@@ -1,0 +1,73 @@
+{html{head
+    {title Off the Beaten Path}
+}{body bgcolor="#EEEEEE"
+    {h1 Off the Beaten Path}
+
+    {p} You already know, probably, about Yahoo and Alta Vista,
+	about Apple and Sun.  But how many of these have you visited?
+    {p}{hr}
+
+    {h2 The Arts}
+    {ul
+	{li} {@http://www.sgi.com/grafica/index.html
+		Grafica Obscura}
+	{li} {@http://www.mcs.net/~sculptor/
+		The Gargoyle Sculptor}
+	{li} {@http://micro.magnet.fsu.edu/chipshot.html
+		Chip Shots}
+	{li}
+{@http://www.iuma.com/IUMA-2.0/ftp/volume1/Nuclear_Whales_Saxophone_Orchestra/
+		Nuclear Whales Saxophone Orchestra}
+	{li} {@http://www.aardman.com/
+		Aardman Animation (Wallace & Gromit)}
+    }
+
+    {h2 Natural Science}
+    {ul
+	{li} {@http://tiger.census.gov/
+		Census Bureau mapmaker}
+	{li} {@http://www.geo.Arizona.EDU/saso/seismograms/current.html
+		On-Line Seismograph}
+	{li} {@http://tycho.usno.navy.mil/time.html
+		The Directorate of Time}
+	{li} {@http://www.fourmilab.ch/hotbits/
+		Truly Random Numbers}
+    }
+
+    {h2 Computer Folklore}
+    {ul
+	{li} {@http://www.inwap.com/pdp10/hbaker/hakmem/hakmem.html
+		The classic HAKMEM}
+	{li} {@http://www.epilogue.com/~sra/alice/
+		Alice's PDP-10}
+		{! WAS: http://www.docs.uu.se/~pem/AlicesPDP10/AlicesPDP10.html}
+	{li} {@http://ecco.bsee.swin.edu.au/unix/uh/unix-haters.html
+		Unix-Haters Handbook}
+	     	{!WAS: http://web.kaleida.com/hopkins/unix-haters.html}
+	{li} {@http://www.research.ibm.com/massive/bump.html
+		Things that go Bump in the Net}
+    }
+
+    {h2 Collections}
+    {ul
+	{li} {@http://www.teleport.com/~dgh/hpmuseum.html
+		Museum of HP Calculators}
+	{li} {@http://www.utm.edu/research/primes/largest.html
+		Largest Known Primes}
+	{li} {@http://www.slip.net/~graphion/museum.html
+		Typography Museum}
+    }
+
+    {h2 Travel, Recreation, and Fine Dining}
+    {ul
+	{li} {@http://www.execpc.com/~aaprco/
+		Private Railroad Cars Available for Charter}
+	{li} {@http://www.ualfltctr.com/docs/simpub.html
+		You Can Fly a 747 Simulator}
+	{li} {@http://ghg.ecn.purdue.edu
+		Barbecuing with Liquid Oxygen}
+    }
+
+   {hr}
+   {address {@http://www.cs.arizona.edu/~gmt Gregg Townsend}}
+}}
