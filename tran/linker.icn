@@ -40,8 +40,8 @@ procedure main(L)
     put(mcode.code, j_ldc(j_cp_String(c, j_cp_Utf8(c, outclass))) )
 
     start := j_create_methodref(c,
-	 "start", "([Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;)V",
-	 "rts/iInterface")
+         "start", "([Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;)V",
+         "rts/iInterface")
     put(mcode.code, j_invokestatic(start) )
     put(mcode.code, j_vreturn() )
 

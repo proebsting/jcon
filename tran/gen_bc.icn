@@ -9,8 +9,8 @@ global bc_proc_classptr
 global bc_proc_classname
 global bc_switch_label
 
-global bc_tmpj_label_table
-global bc_tmpj_label_offset
+global bc_tmplabel_table
+global bc_tmplabel_offset
 
 global bc_create_exists
 global bc_save_restore_flag
@@ -170,11 +170,11 @@ end
 
 # record ir_TmpLabel( name )
 procedure bc_gen_ir_TmpLabel_rval(s, p)
-    put(s, j_Iload(bc_tmpj_label_table[p.name] + bc_tmpj_label_offset))
+    put(s, j_Iload(bc_tmplabel_table[p.name] + bc_tmplabel_offset))
     return s
 end
 procedure bc_gen_ir_TmpLabel_assign(s, p)
-    put(s, j_Istore(bc_tmpj_label_table[p.name] + bc_tmpj_label_offset))
+    put(s, j_Istore(bc_tmplabel_table[p.name] + bc_tmplabel_offset))
     return s
 end
 
@@ -380,18 +380,18 @@ procedure bc_save_tmps(s)
     }
 end
 
-procedure bc_save_tmpj_labels(s)
+procedure bc_save_tmplabels(s)
     local a, k
 
-    if *bc_tmpj_label_table > 0 then {
+    if *bc_tmplabel_table > 0 then {
         a := j_create_fieldref(bc_proc_classptr, "tmpLabelArray", "[I",
                              bc_proc_classname)
         put(s, j_aload_0())
         put(s, j_getfield(a))
-        every k := key(bc_tmpj_label_table) do {
+        every k := key(bc_tmplabel_table) do {
             put(s, j_dup())
-            put(s, j_ipush(bc_tmpj_label_table[k]))
-            put(s, j_Iload(bc_tmpj_label_table[k] + bc_tmpj_label_offset))
+            put(s, j_ipush(bc_tmplabel_table[k]))
+            put(s, j_Iload(bc_tmplabel_table[k] + bc_tmplabel_offset))
             put(s, j_iastore())
         }
         put(s, j_Pop())
@@ -428,7 +428,7 @@ procedure bc_gen_ir_Succeed(s, p)
         put(s, j_putfield(PC))
 
         bc_save_tmps(s)
-        bc_save_tmpj_labels(s)
+        bc_save_tmplabels(s)
         bc_save_tmpclosures(s)
     } else {
         put(s, j_aload_0())
@@ -719,7 +719,7 @@ procedure bc_gen_ir_CoFail(s, p)
     return s
 end
 
-# record ir_EnterInit( startj_label )
+# record ir_EnterInit( startlabel )
 procedure bc_gen_ir_EnterInit(s, p)
     local target, initialized
 
@@ -729,7 +729,7 @@ procedure bc_gen_ir_EnterInit(s, p)
     put(s, j_getstatic(initialized))
     target := j_label()
     put(s, j_ifeq(target))
-    bc_transfer_to(s, p.startj_label )
+    bc_transfer_to(s, p.startlabel )
     put(s, target)
     put(s, j_iconst_1())
     put(s, j_putstatic(initialized))
@@ -776,8 +776,8 @@ procedure bc_gen(s, p)
     }
 end
 
-procedure bc_emit(j_label, code)
-    return bc_emit_table[j_label] := code
+procedure bc_emit(label, code)
+    return bc_emit_table[label] := code
 end
 
 procedure bc_invocables(all, L)
@@ -858,11 +858,11 @@ procedure bc_alloc_tmps(s, c, class_index, class, classname)
     }
 end
 
-procedure bc_alloc_tmpj_labels(s, c, class_index, class, classname)
+procedure bc_alloc_tmplabels(s, c, class_index, class, classname)
     local a
-    if *bc_tmpj_label_table > 0 then {
+    if *bc_tmplabel_table > 0 then {
         put(s, j_aload_0() )
-        put(s, j_ipush(*bc_tmpj_label_table) )
+        put(s, j_ipush(*bc_tmplabel_table) )
         put(s, j_newarray(10) )
         a := j_create_fieldref(class, "tmpLabelArray", "[I",
                              classname)
@@ -916,7 +916,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
 
     bc_args_set := set();
     bc_tmp_table := table()
-    bc_tmpj_label_table := table()
+    bc_tmplabel_table := table()
     bc_tmpclosure_table := table()
     bc_var_set := set([])
     bc_var_field := table()
@@ -926,7 +926,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     bc_key_table := table()
 
     every i := !code do {
-        bc_emit_table[i.j_label] := i.insnList
+        bc_emit_table[i.label] := i.insnList
     }
 
     bc_labels := table()
@@ -987,7 +987,7 @@ procedure bc_create_constructor(c, class_index)
             j_create_field(bc_proc_classptr, 0, "tmpClosureArray",
              "[Lrts/iClosure;")
         }
-        if *bc_tmpj_label_table > 0 then {
+        if *bc_tmplabel_table > 0 then {
             j_create_field(bc_proc_classptr, 0, "tmpLabelArray", "[I")
         }
     }
@@ -1001,7 +1001,7 @@ procedure bc_create_constructor(c, class_index)
     if \bc_save_restore_flag then {
         bc_alloc_tmps(s, c, class_index, bc_proc_classptr,
                       bc_proc_classname)
-        bc_alloc_tmpj_labels(s, c, class_index, bc_proc_classptr,
+        bc_alloc_tmplabels(s, c, class_index, bc_proc_classptr,
                            bc_proc_classname)
         bc_alloc_tmpclosures(s, c, class_index, bc_proc_classptr,
                              bc_proc_classname)
@@ -1021,7 +1021,7 @@ procedure bc_register0(op)
     case type(op) of {
     "list" : every bc_register0(!op)
     "ir_Tmp" :        /bc_tmp_table[op.name] := *bc_tmp_table;
-    "ir_TmpLabel" :   /bc_tmpj_label_table[op.name] := *bc_tmpj_label_table
+    "ir_TmpLabel" :   /bc_tmplabel_table[op.name] := *bc_tmplabel_table
     "ir_TmpClosure" : /bc_tmpclosure_table[op.name] := *bc_tmpclosure_table
     "ir_Var" : {
                      insert(bc_var_set, op.name)
@@ -1066,19 +1066,19 @@ procedure bc_restore_tmpclosures(s)
     }
 end
 
-procedure bc_restore_tmpj_labels(s)
+procedure bc_restore_tmplabels(s)
     local a, k
 
-    if *bc_tmpj_label_table > 0 then {
+    if *bc_tmplabel_table > 0 then {
         a := j_create_fieldref(bc_proc_classptr, "tmpLabelArray", "[I",
                              bc_proc_classname)
         put(s, j_aload_0())
         put(s, j_getfield(a))
-        every k := key(bc_tmpj_label_table) do {
+        every k := key(bc_tmplabel_table) do {
             put(s, j_dup())
-            put(s, j_ipush(bc_tmpj_label_table[k]))
+            put(s, j_ipush(bc_tmplabel_table[k]))
             put(s, j_iaload())
-            put(s, j_Istore(bc_tmpj_label_table[k] + bc_tmpj_label_offset))
+            put(s, j_Istore(bc_tmplabel_table[k] + bc_tmplabel_offset))
         }
         put(s, j_Pop())
     }
@@ -1095,8 +1095,8 @@ procedure bc_create_nextval(c, start, params, locals, undeclared, accumulate)
     s := nextvalcode.code
 
     bc_tmp_offset := 10
-    bc_tmpj_label_offset := bc_tmp_offset + *bc_tmp_table
-    bc_tmpclosure_offset := bc_tmpj_label_offset + *bc_tmpj_label_table
+    bc_tmplabel_offset := bc_tmp_offset + *bc_tmp_table
+    bc_tmpclosure_offset := bc_tmplabel_offset + *bc_tmplabel_table
     bc_var_offset := bc_tmpclosure_offset + *bc_tmpclosure_table
     nextvalcode.max_locals := bc_var_offset + *bc_var_table
 
@@ -1118,7 +1118,7 @@ procedure bc_create_nextval(c, start, params, locals, undeclared, accumulate)
         put(s, j_goto_w(var_load_label))
         put(s, tmplab)
         bc_restore_tmps(s)
-        bc_restore_tmpj_labels(s)
+        bc_restore_tmplabels(s)
         bc_restore_tmpclosures(s)
     }
 
@@ -1179,9 +1179,9 @@ procedure bc_initialize_tmps(s)
         put(s, j_aconst_null())
         put(s, j_Astore(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
     }
-    every k := key(bc_tmpj_label_table) do {
+    every k := key(bc_tmplabel_table) do {
         put(s, j_iconst_0())
-        put(s, j_Istore(bc_tmpj_label_table[k] + bc_tmpj_label_offset))
+        put(s, j_Istore(bc_tmplabel_table[k] + bc_tmplabel_offset))
     }
 end
 
@@ -1219,7 +1219,7 @@ procedure bc_create_locals(c, undeclared, statics)
     local shadow, index, class_index, m, s, sortedvars
 
     sortedvars := sort(bc_var_set ++ bc_params_set ++ bc_locals_set ++
-		       bc_statics_set)
+                       bc_statics_set)
 
     locals := j_create_method(c, 0, "locals", "()V")
     localscode := j_create_code(c, 10, 10)
@@ -1462,7 +1462,7 @@ procedure bc_create_copy(c, params, locals, undeclared)
         Copy := j_create_method(c, 0, "copy", "(I)Lrts/iClosure;")
         copycode := j_create_code(c, 10, 10)
         put(Copy.attributes, copycode)
-	s := copycode.code
+        s := copycode.code
 
         # local1 is PC
         # local2 is New
@@ -1479,7 +1479,7 @@ procedure bc_create_copy(c, params, locals, undeclared)
         deref := deref_methodref(c)
         assign := Assign_methodref(bc_proc_classptr)
         every k := !params | !locals do {
-	    bc_copy_variable(s, c, k)
+            bc_copy_variable(s, c, k)
         }
         every k := !undeclared do {
             linkvalue := j_create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
@@ -1487,7 +1487,7 @@ procedure bc_create_copy(c, params, locals, undeclared)
             lab1 := j_label()
             put(s, j_getstatic(linkvalue) )
             put(s, j_ifnonnull(lab1) )
-	    bc_copy_variable(s, c, k)
+            bc_copy_variable(s, c, k)
             put(s, lab1 )
         }
         PC := PC_fieldref(c)

@@ -405,7 +405,7 @@ procedure preproc_scan_define_value()
     initial interesting_chars := '#"\''
 
     if ="(" then {
-	fail	# "$define name(" is specifically prohibited; needs whitespace
+        fail      # "$define name(" is specifically prohibited; needs whitespace
     }
     preproc_space()
     q := &pos

@@ -99,7 +99,7 @@ procedure yylex0(getline)
             sym := INTLIT
             if str ||:= =("r"|"R") then { # radix
                 str ||:= tab(many(let_dig)) |
-		    lex_error("invalid integer literal")
+                    lex_error("invalid integer literal")
                 ptok := sym
                 ptok.str := str
                 suspend ptok

@@ -595,8 +595,8 @@ procedure u_local_declarations(p, code)
     every x := !p.localsList do {
         every k := !x.idList do {
             write(u_u1, "\tlocal\t", i, ",",
-		  if type(x) == "a_Statics" then "000040" else "000020",
-		  ",", k.id)
+                  if type(x) == "a_Statics" then "000040" else "000020",
+                  ",", k.id)
             i +:= 1
             u_variables[k.id] := *u_variables
         }
@@ -1049,7 +1049,7 @@ procedure u_global_declarations(g)
         }
         "a_ProcDecl": {
             write(u_u2, "\t", t, ",", "000005", ",",
-		  p.ident.id, ",", *p.paramList)
+                  p.ident.id, ",", *p.paramList)
             t +:= 1
         }
         }

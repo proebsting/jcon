@@ -1,11 +1,11 @@
 procedure echo(c, flags)
     local p
     while p := @\c do {
-	if "-verbose" == !\flags then {
+        if "-verbose" == !\flags then {
             write(verbose(p, "", ""))
-	} else {
+        } else {
             write(dump(p))
-	}
+        }
     }
 end
 

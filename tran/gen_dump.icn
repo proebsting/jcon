@@ -1,7 +1,7 @@
 global dump_emit_table
 
-procedure dump_emit(j_label, code)
-    dump_emit_table[j_label] := code
+procedure dump_emit(label, code)
+    dump_emit_table[label] := code
 end
 
 procedure dump_invocables(all, L)
@@ -30,7 +30,7 @@ procedure dump_globals(L)
 end
 
 procedure dump_function(name, params, accumulate, locals, statics, code,
-			codestart, coord)
+                        codestart, coord)
     local i
 
     writes("procedure ", name, "(")
@@ -46,7 +46,7 @@ procedure dump_function(name, params, accumulate, locals, statics, code,
     write()
     dump_emit_table := table()
     every i := !code do {
-	dump_emit_table[i.j_label] := i.insnList
+        dump_emit_table[i.label] := i.insnList
     }
     dump_emit_table := optimize(dump_emit_table, codestart)
     dump_table(&output, dump_emit_table)
@@ -69,24 +69,24 @@ procedure dump_File(irgen, flagList)
         optimize_flag := 1
     }
     while p := @irgen do {
-	case type(p) of {
-	"ir_Global" : {
-	    dump_globals(p.nameList)
-	}
-	"ir_Record" : {
-	    dump_records(p.name, p.fieldList)
-	}
-	"ir_Invocable" : {
-	    dump_invocables(p.all, p.nameList)
-	}
-	"ir_Function" : {
-	    dump_function(p.name, p.paramList, p.accumulate, p.localList,
-			p.staticList, p.codeList, p.codeStart)
-	}
-	"ir_Link" : {
-	    dump_links(p.nameList)
-	}
-	default: runerr(500, p)
-	}
+        case type(p) of {
+        "ir_Global" : {
+            dump_globals(p.nameList)
+        }
+        "ir_Record" : {
+            dump_records(p.name, p.fieldList)
+        }
+        "ir_Invocable" : {
+            dump_invocables(p.all, p.nameList)
+        }
+        "ir_Function" : {
+            dump_function(p.name, p.paramList, p.accumulate, p.localList,
+                        p.staticList, p.codeList, p.codeStart)
+        }
+        "ir_Link" : {
+            dump_links(p.nameList)
+        }
+        default: runerr(500, p)
+        }
     }
 end

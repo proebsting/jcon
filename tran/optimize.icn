@@ -15,7 +15,7 @@ procedure optimize(t, start)
     if i := j_new[start] &
        type(i[1]) == "ir_EnterInit" &
        type(i[2]) == "ir_Goto" &
-       i[1].startj_label === i[2].location then {
+       i[1].startlabel === i[2].location then {
         j_new[start] := [ i[2] ]
     }
     return j_new
@@ -182,7 +182,7 @@ procedure def_use(p, this, uses, defs)
     "ir_Restore" :   { }
     "ir_CoFail" :    { }
     "ir_RunTimeError":{ }
-    "ir_EnterInit" : { def_use(p.startj_label, uses, uses, defs) }
+    "ir_EnterInit" : { def_use(p.startlabel, uses, uses, defs) }
     "ir_Coord" : { }
 
     default :   { runerr(500, p); }
@@ -247,7 +247,7 @@ procedure opt_rewrite(p, rename)
             p.continuation := opt_rewrite(p.continuation, rename);}
     "ir_CoFail" :    { }
     "ir_RunTimeError":{ }
-    "ir_EnterInit" : { p.startj_label := opt_rewrite(p.startj_label, rename) }
+    "ir_EnterInit" : { p.startlabel := opt_rewrite(p.startlabel, rename) }
     "ir_Coord" : { }
 
     default :   { runerr(500,p); }
@@ -378,9 +378,9 @@ procedure j_gotos(p, wl, seen, t)
         p.continuation := j_goto_chain(p.continuation, t)
         j_gotos(p.continuation, wl, seen, t)
         }
-    "ir_EnterInit" : {  # ir_EnterInit : ( startj_label )
-        p.startj_label := j_goto_chain(p.startj_label, t)
-        j_gotos(p.startj_label, wl, seen, t)
+    "ir_EnterInit" : {  # ir_EnterInit : ( startlabel )
+        p.startlabel := j_goto_chain(p.startlabel, t)
+        j_gotos(p.startlabel, wl, seen, t)
         }
     default : runerr(500, p)
     }
