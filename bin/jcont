@@ -125,14 +125,14 @@ for FNAME; do
 		;;
 	*.zip)	BASE=${FNAME%.zip}
 		ZFILES="$ZFILES $BASE.zip"
-		ROOTS="$ROOTS l\\\$$BASE"
+		ROOTS="$ROOTS l\$$BASE"
 		shift
 		;;
 	*)	BASE=${FNAME%.icn}
 		IFILES="$IFILES $BASE"
 		ZFILES="$ZFILES $BASE.zip"
 		ZBUILT="$ZBUILT $BASE.zip"
-		ROOTS="$ROOTS l\\\$$BASE"
+		ROOTS="$ROOTS l\$$BASE"
 		shift
 		;;
     esac
@@ -215,8 +215,11 @@ for FNAME in `<$TDIR/zip.list`; do
     (cd $TDIR; $JAR xf $FNAME)
 done
 
+# create XFILE.main
+(cd $TDIR; jlink $XFILE $ROOTS)
+
 # combine the Icon files from there
-(cd $TDIR; $JAR cf combined.zip [lp]*.class)
+(cd $TDIR; $JAR cf combined.zip [lp]*.class $XFILE.class)
 
 # combine a header (padded via dd) with that zip file to make a script
 # (if making significant changes here, also adjust HBASE above)
@@ -238,7 +241,7 @@ trap "rm -rf \$TZIP" 0 1 2 15
 dd bs=$HDRSIZE skip=1 <\$THISFILE >\$TZIP 2>$NULLFILE
 
 export CLASSPATH="\$TZIP${PATHSEP}$JRTS${PATHSEP}\$CLASSPATH"
-$JAVA rts.Main $ROOTS -- "\$0" "\$@"
+$JAVA $XFILE "\$@"
 exit
 
 [binary data follows]
