@@ -6,7 +6,6 @@ what's implemented:
 -- only part of the graphics repertoire (see below)
 
 general caveats:
--- little optimization has been done
 -- some Java datatypes are suboptimal e.g. for push(L)/pop(L)
 -- crude tracing can be enabled by setting &trace
 -- the TRACE environment variable is *not* honored
@@ -22,7 +21,6 @@ building and running programs:
 ------------------------------------------------------------------------------
 
 known bugs:
--- the lexer chokes on "\x"
 -- the preprocessor does not diagnose "$define f(a) ..."
 -- local variables are not dereferenced prior to being returned
 -- e[e+:e] and e[e-:e] function identically to v9, which is wrong in some cases
@@ -32,7 +30,6 @@ known bugs:
 
 strings and csets:
 -- Jcon uses 8-bit characters, not Unicode
--- image(c) doesn't recognize &digits, &lcase, etc.
 
 numerics:
 -- arithmetic overflow and underflow are not detected
