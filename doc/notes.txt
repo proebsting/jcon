@@ -9,6 +9,7 @@ general:
 -- crude tracing can be enabled by setting &trace
 -- the TRACE environment variable is *not* honored
 -- if Java runs out of memory, setenv JXOPTS='-mx50m' (e.g.) to increase max
+-- out-of-memory errors say "block region"; there is no separate string region
 
 building and running programs:
 -- jcont is a complex script that only runs on Unix
@@ -49,7 +50,7 @@ files:
 error reporting:
 -- arg lists in traceback show actual instead of expected number of arguments
    (e.g.: a call to insert() traces as insert() not insert(&null,&null,&null))
--- in traceback images, list contents and record fields are omitted
+-- record fields are not shown in traceback images
 
 miscellaneous:
 -- no OS symbols (e.g. _UNIX) are predefined; _JAVA is predefined
