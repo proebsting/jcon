@@ -31,8 +31,8 @@ test:	build
 
 
 install: 
-	test -d $(DEST)
-	cp bin/* $(DEST)
+	test -d $(DEST) || mkdir $(DEST)
+	cp bin/j* bin/rts.zip $(DEST)
 
 
 clean:
