@@ -11,4 +11,7 @@
 #  To partially compensate, some program arguments and data files have
 #  been changed to yield longer execution times.
 #
-#  To run or rerun the benchmarks, just type "make".
+#  To run the benchmarks, just type "make".
+#  To redisplay the most recent timings, type "make report".
+#  To rerun the timings, type "make rerun".
+#  To clean up, type "make clean".
