@@ -36,9 +36,8 @@ void report() {				// print message and abort
     if (desc != null) {
 	f.println("offending value: " + desc.report());
     }
-
     //#%#% here is where we would do traceback
-    //#%#% f.println("Traceback:");
+
     iRuntime.exit(1);
 }
 

@@ -72,16 +72,35 @@ public static void declareGlobalInit(String s, vVariable x) {
     global(s,x);
 }
 
-public static void declareKey(String name, String classname) {
-    keytab.put(name, vProc.New(classname, "&" + name, 0));
-}
-
 public static void declareKey(String name, vProc p) {
+    p.img = vString.New("&" + name);
+    p.args = 0;
     keytab.put(name, p);
 }
 
-public static void declareBuiltin(String name, String classname, int arity) {
-    vProc p = vProc.New(classname, "function " + name, arity);
+public static void declareBuiltin(String name, vProc p, int arity) {
+    boolean b;
+
+    p.img = vString.New("function " + name);
+    p.args = arity;
+
+    switch (arity) {	// sanity check on arity
+	case 0:  b = p instanceof vProc0;  break;
+	case 1:  b = p instanceof vProc1;  break;
+	case 2:  b = p instanceof vProc2;  break;
+	case 3:  b = p instanceof vProc3;  break;
+	case 4:  b = p instanceof vProc4;  break;
+	case 5:  b = p instanceof vProc5;  break;
+	case 6:  b = p instanceof vProc6;  break;
+	case 7:  b = p instanceof vProc7;  break;
+	case 8:  b = p instanceof vProc8;  break;
+	case 9:  b = p instanceof vProc9;  break;
+	default: b = p instanceof vProcV;  break;
+    }
+    if (!b) {
+	System.err.println("unexpected arity: function " + name);
+    }
+
     builtintab.put(name, p);
     if (!symtab.containsKey(name)) {
 	declareGlobalInit(name, vSimpleVar.New(name, p));

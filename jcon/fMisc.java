@@ -89,7 +89,7 @@ class f$proc extends vProc2 {					// proc(s, i)
 class f$collect extends vProc2 {				// collect(i,j)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	long i1 = a.isnull() ? 0 : a.mkInteger().value;
-	long i2 = b.isnull() ? 0 : a.mkInteger().value;
+	long i2 = b.isnull() ? 0 : b.mkInteger().value;
 	vNull n = vNull.New();
 	if (i1 == 0) {
 	    System.gc();

@@ -6,7 +6,7 @@ class fString {} // dummy
 
 
 
-class f$char extends vProc1 {				// char()
+class f$char extends vProc1 {					// char(i)
     public vDescriptor Call(vDescriptor a) {
 	long i = a.mkInteger().value;
 	if (i < 0 || i > vCset.MAX_VALUE) {
@@ -18,7 +18,7 @@ class f$char extends vProc1 {				// char()
 
 
 
-class f$ord extends vProc1 {				// ord()
+class f$ord extends vProc1 {					// ord(s)
     public vDescriptor Call(vDescriptor a) {
 	vString s = a.mkString();
 	if (s.length() != 1) {
@@ -30,7 +30,7 @@ class f$ord extends vProc1 {				// ord()
 
 
 
-class f$repl extends vProc2 {				// repl()
+class f$repl extends vProc2 {					// repl(s,i)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	byte[] s = a.mkString().getBytes();
 	long ln = b.isnull() ? 1 : b.mkInteger().value;
@@ -53,7 +53,7 @@ class f$repl extends vProc2 {				// repl()
 
 
 
-class f$reverse extends vProc1 {				// reverse()
+class f$reverse extends vProc1 {				// reverse(s)
     public vDescriptor Call(vDescriptor a) {
 	byte[] s = a.mkString().getBytes();
 	byte[] t = new byte[s.length];
@@ -67,7 +67,7 @@ class f$reverse extends vProc1 {				// reverse()
 
 
 
-class f$left extends vProc3 {				// left(s,i,s)
+class f$left extends vProc3 {					// left(s,i,s)
     static byte[] onespace = { (byte) ' ' };
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
@@ -105,7 +105,7 @@ class f$left extends vProc3 {				// left(s,i,s)
 
 
 
-class f$right extends vProc3 {				// right(s,i,s)
+class f$right extends vProc3 {					// right(s,i,s)
     static byte[] onespace = { (byte) ' ' };
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
@@ -144,7 +144,7 @@ class f$right extends vProc3 {				// right(s,i,s)
 
 
 
-class f$center extends vProc3 {				// center(s,i,s)
+class f$center extends vProc3 {					// center(s,i,s)
     static byte[] onespace = { (byte) ' ' };
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
@@ -233,7 +233,7 @@ class f$map extends vProc3 {				// map(s1,s2,s3)
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
 	vString s1 = a.mkString();
 	vString s2 = b.isnull() ? s2def : b.mkString();
-	vString s3 = c.isnull() ? s3def : b.mkString();
+	vString s3 = c.isnull() ? s3def : c.mkString();
 	byte b1[] = s1.getBytes();
 	byte b2[] = s2.getBytes();
 	byte b3[] = s3.getBytes();

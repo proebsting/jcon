@@ -72,7 +72,7 @@ class f$any extends vProc4 {			// any(c,s,i1,i2)
 class f$many extends vProc4 {			// many(c,s,i1,i2)
         public vDescriptor Call(
 	    vDescriptor a, vDescriptor b, vDescriptor c, vDescriptor d) {
-	vCset cs = c.mkCset();
+	vCset cs = a.mkCset();
 	vString s = fScan.subj(b);
 	int i1 = s.posEq(fScan.pos(b, c));
 	int i2 = s.posEq(d.isnull() ? 0 : d.mkInteger().value);

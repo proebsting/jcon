@@ -2,9 +2,8 @@ package rts;
 
 
 
-public class vRecordProc extends vValue {
+public class vRecordProc extends vProcV {
     vString name;		// name of record Type
-    vString img;		// image: record constructor <name>
     String[] fieldnames;	// names of fields
     String[] varnames;		// variable names
     int nextsn = 1;		// next serial number
@@ -19,6 +18,7 @@ public static vRecordProc New(String name, String[] fields) {
 
 private vRecordProc(String name, String[] fieldnames) {
     this.name = vString.New(name);
+    this.args = fieldnames.length;
     this.img = this.name.surround("record constructor ", "");
     this.fieldnames = fieldnames;
     this.varnames = new String[fieldnames.length];
@@ -31,17 +31,9 @@ private vRecordProc(String name, String[] fieldnames) {
 
 // methods
 
-vString image()		{ return img; }
-
-static vString typestring = vString.New("procedure");
-public vString Type()	{ return typestring; }
-
-int rank()		{ return 80; }	// record constructors sort with procs
-int compareTo(vValue v) {
-    return vProc.compareLastWord(name, v.image());
+public vDescriptor Call(vDescriptor[] v) {
+    return new vRecord(this ,v);
 }
-
-public vInteger Args()	{ return vInteger.New(fieldnames.length); }
 
 int find(String s) {
     for (int i = 0; i < fieldnames.length; i++) {

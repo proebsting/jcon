@@ -16,92 +16,80 @@ import java.util.*;
 
 public class iKeywords extends iFile {
 
-    void announce() {
-	vCset lcase = vCset.New('a', 'z');
-	vCset ucase = vCset.New('A', 'Z');
+void announce() {
+    vCset lcase = vCset.New('a', 'z');
+    vCset ucase = vCset.New('A', 'Z');
 
-	declare("allocated");
-	declare("ascii", vCset.New(0, 127));
-	declare("clock");
-	declare("col");
-	declare("collections");
-	declare("control");
-	declare("cset", vCset.New(0, vCset.MAX_VALUE));
-	declare("current");
-	declare("date");
-	declare("dateline");
-	declare("digits", vCset.New('0', '9'));
-	declare("dump");
-	declare("e", vReal.New(Math.E));
-	declare("error");
-	declare("errornumber");
-	declare("errortext");
-	declare("errorvalue");
-	declare("errout");
-	declare("fail");
-	declare("features");
-	declare("host");
-	declare("input");
-	declare("interval");
-	declare("lcase", lcase);
-	declare("ldrag", vInteger.New(wEvent.LDrag));
-	declare("letters", lcase.Union(ucase));
-	declare("level", vInteger.New(0));	//#%#%
-	declare("lpress", vInteger.New(wEvent.LPress));
-	declare("lrelease", vInteger.New(wEvent.LRelease));
-	declare("main");
-	declare("mdrag", vInteger.New(wEvent.MDrag));
-	declare("meta");
-	declare("mpress", vInteger.New(wEvent.MPress));
-	declare("mrelease", vInteger.New(wEvent.MRelease));
-	declare("null", vNull.New());
-	declare("output");
-	declare("phi", vReal.New((1.0 + Math.sqrt(5.0)) / 2.0));
-	declare("pi", vReal.New(Math.PI));
-	declare("pos");
-	declare("progname");
-	declare("random");
-	declare("rdrag", vInteger.New(wEvent.RDrag));
-	declare("regions");
-	declare("resize", vInteger.New(wEvent.Resize));
-	declare("row");
-	declare("rpress", vInteger.New(wEvent.RPress));
-	declare("rrelease", vInteger.New(wEvent.RRelease));
-	declare("shift");
-	declare("source");
-	declare("storage");
-	declare("subject");
-	declare("time");
-	declare("trace");
-	declare("ucase", ucase);
-	declare("version", vString.New(iConfig.Version));
-	declare("window");
-	declare("x");
-	declare("y");
-    }
-
-    static void declare(String name) {
-	iEnv.declareKey(name, iConfig.KeywordPrefix + name);
-    }
-
-    static void declare(String name, vValue v) {
-	iEnv.declareKey(name, new kConstant(name, v));
-    }
+    iEnv.declareKey("allocated", new k$allocated());
+    iEnv.declareKey("ascii", new kConstant(vCset.New(0, 127)));
+    iEnv.declareKey("clock", new k$clock());
+    iEnv.declareKey("col", new k$col());
+    iEnv.declareKey("collections", new k$collections());
+    iEnv.declareKey("control", new k$control());
+    iEnv.declareKey("cset", new kConstant(vCset.New(0, vCset.MAX_VALUE)));
+    iEnv.declareKey("current", new k$current());
+    iEnv.declareKey("date", new k$date());
+    iEnv.declareKey("dateline", new k$dateline());
+    iEnv.declareKey("digits", new kConstant(vCset.New('0', '9')));
+    iEnv.declareKey("dump", new k$dump());
+    iEnv.declareKey("e", new kConstant(vReal.New(Math.E)));
+    iEnv.declareKey("error", new k$error());
+    iEnv.declareKey("errornumber", new k$errornumber());
+    iEnv.declareKey("errortext", new k$errortext());
+    iEnv.declareKey("errorvalue", new k$errorvalue());
+    iEnv.declareKey("errout", new k$errout());
+    iEnv.declareKey("fail", new kConstant(null));	// always fails
+    iEnv.declareKey("features", new k$features());
+    iEnv.declareKey("host", new k$host());
+    iEnv.declareKey("input", new k$input());
+    iEnv.declareKey("interval", new k$interval());
+    iEnv.declareKey("lcase", new kConstant(lcase));
+    iEnv.declareKey("ldrag", new kConstant(vInteger.New(wEvent.LDrag)));
+    iEnv.declareKey("letters", new kConstant(lcase.Union(ucase)));
+    iEnv.declareKey("level", new kConstant(null));	// always fails (?) #%#%
+    iEnv.declareKey("lpress", new kConstant(vInteger.New(wEvent.LPress)));
+    iEnv.declareKey("lrelease", new kConstant(vInteger.New(wEvent.LRelease)));
+    iEnv.declareKey("main", new k$main());
+    iEnv.declareKey("mdrag", new kConstant(vInteger.New(wEvent.MDrag)));
+    iEnv.declareKey("meta", new k$meta());
+    iEnv.declareKey("mpress", new kConstant(vInteger.New(wEvent.MPress)));
+    iEnv.declareKey("mrelease", new kConstant(vInteger.New(wEvent.MRelease)));
+    iEnv.declareKey("null", new kConstant(vNull.New()));
+    iEnv.declareKey("output", new k$output());
+    iEnv.declareKey("phi", new kConstant(vReal.New((1.0+Math.sqrt(5.0))/2.0)));
+    iEnv.declareKey("pi", new kConstant(vReal.New(Math.PI)));
+    iEnv.declareKey("pos", new k$pos());
+    iEnv.declareKey("progname", new k$progname());
+    iEnv.declareKey("random", new k$random());
+    iEnv.declareKey("rdrag", new kConstant(vInteger.New(wEvent.RDrag)));
+    iEnv.declareKey("regions", new k$regions());
+    iEnv.declareKey("resize", new kConstant(vInteger.New(wEvent.Resize)));
+    iEnv.declareKey("row", new k$row());
+    iEnv.declareKey("rpress", new kConstant(vInteger.New(wEvent.RPress)));
+    iEnv.declareKey("rrelease", new kConstant(vInteger.New(wEvent.RRelease)));
+    iEnv.declareKey("shift", new k$shift());
+    iEnv.declareKey("source", new k$source());
+    iEnv.declareKey("storage", new k$storage());
+    iEnv.declareKey("subject", new k$subject());
+    iEnv.declareKey("time", new k$time());
+    iEnv.declareKey("trace", new k$trace());
+    iEnv.declareKey("ucase", new kConstant(ucase));
+    iEnv.declareKey("version", new kConstant(vString.New(iConfig.Version)));
+    iEnv.declareKey("window", new k$window());
+    iEnv.declareKey("x", new k$x());
+    iEnv.declareKey("y", new k$y());
 }
 
+} // class iKeywords
 
 
-//  constant-valued keywords (those initialized above) are kConstant instances
+
+//  common class used for constant-valued keywords, including &fail
 
 class kConstant extends vProc0 {
     vValue value;
 
-    kConstant(String name, vValue v) {			// constructor
-	img = vString.New("k$" + name);
-	args = 0;
-	value = v;
-    }
-
+    kConstant(vValue v)		{ value = v; }		// constructor
     public vDescriptor Call()	{ return value; }	// reference
 }
 
@@ -212,14 +200,6 @@ class k$dump extends kCounter {
 
 
 
-class k$fail extends vProc0 {					// &fail
-    public vDescriptor Call() {
-	return null; /*FAIL*/
-    }
-}
-
-
-
 class k$features extends vProc0 {				// &features
 
     //  The features list is hard-wired.
@@ -239,7 +219,8 @@ class k$features extends vProc0 {				// &features
 	    int posn = 0;
 	    public vDescriptor Resume() {
 		if (posn < flist.length) {
-		    return flist[posn++];
+		    retval = flist[posn++];
+		    return this;
 		} else {
 		    return null;
 		}
