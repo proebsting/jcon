@@ -69,6 +69,9 @@ vNumeric mkNumeric()	{ return this.mkString().mkNumeric(); }
 vInteger mkInteger()	{ return this.mkString().mkInteger(); }
 vReal mkReal()		{ return this.mkString().mkReal(); }
 
+vDescriptor Index(vValue i)		{ return this.mkString().Index(i); }
+vDescriptor Section(vValue i, vValue j)	{ return this.mkString().Section(i,j); }
+
 vString mkString() {
     StringBuffer b = new StringBuffer();
     for (int i = 0; i < t.size(); i++) {
