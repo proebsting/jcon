@@ -413,6 +413,24 @@ vCset mkCset() {						// cset(s)
 }
 
 
+
+//  =s : tab(match(s))
+//#%#% should this be a generator (undo &pos movement on resumption)?
+//#%#% shouldn't tab() return a modifyable substring?
+
+public vString TabMatch() {
+    vString subj = (vString) k$subject.self.Deref();
+    int pos = (int) ((vInteger)k$pos.self.Deref()).value;
+    if (this.matches(subj, pos - 1)) {
+	k$pos.self.SafeAssign(vInteger.New(pos + tlength));
+	return vString.New(subj, pos, pos + tlength);
+    } else {
+	return null; /*FAIL*/
+    }
+}
+
+
+
 //  static methods for argument processing and defaulting
 
 static vString argDescr(vDescriptor[] args, int index) {	// required arg
@@ -586,11 +604,11 @@ public vDescriptor BangVar(final vVariable v) {
     }
 
     return new vClosure() {
-	int i = 0;
-	{ retval = vSubstring.New(v, 0, 1); }
+	int i = 1;
+	{ retval = vSubstring.New(v, 1, 2); }
 
 	public vDescriptor resume() {
-	    if (++i >= ((vString)v.Deref()).tlength) {
+	    if (++i > ((vString)v.Deref()).tlength) {
 		return null; /*FAIL*/
 	    }
 	    retval = vSubstring.New(v, i, i + 1);

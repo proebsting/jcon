@@ -372,7 +372,7 @@ public vDescriptor Bang() {		// !c
 	public vDescriptor resume() {
 	    while (i <= MAX_VALUE) {
 		if (member(i)) {
-		    retval = vString.New((char) i);
+		    retval = vString.New((char) i++);
 		    return this;
 		}
 		i++;

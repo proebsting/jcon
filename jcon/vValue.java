@@ -37,7 +37,9 @@ vString report()		{ return this.image(); }
 abstract vString image();		// required of all subclasses
 
 public vValue Deref()		{ return this; }
-public vVariable Assign(vDescriptor x){ iRuntime.error(111,this); return null; }
+public vVariable Assign(vDescriptor x) { iRuntime.error(111,this); return null;}
+public vVariable SubjAssign(vDescriptor x)
+				{ iRuntime.error(111,this); return null; }
 
 public vDescriptor resume()	{ return null; /*FAIL*/ }
 public vInteger Limit()		{ return this.mkInteger().Limit(); }
@@ -49,7 +51,7 @@ public vDescriptor Activate(vDescriptor x)
 public vDescriptor ToBy(vDescriptor j, vDescriptor k)
 				{ return this.mkInteger().ToBy(j, k); }
 
-public vNumeric Numerate()	{ return this.mkNumeric().Numerate(); }
+public vNumeric Numerate()	{ return this.mkNumeric(); }
 public vNumeric Negate()	{ return this.mkNumeric().Negate(); }
 public vInteger Size()		{ iRuntime.error(112, this); return null; }
 public vValue Complement()	{ iRuntime.error(104, this); return null; }
@@ -79,103 +81,82 @@ public vDescriptor SectPlus(vDescriptor i, vDescriptor j)
 public vDescriptor SectMinus(vDescriptor i, vDescriptor j)
 				{ iRuntime.error(110, this); return null; }
 
-public vNumeric Add(vDescriptor v)
-				{ iRuntime.error(102, this); return null; }
-public vNumeric Sub(vDescriptor v)
-				{ iRuntime.error(102, this); return null; }
-public vNumeric Mul(vDescriptor v)
-				{ iRuntime.error(102, this); return null; }
-public vNumeric Div(vDescriptor v)
-				{ iRuntime.error(102, this); return null; }
-public vNumeric Mod(vDescriptor v)
-				{ iRuntime.error(102, this); return null; }
-public vNumeric Power(vDescriptor v)
-				{ iRuntime.error(102, this); return null; }
+public vNumeric Add(vDescriptor v)	{ return mkNumeric().Add(v); }
+public vNumeric Sub(vDescriptor v)	{ return mkNumeric().Sub(v); }
+public vNumeric Mul(vDescriptor v)	{ return mkNumeric().Mul(v); }
+public vNumeric Div(vDescriptor v)	{ return mkNumeric().Div(v); }
+public vNumeric Mod(vDescriptor v)	{ return mkNumeric().Mod(v); }
+public vNumeric Power(vDescriptor v)	{ return mkNumeric().Power(v); }
 
-public vNumeric NLess(vDescriptor v)
-				{ iRuntime.error(102, this); return null; }
-public vNumeric NLessEq(vDescriptor v)
-				{ iRuntime.error(102, this); return null; }
-public vNumeric NEqual(vDescriptor v)
-				{ iRuntime.error(102, this); return null; }
-public vNumeric NUnequal(vDescriptor v)
-				{ iRuntime.error(102, this); return null; }
-public vNumeric NGreaterEq(vDescriptor v)
-				{ iRuntime.error(102, this); return null; }
-public vNumeric NGreater(vDescriptor v)
-				{ iRuntime.error(102, this); return null; }
+public vNumeric NLess(vDescriptor v)	{ return mkNumeric().NLess(v); }
+public vNumeric NLessEq(vDescriptor v)	{ return mkNumeric().NLessEq(v); }
+public vNumeric NEqual(vDescriptor v)	{ return mkNumeric().NEqual(v); }
+public vNumeric NUnequal(vDescriptor v)	{ return mkNumeric().NUnequal(v); }
+public vNumeric NGreaterEq(vDescriptor v){return mkNumeric().NGreaterEq(v); }
+public vNumeric NGreater(vDescriptor v)	{ return mkNumeric().NGreater(v); }
 
-public vString LLess(vDescriptor v)
-				{ iRuntime.error(103, this); return null; }
-public vString LLessEq(vDescriptor v)
-				{ iRuntime.error(103, this); return null; }
-public vString LEqual(vDescriptor v)
-				{ iRuntime.error(103, this); return null; }
-public vString LUnequal(vDescriptor v)
-				{ iRuntime.error(103, this); return null; }
-public vString LGreaterEq(vDescriptor v){ iRuntime.error(103, this); return null; }
-public vString LGreater(vDescriptor v)
-				{ iRuntime.error(103, this); return null; }
+public vString LLess(vDescriptor v)	{ return mkString().LLess(v); }
+public vString LLessEq(vDescriptor v)	{ return mkString().LLessEq(v); }
+public vString LEqual(vDescriptor v)	{ return mkString().LEqual(v); }
+public vString LUnequal(vDescriptor v)	{ return mkString().LUnequal(v); }
+public vString LGreaterEq(vDescriptor v){ return mkString().LGreaterEq(v); }
+public vString LGreater(vDescriptor v)	{ return mkString().LGreater(v); }
 
-public vValue VEqual(vDescriptor v) {	// ===
-				vValue vv = (vValue) v;
-				return this.equals(vv) ? vv : null;
-				}
-public vValue VUnequal(vDescriptor v) {	// ~===
-				vValue vv = (vValue) v;
-				return this.equals(vv) ? null : vv;
-				}
+public vValue VEqual(vDescriptor v) {	vValue vv = (vValue) v;	//  a === b
+					return this.equals(vv) ? vv : null;
+					}
+public vValue VUnequal(vDescriptor v) {	vValue vv = (vValue) v;	//  a ~=== b
+					return this.equals(vv) ? null : vv;
+					}
 
-public vString Concat(vDescriptor v)
-				{ iRuntime.error(103, this); return null; }
-public vList ListConcat(vDescriptor v)
-				{ iRuntime.error(108, this); return null; }
+public vString Concat(vDescriptor v)	{ return mkString().Concat(v); }
+public vList ListConcat(vDescriptor v)	{ iRuntime.error(108,this);return null;}
 
-public vList Push(vDescriptor v){ iRuntime.error(108, this); return null; }
-public vValue Pull()		{ iRuntime.error(108, this); return null; }
-public vValue Pop()		{ iRuntime.error(108, this); return null; }
-public vValue Get()		{ iRuntime.error(108, this); return null; }
-public vList Put(vDescriptor v) { iRuntime.error(108, this); return null; }
+public vList Push(vDescriptor v)	{ iRuntime.error(108,this);return null;}
+public vValue Pull()			{ iRuntime.error(108,this);return null;}
+public vValue Pop()			{ iRuntime.error(108,this);return null;}
+public vValue Get()			{ iRuntime.error(108,this);return null;}
+public vList Put(vDescriptor v)		{ iRuntime.error(108,this);return null;}
 
-public vValue Member(vDescriptor i)  { iRuntime.error(122, this); return null; }
-public vValue Delete(vDescriptor i)  { iRuntime.error(122, this); return null; }
+public vValue Member(vDescriptor i)	{ iRuntime.error(122,this);return null;}
+public vValue Delete(vDescriptor i)	{ iRuntime.error(122,this);return null;}
 public vValue Insert(vDescriptor i, vDescriptor val)
-			    	{ iRuntime.error(122, this); return null; }
+					{ iRuntime.error(122,this);return null;}
 
-public vValue Intersect(vDescriptor x){ iRuntime.error(120, this); return null;}
-public vValue Union(vDescriptor x)    { iRuntime.error(120, this); return null;}
-public vValue Diff(vDescriptor x)     { iRuntime.error(120, this); return null;}
+public vValue Intersect(vDescriptor x)	{ iRuntime.error(120,this);return null;}
+public vValue Union(vDescriptor x)	{ iRuntime.error(120,this);return null;}
+public vValue Diff(vDescriptor x)	{ iRuntime.error(120,this);return null;}
 
-public vInteger Serial()	{ return null; /*FAIL*/ }
-public vList Sort(int i)	{ iRuntime.error(115, this); return null; }
+public vInteger Serial()		{ return null; /*FAIL*/ }
+public vList Sort(int i)		{ iRuntime.error(115,this);return null;}
 
-vNumeric AddInto(vInteger a)	{ iRuntime.error(102, this); return null; }
-vNumeric SubFrom(vInteger a)	{ iRuntime.error(102, this); return null; }
-vNumeric MulInto(vInteger a)	{ iRuntime.error(102, this); return null; }
-vNumeric DivInto(vInteger a)	{ iRuntime.error(102, this); return null; }
-vNumeric ModInto(vInteger a)	{ iRuntime.error(102, this); return null; }
-vNumeric PowerOf(vInteger a)	{ iRuntime.error(102, this); return null; }
+vNumeric AddInto(vInteger a)		{ return mkNumeric().AddInto(a); }
+vNumeric SubFrom(vInteger a)		{ return mkNumeric().SubFrom(a); }
+vNumeric MulInto(vInteger a)		{ return mkNumeric().MulInto(a); }
+vNumeric DivInto(vInteger a)		{ return mkNumeric().DivInto(a); }
+vNumeric ModInto(vInteger a)		{ return mkNumeric().ModInto(a); }
+vNumeric PowerOf(vInteger a)		{ return mkNumeric().PowerOf(a); }
 
-vNumeric RevLess(vInteger a)	{ iRuntime.error(102, this); return null; }
-vNumeric RevLessEq(vInteger a)	{ iRuntime.error(102, this); return null; }
-vNumeric RevEqual(vInteger a)	{ iRuntime.error(102, this); return null; }
-vNumeric RevUnequal(vInteger a)	{ iRuntime.error(102, this); return null; }
-vNumeric RevGreaterEq(vInteger a){iRuntime.error(102, this); return null; }
-vNumeric RevGreater(vInteger a)	{ iRuntime.error(102, this); return null; }
+vNumeric RevLess(vInteger a)		{ return mkNumeric().RevLess(a); }
+vNumeric RevLessEq(vInteger a)		{ return mkNumeric().RevLessEq(a); }
+vNumeric RevEqual(vInteger a)		{ return mkNumeric().RevEqual(a); }
+vNumeric RevUnequal(vInteger a)		{ return mkNumeric().RevUnequal(a); }
+vNumeric RevGreaterEq(vInteger a)	{ return mkNumeric().RevGreaterEq(a); }
+vNumeric RevGreater(vInteger a)		{ return mkNumeric().RevGreater(a); }
 
-vNumeric AddInto(vReal a)	{ iRuntime.error(102, this); return null; }
-vNumeric SubFrom(vReal a)	{ iRuntime.error(102, this); return null; }
-vNumeric MulInto(vReal a)	{ iRuntime.error(102, this); return null; }
-vNumeric DivInto(vReal a)	{ iRuntime.error(102, this); return null; }
-vNumeric ModInto(vReal a)	{ iRuntime.error(102, this); return null; }
-vNumeric PowerOf(vReal a)	{ iRuntime.error(102, this); return null; }
+vNumeric AddInto(vReal a)		{ return mkNumeric().AddInto(a); }
+vNumeric SubFrom(vReal a)		{ return mkNumeric().SubFrom(a); }
+vNumeric MulInto(vReal a)		{ return mkNumeric().MulInto(a); }
+vNumeric DivInto(vReal a)		{ return mkNumeric().DivInto(a); }
+vNumeric ModInto(vReal a)		{ return mkNumeric().ModInto(a); }
+vNumeric PowerOf(vReal a)		{ return mkNumeric().PowerOf(a); }
 
-vNumeric RevLess(vReal a)	{ iRuntime.error(102, this); return null; }
-vNumeric RevLessEq(vReal a)	{ iRuntime.error(102, this); return null; }
-vNumeric RevEqual(vReal a)	{ iRuntime.error(102, this); return null; }
-vNumeric RevUnequal(vReal a)	{ iRuntime.error(102, this); return null; }
-vNumeric RevGreaterEq(vReal a)	{ iRuntime.error(102, this); return null; }
-vNumeric RevGreater(vReal a)	{ iRuntime.error(102, this); return null; }
+vNumeric RevLess(vReal a)		{ return mkNumeric().RevLess(a); }
+vNumeric RevLessEq(vReal a)		{ return mkNumeric().RevLessEq(a); }
+vNumeric RevEqual(vReal a)		{ return mkNumeric().RevEqual(a); }
+vNumeric RevUnequal(vReal a)		{ return mkNumeric().RevUnequal(a); }
+vNumeric RevGreaterEq(vReal a)		{ return mkNumeric().RevGreaterEq(a); }
+vNumeric RevGreater(vReal a)		{ return mkNumeric().RevGreater(a); }
 
 
 
@@ -191,7 +172,6 @@ public vDescriptor SectionVar(vVariable v, vDescriptor i, vDescriptor j)
 
 //#%#% to be handled:
 public vVariable Swap(vDescriptor x)      {iRuntime.bomb("Swap"); return null; }
-public vVariable SubjAssign(vDescriptor x) {iRuntime.bomb("SubjAssign");return null;}
 public vDescriptor RevAssign(vDescriptor x){iRuntime.bomb("RevAssign"); return null;}
 public vDescriptor RevSwap(vDescriptor x)  {iRuntime.bomb("RevSwap"); return null; }
 

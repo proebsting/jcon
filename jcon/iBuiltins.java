@@ -89,7 +89,7 @@ void announce() {
     declare("table", 1);
     declare("tan", 1);
     declare("trim", 2);
-    declare("Type", 1);
+    declare("type", 1);
     declare("upto", 4);
     declare("variable", 1);
     declare("where", 1);

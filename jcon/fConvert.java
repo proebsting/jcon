@@ -1,4 +1,4 @@
-//  fConvert.java -- Type conversion functions
+//  fConvert.java -- type conversion functions
 
 package rts;
 
@@ -6,7 +6,7 @@ class fConvert {} //dummy
 
 
 
-class f$Type extends iValueClosure {				// Type(x)
+class f$type extends iValueClosure {				// type(x)
     vDescriptor function(vDescriptor[] args) {
 	return iRuntime.argVal(args, 0).Type();
     }

@@ -412,7 +412,7 @@ public vDescriptor ToBy(vDescriptor v2, vDescriptor v3) {
 	    { retval = vInteger.this; }
 
 	    public vDescriptor resume() {
-		if ((n -= k) >= j) {
+		if ((n += k) >= j) {
 		    retval = New(n);
 		    return this;
 		}

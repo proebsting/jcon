@@ -10,8 +10,11 @@ public abstract class vNumeric extends vValue {
 
 protected vString cachedString;		// cached string equivalent
 
+public vNumeric Numerate()		{ return this; }
+
 vNumeric mkNumeric()			{ return this; }
 vCset mkCset()				{ return this.mkString().mkCset(); }
+
 
 //#%#%#% probably need more conversions added to this list:
 //#%#%#% (Or should there be fewer... and move these to vValue?)
