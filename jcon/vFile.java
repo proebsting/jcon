@@ -203,8 +203,7 @@ vFile(String name, String flags) throws IOException {
 
 private void newpipe(String name, String flags) throws IOException {
 
-    String argv[] = { "sh", "-c", name.toString() };
-    pipe = Runtime.getRuntime().exec(argv);
+    pipe = iSystem.command(name.toString());
 
     if (upto("wabcWABC", flags)) {
 

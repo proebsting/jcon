@@ -356,32 +356,9 @@ final class k$dateline extends vProc0 {				// &dateline
 
 
 final class k$host extends vProc0 {				// &host
-
-    private vString hostname;
-
     public vDescriptor Call() {
-	if (hostname != null) {
-	    return hostname;
-	}
-	// warning: ugly unixisms follow
-	try {
-	    Process p = Runtime.getRuntime().exec("uname -n");
-	    hostname = vString.New(
-		new BufferedReader(
-		new InputStreamReader(p.getInputStream()))
-		.readLine().trim());
-	    p.destroy();
-	    hostname.charAt(0);		// ensure not empty
-	} catch (Exception e1) {
-	    try {
-		hostname = vString.New(System.getProperty("os.name"));
-	    } catch (Exception e2) {
-		hostname = vString.New("Jcon");
-	    }
-	}
-	return hostname;
+	return iSystem.hostname();
     }
-
 }
 
 

@@ -168,33 +168,8 @@ final class f$exit extends vProc1 {				// exit(n)
 
 
 final class f$getenv extends vProc1 {				// getenv(s)
-
-    static Hashtable env = new Hashtable();
-
-    static {				// initialization on first call
-	try {
-	    // warning: ugly unixisms follow
-	    Process p = Runtime.getRuntime().exec("env");
-	    BufferedReader d = new BufferedReader(
-		new InputStreamReader(p.getInputStream()));
-	    String s;
-	    while ((s = d.readLine()) != null) {
-		s = s.trim();
-		int n = s.indexOf('=');
-		if (n > 0) {
-		    String key = s.substring(0, n);
-		    String val = s.substring(n + 1);
-		    env.put(key, vString.New(val));
-		}
-	    }
-	    p.destroy();
-	} catch (Exception e1) {
-	    // nothing; table remains empty, all calls fail
-	}
-    }
-
     public vDescriptor Call(vDescriptor a) {
-	return (vString) env.get(a.mkString().toString());
+	return iSystem.getenv(a.mkString().toString());
     }
 }
 
@@ -202,12 +177,12 @@ final class f$getenv extends vProc1 {				// getenv(s)
 
 final class f$system extends vProc1 {				// system(s)
     public vDescriptor Call(vDescriptor a) {
-	String argv[] = { "sh", "-c", a.mkString().toString() };
+	String s = a.mkString().toString();
 	int status;
 	try {
-	    Process p = Runtime.getRuntime().exec(argv); // start process
-	    p.getOutputStream().close();		 // close its stdin
-	    status = p.waitFor();			 // wait for completion
+	    Process p = iSystem.command(s);		// start process
+	    p.getOutputStream().close();		// close its stdin
+	    status = p.waitFor();			// wait for completion
 	    vFile.copy(p.getInputStream(),iKeyword.output.file()); //copy stdout
 	    vFile.copy(p.getErrorStream(),iKeyword.errout.file()); //copy stderr
 	} catch (Throwable e) {
