@@ -18,6 +18,7 @@ final class wCanvas extends Canvas {
     Vector wlist;		// list of associated vWindows
 
     String visibility;		// value of "canvas" (visibility) attribute
+    String pointer;		// value of "pointer" (mouse cursor) attribute
 
     boolean have_set_width;	// was width set explicitly?
     boolean have_set_height;	// was height set explicitly?
@@ -46,6 +47,8 @@ wCanvas(vWindow win, String label, int w, int h) {
     tty = new wTTY();				// create TTY instance
 
     wEvent.register(this);			// register event handlers
+
+    Pointer(win, "arrow");
 }
 
 
@@ -192,6 +195,48 @@ vString Label(vWindow win, String s) {
 	f.setTitle(s);
     }
     return vString.New(f.getTitle());
+}
+
+
+
+//  Pointer(win, s) -- set "pointer" attribute
+//
+//  indented values are provided for compatibility but are not preferred.
+
+static Hashtable plist = new Hashtable();
+static {
+    plist.put("arrow",			vInteger.New(Cursor.DEFAULT_CURSOR));
+	plist.put("left ptr",		vInteger.New(Cursor.DEFAULT_CURSOR));
+    plist.put("cross",			vInteger.New(Cursor.CROSSHAIR_CURSOR));
+	plist.put("crosshair",		vInteger.New(Cursor.CROSSHAIR_CURSOR));
+    plist.put("hand",			vInteger.New(Cursor.HAND_CURSOR));
+    plist.put("move",			vInteger.New(Cursor.MOVE_CURSOR));
+	plist.put("fleur",		vInteger.New(Cursor.MOVE_CURSOR));
+    plist.put("text",			vInteger.New(Cursor.TEXT_CURSOR));
+	plist.put("ibeam",		vInteger.New(Cursor.TEXT_CURSOR));
+	plist.put("xterm",		vInteger.New(Cursor.TEXT_CURSOR));
+    plist.put("wait",			vInteger.New(Cursor.WAIT_CURSOR));
+	plist.put("watch",		vInteger.New(Cursor.WAIT_CURSOR));
+    plist.put("top side",		vInteger.New(Cursor.N_RESIZE_CURSOR));
+    plist.put("top right corner",	vInteger.New(Cursor.NE_RESIZE_CURSOR));
+    plist.put("right side",		vInteger.New(Cursor.E_RESIZE_CURSOR));
+    plist.put("bottom right corner",	vInteger.New(Cursor.SE_RESIZE_CURSOR));
+    plist.put("bottom side",		vInteger.New(Cursor.S_RESIZE_CURSOR));
+    plist.put("bottom left corner",	vInteger.New(Cursor.SW_RESIZE_CURSOR));
+    plist.put("left side",		vInteger.New(Cursor.W_RESIZE_CURSOR));
+    plist.put("top left corner",	vInteger.New(Cursor.NW_RESIZE_CURSOR));
+}
+
+vString Pointer(vWindow win, String s) {
+    if (s != null) {
+	vInteger i = (vInteger) plist.get(s);
+	if (i == null) {
+	    return null; /*FAIL*/
+	}
+	setCursor(Cursor.getPredefinedCursor((int)i.value));
+	pointer = s;
+    }
+    return vString.New(pointer);
 }
 
 

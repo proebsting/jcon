@@ -20,7 +20,7 @@ static void announce() {
     iEnv.declareBuiltin("Clone", -1);
     iEnv.declareBuiltin("Color", -1);		// always fails
     iEnv.declareBuiltin("ColorValue", 2);
-    iEnv.declareBuiltin("CopyArea", 8);		//#%#% within same window only
+    iEnv.declareBuiltin("CopyArea", 8);
     iEnv.declareBuiltin("DrawArc", -1);
     iEnv.declareBuiltin("DrawCircle", -1);
     iEnv.declareBuiltin("DrawLine", -1);
@@ -359,17 +359,25 @@ final class f$FillRectangle extends vProcV {	// FillRectangle(W,x,y,w,h,...)
     }
 }
 
-//#%#%#% CopyArea only works with one window argument
-final class f$CopyArea extends vProcV {		// CopyArea(W,x1,y1,w,h,x2,y2)
+final class f$CopyArea extends vProcV {	    // CopyArea(W1,W2,x1,y1,w,h,x2,y2)
     public vDescriptor Call(vDescriptor[] args) {
-	vWindow win = vWindow.winArg(args);
-	int[] a = wCoords.rectArgs(args, 4);	// ignore w2, h2
-	if (a.length > 4) {	// explicit x2
-	    win.CopyArea(a[0], a[1], a[2], a[3], a[4], a[5]);
-	} else {
-	    win.CopyArea(a[0], a[1], a[2], a[3], -win.dx, -win.dy);
+	vWindow win1, win2;
+	win1 = win2 = vWindow.winArg(args);
+	int b = vWindow.argBase(args);
+	if (b > 0 && args.length > b && args[b].iswin()) {
+	    win2 = (vWindow) args[b++].Deref();
 	}
-	return win;
+
+	Dimension d = win1.getCanvas().getSize();
+	int x1 = (int) vInteger.argVal(args, b + 0, -win1.dx);
+	int y1 = (int) vInteger.argVal(args, b + 1, -win1.dy);
+	int w  = (int) vInteger.argVal(args, b + 2, d.width - x1);
+	int h  = (int) vInteger.argVal(args, b + 3, d.height - y1);
+	int x2 = (int) vInteger.argVal(args, b + 4, -win2.dx);
+	int y2 = (int) vInteger.argVal(args, b + 5, -win2.dy);
+
+	win2.CopyArea(win1, x1, y1, w, h, x2, y2);
+	return win1;
     }
 }
 

@@ -33,7 +33,7 @@ public static vDescriptor Call(String fname, int lineno,
 	    if (i > 0) {
 		b.append(',');
 	    }
-	    b.append(args[i].report().toString());
+	    b.append(args[i].Deref().report().toString());
 	}
 	b.append(')');
 	trace(fname, lineno, p, b.toString());

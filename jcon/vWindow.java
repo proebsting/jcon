@@ -264,6 +264,8 @@ vValue Event() {
 void Origin(int newdx, int newdy) {		// set origin
     b.translate(newdx - dx, newdy - dy);
     a.translate(newdx - dx, newdy - dy);
+    dx = newdx;
+    dy = newdy;
 }
 
 
@@ -451,20 +453,28 @@ void FillRectangle(int x, int y, int w, int h) {
 }
 
 void EraseArea(int x, int y, int w, int h) {
+    if (xormode) {
+	b.setPaintMode();
+	a.setPaintMode();
+    }
     b.setColor(bg);
     a.setColor(bg);
     b.fillRect(x, y, w, h);
     a.fillRect(x, y, w, h);
     b.setColor(fg);
     a.setColor(fg);
+    if (xormode) {
+	b.setXORMode(bg);
+	a.setXORMode(bg);
+    }
 }
 
 
 
-void CopyArea(int x1, int y1, int w, int h, int x2, int y2) {
+void CopyArea(vWindow src, int x1, int y1, int w, int h, int x2, int y2) {
 
     // check for source portions outside window bounds
-    Dimension d = c.getSize();
+    Dimension d = src.c.getSize();
     int lmar, rmar, tmar, bmar;
     lmar = -x1;			// amount outside left edge
     rmar = x1 + w - d.width;	// amount outside right edge
@@ -499,24 +509,42 @@ void CopyArea(int x1, int y1, int w, int h, int x2, int y2) {
 
     // copy source region, if anything remains
     if (w > 0 && h > 0) {
+	if (xormode) {
+	    b.setPaintMode();
+	    a.setPaintMode();
+	}
 	// remaining source area is within bounds of window
-	// #%#% although it might be obscured -- need to handle that
-	b.copyArea(x1, y1, w, h, x2 - x1, y2 - y1);
-	a.copyArea(x1, y1, w, h, x2 - x1, y2 - y1);
+	if (src == this) {
+	    b.copyArea(x1, y1, w, h, x2 - x1, y2 - y1);
+	} else {
+	    b.drawImage(src.c.i, x2, y2, x2+w, y2+h, x1, y1, x1+w, y1+h, null);
+	}
+	a.drawImage(c.i, x2, y2, x2 + w, y2 + h,
+	    x2 + dx, y2 + dy, x2 + w + dx, y2 + h + dy, null);
     }
 
     // erase areas "copied" from outside window bounds
-    if (lmar > 0) {
-	EraseArea(x2 - lmar, y2 - tmar, lmar, tmar + h + bmar);
+    if (lmar + rmar + tmar + bmar > 0) {
+	wColor bgsave = bg;
+	bg = src.bg;
+	if (lmar > 0) {
+	    EraseArea(x2 - lmar, y2 - tmar, lmar, tmar + h + bmar);
+	}
+	if (rmar > 0) {
+	    EraseArea(x2 + w, y2 - tmar, rmar, tmar + h + bmar);
+	}
+	if (tmar > 0) {
+	    EraseArea(x2, y2 - tmar, w, tmar);
+	}
+	if (bmar > 0) {
+	    EraseArea(x2, y2 + h, w, bmar);
+	}
+	bg = bgsave;
     }
-    if (rmar > 0) {
-	EraseArea(x2 + w, y2 - tmar, rmar, tmar + h + bmar);
-    }
-    if (tmar > 0) {
-	EraseArea(x2, y2 - tmar, w, tmar);
-    }
-    if (bmar > 0) {
-	EraseArea(x2, y2 + h, w, bmar);
+
+    if (xormode) {
+	b.setXORMode(bg);
+	a.setXORMode(bg);
     }
 }
 

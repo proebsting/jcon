@@ -30,7 +30,7 @@ static final String MonoFont = "DialogInput";		// "mono" font
 static final String TypewriterFont = "Monospaced";	// "typewriter" font
 static final String SansFont = "SansSerif";		// "sans" font
 static final String SerifFont = "Serif";		// "serif" font
-static final String FixedFont = "mono,10";		// "fixed" font
+static final String FixedFont = "mono,bold,12";		// "fixed" font
 
 
 

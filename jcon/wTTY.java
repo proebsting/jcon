@@ -166,7 +166,7 @@ void newline(vWindow win) {
     if (yloc > limit) {
 	// need to scroll upward
 	int shift = yloc - limit;
-	win.CopyArea(0, shift, d.width, d.height, 0, 0);
+	win.CopyArea(win, 0, shift, d.width, d.height, 0, 0);
 	yloc = limit;
     }
 }

@@ -22,7 +22,11 @@ abstract vValue get(vWindow win);	// get current value, set s, return val
 private static Hashtable attlist = new Hashtable();
 
 static {
+
+    // The following attributes are implemented:
+
     newatt("canvas", new aCanvas());	//#%#% only normal and hidden, for now
+    newatt("pointer", new aPointer());
     newatt("depth", new aDepth());
     newatt("displayheight", new aDisplayheight());
     newatt("displaywidth", new aDisplaywidth());
@@ -63,34 +67,29 @@ static {
     newatt("col", new aCol());
 
     // The following attributes are incompletely implemented:
-    // they can be set only to a string exactly matching the one
-    // given below, which is the default value and has no effect.
-    // Other attempts to set the attribute fail.
+    // they are recognized as legal, but changes are ignored
 
-    //     att name		   default	retval
+    newatt("resize",	new aDummy(vString.New("on"))); //#%#%# DO THIS ONE
+    newatt("display",	new aDummy(vString.New(":0.0")));
+    newatt("pos",	new aDummy(vString.New("0,0")));
+    newatt("posx",	new aDummy(vString.New("0")));
+    newatt("posy",	new aDummy(vString.New("0")));
+    newatt("pointerx",	new aDummy(vInteger.New(0)));
+    newatt("pointery",	new aDummy(vInteger.New(0)));
+    newatt("pointerrow", new aDummy(vInteger.New(1)));
+    newatt("pointercol", new aDummy(vInteger.New(1)));
+    newatt("image",	new aDummy(vString.New("")));
+    newatt("iconpos",	new aDummy(vString.New("0,0")));
+    newatt("iconlabel",	new aDummy(vString.New("")));
+    newatt("iconimage",	new aDummy(vString.New("")));
 
-    newatt("linewidth",	new aDummy("1",		vInteger.New(1)));
-    newatt("linestyle",	new aDummy("solid",	vString.New("solid")));
-    newatt("fillstyle",	new aDummy("solid",	vString.New("solid")));
-    newatt("pattern",	new aDummy("solid",	vString.New("black")));
+    // The following attributes are incompletely implemented for now
+    // but will be possible when Java 1.2 becomes universally available
 
-    newatt("display",	new aDummy(":0.0",	vString.New(":0.0")));
-    newatt("pos",	new aDummy("0,0",	vString.New("0,0")));
-    newatt("posx",	new aDummy("0",		vString.New("0")));
-    newatt("posy",	new aDummy("0",		vString.New("0")));
-
-    // The following attributes are not implemented at all:
-
-    //#%#% att("resize",	new aSomething());
-    //#%#% att("image",		new aSomething());
-    //#%#% att("iconpos",	new aSomething());
-    //#%#% att("iconlabel",	new aSomething());
-    //#%#% att("iconimage",	new aSomething());
-    //#%#% att("pointer",	new aSomething());
-    //#%#% att("pointerx",	new aSomething());
-    //#%#% att("pointery",	new aSomething());
-    //#%#% att("pointerrow",	new aSomething());
-    //#%#% att("pointercol",	new aSomething());
+    newatt("linewidth",	new aDummy(vInteger.New(1)));
+    newatt("linestyle",	new aDummy(vString.New("solid")));
+    newatt("fillstyle",	new aDummy(vString.New("solid")));
+    newatt("pattern",	new aDummy(vString.New("black")));
 }
 
 private static void newatt(String name, wAttrib a) {
@@ -163,19 +162,11 @@ static vValue unsettable(String name, String value) {
 // dummy attribute class: for attributes not yet implemented
 
 final class aDummy extends wAttrib {
-
-    String accept;
     vValue attval;
+    aDummy(vValue v)			{ attval = v; }		// constructor
 
-    aDummy(String s, vValue v)		{ accept = s; attval = v; }
+    vValue set(vWindow win)		{ return attval; }	// ignore set
     vValue get(vWindow win)		{ return attval; }
-    vValue set(vWindow win) {
-	if (val.equals(accept)) {
-	    return attval;
-	} else {
-	    return null; /*FAIL*/
-	}
-    }
 }
 
 
@@ -183,6 +174,16 @@ final class aDummy extends wAttrib {
 final class aCanvas extends wAttrib {
     vValue get(vWindow win)	{ return win.getCanvas().Canvas(win, null); }
     vValue set(vWindow win)	{ return win.getCanvas().Canvas(win, val); }
+}
+
+final class aLabel extends wAttrib {
+    vValue get(vWindow win)	{ return win.getCanvas().Label(win, null); }
+    vValue set(vWindow win)	{ return win.getCanvas().Label(win, val); }
+}
+
+final class aPointer extends wAttrib {
+    vValue get(vWindow win)	{ return win.getCanvas().Pointer(win, null); }
+    vValue set(vWindow win)	{ return win.getCanvas().Pointer(win, val); }
 }
 
 
@@ -206,13 +207,6 @@ final class aDisplaywidth extends wAttrib {
 	Toolkit.getDefaultToolkit().getScreenSize().width); }
     vValue set(vWindow win)
 	{ return wAttrib.unsettable("displaywidth", val); }
-}
-
-
-
-final class aLabel extends wAttrib {
-    vValue get(vWindow win)	{ return win.getCanvas().Label(win, null); }
-    vValue set(vWindow win)	{ return win.getCanvas().Label(win, val); }
 }
 
 
