@@ -1,0 +1,72 @@
+count callee caller time
+491 java/lang/String.<init>(II[C)V <unknown caller> 3
+396 java/lang/String.hashCode()I java/util/Hashtable.put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; 7
+376 java/util/Hashtable.put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; sun/io/CharacterEncoding.<clinit>()V 25
+70 java/lang/String.getChars(II[CI)V java/lang/String.toCharArray()[C 2
+43 java/lang/String.toCharArray()[C java/util/Locale.toUpperCase(Ljava/lang/String;)Ljava/lang/String; 3
+43 java/lang/String.<init>([C)V java/util/Locale.toUpperCase(Ljava/lang/String;)Ljava/lang/String; 2
+42 java/lang/String.<init>([C)V <unknown caller> 3
+42 java/util/Locale.toUpperCase(Ljava/lang/String;)Ljava/lang/String; java/util/Locale.<init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V 6
+21 java/util/Locale.toLowerCase(Ljava/lang/String;)Ljava/lang/String; java/util/Locale.<init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V 3
+21 java/util/Locale.<init>(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V java/util/Locale.<clinit>()V 10
+14 java/lang/String.getChars(II[CI)V java/lang/StringBuffer.append(Ljava/lang/String;)Ljava/lang/StringBuffer; 12
+10 java/lang/String.hashCode()I java/util/Hashtable.get(Ljava/lang/Object;)Ljava/lang/Object; 1
+8 java/util/Hashtable.get(Ljava/lang/Object;)Ljava/lang/Object; java/util/Properties.getProperty(Ljava/lang/String;)Ljava/lang/String; 2
+6 java/lang/StringBuffer.append(Ljava/lang/String;)Ljava/lang/StringBuffer; java/lang/StringBuffer.<init>(Ljava/lang/String;)V 13
+5 java/lang/ThreadGroup.add(Ljava/lang/Thread;)V java/lang/Thread.init(Ljava/lang/ThreadGroup;Ljava/lang/Runnable;Ljava/lang/String;)V 2
+5 java/lang/ThreadGroup.checkAccess()V java/lang/Thread.init(Ljava/lang/ThreadGroup;Ljava/lang/Runnable;Ljava/lang/String;)V 1
+4 java/util/Properties.getProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String; java/lang/System.getProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String; 2
+4 java/lang/StringBuffer.<init>(Ljava/lang/String;)V java/lang/Thread.<init>()V 12
+4 java/lang/Integer.toString(II)Ljava/lang/String; java/lang/StringBuffer.append(I)Ljava/lang/StringBuffer; 37
+4 java/lang/String.<init>(Ljava/lang/StringBuffer;)V java/lang/Integer.toString(II)Ljava/lang/String; 2
+4 java/lang/Thread.<init>()V <unknown caller> 79
+4 java/lang/StringBuffer.append(I)Ljava/lang/StringBuffer; java/lang/Thread.<init>()V 52
+4 java/lang/Thread.init(Ljava/lang/ThreadGroup;Ljava/lang/Runnable;Ljava/lang/String;)V java/lang/Thread.<init>()V 3
+4 java/util/Properties.getProperty(Ljava/lang/String;)Ljava/lang/String; java/util/Properties.getProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String; 2
+3 java/io/BufferedOutputStream.flushBuffer()V java/io/BufferedOutputStream.flush()V 1
+2 java/io/BufferedWriter.<init>(Ljava/io/Writer;I)V java/io/BufferedWriter.<init>(Ljava/io/Writer;)V 3
+2 java/lang/System.getProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String; sun/io/CharToByteConverter.getDefault()Lsun/io/CharToByteConverter; 1
+2 java/io/BufferedWriter.<init>(Ljava/io/Writer;)V java/io/PrintStream.<init>(Ljava/io/OutputStream;Z)V 3
+2 java/lang/System.getProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String; java/util/Locale.getDefault()Ljava/util/Locale; 1
+2 java/util/Locale.getDefault()Ljava/util/Locale; sun/io/CharacterEncoding.aliasName(Ljava/lang/String;)Ljava/lang/String; 1
+2 sun/io/CharToByteConverter.getDefault()Lsun/io/CharToByteConverter; java/io/OutputStreamWriter.<init>(Ljava/io/OutputStream;)V 127
+2 java/io/PrintStream.<init>(Ljava/io/OutputStream;Z)V java/lang/System.initializeSystemClass()V 160
+2 java/io/OutputStreamWriter.<init>(Ljava/io/OutputStream;Lsun/io/CharToByteConverter;)V java/io/OutputStreamWriter.<init>(Ljava/io/OutputStream;)V 2
+2 sun/io/CharToByteConverter.getConverter(Ljava/lang/String;)Lsun/io/CharToByteConverter; sun/io/CharToByteConverter.getDefault()Lsun/io/CharToByteConverter; 126
+2 java/lang/StringBuffer.<init>(Ljava/lang/String;)V sun/io/CharToByteConverter.getConverter(Ljava/lang/String;)Lsun/io/CharToByteConverter; 1
+2 java/io/BufferedOutputStream.flush()V java/io/PrintStream.write([BII)V 1
+2 java/io/PrintStream.write([BII)V java/io/OutputStreamWriter.flushBuffer()V 1
+2 java/io/OutputStreamWriter.<init>(Ljava/io/OutputStream;)V java/io/PrintStream.<init>(Ljava/io/OutputStream;Z)V 137
+2 java/lang/String.toLowerCase(Ljava/util/Locale;)Ljava/lang/String; sun/io/CharacterEncoding.aliasName(Ljava/lang/String;)Ljava/lang/String; 2
+2 sun/io/CharacterEncoding.aliasName(Ljava/lang/String;)Ljava/lang/String; sun/io/CharToByteConverter.getConverter(Ljava/lang/String;)Lsun/io/CharToByteConverter; 25
+2 java/lang/Class.forName(Ljava/lang/String;)Ljava/lang/Class; sun/io/CharToByteConverter.getConverter(Ljava/lang/String;)Lsun/io/CharToByteConverter; 8
+1 java/util/Locale.<clinit>()V <unknown caller> 11
+1 HelloWorldApp.main([Ljava/lang/String;)V <unknown caller> 3
+1 java/util/Properties.<init>(Ljava/util/Properties;)V java/util/Properties.<init>()V 5
+1 java/io/FileDescriptor.<clinit>()V <unknown caller> 1
+1 java/util/Hashtable.<init>()V java/util/Properties.<init>(Ljava/util/Properties;)V 5
+1 java/util/Hashtable.rehash()V java/util/Hashtable.put(Ljava/lang/Object;Ljava/lang/Object;)Ljava/lang/Object; 3
+1 java/util/Hashtable.<init>(IF)V java/util/Hashtable.<init>()V 5
+1 java/io/PrintStream.print(Ljava/lang/String;)V java/io/PrintStream.println(Ljava/lang/String;)V 2
+1 java/lang/System.initProperties(Ljava/util/Properties;)Ljava/util/Properties; java/lang/System.initializeSystemClass()V 1536
+1 java/io/PrintStream.println(Ljava/lang/String;)V HelloWorldApp.main([Ljava/lang/String;)V 3
+1 java/io/PrintStream.write(Ljava/lang/String;)V java/io/PrintStream.print(Ljava/lang/String;)V 2
+1 java/io/BufferedWriter.flushBuffer()V java/io/PrintStream.write(Ljava/lang/String;)V 1
+1 java/lang/System.getProperty(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String; <unknown caller> 6
+1 java/util/Properties.<clinit>()V <unknown caller> 1
+1 java/lang/System.initializeSystemClass()V <unknown caller> 1806
+1 java/util/Properties.<init>()V java/lang/System.initializeSystemClass()V 5
+1 java/io/OutputStreamWriter.flushBuffer()V java/io/PrintStream.write(Ljava/lang/String;)V 1
+1 sun/io/CharacterEncoding.<clinit>()V <unknown caller> 76
+1 sun/io/CharToByteConverter.<clinit>()V <unknown caller> 1
+1 java/lang/Compiler.<clinit>()V <unknown caller> 1
+1 java/lang/System.<clinit>()V <unknown caller> 3
+1 java/lang/System.nullInputStream()Ljava/io/InputStream; java/lang/System.<clinit>()V 3
+1 java/lang/Character.<clinit>()V <unknown caller> 8
+1 java/lang/ThreadGroup.<init>()V <unknown caller> 1
+1 java/lang/Integer.<clinit>()V <unknown caller> 1
+handles_used: 1259, handles_free: 26214, heap-used: 102976, heap-free: 735880
+sig  count  bytes  indx
+[C     403	20888     5
+[B       8	26498     8
+[I       1	    8    10

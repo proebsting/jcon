@@ -8,11 +8,7 @@
 
 
 
-link numbers
-
-
-
-record proc(name, ncalls, tself, tcalled, tlocal)
+record method(name, ncalls, tself, tcalled, tlocal)
 
 global ptab
 
@@ -71,7 +67,7 @@ procedure lookup(s)
    if p := \ptab[s] then
       return p
    else
-      return ptab[s] := proc(s, 0, 0, 0)
+      return ptab[s] := method(s, 0, 0, 0)
 end
 
 
