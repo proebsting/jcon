@@ -21,8 +21,8 @@ of library procedures.
 Although the JVM was designed for Java, it can also support other
 languages. The new translator reads Icon source files and writes
 Java class files. Combining these with the run-time system
-produces a Zip file composed entirely of class files and
-executable on any platform supporting Java. (JVM implementations
+produces a Zip file that is composed entirely of class files and
+can be run on any platform supporting Java. (JVM implementations
 are freely available for every major computer system.)
 
 This system is as complete an implementation as is possible given
