@@ -80,19 +80,14 @@ abstract class vValue extends vDescriptor {
     vValue Put(vDescriptor v)	{ iRuntime.error(108, this); return null; }
 
     // table operations
-    vDescriptor Key(iClosure c)	  { iRuntime.error(124, this); return null; }
-    vDescriptor Member(vDescriptor i)
-    			{ iRuntime.error(122, this); return null; }
-    vDescriptor Delete(vDescriptor i)
-    			{ iRuntime.error(122, this); return null; }
-    vDescriptor Insert(vDescriptor i, vDescriptor val)
-    			{ iRuntime.error(124, this); return null; }
+    vValue Key(iClosure c)	 { iRuntime.error(124, this); return null; }
+    vValue Member(vDescriptor i) { iRuntime.error(122, this); return null; }
+    vValue Delete(vDescriptor i) { iRuntime.error(122, this); return null; }
+    vValue Insert(vDescriptor i, vDescriptor val)
+				 { iRuntime.error(122, this); return null; }
 
     // set operations
-    vDescriptor Union(vDescriptor x)
-    			{ iRuntime.error(120, this); return null; }
-    vDescriptor Intersect(vDescriptor x)
-    			{ iRuntime.error(120, this); return null; }
-    vDescriptor Diff(vDescriptor x)
-    			{ iRuntime.error(120, this); return null; }
+    vValue Union(vDescriptor x)     { iRuntime.error(120, this); return null; }
+    vValue Intersect(vDescriptor x) { iRuntime.error(120, this); return null; }
+    vValue Diff(vDescriptor x)      { iRuntime.error(120, this); return null; }
 }

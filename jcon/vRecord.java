@@ -86,7 +86,8 @@ class iRecordClosure extends iFunctionClosure {
 	String name;
 	String[] fieldnames;
 
-	iRecordClosure(String name, String[] fieldnames, vDescriptor[] args, iClosure parent) {
+	iRecordClosure(String name, String[] fieldnames,
+			vDescriptor[] args, iClosure parent) {
 		super();
 		this.name = name;
 		this.parent = parent;

@@ -74,15 +74,15 @@ abstract class vDescriptor {
     abstract vValue Put(vDescriptor v);
 
     // table operations
-    abstract vDescriptor Key(iClosure c);
-    abstract vDescriptor Member(vDescriptor i);
-    abstract vDescriptor Delete(vDescriptor i);
-    abstract vDescriptor Insert(vDescriptor i, vDescriptor val);
+    abstract vValue Key(iClosure c);
+    abstract vValue Member(vDescriptor i);
+    abstract vValue Delete(vDescriptor i);
+    abstract vValue Insert(vDescriptor i, vDescriptor val);
 
     // set operations
-    abstract vDescriptor Intersect(vDescriptor i);
-    abstract vDescriptor Union(vDescriptor i);
-    abstract vDescriptor Diff(vDescriptor i);
+    abstract vValue Intersect(vDescriptor i);
+    abstract vValue Union(vDescriptor i);
+    abstract vValue Diff(vDescriptor i);
 
     //#%#%#%# not-yet-implemented abort
     void NYI(String s) {

@@ -52,21 +52,21 @@ vDescriptor Bang(iClosure c) {
     return e.hasMoreElements() ? (vDescriptor) e.nextElement() : null;
 }
 
-vDescriptor Member(vDescriptor i) {
-    return t.containsKey(i) ? i : null;
+vValue Member(vDescriptor i) {
+    return t.containsKey(i) ? (vValue) i : null;
 }
 
-vDescriptor Delete(vDescriptor i) {
+vValue Delete(vDescriptor i) {
     t.remove(i);
     return this;
 }
 
-vDescriptor Insert(vDescriptor i, vDescriptor val) {
+vValue Insert(vDescriptor i, vDescriptor val) {
     t.put(i, i);
     return this;
 }
 
-vDescriptor Intersect(vDescriptor x) {
+vValue Intersect(vDescriptor x) {
     if (!(x instanceof vSet)) {
         iRuntime.error(108, x);
     }
@@ -84,7 +84,7 @@ vDescriptor Intersect(vDescriptor x) {
     return result;
 }
 
-vDescriptor Union(vDescriptor x) {
+vValue Union(vDescriptor x) {
     if (!(x instanceof vSet)) {
         iRuntime.error(108, x);
     }
@@ -98,7 +98,8 @@ vDescriptor Union(vDescriptor x) {
     }
     return result;
 }
-vDescriptor Diff(vDescriptor x) {
+
+vValue Diff(vDescriptor x) {
     if (!(x instanceof vSet)) {
         iRuntime.error(108, x);
     }

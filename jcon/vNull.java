@@ -7,9 +7,11 @@ class vNull extends vValue {
     String image()		{ return "&null"; }
     String type()		{ return "null"; }
 
-public boolean equals(Object o)	{
+    int hashcode()		{ return 0; }
+
+    public boolean equals(Object o)	{
 	// #%#%  should there be only one instance of Null?
 	return (o instanceof vNull);
-}
+    }
 
 }

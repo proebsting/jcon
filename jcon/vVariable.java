@@ -64,16 +64,16 @@ abstract class vVariable extends vDescriptor {
     vValue Put(vDescriptor v)		{ return this.deref().Put(v); }
 
     // table operations
-    vDescriptor Key(iClosure c)		{ return this.deref().Key(c); }
-    vDescriptor Member(vDescriptor i)	{ return this.deref().Member(i); }
-    vDescriptor Delete(vDescriptor i)	{ return this.deref().Delete(i); }
-    vDescriptor Insert(vDescriptor i, vDescriptor val)
-    		{ return this.deref().Insert(i, val); }
+    vValue Key(iClosure c)		{ return this.deref().Key(c); }
+    vValue Member(vDescriptor i)	{ return this.deref().Member(i); }
+    vValue Delete(vDescriptor i)	{ return this.deref().Delete(i); }
+    vValue Insert(vDescriptor i, vDescriptor val)
+    					{ return this.deref().Insert(i, val); }
 
     // set operations
-    vDescriptor Union(vDescriptor x)	{ return this.deref().Union(x); }
-    vDescriptor Intersect(vDescriptor x){ return this.deref().Intersect(x); }
-    vDescriptor Diff(vDescriptor x)	{ return this.deref().Diff(x); }
+    vValue Union(vDescriptor x)		{ return this.deref().Union(x); }
+    vValue Intersect(vDescriptor x)	{ return this.deref().Intersect(x); }
+    vValue Diff(vDescriptor x)		{ return this.deref().Diff(x); }
 
     vDescriptor isNull()	{
     	if (this.deref() instanceof vNull) {

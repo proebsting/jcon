@@ -39,27 +39,28 @@ vDescriptor Bang(iClosure c) {
         c.o = t.keys();
     }
     java.util.Enumeration e = (java.util.Enumeration) c.o;
-    return e.hasMoreElements() ? new vTrappedTable(this, (vDescriptor) e.nextElement()) : null;
+    return e.hasMoreElements() ? 
+	new vTrappedTable(this, (vDescriptor) e.nextElement()) : null;
 }
 
-vDescriptor Key(iClosure c) {
+vValue Key(iClosure c) {
     if (c.o == null) {
         c.o = t.keys();
     }
     java.util.Enumeration e = (java.util.Enumeration) c.o;
-    return e.hasMoreElements() ?  (vDescriptor) e.nextElement() : null;
+    return e.hasMoreElements() ?  (vValue) e.nextElement() : null;
 }
 
-vDescriptor Member(vDescriptor i) {
-    return t.containsKey(i) ? i : null;
+vValue Member(vDescriptor i) {
+    return t.containsKey(i) ? (vValue) i : null;
 }
 
-vDescriptor Delete(vDescriptor i) {
+vValue Delete(vDescriptor i) {
     t.remove(i);
     return this;
 }
 
-vDescriptor Insert(vDescriptor i, vDescriptor val) {
+vValue Insert(vDescriptor i, vDescriptor val) {
     t.put(i, val);
     return this;
 }
@@ -71,7 +72,10 @@ class vTrappedTable extends vVariable {
     vTable table;
     vDescriptor key;
 
-String report()	{ return "(variable = " + this.table.report() + "[" + this.key.report() + "])"; }
+String report()	{
+    return
+    	"(variable = " + this.table.report() + "[" + this.key.report() + "])";
+}
 
 vTrappedTable(vTable table, vDescriptor key) {
     this.table = table;
