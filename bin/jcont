@@ -23,7 +23,7 @@
 #     -d	debug jcont: use ./jtmp for temp files, and don't delete
 #     -v	verbose: echo shell commands, trace linking steps
 #		    (this option is not for the squeamish)
-#     -J	use jcon-built versions of jtran and jlink, if available
+#     -J	use Jcon-built versions of jtran and jlink, if available
 #     -P	pessimize: don't optimize the generated Java code
 #     -S	also generate .jvm file listing generated Java code
 #
@@ -35,14 +35,14 @@
 #  "java" and "jar" must be in the search path, and "javap" if -S is used.
 #
 #  Normally, jcont produces a directly executable Korn Shell script
-#  containing an embedded ZIP file.  Running the script executes the
+#  containing an embedded Zip file.  Running the script executes the
 #  compiled Icon program, and arguments can be passed as usual.  The
 #  JXOPTS environment variable can be set to pass an arbitrary string
 #  of options to the Java interpreter.
 #
 #  If -j is passed to jcont, the final output file is given a .jar
 #  extension and the header is omitted to facilitate manipulation as a
-#  ZIP archive.  Execution is accomplished by naming the file in the
+#  Zip archive.  Execution is accomplished by naming the file in the
 #  CLASSPATH (with the runtime files) and then running java:
 #	jcont -j myprog.icn
 #	setenv CLASSPATH myprog.jar:/myhome/jcon/bin/rts.zip
