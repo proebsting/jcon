@@ -413,6 +413,9 @@ procedure bc_gen_ir_Succeed(s, p)
 #	}
 #	put(s, j_invokestatic(free))
 #    }
+    if /bc_nodebuginfo then {
+	bc_emitlineinfo(s, p.coord)
+    }
     put(s, j_areturn())
     return s
 end
@@ -431,9 +434,22 @@ procedure bc_gen_ir_Fail(s, p)
 #	}
 #	put(s, j_invokestatic(free))
 #    }
+    if /bc_nodebuginfo then {
+	bc_emitlineinfo(s, p.coord)
+    }
     put(s, j_aconst_null())
     put(s, j_areturn())
     return s
+end
+
+procedure bc_emitlineinfo(s, coord)
+    local field
+
+    bc_push_coordinate(s, coord)
+    field := bc_line_fieldref(bc_current_classptr)
+    put(s, j_putstatic(field) )
+    field := bc_file_fieldref(bc_current_classptr)
+    put(s, j_putstatic(field) )
 end
 
 # record ir_RunTimeError( )
