@@ -64,7 +64,6 @@ miscellaneous:
 ------------------------------------------------------------------------------
 
 arguably correct differences:
--- tables sort after sets, and co-expressions after files, as per the Icon book
 -- seek(-n) fails if n > filesize
 -- to-by handles overflow in "n to MAXINT" case
 -- 1 / 0 gives error 201 instead of error 204
@@ -93,7 +92,6 @@ graphics bugs:
 -- graphics output is flushed before any read() -- even untranslated from disk
 
 graphics (general):
--- all windows collate after all files when sorting
 -- no sharing of graphics contexts among windows by Couple() or Clone()
 
 events:
