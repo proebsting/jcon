@@ -2,16 +2,26 @@ class vCset extends vValue {
 
     java.util.BitSet t;
 
-vCset(java.util.BitSet x) {
+
+vCset(java.util.BitSet x) {			// new Cset(Bitset b)
     t = (java.util.BitSet) x.clone();
 }
 
-vCset(String s) {
+vCset(String s) {				// new Cset(String s)
     t = new java.util.BitSet();
     for (int i = 0; i < s.length(); i++) {
 	t.set( (int) s.charAt(i) );
     }
 }
+
+vCset(int low, int high) {			// new Cset(int low, high)
+    t = new java.util.BitSet();
+    for (int i = low; i <= high; i++) {
+	t.set(i);
+    }
+}
+
+
 
 String image() {	//#%#% need to add escapes for special characters
     StringBuffer b = new StringBuffer();

@@ -19,6 +19,7 @@ static vInteger Integer(String x)	{ return new vInteger(x); }
 static vReal Real(double x) 		{ return new vReal(x); }
 
 static vCset Cset(String x) 		{ return new vCset(x); }
+static vCset Cset(int low, int high)	{ return new vCset(low, high); }
 
 static vString String(String x) 	{ return new vString(x); }
 

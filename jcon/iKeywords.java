@@ -6,7 +6,7 @@ import java.util.*;
 class iKeywords extends iFile {
 
 	void announce(iEnv env) {
-
+		
 		// constants
 		env.declareKey("null", iNew.Null());
 		env.declareKey("e", iNew.Real(Math.E));
@@ -14,6 +14,15 @@ class iKeywords extends iFile {
 		env.declareKey("pi", iNew.Real(Math.PI));
 		env.declareKey("version", 
 			    iNew.String("Jcon Version 0.0, Spring, 1997"));
+
+	    	// cset constants
+		vCset lcase, ucase;
+		env.declareKey("digits", iNew.Cset('0', '9'));
+		env.declareKey("lcase", lcase = iNew.Cset('a','z'));
+		env.declareKey("ucase", ucase = iNew.Cset('A','Z'));
+		env.declareKey("letters", lcase.Union(ucase));
+		env.declareKey("ascii", iNew.Cset(0, 127));
+//#%#% slow	env.declareKey("cset", iNew.Cset(0, Character.MAX_VALUE));
 
 		// read-only, but variable
 		env.declareKey("clock", new k$clock());
