@@ -4,7 +4,7 @@
 #
 #  writes temp files in ./tmp; cleans up class files if no errors
 
-JDIR=/home/gmt/jcon
+JDIR=/home/todd/research/i2j/jcon
 TMP=./tmp
 
 JCON="$JDIR/src/jcon -O -target=java"

@@ -4,7 +4,7 @@
 #
 #  assumes the class name is "a_out" in directory "./tmp"
 
-JDIR=/home/gmt/jcon
+JDIR=..
 TMP=./tmp
 JAVA="java"
 
