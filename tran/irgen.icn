@@ -89,7 +89,40 @@ end
 
 # record Limitation( expr limit )
 procedure ir_Limitation(p)
-	stop("FATAL ERROR: don't know how to do limitation")
+	local c, closure
+
+	ir(p.expr)
+	ir(p.limit)
+	init4ir(p)
+	c := ir_tmp(p, "ctr")
+	closure := ir_tmp_closure(p, "closure")
+
+	CG.emit(p.ir.start, [ irGoto(p.limit.ir.start) ])
+	CG.emit(p.ir.resume, [
+		irOpClosure(closure, irOperator(">", 2)),
+		irInstallArgs(closure, [ p.limit.ir.value, c ]),
+		irResume(closure, p.limit.ir.resume, c),
+
+		irOpClosure(closure, irOperator("+", 2)),
+		irInstallArgs(closure, [ c, irIntLit(1) ]),
+		irResume(closure, p.expr.ir.resume, c),
+
+		irGoto(p.expr.ir.resume)
+		])
+	CG.emit(p.expr.ir.failure, [ irGoto(p.limit.ir.resume) ])
+	CG.emit(p.limit.ir.failure, [ irGoto(p.ir.failure) ])
+	CG.emit(p.expr.ir.success, [
+		irMove(p.ir.value, p.expr.ir.value),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.limit.ir.success, [
+		irCoord(p.coord),
+		irOpClosure(closure, irOperator("#", 1)),
+		irInstallArgs(closure, [ p.limit.ir.value ]),
+		irResume(closure, p.limit.ir.resume, p.limit.ir.value),
+		irMove(c, irIntLit(1)),
+		irGoto(p.expr.ir.start)
+		])
 end
 
 # record Not( expr )
@@ -138,32 +171,6 @@ procedure ir_ExclAlt(p)
 	CG.emit(p.e1.ir.failure, [ irGoto(Y) ])
 	CG.emit(p.e2.ir.success, [
 		irMove(X, p.e2.ir.resume),
-		irMove(p.ir.value, p.e2.ir.value),
-		irGoto(p.ir.success)
-		])
-	CG.emit(p.e2.ir.failure, [ irGoto(p.ir.failure) ])
-end
-
-# record Parallel( e1 e2 )
-procedure ir_Parallel(p)
-	local t
-
-	ir(p.e1)
-	ir(p.e2)
-
-	init4ir(p)
-
-	t := ir_tmploc(p, "gate")
-
-	CG.emit(p.ir.start, [
-		irMove(t, p.e2.ir.start),
-		irGoto(p.e1.ir.start)
-		])
-	CG.emit(p.ir.resume, [ irGoto(p.e1.ir.resume) ])
-	CG.emit(p.e1.ir.success, [ irGoto(t) ])
-	CG.emit(p.e1.ir.failure, [ irGoto(p.ir.failure) ])
-	CG.emit(p.e2.ir.success, [
-		irMove(t, p.e2.ir.resume),
 		irMove(p.ir.value, p.e2.ir.value),
 		irGoto(p.ir.success)
 		])
@@ -1095,7 +1102,6 @@ procedure ir(p)
 	"CoexpList" : q := ir_CoexpList(p)
 	"Alt" : q := ir_Alt(p)
 	"ExclAlt" : q := ir_ExclAlt(p)
-	"Parallel" : q := ir_Parallel(p)
 	"RepAlt" : q := ir_RepAlt(p)
 	"Case" : q := ir_Case(p)
 	"Every" : q := ir_Every(p)

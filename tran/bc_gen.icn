@@ -499,6 +499,7 @@ procedure initoptable()
 	static optable
 	initial {
 		optable := [ table(), table(), table() ]
+		optable[1]["#"] := "oLimit"
 		optable[1]["."] := "oDeref"
 		optable[1]["/"] := "oIsNull"
 		optable[1]["\\"] := "oIsntNull"

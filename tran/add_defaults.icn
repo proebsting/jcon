@@ -51,13 +51,6 @@ procedure add_defaults_Call(p)
 	return p
 end
 
-# record Parallel( e1 e2 )
-procedure add_defaults_Parallel(p)
-	p.e1 := add_defaults(p.e1)
-	p.e2 := add_defaults(p.e2)
-	return p
-end
-
 # record ExclAlt( e1 e2 )
 procedure add_defaults_ExclAlt(p)
 	p.e1 := add_defaults(p.e1)
@@ -76,8 +69,6 @@ end
 procedure add_defaults_Limitation(p)
 	p.expr := add_defaults(p.expr)
 	p.limit := add_defaults(p.limit)
-
-	p := Parallel(ToBy(Intlit(1), p.limit, Intlit(1), p.coord), p.expr, p.coord)
 	return p
 end
 
@@ -337,7 +328,6 @@ procedure add_defaults(p)
 	case type(\p) of {
 	"Alt" : return add_defaults_Alt(p)
 	"ExclAlt" : return add_defaults_ExclAlt(p)
-	"Parallel" : return add_defaults_Parallel(p)
 	"Call" : return add_defaults_Call(p)
 	"Not" : return add_defaults_Not(p)
 	"RepAlt" : return add_defaults_RepAlt(p)
