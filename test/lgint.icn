@@ -15,6 +15,7 @@ procedure main()
    write(); every tmul(2 | 3 | 5 | 7 | 10 | 17 | 51 | -3 | -11 | -43)
    write(); every tmul(3 ^ (2 to 50))
    write(); every conv(787 ^ (1 to 24) | -5781 ^ (1 to 18))
+   write(); radix()
    write(); over();
 
    # test unary and binary operations, including mixed-mode operations
@@ -139,6 +140,19 @@ procedure compares(m, n)	# return string indicating successful compares
    if (m > n)  == n then s ||:= " >"
    if (m >= n) == n then s ||:= " >="
    return s
+end
+
+procedure radix()		# radix conversions
+   local b, s, d, min, n
+   min := 2 ^ 63
+   d := &digits || &lcase
+   every b := 2 to 35 do {
+      n := (min < integer(s := b || "R" || repl(d[b], 1 to 100)))
+      write(s, " = ", n)
+      }
+   every s := "36r" || repl("Z", 10 to 20) do
+      write(s, " = ", integer(s))
+   return
 end
 
 procedure over()		# old "over.icn" test from Icon v9
