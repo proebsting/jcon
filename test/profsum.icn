@@ -2,9 +2,12 @@
 
 #  profsum -- read and summarize profiling data from "java -prof"
 #
-#  usage:  profsum [file]	-- typically: profsum java.prof
+#  usage:  profsum [-t] [file]	-- typically: profsum java.prof
+#
+#	-t	sort on total time instead of time in method
 #
 #  3-jul-97/gmt
+#  5-jun-98/gmt
 
 
 
@@ -15,7 +18,10 @@ global ptab
 
 
 procedure main(args)
-   local f, line, p, l, tlocal, ttotal, pct
+   local f, line, p, l, tlocal, ttotal, pctlocal, pcttotal, sorttotal
+
+   if args[1] == "-t" then
+      sorttotal := get(args)
 
    if *args > 0 then
       f := open(args[1]) | stop(&progname, ": can't open ", args[1])
@@ -38,20 +44,26 @@ procedure main(args)
          ttotal +:= p.tlocal
       put(l, p)
    }
-   l := sortf(l, 5)
 
-   write("   ncalls  tottime inmethod  pct  method")
+   if \sorttotal then
+      l := sortf(l, 3)
+   else
+      l := sortf(l, 5)
+
+   write("  calls  totaltime   inmethod  method")
 
    while p := pull(l) do {
       if p.tlocal > 0 then
-	 pct := (100 * p.tlocal + ttotal / 2) / ttotal
+	 pctlocal := (100 * p.tlocal + ttotal / 2) / ttotal
       else
-	 pct := (100 * p.tlocal - ttotal / 2) / ttotal
+	 pctlocal := (100 * p.tlocal - ttotal / 2) / ttotal
+      pcttotal := ((100 * p.tself) + (ttotal / 2)) / ttotal
       write(
-	 right(p.ncalls, 9),
-	 right(p.tself, 9),
-	 right(p.tlocal, 9),
-         right(pct, 4), "%",
+	 pad(p.ncalls, 7),
+	 pad(p.tself, 7), " ",
+         pad(pcttotal, 2), "%",
+	 pad(p.tlocal, (if pcttotal = 100 then 6 else 7)), " ",
+         pad(pctlocal, 2), "%",
 	 "  ",
 	 p.name);
       }
@@ -106,4 +118,15 @@ procedure fixname(s)
       ="rts/" | (="java/" & tab(upto('/') + 1)) | (="p_l$" & tab(upto('$')))
       return tab(0)
    }
+end
+
+
+
+#  pad(s, n) -- pad string to length n, never truncating
+
+procedure pad(s, n)
+   if *s < n then
+      return right(s, n)
+   else
+      return s
 end
