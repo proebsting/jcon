@@ -43,6 +43,9 @@ void announce(iEnv env) {
     declare(env, ">=,2", "oNGreaterEq");
     declare(env, ">,2", "oNGreater");
 
+    declare(env, "===,2", "oVEqual");
+    declare(env, "~===,2", "oVUnequal");
+
     declare(env, "||,2", "oConcat");
 
     declare(env, "@,2", "oActivate");
@@ -343,6 +346,20 @@ class oNGreater extends iFunctionClosure {		//  n1 > n2
 		return args[0].NGreater(args[1]);
 	}
 	String tfmt() { return "{$1 > $2}"; }
+}
+
+class oVEqual extends iFunctionClosure {		//  n1 === n2
+	vDescriptor function(vDescriptor[] args) {
+		return (args[0].equals(args[1].deref())) ? args[1] : null;
+	}
+	String tfmt() { return "{$1 === $2}"; }
+}
+
+class oVUnequal extends iFunctionClosure {		//  n1 ~=== n2
+	vDescriptor function(vDescriptor[] args) {
+		return (args[0].equals(args[1].deref())) ? null : args[1];
+	}
+	String tfmt() { return "{$1 ~=== $2}"; }
 }
 
 

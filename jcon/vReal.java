@@ -14,6 +14,10 @@ vReal(String s)		{ value = Double.valueOf(s).doubleValue(); }
 
 // runtime primitives
 
+public boolean equals(Object o)	{
+	return (o instanceof vReal) && (((vReal)o).value == value);
+}
+
 vReal mkReal()		{ return this; }
 vInteger mkInteger()	{ return iNew.Integer(this.value); }
 vString mkString()	{ return iNew.String(this.image()); }

@@ -14,6 +14,10 @@ vInteger(String s)	{ value = Long.parseLong(s); } //#%#% errs??
 
 //  runtime primitives
 
+public boolean equals(Object o)	{
+	return (o instanceof vInteger) && (((vInteger)o).value == value);
+}
+
 vInteger mkInteger()	{ return this; }
 vReal mkReal()		{ return iNew.Real(this.value); }
 vString mkString()	{ return iNew.String(String.valueOf(value)); }

@@ -22,6 +22,8 @@ abstract class vVariable extends vDescriptor {
 
     // for many operations on variables, default action is to deref and retry
 
+    public boolean equals(Object o)	{ return this.deref().equals(o); }
+
     iClosure instantiate(vDescriptor[] args, iClosure parent)
 			{ return this.deref().instantiate(args, parent); }
 

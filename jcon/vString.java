@@ -13,6 +13,10 @@ vString mkString()		{ return this; }
 
 // runtime primitives
 
+public boolean equals(Object o)	{
+	return (o instanceof vString) && value.equals(((vString)o).value);
+}
+
 String write()		{ return value; }
 String image()		{ return "\"" + value + "\""; }
 				//#%#%#% need to escape special chars
