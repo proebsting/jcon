@@ -105,6 +105,7 @@ class k$features extends iClosure {		// &features
 			retvalue = null;
 		}
 	}
+	String tfmt() { return "&features"; }
 }
 
 
@@ -379,7 +380,7 @@ class k$errorvalue extends iFunctionClosure {
 	}
 }
 
-class k$level extends iFunctionClosure {
+class k$level extends iFunctionClosure {	// &level
 	vDescriptor function(vDescriptor args[]) {
 		int i = 0;
 		for (iClosure p = this.parent; p != null; p = p.parent) {
@@ -387,6 +388,8 @@ class k$level extends iFunctionClosure {
 		}
 		return iNew.Integer(i);
 	}
+
+	String tfmt() { return "&level"; }
 }
 
 class k$gen4zeros extends iClosure {		// &allocated, &collections
@@ -399,6 +402,8 @@ class k$gen4zeros extends iClosure {		// &allocated, &collections
 			retvalue = null;
 		}
 	}
+
+	String tfmt() { return "&...."; }
 }
 
 class k$gen3zeros extends iClosure {		// &regions, &storage
@@ -411,4 +416,5 @@ class k$gen3zeros extends iClosure {		// &regions, &storage
 			retvalue = null;
 		}
 	}
+	String tfmt() { return "&..."; }
 }

@@ -266,7 +266,7 @@ class oDeref extends iFunctionClosure {			//  .x
 	vDescriptor function(vDescriptor[] args) {
 		return args[0];		// deref'd by caller
 	}
-	String tfmt() { return "{.$1}"; }
+	String tfmt() { return "{. $1}"; }
 }
 
 class oIsNull extends iRefClosure {			//  /x
