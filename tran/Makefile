@@ -45,8 +45,8 @@ $(JLINK):  linker.icn bytecode.icn
 $(JTRAN):  $(TRANSRC)
 	$(ICONT) -o $(JTRAN) $(TRANSRC)
 
-oplexgen: init.icn oplexgen.icn
-	$(ICONT) -o oplexgen oplexgen.icn init.icn
+oplexgen: oplexgen.icn
+	$(ICONT) -o oplexgen oplexgen.icn
 
 do_ops.icn: oplexgen
 	./oplexgen tree > do_ops.icn
