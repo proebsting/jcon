@@ -19,11 +19,6 @@ hdr.t:	FORCE
 jcont.t:  ../bin/jcont shdoc.sed
 	sed -f shdoc.sed ../bin/jcont			> jcont.t
 
-kwds.t:	  ../rts/iKeywords.java kwds.sed
-	echo "Keywords implemented:"			> kwds.t
-	echo ""						>>kwds.t
-	sed -f kwds.sed ../rts/iKeywords.java | sort | \
-	    pr -4 -t -w 60 -l 12 | sed 's/^/	/'	>>kwds.t
 
 FORCE:
 
