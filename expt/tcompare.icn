@@ -14,9 +14,6 @@
 #  are assumed to be outputs from the same version of "timings.icn".
 
 
-link numbers
-
-
 procedure main(args)
    local i, d, label, flist, slist, tlist
 
@@ -50,7 +47,7 @@ procedure main(args)
       every writes(right(!tlist, 8), " ")
       writes("  ", left(label, 14))
       d := real(tlist[1])
-      every writes(decipos(tlist[2 to *args] / d, 7, 9))
+      every writes(frn(tlist[2 to *args] / d, 9, 2))
       write()
    }
 end
@@ -66,4 +63,37 @@ procedure fit(s, n)
       return s[1+:n]
    else
       return right(s, n)
+end
+
+
+
+#  frn(r, w, d) -- format real number
+#
+#  Converts the value r into a string with d digits after the decimal point.
+#  A result narrower than w characters is padded on the left with spaces.
+#  Fixed format is always used; there is no exponential notation.
+#
+#  defaults:	w: 0
+#		d: 0
+
+$define MAXDECIMALS 25
+
+procedure frn(r, w, d)
+   local s
+   static mlist
+   initial every put(mlist := list(), 10.0 ^ (0 to MAXDECIMALS))
+
+   r := real(r) | runerr(102, r)
+   (/d := 0) | (d >=:= MAXDECIMALS)
+   if r >= 0 then {
+      s := string(integer(r * mlist[d + 1] + 0.5))
+      s := right(s, *s < d, "0")
+      }
+   else {
+      s := string(integer(-r * mlist[d + 1] + 0.5))
+      s := right(s, *s < d, "0")
+      s := "-" || s
+      }
+   s := right(s, *s < (\w - 1))
+   return s ? (tab(-d) || "." || tab(0))
 end
