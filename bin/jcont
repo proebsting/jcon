@@ -139,10 +139,10 @@ done
 #  determine installed directory
 PRG=`whence $0`
 IDIR=`dirname $PRG`
-case $IDIR in 
+case $IDIR in
     /*)		;;			# Unix-style absolute path
     ?:*)	;;			# DOS-style absolute path
-    *)		IDIR=`pwd`;;		# relative path
+    *)		IDIR=`pwd`/$IDIR;;	# relative path
 esac
 
 #  set paths for translator and for runtime files
