@@ -1,0 +1,33 @@
+# lexical comparison test
+
+procedure main()
+   "a" << "b" | write("fail 1")
+   "a" <<= "b" | write("fail 2")
+   "a" == "b" | write("succeed 1")
+   "a" ~== "b" | write("fail 3")
+   "a" >>= "b" | write("succeed 2")
+   "a" >> "b" | write("succeed 3")
+
+   "c" << "b" | write("succeed 4")
+   "c" <<= "b" | write("succeed 5")
+   "c" == "b" | write("succeed 6")
+   "c" ~== "b" | write("fail 4")
+   "c" >>= "b" | write("fail 5")
+   "c" >> "b" | write("fail 6")
+
+   "b" << "b" | write("succeed 7")
+   "b" <<= "b" | write("fail 7")
+   "b" == "b" | write("fail 8")
+   "b" ~== "b" | write("succeed 8")
+   "b" >>= "b" | write("fail 9")
+   "b" >> "b" | write("succeed 9")
+
+   write("fail" << "succeed 10" | "bad")
+   write("fail" <<= "succeed 11" | "bad")
+   write("succeed 12" <<= "succeed 12" | "bad")
+   write("succeed 13" == "succeed 13" | "bad")
+   write("fail" ~== "succeed 14" | "bad")
+   write("zfail" >> "succeed 15" | "bad")
+   write("zfail" >>= "succeed 16" | "bad")
+   write("succeed 17, last" >>= "succeed 17, last" | "bad")
+end
