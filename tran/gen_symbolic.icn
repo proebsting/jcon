@@ -1,4 +1,4 @@
-#  gen_symbolic.icn -- create symbolic output from intermediate represenation.
+#  gen_symbolic.icn -- create symbolic output from intermediate representation.
 
 global symbolic_emit_table
 
