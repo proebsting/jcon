@@ -224,8 +224,9 @@ vList Pending() {
 }
 
 vValue Event() {
-    if (c.evq.Size().value == 0)	// if we're going to block
+    if (c.evq.Size().value == 0) {	// if we're going to block
 	k$output.file.flush();		// flush stdout first
+    }
     vValue e = wEvent.dequeue(c.evq);
     setCurrent(this);
     return e;

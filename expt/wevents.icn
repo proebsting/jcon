@@ -105,7 +105,8 @@ w := open(&progname, "g") | stop("can't open window")
          )
       if e === ("\^C" | "\^D" | "\177") then
          break
-         }
+      flush(&output)
+      }
 end
 
 

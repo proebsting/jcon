@@ -119,7 +119,12 @@ final class f$WAttrib extends vProcV { 		// WAttrib(W,attribs,..)
 			}
 		    }
 		}
-		return v;
+		if (v == null) {
+		    return null;
+		} else {
+		    retval = v;
+		    return this;
+		}
 	    }
 	}.Resume();
     }

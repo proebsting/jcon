@@ -597,9 +597,9 @@ abstract class kMirrored extends vProc0 {	// super for "mirrored" int kwds
 	};
     }
 
-    abstract void newValue(long v);		// propagate side-effects
+    abstract void newValue(long v);		// set with side-effects
 
-    void set(long v) {				// assign without side-effects
+    void set(long v) {				// set without side-effects
 	kwvar.value = vInteger.New(v);
     }
 
@@ -614,6 +614,7 @@ final class k$x extends kMirrored {				// &x
 
     void newValue(long i) {
 	vWindow win = vWindow.getCurrent();
+	set(i);
 	k$col.self.set(1 + i / 12);		// #%#% should depend on font
     }
 }
@@ -624,6 +625,7 @@ final class k$y extends kMirrored {				// &y
 
     void newValue(long i) {
 	vWindow win = vWindow.getCurrent();
+	set(i);
 	k$row.self.set(1 + i / 7);		// #%#% should depend on font
     }
 }
@@ -634,6 +636,7 @@ final class k$row extends kMirrored {				// &row
 
     void newValue(long i) {
 	vWindow win = vWindow.getCurrent();
+	set(i);
 	k$y.self.set(12 * i);			// #%#% should depend on font
     }
 }
@@ -644,6 +647,7 @@ final class k$col extends kMirrored {				// &col
 
     void newValue(long i) {
 	vWindow win = vWindow.getCurrent();
+	set(i);
 	k$x.self.set(7 * i);			// #%#% should depend on font
     }
 }
