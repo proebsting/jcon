@@ -3,7 +3,7 @@ package rts;
 public abstract class iBinaryValueClosure extends iBinaryClosure {
 
 	// Class for simple binary operations that return at most one value
-	// but do not want their arguments dereferenced
+	// and want their arguments dereferenced
 
 	public void nextval() {
 		if (PC == 1) {

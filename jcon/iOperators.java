@@ -172,42 +172,41 @@ public class oConjunction extends iBinaryRefClosure {		// x1 & x2
 
 public class oToBy extends iClosure {				// i1 to i2 by i3
 
-	vInteger i1, i2, i3, iprev, ivar;
+	long i2, i3, ivar;
 
 	public void nextval() {
+		long i1, iprev;
+
 		if (PC == 1) {
-			for (int i = 0; i < arguments.length; i++) {
-				arguments[i] = arguments[i].deref();
-			}
-			i1 = arguments[0].mkInteger();
-			i2 = arguments[1].mkInteger();
-			i3 = arguments[2].mkInteger();
-			if (i3.value == 0) {
-				iRuntime.error(211, i3);
+			i1 = arguments[0].mkInteger().value;
+			i2 = arguments[1].mkInteger().value;
+			i3 = arguments[2].mkInteger().value;
+			if (i3 == 0) {
+				iRuntime.error(211, iNew.Integer(i3));
 			}
 			PC = 0;
 			iprev = ivar = i1;
 		} else {
 			iprev = ivar;
-			ivar = iNew.Integer(ivar.value + i3.value);
+			ivar += i3;
 		}	
 
-		if (i3.value > 0) {		// ascending loop
+		if (i3 > 0) {		// ascending loop
 
 		    // test for end of loop and for overflow
-		    if (ivar.value > i2.value || ivar.value < iprev.value) {
+		    if (ivar > i2 || ivar < iprev) {
 			    retvalue = null;
 		    } else {
-			    retvalue = ivar;
+			    retvalue = iNew.Integer(ivar);
 		    }
 
 		} else {			// descending loop
 
 		    // test for end of loop and for overflow
-		    if (ivar.value < i2.value || ivar.value > iprev.value) {
+		    if (ivar < i2 || ivar > iprev) {
 			    retvalue = null;
 		    } else {
-			    retvalue = ivar;
+			    retvalue = iNew.Integer(ivar);
 		    }
 
 		}

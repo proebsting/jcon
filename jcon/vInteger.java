@@ -187,17 +187,21 @@ vValue Mul(vDescriptor v) {
 } 
 
 vValue Div(vDescriptor v) {
-    if (((vInteger)v).value == 0) {
+    try {
+	return iNew.Integer(this.value / ((vInteger)v).value);
+    } catch (ArithmeticException e) {
 	iRuntime.error(201);
     }
-    return iNew.Integer(this.value / ((vInteger)v).value);
+    return null;
 } 
 
 vValue Mod(vDescriptor v) {
-    if (((vInteger)v).value == 0) {
+    try {
+	return iNew.Integer(this.value % ((vInteger)v).value);
+    } catch (ArithmeticException e) {
 	iRuntime.error(202);
     }
-    return iNew.Integer(this.value % ((vInteger)v).value);
+    return null;
 } 
 
 vValue Abs() {
