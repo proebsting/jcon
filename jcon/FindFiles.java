@@ -201,9 +201,8 @@ static void readlinks(String fname)
 	if (e == null) {
 	    error(fname + ": linkage information missing");
 	} else {
-	    InputStream ist = f.getInputStream(e);
-	    BufferedInputStream bf = new BufferedInputStream(ist);
-	    DataInputStream d = new DataInputStream(bf);
+	    BufferedReader d = new BufferedReader(
+		new InputStreamReader(f.getInputStream(e)));
 	    String s;
 	    while ((s = d.readLine()) != null) {
 		trace("   links: " + s);

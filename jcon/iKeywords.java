@@ -204,13 +204,17 @@ class k$host extends k$Value {			// &host
 		return hostname;
 	}
 
+	//#%#% warning: ugly unixisms follow
+
 	static void inithost() {
 	    try {
-		Process p = Runtime.getRuntime().exec("/bin/hostname");
+		Process p = Runtime.getRuntime().exec("/bin/uname -n");
 		hostname = iNew.String(
-		    (new DataInputStream(p.getInputStream()))
+		    new BufferedReader(
+		    new InputStreamReader(p.getInputStream()))
 		    .readLine().trim());
 		p.destroy();
+		hostname.value.charAt(0);	// ensure not empty
 	    } catch (Exception e1) {
 		try {
 		    hostname = iNew.String(System.getProperty("os.name"));

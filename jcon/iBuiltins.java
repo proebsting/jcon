@@ -407,14 +407,16 @@ class f$system extends iFunctionClosure {			// system(s)
 
 class f$getenv extends iFunctionClosure {			// getenv(s)
 
+
 	static Hashtable env = new Hashtable();
 
 	static {				// initialization on first call
 		try {
+			//#%#% warning: ugly unixisms follow
 			Process p =
 				Runtime.getRuntime().exec("/usr/bin/env");
-			DataInputStream d =
-				new DataInputStream(p.getInputStream());
+			BufferedReader d = new BufferedReader(
+				new InputStreamReader(p.getInputStream()));
 			String s;
 			while ((s = d.readLine()) != null) {
 				s = s.trim();
