@@ -273,17 +273,16 @@ public vDescriptor RevAssign(vDescriptor v) {
 //  Wraparound occurs when (i) and (i +/- j) are of opposite type.  It is
 //  checked by negating the two values, which makes the sign bit serve as
 //  a classifier, and then checking for sign bit differences.
-//
-//  #%#% Should still give error (not failure) if object is not subscriptable.
 
 public vDescriptor SectPlus(vDescriptor a, vDescriptor b) {	// x[i+:j]
     vInteger ai = a.mkInteger();
     long i = ai.value;
     long j = i + b.mkInteger().value;
     if ((-i ^ -j) < 0) {	// if wraparound
-	return null; /*FAIL*/
+	Section(ai, vInteger.New(j));		// first provoke error, if any
+	return null; /*FAIL*/			// then fail
     }
-    return Section(ai, vInteger.New(j));
+    return Section(ai, vInteger.New(j));	// no wraparound
 }
 
 public vDescriptor SectMinus(vDescriptor a, vDescriptor b) {	// x[i-:j]
@@ -291,9 +290,10 @@ public vDescriptor SectMinus(vDescriptor a, vDescriptor b) {	// x[i-:j]
     long i = ai.value;
     long j = i - b.mkInteger().value;
     if ((-i ^ -j) < 0) {	// if wraparound
-	return null; /*FAIL*/
+	Section(ai, vInteger.New(j));		// first provoke error, if any
+	return null; /*FAIL*/			// then fail
     }
-    return Section(ai, vInteger.New(j));
+    return Section(ai, vInteger.New(j));	// no wraparound
 }
 
 public vValue SectPlusVal(vDescriptor a, vDescriptor b) {	// .x[i+:j]
@@ -301,9 +301,10 @@ public vValue SectPlusVal(vDescriptor a, vDescriptor b) {	// .x[i+:j]
     long i = ai.value;
     long j = i + b.mkInteger().value;
     if ((-i ^ -j) < 0) {	// if wraparound
-	return null; /*FAIL*/
+	SectionVal(ai, vInteger.New(j));	// first provoke error, if any
+	return null; /*FAIL*/			// then fail
     }
-    return SectionVal(ai, vInteger.New(j));
+    return SectionVal(ai, vInteger.New(j));	// no wraparound
 }
 
 public vValue SectMinusVal(vDescriptor a, vDescriptor b) {	// .x[i-:j]
@@ -311,9 +312,10 @@ public vValue SectMinusVal(vDescriptor a, vDescriptor b) {	// .x[i-:j]
     long i = ai.value;
     long j = i - b.mkInteger().value;
     if ((-i ^ -j) < 0) {	// if wraparound
-	return null; /*FAIL*/
+	SectionVal(ai, vInteger.New(j));	// first provoke error, if any
+	return null; /*FAIL*/			// then fail
     }
-    return SectionVal(ai, vInteger.New(j));
+    return SectionVal(ai, vInteger.New(j));	// no wraparound
 }
 
 
