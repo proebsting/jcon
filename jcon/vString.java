@@ -10,6 +10,8 @@
 
 package rts;
 
+import java.math.BigInteger;
+
 public final class vString extends vValue {
 
     private int tlength;		// total string length
@@ -357,11 +359,23 @@ public vNumeric Numerate() {					// numeric(s)
 	return cachedNumeric = v;
     }
 
-    // unsuccessful; try parsing as real value
+    // convert to string; must skip leading "+" for Java converters
     if (i + 2 <= j && data[i] == '+' && data[i+1] != '-') {
 	i++;					// skip leading '+'
     }
+    if (i + 2 <= j && data[i+1] == '-' && data[i] == '-') {
+	iRuntime.error(102, this);		// reject "--2" that Java allows
+	return null;
+    }
     String s = new String(data, i, j - i);
+
+    // try parsing as large integer
+    try {
+	return cachedNumeric = vBigInt.Result(new BigInteger(s));
+    } catch (NumberFormatException e) {
+    }
+
+    // try parsing as real
     try {
 	Double d = Double.valueOf(s);
 	if (!d.isInfinite()) {

@@ -13,8 +13,6 @@ public final class vBigInt extends vNumeric {
 
     private BigInteger value;
 
-    static final int MaxDigits = 30;	//#%#% move to iConfig.java
-
     static final BigInteger MinInteger = BigInteger.valueOf(Long.MIN_VALUE);
     static final BigInteger MaxInteger = BigInteger.valueOf(Long.MAX_VALUE);
 
@@ -32,7 +30,20 @@ private vBigInt(long n) {
 }
 
 private vBigInt(double d) {
-    iRuntime.bomb("BigInt(double) NYI");	//#%#%#%
+    if (d <= Long.MAX_VALUE && d >= Long.MIN_VALUE) {
+	value = BigInteger.valueOf((long)d);
+    } else {
+	// from Java VM Spec, 1997, page 99
+	long bits = Double.doubleToLongBits(d);
+	int e = (int)((bits >> 52) & 0x7FFL);
+	long m = (e == 0) ?
+	    (bits & 0xFFFFFFFFFFFFFL) << 1 :
+	    (bits & 0xFFFFFFFFFFFFFL) | 0x10000000000000L;
+	value = BigInteger.valueOf(m).shiftLeft(e - 1075);
+	if (bits < 0) {
+	    value = value.negate();
+	}
+    }
 }
 
 private vBigInt(String s) {
@@ -81,7 +92,7 @@ vString write()		{ return mkString(); }
 vString image()	{
     int ndigits = (int) (value.bitCount() * 0.3010299956639812 + 0.5);
 					//     1 / log2(10)
-    if (ndigits >= MaxDigits) {
+    if (ndigits < iConfig.MaxIntDigits) {
 	return mkString();
     } else {
 	return vString.New("integer(~10^" + ndigits + ")");
@@ -108,7 +119,7 @@ public vDescriptor ProcessArgs(vDescriptor x) {			// i ! X
 
 //  create vBigInteger or vInteger result as appropriate.
 
-private static vNumeric Result(BigInteger v) {
+static vNumeric Result(BigInteger v) {
     if (v.compareTo(MaxInteger) > 0 || v.compareTo(MinInteger) < 0) {
 	return vBigInt.New(v);
     } else {

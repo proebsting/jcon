@@ -35,6 +35,8 @@ static final String FixedFont = "mono,10";		// "fixed" font
 //  the following constants are documented features of the Icon language
 //  and should not be changed lightly
 
+static final int MaxIntDigits = 30;		// maximum digits in image(i)
+
 static final String FontName = "fixed";		// default font name
 static final int FontSize = 14;			// default font size
 
