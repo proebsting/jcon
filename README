@@ -1,4 +1,4 @@
-JCON v0.5 README
+JCON 0.5.1 README
 July 16, 1997
 
 Gregg Townsend
@@ -31,27 +31,19 @@ tying things together.
 
 2.  INSTALLED SOFTWARE
 
-Jcon requires Icon v9, Java v1.1, Zip v2, UnZip v5.
-
-These are all generally available as prebuilt binaries.
-Installation of Java may require system privileges and
-concurrent installation of some OS patches.
+Jcon requires version 9 of Icon and version 1.1 of Java.  Prebuilt
+binaries are available for many platforms.  Installation of Java
+may require system privileges, and proper functioning may require
+installation of some OS patches.
 
 For software see:
-
-    Icon		http://www.cs.arizona.edu/icon/v93u.html
-    Java		http://www.javasoft.com/products/jdk/1.1/
-    Zip and UnZip	http://www.cdrom.com/pub/infozip/
+    Icon 9.3	http://www.cs.arizona.edu/icon/v93u.html
+    Java 1.1	http://www.javasoft.com/products/jdk/1.1/
 
 3. SEARCH PATH
 
-Executables of icont, javac, java, zip, and unzip must be in the
-search path to build or run Jcon or to execute generated binaries.
-
-Binaries of Zip and UnZip can simply be placed in Jcon's "bin"
-directory, if that is most convenient, provided that it is added
-to the search path.  (That is not practical for Icon or Java,
-which are large and complex packages.)
+Executables of icont, javac, java, and jar must be in the search
+path to build or run Jcon or to execute generated binaries.
 
 
 
@@ -101,6 +93,14 @@ A description of the code generator techniques appears in:
     http://www.cs.arizona.edu/~todd/papers/pldi97.goal.ps
 
 There is no other documentation at this time.
+
+
+
+ACKNOWLEDGEMENTS
+
+Denise Todd contributed to the translator used by Jcon.
+Ralph Griswold offered useful advice and helped test early versions.
+Bob Alexander also provided helpful suggestions.
 
 
 

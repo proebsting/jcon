@@ -17,8 +17,7 @@
 #		    (this option is not for the squeamish)
 #     -J	generate slower code in Java source form
 #		    instead of writing class files directly
-#		    -- requires javac in search path
-#		    -- may expose bugs in the Java compiler
+#		    (may expose bugs in the Java compiler)
 #     -P	pessimize: don't optimize the generated Java code
 #
 #  Jcont translates Icon source files into .zip files, and links .zip
@@ -27,14 +26,12 @@
 #  pair from icont.
 #
 #  The following executables must be in the search path:
-#	icont, java, zip, unzip 
-#  (zip and unzip may be installed in the same directory as jcont.)
+#	icont, java, jar
 
 PREPROC="icont -s -E"
-ZIP="zip"
-UNZIP="unzip"
 JAVAC="javac -nowarn"
 JAVA="java"
+JAR="jar"
 
 export BLKSIZE=6000000
 export STRSIZE=500000
@@ -178,7 +175,7 @@ for FNAME in $IFILES; do
 	    (cd $TDIR; $JAVAC $FNAME.java)
 	fi
 	# bundle .class files (and linkage info) into .zip file
-	$ZIP -0 -j -q $FNAME.zip $TDIR/links $TDIR/*.class
+	(cd $TDIR; $JAR cf ../$FNAME.zip links *.class)
     else
 	ERREXIT="exit"
     fi
@@ -196,11 +193,11 @@ $JAVA rts.FindFiles $LINKTRACE "$UIPATH" $ZFILES >$TDIR/zip.list
 # unpack all those .zip files
 rm -f $TDIR/*.class
 for FNAME in `<$TDIR/zip.list`; do
-    $UNZIP -n -d $TDIR -q $FNAME '[lp]*.class'
+    (cd $TDIR; $JAR xf ../$FNAME)
 done
 
 # combine the Icon files from there
-(cd $TDIR; ls | grep '^[lp].*\.class$' | xargs $ZIP -0 -q combined.zip)
+(cd $TDIR; $JAR cf combined.zip [lp]*.class)
 
 # combine a header (padded via dd) with that zip file to make a script
 # (if making significant changes here, also adjust HBASE above)
