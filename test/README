@@ -7,7 +7,4 @@ The important scripts are:
 
     addtest	adds a new test, using icont as baseline for correctness
 
-    jxprof	runs a Jcon program with profiling
-		(robustness and reliability of this tool is questionable)
-
 See the script headers for usage.
