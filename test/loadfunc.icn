@@ -50,11 +50,12 @@ end
 
 
 procedure javaprocs()
-   local sum3, factors, threen, f, i
+   local sum3, factors, threen, primes, f, i
 
    sum3 := loadfunc("jfuncs.zip", "sum3")
    factors := loadfunc("jfuncs.zip", "factors")
    threen := loadfunc("jfuncs.zip", "threen")
+   primes := loadfunc(, "primes")
 
    write()
    every f := sum3 | factors | threen do
@@ -76,6 +77,10 @@ procedure javaprocs()
        every writes(" ", threen(i))
        write()
    }
+
+   write()
+   every writes(" ", "primes:" | primes(100) | "\n")
+
    return
 end
 
