@@ -35,41 +35,44 @@ public class iInterface {
 		return a;
 	}
 
-	static iFile[] getFiles(String[] names) {
-		iFile[] files = new iFile[names.length];
-		for (int i = 0; i < names.length; i++) {
-			try {
-				Class c = Class.forName(names[i]);
-				Object o = c.newInstance();
-				files[i] = (iFile) o;
-			} catch (ClassNotFoundException e) {
-				System.err.println();
-				System.err.println("linking error in startup code");
-				System.err.println("error linking file " + names[i]);
-				iRuntime.exit(1, null);
-			} catch (InstantiationException e) {
-				System.err.println();
-				System.err.println("linking error in startup code");
-				System.err.println("error linking file " + names[i]);
-				iRuntime.exit(1, null);
-			} catch (IllegalAccessException e) {
-				System.err.println();
-				System.err.println("linking error in startup code");
-				System.err.println("error linking file " + names[i]);
-				iRuntime.exit(1, null);
-			}
+	static java.util.Hashtable fileTable = new java.util.Hashtable();
+	static void announce(String name) {
+		if (fileTable.containsKey(name)) {
+			return;
 		}
-		return files;
+		try {
+			Class c = Class.forName(name);
+			Object o = c.newInstance();
+			iFile file = (iFile) o;
+			file.announce();
+			fileTable.put(name, file);
+		} catch (ClassNotFoundException e) {
+			System.err.println();
+			System.err.println("linking error in startup code");
+			System.err.println("error linking file " + name);
+			iRuntime.exit(1, null);
+		} catch (InstantiationException e) {
+			System.err.println();
+			System.err.println("linking error in startup code");
+			System.err.println("error linking file " + name);
+			iRuntime.exit(1, null);
+		} catch (IllegalAccessException e) {
+			System.err.println();
+			System.err.println("linking error in startup code");
+			System.err.println("error linking file " + name);
+			iRuntime.exit(1, null);
+		}
 	}
 
 	public static void start(String[] filenames, String[] args, String name) {
-		iFile[] files = getFiles(filenames);
-		for (int i = 0; i < files.length; i++) {
-			files[i].announce();
+		for (int i = 0; i < filenames.length; i++) {
+			announce(filenames[i]);
 		}
 		iInterface.init();
-		for (int i = 0; i < files.length; i++) {
-			files[i].link();
+		java.util.Enumeration e = fileTable.elements();
+		while (e.hasMoreElements()) {
+			iFile file = (iFile) e.nextElement();
+			file.link();
 		}
 		k$progname.name = name;
 		vDescriptor m = iEnv.resolve("main");
