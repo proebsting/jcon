@@ -150,7 +150,7 @@ static vVariable getKeyVar(String s) {
     }
 }
 
-public static vDescriptor resolveKey(String s) {	//#%#% s/b vProc
+public static vProc resolveKey(String s) {
     vProc p = (vProc) keytab.get(s);
     if (p == null) {
 	iRuntime.bomb("keyword not found: &" + s);
@@ -189,12 +189,10 @@ static vProc getOpr(vString repr, long arity) {
     return v;					// return new instance
 }
 
-//#%#% is this still used?
 public static vDescriptor resolveProc(String s, int args) {
     if (args < 1 || args > 3) {
 	iRuntime.error(902);
     }
-System.err.println("resolveProc(" + s + "," + args + ")"); //#%#%
     vDescriptor v = (vDescriptor) getOpr(vString.New(s), args);
     if (v == null) {
 	v = vNull.New();

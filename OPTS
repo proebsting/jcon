@@ -23,7 +23,7 @@ the common cases that use default arguments.
 	-- could also do: match, find, trim, log, atan
 
 Use lazy creation for most keyword classes.
-	-- nontrivial; not clear how many can actually do this
+	-- nontrivial and probably not worth it
 
 Make some methods final to allow inlining, e.g. vCset.member().
 	-- DONE by making almost all classes final

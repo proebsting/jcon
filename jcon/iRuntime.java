@@ -76,16 +76,6 @@ public static vDescriptor arg(vDescriptor[] args, int index) {
     }
 }
 
-//#%#% is this needed?:
-public static vDescriptor arg(vDescriptor[] args, int index, int errcode) {
-    if (args.length <= index) {
-	iRuntime.error(errcode);
-	return null;
-    } else {
-	return args[index];
-    }
-}
-
 
 
 //  display(f) -- display global variables (only) on f

@@ -1,4 +1,4 @@
-//  vCoexp -- coexpressions	#%#% TO BE DONE
+//  vCoexp -- coexpressions
 
 package rts;
 

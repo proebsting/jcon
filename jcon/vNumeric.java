@@ -16,8 +16,8 @@ vCset mkCset()				{ return this.mkString().mkCset(); }
 vProc mkProc()				{ return this.mkInteger().mkProc(); }
 
 
-//#%#%#% may need more conversions added to this list:
-//#%#%#% (or should there be fewer... and move these to vValue?)
+// these operators coerce any numeric value to string
+// (this code is not in vValue because non-numerics are handled differently)
 
 public vDescriptor Bang()		{ return this.mkString().Bang(); }
 public vInteger Size()			{ return this.mkString().Size(); }

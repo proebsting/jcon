@@ -69,9 +69,9 @@ final class f$ishift extends vProc2 {				// ishift(m, n)
 	long v = a.mkInteger().value;
 	long n = b.mkInteger().value;
 	if (n >= 64) {
-	    return vInteger.New(0);		//#%#% ignoring overflow
+	    return vInteger.New(0);		// no error 203; same as v9
 	} else if (n >= 0) {
-	    return vInteger.New(v << n);	//#%#% ignoring overflow
+	    return vInteger.New(v << n);	// no error 203; same as v9
 	} else if (n > -64) {
 	    return vInteger.New(v >> -n);
 	} else {
