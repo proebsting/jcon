@@ -4,7 +4,7 @@
 
 
 procedure main()
-   local colors, a, i, w, h, e, x, y, w2, w3, w4, d, star
+   local colors, a, i, w, h, e, x, y, r, w2, w3, w4, d, star
 
    &window := open("window", "g", "size=500,300")
    DrawRectangle(10, 10, 480, 280)
@@ -33,6 +33,16 @@ procedure main()
       DrawRectangle(250, 150, w, h)
       DrawLine(250 + w, 150 + h, 250 + 100 * cos(a), 150 + 100 * sin(a))
    }
+
+   x := 95
+   y := 285
+   r := 1.0
+   while x < 400 do {
+      FillCircle(x, y - r, r)
+      DrawCircle(x, y - r, r + 2)
+      x +:= 2 * r + 6
+      r +:= 0.5
+      }
 
    a := -&pi / 2
    star := []
