@@ -1,3 +1,4 @@
+global bc_indirect_targets
 global bc_directory
 global bc_statics
 global bc_keys_link
@@ -178,6 +179,9 @@ end
 
 # record irLabel( value )
 procedure gen_bc_irLabel_rval(s, p)
+
+	member(bc_indirect_targets, p) | runerr(1000)
+
 	\bc_labels[p] | stop("ERROR: ", image(&file), " ", &line)
 	put(s, ipush(bc_labels[p], bc_proc_classptr) )
 	return s
@@ -410,6 +414,8 @@ procedure gen_bc_irRunTimeError(s, p)
 	runtimeerror := runtimeerror_methodref(bc_proc_classptr)
 	put(s, ipush(902))
 	put(s, invokestatic(runtimeerror))
+	put(s, aconst_null())
+	put(s, areturn())
 	return s
 end
 
@@ -738,6 +744,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	local undeclared, sortedvars, op, i, classname, k, insns, nextval, c, newsimplevar
 	local init, initcode, f, n, constructor, a, class_index
 	local clinit, clinitcode
+	local t
 
 	bc_statics := set(statics)
 	if member(bc_declare_set, name) then {
@@ -778,6 +785,31 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	bc_ir2bc_labels := table()
 	bc_labels[code.ir.start] := 1
 	bc_emit_table := optimize(bc_emit_table, code.ir.start)
+
+	bc_indirect_targets := set([])
+	every a := !!bc_emit_table do {
+		case type(a) of {
+		"irCoRet":	t := a.continuation
+		"irCreate":	t := a.location
+		"irMove":	t := a.rhs
+		"irSucceed":	t := a.continuation
+		default: next
+		}
+		if type(t) == "irLabel" then {
+			insert(bc_indirect_targets, t)
+		}
+	}
+	every a := !!!bc_emit_table & type(a) == "irCreate" do {
+		t := a.location
+		if type(t) == "irLabel" then {
+			insert(bc_indirect_targets, t)
+		}
+	}
+
+	every k := !bc_indirect_targets do {
+		/bc_labels[k] := *bc_labels + 1
+		bc_ir2bc_labels[k] := label()
+	}
 	every k := key(bc_emit_table) do {
 		/bc_labels[k] := *bc_labels + 1
 		bc_ir2bc_labels[k] := label()
@@ -909,7 +941,7 @@ end
 procedure bc_create_nextval(c, start, params, accumulate)
 	local PC, nextval, nextvalcode, k, lab, switch, insns, deflab
 	local runtimeerror, r
-	local a, s, tmplab, prologue, var_load_label
+	local a, s, tmplab, prologue, var_load_label, t
 
 	nextval := create_method(c, 0, "nextval", "()Lrts/vDescriptor;")
 	nextvalcode := create_code(c, 10, 10)
@@ -936,11 +968,11 @@ procedure bc_create_nextval(c, start, params, accumulate)
 	tmplab := label()
 
 	PC := PC_fieldref(c)
-	put(nextvalcode.code, aload_0() )
-	put(nextvalcode.code, getfield(PC))
 
 	#%#% this use of flag causes spurious verification errors.
 	if \bc_save_restore_flag then {
+		put(nextvalcode.code, aload_0() )
+		put(nextvalcode.code, getfield(PC))
 		put(nextvalcode.code, dup())
 		put(nextvalcode.code, iconst_1())
 		put(nextvalcode.code, if_icmpne(tmplab))
@@ -1030,7 +1062,7 @@ procedure bc_create_nextval(c, start, params, accumulate)
 		put(s, Astore(bc_var_table[k] + bc_var_offset))
 	}
 	deflab := label()
-
+	
 	switch := tableswitch(0, deflab, 1, *bc_emit_table, list(*bc_emit_table))
 	if \bc_save_restore_flag then {
 		put(nextvalcode.code, goto_w(bc_switch_label) )
@@ -1039,16 +1071,19 @@ procedure bc_create_nextval(c, start, params, accumulate)
 	bc_emit_code(nextvalcode.code, switch, start)
 
 	put(nextvalcode.code, bc_switch_label)
-	put(nextvalcode.code, switch)
 
+	if *bc_indirect_targets > 0 then {
+		put(nextvalcode.code, switch)
 
-	runtimeerror := runtimeerror_methodref(c)
-	put(nextvalcode.code, deflab)
-	put(nextvalcode.code, ipush(902) )
-	put(nextvalcode.code, invokestatic(runtimeerror) )
-
-	put(nextvalcode.code, aconst_null())
-	put(nextvalcode.code, areturn())
+		runtimeerror := runtimeerror_methodref(c)
+		put(nextvalcode.code, deflab)
+		put(nextvalcode.code, ipush(902) )
+		put(nextvalcode.code, invokestatic(runtimeerror) )
+		put(nextvalcode.code, aconst_null())
+		put(nextvalcode.code, areturn())
+	} else {
+		/bc_save_restore_flag | runerr(1000)
+	}
 end
 
 global bc_emitted
@@ -1162,7 +1197,7 @@ procedure bc_emit_prologue(s, c, params, accumulate)
 		put(s, aload_0() )
 		put(s, getfield(field) )
 		if i = *params & \accumulate then {
-			marshal := create_methodref(c, "marshal", "([Lrts/vDescriptor;I)Lrts/vDescriptor;", "rts/iInterface")
+			marshal := create_methodref(c, "marshal", "([Lrts/vDescriptor;I)Lrts/vList;", "rts/iInterface")
 			put(s, aload_0() )
 			put(s, getfield(arguments))
 			put(s, ipush(*params))
@@ -1182,8 +1217,8 @@ procedure bc_emit_prologue(s, c, params, accumulate)
 			put(s, elselab)
 				put(s, ipush(i-1))
 				put(s, aaload())
-				put(s, invokevirtual(deref) )
 			put(s, endlab)
+			put(s, invokevirtual(deref) )
 		}
 		put(s, invokevirtual(assign) )
 		put(s, Pop())
