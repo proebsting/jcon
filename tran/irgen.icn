@@ -26,7 +26,10 @@ procedure ir_Field(p, st, inuse, target, bounded)
 	CG.emit(p.ir.resume, [ irGoto(p.expr.ir.resume) ])
 	CG.emit(p.expr.ir.success, [
 		irCoord(p.coord),
-		ir_opfn(target, irOperator(".", 2), [ t, irStrLit(p.field.id) ], p.expr.ir.resume),
+
+		irField(target, t, p.field.id, p.expr.ir.resume),
+		# ir_opfn(target, irOperator(".", 2), [ t, irStrLit(p.field.id) ], p.expr.ir.resume),
+
 		irGoto(p.ir.success)
 		])
 	CG.emit(p.expr.ir.failure, [ irGoto(p.ir.failure) ])

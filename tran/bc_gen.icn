@@ -130,6 +130,7 @@ procedure gen_bc_assign_to(s, p)
 	return s
 end
 
+
 # record irFree( v )
 procedure gen_bc_irFree(s, p)
 	local free, c, lab
@@ -225,11 +226,38 @@ procedure gen_bc_irLabel_rval(s, p)
 	return s
 end
 
+# record irField(lhs, expr, field, failLabel)
+procedure gen_bc_irField(s, p)
+	local lab, method, fieldname, field, d
+
+	field := create_fieldref(bc_proc_classptr, "field", "Lrts/oField;", "rts/oField")
+	put(s, getstatic(field) )
+	gen_bc_rval(s, p.expr)
+	d := cp_String(bc_proc_classptr, cp_Utf8(bc_proc_classptr, p.field)) | runerr(1000)
+	put(s, ldc_w(d) )
+	put(s, aload_0())
+	args := "Lrts/vDescriptor;Ljava/lang/String;Lrts/iClosure;"
+	method := create_methodref(bc_proc_classptr, "call", "(" || args || ")Lrts/vDescriptor;", "rts/oField")
+	put(s, invokevirtual(method))
+	if \p.lhs then {
+		put(s, dup() )
+		lab := label()
+		put(s, ifnonnull(lab) )
+		put(s, Pop() )
+		transfer_to(s, p.failLabel)
+		put(s, lab )
+		gen_bc_assign_to(s, p.lhs)
+	} else {
+		conditional_transfer_to(s, p.failLabel, ifnull, ifnonnull)
+	}
+	return s
+end
+
 # record irMove( lhs rhs )
 procedure gen_bc_irMove(s, p)
 	local deref
 
-	\p.lhs | return []
+	\p.lhs | return s
 
 	gen_bc_rval(s, p.rhs)
 	if type(p.lhs) == ("irKey" | "irVar") then {
@@ -769,6 +797,7 @@ procedure gen_bc(s, p)
 	"irRunTimeError" : return gen_bc_irRunTimeError(s, p)
 	"irEnterInit" : return gen_bc_irEnterInit(s, p)
 	"irFree" : return gen_bc_irFree(s, p)
+	"irField" : return gen_bc_irField(s, p)
 	default : { runerr(1000, p); }
 	}
 end

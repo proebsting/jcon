@@ -133,6 +133,8 @@ procedure def_use(p, this, uses, defs)
 	"irTmpLabel" :	{ this[p]+:=1 }
 	"irTmpClosure":	{ this[p]+:=1 }
 	"irLabel" :	{ this[p]+:=1 }
+	"irField" :	{ def_use(\p.lhs, defs, uses, defs);
+			def_use(p.expr, uses, uses, defs) }
 	"irMove" :	{ def_use(\p.lhs, defs, uses, defs);
 			def_use(p.rhs, uses, uses, defs) }
 	"irScanSwap" :	{ def_use(p.subject, defs, uses, defs);
@@ -209,6 +211,10 @@ procedure opt_rewrite(p, rename)
 			every i := 1 to *p.valueList do {
 				p.valueList[i] := opt_rewrite(p.valueList[i],
 							      rename); }
+			}
+	"irField" :	{ p.lhs := opt_rewrite(\p.lhs, rename)
+			p.expr := opt_rewrite(p.expr, rename)
+			p.failLabel := opt_rewrite(\p.failLabel, rename)
 			}
 	"irOpFunction":{p.lhs := opt_rewrite(\p.lhs, rename);
 			p.fn := opt_rewrite(p.fn, rename); 
@@ -332,6 +338,10 @@ procedure gotos(p, wl, seen, t)
 	"irSucceed" : {  # irSucceed : ( expr continuation )
 		p.continuation := goto_chain(\p.continuation, t)
 		gotos(\p.continuation, wl, seen, t)
+		}
+	"irField" : {  # irField : ( lhs expr field failLabel )
+		p.failLabel := goto_chain(\p.failLabel, t)
+		gotos(\p.failLabel, wl, seen, t)
 		}
 	"irOpFunction" : {  # irOpFunction : ( lhs fn argList failLabel )
 		p.failLabel := goto_chain(\p.failLabel, t)
