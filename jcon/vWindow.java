@@ -222,6 +222,22 @@ void EraseArea(int x, int y, int w, int h) {
 
 
 
+void DrawArc(int x, int y, int w, int h, double theta, double alpha) {
+    int start = (int) (-180 * theta / Math.PI + 0.5);
+    int arc = ((int) (-180 * (theta + alpha) / Math.PI + 0.5)) - start;
+    b.drawArc(x, y, w, h, start, arc);
+    a.drawArc(x, y, w, h, start, arc);
+}
+
+void FillArc(int x, int y, int w, int h, double theta, double alpha) {
+    int start = (int) (-180 * theta / Math.PI + 0.5);
+    int arc = ((int) (-180 * (theta + alpha) / Math.PI + 0.5)) - start;
+    b.fillArc(x, y, w, h, start, arc);
+    a.fillArc(x, y, w, h, start, arc);
+}
+
+
+
 void DrawLine(int x1, int y1, int x2, int y2) {
     b.drawLine(x1, y1, x2, y2);
     a.drawLine(x1, y1, x2, y2);

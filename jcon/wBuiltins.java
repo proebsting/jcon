@@ -20,6 +20,7 @@ void announce() {
 	iBuiltins.declare("Bg", 2);
 	iBuiltins.declare("Clone", -1);
 	iBuiltins.declare("Color", -1);
+	iBuiltins.declare("DrawCircle", -1);
 	iBuiltins.declare("DrawLine", -1);
 	iBuiltins.declare("DrawPoint", -1);
 	iBuiltins.declare("DrawPolygon", -1);
@@ -28,6 +29,7 @@ void announce() {
 	iBuiltins.declare("EraseArea", -1);
 	iBuiltins.declare("Event", 1);
 	iBuiltins.declare("Fg", 2);
+	iBuiltins.declare("FillCircle", -1);
 	iBuiltins.declare("FillRectangle", -1);
 	iBuiltins.declare("FillPolygon", -1);
 	iBuiltins.declare("FreeColor", -1);
@@ -44,12 +46,10 @@ void announce() {
 	// iBuiltins.declare("CopyArea", 8);
 	// iBuiltins.declare("Couple", 2);
 	// iBuiltins.declare("DrawArc", -1);
-	// iBuiltins.declare("DrawCircle", -1);
 	// iBuiltins.declare("DrawCurve", -1);
 	// iBuiltins.declare("DrawImage", 4);
 	// iBuiltins.declare("DrawString", -1);
 	// iBuiltins.declare("FillArc", -1);
-	// iBuiltins.declare("FillCircle", -1);
 	// iBuiltins.declare("Font", 2);
 	// iBuiltins.declare("GotoRC", 3);
 	// iBuiltins.declare("GotoXY", 3);
@@ -201,6 +201,54 @@ class f$FillRectangle extends iValueClosure {	// FillRectangle(W,x,y,w,h,...)
 		int[] a = wCoords.rectArgs(args);
 		for (int i = 0; i < a.length; i += 4) {
 			win.FillRectangle(a[i], a[i+1], a[i+2], a[i+3]);
+		}
+		return win;
+	}
+}
+
+
+
+class f$DrawCircle extends iValueClosure {	// DrawCircle(W,x,y,r,t,a,...)
+	vDescriptor function(vDescriptor[] args) {
+		vWindow win = vWindow.winArg(args);
+	    	int b = vWindow.argBase(args);
+		int ncir = (args.length - b + 4) / 5;
+		if (ncir == 0) {
+		    ncir = 1;
+		}
+		for (int i = 0; i < 5 * ncir; i += 5) {
+		    double x = vReal.argVal(args, b + i);
+		    double y = vReal.argVal(args, b + i + 1);
+		    double r = vReal.argVal(args, b + i + 2);
+		    double t = vReal.argVal(args, b + i + 3, 0.0);
+		    double a = vReal.argVal(args, b + i + 4, 2.0 * Math.PI);
+		    int ix = (int) (x - r);
+		    int iy = (int) (y - r);
+		    int w = (int) (2 * r);
+		    win.DrawArc(ix, iy, w, w, t, a);
+		}
+		return win;
+	}
+}
+
+class f$FillCircle extends iValueClosure {	// FillCircle(W,x,y,r,t,a,...)
+	vDescriptor function(vDescriptor[] args) {
+		vWindow win = vWindow.winArg(args);
+	    	int b = vWindow.argBase(args);
+		int ncir = (args.length - b + 4) / 5;
+		if (ncir == 0) {
+		    ncir = 1;
+		}
+		for (int i = 0; i < 5 * ncir; i += 5) {
+		    double x = vReal.argVal(args, b + i);
+		    double y = vReal.argVal(args, b + i + 1);
+		    double r = vReal.argVal(args, b + i + 2);
+		    double t = vReal.argVal(args, b + i + 3, 0.0);
+		    double a = vReal.argVal(args, b + i + 4, 2.0 * Math.PI);
+		    int ix = (int) (x - r);
+		    int iy = (int) (y - r);
+		    int w = (int) (2 * r);
+		    win.FillArc(ix, iy, w, w, t, a);
 		}
 		return win;
 	}
