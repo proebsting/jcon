@@ -44,3 +44,6 @@ to load it.
 
 From gmt Wed Sep  1 17:58:21 MST 1999
 Added code for exponentiation to a BigInt power.
+
+From todd+gmt Thu Sep  9 17:24:26 MST 1999
+Added code for tracing co-expressions.

@@ -23,16 +23,12 @@ Changes include the following:
 
 <P> Jcon has been successfully tested on:
 <BLOCKQUOTE>
-	Sun Sparc / Solaris 2.6 (SunOS 5.6) / Sun Java 1.2
+	Sun Sparc / Solaris 2.6 (SunOS 5.6) / Sun Java 1.3beta0
 	<BR> SGI Indigo2 / Irix 6.5 / SGI Java 3.1.1 (JDK 1.1.6N)
 	<BR> IBM RS6000 / AIX 4.3 / IBM Java 1.1.6-19990401
-	<BR> DEC Alpha / Digital Unix 4.0D / Digital Java 1.1.7B-2
-	<BR> Intel / Linux v2 (Red Hat 5.2) / Blackdown Java 1.1.7Bv3
+	<BR> DEC Alpha / Digital Unix 4.0D / Digital Java 1.1.6-2
+	<BR> Intel / Linux 2.2.5 (Red Hat 6.0) / IBM JDK 1.1.6-990814
 </BLOCKQUOTE>
-
-<P> We also tested Jcon using the JDK 1.2beta4 release for Solaris 2.6.
-Nongraphical programs worked well, but many problems were seen in
-graphics applications.
 
 <P> We would be interested to learn of either successes or failures
 on other platforms.
@@ -41,7 +37,8 @@ on other platforms.
 <UL>
     <LI>Some JIT compilers fail to execute Jcon programs correctly.
 	Disabling the JIT compiler produces correct execution.
-	<!-- Sun JDK1.2, Sun HotSpot, IBM Java -->
+	<!-- Sun JDK1.2, Sun HotSpot, IBM AIX Java -->
+	<!-- Also IBM Linux java, the ck test (-0.0 vs. 0.0) -->
     <LI>The <CODE>-S</CODE> option of <CODE>jcont</CODE> does not work
     	for programs that link other files.
     <LI><CODE>&amp;clock</CODE> and <CODE>&amp;dateline</CODE>

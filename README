@@ -1,5 +1,5 @@
 JCON 2.1 README
-May, 1999
+September 10, 1999
 
 Gregg Townsend, The University of Arizona
 Todd Proebsting, Microsoft Research
@@ -21,8 +21,8 @@ QUICK INSTALLATION SUMMARY
 
 Jcon requires:
     A Unix system with the Korn Shell (/bin/ksh)
-    A recent version of Icon  (http://www.cs.arizona.edu/icon/v93u.html)
-    Version 1.1 of Java  (http://www.javasoft.com/products/jdk/1.1/)
+    Version 9 of Icon  (http://www.cs.arizona.edu/icon/v93u.html)
+    Version 1.1 (or newer) of Java  (http://www.javasoft.com/products/jdk/1.1/)
 
 The icont, javac, java, and jar programs must be in the search path.
 Go to the top level of the Jcon distribution and type "make".
