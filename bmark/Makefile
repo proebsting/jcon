@@ -38,6 +38,7 @@ run:	setup
 rerun:	
 	rm -f run
 	$(MAKE) run
+	$(MAKE) report
 
 setup:	$(PROGS) $(LIBS)
 	$(ICONT) -sc $(LIBS)
