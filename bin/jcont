@@ -32,19 +32,24 @@
 #  concept and behavior; think of a .zip file as analagous to a .u1/.u2
 #  pair from icont.
 #
-#  "java" and "jar" must be in the search path.
+#  "java" and "jar" must be in the search path, and "javap" if -S is used.
 #
 #  Normally, jcont produces a directly executable Korn Shell script
-#  containing an embedded ZIP file.  However, if -j is specified, the
-#  file is written with a .jar extension and the header is omitted to
-#  facilitate manipulation as a ZIP archive.  Execution is accomplished
-#  by naming the file in the CLASSPATH (with the runtime files) and
-#  then running java:
+#  containing an embedded ZIP file.  Running the script executes the
+#  compiled Icon program, and arguments can be passed as usual.  The
+#  JXOPTS environment variable can be set to pass an abritrary string
+#  of options to the Java interpreter.
+#
+#  If -j is passed to jcont, the final output file is given a .jar
+#  extension and the header is omitted to facilitate manipulation as a
+#  ZIP archive.  Execution is accomplished by naming the file in the
+#  CLASSPATH (with the runtime files) and then running java:
+#	jcont -j myprog.icn
 #	setenv CLASSPATH myprog.jar:/myhome/jcon/bin/rts.zip
 #	java myprog
 
 JAVAC="javac -nowarn"
-JAVA="java -verify"
+JAVA="java"
 JAR="jar"
 
 case `uname` in
@@ -290,7 +295,7 @@ trap "rm -rf \$TZIP" 0 1 2 15
 dd bs=$HDRSIZE skip=1 <\$THISFILE >\$TZIP 2>$NULLFILE
 
 export CLASSPATH="\$TZIP${PATHSEP}$JRTS${PATHSEP}\$CLASSPATH"
-$JAVA $MAIN "\$@"
+$JAVA \$JXOPTS $MAIN "\$@"
 exit
 
 [binary data follows]
