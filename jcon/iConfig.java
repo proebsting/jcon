@@ -8,7 +8,7 @@ class iConfig {
 
 // the following constants are peculiar to the Jcon implementation
 
-static final String Version = "Jcon Version 0.6.1, December 15, 1997";
+static final String Version = "Jcon Version 0.6.1, February 6, 1998";
 
 static final String MonoFont = "DialogInput";		// "mono" font
 static final String TypewriterFont = "Monospaced";	// "typewriter" font
@@ -26,7 +26,7 @@ static final int MaxPrebuiltInt = +1000;
 
 
 //  the following constants are documented features of the Icon language
-//  and should not be changed likely
+//  and should not be changed lightly
 
 static final String FontName = "fixed";		// default font name
 static final int FontSize = 14;			// default font size

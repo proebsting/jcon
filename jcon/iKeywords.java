@@ -31,9 +31,6 @@ public class iKeywords extends iFile {
 		iEnv.declareKey("pi", iNew.Real(Math.PI));
 		iEnv.declareKey("version", iNew.String(iConfig.Version));
 
-		// constant for lack of a better solution
-		iEnv.declareKey("time", iNew.Integer(0));
-
 	    	// cset constants
 		vCset lcase, ucase;
 		iEnv.declareKey("digits", iNew.Cset('0', '9'));
@@ -50,8 +47,9 @@ public class iKeywords extends iFile {
 		iEnv.declareKey("dateline", new k$dateline());
 		iEnv.declareKey("host", new k$host());
 		iEnv.declareKey("main", new k$main());
-		iEnv.declareKey("source", new k$source());
 		iEnv.declareKey("progname", new k$progname());
+		iEnv.declareKey("source", new k$source());
+		iEnv.declareKey("time", new k$time());
 
 		// files
 		iEnv.declareKey("input",  new k$input());
@@ -216,6 +214,21 @@ class k$date extends k$Value {			// &date
 		Date d = new Date();
 		String s = formatter.format(d);
 		return iNew.String(s);
+	}
+}
+
+
+
+class k$time extends k$Value {			// &time
+
+	private static long tbase;
+
+	public static void reset() {		// reset to zero
+		tbase = System.currentTimeMillis();
+	}
+
+	public vValue deref() {			// read value
+		return iNew.Integer(System.currentTimeMillis() - tbase);
 	}
 }
 

@@ -115,6 +115,7 @@ public class iInterface {
 			v[0] = iNew.List(vargs);
 		}
 		iClosure closure = p.instantiate(v, null);
+		k$time.reset();			// zero &time
 		iEnv.main = new vCoexp(closure);
 		iEnv.cur_coexp = iEnv.main;
 		iEnv.main.lock.V();
