@@ -1,83 +1,137 @@
-tracing.icn  :    8  | recurse(0)
-tracing.icn  :   18  | | failer()
-tracing.icn  :   24  | | failer failed
-tracing.icn  :   19  | | genr(5,12,4)
-tracing.icn  :   32  | | genr suspended 5
-tracing.icn  :   19  | | genr resumed
-tracing.icn  :   32  | | genr suspended 9
-tracing.icn  :   19  | | genr resumed
-tracing.icn  :   33  | | genr failed
-tracing.icn  :   20  | | func(3,4)
-tracing.icn  :   28  | | func returned 13
-tracing.icn  :   20  | recurse returned 13
-tracing.icn  :    8  | recurse(1)
-tracing.icn  :   17  | | recurse(0)
-tracing.icn  :   18  | | | failer()
-tracing.icn  :   24  | | | failer failed
-tracing.icn  :   19  | | | genr(5,12,4)
-tracing.icn  :   32  | | | genr suspended 5
-tracing.icn  :   19  | | | genr resumed
-tracing.icn  :   32  | | | genr suspended 9
-tracing.icn  :   19  | | | genr resumed
-tracing.icn  :   33  | | | genr failed
-tracing.icn  :   20  | | | func(3,4)
-tracing.icn  :   28  | | | func returned 13
-tracing.icn  :   20  | | recurse returned 13
-tracing.icn  :   17  | recurse returned 14
-tracing.icn  :    8  | recurse(2)
-tracing.icn  :   17  | | recurse(1)
-tracing.icn  :   17  | | | recurse(0)
-tracing.icn  :   18  | | | | failer()
-tracing.icn  :   24  | | | | failer failed
-tracing.icn  :   19  | | | | genr(5,12,4)
-tracing.icn  :   32  | | | | genr suspended 5
-tracing.icn  :   19  | | | | genr resumed
-tracing.icn  :   32  | | | | genr suspended 9
-tracing.icn  :   19  | | | | genr resumed
-tracing.icn  :   33  | | | | genr failed
-tracing.icn  :   20  | | | | func(3,4)
-tracing.icn  :   28  | | | | func returned 13
-tracing.icn  :   20  | | | recurse returned 13
-tracing.icn  :   17  | | recurse returned 14
-tracing.icn  :   17  | recurse returned 15
-tracing.icn  :    8  | recurse(3)
-tracing.icn  :   17  | | recurse(2)
-tracing.icn  :   17  | | | recurse(1)
-tracing.icn  :   17  | | | | recurse(0)
-tracing.icn  :   18  | | | | | failer()
-tracing.icn  :   24  | | | | | failer failed
-tracing.icn  :   19  | | | | | genr(5,12,4)
-tracing.icn  :   32  | | | | | genr suspended 5
-tracing.icn  :   19  | | | | | genr resumed
-tracing.icn  :   32  | | | | | genr suspended 9
-tracing.icn  :   19  | | | | | genr resumed
-tracing.icn  :   33  | | | | | genr failed
-tracing.icn  :   20  | | | | | func(3,4)
-tracing.icn  :   28  | | | | | func returned 13
-tracing.icn  :   20  | | | | recurse returned 13
-tracing.icn  :   17  | | | recurse returned 14
-tracing.icn  :   17  | | recurse returned 15
-tracing.icn  :   17  | recurse returned 16
-tracing.icn  :    9  | divall("")
-tracing.icn  :   42  | divall returned &null
-tracing.icn  :    9  | divall("314")
-tracing.icn  :   40  | | divide(9,"3")
-tracing.icn  :   46  | | divide returned 3
-tracing.icn  :   40  | | divide(9,"1")
-tracing.icn  :   46  | | divide returned 9
-tracing.icn  :   40  | | divide(9,"4")
-tracing.icn  :   46  | | divide returned 2
-tracing.icn  :   42  | divall returned &null
-tracing.icn  :    9  | divall("x")
-tracing.icn  :   40  | | divide(9,"x")
-tracing.icn  :   46  | | divide failed
-tracing.icn  :   42  | divall returned &null
-tracing.icn  :    9  | divall("12x")
-tracing.icn  :   40  | | divide(9,"1")
-tracing.icn  :   46  | | divide returned 9
-tracing.icn  :   40  | | divide(9,"2")
-tracing.icn  :   46  | | divide returned 4
-tracing.icn  :   40  | | divide(9,"x")
-tracing.icn  :   46  | | divide failed
-tracing.icn  :   42  | divall returned &null
-tracing.icn  :   10  main failed
+tracing.icn  :   10  | recurse(0)
+tracing.icn  :   22  | | failer()
+tracing.icn  :   28  | | failer failed
+tracing.icn  :   23  | | genr(5,12,4)
+tracing.icn  :   36  | | genr suspended 5
+tracing.icn  :   23  | | genr resumed
+tracing.icn  :   36  | | genr suspended 9
+tracing.icn  :   23  | | genr resumed
+tracing.icn  :   37  | | genr failed
+tracing.icn  :   24  | | func(3,4)
+tracing.icn  :   32  | | func returned 13
+tracing.icn  :   24  | recurse returned 13
+tracing.icn  :   10  | recurse(1)
+tracing.icn  :   21  | | recurse(0)
+tracing.icn  :   22  | | | failer()
+tracing.icn  :   28  | | | failer failed
+tracing.icn  :   23  | | | genr(5,12,4)
+tracing.icn  :   36  | | | genr suspended 5
+tracing.icn  :   23  | | | genr resumed
+tracing.icn  :   36  | | | genr suspended 9
+tracing.icn  :   23  | | | genr resumed
+tracing.icn  :   37  | | | genr failed
+tracing.icn  :   24  | | | func(3,4)
+tracing.icn  :   32  | | | func returned 13
+tracing.icn  :   24  | | recurse returned 13
+tracing.icn  :   21  | recurse returned 14
+tracing.icn  :   10  | recurse(2)
+tracing.icn  :   21  | | recurse(1)
+tracing.icn  :   21  | | | recurse(0)
+tracing.icn  :   22  | | | | failer()
+tracing.icn  :   28  | | | | failer failed
+tracing.icn  :   23  | | | | genr(5,12,4)
+tracing.icn  :   36  | | | | genr suspended 5
+tracing.icn  :   23  | | | | genr resumed
+tracing.icn  :   36  | | | | genr suspended 9
+tracing.icn  :   23  | | | | genr resumed
+tracing.icn  :   37  | | | | genr failed
+tracing.icn  :   24  | | | | func(3,4)
+tracing.icn  :   32  | | | | func returned 13
+tracing.icn  :   24  | | | recurse returned 13
+tracing.icn  :   21  | | recurse returned 14
+tracing.icn  :   21  | recurse returned 15
+tracing.icn  :   10  | recurse(3)
+tracing.icn  :   21  | | recurse(2)
+tracing.icn  :   21  | | | recurse(1)
+tracing.icn  :   21  | | | | recurse(0)
+tracing.icn  :   22  | | | | | failer()
+tracing.icn  :   28  | | | | | failer failed
+tracing.icn  :   23  | | | | | genr(5,12,4)
+tracing.icn  :   36  | | | | | genr suspended 5
+tracing.icn  :   23  | | | | | genr resumed
+tracing.icn  :   36  | | | | | genr suspended 9
+tracing.icn  :   23  | | | | | genr resumed
+tracing.icn  :   37  | | | | | genr failed
+tracing.icn  :   24  | | | | | func(3,4)
+tracing.icn  :   32  | | | | | func returned 13
+tracing.icn  :   24  | | | | recurse returned 13
+tracing.icn  :   21  | | | recurse returned 14
+tracing.icn  :   21  | | recurse returned 15
+tracing.icn  :   21  | recurse returned 16
+tracing.icn  :   11  | divall("")
+tracing.icn  :   47  | divall returned &null
+tracing.icn  :   11  | divall("314")
+tracing.icn  :   45  | | divide(9,"3")
+tracing.icn  :   51  | | divide returned 3
+tracing.icn  :   45  | | divide(9,"1")
+tracing.icn  :   51  | | divide returned 9
+tracing.icn  :   45  | | divide(9,"4")
+tracing.icn  :   51  | | divide returned 2
+tracing.icn  :   47  | divall returned &null
+tracing.icn  :   11  | divall("x")
+tracing.icn  :   45  | | divide(9,"x")
+tracing.icn  :   51  | | divide failed
+tracing.icn  :   47  | divall returned &null
+tracing.icn  :   11  | divall("12x")
+tracing.icn  :   45  | | divide(9,"1")
+tracing.icn  :   51  | | divide returned 9
+tracing.icn  :   45  | | divide(9,"2")
+tracing.icn  :   51  | | divide returned 4
+tracing.icn  :   45  | | divide(9,"x")
+tracing.icn  :   51  | | divide failed
+tracing.icn  :   47  | divall returned &null
+tracing.icn  :   12  | varargs()
+tracing.icn  :   60  | | vproc()
+tracing.icn  :   72  | | vproc suspended &null
+tracing.icn  :   60  | | vproc resumed
+                     | | vproc failed
+tracing.icn  :   61  | | vproc(1)
+tracing.icn  :   72  | | vproc suspended 1
+tracing.icn  :   61  | | vproc resumed
+                     | | vproc failed
+tracing.icn  :   62  | | vproc(1,2)
+tracing.icn  :   73  | | vproc suspended (variable = 2)
+tracing.icn  :   62  | | vproc resumed
+tracing.icn  :   74  | | vproc failed
+tracing.icn  :   63  | | vproc(1,2,3)
+tracing.icn  :   73  | | vproc suspended (variable = 2)
+tracing.icn  :   63  | | vproc resumed
+tracing.icn  :   73  | | vproc suspended (variable = 3)
+tracing.icn  :   63  | | vproc resumed
+tracing.icn  :   74  | | vproc failed
+tracing.icn  :   64  | | vproc(1,2,3,4)
+tracing.icn  :   73  | | vproc suspended (variable = 2)
+tracing.icn  :   64  | | vproc resumed
+tracing.icn  :   73  | | vproc suspended (variable = 3)
+tracing.icn  :   64  | | vproc resumed
+tracing.icn  :   73  | | vproc suspended (variable = 4)
+tracing.icn  :   64  | | vproc resumed
+tracing.icn  :   74  | | vproc failed
+tracing.icn  :   67  | | vproc(1,2,3,4)
+tracing.icn  :   73  | | vproc suspended (variable = 2)
+tracing.icn  :   67  | | vproc resumed
+tracing.icn  :   73  | | vproc suspended (variable = 3)
+tracing.icn  :   67  | | vproc resumed
+tracing.icn  :   73  | | vproc suspended (variable = 4)
+tracing.icn  :   67  | | vproc resumed
+tracing.icn  :   74  | | vproc failed
+tracing.icn  :   67  | | vproc(1,2,3)
+tracing.icn  :   73  | | vproc suspended (variable = 2)
+tracing.icn  :   67  | | vproc resumed
+tracing.icn  :   73  | | vproc suspended (variable = 3)
+tracing.icn  :   67  | | vproc resumed
+tracing.icn  :   74  | | vproc failed
+tracing.icn  :   67  | | vproc(1,2)
+tracing.icn  :   73  | | vproc suspended (variable = 2)
+tracing.icn  :   67  | | vproc resumed
+tracing.icn  :   74  | | vproc failed
+tracing.icn  :   67  | | vproc(1)
+tracing.icn  :   72  | | vproc suspended 1
+tracing.icn  :   67  | | vproc resumed
+                     | | vproc failed
+tracing.icn  :   67  | | vproc()
+tracing.icn  :   72  | | vproc suspended &null
+tracing.icn  :   67  | | vproc resumed
+                     | | vproc failed
+tracing.icn  :   68  | varargs returned &null
+tracing.icn  :   13  main failed

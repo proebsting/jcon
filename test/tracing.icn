@@ -1,13 +1,17 @@
 #SRC: JCON
 #OPTS: -en
 
+
+
 #  test tracing of procedure calls
 
 procedure main()
    &trace := -1
    every recurse(0 to 3)
    every divall("" | "314" | "x" | "12x")
+   varargs()
 end
+
 
 
 #  test tracing of recursion
@@ -33,6 +37,7 @@ procedure genr(i, j, k)
 end
 
 
+
 #  test tracing in combination with errors
 
 procedure divall(s)
@@ -44,4 +49,26 @@ end
 
 procedure divide(a, b)
    return a / b
+end
+
+
+
+#  test vararg tracing
+
+procedure varargs()
+   local args
+   every vproc()
+   every vproc(1)
+   every vproc(1,2)
+   every vproc(1,2,3)
+   every vproc(1,2,3,4)
+   args := [1,2,3,4,5]
+   while pull(args) do
+      every vproc ! args
+   return
+end
+
+procedure vproc(a, b[])
+   if *b = 0 then return a
+   else suspend !b
 end
