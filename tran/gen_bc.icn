@@ -806,7 +806,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     bc_proc_classname := "p_" || bc_java_classname || "$" || name
     c := bc_current_classptr := j_ClassFile(3, 45, [&null], table(), 1, &null,
                                          &null, [], [], [], [])
-    c.super_class := j_cp_Class(c, j_cp_Utf8(c, "rts/iClosure"))
+    c.super_class := j_cp_Class(c, j_cp_Utf8(c, "rts/vProcV"))
     c.this_class := j_cp_Class(c, j_cp_Utf8(c, bc_proc_classname))
 
     bc_proc_table[name] := if /accumulate then *params else -*params
@@ -885,7 +885,7 @@ procedure bc_create_constructor(c, class_index)
             j_create_field(bc_current_classptr, 0, "tmpLabelArray", "[I")
         }
     }
-    constructor := bc_init_methodref(c, "rts/iClosure")
+    constructor := bc_init_methodref(c, "rts/vProcV")
     put(s, j_aload_0() )
     put(s, j_invokenonvirtual(constructor) )
     createvars := bc_createVars_methodref(c, bc_proc_classname)
@@ -962,7 +962,8 @@ procedure bc_create_nextval(c, start, params, locals, undeclared, accumulate)
     local runtimeerror, r
     local a, s, tmplab, prologue, var_load_label, t, tmpset
 
-    nextval := j_create_method(c, 0, "nextval", "()Lrts/vDescriptor;")
+    nextval := j_create_method(c, 0, "Call",
+				     "([Lrts/vDescriptor;)Lrts/vDescriptor;")
     nextvalcode := j_create_code(c, 10, 10)
     put(nextval.attributes, nextvalcode)
     s := nextvalcode.code
@@ -1165,10 +1166,9 @@ end
 
 procedure bc_emit_prologue_params(s, c, params, accumulate)
     local marshal, i, k, field, elselab, endlab
-    local null, arguments, deref, assign
+    local null, deref, assign
 
     null := bc_New_vNull_methodref(bc_current_classptr)
-    arguments := bc_arguments_fieldref(c)
     deref := bc_Deref_methodref(c)
     assign := bc_Assign_methodref(c)
 
@@ -1181,8 +1181,7 @@ procedure bc_emit_prologue_params(s, c, params, accumulate)
 
         if i = *params & \accumulate then {
             marshal := bc_marshal_methodref(c)
-            put(s, j_aload_0() )
-            put(s, j_getfield(arguments))
+            put(s, j_aload_1() )	#%#%# arguments array
             put(s, j_ipush(*params))
             put(s, j_invokestatic(marshal))
             put(s, j_invokevirtual(assign) )
@@ -1190,16 +1189,14 @@ procedure bc_emit_prologue_params(s, c, params, accumulate)
         } else {
             elselab := j_label()
             endlab := j_label()
-            put(s, j_aload_0() )
-            put(s, j_getfield(arguments))
-            put(s, j_dup())
+            put(s, j_aload_1() )	#%#%# arguments array
             put(s, j_arraylength())
             put(s, j_ipush(i))
             put(s, j_if_icmpge(elselab))
-                put(s, j_pop())
                 put(s, j_invokestatic(null))
                 put(s, j_goto(endlab))
             put(s, elselab)
+                put(s, j_aload_1() )	#%#%# arguments array
                 put(s, j_ipush(i-1))
                 put(s, j_aaload())
                 put(s, j_invokevirtual(deref) )
@@ -1212,11 +1209,9 @@ end
 
 procedure bc_emit_prologue_locals(s, c, locals)
     local k, field
-    local null, arguments, deref, assign
+    local null, assign
 
     null := bc_New_vNull_methodref(bc_current_classptr)
-    arguments := bc_arguments_fieldref(c)
-    deref := bc_Deref_methodref(c)
     assign := bc_Assign_methodref(c)
 
     every k := !locals do {
@@ -1232,11 +1227,9 @@ end
 
 procedure bc_emit_prologue_undeclared(s, c, undeclared)
     local k, field, lab1, linkvalue
-    local null, arguments, deref, assign
+    local null, assign
 
     null := bc_New_vNull_methodref(bc_current_classptr)
-    arguments := bc_arguments_fieldref(c)
-    deref := bc_Deref_methodref(c)
     assign := bc_Assign_methodref(c)
 
     every k := !undeclared do {
@@ -1329,7 +1322,7 @@ procedure bc_create_copy(c, params, locals, undeclared)
     local k, field, linkvalue, lab1, PC, init, class, s
 
     if \bc_create_exists then {
-        Copy := j_create_method(c, 0, "copy", "(I)Lrts/iClosure;")
+        Copy := j_create_method(c, 0, "copy", "(I)Lrts/vClosure;")
         copycode := j_create_code(c, 10, 10)
         put(Copy.attributes, copycode)
         s := copycode.code
