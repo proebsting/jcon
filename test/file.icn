@@ -1,7 +1,7 @@
 #  file test -- writes tmp1, tmp2
 
 procedure main()
-   local L, f, m, n
+   local L, f, m, n, t1, t2
 
    L := [&input, &output, &errout,
    	m := open("/etc/motd"), n := open("/dev/null", "w")]
@@ -41,6 +41,23 @@ procedure main()
    rfile("tmp1")
    rename("tmp1", "tmp2")
    rfile("tmp2")
+
+   write()
+   write(image(t1 := open("tmp1", "w")) | "can't open tmp1")
+   write(image(t2 := open("tmp2", "w")) | "can't open tmp2")
+   writes(">stdout", t1, ">1a", t2, ">2a", &output)
+   writes(">stdout", t2, ">2b", t1, ">1b", &output)
+   write(">stdout", t1, ">1c", t2, t2, ">2c", &output)
+   write(">stdout", t2, ">2d", t1, t1, ">1d", &output)
+   every write(t1 | t2)
+   writes(t1, ">1e")
+   writes(t2, ">2e")
+   write(t1, ">1f")
+   write(t2, ">2f")
+   every close(t1 | t2)
+   rfile("tmp1")
+   rfile("tmp2")
+
    every remove("tmp1" | "tmp2")
    every remove("tmp1" | "tmp2")
 end
