@@ -25,9 +25,6 @@
 #     -d	debug jcont: use ./jtmp for temp files, and don't delete
 #     -v	verbose: echo shell commands, trace linking steps
 #		    (this option is not for the squeamish)
-#     -J	generate slower code in Java source form
-#		    instead of writing class files directly
-#		    (may expose bugs in the Java compiler)
 #     -P	pessimize: don't optimize the generated Java code
 #     -S	also generate .jvm file listing generated Java code
 #     -U	unsafe: allow generation of code that won't verify
@@ -76,13 +73,22 @@ case `uname` in
 	;;
 esac
 
+# determine installed directory
+SCRIPT=`whence $0`
+IDIR=`dirname $SCRIPT`
+case $IDIR in
+    /*)		;;			# Unix-style absolute path
+    ?:*)	;;			# DOS-style absolute path
+    *)		IDIR=`pwd`/$IDIR;;	# relative path
+esac
+
 function usage {	# usage message: print header above
     sed -n '
        1,3d
        /^$/q
        /^[^#]/q
        s/^#/ /p
-    ' 1>&2 $0
+    ' 1>&2 $SCRIPT
     exit 1
 }
 
@@ -123,7 +129,7 @@ NOEXECUTE=exit
 
 # process options, changing devault values set above
 
-while getopts "bcdjsvEJPSUo:f:" c 2>$NULLFILE; do
+while getopts "bcdjsvEPSUo:f:" c 2>$NULLFILE; do
     case $c in
 	b)	TARGET="ucode"; NOLINK="exit";;
 	c)	NOLINK="exit";;
@@ -133,7 +139,6 @@ while getopts "bcdjsvEJPSUo:f:" c 2>$NULLFILE; do
 	s)	ANNOUNCE=":";;
 	v)	CMDTRACE="set -x"; LINKTRACE="-t";;
 	E)	TARGET="ppsrc"; NOLINK="exit";;
-	J)	TARGET="java";;
 	P)	OFLAG="";;
 	S)	JVMDUMP="javap -c -private -verbose";;
 	U)	TFLAGS="$TFLAGS -U";;
@@ -170,27 +175,18 @@ for FNAME; do
 		;;
 	*.zip)	BASE=${FNAME%.zip}
 		ZFILES="$ZFILES $BASE.zip"
-		ROOTS="$ROOTS l\$$BASE"
+		ROOTS="$ROOTS l\$${BASE##*/}"
 		shift
 		;;
 	*)	BASE=${FNAME%.icn}
 		IFILES="$IFILES $BASE"
 		ZFILES="$ZFILES $BASE.zip"
 		ZBUILT="$ZBUILT $BASE.zip"
-		ROOTS="$ROOTS l\$$BASE"
+		ROOTS="$ROOTS l\$${BASE##*/}"
 		shift
 		;;
     esac
 done
-
-# determine installed directory
-PRG=`whence $0`
-IDIR=`dirname $PRG`
-case $IDIR in
-    /*)		;;			# Unix-style absolute path
-    ?:*)	;;			# DOS-style absolute path
-    *)		IDIR=`pwd`/$IDIR;;	# relative path
-esac
 
 # set paths for translator and for runtime files
 JTRAN="$ICONX $IDIR${FILESEP}jtran"
@@ -230,30 +226,16 @@ ERREXIT=":"
 for FNAME in $IFILES; do
     $ANNOUNCE 1>&2 $FNAME.icn:
     rm -f $TDIR/*.class
-    if case $TARGET in
+    case $TARGET in
 	ppsrc)
-	    $JTRAN preproc $FNAME.icn : cat
+	    $JTRAN preproc $FNAME.icn : stdout
 	    ;;
 	ucode)
 	    $JTRAN preproc $FNAME.icn : parse : ucode_File -out:$FNAME
 	    ;;
 	bytecode)
-	    $JTRAN preproc $FNAME.icn : parse : \
-		bc_File $OFLAG $TFLAGS -class:l\$$FNAME -dir:$TDIR/
-	    ;;
-	java)
-	    $JTRAN preproc $FNAME.icn : parse : \
-		java -class:l\$$FNAME >$TDIR/$FNAME.java &&
-	    sed -n 's=^//JCON//links:==p' $TDIR/$FNAME.java >$TDIR/links &&
-	    (cd $TDIR; $JAVAC $FNAME.java)
-	    ;;
-	"" | *)
-	    echo "TARGET=$TARGET unrecognized"
-	    exit 1
-	    ;;
-    esac; then
-	case $TARGET in
-	    bytecode | java)
+	    if $JTRAN preproc $FNAME.icn : parse : \
+		bc_File $OFLAG $TFLAGS -class:l\$$FNAME -dir:$TDIR/; then
 		# bundle .class files (and linkage info) into .zip file
 		(cd $TDIR; $JAR cfM ../$FNAME.zip links *.class)
 		# disassemble if requested
@@ -272,11 +254,15 @@ for FNAME in $IFILES; do
 		    done
 		    )
 		fi
-		;;
-	esac
-    else
-	ERREXIT="exit"
-    fi
+	    else
+		false	
+	    fi
+	    ;;
+	"" | *)
+	    echo "TARGET=$TARGET unrecognized"
+	    exit 1
+	    ;;
+    esac || ERREXIT="exit"
 done
 $ERREXIT 1
 $TANNOUNCE 1>&2 "No errors"
