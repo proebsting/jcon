@@ -6,7 +6,7 @@
 procedure main()
    local clist
 
-   &window := open("window", "g", "size=500,300") 	#%#%#% ,"canvas=hidden"
+   &window := open("window", "g") 	#%#%#% ,"canvas=hidden"
 
    inqfuncs()
 
@@ -47,7 +47,7 @@ procedure dump()		# test using WAttrib
    static atts
    initial atts := [
       # canvas attributes:
-      "size", "height", "width",
+      "size", "height", "width", "rows", "columns",
       "echo", "cursor", "x", "y", "row", "col",
       # graphics context attributes:
       "fg", "bg", 
