@@ -25,12 +25,16 @@ vCset(int low, int high) {			// new Cset(int low, high)
 
 
 
-String image() {	//#%#% need to add escapes for special characters
+String image() {	//#%#% should keyword csets and treat specially
     StringBuffer b = new StringBuffer();
     b.append("'");
-    for (int i = 0; i < t.size(); i++) {
-	if (t.get(i)) {
-	    b.append((char)i);
+    for (char c = 0; c < t.size(); c++) {
+	if (t.get(c)) {
+	    if (c == '\'') {
+		b.append("\\'");
+	    } else {
+		vString.appendEscaped(b, c);
+	    }
 	}
     }
     b.append("'");

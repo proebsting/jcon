@@ -23,11 +23,24 @@ public boolean equals(Object o)	{
 }
 
 String write()		{ return value; }
-String image()		{ return "\"" + value + "\""; }
-				//#%#%#% need to escape special chars
-String report()		{ return "\"" + value + "\""; }
-				//#%#%#% trim length, besides escaping
 String type()		{ return "string"; }
+
+String image() {
+    StringBuffer b = new StringBuffer(value.length() + 3);
+    b.append("\"");
+    for (int i = 0; i < value.length(); i++) {
+	char c = value.charAt(i);
+	if (c == '"') {
+	    b.append("\\\"");
+	} else {
+	    appendEscaped(b, c);
+        }
+    }
+    b.append("\"");
+    return b.toString();
+}
+
+String report()		{ return image(); }	 //#%#% should elide if long
 
 int rank()		{ return 30; }		// strings rank after reals
 
@@ -87,6 +100,35 @@ static String argVal(vDescriptor[] args, int index, String dflt) // optional arg
 	return dflt;
     } else {
 	return args[index].mkString().value;
+    }
+}
+
+
+
+//  append escaped char to StringBuffer; also used for csets
+
+private static String[] escapes =	// escapes for chars 0x08 - 0x0D
+    { "\\b", "\\t", "\\n", "\\v", "\\f", "\\r" };
+
+static void appendEscaped(StringBuffer b, char c)
+{
+    if (c >= ' ' && c <= '~') {		// printable range
+	if (c == '\\') {
+	    b.append('\\');
+	}
+	b.append(c);
+    } else if (c > 0xFF) {		// extended Unicode range
+	b.append("\\u");
+	b.append(Integer.toHexString(0x10000 + c).substring(1));   // 4 digits
+    } else if (c >= 0x08 && c <= 0x0D) {
+	b.append(escapes[c - 0x08]);	//  \b \t \n \v \f \r
+    } else if (c == 0x1B) {
+	b.append("\\e");		//  \e
+    } else if (c == 0x7F) {
+	b.append("\\d");		//  \d
+    } else {
+	b.append("\\x");		//  \xnn
+	b.append(Integer.toHexString(0x100 + c).substring(1));    // 2 digits
     }
 }
 
