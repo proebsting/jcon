@@ -6,6 +6,8 @@ class iOperators extends iFile {
 void announce(iEnv env) {
 
     declare(env, ":=,2", "oAssign");
+    declare(env, "&,2", "oConjunction");
+
     declare(env, "ToBy,3", "oToBy");
 
     declare(env, "/,1", "oIsNull");
@@ -16,6 +18,7 @@ void announce(iEnv env) {
 
     declare(env, "+,1", "oNumerate");
     declare(env, "-,1", "oNegate");
+
 
     declare(env, "+,2", "oAdd");
     declare(env, "-,2", "oSub");
@@ -52,10 +55,20 @@ static void declare(iEnv env, String opr, String name)
 
 
 
-class oAssign extends iRefClosure {			//  :=
+class oAssign extends iRefClosure {			// x1 := x2
 
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].Assign(args[1].deref());
+	}
+}
+
+
+
+class oConjunction extends iRefClosure {		// x1 & x2
+
+	vDescriptor function(vDescriptor[] args) {
+		args[0].deref();
+		return args[1];
 	}
 }
 
