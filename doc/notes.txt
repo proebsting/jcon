@@ -76,3 +76,9 @@ known bugs:
 -- local variables are not dereferenced prior to being returned
 -- "invocable" procedures are computed incorrectly.  "invocable all" works.
    Basically, too many user procedures are considered invocable.
+
+Irix implementation note:
+-- The SGI Java implementation may issue "JIT translation fails" messages
+   at execution time for some large procedures. This message is annoying
+   but harmless.  We have left JIT translation enabled because it normally
+   succeeds and produces much faster execution.
