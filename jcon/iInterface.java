@@ -42,19 +42,24 @@ public class iInterface {
 		k$progname.name = name;
 		iInterface.init();
 		vDescriptor m = iEnv.resolve("main");
-		if (m == null) {
+		if (m == null || !(m.deref() instanceof vProc)) {
 		    System.err.println();
 		    System.err.println("Run-time error 117 in startup code");
 		    System.err.println("missing main procedure");
 		    iRuntime.exit(1, null);
 		}
-		vDescriptor p = m.deref();
-		vDescriptor[] vargs = new vDescriptor[args.length];
-		for (int i = 0; i < args.length; i++) {
-			vargs[i] = iNew.String(args[i]);
+		vProc p = (vProc) m.deref();
+		vDescriptor[] v;
+		if (p.args == 0) {
+			v = new vDescriptor[0];
+		} else {
+			v = new vDescriptor[1];
+			vDescriptor[] vargs = new vDescriptor[args.length];
+			for (int i = 0; i < args.length; i++) {
+				vargs[i] = iNew.String(args[i]);
+			}
+			v[0] = iNew.List(vargs);
 		}
-		vDescriptor list = iNew.List(vargs);
-		vDescriptor[] v = { list };
 		iClosure closure = p.instantiate(v, null);
 		iEnv.main = new vCoexp(closure);
 		iEnv.cur_coexp = iEnv.main;
