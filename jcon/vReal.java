@@ -26,7 +26,8 @@ vReal mkReal()		{ return this; }
 
 vInteger mkInteger()	{
     if (value < Long.MIN_VALUE || value > Long.MAX_VALUE) {
-	    return null;	// if not convertable, fail
+	    iRuntime.error(101, this);
+	    return null;
     } else {
 	    return iNew.Integer(this.value);
     }
