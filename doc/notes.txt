@@ -7,7 +7,7 @@ changes in v2:
 ------------------------------------------------------------------------------
 
 what's implemented:
--- all datatypes (but only 64-bit integers; no large integers)
+-- all datatypes including large integers
 -- all keywords, although resource keywords produce zeroes
 -- preprocessing
 -- most functions; missing chdir(), loadfunc(), getch()/getche()/kbhit()
