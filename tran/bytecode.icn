@@ -509,7 +509,7 @@ procedure j_writer_j_local_variable_table_info(writer, p)
 end
 
 procedure j_writer_opcodes(writer, p)
-    local i, high, low, npairs, t
+    local i, high, low, npairs, t, o
     static opcode_table, opcode_leaf
     initial {
         opcode_table := table()
@@ -794,7 +794,8 @@ procedure j_writer_opcodes(writer, p)
         return
     }
     "j_iload_w": {
-        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
         j_writer_u2(writer, p.index)
         return
     }
@@ -803,7 +804,8 @@ procedure j_writer_opcodes(writer, p)
         return
     }
     "j_aload_w": {
-        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
         j_writer_u2(writer, p.index)
         return
     }
@@ -812,7 +814,8 @@ procedure j_writer_opcodes(writer, p)
         return
     }
     "j_istore_w": {
-        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
         j_writer_u2(writer, p.index)
         return
     }
@@ -821,7 +824,8 @@ procedure j_writer_opcodes(writer, p)
         return
     }
     "j_astore_w": {
-        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
         j_writer_u2(writer, p.index)
         return
     }
@@ -884,7 +888,8 @@ procedure j_writer_opcodes(writer, p)
         j_writer_u1(writer, p.index)
     }
     "j_lload_w": {
-        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
         j_writer_u2(writer, p.index)
         return
     }
@@ -892,7 +897,8 @@ procedure j_writer_opcodes(writer, p)
         j_writer_u1(writer, p.index)
     }
     "j_fload_w": {
-        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
         j_writer_u2(writer, p.index)
         return
     }
@@ -900,7 +906,8 @@ procedure j_writer_opcodes(writer, p)
         j_writer_u1(writer, p.index)
     }
     "j_dload_w": {
-        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
         j_writer_u2(writer, p.index)
         return
     }
@@ -908,7 +915,8 @@ procedure j_writer_opcodes(writer, p)
         j_writer_u1(writer, p.index)
     }
     "j_lstore_w": {
-        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
         j_writer_u2(writer, p.index)
         return
     }
@@ -916,7 +924,8 @@ procedure j_writer_opcodes(writer, p)
         j_writer_u1(writer, p.index)
     }
     "j_fstore_w": {
-        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
         j_writer_u2(writer, p.index)
         return
     }
@@ -924,7 +933,8 @@ procedure j_writer_opcodes(writer, p)
         j_writer_u1(writer, p.index)
     }
     "j_dstore_w": {
-        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
         j_writer_u2(writer, p.index)
         return
     }
@@ -933,7 +943,8 @@ procedure j_writer_opcodes(writer, p)
         j_writer_s1(writer, p.const)
     }
     "j_iinc_w": {
-        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+	t := t[1:-2]
+        j_writer_u1(writer, opcode_table[t])
         j_writer_u2(writer, p.index)
         j_writer_s2(writer, p.const)
     }

@@ -1441,7 +1441,7 @@ procedure bc_emit_exception(c, s, params, etab, last_label, i)
         put(s, j_dup() )
         put(s, j_ipush(i-1) )
         if \bc_var_table[k] then {
-            put(s, j_aload(bc_var_table[k]+bc_var_offset) )
+            put(s, j_Aload(bc_var_table[k]+bc_var_offset) )
         } else {
 	    put(s, j_aconst_null() )
         }
