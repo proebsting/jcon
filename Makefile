@@ -5,17 +5,19 @@
 #   to test:	make test
 #
 #   to install:	make install DEST=path
-#		(puts files in $DEST/bin and $DEST/lib)
+#		(puts files in $DEST)
 
 
-MAKE=make
-SHELL=/bin/sh
+MAKE = make
+SHELL = /bin/sh
 
-DEST=/cs/jive/`rts/arch.sh`
+BUILT = jtran rts.zip jcon.doc
+INSTALL = jcont $(BUILT)
+DEST = /cs/jive/`/home/gmt/sh/arch`/bin
 
 
 build:
-	cd src; $(MAKE)
+	cd tran; $(MAKE)
 	cd rts; $(MAKE)
 	cd doc; $(MAKE)
 
@@ -23,17 +25,11 @@ test:	build
 	cd test; $(MAKE)
 
 install: build
-	test -d $(DEST)     || mkdir $(DEST)
-	test -d $(DEST)/bin || mkdir $(DEST)/bin
-	test -d $(DEST)/lib || mkdir $(DEST)/lib
-	test -d $(DEST)/doc || mkdir $(DEST)/doc
-	cp rts/rts.zip $(DEST)/lib
-	cp src/jcon    $(DEST)/lib
-	cp test/jcont $(DEST)/bin
-	cp doc/jcon.txt $(DEST)/doc
+	cd bin; cp $(INSTALL) $(DEST)
 
 clean:
-	cd src; $(MAKE) clean
-	cd rts; $(MAKE) clean
-	cd doc; $(MAKE) clean
+	cd tran; $(MAKE) clean
+	cd rts;  $(MAKE) clean
+	cd doc;  $(MAKE) clean
 	cd test; $(MAKE) clean
+	cd bin;  rm -f $(BUILT)

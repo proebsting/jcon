@@ -32,7 +32,7 @@ For software see:
 
     Icon		http://www.cs.arizona.edu/icon/v93u.html
     Java		http://www.javasoft.com/products/jdk/1.1/
-    Zip and Unzip	http://www.cdrom.com/pub/infozip/
+    Zip and UnZip	http://www.cdrom.com/pub/infozip/
 
 3. SEARCH PATH
 
@@ -60,7 +60,10 @@ The rest of the Jcon distribution can be deleted if no longer wanted.
 
 DOCUMENTATION
 
-The build process creates a "jcon.txt" file in the bin directory
+The file doc/Article contains an overview of Jcon written for the
+Icon Newsletter.
+
+The build process creates a "jcon.doc" file in the bin directory
 containing usage information and a very brief summary of the current
 implementation state.
 
