@@ -11,7 +11,7 @@ for FNAME; do
     echo ${BASE}:
     ../bin/jcont -s $BASE
     if [ -r $BASE.dat ]; then
-	./$BASE <$BASE.dat >$BASE.out
+	./$BASE $BASE.dat <$BASE.dat >$BASE.out
     else
 	./$BASE </dev/null >$BASE.out
     fi

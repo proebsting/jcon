@@ -14,7 +14,7 @@ for FNAME; do
     echo ${BASE}:
     icont -us $BASE.icn 
     if [ -r $BASE.dat ]; then
-	./$BASE <$BASE.dat >$BASE.std
+	./$BASE $BASE.dat <$BASE.dat >$BASE.std
     else
 	./$BASE </dev/null >$BASE.std
     fi
