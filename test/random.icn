@@ -1,0 +1,19 @@
+procedure main()
+	foo()
+	&random := 3
+	foo()
+end
+
+procedure foo()
+	write(&random)
+	?0
+	write(&random)
+	?0
+	write(&random)
+	?0
+	write(&random)
+	?0
+	write(&random)
+	?0
+	write(&random)
+end

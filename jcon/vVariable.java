@@ -72,6 +72,8 @@ public abstract class vVariable extends vDescriptor {
 
     vValue Concat(vDescriptor v)	{ return this.deref().Concat(v); }
 
+    vValue ListConcat(vDescriptor v)	{ return this.deref().ListConcat(v); }
+
     // list operations
     vValue Push(vDescriptor v)		{ return this.deref().Push(v); }
     vValue Pull()			{ return this.deref().Pull(); }

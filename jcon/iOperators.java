@@ -64,6 +64,8 @@ void announce() {
     declare("===", 2, "oVEqual");
     declare("~===", 2, "oVUnequal");
 
+    declare("|||", 2, "oListConcat");
+
     declare("||", 2, "oConcat");
     declare("=", 1, "oTabMatch");
 
@@ -521,6 +523,13 @@ class oVUnequal extends iFunctionClosure {		//  n1 ~=== n2
 
 
 //  miscellaneous binary operators
+
+class oListConcat extends iFunctionClosure {		//  L1 ||| L2
+	vDescriptor function(vDescriptor[] args) {
+		return args[0].ListConcat(args[1]);
+	}
+	String tfmt() { return "{$1 ||| $2}"; }
+}
 
 class oConcat extends iFunctionClosure {		//  s1 || s2
 	vDescriptor function(vDescriptor[] args) {

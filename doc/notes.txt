@@ -34,9 +34,6 @@ error reporting:
 -- long strings are not elided, list contents are omitted, etc.
 
 miscellaneous:
--- random selection uses Java's RNG, presumably generating different sequences
--- random sequences are different on every run
--- &random exists, but has not effect
 -- read() and write() don't accept file arguments
 -- display() ignores its arguments (and displays everything)
 -- display() prints globals in an unsorted order

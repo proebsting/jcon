@@ -186,6 +186,17 @@ vDescriptor Bang(iClosure c) {				//  !L
     }
 }
 
+vValue ListConcat(vDescriptor v) {			// L1 ||| L2
+    v = v.deref();
+    if (!(v instanceof vList)) {
+	iRuntime.error(108, v);
+    }
+    vList result = new vList(((vList)v).v);
+    for (int i = 0; i < this.v.size(); i++) {
+	result.v.addElement(this.v.elementAt(i));
+    }
+    return result;
+}
 
 
 vValue Sort(vDescriptor n) {				// sort(L)
