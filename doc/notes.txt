@@ -22,6 +22,7 @@ building and running programs:
 ------------------------------------------------------------------------------
 
 known bugs:
+-- the lexer chokes on "\x"
 -- the preprocessor does not diagnose "$define f(a) ..."
 -- local variables are not dereferenced prior to being returned
 -- e[e+:e] and e[e-:e] function identically to v9, which is wrong in some cases
