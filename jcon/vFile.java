@@ -49,7 +49,21 @@ public vString Type()		{ return typestring; }
 vString image()			{ return this.img; }
 int rank()			{ return 60; }	// files sort after windows
 int compareTo(vValue v)		{ return this.img.compareTo(((vFile) v).img); }
-public vDescriptor Bang()	{ return this.read(); }
+
+
+
+public vDescriptor Bang() {
+    final vString s = this.read();
+    if (s == null) {
+	return null;
+    }
+    return new vClosure() {
+	{ retval = s; }
+	public vDescriptor resume() {
+	    return vFile.this.read();
+	}
+    };
+}
 
 
 
