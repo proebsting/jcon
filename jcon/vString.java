@@ -240,6 +240,13 @@ vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }
 
 
 vValue Proc(long i) {
+    if (i == 0) {
+	vValue b = (vValue) iEnv.builtintab.get(this.value);
+	if (b == null) {
+	    return null;
+	}
+	return b;
+    }
     vDescriptor v = (vDescriptor) iEnv.symtab.get(this.value);
     if (v != null) {
 	return v.deref().getproc();

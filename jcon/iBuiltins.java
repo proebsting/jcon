@@ -28,9 +28,11 @@ void announce() {
 	declare("delete", 2);
 	declare("display", 2);
 	declare("dtor", 1);
+	declare("errorclear", 0);
 	declare("exit", 1);
 	declare("exp", 1);
 	declare("find", 4);
+	declare("function", 0);
 	declare("get", 1);
 	declare("iand", 2);
 	declare("icom", 1);
@@ -90,8 +92,7 @@ void announce() {
 static void declare(String name, int args)
 {
     try {
-	iEnv.declareGlobal(name,
-	    iNew.SimpleVar(name, iNew.Proc(Class.forName(PREFIX + name), args)));
+	iEnv.declareBuiltin(name, iNew.Proc(Class.forName(PREFIX + name), args));
     } catch (ClassNotFoundException e) {
 	iRuntime.bomb("cannot declare builtin function " + name + "()");
     }
@@ -343,6 +344,21 @@ class f$exit extends iFunctionClosure {				// exit(n)
 	}
 }
 
+class f$function extends iClosure {				// function()
+	java.util.Enumeration e;
+
+	void nextval() {
+		if (e == null) {
+			e = iEnv.builtintab.keys();
+		}
+		if (e.hasMoreElements()) {
+			retvalue = iNew.String((String) e.nextElement());
+		} else {
+			retvalue = null;
+		}
+	}
+}
+
 class f$seq extends iClosure {					// seq(i1,i2)
 	vInteger i1;
 	vInteger i2;
@@ -380,6 +396,15 @@ class f$rename extends iFunctionClosure {			// rename(s1,s2)
 		} else {
 			return null;
 		}
+	}
+}
+
+class f$errorclear extends iFunctionClosure {			// errorclear()
+	vDescriptor function(vDescriptor[] args) {
+		k$errornumber.number = null;
+		k$errortext.text = null;
+		k$errorvalue.value = null;
+		return iNew.Null();
 	}
 }
 

@@ -32,7 +32,6 @@ error reporting:
 -- arg lists in traceback show actual instead of expected number of arguments
    (e.g.: a call to insert() traces as insert() not insert(&null,&null,&null))
 -- long strings are not elided, list contents are omitted, etc.
--- error recovery is not implemented yet
 
 miscellaneous:
 -- random selection uses Java's RNG, presumably generating different sequences
@@ -40,7 +39,7 @@ miscellaneous:
 -- read() and write() don't accept file arguments
 -- display() ignores its arguments (and displays everything)
 -- display() prints globals in an unsorted order
--- proc(x,0) does not find builtins that have been over-ridden.
+-- function() generates names in an unsorted order
 -- jcon always allocates a list even if main() declares no arguments
 -- compiler silently ignores illegal multiply-defined names
    (e.g., record foo(a,a,a), procedure foo(a,a,a), etc.)

@@ -17,9 +17,15 @@ iError(int num, vDescriptor desc) {	// constructor
 
 void report(iClosure c) {		// print message and abort
 
-    //#%#% if &error is zero, issue message and abort
-    //#%#% if &error is not zero, decrement it and set other error keywords
-    //#%#% throw exception for handling as failure at proper point
+    // if &error is zero, issue message and abort
+    // if &error is not zero, decrement it and set other error keywords
+    if (k$error.error != 0) {
+	k$error.error--;
+	k$errornumber.number = iNew.Integer(this.num);
+	k$errortext.text = iNew.String(iRunerr.text(num));
+	k$errorvalue.value = (this.desc == null) ? null : this.desc.deref();
+	return;
+    }
 
     System.out.flush();
     System.err.println();

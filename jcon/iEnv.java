@@ -5,6 +5,7 @@ import java.util.Hashtable;
 public class iEnv {
 	static Hashtable symtab = new Hashtable();
 	static Hashtable keytab = new Hashtable();
+	static Hashtable builtintab = new Hashtable();
 	static Hashtable[] proctab = new Hashtable[3];
 	static {
 		proctab[0] = new Hashtable();
@@ -22,6 +23,16 @@ public class iEnv {
 
 	public static void declareGlobal(String s, vVariable x) {
 		symtab.put(s, x);
+	}
+
+	public static vValue resolveBuiltin(String s) {
+		vValue v = (vValue) builtintab.get(s);
+		return v;
+	}
+
+	public static void declareBuiltin(String s, vValue x) {
+		builtintab.put(s, x);
+		iEnv.declareGlobal(s, iNew.SimpleVar(s, x));	// %#%##% invocables affect ?
 	}
 
 	public static vDescriptor resolveKey(String s) {

@@ -49,6 +49,15 @@ public class iKeywords extends iFile {
 		iEnv.declareKey("subject", s);
 		iEnv.declareKey("pos", p);
 
+		// error-related
+		iEnv.declareKey("error", new k$error());
+		iEnv.declareKey("errornumber", 
+			iNew.Proc((new k$errornumber()).getClass(), 0));
+		iEnv.declareKey("errortext", 
+			iNew.Proc((new k$errortext()).getClass(), 0));
+		iEnv.declareKey("errorvalue", 
+			iNew.Proc((new k$errorvalue()).getClass(), 0));
+
 		// generators
 		iEnv.declareKey("features", 
 			iNew.Proc((new k$features()).getClass(), 0));
@@ -219,5 +228,46 @@ class k$trace extends vSimpleVar {		// &trace
 
 	public vValue deref() {
 		return value = iNew.Integer(trace);
+	}
+}
+
+class k$error extends vSimpleVar {		// &trace
+
+	static long error;		// #%#%#% referenced in iClosure
+
+	k$error() { super("&error"); }
+
+	public vVariable Assign(vValue i) {
+		value = i.mkInteger();
+		error = ((vInteger)value).value;
+		return this;
+	}
+
+	public vValue deref() {
+		return value = iNew.Integer(error);
+	}
+}
+
+class k$errornumber extends iFunctionClosure {
+	static vInteger number;
+
+	vDescriptor function(vDescriptor args[]) {
+		return number;
+	}
+}
+
+class k$errortext extends iFunctionClosure {
+	static vString text;
+
+	vDescriptor function(vDescriptor args[]) {
+		return text;
+	}
+}
+
+class k$errorvalue extends iFunctionClosure {
+	static vValue value;
+
+	vDescriptor function(vDescriptor args[]) {
+		return value;
 	}
 }

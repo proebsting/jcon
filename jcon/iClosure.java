@@ -57,9 +57,10 @@ public final void resume() {
             iRuntime.error(307);	// #%#%# really out of memory.
         }
     } catch (iError e) {
-        //  e.printStackTrace();  //#%#%#% TEMP: enable for debugging
-        //#%#%# check &error here and fail or:
-        e.report(this);
+	//  e.printStackTrace();  //#%#%#% TEMP: enable for debugging
+	//#%#%# check &error here and fail or:
+	e.report(this);  // returns only on error->failure conversion.
+	this.retvalue = null;
     }
 }
 
