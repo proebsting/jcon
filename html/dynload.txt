@@ -122,10 +122,10 @@ import jcon.*;
 public class sum3 extends vProc3 {
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
-	vInteger i = a.mkInteger();
-	vInteger j = b.mkInteger();
-	vInteger k = c.mkInteger();
-	return vInteger.New(i.value + j.value + k.value);
+        vInteger i = a.mkInteger();
+        vInteger j = b.mkInteger();
+        vInteger k = c.mkInteger();
+        return vInteger.New(i.value + j.value + k.value);
     }
 
 }
@@ -198,19 +198,19 @@ import jcon.*;
 public class factors extends vProc1 {
 
     public vDescriptor Call(vDescriptor a) {
-	final long arg = a.mkInteger().value;
-	return new vClosure() {
-	    long n = 0;
-	    public vDescriptor Resume() {
+        final long arg = a.mkInteger().value;
+        return new vClosure() {
+            long n = 0;
+            public vDescriptor Resume() {
                 while (++n &lt;= arg) {
                     if (arg % n == 0) {
                          retval = vInteger.New(n);
                          return this;
                     }
                 }
-		return null; /*FAIL*/
-	    }
-	}.Resume();
+                return null; /*FAIL*/
+            }
+        }.Resume();
     }
 
 }
