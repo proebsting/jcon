@@ -27,6 +27,7 @@ abstract class vDescriptor {
     abstract vInteger mkInteger();		// convert to Icon integer
     abstract vReal mkReal();			// convert to Icon real
     abstract vNumeric mkNumeric();		// convert to Icon numeric
+    abstract vCset mkCset();			// convert to Icon numeric
 
     // conversion to (Java) string for special purposes
     abstract String write();			// convert for use in write()
@@ -80,6 +81,7 @@ abstract class vDescriptor {
     abstract vValue Insert(vDescriptor i, vDescriptor val);
 
     // set operations
+    abstract vValue Complement();
     abstract vValue Intersect(vDescriptor i);
     abstract vValue Union(vDescriptor i);
     abstract vValue Diff(vDescriptor i);

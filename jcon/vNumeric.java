@@ -7,6 +7,7 @@ abstract class vNumeric extends vValue {
 
 
 vNumeric mkNumeric()		{ return this; }
+vCset mkCset()			{ return this.mkString().mkCset(); }
 
 vDescriptor Bang(iClosure c)	{ return this.mkString().Bang(c); }
 vInteger Size()			{ return this.mkString().Size(); }

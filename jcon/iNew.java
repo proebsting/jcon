@@ -18,6 +18,8 @@ static vInteger Integer(String x)	{ return new vInteger(x); }
 
 static vReal Real(double x) 		{ return new vReal(x); }
 
+static vCset Cset(String x) 		{ return new vCset(x); }
+
 static vString String(String x) 	{ return new vString(x); }
 
 static vDescriptor List(int n, vValue x)	{ return new vList(n, x); }

@@ -31,6 +31,7 @@ abstract class vVariable extends vDescriptor {
     vInteger mkInteger()		{ return this.deref().mkInteger(); }
     vReal mkReal()			{ return this.deref().mkReal(); }
     vNumeric mkNumeric()		{ return this.deref().mkNumeric(); }
+    vCset mkCset()			{ return this.deref().mkCset(); }
 
     String write()			{ return this.deref().write(); }
     String image()			{ return this.deref().image(); }
@@ -71,6 +72,7 @@ abstract class vVariable extends vDescriptor {
     					{ return this.deref().Insert(i, val); }
 
     // set operations
+    vValue Complement()			{ return this.deref().Complement(); }
     vValue Union(vDescriptor x)		{ return this.deref().Union(x); }
     vValue Intersect(vDescriptor x)	{ return this.deref().Intersect(x); }
     vValue Diff(vDescriptor x)		{ return this.deref().Diff(x); }

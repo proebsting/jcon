@@ -23,6 +23,7 @@ abstract class vValue extends vDescriptor {
     vInteger mkInteger()	{ iRuntime.error(101, this); return null; }
     vReal mkReal()		{ iRuntime.error(102, this); return null; }
     vNumeric mkNumeric()	{ iRuntime.error(102, this); return null; }
+    vCset mkCset()		{ iRuntime.error(104, this); return null; }
 
     String write()		{ return this.mkString().write(); }
     String report()		{ return this.image(); }
@@ -87,7 +88,8 @@ abstract class vValue extends vDescriptor {
 				 { iRuntime.error(122, this); return null; }
 
     // set operations
-    vValue Union(vDescriptor x)     { iRuntime.error(120, this); return null; }
-    vValue Intersect(vDescriptor x) { iRuntime.error(120, this); return null; }
-    vValue Diff(vDescriptor x)      { iRuntime.error(120, this); return null; }
+    vValue Complement()			{ iRuntime.error(104, this); return null; }
+    vValue Union(vDescriptor x)		{ iRuntime.error(120, this); return null; }
+    vValue Intersect(vDescriptor x)	{ iRuntime.error(120, this); return null; }
+    vValue Diff(vDescriptor x)		{ iRuntime.error(120, this); return null; }
 }

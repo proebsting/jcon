@@ -39,6 +39,9 @@ vNumeric mkNumeric()	{
     return null;
 }
 
+vCset mkCset() {
+    return new vCset(this.value);
+}
 
 
 //  static methods for argument processing and defaulting
