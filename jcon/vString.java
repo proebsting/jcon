@@ -729,10 +729,16 @@ public vString LLessEq(vDescriptor v) {
 }
 public vString LEqual(vDescriptor v) {
     vString s = v.mkString();
+    if (this.tlength != s.tlength) {
+	return null;
+    }
     return this.compareTo(s) == 0 ? s : null;
 }
 public vString LUnequal(vDescriptor v) {
     vString s = v.mkString();
+    if (this.tlength != s.tlength) {
+	return s;
+    }
     return this.compareTo(s) != 0 ? s : null;
 }
 public vString LGreaterEq(vDescriptor v) {
