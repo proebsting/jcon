@@ -21,8 +21,31 @@ public class iEnv {
 		return v;
 	}
 
-	public static void declareGlobal(String s, vVariable x) {
+	public static void declareGlobal(String s) {
+		if (!symtab.containsKey(s)) {
+			symtab.put(s, iNew.SimpleVar(s));
+		}
+	}
+
+	public static void declareGlobalInit(String s, vVariable x) {
+		if (symtab.containsKey(s)) {
+			if (!(((vVariable)symtab.get(s)).deref() instanceof vNull)) {
+				System.err.println("\"" + s + "\": inconsistent redeclaration");
+				System.exit(1);
+			}
+		}
 		symtab.put(s, x);
+	}
+
+	public static void declareProcedure(String name, String classname, int arity) {
+		try {
+			declareGlobalInit(name, iNew.SimpleVar(name, iNew.Proc(Class.forName(classname), arity)));
+		} catch (ClassNotFoundException e) {
+		}
+	}
+
+	public static void declareRecord(String name, String[] fields) {
+		declareGlobalInit(name, iNew.SimpleVar(name, iNew.RecordProc(name, fields)));
 	}
 
 	public static vValue resolveBuiltin(String s) {
@@ -32,7 +55,9 @@ public class iEnv {
 
 	public static void declareBuiltin(String s, vValue x) {
 		builtintab.put(s, x);
-		iEnv.declareGlobal(s, iNew.SimpleVar(s, x));	// %#%##% invocables affect ?
+		if (!symtab.containsKey(s)) {
+			iEnv.declareGlobalInit(s, iNew.SimpleVar(s, x));	// %#%##% invocables affect ?
+		}
 	}
 
 	public static vDescriptor resolveKey(String s) {
