@@ -153,12 +153,12 @@ vDescriptor Select() {
 
 vDescriptor Bang(iClosure c) {
     if (c.o == null) {
-        c.o = new Integer(0);
+        c.o = c;
+	c.oint = 0;
     }
-    Integer i = (Integer) c.o;
-    for (int k = i.intValue(); k < t.size(); k++) {
+    for (int k = c.oint; k < t.size(); k++) {
 	if (t.get(k)) {
-	    c.o = new Integer(k+1);
+	    c.oint = k+1;
 	    return iNew.String(String.valueOf((char) k));
 	}
     }

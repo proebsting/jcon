@@ -189,11 +189,13 @@ class k$source extends k$Value {		// &source
 
 class k$clock extends k$Value {			// &clock
 
-	static SimpleDateFormat formatter =
-		new SimpleDateFormat("HH:mm:ss");
-	static { formatter.setTimeZone(TimeZone.getDefault()); }
+	static SimpleDateFormat formatter;
 
 	public vValue deref() {
+		if (formatter == null) {
+			formatter = new SimpleDateFormat("HH:mm:ss");
+			formatter.setTimeZone(TimeZone.getDefault());
+		}
 		Date d = new Date();
 		String s = formatter.format(d);
 		return iNew.String(s);
@@ -204,11 +206,13 @@ class k$clock extends k$Value {			// &clock
 
 class k$date extends k$Value {			// &date
 
-	static SimpleDateFormat formatter =
-		new SimpleDateFormat("yyyy/MM/dd");
-	static { formatter.setTimeZone(TimeZone.getDefault()); }
+	static SimpleDateFormat formatter;
 
 	public vValue deref() {
+		if (formatter == null) {
+			formatter = new SimpleDateFormat("yyyy/MM/dd");
+			formatter.setTimeZone(TimeZone.getDefault());
+		}
 		Date d = new Date();
 		String s = formatter.format(d);
 		return iNew.String(s);
@@ -219,11 +223,14 @@ class k$date extends k$Value {			// &date
 
 class k$dateline extends k$Value {		// &dateline
 
-	static SimpleDateFormat formatter =
-		new SimpleDateFormat("EEEEEE, MMMM d, yyyy  h:mm aa");
-	static { formatter.setTimeZone(TimeZone.getDefault()); }
+	static SimpleDateFormat formatter;
 
 	public vValue deref() {
+		if (formatter == null) {
+			formatter =
+			new SimpleDateFormat("EEEEEE, MMMM d, yyyy  h:mm aa");
+			formatter.setTimeZone(TimeZone.getDefault());
+		}
 		Date d = new Date();
 		String s = formatter.format(d);
 		int n = s.length() - 2;		// beginning of AM/PM

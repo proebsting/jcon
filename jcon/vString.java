@@ -269,14 +269,14 @@ vDescriptor SelectVar(vVariable v) {
 vDescriptor Bang(iClosure c) {
     if (c.o == null) {
 	c.o = c;
-	c.oint = 1;
+	c.oint = 0;
     } else {
 	c.oint++;
     }
-    if (c.oint > value.length()) {
+    if (c.oint >= value.length()) {
 	return null; /*FAIL*/
     } else {
-	return iNew.String(value.substring(c.oint - 1, c.oint));
+	return iNew.String(value.charAt(c.oint));
     }
 }
 
