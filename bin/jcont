@@ -34,7 +34,7 @@ PREPROC="icont -s -E"
 ZIP="zip"
 UNZIP="unzip"
 JAVAC="javac -nowarn"
-JAVA="java -verify"
+JAVA="java"
 
 export BLKSIZE=6000000
 export STRSIZE=500000
@@ -170,7 +170,7 @@ for FNAME in $IFILES; do
     rm -f $TDIR/*.class
     # Icon to Java
     $ANNOUNCE 1>&2 $FNAME.icn:
-    if $PREPROC $FNAME.icn | 
+    if ($PREPROC $FNAME.icn || echo nosuchfile) | 
 		$JTRAN -class=l\$$FNAME -dir=$TDIR/ >$TDIR/$FNAME.java; then
 	# if using java target, make "links" file and compile the code
 	if [ $TARGET = java ]; then
