@@ -2,7 +2,7 @@ record CONSTANT_Class(name_index, pool_index)
 record CONSTANT_Fieldref(class_index, name_and_type_index, pool_index)
 record CONSTANT_Methodref(class_index, name_and_type_index, pool_index)
 record CONSTANT_InterfaceMethodref(class_index, name_and_type_index,
-				   pool_index)
+                   pool_index)
 record CONSTANT_String(string_index, pool_index)
 record CONSTANT_Integer(value, pool_index)
 record CONSTANT_Float(value, pool_index)
@@ -13,14 +13,14 @@ record CONSTANT_Utf8(value, pool_index)
 record CONSTANT_Unicode(value, pool_index)
 
 record ClassFile(minor_version, major_version, constant_pool, constant_table,
-		 access_flags, this_class, super_class, interfaces, fields,
-		 methods, attributes)
+         access_flags, this_class, super_class, interfaces, fields,
+         methods, attributes)
 record field_info(access_flags, name_index, signature_index, attributes)
 
 record SourceFile_attribute(attribute_name_index, sourcefile_index)
 record ConstantValue_attribute(attribute_name_index, constantvalue_index)
 record Code_attribute(attribute_name_index, max_stack, max_locals, code,
-		      exception_table, attributes)
+              exception_table, attributes)
 record Exceptions_attribute(attribute_name_index, exception_index_table)
 record LineNumberTable_attribute(attribute_name_index, line_number_table)
 record LocalVariableTable_attribute(attribute_name_index, local_variable_table)
@@ -30,7 +30,7 @@ record method_info(access_flags, name_index, signature_index, attributes)
 record exception_table_info(start_pc, end_pc, handler_pc, catch_type)
 record line_number_table_info(start_pc, line_number)
 record local_variable_table_info(start_pc, length, name_index, signature_index,
-				 slot)
+                 slot)
 
 record label(name)
 record bipush(byte)
@@ -409,10 +409,10 @@ procedure writer_attribute_info(writer, p)
 
         attribute_length := 0
         every attribute_length := offset_attribute_info(!p.attributes,
-							attribute_length)
+                            attribute_length)
 
         writer_u4(writer,
-		  2+2+4+code_length+2+8* *p.exception_table+2+attribute_length)
+          2+2+4+code_length+2+8* *p.exception_table+2+attribute_length)
         writer_u2(writer, p.max_stack)
         writer_u2(writer, p.max_locals)
         writer_u4(writer, code_length)
@@ -1330,7 +1330,7 @@ procedure cp_Class(c, name_index)
     s := "CONSTANT_Class" || "," || name_index
     if /c.constant_table[s] then {
         put(c.constant_pool,
-	    c.constant_table[s]:= CONSTANT_Class(name_index, *c.constant_pool))
+        c.constant_table[s]:= CONSTANT_Class(name_index, *c.constant_pool))
     }
     return c.constant_table[s].pool_index
 end
@@ -1341,7 +1341,7 @@ procedure cp_Fieldref(c, class_index, name_and_type_index)
     s:= "CONSTANT_Fieldref" || "," || class_index || "," || name_and_type_index
     if /c.constant_table[s] then {
         put(c.constant_pool, c.constant_table[s] :=
-	  CONSTANT_Fieldref(class_index, name_and_type_index, *c.constant_pool))
+      CONSTANT_Fieldref(class_index, name_and_type_index, *c.constant_pool))
     }
     return c.constant_table[s].pool_index
 end
@@ -1352,7 +1352,7 @@ procedure cp_Methodref(c, class_index, name_and_type_index)
     s:= "CONSTANT_Methodref" || "," || class_index || "," || name_and_type_index
     if /c.constant_table[s] then {
         put(c.constant_pool, c.constant_table[s] :=
-	 CONSTANT_Methodref(class_index, name_and_type_index, *c.constant_pool))
+     CONSTANT_Methodref(class_index, name_and_type_index, *c.constant_pool))
     }
     return c.constant_table[s].pool_index
 end
@@ -1361,11 +1361,11 @@ procedure cp_InterfaceMethodref(c, class_index, name_and_type_index)
     local s
 
     s := "CONSTANT_InterfaceMethodref" ||
-	 "," || class_index || "," || name_and_type_index
+     "," || class_index || "," || name_and_type_index
     if /c.constant_table[s] then {
         put(c.constant_pool, c.constant_table[s] :=
-	  CONSTANT_InterfaceMethodref(class_index, name_and_type_index,
-				      *c.constant_pool))
+      CONSTANT_InterfaceMethodref(class_index, name_and_type_index,
+                      *c.constant_pool))
     }
     return c.constant_table[s].pool_index
 end
@@ -1376,7 +1376,7 @@ procedure cp_String(c, string_index)
     s := "CONSTANT_String" || "," || string_index
     if /c.constant_table[s] then {
         put(c.constant_pool, c.constant_table[s] :=
-	  CONSTANT_String(string_index, *c.constant_pool))
+      CONSTANT_String(string_index, *c.constant_pool))
     }
     return c.constant_table[s].pool_index
 end
@@ -1387,7 +1387,7 @@ procedure cp_Integer(c, value)
     s := "CONSTANT_Integer" || "," || value
     if /c.constant_table[s] then {
         put(c.constant_pool, c.constant_table[s] :=
-	  CONSTANT_Integer(value, *c.constant_pool))
+      CONSTANT_Integer(value, *c.constant_pool))
     }
     return c.constant_table[s].pool_index
 end
@@ -1398,7 +1398,7 @@ procedure cp_Float(c, value)
     s := "CONSTANT_Float" || "," || value
     if /c.constant_table[s] then {
         put(c.constant_pool, c.constant_table[s] :=
-	  CONSTANT_Float(value, *c.constant_pool))
+      CONSTANT_Float(value, *c.constant_pool))
     }
     return c.constant_table[s].pool_index
 end
@@ -1409,7 +1409,7 @@ procedure cp_Long(c, value)
     s := "CONSTANT_Long" || "," || value
     if /c.constant_table[s] then {
         put(c.constant_pool, c.constant_table[s] :=
-	  CONSTANT_Long(value, *c.constant_pool))
+      CONSTANT_Long(value, *c.constant_pool))
     }
     put(c.constant_pool, &null) # Sun JVM stupidity
     return c.constant_table[s].pool_index
@@ -1421,7 +1421,7 @@ procedure cp_Double(c, value)
     s := "CONSTANT_Double" || "," || value
     if /c.constant_table[s] then {
         put(c.constant_pool, c.constant_table[s] :=
-	  CONSTANT_Double(value, *c.constant_pool))
+      CONSTANT_Double(value, *c.constant_pool))
     }
     put(c.constant_pool, &null) # Sun JVM stupidity
     return c.constant_table[s].pool_index
@@ -1433,7 +1433,7 @@ procedure cp_NameAndType(c, name_index, signature_index)
     s := "CONSTANT_NameAndType" || "," || name_index || "," || signature_index
     if /c.constant_table[s] then {
         put(c.constant_pool, c.constant_table[s] :=
-	  CONSTANT_NameAndType(name_index, signature_index, *c.constant_pool))
+      CONSTANT_NameAndType(name_index, signature_index, *c.constant_pool))
     }
     return c.constant_table[s].pool_index
 end
@@ -1444,7 +1444,7 @@ procedure cp_Utf8(c, value)
     s := "CONSTANT_Utf8" || "," || value
     if /(t := c.constant_table[s]) then {
         put(c.constant_pool, t := c.constant_table[s] :=
-	  CONSTANT_Utf8(value, *c.constant_pool))
+      CONSTANT_Utf8(value, *c.constant_pool))
     }
     return t.pool_index
 end
@@ -1455,7 +1455,7 @@ procedure cp_Unicode(c, value)
     s := "CONSTANT_Unicode" || "," || value
     if /c.constant_table[s] then {
         put(c.constant_pool, c.constant_table[s] :=
-	  CONSTANT_Unicode(value, *c.constant_pool))
+      CONSTANT_Unicode(value, *c.constant_pool))
     }
     return c.constant_table[s].pool_index
 end
@@ -1539,7 +1539,7 @@ procedure relocate(insn, locations)
     static branching
     initial {
         branching := set([
-	    "ifnull", "ifnonnull",
+        "ifnull", "ifnonnull",
             "ifeq", "iflt", "ifle", "ifne", "ifgt", "ifge",
             "if_icmpeq", "if_icmpne",
             "if_icmplt", "if_icmpgt",
@@ -1555,7 +1555,7 @@ procedure relocate(insn, locations)
     if type(insn) == "tableswitch" then {
         if type(insn.default_offset) == "label" then {
             insn.default_offset :=
-	      locations[insn.default_offset] - locations[insn]
+          locations[insn.default_offset] - locations[insn]
         }
         every i := 1 to *insn.offsets do {
             if type(insn.offsets[i]) == "label" then {
@@ -1566,12 +1566,12 @@ procedure relocate(insn, locations)
     if type(insn) == "lookupswitch" then {
         if type(insn.default_offset) == "label" then {
             insn.default_offset :=
-	      locations[insn.default_offset] - locations[insn]
+          locations[insn.default_offset] - locations[insn]
         }
         every i := 1 to *insn.offsets do {
             if type(insn.offsets[i].offset) == "label" then {
                 insn.offsets[i].offset :=
-		  locations[insn.offsets[i].offset] - locations[insn]
+          locations[insn.offsets[i].offset] - locations[insn]
             }
         }
     }

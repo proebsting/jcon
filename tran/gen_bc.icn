@@ -19,7 +19,7 @@ global bc_function_name
 global bc_file_name
 
 global bc_create_exists
-global bc_save_restore_flag	#%#% This flag may cause verification errors.
+global bc_save_restore_flag #%#% This flag may cause verification errors.
 global bc_declare_set
 global bc_undeclared_set
 global bc_function_name
@@ -55,1725 +55,1806 @@ global bc_params_set
 global bc_statics_set
 
 procedure assign_methodref(c)
-	return create_methodref(c, "Assign", "(Lrts/vValue;)Lrts/vVariable;", "rts/vDescriptor")
+    return create_methodref(c, "Assign", "(Lrts/vValue;)Lrts/vVariable;",
+                "rts/vDescriptor")
 end
 
 procedure deref_methodref(c)
-	return create_methodref(c, "deref", "()Lrts/vValue;", "rts/vDescriptor")
+    return create_methodref(c, "deref", "()Lrts/vValue;", "rts/vDescriptor")
 end
 
 procedure runtimeerror_methodref(c)
-	return create_methodref(c, "error", "(I)V", "rts/iRuntime")
+    return create_methodref(c, "error", "(I)V", "rts/iRuntime")
 end
 
 procedure PC_fieldref(c)
-	return create_fieldref(c, "PC", "I", "rts/iClosure")
+    return create_fieldref(c, "PC", "I", "rts/iClosure")
 end
 
 procedure transfer_to(s, p)
-	case type(p) of {
-	default: runerr(1000, p)
-	"irLabel" : {
-		put(s, goto_w(\bc_ir2bc_labels[p]) ) | runerr(1000, p)
-	}
-	"irTmpLabel": {
-		gen_bc_rval(s, p)
-		put(s, goto_w(bc_switch_label) )
-	}
-	}
-	return s
+    case type(p) of {
+    default: runerr(1000, p)
+    "irLabel" : {
+        put(s, goto_w(\bc_ir2bc_labels[p]) ) | runerr(1000, p)
+    }
+    "irTmpLabel": {
+        gen_bc_rval(s, p)
+        put(s, goto_w(bc_switch_label) )
+    }
+    }
+    return s
 end
 
 procedure conditional_transfer_to(s, p, cond, notcond)
-	local tmp
+    local tmp
 
-	case type(p) of {
-	default: runerr(1000, p)
-	"irLabel" : {
-		put(s, cond(\bc_ir2bc_labels[p]) ) | runerr(1000, p)
-	}
-	"irTmpLabel": {
-		tmp := label()
-		put(s, notcond(tmp))
-		gen_bc_rval(s, p)
-		put(s, goto_w(bc_switch_label) )
-		put(s, tmp)
-	}
-	}
-	return s
+    case type(p) of {
+    default: runerr(1000, p)
+    "irLabel" : {
+        put(s, cond(\bc_ir2bc_labels[p]) ) | runerr(1000, p)
+    }
+    "irTmpLabel": {
+        tmp := label()
+        put(s, notcond(tmp))
+        gen_bc_rval(s, p)
+        put(s, goto_w(bc_switch_label) )
+        put(s, tmp)
+    }
+    }
+    return s
 end
 
 # assign top-of-stack to p
 procedure gen_bc_assign_to(s, p)
-	local assign
+    local assign
 
-	case type(p) of {
-	default: { runerr(1000, p) }
-	"irTmp": {
-		gen_bc_irTmp_assign(s, p)
-	}
-	"irTmpLabel": {
-		gen_bc_irTmpLabel_assign(s, p)
-	}
-	"irTmpClosure": {
-		gen_bc_irTmpClosure_assign(s, p)
-	}
-	"irVar" |
-	"irKey": {
-		gen_bc(s, p)
-		assign := assign_methodref(bc_proc_classptr)
-		put(s, swap())
-		put(s, invokevirtual(assign))
-		put(s, Pop())
-	}
-	}
-	return s
+    case type(p) of {
+    default: { runerr(1000, p) }
+    "irTmp": {
+        gen_bc_irTmp_assign(s, p)
+    }
+    "irTmpLabel": {
+        gen_bc_irTmpLabel_assign(s, p)
+    }
+    "irTmpClosure": {
+        gen_bc_irTmpClosure_assign(s, p)
+    }
+    "irVar" |
+    "irKey": {
+        gen_bc(s, p)
+        assign := assign_methodref(bc_proc_classptr)
+        put(s, swap())
+        put(s, invokevirtual(assign))
+        put(s, Pop())
+    }
+    }
+    return s
 end
 
 
 # record irFree( v )
 procedure gen_bc_irFree(s, p)
-	local free, c, lab
+    local free, c, lab
 
-	free := create_methodref(bc_proc_classptr, "Free", "()V", "rts/iClosure")
-	every c := !p.v.clo do {
-		lab := label()
-		gen_bc_irTmpClosure_rval(s, c)
-		put(s, ifnull(lab))
-			gen_bc_irTmpClosure_rval(s, c)
-			put(s, invokevirtual(free))
-			put(s, aconst_null() )
-			gen_bc_irTmpClosure_assign(s, c)
-		put(s, lab)
-	}
-	return s
+    free := create_methodref(bc_proc_classptr, "Free", "()V", "rts/iClosure")
+    every c := !p.v.clo do {
+        lab := label()
+        gen_bc_irTmpClosure_rval(s, c)
+        put(s, ifnull(lab))
+            gen_bc_irTmpClosure_rval(s, c)
+            put(s, invokevirtual(free))
+            put(s, aconst_null() )
+            gen_bc_irTmpClosure_assign(s, c)
+        put(s, lab)
+    }
+    return s
 end
 
 # record irCoord( coord )
 procedure gen_bc_irCoord(s, p)
-	local f, line, column, field
+    local f, line, column, field
 
-	/nodebuginfo | return s
+    /nodebuginfo | return s
 
-	if f := cp_String(bc_proc_classptr, cp_Utf8(bc_proc_classptr, \(\p.coord).file)) then {
-		field := create_fieldref(bc_proc_classptr, "file", "Ljava/lang/String;", "rts/iClosure")
-		put(s, aload_0())
-		put(s, ldc_w(f))
-		put(s, putfield(field))
-	}
-	if line := \(\p.coord).line then {
-		field := create_fieldref(bc_proc_classptr, "line", "I", "rts/iClosure")
-		put(s, aload_0())
-		put(s, ipush(line, bc_proc_classptr))
-		put(s, putfield(field))
-	}
-#	if column := cp_Integer(bc_proc_classptr, \(\p.coord).column) then {
-#		field := create_fieldref(bc_proc_classptr, "column", "I", "rts/iClosure")
-#		put(s, aload_0())
-#		put(s, ldc_w(column))
-#		put(s, putfield(field))
-#	}
-	return s
+    if f := cp_String(bc_proc_classptr,
+              cp_Utf8(bc_proc_classptr, \(\p.coord).file)) then {
+        field := create_fieldref(bc_proc_classptr, "file",
+                 "Ljava/lang/String;", "rts/iClosure")
+        put(s, aload_0())
+        put(s, ldc_w(f))
+        put(s, putfield(field))
+    }
+    if line := \(\p.coord).line then {
+        field := create_fieldref(bc_proc_classptr, "line", "I", "rts/iClosure")
+        put(s, aload_0())
+        put(s, ipush(line, bc_proc_classptr))
+        put(s, putfield(field))
+    }
+#   if column := cp_Integer(bc_proc_classptr, \(\p.coord).column) then {
+#       field := create_fieldref(bc_proc_classptr, "column", "I",
+#                "rts/iClosure")
+#       put(s, aload_0())
+#       put(s, ldc_w(column))
+#       put(s, putfield(field))
+#   }
+    return s
 end
 
 # record irDeref( value )
 procedure gen_bc_irDeref(s, p)
-	local deref
+    local deref
 
-	gen_bc(s, p.value)
-	deref := deref_methodref(bc_proc_classptr)
-	put(s, invokevirtual(deref))
-	return s
+    gen_bc(s, p.value)
+    deref := deref_methodref(bc_proc_classptr)
+    put(s, invokevirtual(deref))
+    return s
 end
 
 # record irTmp( name )
 procedure gen_bc_irTmp_rval(s, p)
-	put(s, Aload(bc_tmp_table[p.name] + bc_tmp_offset))
-	return s
+    put(s, Aload(bc_tmp_table[p.name] + bc_tmp_offset))
+    return s
 end
 procedure gen_bc_irTmp_assign(s, p)
-	put(s, Astore(bc_tmp_table[p.name] + bc_tmp_offset))
-	return s
+    put(s, Astore(bc_tmp_table[p.name] + bc_tmp_offset))
+    return s
 end
 
 # record irTmpLabel( name )
 procedure gen_bc_irTmpLabel_rval(s, p)
-	put(s, Iload(bc_tmplabel_table[p.name] + bc_tmplabel_offset))
-	return s
+    put(s, Iload(bc_tmplabel_table[p.name] + bc_tmplabel_offset))
+    return s
 end
 procedure gen_bc_irTmpLabel_assign(s, p)
-	put(s, Istore(bc_tmplabel_table[p.name] + bc_tmplabel_offset))
-	return s
+    put(s, Istore(bc_tmplabel_table[p.name] + bc_tmplabel_offset))
+    return s
 end
 
 # record irTmpClosure( name )
 procedure gen_bc_irTmpClosure_rval(s, p)
-	put(s, Aload(bc_tmpclosure_table[p.name] + bc_tmpclosure_offset))
-	return s
+    put(s, Aload(bc_tmpclosure_table[p.name] + bc_tmpclosure_offset))
+    return s
 end
 procedure gen_bc_irTmpClosure_assign(s, p)
-	put(s, Astore(bc_tmpclosure_table[p.name] + bc_tmpclosure_offset))
-	return s
+    put(s, Astore(bc_tmpclosure_table[p.name] + bc_tmpclosure_offset))
+    return s
 end
 
 # record irLabel( value )
 procedure gen_bc_irLabel_rval(s, p)
 
-	member(bc_indirect_targets, p) | runerr(1000)
+    member(bc_indirect_targets, p) | runerr(1000)
 
-	\bc_labels[p] | runerr(1000, p)
-	put(s, ipush(bc_labels[p], bc_proc_classptr) )
-	return s
+    \bc_labels[p] | runerr(1000, p)
+    put(s, ipush(bc_labels[p], bc_proc_classptr) )
+    return s
 end
 
 # record irField(lhs, expr, field, failLabel)
 procedure gen_bc_irField(s, p)
-	local lab, method, fieldname, field, d
+    local lab, method, fieldname, field, d
 
-	field := create_fieldref(bc_proc_classptr, "field", "Lrts/oField;", "rts/oField")
-	put(s, getstatic(field) )
-	gen_bc_rval(s, p.expr)
-	d := cp_String(bc_proc_classptr, cp_Utf8(bc_proc_classptr, p.field)) | runerr(1000)
-	put(s, ldc_w(d) )
-	put(s, aload_0())
-	args := "Lrts/vDescriptor;Ljava/lang/String;Lrts/iClosure;"
-	method := create_methodref(bc_proc_classptr, "call", "(" || args || ")Lrts/vDescriptor;", "rts/oField")
-	put(s, invokevirtual(method))
-	if \p.lhs then {
-		put(s, dup() )
-		lab := label()
-		put(s, ifnonnull(lab) )
-		put(s, Pop() )
-		transfer_to(s, p.failLabel)
-		put(s, lab )
-		gen_bc_assign_to(s, p.lhs)
-	} else {
-		conditional_transfer_to(s, p.failLabel, ifnull, ifnonnull)
-	}
-	return s
+    field := create_fieldref(bc_proc_classptr, "field", "Lrts/oField;",
+                 "rts/oField")
+    put(s, getstatic(field) )
+    gen_bc_rval(s, p.expr)
+    d := cp_String(bc_proc_classptr,
+           cp_Utf8(bc_proc_classptr, p.field)) | runerr(1000)
+    put(s, ldc_w(d) )
+    put(s, aload_0())
+    args := "Lrts/vDescriptor;Ljava/lang/String;Lrts/iClosure;"
+    method := create_methodref(bc_proc_classptr, "call",
+                   "(" || args || ")Lrts/vDescriptor;",
+                   "rts/oField")
+    put(s, invokevirtual(method))
+    if \p.lhs then {
+        put(s, dup() )
+        lab := label()
+        put(s, ifnonnull(lab) )
+        put(s, Pop() )
+        transfer_to(s, p.failLabel)
+        put(s, lab )
+        gen_bc_assign_to(s, p.lhs)
+    } else {
+        conditional_transfer_to(s, p.failLabel, ifnull, ifnonnull)
+    }
+    return s
 end
 
 # record irMove( lhs rhs )
 procedure gen_bc_irMove(s, p)
-	local deref
+    local deref
 
-	\p.lhs | return s
+    \p.lhs | return s
 
-	gen_bc_rval(s, p.rhs)
-	if type(p.lhs) == ("irKey" | "irVar") then {
-		deref := deref_methodref(bc_proc_classptr)
-		put(s, invokevirtual(deref))
-	}
-	gen_bc_assign_to(s, p.lhs)
-	return s
+    gen_bc_rval(s, p.rhs)
+    if type(p.lhs) == ("irKey" | "irVar") then {
+        deref := deref_methodref(bc_proc_classptr)
+        put(s, invokevirtual(deref))
+    }
+    gen_bc_assign_to(s, p.lhs)
+    return s
 end
 
 # record irScanSwap( subject pos )
 procedure gen_bc_irScanSwap(s, p)
-	local subject, pos, Ksubject, Kpos, deref, assign
+    local subject, pos, Ksubject, Kpos, deref, assign
 
-	Ksubject := gen_bc([], irKey("subject"))
-	Kpos := gen_bc([], irKey("pos"))
-	subject := gen_bc([], p.subject)
-	pos := gen_bc([], p.pos)
+    Ksubject := gen_bc([], irKey("subject"))
+    Kpos := gen_bc([], irKey("pos"))
+    subject := gen_bc([], p.subject)
+    pos := gen_bc([], p.pos)
 
-	deref := deref_methodref(bc_proc_classptr)
-	assign := assign_methodref(bc_proc_classptr)
-	every put(s, !Kpos)
-	put(s, invokevirtual(deref))
-	every put(s, !Ksubject)
-	put(s, invokevirtual(deref))
+    deref := deref_methodref(bc_proc_classptr)
+    assign := assign_methodref(bc_proc_classptr)
+    every put(s, !Kpos)
+    put(s, invokevirtual(deref))
+    every put(s, !Ksubject)
+    put(s, invokevirtual(deref))
 
-	every put(s, !Ksubject)
-	every put(s, !subject)
-	put(s, invokevirtual(deref))
-	put(s, invokevirtual(assign))
-	put(s, Pop())
-	every put(s, !Kpos)
-	every put(s, !pos)
-	put(s, invokevirtual(deref))
-	put(s, invokevirtual(assign))
-	put(s, Pop())
+    every put(s, !Ksubject)
+    every put(s, !subject)
+    put(s, invokevirtual(deref))
+    put(s, invokevirtual(assign))
+    put(s, Pop())
+    every put(s, !Kpos)
+    every put(s, !pos)
+    put(s, invokevirtual(deref))
+    put(s, invokevirtual(assign))
+    put(s, Pop())
 
-	gen_bc_assign_to(s, p.subject)
-	gen_bc_assign_to(s, p.pos)
-	return s
+    gen_bc_assign_to(s, p.subject)
+    gen_bc_assign_to(s, p.pos)
+    return s
 end
 
 # record irGoto( location )
 procedure gen_bc_irGoto(s, p)
-	transfer_to(s, p.location)
-	return s
+    transfer_to(s, p.location)
+    return s
 end
 
 # record irVar( name )
 procedure gen_bc_irVar_rval(s, p)
-	put(s, Aload(bc_var_table[p.name] + bc_var_offset))
-	return s
+    put(s, Aload(bc_var_table[p.name] + bc_var_offset))
+    return s
 
-	/bc_var_field[p.name] := create_fieldref(bc_proc_classptr,
-						"v$" || p.name,
-						"Lrts/vVariable;",
-						bc_proc_classname)
-	if member(bc_statics, p.name) then {
-		put(s, getstatic(bc_var_field[p.name]))
-	} else {
-		put(s, aload_0() )
-		put(s, getfield(bc_var_field[p.name]))
-	}
-	return s
+    /bc_var_field[p.name] := create_fieldref(bc_proc_classptr,
+                        "v$" || p.name,
+                        "Lrts/vVariable;",
+                        bc_proc_classname)
+    if member(bc_statics, p.name) then {
+        put(s, getstatic(bc_var_field[p.name]))
+    } else {
+        put(s, aload_0() )
+        put(s, getfield(bc_var_field[p.name]))
+    }
+    return s
 end
 
 # record irKey( name )
 procedure gen_bc_irKey_register(p)
-	bc_keys_link[p.name] := 1
-	/bc_key_table[p.name] := create_fieldref(bc_proc_classptr,
-						"$" || p.name,
-						"Lrts/vDescriptor;",
-						bc_link_classname)
+    bc_keys_link[p.name] := 1
+    /bc_key_table[p.name] := create_fieldref(bc_proc_classptr,
+                        "$" || p.name,
+                        "Lrts/vDescriptor;",
+                        bc_link_classname)
 end
 procedure gen_bc_irKey_rval(s, p)
-	gen_bc_irKey_register(p)
-	put(s, getstatic(bc_key_table[p.name]))
-	return s
+    gen_bc_irKey_register(p)
+    put(s, getstatic(bc_key_table[p.name]))
+    return s
 end
 
 # record irIntLit( val )
 procedure gen_bc_irIntLit(s, p)
-	local i, field
+    local i, field
 
-	i := integer(p.val)
-	/bc_integer_table[i] := "li$" || map(i, "-", "m")
-	field := create_fieldref(bc_proc_classptr,
-					bc_integer_table[i],
-					"Lrts/vInteger;",
-					bc_link_classname)
-	put(s, getstatic(field))
-	return s
+    i := integer(p.val)
+    /bc_integer_table[i] := "li$" || map(i, "-", "m")
+    field := create_fieldref(bc_proc_classptr,
+                    bc_integer_table[i],
+                    "Lrts/vInteger;",
+                    bc_link_classname)
+    put(s, getstatic(field))
+    return s
 end
 
 # record irRealLit( val )
 procedure gen_bc_irRealLit(s, p)
-	local r, x, field
+    local r, x, field
 
-	r := real(p.val)
-	/bc_real_table[r] := "lr$" || map(r, ".-+", "dmp")
-	field := create_fieldref(bc_proc_classptr,
-					bc_real_table[r],
-					"Lrts/vReal;",
-					bc_link_classname)
-	put(s, getstatic(field))
-	return s
+    r := real(p.val)
+    /bc_real_table[r] := "lr$" || map(r, ".-+", "dmp")
+    field := create_fieldref(bc_proc_classptr,
+                    bc_real_table[r],
+                    "Lrts/vReal;",
+                    bc_link_classname)
+    put(s, getstatic(field))
+    return s
 end
 
 # record irStrLit( val )
 procedure gen_bc_irStrLit(s, p)
-	local x, field
+    local x, field
 
-	/bc_string_table[p.val] := "ls$" || *bc_string_table
-	field := create_fieldref(bc_proc_classptr,
-					bc_string_table[p.val],
-					"Lrts/vString;",
-					bc_link_classname)
-	put(s, getstatic(field))
-	return s
+    /bc_string_table[p.val] := "ls$" || *bc_string_table
+    field := create_fieldref(bc_proc_classptr,
+                    bc_string_table[p.val],
+                    "Lrts/vString;",
+                    bc_link_classname)
+    put(s, getstatic(field))
+    return s
 end
 
 # record irCsetLit( val )
 procedure gen_bc_irCsetLit(s, p)
-	local v, field
+    local v, field
 
-	/bc_cset_table[p.val] := "lc$" || *bc_cset_table
-	field := create_fieldref(bc_proc_classptr,
-					bc_cset_table[p.val],
-					"Lrts/vCset;",
-					bc_link_classname)
-	put(s, getstatic(field))
-	return s
+    /bc_cset_table[p.val] := "lc$" || *bc_cset_table
+    field := create_fieldref(bc_proc_classptr,
+                    bc_cset_table[p.val],
+                    "Lrts/vCset;",
+                    bc_link_classname)
+    put(s, getstatic(field))
+    return s
 end
 
 # record irRestore( )
 procedure gen_bc_irRestore(s, p)
-	return s
+    return s
 end
 
 # record irSucceed( expr continuation )
 procedure gen_bc_irSucceed(s, p)
-	local r, e, PC, k, a
+    local r, e, PC, k, a
 
-	PC := PC_fieldref(bc_proc_classptr)
-	if \p.continuation then {
-		\bc_save_restore_flag | runerr(1000)
+    PC := PC_fieldref(bc_proc_classptr)
+    if \p.continuation then {
+        \bc_save_restore_flag | runerr(1000)
 
-		put(s, aload_0())
-		gen_bc(s, p.continuation)
-		put(s, putfield(PC))
+        put(s, aload_0())
+        gen_bc(s, p.continuation)
+        put(s, putfield(PC))
 
-		if *bc_tmp_table > 0 then {
-			a := create_fieldref(bc_proc_classptr,
-						"tmpArray",
-						"[Lrts/vDescriptor;",
-						bc_proc_classname)
-			put(s, aload_0())
-			put(s, getfield(a))
-			every k := key(bc_tmp_table) do {
-				put(s, dup())
-				put(s, ipush(bc_tmp_table[k]))
-				put(s, Aload(bc_tmp_table[k] + bc_tmp_offset))
-				put(s, aastore())
-			}
-			put(s, Pop())
-		}
+        if *bc_tmp_table > 0 then {
+            a := create_fieldref(bc_proc_classptr,
+                        "tmpArray",
+                        "[Lrts/vDescriptor;",
+                        bc_proc_classname)
+            put(s, aload_0())
+            put(s, getfield(a))
+            every k := key(bc_tmp_table) do {
+                put(s, dup())
+                put(s, ipush(bc_tmp_table[k]))
+                put(s, Aload(bc_tmp_table[k] + bc_tmp_offset))
+                put(s, aastore())
+            }
+            put(s, Pop())
+        }
 
-		if *bc_tmplabel_table > 0 then {
-			a := create_fieldref(bc_proc_classptr,
-						"tmpLabelArray",
-						"[I",
-						bc_proc_classname)
-			put(s, aload_0())
-			put(s, getfield(a))
-			every k := key(bc_tmplabel_table) do {
-				put(s, dup())
-				put(s, ipush(bc_tmplabel_table[k]))
-				put(s, Iload(bc_tmplabel_table[k] + bc_tmplabel_offset))
-				put(s, iastore())
-			}
-			put(s, Pop())
-		}
+        if *bc_tmplabel_table > 0 then {
+            a := create_fieldref(bc_proc_classptr,
+                        "tmpLabelArray",
+                        "[I",
+                        bc_proc_classname)
+            put(s, aload_0())
+            put(s, getfield(a))
+            every k := key(bc_tmplabel_table) do {
+                put(s, dup())
+                put(s, ipush(bc_tmplabel_table[k]))
+                put(s, Iload(bc_tmplabel_table[k] + bc_tmplabel_offset))
+                put(s, iastore())
+            }
+            put(s, Pop())
+        }
 
-		if *bc_tmpclosure_table > 0 then {
-			a := create_fieldref(bc_proc_classptr,
-						"tmpClosureArray",
-						"[Lrts/iClosure;",
-						bc_proc_classname)
-			put(s, aload_0())
-			put(s, getfield(a))
-			every k := key(bc_tmpclosure_table) do {
-				put(s, dup())
-				put(s, ipush(bc_tmpclosure_table[k]))
-				put(s, Aload(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
-				put(s, aastore())
-			}
-			put(s, Pop())
-		}
-	} else {
-		put(s, aload_0())
-		put(s, iconst_0())
-		put(s, putfield(PC))
-	}
-	gen_bc(s, p.expr)
-	put(s, areturn())
-	return s
+        if *bc_tmpclosure_table > 0 then {
+            a := create_fieldref(bc_proc_classptr,
+                        "tmpClosureArray",
+                        "[Lrts/iClosure;",
+                        bc_proc_classname)
+            put(s, aload_0())
+            put(s, getfield(a))
+            every k := key(bc_tmpclosure_table) do {
+                put(s, dup())
+                put(s, ipush(bc_tmpclosure_table[k]))
+                put(s, Aload(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
+                put(s, aastore())
+            }
+            put(s, Pop())
+        }
+    } else {
+        put(s, aload_0())
+        put(s, iconst_0())
+        put(s, putfield(PC))
+    }
+    gen_bc(s, p.expr)
+    put(s, areturn())
+    return s
 end
 
 # record irFail( )
 procedure gen_bc_irFail(s, p)
-	put(s, aconst_null())
-	put(s, areturn())
-	return s
+    put(s, aconst_null())
+    put(s, areturn())
+    return s
 end
 
 # record irRunTimeError( )
 procedure gen_bc_irRunTimeError(s, p)
-	local runtimeerror
+    local runtimeerror
 
-	runtimeerror := runtimeerror_methodref(bc_proc_classptr)
-	put(s, ipush(902))
-	put(s, invokestatic(runtimeerror))
-	put(s, aconst_null())
-	put(s, areturn())
-	return s
+    runtimeerror := runtimeerror_methodref(bc_proc_classptr)
+    put(s, ipush(902))
+    put(s, invokestatic(runtimeerror))
+    put(s, aconst_null())
+    put(s, areturn())
+    return s
 end
 
 # record irResume( closure failLabel retValue )
 procedure gen_bc_irResume(s, p)
-	local c, PC, target, resume, free
+    local c, PC, target, resume, free
 
-	PC := PC_fieldref(bc_proc_classptr)
-	resume := create_methodref(bc_proc_classptr, "resume", "()Lrts/vDescriptor;", "rts/iClosure")
-	gen_bc(s, p.closure)
-	put(s, dup())
-	put(s, getfield(PC))
-	target := label()
-	put(s, ifne(target))
-	put(s, Pop())
-	transfer_to(s, p.failLabel)
-	put(s, target)
-	put(s, invokevirtual(resume))
-	if \p.retValue then {
-		put(s, dup())
-		target := label()
-		put(s, ifnonnull(target))
-		put(s, Pop())
-		transfer_to(s, p.failLabel)
-		put(s, target)
-		gen_bc_assign_to(s, p.retValue)
-	} else {
-		conditional_transfer_to(s, p.failLabel, ifnull, ifnonnull)
-	}
-	return s
+    PC := PC_fieldref(bc_proc_classptr)
+    resume := create_methodref(bc_proc_classptr, "resume",
+                   "()Lrts/vDescriptor;", "rts/iClosure")
+    gen_bc(s, p.closure)
+    put(s, dup())
+    put(s, getfield(PC))
+    target := label()
+    put(s, ifne(target))
+    put(s, Pop())
+    transfer_to(s, p.failLabel)
+    put(s, target)
+    put(s, invokevirtual(resume))
+    if \p.retValue then {
+        put(s, dup())
+        target := label()
+        put(s, ifnonnull(target))
+        put(s, Pop())
+        transfer_to(s, p.failLabel)
+        put(s, target)
+        gen_bc_assign_to(s, p.retValue)
+    } else {
+        conditional_transfer_to(s, p.failLabel, ifnull, ifnonnull)
+    }
+    return s
 end
 
 # record irMakeList( lhs valueList )
 procedure gen_bc_irMakeList(s, p)
-	local r, v, i, atype, method
+    local r, v, i, atype, method
 
-	\p.lhs | return s
+    \p.lhs | return s
 
-	put(s, ipush(*p.valueList))
-	atype := cp_Class(bc_proc_classptr, cp_Utf8(bc_proc_classptr, "rts/vDescriptor"))
+    put(s, ipush(*p.valueList))
+    atype := cp_Class(bc_proc_classptr,
+              cp_Utf8(bc_proc_classptr, "rts/vDescriptor"))
 
-	method := create_methodref(bc_proc_classptr, "ArgArray", "(I)[Lrts/vDescriptor;", "rts/iNew")
-	put(s, invokestatic(method))
-	# put(s, anewarray(atype))
+    method := create_methodref(bc_proc_classptr, "ArgArray",
+                   "(I)[Lrts/vDescriptor;", "rts/iNew")
+    put(s, invokestatic(method))
 
-	every i := 1 to *p.valueList do {
-		put(s, dup())
-		put(s, ipush(i-1))
-		gen_bc(s, p.valueList[i])
-		put(s, aastore())
-	}
-	method := create_methodref(bc_proc_classptr, "List", "([Lrts/vDescriptor;)Lrts/vList;", "rts/iNew")
-	put(s, invokestatic(method))
-	gen_bc_assign_to(s, p.lhs)
-	return s
+    every i := 1 to *p.valueList do {
+        put(s, dup())
+        put(s, ipush(i-1))
+        gen_bc(s, p.valueList[i])
+        put(s, aastore())
+    }
+    method := create_methodref(bc_proc_classptr, "List",
+                   "([Lrts/vDescriptor;)Lrts/vList;", "rts/iNew")
+    put(s, invokestatic(method))
+    gen_bc_assign_to(s, p.lhs)
+    return s
 end
 
 procedure initoptable()
-	static optable
-	initial {
-		optable := [ table(), table(), table() ]
-		optable[1]["#"] := "oLimit"
-		optable[1]["."] := "oDeref"
-		optable[1]["/"] := "oIsNull"
-		optable[1]["\\"] := "oIsntNull"
-		optable[1]["*"] := "oSize"
-		optable[1]["?"] := "oSelect"
-		optable[1]["+"] := "oNumerate"
-		optable[1]["-"] := "oNegate"
-		optable[1]["~"] := "oComplement"
-		optable[1]["^"] := "oRefresh"
-		optable[2][":="] := "oAssign"
-		optable[2][":=:"] := "oSwap"
-		optable[2]["&"] := "oConjunction"
-		optable[2]["."] := "oField"
-		optable[2]["[]"] := "oIndex"
-		optable[2]["+"] := "oAdd"
-		optable[2]["-"] := "oSub"
-		optable[2]["*"] := "oMul"
-		optable[2]["/"] := "oDiv"
-		optable[2]["%"] := "oMod"
-		optable[2]["^"] := "oPower"
-		optable[2]["**"] := "oIntersect"
-		optable[2]["++"] := "oUnion"
-		optable[2]["--"] := "oDiff"
-		optable[2]["<"] := "oNLess"
-		optable[2]["<="] := "oNLessEq"
-		optable[2]["="] := "oNEqual"
-		optable[2]["~="] := "oNUnequal"
-		optable[2][">="] := "oNGreaterEq"
-		optable[2][">"] := "oNGreater"
-		optable[2]["<<"] := "oLLess"
-		optable[2]["<<="] := "oLLessEq"
-		optable[2]["=="] := "oLEqual"
-		optable[2]["~=="] := "oLUnequal"
-		optable[2][">>="] := "oLGreaterEq"
-		optable[2][">>"] := "oLGreater"
-		optable[2]["==="] := "oVEqual"
-		optable[2]["~==="] := "oVUnequal"
-		optable[2]["|||"] := "oListConcat"
-		optable[2]["||"] := "oConcat"
-		optable[2]["@"] := "oActivate"
-		optable[2][":?"] := "oSubjAssign"
-		optable[3]["[:]"] := "oSection"
-		optable[3]["[+:]"] := "oSectPlus"
-		optable[3]["[-:]"] := "oSectMinus"
-	}
-	return optable
+    static optable
+    initial {
+        optable := [ table(), table(), table() ]
+        optable[1]["#"] := "oLimit"
+        optable[1]["."] := "oDeref"
+        optable[1]["/"] := "oIsNull"
+        optable[1]["\\"] := "oIsntNull"
+        optable[1]["*"] := "oSize"
+        optable[1]["?"] := "oSelect"
+        optable[1]["+"] := "oNumerate"
+        optable[1]["-"] := "oNegate"
+        optable[1]["~"] := "oComplement"
+        optable[1]["^"] := "oRefresh"
+        optable[2][":="] := "oAssign"
+        optable[2][":=:"] := "oSwap"
+        optable[2]["&"] := "oConjunction"
+        optable[2]["."] := "oField"
+        optable[2]["[]"] := "oIndex"
+        optable[2]["+"] := "oAdd"
+        optable[2]["-"] := "oSub"
+        optable[2]["*"] := "oMul"
+        optable[2]["/"] := "oDiv"
+        optable[2]["%"] := "oMod"
+        optable[2]["^"] := "oPower"
+        optable[2]["**"] := "oIntersect"
+        optable[2]["++"] := "oUnion"
+        optable[2]["--"] := "oDiff"
+        optable[2]["<"] := "oNLess"
+        optable[2]["<="] := "oNLessEq"
+        optable[2]["="] := "oNEqual"
+        optable[2]["~="] := "oNUnequal"
+        optable[2][">="] := "oNGreaterEq"
+        optable[2][">"] := "oNGreater"
+        optable[2]["<<"] := "oLLess"
+        optable[2]["<<="] := "oLLessEq"
+        optable[2]["=="] := "oLEqual"
+        optable[2]["~=="] := "oLUnequal"
+        optable[2][">>="] := "oLGreaterEq"
+        optable[2][">>"] := "oLGreater"
+        optable[2]["==="] := "oVEqual"
+        optable[2]["~==="] := "oVUnequal"
+        optable[2]["|||"] := "oListConcat"
+        optable[2]["||"] := "oConcat"
+        optable[2]["@"] := "oActivate"
+        optable[2][":?"] := "oSubjAssign"
+        optable[3]["[:]"] := "oSection"
+        optable[3]["[+:]"] := "oSectPlus"
+        optable[3]["[-:]"] := "oSectMinus"
+    }
+    return optable
 end
 
 procedure gen_bc_call_op(s, p)
-	local r, l, f, v, n, i, method
+    local r, l, f, v, n, i, method
 
-	type(p.fn) == "irOperator" | runerr(1000, p.fn)
+    type(p.fn) == "irOperator" | runerr(1000, p.fn)
 
-	gen_bc(s, p.fn)
-	args := ""
-	every i := 1 to *p.argList do {
-		gen_bc(s, p.argList[i])
-		args ||:= "Lrts/vDescriptor;"
-	}
-	put(s, aload_0())
-	method := create_methodref(bc_proc_classptr, "instantiate", "(" || args || "Lrts/iClosure;)Lrts/iClosure;", "rts/vDescriptor")
-	put(s, invokevirtual(method))
-	gen_bc_assign_to(s, p.lhs)
-	return s
+    gen_bc(s, p.fn)
+    args := ""
+    every i := 1 to *p.argList do {
+        gen_bc(s, p.argList[i])
+        args ||:= "Lrts/vDescriptor;"
+    }
+    put(s, aload_0())
+    method := create_methodref(bc_proc_classptr, "instantiate",
+                   "(" || args || "Lrts/iClosure;)Lrts/iClosure;",
+                   "rts/vDescriptor")
+    put(s, invokevirtual(method))
+    gen_bc_assign_to(s, p.lhs)
+    return s
 end
 
 # record irOpFunction( lhs fn argList failLabel )
 procedure gen_bc_irOpFunction(s, p)
-	local target, args, method, class, i, op, field
-	static optable
-	initial optable := initoptable()
+    local target, args, method, class, i, op, field
+    static optable
+    initial optable := initoptable()
 
-	p.fn.arity = *p.argList | runerr(1000, p)
-	op := \optable[p.fn.arity][p.fn.name] | runerr(1000, p.fn)
+    p.fn.arity = *p.argList | runerr(1000, p)
+    op := \optable[p.fn.arity][p.fn.name] | runerr(1000, p.fn)
 
-	class := case p.fn.arity of {
-		1 : "rts/iUnaryClosure"
-		2 : "rts/iBinaryClosure"
-		3 : "rts/iTrinaryClosure"
-		default : runerr(1000)
-		}
-	field := create_fieldref(bc_proc_classptr, "instance", "L" || class || ";", "rts/" || op)
-	put(s, getstatic(field) )
+    class := case p.fn.arity of {
+        1 : "rts/iUnaryClosure"
+        2 : "rts/iBinaryClosure"
+        3 : "rts/iTrinaryClosure"
+        default : runerr(1000)
+        }
+    field := create_fieldref(bc_proc_classptr, "instance", "L" || class || ";",
+                 "rts/" || op)
+    put(s, getstatic(field) )
 
-	args := ""
-	every i := 1 to *p.argList do {
-		gen_bc(s, p.argList[i])
-		args ||:= "Lrts/vDescriptor;"
-	}
-	put(s, aload_0())
-	args ||:= "Lrts/iClosure;"
-	method := create_methodref(bc_proc_classptr, "call", "(" || args || ")Lrts/vDescriptor;", class)
-	put(s, invokevirtual(method))
+    args := ""
+    every i := 1 to *p.argList do {
+        gen_bc(s, p.argList[i])
+        args ||:= "Lrts/vDescriptor;"
+    }
+    put(s, aload_0())
+    args ||:= "Lrts/iClosure;"
+    method := create_methodref(bc_proc_classptr, "call",
+                   "(" || args || ")Lrts/vDescriptor;", class)
+    put(s, invokevirtual(method))
 
-	if \p.failLabel then {
-		if \p.lhs then {
-			put(s, dup())
-			target := label()
-			put(s, ifnonnull(target))
-			put(s, Pop())
-			transfer_to(s, p.failLabel)
-			put(s, target)
-			gen_bc_assign_to(s, p.lhs)
-		} else {
-			conditional_transfer_to(s, p.failLabel, ifnull, ifnonnull)
-		}
-	} else {
-		if \p.lhs then {
-			gen_bc_assign_to(s, p.lhs)
-		} else {
-			put(s, Pop())
-		}
-	}
-	return s
+    if \p.failLabel then {
+        if \p.lhs then {
+            put(s, dup())
+            target := label()
+            put(s, ifnonnull(target))
+            put(s, Pop())
+            transfer_to(s, p.failLabel)
+            put(s, target)
+            gen_bc_assign_to(s, p.lhs)
+        } else {
+            conditional_transfer_to(s, p.failLabel, ifnull, ifnonnull)
+        }
+    } else {
+        if \p.lhs then {
+            gen_bc_assign_to(s, p.lhs)
+        } else {
+            put(s, Pop())
+        }
+    }
+    return s
 end
 
 # record irMakeClosure( lhs fn argList )
 procedure gen_bc_irMakeClosure(s, p)
-	local r, l, f, v, n, i, method, atype
+    local r, l, f, v, n, i, method, atype
 
-	\p.lhs | return ""
+    \p.lhs | return ""
 
-	if type(p.fn) == "irOperator" then {
-		return gen_bc_call_op(s, p)
-	}
+    if type(p.fn) == "irOperator" then {
+        return gen_bc_call_op(s, p)
+    }
 
-	gen_bc(s, p.fn)
-	put(s, ipush(*p.argList))
-	atype := cp_Class(bc_proc_classptr, cp_Utf8(bc_proc_classptr, "rts/vDescriptor"))
+    gen_bc(s, p.fn)
+    put(s, ipush(*p.argList))
+    atype := cp_Class(bc_proc_classptr,
+              cp_Utf8(bc_proc_classptr, "rts/vDescriptor"))
 
-	method := create_methodref(bc_proc_classptr, "ArgArray", "(I)[Lrts/vDescriptor;", "rts/iNew")
-	put(s, invokestatic(method))
-	# put(s, anewarray(atype))
+    method := create_methodref(bc_proc_classptr, "ArgArray",
+                   "(I)[Lrts/vDescriptor;", "rts/iNew")
+    put(s, invokestatic(method))
 
-	every i := 1 to *p.argList do {
-		put(s, dup())
-		put(s, ipush(i-1))
-		gen_bc(s, p.argList[i])
-		put(s, aastore())
-	}
-	put(s, aload_0())
-	method := create_methodref(bc_proc_classptr, "Instantiate", "(Lrts/vDescriptor;[Lrts/vDescriptor;Lrts/iClosure;)Lrts/iClosure;", "rts/iInterface")
-	put(s, invokestatic(method))
-	gen_bc_assign_to(s, p.lhs)
-	return s
+    every i := 1 to *p.argList do {
+        put(s, dup())
+        put(s, ipush(i-1))
+        gen_bc(s, p.argList[i])
+        put(s, aastore())
+    }
+    put(s, aload_0())
+    method := create_methodref(bc_proc_classptr, "Instantiate",
+       "(Lrts/vDescriptor;[Lrts/vDescriptor;Lrts/iClosure;)Lrts/iClosure;",
+       "rts/iInterface")
+    put(s, invokestatic(method))
+    gen_bc_assign_to(s, p.lhs)
+    return s
 end
 
 # record irOperator( name arity )
 procedure gen_bc_irOperator(s, p)
-	local n, x, field
+    local n, x, field
 
-	n := p.name || "," || p.arity
-	/bc_op_table[n] := "proc_" || *bc_op_table
-	field := create_fieldref(bc_proc_classptr, bc_op_table[n], "Lrts/vDescriptor;", bc_link_classname)
-	put(s, getstatic(field))
-	return s
+    n := p.name || "," || p.arity
+    /bc_op_table[n] := "proc_" || *bc_op_table
+    field := create_fieldref(bc_proc_classptr, bc_op_table[n],
+                 "Lrts/vDescriptor;", bc_link_classname)
+    put(s, getstatic(field))
+    return s
 end
 
 # record irCreate( location )
 procedure gen_bc_irCreate(s, p)
-	local copymethod, createmethod
+    local copymethod, createmethod
 
-	bc_create_exists := 1
+    bc_create_exists := 1
 
-	\bc_save_restore_flag | runerr(1000)
+    \bc_save_restore_flag | runerr(1000)
 
-	copymethod := create_methodref(bc_proc_classptr, "copy", "(I)Lrts/iClosure;", bc_proc_classname)
-	createmethod := create_methodref(bc_proc_classptr, "create", "(Lrts/iClosure;)Lrts/vCoexp;", "rts/iCoexp")
-	put(s, aload_0())
-	gen_bc(s, p.location)
-	put(s, invokevirtual(copymethod))
-	put(s, invokestatic(createmethod))
-	return s
+    copymethod := create_methodref(bc_proc_classptr, "copy",
+                   "(I)Lrts/iClosure;", bc_proc_classname)
+    createmethod := create_methodref(bc_proc_classptr, "create",
+                     "(Lrts/iClosure;)Lrts/vCoexp;",
+                     "rts/iCoexp")
+    put(s, aload_0())
+    gen_bc(s, p.location)
+    put(s, invokevirtual(copymethod))
+    put(s, invokestatic(createmethod))
+    return s
 end
 
 # record irCoRet( value continuation )
 procedure gen_bc_irCoRet(s, p)
-	local r, coretmethod, current
+    local r, coretmethod, current
 
-	coretmethod := create_methodref(bc_proc_classptr, "coret", "(Lrts/vDescriptor;)V", "rts/vCoexp")
-	current := create_fieldref(bc_proc_classptr, "cur_coexp", "Lrts/vCoexp;", "rts/iEnv")
-	put(s, getstatic(current))
-	gen_bc(s, p.value)
-	put(s, invokevirtual(coretmethod))
-	transfer_to(s, p.continuation)
-	return s
+    coretmethod := create_methodref(bc_proc_classptr, "coret",
+                    "(Lrts/vDescriptor;)V", "rts/vCoexp")
+    current := create_fieldref(bc_proc_classptr, "cur_coexp", "Lrts/vCoexp;",
+                   "rts/iEnv")
+    put(s, getstatic(current))
+    gen_bc(s, p.value)
+    put(s, invokevirtual(coretmethod))
+    transfer_to(s, p.continuation)
+    return s
 end
 
 # record irCoFail( )
 procedure gen_bc_irCoFail(s, p)
-	local cofailmethod, current
+    local cofailmethod, current
 
-	cofailmethod := create_methodref(bc_proc_classptr, "cofail", "()V", "rts/vCoexp")
-	current := create_fieldref(bc_proc_classptr, "cur_coexp", "Lrts/vCoexp;", "rts/iEnv")
-	put(s, getstatic(current))
-	put(s, invokevirtual(cofailmethod))
-	# the next two lines make the verifier happy.
-	put(s, aconst_null())
-	put(s, areturn())
-	return s
+    cofailmethod := create_methodref(bc_proc_classptr, "cofail", "()V",
+                     "rts/vCoexp")
+    current := create_fieldref(bc_proc_classptr, "cur_coexp", "Lrts/vCoexp;",
+                   "rts/iEnv")
+    put(s, getstatic(current))
+    put(s, invokevirtual(cofailmethod))
+    # the next two lines make the verifier happy.
+    put(s, aconst_null())
+    put(s, areturn())
+    return s
 end
 
 # record irEnterInit( startlabel )
 procedure gen_bc_irEnterInit(s, p)
-	local target, initialized
+    local target, initialized
 
-	create_field(bc_proc_classptr, 8, "initialized", "Z")
-	initialized := create_fieldref(bc_proc_classptr, "initialized", "Z", bc_proc_classname)
-	put(s, getstatic(initialized))
-	target := label()
-	put(s, ifeq(target))
-	transfer_to(s, p.startlabel )
-	put(s, target)
-	put(s, iconst_1())
-	put(s, putstatic(initialized))
-	return s
+    create_field(bc_proc_classptr, 8, "initialized", "Z")
+    initialized := create_fieldref(bc_proc_classptr, "initialized", "Z",
+                   bc_proc_classname)
+    put(s, getstatic(initialized))
+    target := label()
+    put(s, ifeq(target))
+    transfer_to(s, p.startlabel )
+    put(s, target)
+    put(s, iconst_1())
+    put(s, putstatic(initialized))
+    return s
 end
 
 procedure gen_bc_rval(s, p)
-	return gen_bc(s, p)
+    return gen_bc(s, p)
 end
 
 procedure gen_bc(s, p)
-	case type(p) of {
-	"irTmp" : return gen_bc_irTmp_rval(s, p)
-	"irTmpLabel" : return gen_bc_irTmpLabel_rval(s, p)
-	"irTmpClosure" : return gen_bc_irTmpClosure_rval(s, p)
-	"irVar" : return gen_bc_irVar_rval(s, p)
-	"irKey" : return gen_bc_irKey_rval(s, p)
-	"irLabel" : return gen_bc_irLabel_rval(s, p)
-	"irCoord" : return gen_bc_irCoord(s, p)
-	"irDeref" : return gen_bc_irDeref(s, p)
-	"irMove" : return gen_bc_irMove(s, p)
-	"irScanSwap" : return gen_bc_irScanSwap(s, p)
-	"irGoto" : return gen_bc_irGoto(s, p)
-	"irIntLit" : return gen_bc_irIntLit(s, p)
-	"irRealLit" : return gen_bc_irRealLit(s, p)
-	"irStrLit" : return gen_bc_irStrLit(s, p)
-	"irCsetLit" : return gen_bc_irCsetLit(s, p)
-	"irRestore" : return gen_bc_irRestore(s, p)
-	"irSucceed" : return gen_bc_irSucceed(s, p)
-	"irFail" : return gen_bc_irFail(s, p)
-	"irResume" : return gen_bc_irResume(s, p)
-	"irMakeList" : return gen_bc_irMakeList(s, p)
-	"irOpFunction" : return gen_bc_irOpFunction(s, p)
-	"irMakeClosure" : return gen_bc_irMakeClosure(s, p)
-	"irOperator" : return gen_bc_irOperator(s, p)
-	"irCreate" : return gen_bc_irCreate(s, p)
-	"irCoRet" : return gen_bc_irCoRet(s, p)
-	"irCoFail" : return gen_bc_irCoFail(s, p)
-	"irRunTimeError" : return gen_bc_irRunTimeError(s, p)
-	"irEnterInit" : return gen_bc_irEnterInit(s, p)
-	"irFree" : return gen_bc_irFree(s, p)
-	"irField" : return gen_bc_irField(s, p)
-	default : { runerr(1000, p); }
-	}
+    case type(p) of {
+    "irTmp" : return gen_bc_irTmp_rval(s, p)
+    "irTmpLabel" : return gen_bc_irTmpLabel_rval(s, p)
+    "irTmpClosure" : return gen_bc_irTmpClosure_rval(s, p)
+    "irVar" : return gen_bc_irVar_rval(s, p)
+    "irKey" : return gen_bc_irKey_rval(s, p)
+    "irLabel" : return gen_bc_irLabel_rval(s, p)
+    "irCoord" : return gen_bc_irCoord(s, p)
+    "irDeref" : return gen_bc_irDeref(s, p)
+    "irMove" : return gen_bc_irMove(s, p)
+    "irScanSwap" : return gen_bc_irScanSwap(s, p)
+    "irGoto" : return gen_bc_irGoto(s, p)
+    "irIntLit" : return gen_bc_irIntLit(s, p)
+    "irRealLit" : return gen_bc_irRealLit(s, p)
+    "irStrLit" : return gen_bc_irStrLit(s, p)
+    "irCsetLit" : return gen_bc_irCsetLit(s, p)
+    "irRestore" : return gen_bc_irRestore(s, p)
+    "irSucceed" : return gen_bc_irSucceed(s, p)
+    "irFail" : return gen_bc_irFail(s, p)
+    "irResume" : return gen_bc_irResume(s, p)
+    "irMakeList" : return gen_bc_irMakeList(s, p)
+    "irOpFunction" : return gen_bc_irOpFunction(s, p)
+    "irMakeClosure" : return gen_bc_irMakeClosure(s, p)
+    "irOperator" : return gen_bc_irOperator(s, p)
+    "irCreate" : return gen_bc_irCreate(s, p)
+    "irCoRet" : return gen_bc_irCoRet(s, p)
+    "irCoFail" : return gen_bc_irCoFail(s, p)
+    "irRunTimeError" : return gen_bc_irRunTimeError(s, p)
+    "irEnterInit" : return gen_bc_irEnterInit(s, p)
+    "irFree" : return gen_bc_irFree(s, p)
+    "irField" : return gen_bc_irField(s, p)
+    default : { runerr(1000, p); }
+    }
 end
 
 procedure bc_emit(label, code)
-	return bc_emit_table[label] := code
+    return bc_emit_table[label] := code
 end
 
 procedure bc_invocables(all, L)
-	every insert(bc_invoke_set, !L)
-	bc_invoke_all := \all
+    every insert(bc_invoke_set, !L)
+    bc_invoke_all := \all
 end
 
 procedure bc_links(L)
-	every insert(bc_link_set, !L)
+    every insert(bc_link_set, !L)
 end
 
 procedure bc_records(name, fields, coord)
-	if member(bc_declare_set, name) then {
-		semantic_error(
-			image(name) || ": inconsistent redeclaration", coord)
-	}
-	insert(bc_declare_set, name)
+    if member(bc_declare_set, name) then {
+        semantic_error(
+            image(name) || ": inconsistent redeclaration", coord)
+    }
+    insert(bc_declare_set, name)
 
-	bc_record_table[name] := fields
+    bc_record_table[name] := fields
 end
 
 procedure bc_globals(L)
-	every insert(bc_global_set, !L)
+    every insert(bc_global_set, !L)
 end
 
 procedure bc_function(name, params, accumulate, locals, statics, code, coord)
-	local undeclared, sortedvars, op, i, classname, k, insns, nextval, c, newsimplevar
-	local init, initcode, f, n, constructor, a, class_index
-	local clinit, clinitcode
-	local t
-	local createvars
+    local undeclared, sortedvars, op, i, classname, k, insns, nextval, c
+    local newsimplevar
+    local init, initcode, f, n, constructor, a, class_index
+    local clinit, clinitcode
+    local t
+    local createvars
 
-	bc_statics := set(statics)
-	if member(bc_declare_set, name) then {
-		semantic_error(
-			image(name) || ": inconsistent redeclaration", coord)
-	}
-	insert(bc_declare_set, name)
+    bc_statics := set(statics)
+    if member(bc_declare_set, name) then {
+        semantic_error(
+            image(name) || ": inconsistent redeclaration", coord)
+    }
+    insert(bc_declare_set, name)
 
-	c := bc_proc_classptr := ClassFile(3, 45, [&null], table(), 1,
-		&null,
-		&null,
-		[], [], [], []
-		)
+    c := bc_proc_classptr := ClassFile(3, 45, [&null], table(), 1,
+        &null,
+        &null,
+        [], [], [], []
+        )
 
-	bc_function_name := "p_" || bc_file_name || "$" || name
+    bc_function_name := "p_" || bc_file_name || "$" || name
 
-	bc_proc_table[name] := if /accumulate then *params else -*params
+    bc_proc_table[name] := if /accumulate then *params else -*params
 
-	bc_proc_classname := bc_function_name
+    bc_proc_classname := bc_function_name
 
-	c.super_class := cp_Class(c, cp_Utf8(c, "rts/iClosure"))
-	c.this_class := cp_Class(c, cp_Utf8(c, bc_function_name))
+    c.super_class := cp_Class(c, cp_Utf8(c, "rts/iClosure"))
+    c.this_class := cp_Class(c, cp_Utf8(c, bc_function_name))
 
-	bc_args_set := set();
-	bc_tmp_table := table()
-	bc_tmplabel_table := table()
-	bc_tmpclosure_table := table()
-	bc_var_set := set([])
-	bc_var_field := table()
-	bc_var_table := table()
-	bc_emit_table := table()
-	bc_create_exists := &null
-	bc_key_table := table()
+    bc_args_set := set();
+    bc_tmp_table := table()
+    bc_tmplabel_table := table()
+    bc_tmpclosure_table := table()
+    bc_var_set := set([])
+    bc_var_field := table()
+    bc_var_table := table()
+    bc_emit_table := table()
+    bc_create_exists := &null
+    bc_key_table := table()
 
-	ir(code)
+    ir(code)
 
-	bc_labels := table()
-	bc_ir2bc_labels := table()
-	bc_labels[code.ir.start] := 1
-	bc_emit_table := optimize(bc_emit_table, code.ir.start)
+    bc_labels := table()
+    bc_ir2bc_labels := table()
+    bc_labels[code.ir.start] := 1
+    bc_emit_table := optimize(bc_emit_table, code.ir.start)
 
-	bc_indirect_targets := set([])
-	every a := !!bc_emit_table do {
-		case type(a) of {
-		"irCoRet":	t := a.continuation
-		"irCreate":	t := a.location
-		"irMove":	t := a.rhs
-		"irSucceed":	t := a.continuation
-		default: next
-		}
-		if type(t) == "irLabel" then {
-			insert(bc_indirect_targets, t)
-		}
-	}
-	every a := !!!bc_emit_table & type(a) == "irCreate" do {
-		t := a.location
-		if type(t) == "irLabel" then {
-			insert(bc_indirect_targets, t)
-		}
-	}
+    bc_indirect_targets := set([])
+    every a := !!bc_emit_table do {
+        case type(a) of {
+        "irCoRet":  t := a.continuation
+        "irCreate": t := a.location
+        "irMove":   t := a.rhs
+        "irSucceed":    t := a.continuation
+        default: next
+        }
+        if type(t) == "irLabel" then {
+            insert(bc_indirect_targets, t)
+        }
+    }
+    every a := !!!bc_emit_table & type(a) == "irCreate" do {
+        t := a.location
+        if type(t) == "irLabel" then {
+            insert(bc_indirect_targets, t)
+        }
+    }
 
-	every k := !bc_indirect_targets do {
-		/bc_labels[k] := *bc_labels + 1
-		bc_ir2bc_labels[k] := label()
-	}
-	every k := key(bc_emit_table) do {
-		/bc_labels[k] := *bc_labels + 1
-		bc_ir2bc_labels[k] := label()
-	}
+    every k := !bc_indirect_targets do {
+        /bc_labels[k] := *bc_labels + 1
+        bc_ir2bc_labels[k] := label()
+    }
+    every k := key(bc_emit_table) do {
+        /bc_labels[k] := *bc_labels + 1
+        bc_ir2bc_labels[k] := label()
+    }
 
-	bc_save_restore_flag := &null
-	if a := !!bc_emit_table & type(a)=="irSucceed" & \a.continuation then {
-		bc_save_restore_flag := 1
-	}
-	if a := !!!bc_emit_table & type(a)=="irCreate" then {
-		bc_save_restore_flag := 1
-	}
+    bc_save_restore_flag := &null
+    if a := !!bc_emit_table & type(a)=="irSucceed" & \a.continuation then {
+        bc_save_restore_flag := 1
+    }
+    if a := !!!bc_emit_table & type(a)=="irCreate" then {
+        bc_save_restore_flag := 1
+    }
 
-	clinit := create_method(c, 8, "<clinit>", "()V")
-	clinitcode := create_code(c, 10, 10)
-	put(clinit.attributes, clinitcode)
+    clinit := create_method(c, 8, "<clinit>", "()V")
+    clinitcode := create_code(c, 10, 10)
+    put(clinit.attributes, clinitcode)
 
-	newsimplevar := create_methodref(c, "SimpleVar", "(Ljava/lang/String;)Lrts/vSimpleVar;", "rts/iNew")
-	every k := !statics do {
-		create_field(c, 8, "v$" || k, "Lrts/vVariable;")
-		f := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
-		n := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-		put(clinitcode.code, ldc_w(n))
-		put(clinitcode.code, invokestatic(newsimplevar))
-		put(clinitcode.code, putstatic(f))
-	}
+    newsimplevar := create_methodref(c, "SimpleVar",
+                     "(Ljava/lang/String;)Lrts/vSimpleVar;",
+                     "rts/iNew")
+    every k := !statics do {
+        create_field(c, 8, "v$" || k, "Lrts/vVariable;")
+        f := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
+        n := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
+        put(clinitcode.code, ldc_w(n))
+        put(clinitcode.code, invokestatic(newsimplevar))
+        put(clinitcode.code, putstatic(f))
+    }
 
-	bc_locals_set := set(locals)
-	bc_params_set := set(params)
-	bc_statics_set := set(statics)
+    bc_locals_set := set(locals)
+    bc_params_set := set(params)
+    bc_statics_set := set(statics)
 
-	bc_register(bc_emit_table)
+    bc_register(bc_emit_table)
 
-	undeclared := bc_var_set -- bc_params_set -- bc_locals_set -- bc_statics_set
-	every k := !params | !locals | !undeclared do {
-		create_field(c, 0, "v$" || k, "Lrts/vVariable;")
-	}
+    undeclared := bc_var_set -- bc_params_set -- bc_locals_set -- bc_statics_set
+    every k := !params | !locals | !undeclared do {
+        create_field(c, 0, "v$" || k, "Lrts/vVariable;")
+    }
 
-	bc_create_nextval(c, code.ir.start, params, locals, undeclared, accumulate)
+    bc_create_nextval(c, code.ir.start, params, locals, undeclared, accumulate)
 
-	init := create_method(c, 1, "<init>", "()V")
-	initcode := create_code(c, 10, 10)
-	put(init.attributes, initcode)
-	if \bc_save_restore_flag then {
-		if *bc_tmp_table > 0 then {
-			create_field(bc_proc_classptr, 0, "tmpArray", "[Lrts/vDescriptor;")
-		}
-		if *bc_tmpclosure_table > 0 then {
-			create_field(bc_proc_classptr, 0, "tmpClosureArray", "[Lrts/iClosure;")
-		}
-		if *bc_tmplabel_table > 0 then {
-			create_field(bc_proc_classptr, 0, "tmpLabelArray", "[I")
-		}
-	}
-	constructor := create_methodref(c, "<init>", "()V", "rts/iClosure")
-	put(initcode.code, aload_0() )
-	put(initcode.code, invokenonvirtual(constructor) )
-	createvars := create_methodref(c, "createVars", "()V", bc_proc_classname)
-	put(initcode.code, aload_0() )
-	put(initcode.code, invokevirtual(createvars) )
+    init := create_method(c, 1, "<init>", "()V")
+    initcode := create_code(c, 10, 10)
+    put(init.attributes, initcode)
+    if \bc_save_restore_flag then {
+        if *bc_tmp_table > 0 then {
+            create_field(bc_proc_classptr, 0, "tmpArray", "[Lrts/vDescriptor;")
+        }
+        if *bc_tmpclosure_table > 0 then {
+            create_field(bc_proc_classptr, 0, "tmpClosureArray",
+             "[Lrts/iClosure;")
+        }
+        if *bc_tmplabel_table > 0 then {
+            create_field(bc_proc_classptr, 0, "tmpLabelArray", "[I")
+        }
+    }
+    constructor := create_methodref(c, "<init>", "()V", "rts/iClosure")
+    put(initcode.code, aload_0() )
+    put(initcode.code, invokenonvirtual(constructor) )
+    createvars := create_methodref(c, "createVars", "()V", bc_proc_classname)
+    put(initcode.code, aload_0() )
+    put(initcode.code, invokevirtual(createvars) )
 
-	if \bc_save_restore_flag then {
+    if \bc_save_restore_flag then {
 
-		if *bc_tmp_table > 0 then {
-			put(initcode.code, aload_0() )
-			put(initcode.code, ipush(*bc_tmp_table) )
-			class_index := cp_Class(c, cp_Utf8(c, "rts/vDescriptor"))
-			put(initcode.code, anewarray(class_index) )
-			a := create_fieldref(bc_proc_classptr,
-						"tmpArray",
-						"[Lrts/vDescriptor;",
-						bc_proc_classname)
-			put(initcode.code, putfield(a) )
-		}
+        if *bc_tmp_table > 0 then {
+            put(initcode.code, aload_0() )
+            put(initcode.code, ipush(*bc_tmp_table) )
+            class_index := cp_Class(c, cp_Utf8(c, "rts/vDescriptor"))
+            put(initcode.code, anewarray(class_index) )
+            a := create_fieldref(bc_proc_classptr,
+                        "tmpArray",
+                        "[Lrts/vDescriptor;",
+                        bc_proc_classname)
+            put(initcode.code, putfield(a) )
+        }
 
-		if *bc_tmplabel_table > 0 then {
-			put(initcode.code, aload_0() )
-			put(initcode.code, ipush(*bc_tmplabel_table) )
-			put(initcode.code, newarray(10) )
-			a := create_fieldref(bc_proc_classptr,
-						"tmpLabelArray",
-						"[I",
-						bc_proc_classname)
-			put(initcode.code, putfield(a) )
-		}
+        if *bc_tmplabel_table > 0 then {
+            put(initcode.code, aload_0() )
+            put(initcode.code, ipush(*bc_tmplabel_table) )
+            put(initcode.code, newarray(10) )
+            a := create_fieldref(bc_proc_classptr,
+                        "tmpLabelArray",
+                        "[I",
+                        bc_proc_classname)
+            put(initcode.code, putfield(a) )
+        }
 
-		if *bc_tmpclosure_table > 0 then {
-			put(initcode.code, aload_0() )
-			put(initcode.code, ipush(*bc_tmpclosure_table) )
-			class_index := cp_Class(c, cp_Utf8(c, "rts/iClosure"))
-			put(initcode.code, anewarray(class_index) )
-			a := create_fieldref(bc_proc_classptr,
-						"tmpClosureArray",
-						"[Lrts/iClosure;",
-						bc_proc_classname)
-			put(initcode.code, putfield(a) )
-		}
-	}
-	put(initcode.code, vreturn() )
+        if *bc_tmpclosure_table > 0 then {
+            put(initcode.code, aload_0() )
+            put(initcode.code, ipush(*bc_tmpclosure_table) )
+            class_index := cp_Class(c, cp_Utf8(c, "rts/iClosure"))
+            put(initcode.code, anewarray(class_index) )
+            a := create_fieldref(bc_proc_classptr,
+                        "tmpClosureArray",
+                        "[Lrts/iClosure;",
+                        bc_proc_classname)
+            put(initcode.code, putfield(a) )
+        }
+    }
+    put(initcode.code, vreturn() )
 
-	every insert(bc_undeclared_set, !undeclared)
+    every insert(bc_undeclared_set, !undeclared)
 
-	sortedvars := 
-		sort(bc_var_set ++ set(params) ++ set(locals) ++ set(statics))
+    sortedvars := 
+        sort(bc_var_set ++ set(params) ++ set(locals) ++ set(statics))
 
-	bc_create_locals(c, undeclared, set(statics), sortedvars)
-	bc_create_createvars(c, params, locals, undeclared)
-	bc_create_copy(c, params, locals, undeclared)
+    bc_create_locals(c, undeclared, set(statics), sortedvars)
+    bc_create_createvars(c, params, locals, undeclared)
+    bc_create_copy(c, params, locals, undeclared)
 
-	put(clinitcode.code, vreturn() )
-	
-	f := open(bc_directory || bc_function_name || ".class","wu") | runerr(1000)
-	writer_ClassFile(f, c)
-	close(f)
+    put(clinitcode.code, vreturn() )
+    
+    f := open(bc_directory || bc_function_name || ".class","wu") | runerr(1000)
+    writer_ClassFile(f, c)
+    close(f)
 
-	# write(&errout, "tmp=", *bc_tmp_table, " lab=", *bc_tmplabel_table, " clo=", *bc_tmpclosure_table)
 end
 
 procedure bc_register(t)
-	local op
+    local op
 
-	every op := !!!t do {
-		bc_register0(op)
-	}
+    every op := !!!t do {
+        bc_register0(op)
+    }
 end
 
 procedure bc_register0(op)
-	case type(op) of {
-	"list" : every bc_register0(!op)
-	"irTmp" : {
-		/bc_tmp_table[op.name] := *bc_tmp_table;
-	}
-	"irTmpLabel" : {
-		/bc_tmplabel_table[op.name] := *bc_tmplabel_table
-	}
-	"irTmpClosure" : {
-		/bc_tmpclosure_table[op.name] := *bc_tmpclosure_table
-	}
-	"irVar" : {
-		insert(bc_var_set, op.name)
-		/bc_var_table[op.name] := *bc_var_table
-	}
-	}
+    case type(op) of {
+    "list" : every bc_register0(!op)
+    "irTmp" : {
+        /bc_tmp_table[op.name] := *bc_tmp_table;
+    }
+    "irTmpLabel" : {
+        /bc_tmplabel_table[op.name] := *bc_tmplabel_table
+    }
+    "irTmpClosure" : {
+        /bc_tmpclosure_table[op.name] := *bc_tmpclosure_table
+    }
+    "irVar" : {
+        insert(bc_var_set, op.name)
+        /bc_var_table[op.name] := *bc_var_table
+    }
+    }
 end
 
 procedure bc_create_nextval(c, start, params, locals, undeclared, accumulate)
-	local PC, nextval, nextvalcode, k, lab, switch, insns, deflab
-	local runtimeerror, r
-	local a, s, tmplab, prologue, var_load_label, t, tmpset
+    local PC, nextval, nextvalcode, k, lab, switch, insns, deflab
+    local runtimeerror, r
+    local a, s, tmplab, prologue, var_load_label, t, tmpset
 
-	nextval := create_method(c, 0, "nextval", "()Lrts/vDescriptor;")
-	nextvalcode := create_code(c, 10, 10)
-	put(nextval.attributes, nextvalcode)
+    nextval := create_method(c, 0, "nextval", "()Lrts/vDescriptor;")
+    nextvalcode := create_code(c, 10, 10)
+    put(nextval.attributes, nextvalcode)
 
-	bc_tmp_offset := 10
-	bc_tmplabel_offset := bc_tmp_offset + *bc_tmp_table
-	bc_tmpclosure_offset := bc_tmplabel_offset + *bc_tmplabel_table
-	bc_var_offset := bc_tmpclosure_offset + *bc_tmpclosure_table
-	nextvalcode.max_locals := bc_var_offset + *bc_var_table
-	s := nextvalcode.code
+    bc_tmp_offset := 10
+    bc_tmplabel_offset := bc_tmp_offset + *bc_tmp_table
+    bc_tmpclosure_offset := bc_tmplabel_offset + *bc_tmplabel_table
+    bc_var_offset := bc_tmpclosure_offset + *bc_tmpclosure_table
+    nextvalcode.max_locals := bc_var_offset + *bc_var_table
+    s := nextvalcode.code
 
-	bc_switch_label := label()
-	var_load_label := label()
-	tmplab := label()
+    bc_switch_label := label()
+    var_load_label := label()
+    tmplab := label()
 
-	PC := PC_fieldref(c)
+    PC := PC_fieldref(c)
 
-	#%#% this use of flag causes spurious verification errors.
-	if \bc_save_restore_flag then {
-		put(nextvalcode.code, aload_0() )
-		put(nextvalcode.code, getfield(PC))
-		put(nextvalcode.code, dup())
-		put(nextvalcode.code, iconst_1())
-		put(nextvalcode.code, if_icmpne(tmplab))
-	}
+    #%#% this use of flag causes spurious verification errors.
+    if \bc_save_restore_flag then {
+        put(nextvalcode.code, aload_0() )
+        put(nextvalcode.code, getfield(PC))
+        put(nextvalcode.code, dup())
+        put(nextvalcode.code, iconst_1())
+        put(nextvalcode.code, if_icmpne(tmplab))
+    }
 
-	bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
+    bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
 
-	every k := key(bc_tmp_table) do {
-		put(s, aconst_null())
-		put(s, Astore(bc_tmp_table[k] + bc_tmp_offset))
-	}
-	every k := key(bc_tmpclosure_table) do {
-		put(s, aconst_null())
-		put(s, Astore(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
-	}
-	every k := key(bc_tmplabel_table) do {
-		put(s, iconst_0())
-		put(s, Istore(bc_tmplabel_table[k] + bc_tmplabel_offset))
-	}
+    every k := key(bc_tmp_table) do {
+        put(s, aconst_null())
+        put(s, Astore(bc_tmp_table[k] + bc_tmp_offset))
+    }
+    every k := key(bc_tmpclosure_table) do {
+        put(s, aconst_null())
+        put(s, Astore(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
+    }
+    every k := key(bc_tmplabel_table) do {
+        put(s, iconst_0())
+        put(s, Istore(bc_tmplabel_table[k] + bc_tmplabel_offset))
+    }
 
-	#%#% this use of flag causes spurious verification errors.
-	if \bc_save_restore_flag then {
-		put(s, goto_w(var_load_label))
-		put(nextvalcode.code, tmplab)
-		if *bc_tmp_table > 0 then {
-			a := create_fieldref(bc_proc_classptr,
-						"tmpArray",
-						"[Lrts/vDescriptor;",
-						bc_proc_classname)
-			put(s, aload_0())
-			put(s, getfield(a))
-			every k := key(bc_tmp_table) do {
-				put(s, dup())
-				put(s, ipush(bc_tmp_table[k]))
-				put(s, aaload())
-				put(s, Astore(bc_tmp_table[k] + bc_tmp_offset))
-			}
-			put(s, Pop())
-		}
+    #%#% this use of flag causes spurious verification errors.
+    if \bc_save_restore_flag then {
+        put(s, goto_w(var_load_label))
+        put(nextvalcode.code, tmplab)
+        if *bc_tmp_table > 0 then {
+            a := create_fieldref(bc_proc_classptr,
+                        "tmpArray",
+                        "[Lrts/vDescriptor;",
+                        bc_proc_classname)
+            put(s, aload_0())
+            put(s, getfield(a))
+            every k := key(bc_tmp_table) do {
+                put(s, dup())
+                put(s, ipush(bc_tmp_table[k]))
+                put(s, aaload())
+                put(s, Astore(bc_tmp_table[k] + bc_tmp_offset))
+            }
+            put(s, Pop())
+        }
 
-		if *bc_tmpclosure_table > 0 then {
-			a := create_fieldref(bc_proc_classptr,
-						"tmpClosureArray",
-						"[Lrts/iClosure;",
-						bc_proc_classname)
-			put(s, aload_0())
-			put(s, getfield(a))
-			every k := key(bc_tmpclosure_table) do {
-				put(s, dup())
-				put(s, ipush(bc_tmpclosure_table[k]))
-				put(s, aaload())
-				put(s, Astore(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
-			}
-			put(s, Pop())
-		}
+        if *bc_tmpclosure_table > 0 then {
+            a := create_fieldref(bc_proc_classptr,
+                        "tmpClosureArray",
+                        "[Lrts/iClosure;",
+                        bc_proc_classname)
+            put(s, aload_0())
+            put(s, getfield(a))
+            every k := key(bc_tmpclosure_table) do {
+                put(s, dup())
+                put(s, ipush(bc_tmpclosure_table[k]))
+                put(s, aaload())
+                put(s, Astore(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
+            }
+            put(s, Pop())
+        }
 
-		if *bc_tmplabel_table > 0 then {
-			a := create_fieldref(bc_proc_classptr,
-						"tmpLabelArray",
-						"[I",
-						bc_proc_classname)
-			put(s, aload_0())
-			put(s, getfield(a))
-			every k := key(bc_tmplabel_table) do {
-				put(s, dup())
-				put(s, ipush(bc_tmplabel_table[k]))
-				put(s, iaload())
-				put(s, Istore(bc_tmplabel_table[k] + bc_tmplabel_offset))
-			}
-			put(s, Pop())
-		}
-	}
+        if *bc_tmplabel_table > 0 then {
+            a := create_fieldref(bc_proc_classptr,
+                        "tmpLabelArray",
+                        "[I",
+                        bc_proc_classname)
+            put(s, aload_0())
+            put(s, getfield(a))
+            every k := key(bc_tmplabel_table) do {
+                put(s, dup())
+                put(s, ipush(bc_tmplabel_table[k]))
+                put(s, iaload())
+                put(s, Istore(bc_tmplabel_table[k] + bc_tmplabel_offset))
+            }
+            put(s, Pop())
+        }
+    }
 
-	put(nextvalcode.code, var_load_label)
+    put(nextvalcode.code, var_load_label)
 
-	every k := key(bc_var_table) do {
-		/bc_var_field[k] := create_fieldref(bc_proc_classptr,
-						"v$" || k,
-						"Lrts/vVariable;",
-						bc_proc_classname)
-		if member(bc_statics, k) then {
-			put(s, getstatic(bc_var_field[k]))
-		} else {
-			put(s, aload_0() )
-			put(s, getfield(bc_var_field[k]))
-		}
-		put(s, Astore(bc_var_table[k] + bc_var_offset))
-	}
+    every k := key(bc_var_table) do {
+        /bc_var_field[k] := create_fieldref(bc_proc_classptr,
+                        "v$" || k,
+                        "Lrts/vVariable;",
+                        bc_proc_classname)
+        if member(bc_statics, k) then {
+            put(s, getstatic(bc_var_field[k]))
+        } else {
+            put(s, aload_0() )
+            put(s, getfield(bc_var_field[k]))
+        }
+        put(s, Astore(bc_var_table[k] + bc_var_offset))
+    }
 
-	deflab := label()
-	
-	member(bc_indirect_targets, start) & runerr(1000)
-	switch := tableswitch(0, deflab, 1, *bc_indirect_targets+1, list(*bc_indirect_targets+1))
-	every k := (!bc_indirect_targets | start) do {
-		switch.offsets[\bc_labels[k]] := \bc_ir2bc_labels[k] | runerr(1000,k)
-	}
+    deflab := label()
+    
+    member(bc_indirect_targets, start) & runerr(1000)
+    switch := tableswitch(0, deflab, 1, *bc_indirect_targets+1,
+              list(*bc_indirect_targets+1))
+    every k := (!bc_indirect_targets | start) do {
+        switch.offsets[\bc_labels[k]] := \bc_ir2bc_labels[k] | runerr(1000,k)
+    }
 
-	if \bc_save_restore_flag then {
-		put(nextvalcode.code, goto_w(bc_switch_label) )
-	}
+    if \bc_save_restore_flag then {
+        put(nextvalcode.code, goto_w(bc_switch_label) )
+    }
 
-	bc_emit_code(nextvalcode.code, switch, start)
+    bc_emit_code(nextvalcode.code, switch, start)
 
-	put(nextvalcode.code, bc_switch_label)
+    put(nextvalcode.code, bc_switch_label)
 
-	if *bc_indirect_targets > 0 then {
-		put(nextvalcode.code, switch)
+    if *bc_indirect_targets > 0 then {
+        put(nextvalcode.code, switch)
 
-		runtimeerror := runtimeerror_methodref(c)
-		put(nextvalcode.code, deflab)
-		put(nextvalcode.code, ipush(902) )
-		put(nextvalcode.code, invokestatic(runtimeerror) )
-		put(nextvalcode.code, aconst_null())
-		put(nextvalcode.code, areturn())
-	} else {
-		/bc_save_restore_flag | runerr(1000)
-	}
+        runtimeerror := runtimeerror_methodref(c)
+        put(nextvalcode.code, deflab)
+        put(nextvalcode.code, ipush(902) )
+        put(nextvalcode.code, invokestatic(runtimeerror) )
+        put(nextvalcode.code, aconst_null())
+        put(nextvalcode.code, areturn())
+    } else {
+        /bc_save_restore_flag | runerr(1000)
+    }
 end
 
 global bc_emitted
 
 procedure bc_emit_code0(s, switch, k)
-	local lab, insns, i
+    local lab, insns, i
 
-	if member(bc_emitted, k) then return
-	insert(bc_emitted, k)
+    if member(bc_emitted, k) then return
+    insert(bc_emitted, k)
 
-	lab := bc_ir2bc_labels[k]
-	put(s, lab)
-	insns := bc_emit_table[k]
-	every i := insns[1 to *insns-1] do {
-		gen_bc(s, i)
-	}
-	# every gen_bc(s, insns[1 to *insns-1])
-	if type(insns[-1]) == "irGoto" & type(insns[-1].location) == "irLabel" & not member(bc_emitted, insns[-1].location) then {
-		bc_emit_code0(s, switch, insns[-1].location)
-	} else {
-		gen_bc(s, insns[-1])
-	}
+    lab := bc_ir2bc_labels[k]
+    put(s, lab)
+    insns := bc_emit_table[k]
+    every i := insns[1 to *insns-1] do {
+        gen_bc(s, i)
+    }
+    # every gen_bc(s, insns[1 to *insns-1])
+    if type(insns[-1]) == "irGoto" &
+       type(insns[-1].location) == "irLabel" &
+       not member(bc_emitted, insns[-1].location) then {
+        bc_emit_code0(s, switch, insns[-1].location)
+    } else {
+        gen_bc(s, insns[-1])
+    }
 end
 
 procedure bc_emit_code(s, switch, start)
-	bc_emitted := set([])
-	bc_emit_code0(s, switch, start)
-	every bc_emit_code0(s, switch, key(bc_emit_table))
+    bc_emitted := set([])
+    bc_emit_code0(s, switch, start)
+    every bc_emit_code0(s, switch, key(bc_emit_table))
 end
 
 procedure bc_create_locals(c, undeclared, statics, sortedvars)
-	local locals, localscode, names, variables, k, lab
-	local shadow, index, class_index, m
+    local locals, localscode, names, variables, k, lab
+    local shadow, index, class_index, m
 
-	locals := create_method(c, 0, "locals", "()V")
-	localscode := create_code(c, 10, 10)
-	put(locals.attributes, localscode)
+    locals := create_method(c, 0, "locals", "()V")
+    localscode := create_code(c, 10, 10)
+    put(locals.attributes, localscode)
 
-	if \nointrospection then {
-		m := runtimeerror_methodref(c)
-		put(localscode.code, ipush(905))
-		put(localscode.code, invokestatic(m))
-		put(localscode.code, vreturn() )
-		return
-	}
-	# local1 is int counter
-	put(localscode.code, iconst_0() )
-	put(localscode.code, istore_1() )
-	names := create_fieldref(c, "names", "[Ljava/lang/String;", "rts/iClosure")
-	class_index := cp_Class(c, cp_Utf8(c, "java/lang/String"))
-	put(localscode.code, aload_0() )
-	put(localscode.code, ipush(*sortedvars+1) )
-	put(localscode.code, anewarray(class_index) )
-	put(localscode.code, putfield(names) )
-	variables := create_fieldref(c, "variables", "[Lrts/vVariable;", "rts/iClosure")
-	class_index := cp_Class(c, cp_Utf8(c, "rts/vVariable"))
-	put(localscode.code, aload_0() )
-	put(localscode.code, ipush(*sortedvars+1) )
-	put(localscode.code, anewarray(class_index) )
-	put(localscode.code, putfield(variables) )
+    if \nointrospection then {
+        m := runtimeerror_methodref(c)
+        put(localscode.code, ipush(905))
+        put(localscode.code, invokestatic(m))
+        put(localscode.code, vreturn() )
+        return
+    }
+    # local1 is int counter
+    put(localscode.code, iconst_0() )
+    put(localscode.code, istore_1() )
+    names := create_fieldref(c, "names", "[Ljava/lang/String;", "rts/iClosure")
+    class_index := cp_Class(c, cp_Utf8(c, "java/lang/String"))
+    put(localscode.code, aload_0() )
+    put(localscode.code, ipush(*sortedvars+1) )
+    put(localscode.code, anewarray(class_index) )
+    put(localscode.code, putfield(names) )
+    variables := create_fieldref(c, "variables", "[Lrts/vVariable;",
+                 "rts/iClosure")
+    class_index := cp_Class(c, cp_Utf8(c, "rts/vVariable"))
+    put(localscode.code, aload_0() )
+    put(localscode.code, ipush(*sortedvars+1) )
+    put(localscode.code, anewarray(class_index) )
+    put(localscode.code, putfield(variables) )
 
-	every k := !sortedvars do {
-		lab := label()
-		if member(undeclared, k) then {
-			shadow := create_fieldref(c, "v$" || k || "$", "Lrts/vVariable;", bc_link_classname)
-			put(localscode.code, getstatic(shadow) )
-			put(localscode.code, ifnonnull(lab) )
-		}
-		index := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-		put(localscode.code, aload_0() )
-		put(localscode.code, getfield(names) )
-		put(localscode.code, iload_1() )
-		put(localscode.code, ldc_w(index) )
-		put(localscode.code, aastore() )
+    every k := !sortedvars do {
+        lab := label()
+        if member(undeclared, k) then {
+            shadow := create_fieldref(c, "v$" || k || "$", "Lrts/vVariable;",
+                      bc_link_classname)
+            put(localscode.code, getstatic(shadow) )
+            put(localscode.code, ifnonnull(lab) )
+        }
+        index := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
+        put(localscode.code, aload_0() )
+        put(localscode.code, getfield(names) )
+        put(localscode.code, iload_1() )
+        put(localscode.code, ldc_w(index) )
+        put(localscode.code, aastore() )
 
-		index := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
-		put(localscode.code, aload_0() )
-		put(localscode.code, getfield(variables) )
-		put(localscode.code, iload_1() )
-		if member(statics, k) then {
-			put(localscode.code, getstatic(index) )
-		} else {
-			put(localscode.code, aload_0() )
-			put(localscode.code, getfield(index) )
-		}
-		put(localscode.code, aastore() )
+        index := create_fieldref(c, "v$" || k, "Lrts/vVariable;",
+                 bc_proc_classname)
+        put(localscode.code, aload_0() )
+        put(localscode.code, getfield(variables) )
+        put(localscode.code, iload_1() )
+        if member(statics, k) then {
+            put(localscode.code, getstatic(index) )
+        } else {
+            put(localscode.code, aload_0() )
+            put(localscode.code, getfield(index) )
+        }
+        put(localscode.code, aastore() )
 
-		put(localscode.code, iinc(1,1) )
-		put(localscode.code, lab )
-	}
-	put(localscode.code, aload_0() )
-	put(localscode.code, getfield(names) )
-	put(localscode.code, iload_1() )
-	put(localscode.code, aconst_null() )
-	put(localscode.code, aastore() )
+        put(localscode.code, iinc(1,1) )
+        put(localscode.code, lab )
+    }
+    put(localscode.code, aload_0() )
+    put(localscode.code, getfield(names) )
+    put(localscode.code, iload_1() )
+    put(localscode.code, aconst_null() )
+    put(localscode.code, aastore() )
 
-	put(localscode.code, aload_0() )
-	put(localscode.code, getfield(variables) )
-	put(localscode.code, iload_1() )
-	put(localscode.code, aconst_null() )
-	put(localscode.code, aastore() )
-	put(localscode.code, vreturn() )
+    put(localscode.code, aload_0() )
+    put(localscode.code, getfield(variables) )
+    put(localscode.code, iload_1() )
+    put(localscode.code, aconst_null() )
+    put(localscode.code, aastore() )
+    put(localscode.code, vreturn() )
 end
 
 procedure bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
-	local arguments, marshal
-	local deref, assign, i, k, field
-	local elselab, endlab
-	local null, lab1, linkvalue
+    local arguments, marshal
+    local deref, assign, i, k, field
+    local elselab, endlab
+    local null, lab1, linkvalue
 
 
-	null := create_methodref(bc_proc_classptr, "Null", "()Lrts/vNull;", "rts/iNew")
-	arguments := create_fieldref(c, "arguments", "[Lrts/vDescriptor;", "rts/iClosure")
-	deref := deref_methodref(c)
-	assign := assign_methodref(c)
+    null := create_methodref(bc_proc_classptr, "Null", "()Lrts/vNull;",
+                 "rts/iNew")
+    arguments := create_fieldref(c, "arguments", "[Lrts/vDescriptor;",
+                 "rts/iClosure")
+    deref := deref_methodref(c)
+    assign := assign_methodref(c)
 
-	every i := 1 to *params do {
-		k := params[i]
-		field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
-		put(s, aload_0() )
-		put(s, getfield(field) )
+    every i := 1 to *params do {
+        k := params[i]
+        field := create_fieldref(c, "v$" || k, "Lrts/vVariable;",
+                 bc_proc_classname)
+        put(s, aload_0() )
+        put(s, getfield(field) )
 
-		if i = *params & \accumulate then {
-			marshal := create_methodref(c, "marshal", "([Lrts/vDescriptor;I)Lrts/vList;", "rts/iInterface")
-			put(s, aload_0() )
-			put(s, getfield(arguments))
-			put(s, ipush(*params))
-			put(s, invokestatic(marshal))
-			put(s, invokevirtual(assign) )
-			put(s, Pop())
-		} else {
-			elselab := label()
-			endlab := label()
-			put(s, aload_0() )
-			put(s, getfield(arguments))
-			put(s, dup())
-			put(s, arraylength())
-			put(s, ipush(i))
-			put(s, if_icmpge(elselab))
-				put(s, Pop())
-				put(s, invokestatic(null))
-				put(s, goto(endlab))
-			put(s, elselab)
-				put(s, ipush(i-1))
-				put(s, aaload())
-				put(s, invokevirtual(deref) )
-			put(s, endlab)
-			put(s, invokevirtual(assign) )
-			put(s, Pop())
-		}
-	}
-	every k := !locals do {
-		field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
-		put(s, aload_0() )
-		put(s, getfield(field) )
-		put(s, invokestatic(null))
-		put(s, invokevirtual(assign) )
-		put(s, Pop())
-	}
-	every k := !undeclared do {
-		linkvalue := create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;", bc_link_classname)
-		lab1 := label()
-		field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
-		put(s, getstatic(linkvalue) )
-		put(s, ifnonnull(lab1) )
-		put(s, aload_0() )
-		put(s, getfield(field) )
-		put(s, invokestatic(null))
-		put(s, invokevirtual(assign) )
-		put(s, Pop())
-		put(s, lab1 )
-	}
+        if i = *params & \accumulate then {
+            marshal := create_methodref(c, "marshal",
+                    "([Lrts/vDescriptor;I)Lrts/vList;",
+                    "rts/iInterface")
+            put(s, aload_0() )
+            put(s, getfield(arguments))
+            put(s, ipush(*params))
+            put(s, invokestatic(marshal))
+            put(s, invokevirtual(assign) )
+            put(s, Pop())
+        } else {
+            elselab := label()
+            endlab := label()
+            put(s, aload_0() )
+            put(s, getfield(arguments))
+            put(s, dup())
+            put(s, arraylength())
+            put(s, ipush(i))
+            put(s, if_icmpge(elselab))
+                put(s, Pop())
+                put(s, invokestatic(null))
+                put(s, goto(endlab))
+            put(s, elselab)
+                put(s, ipush(i-1))
+                put(s, aaload())
+                put(s, invokevirtual(deref) )
+            put(s, endlab)
+            put(s, invokevirtual(assign) )
+            put(s, Pop())
+        }
+    }
+    every k := !locals do {
+        field := create_fieldref(c, "v$" || k, "Lrts/vVariable;",
+                 bc_proc_classname)
+        put(s, aload_0() )
+        put(s, getfield(field) )
+        put(s, invokestatic(null))
+        put(s, invokevirtual(assign) )
+        put(s, Pop())
+    }
+    every k := !undeclared do {
+        linkvalue := create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
+                     bc_link_classname)
+        lab1 := label()
+        field := create_fieldref(c, "v$" || k, "Lrts/vVariable;",
+                 bc_proc_classname)
+        put(s, getstatic(linkvalue) )
+        put(s, ifnonnull(lab1) )
+        put(s, aload_0() )
+        put(s, getfield(field) )
+        put(s, invokestatic(null))
+        put(s, invokevirtual(assign) )
+        put(s, Pop())
+        put(s, lab1 )
+    }
 end
 
 procedure bc_createvars(s, c, params, locals, undeclared)
-	local newsimplevar, k, field, v
-	local linkvalue, lab1
+    local newsimplevar, k, field, v
+    local linkvalue, lab1
 
-	newsimplevar := create_methodref(c, "SimpleVar", "(Ljava/lang/String;)Lrts/vSimpleVar;", "rts/iNew")
-	every k := !params | !locals do {
-		v := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-		field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
-		put(s, aload_0() )
-		put(s, ldc_w(v) )
-		put(s, invokestatic(newsimplevar) )
-		put(s, putfield(field) )
-	}
+    newsimplevar := create_methodref(c, "SimpleVar",
+                     "(Ljava/lang/String;)Lrts/vSimpleVar;",
+                     "rts/iNew")
+    every k := !params | !locals do {
+        v := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
+        field := create_fieldref(c, "v$" || k, "Lrts/vVariable;",
+                 bc_proc_classname)
+        put(s, aload_0() )
+        put(s, ldc_w(v) )
+        put(s, invokestatic(newsimplevar) )
+        put(s, putfield(field) )
+    }
 
-	every k := !undeclared do {
-		linkvalue := create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;", bc_link_classname)
-		lab1 := label()
-		v := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-		# v$k = link.v$k$ == null ? iNew.SimpleVar("k") : link.v$k$
-		field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
-		put(s, aload_0() )
-		put(s, getstatic(linkvalue) )
-		put(s, dup() )
-		put(s, ifnonnull(lab1) )
-		put(s, Pop() )
-		put(s, ldc_w(v) )
-		put(s, invokestatic(newsimplevar) )
-		put(s, lab1 )
-		put(s, putfield(field) )
-	}
+    every k := !undeclared do {
+        linkvalue := create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
+                     bc_link_classname)
+        lab1 := label()
+        v := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
+        # v$k = link.v$k$ == null ? iNew.SimpleVar("k") : link.v$k$
+        field := create_fieldref(c, "v$" || k, "Lrts/vVariable;",
+                 bc_proc_classname)
+        put(s, aload_0() )
+        put(s, getstatic(linkvalue) )
+        put(s, dup() )
+        put(s, ifnonnull(lab1) )
+        put(s, Pop() )
+        put(s, ldc_w(v) )
+        put(s, invokestatic(newsimplevar) )
+        put(s, lab1 )
+        put(s, putfield(field) )
+    }
 end
 
 procedure bc_create_createvars(c, params, locals, undeclared)
-	local createvars, createvarscode
+    local createvars, createvarscode
 
-	createvars := create_method(c, 0, "createVars", "()V")
-	createvarscode := create_code(c, 10, 10)
-	put(createvars.attributes, createvarscode)
+    createvars := create_method(c, 0, "createVars", "()V")
+    createvarscode := create_code(c, 10, 10)
+    put(createvars.attributes, createvarscode)
 
-	bc_createvars(createvarscode.code, c, params, locals, undeclared)
+    bc_createvars(createvarscode.code, c, params, locals, undeclared)
 
-	put(createvarscode.code, vreturn() )
+    put(createvarscode.code, vreturn() )
 end
 
 procedure bc_create_copy(c, params, locals, undeclared)
-	local Copy, copycode, createvars, deref, assign
-	local k, field, linkvalue, lab1, PC, init, class
+    local Copy, copycode, createvars, deref, assign
+    local k, field, linkvalue, lab1, PC, init, class
 
-	if \bc_create_exists then {
-		Copy := create_method(c, 0, "copy", "(I)Lrts/iClosure;")
-		copycode := create_code(c, 10, 10)
-		put(Copy.attributes, copycode)
-		# local1 is PC
-		# local2 is New
-		class := cp_Class(c, cp_Utf8(c, bc_proc_classname))
-		init := create_methodref(c, "<init>", "()V", bc_proc_classname)
-		put(copycode.code, new(class) )
-		put(copycode.code, dup() )
-		put(copycode.code, invokenonvirtual(init) )
-		put(copycode.code, astore_2() )
+    if \bc_create_exists then {
+        Copy := create_method(c, 0, "copy", "(I)Lrts/iClosure;")
+        copycode := create_code(c, 10, 10)
+        put(Copy.attributes, copycode)
+        # local1 is PC
+        # local2 is New
+        class := cp_Class(c, cp_Utf8(c, bc_proc_classname))
+        init := create_methodref(c, "<init>", "()V", bc_proc_classname)
+        put(copycode.code, new(class) )
+        put(copycode.code, dup() )
+        put(copycode.code, invokenonvirtual(init) )
+        put(copycode.code, astore_2() )
 
-		createvars := create_methodref(c, "createVars", "()V", bc_proc_classname)
-		put(copycode.code, aload_2() )
-		put(copycode.code, invokevirtual(createvars) )
-		deref := deref_methodref(c)
-		assign := assign_methodref(bc_proc_classptr)
-		every k := !params | !locals do {
-			field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
-			put(copycode.code, aload_2() )
-			put(copycode.code, getfield(field) )
-			put(copycode.code, aload_0() )
-			put(copycode.code, getfield(field) )
-			put(copycode.code, invokevirtual(deref) )
-			put(copycode.code, invokevirtual(assign) )
-			put(copycode.code, Pop())
-		}
-		every k := !undeclared do {
-			linkvalue := create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;", bc_link_classname)
-			lab1 := label()
-			put(copycode.code, getstatic(linkvalue) )
-			put(copycode.code, ifnonnull(lab1) )
-			# copied from above #%#%#%#%
-			field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
-			put(copycode.code, aload_2() )
-			put(copycode.code, getfield(field) )
-			put(copycode.code, aload_0() )
-			put(copycode.code, getfield(field) )
-			put(copycode.code, invokevirtual(deref) )
-			put(copycode.code, invokevirtual(assign) )
-			put(copycode.code, Pop())
+        createvars := create_methodref(c, "createVars", "()V",
+                       bc_proc_classname)
+        put(copycode.code, aload_2() )
+        put(copycode.code, invokevirtual(createvars) )
+        deref := deref_methodref(c)
+        assign := assign_methodref(bc_proc_classptr)
+        every k := !params | !locals do {
+            field := create_fieldref(c, "v$" || k, "Lrts/vVariable;",
+                     bc_proc_classname)
+            put(copycode.code, aload_2() )
+            put(copycode.code, getfield(field) )
+            put(copycode.code, aload_0() )
+            put(copycode.code, getfield(field) )
+            put(copycode.code, invokevirtual(deref) )
+            put(copycode.code, invokevirtual(assign) )
+            put(copycode.code, Pop())
+        }
+        every k := !undeclared do {
+            linkvalue := create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
+                     bc_link_classname)
+            lab1 := label()
+            put(copycode.code, getstatic(linkvalue) )
+            put(copycode.code, ifnonnull(lab1) )
+            # copied from above #%#%#%#%
+            field := create_fieldref(c, "v$" || k, "Lrts/vVariable;",
+                     bc_proc_classname)
+            put(copycode.code, aload_2() )
+            put(copycode.code, getfield(field) )
+            put(copycode.code, aload_0() )
+            put(copycode.code, getfield(field) )
+            put(copycode.code, invokevirtual(deref) )
+            put(copycode.code, invokevirtual(assign) )
+            put(copycode.code, Pop())
 
-			put(copycode.code, lab1 )
-		}
-		PC := PC_fieldref(c)
-		put(copycode.code, aload_2() )
-		put(copycode.code, iload_1() )
-		put(copycode.code, putfield(PC) )
-		put(copycode.code, aload_2() )
-		put(copycode.code, areturn() )
-	}
+            put(copycode.code, lab1 )
+        }
+        PC := PC_fieldref(c)
+        put(copycode.code, aload_2() )
+        put(copycode.code, iload_1() )
+        put(copycode.code, putfield(PC) )
+        put(copycode.code, aload_2() )
+        put(copycode.code, areturn() )
+    }
 end
 
 procedure bc_File(parse, flagList)
-	local k, i, op, c, f, p
+    local k, i, op, c, f, p
 
-	CG := bc_CG()
+    CG := bc_CG()
 
-	outfile := &output
-	if "-debug" == !flagList then {
-		bc_debug := 1
-	}
-	if match("-O", !flagList) then {
-		optimize_flag := 1
-	}
+    outfile := &output
+    if "-debug" == !flagList then {
+        bc_debug := 1
+    }
+    if match("-O", !flagList) then {
+        optimize_flag := 1
+    }
 
-	!flagList ? {
-		="-class:" & java_classname := tab(0)
-		&fail
-	}
-	\java_classname | stop("ERROR: must specify -class:<name>")
+    !flagList ? {
+        ="-class:" & java_classname := tab(0)
+        &fail
+    }
+    \java_classname | stop("ERROR: must specify -class:<name>")
 
-	nodebuginfo := 1
-	nointrospection := 1
-	noerror2failure := 1
-	every k := !flagList do {
-		k ? {
-			if ="-f" then {
-				if find("e") | find("a") then {
-					noerror2failure := &null
-				}
-				if find("n") | find("a") then {
-					nodebuginfo := &null
-				}
-				if find("d") | find("a") then {
-					nointrospection := &null
-				}
-			}
-		}
-	}
+    nodebuginfo := 1
+    nointrospection := 1
+    noerror2failure := 1
+    every k := !flagList do {
+        k ? {
+            if ="-f" then {
+                if find("e") | find("a") then {
+                    noerror2failure := &null
+                }
+                if find("n") | find("a") then {
+                    nodebuginfo := &null
+                }
+                if find("d") | find("a") then {
+                    nointrospection := &null
+                }
+            }
+        }
+    }
 
-	bc_directory := "./"
-	bc_directory := (!flagList ? (="-dir:" & tab(0)))
+    bc_directory := "./"
+    bc_directory := (!flagList ? (="-dir:" & tab(0)))
 
-	bc_file_name := java_classname
-	bc_link_classname := bc_file_name
+    bc_file_name := java_classname
+    bc_link_classname := bc_file_name
 
-	bc_invoke_set := set([])
-	bc_invoke_all := &null
-	bc_link_set := set([])
-	bc_global_set := set([])
-	bc_proc_table := table()
-	bc_record_table := table()
-	bc_undeclared_set := set([])
-	bc_op_table := table()
-	bc_declare_set := set([])
+    bc_invoke_set := set([])
+    bc_invoke_all := &null
+    bc_link_set := set([])
+    bc_global_set := set([])
+    bc_proc_table := table()
+    bc_record_table := table()
+    bc_undeclared_set := set([])
+    bc_op_table := table()
+    bc_declare_set := set([])
 
-	bc_cset_table := table()
-	bc_string_table := table()
-	bc_integer_table := table()
-	bc_real_table := table()
-	bc_keys_link := table()
+    bc_cset_table := table()
+    bc_string_table := table()
+    bc_integer_table := table()
+    bc_real_table := table()
+    bc_keys_link := table()
 
-	while p := @parse do {
-		ir(p)
-	}
+    while p := @parse do {
+        ir(p)
+    }
 
-	c := bc_proc_classptr := ClassFile(3, 45, [&null], table(), 1,
-		&null,
-		&null,
-		[], [], [], []
-		)
+    c := bc_proc_classptr := ClassFile(3, 45, [&null], table(), 1,
+        &null,
+        &null,
+        [], [], [], []
+        )
 
-	c.super_class := cp_Class(c, cp_Utf8(c, "rts/iFile"))
-	c.this_class := cp_Class(c, cp_Utf8(c, bc_link_classname))
+    c.super_class := cp_Class(c, cp_Utf8(c, "rts/iFile"))
+    c.this_class := cp_Class(c, cp_Utf8(c, bc_link_classname))
 
-	bc_create_declare(c)
-	bc_create_unresolved(c)
-	bc_create_linked(c)
-	bc_create_resolve(c)
-	bc_create_linkinit(c)
+    bc_create_declare(c)
+    bc_create_unresolved(c)
+    bc_create_linked(c)
+    bc_create_resolve(c)
+    bc_create_linkinit(c)
 
-	f := open(bc_directory || bc_file_name || ".class","wu") | runerr(1000)
-	writer_ClassFile(f, c)
-	close(f)
+    f := open(bc_directory || bc_file_name || ".class","wu") | runerr(1000)
+    writer_ClassFile(f, c)
+    close(f)
 end
 
 procedure bc_create_declare(c)
-	local declare, declarecode, declareGlobal, k, s, declareProcedure
-	local declareRecord, stringclass, i, f, declareNoErrorConversion
+    local declare, declarecode, declareGlobal, k, s, declareProcedure
+    local declareRecord, stringclass, i, f, declareNoErrorConversion
 
-	declare := create_method(c, 0, "declare", "()V")
-	declarecode := create_code(c, 10, 10)
-	put(declare.attributes, declarecode)
+    declare := create_method(c, 0, "declare", "()V")
+    declarecode := create_code(c, 10, 10)
+    put(declare.attributes, declarecode)
 
-	if \noerror2failure then {
-		declareNoErrorConversion := create_methodref(c, "declareNoErrorConversion", "()V", "rts/iEnv")
-		put(declarecode.code, invokestatic(declareNoErrorConversion) )
-	}
-	declareGlobal := create_methodref(c, "declareGlobal", "(Ljava/lang/String;)V", "rts/iEnv")
-	every k := !bc_global_set do {
-		s := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-		put(declarecode.code, ldc_w(s) )
-		put(declarecode.code, invokestatic(declareGlobal) )
-	}
+    if \noerror2failure then {
+        declareNoErrorConversion := create_methodref(c,
+                             "declareNoErrorConversion", "()V", "rts/iEnv")
+        put(declarecode.code, invokestatic(declareNoErrorConversion) )
+    }
+    declareGlobal := create_methodref(c, "declareGlobal",
+                      "(Ljava/lang/String;)V", "rts/iEnv")
+    every k := !bc_global_set do {
+        s := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
+        put(declarecode.code, ldc_w(s) )
+        put(declarecode.code, invokestatic(declareGlobal) )
+    }
 
-	declareProcedure := create_methodref(c, "declareProcedure", "(Ljava/lang/String;Ljava/lang/String;I)V", "rts/iEnv")
-	every k := key(bc_proc_table) do {
-		s := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-		put(declarecode.code, ldc_w(s) )
-		s := cp_String(c, cp_Utf8(c, "p_" || bc_link_classname || "$" || k)) | runerr(1000)
-		put(declarecode.code, ldc_w(s) )
-		put(declarecode.code, ipush(bc_proc_table[k]) )
-		put(declarecode.code, invokestatic(declareProcedure) )
-	}
+    declareProcedure := create_methodref(c, "declareProcedure",
+                    "(Ljava/lang/String;Ljava/lang/String;I)V",
+                    "rts/iEnv")
+    every k := key(bc_proc_table) do {
+        s := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
+        put(declarecode.code, ldc_w(s) )
+        s := cp_String(c, cp_Utf8(c, "p_" || bc_link_classname || "$" || k)) |
+        runerr(1000)
+        put(declarecode.code, ldc_w(s) )
+        put(declarecode.code, ipush(bc_proc_table[k]) )
+        put(declarecode.code, invokestatic(declareProcedure) )
+    }
 
-	declareRecord := create_methodref(c, "declareRecord", "(Ljava/lang/String;[Ljava/lang/String;)V", "rts/iEnv")
-	stringclass := cp_Class(c, cp_Utf8(c, "java/lang/String"))
-	every k := key(bc_record_table) do {
-		s := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-		put(declarecode.code, ldc_w(s) )
+    declareRecord := create_methodref(c, "declareRecord",
+                    "(Ljava/lang/String;[Ljava/lang/String;)V",
+                    "rts/iEnv")
+    stringclass := cp_Class(c, cp_Utf8(c, "java/lang/String"))
+    every k := key(bc_record_table) do {
+        s := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
+        put(declarecode.code, ldc_w(s) )
 
-		put(declarecode.code, ipush(*bc_record_table[k]) )
-		put(declarecode.code, anewarray(stringclass) )
-		every i := 1 to *bc_record_table[k] do {
-			put(declarecode.code, dup() )
-			put(declarecode.code, ipush(i-1) )
-			f := cp_String(c, cp_Utf8(c, bc_record_table[k][i])) | runerr(1000)
-			put(declarecode.code, ldc_w(f) )
-			put(declarecode.code, aastore() )
-		}
-		put(declarecode.code, invokestatic(declareRecord) )
-	}
-	put(declarecode.code, vreturn() )
+        put(declarecode.code, ipush(*bc_record_table[k]) )
+        put(declarecode.code, anewarray(stringclass) )
+        every i := 1 to *bc_record_table[k] do {
+            put(declarecode.code, dup() )
+            put(declarecode.code, ipush(i-1) )
+            f := cp_String(c, cp_Utf8(c, bc_record_table[k][i])) | runerr(1000)
+            put(declarecode.code, ldc_w(f) )
+            put(declarecode.code, aastore() )
+        }
+        put(declarecode.code, invokestatic(declareRecord) )
+    }
+    put(declarecode.code, vreturn() )
 end
 
 procedure bc_create_unresolved(c)
-	local unresolved, unresolvedcode, invokeall, invokes, k, s
-	local undeclaredmethod
+    local unresolved, unresolvedcode, invokeall, invokes, k, s
+    local undeclaredmethod
 
-	unresolved := create_method(c, 0, "unresolved", "()V")
-	unresolvedcode := create_code(c, 10, 10)
-	put(unresolved.attributes, unresolvedcode)
+    unresolved := create_method(c, 0, "unresolved", "()V")
+    unresolvedcode := create_code(c, 10, 10)
+    put(unresolved.attributes, unresolvedcode)
 
-	if \bc_invoke_all then {
-		invokeall := create_methodref(c, "declareInvokeAll", "()V", "rts/iEnv")
-		put(unresolvedcode.code, invokestatic(invokeall) )
-	} else {
-		invokes := create_methodref(c, "declareInvoke", "(Ljava/lang/String;)V", "rts/iEnv")
-		every k := !bc_invoke_set do {
-			s := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-			put(unresolvedcode.code, ldc_w(s) )
-			put(unresolvedcode.code, invokestatic(invokes) )
-		}
-	}
+    if \bc_invoke_all then {
+        invokeall := create_methodref(c, "declareInvokeAll", "()V", "rts/iEnv")
+        put(unresolvedcode.code, invokestatic(invokeall) )
+    } else {
+        invokes := create_methodref(c, "declareInvoke",
+                    "(Ljava/lang/String;)V", "rts/iEnv")
+        every k := !bc_invoke_set do {
+            s := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
+            put(unresolvedcode.code, ldc_w(s) )
+            put(unresolvedcode.code, invokestatic(invokes) )
+        }
+    }
 
-	undeclaredmethod := create_methodref(c, "undeclared", "(Ljava/lang/String;)V", "rts/iEnv")
-	every k := !bc_undeclared_set do {
-		s := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-		put(unresolvedcode.code, ldc_w(s) )
-		put(unresolvedcode.code, invokestatic(undeclaredmethod) )
-	}
-	put(unresolvedcode.code, vreturn() )
+    undeclaredmethod := create_methodref(c, "undeclared",
+                     "(Ljava/lang/String;)V", "rts/iEnv")
+    every k := !bc_undeclared_set do {
+        s := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
+        put(unresolvedcode.code, ldc_w(s) )
+        put(unresolvedcode.code, invokestatic(undeclaredmethod) )
+    }
+    put(unresolvedcode.code, vreturn() )
 end
 
 procedure bc_create_linked(c)
-	local linked, linkedcode, linkref, lab, linkmethod, k, s, f
+    local linked, linkedcode, linkref, lab, linkmethod, k, s, f
 
-	if *bc_link_set > 0 then {
-		create_field(c, 8, "linked", "Z")
+    if *bc_link_set > 0 then {
+        create_field(c, 8, "linked", "Z")
 
-		linked := create_method(c, 0, "link", "()V")
-		linkedcode := create_code(c, 10, 10)
-		put(linked.attributes, linkedcode)
+        linked := create_method(c, 0, "link", "()V")
+        linkedcode := create_code(c, 10, 10)
+        put(linked.attributes, linkedcode)
 
-		linkref := create_fieldref(c, "linked", "Z", bc_link_classname)
-		put(linkedcode.code, getstatic(linkref) )
-		lab := label()
-		put(linkedcode.code, ifne(lab) )
-		put(linkedcode.code, iconst_1() )
-		put(linkedcode.code, putstatic(linkref) )
-		linkmethod := create_methodref(c, "link", "(Ljava/lang/String;)V", "rts/iInterface")
+        linkref := create_fieldref(c, "linked", "Z", bc_link_classname)
+        put(linkedcode.code, getstatic(linkref) )
+        lab := label()
+        put(linkedcode.code, ifne(lab) )
+        put(linkedcode.code, iconst_1() )
+        put(linkedcode.code, putstatic(linkref) )
+        linkmethod := create_methodref(c, "link", "(Ljava/lang/String;)V",
+                       "rts/iInterface")
 
-		every k := !bc_link_set do {
-			s := cp_String(c, cp_Utf8(c, "l$" || k)) | runerr(1000)
-			put(linkedcode.code, ldc_w(s) )
-			put(linkedcode.code, invokestatic(linkmethod) )
-		}
+        every k := !bc_link_set do {
+            s := cp_String(c, cp_Utf8(c, "l$" || k)) | runerr(1000)
+            put(linkedcode.code, ldc_w(s) )
+            put(linkedcode.code, invokestatic(linkmethod) )
+        }
 
-		put(linkedcode.code, lab )
-		put(linkedcode.code, vreturn() )
-	}
-	f := open(bc_directory || "links", "w") | runerr(1000)
-	every k := !bc_link_set do {
-		write(f, k)
-	}
-	close(f)
+        put(linkedcode.code, lab )
+        put(linkedcode.code, vreturn() )
+    }
+    f := open(bc_directory || "links", "w") | runerr(1000)
+    every k := !bc_link_set do {
+        write(f, k)
+    }
+    close(f)
 end
 
 procedure bc_create_resolve(c)
-	local resolve, resolvecode, resolvemethod, k, f, s, op
+    local resolve, resolvecode, resolvemethod, k, f, s, op
 
-	resolve := create_method(c, 0, "resolve", "()V")
-	resolvecode := create_code(c, 10, 10)
-	put(resolve.attributes, resolvecode)
+    resolve := create_method(c, 0, "resolve", "()V")
+    resolvecode := create_code(c, 10, 10)
+    put(resolve.attributes, resolvecode)
 
-	resolvemethod := create_methodref(c, "resolve", "(Ljava/lang/String;)Lrts/vVariable;", "rts/iEnv")
-	every k := !bc_undeclared_set do {
-		f := create_fieldref(c, "v$" || k || "$", "Lrts/vVariable;", bc_link_classname)
-		s := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-		put(resolvecode.code, ldc_w(s) )
-		put(resolvecode.code, invokestatic(resolvemethod) )
-		put(resolvecode.code, putstatic(f) )
-	}
+    resolvemethod := create_methodref(c, "resolve",
+                      "(Ljava/lang/String;)Lrts/vVariable;",
+                      "rts/iEnv")
+    every k := !bc_undeclared_set do {
+        f := create_fieldref(c, "v$" || k || "$", "Lrts/vVariable;",
+                 bc_link_classname)
+        s := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
+        put(resolvecode.code, ldc_w(s) )
+        put(resolvecode.code, invokestatic(resolvemethod) )
+        put(resolvecode.code, putstatic(f) )
+    }
 
-	resolvemethod := create_methodref(c, "resolveKey", "(Ljava/lang/String;)Lrts/vDescriptor;", "rts/iEnv")
-	every k := key(bc_keys_link) do {
-		f := create_fieldref(c, "$" || k, "Lrts/vDescriptor;", bc_link_classname)
-		s := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-		put(resolvecode.code, ldc_w(s) )
-		put(resolvecode.code, invokestatic(resolvemethod) )
-		put(resolvecode.code, putstatic(f) )
-	}
+    resolvemethod := create_methodref(c, "resolveKey",
+                      "(Ljava/lang/String;)Lrts/vDescriptor;",
+                      "rts/iEnv")
+    every k := key(bc_keys_link) do {
+        f := create_fieldref(c, "$" || k, "Lrts/vDescriptor;",
+                 bc_link_classname)
+        s := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
+        put(resolvecode.code, ldc_w(s) )
+        put(resolvecode.code, invokestatic(resolvemethod) )
+        put(resolvecode.code, putstatic(f) )
+    }
 
-	resolvemethod := create_methodref(c, "resolveProc", "(Ljava/lang/String;I)Lrts/vDescriptor;", "rts/iEnv")
-	every k := key(bc_op_table) do {
-		k ? {
-			op := tab(upto(','))
-			move(1)
-			args := integer(tab(0))
-		}
-		f := create_fieldref(c, bc_op_table[k], "Lrts/vDescriptor;", bc_link_classname)
-		s := cp_String(c, cp_Utf8(c, op)) | runerr(1000)
-		put(resolvecode.code, ldc_w(s) )
-		put(resolvecode.code, ipush(args) )
-		put(resolvecode.code, invokestatic(resolvemethod) )
-		put(resolvecode.code, putstatic(f) )
-	}
-	put(resolvecode.code, vreturn() )
+    resolvemethod := create_methodref(c, "resolveProc",
+                      "(Ljava/lang/String;I)Lrts/vDescriptor;",
+                      "rts/iEnv")
+    every k := key(bc_op_table) do {
+        k ? {
+            op := tab(upto(','))
+            move(1)
+            args := integer(tab(0))
+        }
+        f := create_fieldref(c, bc_op_table[k], "Lrts/vDescriptor;",
+                 bc_link_classname)
+        s := cp_String(c, cp_Utf8(c, op)) | runerr(1000)
+        put(resolvecode.code, ldc_w(s) )
+        put(resolvecode.code, ipush(args) )
+        put(resolvecode.code, invokestatic(resolvemethod) )
+        put(resolvecode.code, putstatic(f) )
+    }
+    put(resolvecode.code, vreturn() )
 end
 
 procedure bc_create_linkinit(c)
-	local init, initcode, newmethod, k, f, d, constructor
-	local clinit, clinitcode
+    local init, initcode, newmethod, k, f, d, constructor
+    local clinit, clinitcode
 
-	init := create_method(c, 1, "<init>", "()V")
-	initcode := create_code(c, 10, 10)
-	put(init.attributes, initcode)
+    init := create_method(c, 1, "<init>", "()V")
+    initcode := create_code(c, 10, 10)
+    put(init.attributes, initcode)
 
-	every create_field(c, 8, "v$" || !bc_undeclared_set || "$", "Lrts/vVariable;")
-	every create_field(c, 8, "$" || key(bc_keys_link), "Lrts/vDescriptor;")
-	every create_field(c, 8, !bc_op_table, "Lrts/vDescriptor;")
+    every create_field(c, 8, "v$" || !bc_undeclared_set || "$",
+               "Lrts/vVariable;")
+    every create_field(c, 8, "$" || key(bc_keys_link), "Lrts/vDescriptor;")
+    every create_field(c, 8, !bc_op_table, "Lrts/vDescriptor;")
 
-	constructor := create_methodref(c, "<init>", "()V", "rts/iFile")
-	put(initcode.code, aload_0() )
-	put(initcode.code, invokenonvirtual(constructor) )
-	put(initcode.code, vreturn() )
+    constructor := create_methodref(c, "<init>", "()V", "rts/iFile")
+    put(initcode.code, aload_0() )
+    put(initcode.code, invokenonvirtual(constructor) )
+    put(initcode.code, vreturn() )
 
-	clinit := create_method(c, 8, "<clinit>", "()V")
-	clinitcode := create_code(c, 10, 10)
-	put(clinit.attributes, clinitcode)
+    clinit := create_method(c, 8, "<clinit>", "()V")
+    clinitcode := create_code(c, 10, 10)
+    put(clinit.attributes, clinitcode)
 
-	newmethod := create_methodref(c, "Real", "(Ljava/lang/String;)Lrts/vReal;", "rts/iNew")
-	every k := key(bc_real_table) do {
-		create_field(c, 8, bc_real_table[k], "Lrts/vReal;")
-		f := create_fieldref(c, bc_real_table[k], "Lrts/vReal;", bc_link_classname)
-		d := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-		put(clinitcode.code, ldc_w(d) )
-		put(clinitcode.code, invokestatic(newmethod) )
-		put(clinitcode.code, putstatic(f) )
-	}
+    newmethod := create_methodref(c, "Real", "(Ljava/lang/String;)Lrts/vReal;",
+                  "rts/iNew")
+    every k := key(bc_real_table) do {
+        create_field(c, 8, bc_real_table[k], "Lrts/vReal;")
+        f := create_fieldref(c, bc_real_table[k], "Lrts/vReal;",
+                 bc_link_classname)
+        d := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
+        put(clinitcode.code, ldc_w(d) )
+        put(clinitcode.code, invokestatic(newmethod) )
+        put(clinitcode.code, putstatic(f) )
+    }
 
-	newmethod := create_methodref(c, "Integer", "(J)Lrts/vInteger;", "rts/iNew")
-	every k := key(bc_integer_table) do {
-		create_field(c, 8, bc_integer_table[k], "Lrts/vInteger;")
-		f := create_fieldref(c, bc_integer_table[k], "Lrts/vInteger;", bc_link_classname)
-		d := cp_Long(c, k)
-		put(clinitcode.code, ldc2_w(d) )
-		put(clinitcode.code, invokestatic(newmethod) )
-		put(clinitcode.code, putstatic(f) )
-	}
+    newmethod := create_methodref(c, "Integer", "(J)Lrts/vInteger;", "rts/iNew")
+    every k := key(bc_integer_table) do {
+        create_field(c, 8, bc_integer_table[k], "Lrts/vInteger;")
+        f := create_fieldref(c, bc_integer_table[k], "Lrts/vInteger;",
+                 bc_link_classname)
+        d := cp_Long(c, k)
+        put(clinitcode.code, ldc2_w(d) )
+        put(clinitcode.code, invokestatic(newmethod) )
+        put(clinitcode.code, putstatic(f) )
+    }
 
-	newmethod := create_methodref(c, "String", "(Ljava/lang/String;)Lrts/vString;", "rts/iNew")
-	every k := key(bc_string_table) do {
-		create_field(c, 8, bc_string_table[k], "Lrts/vString;")
-		f := create_fieldref(c, bc_string_table[k], "Lrts/vString;", bc_link_classname)
-		d := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-		put(clinitcode.code, ldc_w(d) )
-		put(clinitcode.code, invokestatic(newmethod) )
-		put(clinitcode.code, putstatic(f) )
-	}
+    newmethod := create_methodref(c, "String",
+                  "(Ljava/lang/String;)Lrts/vString;",
+                  "rts/iNew")
+    every k := key(bc_string_table) do {
+        create_field(c, 8, bc_string_table[k], "Lrts/vString;")
+        f := create_fieldref(c, bc_string_table[k], "Lrts/vString;",
+                 bc_link_classname)
+        d := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
+        put(clinitcode.code, ldc_w(d) )
+        put(clinitcode.code, invokestatic(newmethod) )
+        put(clinitcode.code, putstatic(f) )
+    }
 
-	newmethod := create_methodref(c, "Cset", "(Ljava/lang/String;)Lrts/vCset;", "rts/iNew")
-	every k := key(bc_cset_table) do {
-		create_field(c, 8, bc_cset_table[k], "Lrts/vCset;")
-		f := create_fieldref(c, bc_cset_table[k], "Lrts/vCset;", bc_link_classname)
-		d := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-		put(clinitcode.code, ldc_w(d) )
-		put(clinitcode.code, invokestatic(newmethod) )
-		put(clinitcode.code, putstatic(f) )
-	}
+    newmethod := create_methodref(c, "Cset", "(Ljava/lang/String;)Lrts/vCset;",
+                  "rts/iNew")
+    every k := key(bc_cset_table) do {
+        create_field(c, 8, bc_cset_table[k], "Lrts/vCset;")
+        f := create_fieldref(c, bc_cset_table[k], "Lrts/vCset;",
+                 bc_link_classname)
+        d := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
+        put(clinitcode.code, ldc_w(d) )
+        put(clinitcode.code, invokestatic(newmethod) )
+        put(clinitcode.code, putstatic(f) )
+    }
 
-	put(clinitcode.code, vreturn() )
+    put(clinitcode.code, vreturn() )
 
 end
 
 procedure bc_CG()
-	return code_gen(bc_emit,
-			bc_globals,
-			bc_invocables,
-			bc_links,
-			bc_function,
-			bc_records,
-			bc_File
-			)
+    return code_gen(bc_emit,
+            bc_globals,
+            bc_invocables,
+            bc_links,
+            bc_function,
+            bc_records,
+            bc_File
+            )
 end
