@@ -52,10 +52,10 @@ interfacegen: interfacegen.icn
 	$(ICONT) -o interfacegen interfacegen.icn
 
 interface.icn: interfacegen
-	interfacegen > interface.icn
+	./interfacegen > interface.icn
 
 do_ops.icn: oplexgen
 	./oplexgen > do_ops.icn
 
 clean:
-	rm -f do_ops.icn interface.icn oplexgen *.u[12]
+	rm -f do_ops.icn interface.icn interfacegen oplexgen *.u[12]
