@@ -335,6 +335,11 @@ oops -- function ord("antidisestablishmentarianism")
 oops -- function ord(47) 
 oops -- function ord(&output) 
 oops -- function ord(table_1(0)) 
+found file: .
+found file: ..
+found file: Makefile
+found file: recent.icn
+found file: recogn.dat
 &ascii
 &cset
 &digits
@@ -342,31 +347,31 @@ oops -- function ord(table_1(0))
 &letters
 &letters
 &lcase
-list_35(1)
-list_36(2)
-list_37(3)
-list_38(4)
-list_39(0)
+list_36(1)
+list_37(2)
+list_38(3)
+list_39(4)
+list_40(0)
 p(1):
    image(a):1
    image(b):&null
-   image(c):list_42(0)
+   image(c):list_43(0)
    every write("\t", !c):
 p(1, 2):
    image(a):1
    image(b):2
-   image(c):list_43(0)
+   image(c):list_44(0)
    every write("\t", !c):
 p(1, 2, 3):
    image(a):1
    image(b):2
-   image(c):list_44(1)
+   image(c):list_45(1)
    every write("\t", !c):
 	3
 p(1, 2, 3, 4, 5):
    image(a):1
    image(b):2
-   image(c):list_45(3)
+   image(c):list_46(3)
    every write("\t", !c):
 	3
 	4
@@ -432,5 +437,5 @@ t[] --> "default"
 x := r1([t, [1, [2, 3]]]) --> record r1_4(1)
 x[1, 1, "one"] --> 1
 x[1, 2, 2, 2] --> 3
-x[1, 2] := ["abcd", "defg"] --> list_56(2)
+x[1, 2] := ["abcd", "defg"] --> list_57(2)
 x[1, 2, 2, 2] --> "e"
