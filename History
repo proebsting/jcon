@@ -1,6 +1,7 @@
 Version History
 
 0.5.3
+	snapshot set/table at start of generation to prevent later confusion
 	fix coercion and error checking in x ^ y
 	minor error reporting changes for v9 compatibility
 

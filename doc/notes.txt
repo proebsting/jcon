@@ -34,7 +34,6 @@ files:
 
 structures:
 -- random selection from sets and tables differs from v9
--- insertion/deletion during set/table generation can confuse the generator
 
 error reporting:
 -- arg lists in traceback show actual instead of expected number of arguments
