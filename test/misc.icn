@@ -62,6 +62,8 @@ procedure main()
 
    evaluation("1234567890", "abcdefghi")
 
+   every write(image(nullsuspend()))
+
    write("done")
    exit()
    write("oops!")
@@ -102,4 +104,9 @@ end
 
 procedure pairs(e)
    while write(@e[1], " ", @e[2])
+end
+
+procedure nullsuspend()
+   suspend
+   suspend
 end
