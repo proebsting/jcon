@@ -21,7 +21,7 @@
 #
 
 #
-# Global declarations of variables in the preprocessor "object"
+# a_Global declarations of variables in the preprocessor "object"
 #
 global preproc_sym_table,preproc_if_stack,preproc_file_stack,preproc_if_state,
         preproc_file,preproc_filename,preproc_line,preproc_print_line,
@@ -82,7 +82,7 @@ procedure preprocessor(fname,predefined_syms)
 end
 
 #
-# Initializes the preprocessor "object".
+# a_Initializes the preprocessor "object".
 #
 procedure preproc_new(fname,predefined_syms)
     preproc_file := open(fname) |
@@ -112,7 +112,7 @@ procedure preproc_done()
 end
 
 #
-# Scans a preprocessor directive.
+# a_Scans a preprocessor directive.
 #
 procedure preproc_scan_directive()
     local sym,value,new_file,new_filename,new_line,path_list,old
@@ -271,7 +271,7 @@ procedure preproc_scan_directive()
 end
 
 #
-# Scans and make substitutions in a text line.
+# a_Scans and make substitutions in a text line.
 #
 procedure preproc_scan_text(done_set)
     local q,result,p,interesting_in_quotes,ident,value
@@ -374,7 +374,7 @@ procedure preproc_read()
 end
 
 #
-# Scans an identifier.
+# a_Scans an identifier.
 #
 procedure preproc_word()
     static word_starters
@@ -385,7 +385,7 @@ procedure preproc_word()
 end
 
 #
-# Scans a possibly-quoted word (e.g. a file name).
+# a_Scans a possibly-quoted word (e.g. a file name).
 #
 procedure preproc_qword()
     local result
@@ -397,7 +397,7 @@ procedure preproc_qword()
 end
 
 #
-# Scans the value of a $define.
+# a_Scans the value of a $define.
 #
 procedure preproc_scan_define_value()
     local q,interesting_in_quotes
@@ -435,14 +435,14 @@ procedure preproc_scan_define_value()
 end
 
 #
-# Scans white space.
+# a_Scans white space.
 #
 procedure preproc_space()
     suspend tab(many(' \t\f\r'))
 end
 
 #
-# Scans optional white space.
+# a_Scans optional white space.
 #
 procedure preproc_opt_space()
     local i
@@ -476,7 +476,7 @@ procedure preproc_error(msg)
 end
 
 #
-# Returns the list of directories in the LPATH environment variable.
+# a_Returns the list of directories in the LPATH environment variable.
 #
 procedure preproc_get_path_list()
     static the_list

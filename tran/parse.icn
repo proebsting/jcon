@@ -37,7 +37,7 @@ procedure do_case()
         }
     }
     match_token(RBRACE)
-    return Case(e, body, dflt, coord)
+    return a_Case(e, body, dflt, coord)
 end
 
 procedure cclause()
@@ -65,7 +65,7 @@ procedure cclause()
     } else {
         parse_error("\""||tok_rec.str||"\": invalid case clause")
     }
-    return Cclause(e, body, coord)
+    return a_Cclause(e, body, coord)
 end
 
 procedure compound()
@@ -104,7 +104,7 @@ procedure do_every()
     } else {
         body := &null
     }
-    return Every(e, body, coord)
+    return a_Every(e, body, coord)
 end
 
 procedure expr()
@@ -115,7 +115,7 @@ procedure expr()
     while tok_rec === CONJUNC do {
         op := eat_token()
         right := expr1a()
-        ret := Binop(op, ret, right, ret.coord)
+        ret := a_Binop(op, ret, right, ret.coord)
     }
     return ret
 end
@@ -138,9 +138,9 @@ procedure expr1()
         op := eat_token()
         right := expr1()
         if op == "?:=" then {
-            ret := Scan(op, ret, right, ret.coord)
+            ret := a_Scan(op, ret, right, ret.coord)
         } else {
-            ret := Binop(op, ret, right, ret.coord)
+            ret := a_Binop(op, ret, right, ret.coord)
         }
     }
     return ret
@@ -168,9 +168,9 @@ procedure expr10()
         op := eat_token()
         operand := expr10()
         case (op) of {
-        "|":        return RepAlt(operand, coord)
-        "not":      return Not(operand, coord)
-        default:    return Unop(op, operand, coord)
+        "|":        return a_RepAlt(operand, coord)
+        "not":      return a_Not(operand, coord)
+        default:    return a_Unop(op, operand, coord)
         }
     } else if member(expr10_set3, tok_rec) then {
         tmp_tok := tok_rec
@@ -178,11 +178,11 @@ procedure expr10()
         op := eat_token()
         operand := expr10()
         case tmp_tok of {
-        CONCAT  : return RepAlt(operand, coord)
-        LCONCAT : return RepAlt(operand, coord)
-        UNION     : return Unop("+", operand, coord)
-        INTER     : return Unop("*",Unop("*", operand, coord), coord)
-        DIFF      : return Unop("-",Unop("-", operand, coord), coord)
+        CONCAT  : return a_RepAlt(operand, coord)
+        LCONCAT : return a_RepAlt(operand, coord)
+        UNION     : return a_Unop("+", operand, coord)
+        INTER     : return a_Unop("*",a_Unop("*", operand, coord), coord)
+        DIFF      : return a_Unop("-",a_Unop("-", operand, coord), coord)
         default     : runerr(500)
         }
     } else {
@@ -219,26 +219,26 @@ procedure expr11()
         coord := tok_rec.coord
         eat_token()
         e := expr()
-        return Create(e, coord)
+        return a_Create(e, coord)
         }
     IDENT   :   # IDENT 
         {
         coord := tok_rec.coord
         id := eat_token()
-        return Ident(id, coord)
+        return a_Ident(id, coord)
         }
     NEXT    :   # NEXT 
         {
         coord := tok_rec.coord
         eat_token()
-        return Next(coord)
+        return a_Next(coord)
         }
     BREAK   :   # BREAK  nexpr 
         {
         coord := tok_rec.coord
         eat_token()
         e := nexpr()
-        return Break(e, coord)
+        return a_Break(e, coord)
         }
     LPAREN  :   # LPAREN  exprlist  RPAREN 
         {
@@ -246,7 +246,7 @@ procedure expr11()
         eat_token()
         e := exprlist()
         match_token(RPAREN)
-        return Mutual(e, coord)
+        return a_Mutual(e, coord)
         }
     LBRACE  :   # LBRACE  compound  RBRACE 
         {
@@ -254,7 +254,7 @@ procedure expr11()
         eat_token()
         e := compound()
         match_token(RBRACE)
-        return Compound(e, coord)
+        return a_Compound(e, coord)
         }
     LBRACK  :   # LBRACK  exprlist  RBRACK 
         {
@@ -262,7 +262,7 @@ procedure expr11()
         eat_token()
         e := exprlist()
         match_token(RBRACK)
-        return ListConstructor(e, coord)
+        return a_ListConstructor(e, coord)
         }
     CONJUNC :   # AND ( FAIL  |  IDENT )
         {
@@ -270,10 +270,10 @@ procedure expr11()
         eat_token()
         case tok_rec of {
         FAIL : {
-            return Key(eat_token(), coord)
+            return a_Key(eat_token(), coord)
         }
         IDENT : {
-            return Key(eat_token(), coord)
+            return a_Key(eat_token(), coord)
         }
         default : {
             parse_error("\""||tok_rec.str||"\": invalid keyword construction")
@@ -325,21 +325,21 @@ procedure expr11suffix(lhs)
             l := pdcolist()
         }
         match_token(RBRACE)
-        return Call(lhs, CoexpList(l),lhs.coord)
+        return a_Call(lhs, a_CoexpList(l),lhs.coord)
         }
     LPAREN  :   # LPAREN  exprlist  RPAREN 
         {
         eat_token()
         l := exprlist()
         match_token(RPAREN)
-        return Call(lhs, Arglist(l), lhs.coord)
+        return a_Call(lhs, a_Arglist(l), lhs.coord)
         }
     DOT :   # DOT  IDENT 
         {
         coord := tok_rec.coord
         x := eat_token()
         id := match_token(IDENT)
-        return Field(lhs, Ident(id, coord), lhs.coord)
+        return a_Field(lhs, a_Ident(id, coord), lhs.coord)
         }
     LBRACK  :   # LBRACK  expr [  sectop  expr ]  RBRACK 
         {
@@ -349,9 +349,9 @@ procedure expr11suffix(lhs)
             if member(expr11suffix_set2, tok_rec) then {
                 op := "[" || eat_token() || "]"
                 right := expr()
-                lhs := Sectionop(op, lhs, left, right, lhs.coord)
+                lhs := a_Sectionop(op, lhs, left, right, lhs.coord)
             } else {
-                lhs := Binop("[]", lhs, left, lhs.coord)
+                lhs := a_Binop("[]", lhs, left, lhs.coord)
             }
             if tok_rec ~=== COMMA then break
             match_token(COMMA)
@@ -373,7 +373,7 @@ procedure expr1a()
     while tok_rec === QMARK do {
         eat_token()
         right := expr1()
-        left := Scan("?", left, right, left.coord)
+        left := a_Scan("?", left, right, left.coord)
     }
     return left
 end
@@ -393,7 +393,7 @@ procedure expr2()
             match_token(BY)
             e3 := expr3()
         }
-        ret := ToBy(e1, e2, e3, e1.coord)
+        ret := a_ToBy(e1, e2, e3, e1.coord)
         e1 := ret
     }
     return ret
@@ -405,7 +405,7 @@ procedure expr3()
 
     ret := expr4()
     while tok_rec === BAR do {
-        /a := Alt([ret], tok_rec.coord)
+        /a := a_Alt([ret], tok_rec.coord)
         eat_token()
         put(a.eList, expr4())
     }
@@ -427,7 +427,7 @@ procedure expr4()
     while member(expr4_set, tok_rec) do {
         op := eat_token()
         right := expr5()
-        ret := Binop(op, ret, right, ret.coord)
+        ret := a_Binop(op, ret, right, ret.coord)
     }
     return ret
 end
@@ -440,7 +440,7 @@ procedure expr5()
     while tok_rec === CONCAT | tok_rec === LCONCAT do {
         op := eat_token()
         right := expr6()
-        ret := Binop(op, ret, right, ret.coord)
+        ret := a_Binop(op, ret, right, ret.coord)
     }
     return ret
 end
@@ -459,7 +459,7 @@ procedure expr6()
     while member(expr6_set, tok_rec) do {
         op := eat_token()
         right := expr7()
-        ret := Binop(op, ret, right, ret.coord)
+        ret := a_Binop(op, ret, right, ret.coord)
     }
     return ret
 end
@@ -478,7 +478,7 @@ procedure expr7()
     while member(expr7_set, tok_rec) do {
         op := eat_token()
         right := expr8()
-        ret := Binop(op, ret, right, ret.coord)
+        ret := a_Binop(op, ret, right, ret.coord)
     }
     return ret
 end
@@ -491,7 +491,7 @@ procedure expr8()
     while tok_rec === CARET do {
         op := eat_token()
         right := expr8()
-        ret := Binop(op, ret, right, ret.coord)
+        ret := a_Binop(op, ret, right, ret.coord)
     }
     return ret
 end
@@ -505,9 +505,9 @@ procedure expr9()
         op := eat_token()
         right := expr10()
         if op == "\\" then {
-            ret := Limitation(ret, right, ret.coord)
+            ret := a_Limitation(ret, right, ret.coord)
         } else {
-            ret := Binop(op, ret, right, ret.coord)
+            ret := a_Binop(op, ret, right, ret.coord)
         }
     }
     return ret
@@ -536,7 +536,7 @@ procedure do_global()
 
     coord := tok_rec.coord
     match_token(GLOBAL)
-    return Global(idlist(), coord)
+    return a_Global(idlist(), coord)
 end
 
 procedure idlist()
@@ -545,11 +545,11 @@ procedure idlist()
 
     coord := tok_rec.coord
 
-    l := [Ident(match_token(IDENT), coord)]
+    l := [a_Ident(match_token(IDENT), coord)]
     while tok_rec === COMMA do {
         eat_token()
         coord := tok_rec.coord
-        id := Ident(match_token(IDENT), coord)
+        id := a_Ident(match_token(IDENT), coord)
         put(l, id)
     }
     return l
@@ -569,7 +569,7 @@ procedure do_if()
         eat_token()
         elseexpr := expr()
     }
-    return If(ex, thenexpr, elseexpr, coord)
+    return a_If(ex, thenexpr, elseexpr, coord)
 end
 
 procedure do_initial()
@@ -582,7 +582,7 @@ procedure do_initial()
         e := expr()
         match_token(SEMICOL)
     }
-    return Initial(e, tok_rec.coord)
+    return a_Initial(e, tok_rec.coord)
 end
 
 procedure do_invocable()
@@ -597,7 +597,7 @@ procedure do_invocable()
         op := invocop()
         put(l, op)
     }
-    return Invocable(l, coord)
+    return a_Invocable(l, coord)
 end
 
 procedure invocop()
@@ -605,9 +605,9 @@ procedure invocop()
     coord := tok_rec.coord
     case tok_rec of {
     IDENT   :   # IDENT 
-        return Ident(eat_token(), coord)
+        return a_Ident(eat_token(), coord)
     STRINGLIT   :   # STRINGLIT [  COLON  INTLIT ] 
-        return Stringlit(eat_token(), coord)
+        return a_Stringlit(eat_token(), coord)
     default : 
         parse_error("\""||tok_rec.str||"\": invocable list expected")
     }
@@ -625,7 +625,7 @@ procedure do_link()
         lnkf := lnkfile()
         put(l, lnkf)
     }
-    return Link(l, coord)
+    return a_Link(l, coord)
 end
 
 procedure literal()
@@ -633,13 +633,13 @@ procedure literal()
     coord := tok_rec.coord
     case tok_rec of {
     INTLIT  :   # INTLIT 
-        return Intlit(integer(eat_token()), coord)
+        return a_Intlit(integer(eat_token()), coord)
     REALLIT :   # REALLIT 
-        return Reallit(real(eat_token()), coord)
+        return a_Reallit(real(eat_token()), coord)
     STRINGLIT   :   # STRINGLIT 
-        return Stringlit(eat_token(), coord)
+        return a_Stringlit(eat_token(), coord)
     CSETLIT :   # CSETLIT 
-        return Csetlit(cset(eat_token()), coord)
+        return a_Csetlit(cset(eat_token()), coord)
     default :
         parse_error("Expecting literal")
     }
@@ -667,14 +667,14 @@ procedure parse_locals()
         eat_token()
         vars := idlist()
         match_token(SEMICOL)
-        ret := Locals(vars, coord)
+        ret := a_Locals(vars, coord)
         put(l, ret)
     } else {
         coord := tok_rec.coord
         eat_token()
         vars := idlist()
         match_token(SEMICOL)
-        ret := Statics(vars, coord)
+        ret := a_Statics(vars, coord)
         put(l, ret)
     }
     }
@@ -729,7 +729,7 @@ procedure do_proc()
     coord := tok_rec.coord
     match_token(PROCEDURE)
     idcoord := tok_rec.coord
-    ident := Ident(match_token(IDENT), idcoord)
+    ident := a_Ident(match_token(IDENT), idcoord)
     match_token(LPAREN)
     paramList := []
     if tok_rec === IDENT then {
@@ -751,8 +751,8 @@ procedure do_proc()
         match_token(SEMICOL)
     }
     match_token(END)
-    return ProcDecl(ident, paramList, accumulate, loc,
-                    ProcCode(init, ProcBody(nexprList)), coord)
+    return a_ProcDecl(ident, paramList, accumulate, loc,
+                    a_ProcCode(init, a_ProcBody(nexprList)), coord)
 end
 
 procedure program()  # {  decl } 
@@ -778,14 +778,14 @@ procedure do_record()
     coord := tok_rec.coord
     match_token(RECORD)
     idcoord := tok_rec.coord
-    id := Ident(match_token(IDENT), idcoord)
+    id := a_Ident(match_token(IDENT), idcoord)
     match_token(LPAREN)
     l := []
     if tok_rec === IDENT then {
         l := idlist()
     }
     match_token(RPAREN)
-    return Record(id, l, coord)
+    return a_Record(id, l, coord)
 end
 
 procedure do_repeat()
@@ -794,7 +794,7 @@ procedure do_repeat()
     coord := tok_rec.coord
     match_token(REPEAT)
     e := expr()
-    return Repeat(e, coord)
+    return a_Repeat(e, coord)
 end
 
 procedure do_return()
@@ -805,13 +805,13 @@ procedure do_return()
     FAIL    :   # FAIL 
         {
         eat_token()
-        return Fail(coord)
+        return a_Fail(coord)
         }
     RETURN  :   # RETURN  nexpr 
         {
         eat_token()
         e := nexpr()
-        return Return(e, coord)
+        return a_Return(e, coord)
         }
     SUSPEND :   # SUSPEND  expr [  DO  expr ] 
         {
@@ -822,7 +822,7 @@ procedure do_return()
             eat_token()
             doexpr := expr()
         }
-        return Suspend(e, doexpr, coord)
+        return a_Suspend(e, doexpr, coord)
         }
     default :
         parse_error("Expecting FAIL, RETURN, or SUSPEND")
@@ -841,7 +841,7 @@ procedure do_until()
         eat_token()
         dexpr := expr()
     }
-    return Until(e, dexpr, coord)
+    return a_Until(e, dexpr, coord)
 end
 
 #  WHILE  expr [  DO  expr ] 
@@ -856,7 +856,7 @@ procedure do_while()
         eat_token()
         dexpr := expr()
     }
-    return While(e, dexpr, coord)
+    return a_While(e, dexpr, coord)
 end
 
 procedure match_token(which_token)

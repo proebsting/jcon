@@ -1,5 +1,5 @@
 record CONSTANT_Class(name_index, pool_index)
-record CONSTANT_Fieldref(class_index, name_and_type_index, pool_index)
+record CONSTANT_a_Fieldref(class_index, name_and_type_index, pool_index)
 record CONSTANT_Methodref(class_index, name_and_type_index, pool_index)
 record CONSTANT_InterfaceMethodref(class_index, name_and_type_index,
                    pool_index)
@@ -288,7 +288,7 @@ procedure writer_cp_info(writer, p)
         writer_u1(writer, 7)
         writer_u2(writer, p.name_index)
     }
-    "CONSTANT_Fieldref": {
+    "CONSTANT_a_Fieldref": {
         writer_u1(writer, 9)
         writer_u2(writer, p.class_index)
         writer_u2(writer, p.name_and_type_index)
@@ -1291,13 +1291,13 @@ procedure cp_Class(c, name_index)
     return c.constant_table[s].pool_index
 end
 
-procedure cp_Fieldref(c, class_index, name_and_type_index)
+procedure cp_a_Fieldref(c, class_index, name_and_type_index)
     local s
 
-    s:= "CONSTANT_Fieldref" || "," || class_index || "," || name_and_type_index
+    s:= "CONSTANT_a_Fieldref" || "," || class_index || "," || name_and_type_index
     if /c.constant_table[s] then {
         put(c.constant_pool, c.constant_table[s] :=
-      CONSTANT_Fieldref(class_index, name_and_type_index, *c.constant_pool))
+      CONSTANT_a_Fieldref(class_index, name_and_type_index, *c.constant_pool))
     }
     return c.constant_table[s].pool_index
 end
@@ -1545,7 +1545,7 @@ procedure create_fieldref(classfile, name, Type, class)
     type_index := cp_Utf8(classfile, Type)
     class_index := cp_Class(classfile, cp_Utf8(classfile, class))
     nat_index := cp_NameAndType(classfile, name_index, type_index)
-    field_index := cp_Fieldref(classfile, class_index, nat_index)
+    field_index := cp_a_Fieldref(classfile, class_index, nat_index)
     return field_index
 end
 

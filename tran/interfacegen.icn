@@ -27,7 +27,7 @@ procedure methodrefs()
             ["cofail", "()V", "rts/vCoexp"],
             ["copy", "(I)Lrts/iClosure;", &null],
             ["coret", "(Lrts/vDescriptor;)V", "rts/vCoexp"],
-            ["create", "(Lrts/iClosure;)Lrts/vCoexp;", "rts/iCoexp", "Create"],
+            ["create", "(Lrts/iClosure;)Lrts/vCoexp;", "rts/iCoexp", "a_Create"],
             ["createVars", "()V", &null],
             ["declareGlobal", "(Ljava/lang/String;)V", "rts/iEnv"],
             ["declareInvoke", "(Ljava/lang/String;)V", "rts/iEnv"],

@@ -684,7 +684,7 @@ procedure gen_bc_irCreate(s, p)
     \bc_save_restore_flag | runerr(500)
 
     copymethod := copy_methodref(bc_proc_classptr, bc_proc_classname)
-    createmethod := Create_methodref(bc_proc_classptr)
+    createmethod := a_Create_methodref(bc_proc_classptr)
     put(s, aload_0())
     gen_bc(s, p.location)
     put(s, invokevirtual(copymethod))
