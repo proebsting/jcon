@@ -46,8 +46,10 @@ static void Coerce(iBinaryValueClosure c) {
 		c.argument0 = arg0.mkReal();
 		return;
 	    } else {
-		arg1 = c.argument1 = arg1.mkNumeric();
-		// and repeat
+		if ((c.argument1 = arg1.mkNumeric()) instanceof vReal) {
+		    c.argument0 = arg0.mkReal();
+	        }
+		return;
 	    }
 
 	} else if (arg0 instanceof vReal) {
@@ -56,7 +58,6 @@ static void Coerce(iBinaryValueClosure c) {
 
 	} else {
 	    arg0 = c.argument0 = arg0.mkNumeric();
-	    arg1 = c.argument1 = arg1.mkNumeric();
 	    // and repeat
 	}
 
