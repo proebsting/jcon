@@ -2,7 +2,7 @@
 #
 #  jcont -- compile Icon program
 #
-#  usage:  jcont [-bcdhjsvEJPSU] [-f flags] [-o exe] file... [-x [args]]
+#  usage:  jcont [-bcdhjsvEJPS] [-f flags] [-o exe] file... [-x [args]]
 #
 #     file:	filename.icn (Icon source) or filename.zip (translated code)
 #
@@ -28,7 +28,6 @@
 #     -J	use jcon-built versions of jtran and jlink, if available
 #     -P	pessimize: don't optimize the generated Java code
 #     -S	also generate .jvm file listing generated Java code
-#     -U	unsafe: allow generation of code that won't verify
 #
 #  Jcont translates Icon source files into .zip files, and links .zip
 #  files to make an excutable program.  Jcont is similar to icont in
@@ -136,7 +135,7 @@ NOEXECUTE=exit
 
 # process options, changing default values set above
 
-while getopts "bcdjsvEJPSUo:f:" c 2>$NULLFILE; do
+while getopts "bcdjsvEJPSo:f:" c 2>$NULLFILE; do
     case $c in
 	b)	TARGET="ucode"; NOLINK="exit";;
 	c)	NOLINK="exit";;
@@ -149,7 +148,6 @@ while getopts "bcdjsvEJPSUo:f:" c 2>$NULLFILE; do
 	J)	TRAN="jjtran"; LINK="jjlink";;
 	P)	OFLAG="";;
 	S)	JVMDUMP="javap -c -private -verbose";;
-	U)	TFLAGS="$TFLAGS -U";;
 	o)	XFILE="$OPTARG";;
     	\?)	usage;;
     esac
