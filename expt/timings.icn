@@ -528,9 +528,10 @@ procedure lcreate(n)
 end
 
 procedure lconst(n)
+   local x
    if /n then return "[1,2,3,4,5]"
    every 1 to n do
-      [1,2,3,4,5]
+      x := [1,2,3,4,5]		# must store, else jcont suppresses
 end
 
 procedure lcopy(n)
