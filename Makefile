@@ -13,7 +13,7 @@ SHELL = /bin/sh
 
 BUILT = jtran rts.zip jcon.txt
 INSTALL = jcont $(BUILT)
-DEST = /cs/jive/`/home/gmt/sh/arch`/bin
+DEST = /cs/jcon/`/home/gmt/sh/arch`/bin
 
 
 build:
