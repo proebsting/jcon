@@ -23,7 +23,7 @@ and arguments can be passed as usual.
 	Icon source file to compile and link</TD></TR>
 <TR><TD WIDTH=50 VALIGN=TOP><VAR>file</VAR><CODE>.zip</CODE></TD><TD>
 	Previously compiled file to link
-	<BR>(Must be local: jcont does not search $IPATH
+	<BR>(Must be local: <I>jcont</I> does not search $IPATH
 	    for <VAR>file</VAR><CODE>.zip</CODE>)
 	</TD></TR>
 </TABLE></BLOCKQUOTE>
@@ -61,7 +61,7 @@ and arguments can be passed as usual.
 <P>The following options are mainly for debugging Jcon:
 <BLOCKQUOTE><TABLE>
 <TR><TD WIDTH=50 VALIGN=TOP><CODE>-d</CODE></TD><TD>
-	debug jcont: use <CODE>./jtmp</CODE> for temporary files,
+	debug <I>jcont</I>: use <CODE>./jtmp</CODE> for temporary files,
 	and do not delete them when finished</TD></TR>
 <TR><TD WIDTH=50 VALIGN=TOP><CODE>-J</CODE></TD><TD>
 	use Jcon-built versions of <I>jtran</I> and <I>jlink</I>,
@@ -107,16 +107,16 @@ See the Java documentation for other Java options.
 
 <H3>Jar file output</H3>
 
-<P> If <CODE>-j</CODE> is passed to <CODE>jcont</CODE>,
+<P> If <CODE>-j</CODE> is passed to <I>jcont</I>,
 the final output file is given a <CODE>.jar</CODE> extension
 and the header is omitted to facilitate manipulation of the file as an archive.
 Execution is accomplished by naming the file in the CLASSPATH,
 along with the run-time library, and then running java:
-<BLOCKQUOTE><CODE>
-	jcont -j myprog.icn
-	<BR>setenv CLASSPATH myprog.jar:/myhome/jcon/bin/rts.zip
-	<BR>java myprog
-</CODE></BLOCKQUOTE>
+<BLOCKQUOTE><PRE>
+jcont -j myprog.icn
+setenv CLASSPATH myprog.jar:/myhome/jcon/bin/rts.zip
+java myprog
+</PRE></BLOCKQUOTE>
 
 <P> It is possible to transport such a Jar file for execution on another
 machine, possibly even one of different architecture.

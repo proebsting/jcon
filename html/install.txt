@@ -82,7 +82,8 @@ nongraphical tests and experiments.
 <P> The subdirectories within the Jcon tree are as follows:
 <BLOCKQUOTE><TABLE>
 <TR><TD><CODE>bin</CODE></TD>
-	<TD>target for all build products; also includes jcont script</TD></TR>
+	<TD>target for all build products;
+	    also includes <CODE>jcont</CODE> script</TD></TR>
 <TR><TD><CODE>tran</CODE></TD>
 	<TD>source code for the translator</TD></TR>
 <TR><TD><CODE>rts</CODE></TD>

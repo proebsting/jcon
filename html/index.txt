@@ -23,4 +23,7 @@
 <P> They are also collected together into a 
 <A HREF=ipd286.htm>single large file</A>, if you prefer that.
 
+<P><HR>
+<A HREF="http://www.cs.arizona.edu/icon/jcon/">Jcon home page</A>
+
 </BODY></HTML>

@@ -55,7 +55,6 @@ palette that can vary from one run to another.
 The first image below (from Plate 8.2 of the graphics book)
 shows the surface of color space as rendered on a full-color display.
 The second image is an example of how Java renders it on an 8-bit display.
-<BR>
 <P>
 <CENTER>
 	<IMG WIDTH=202 HEIGHT=122 SRC=merc24.jpg ALT="full color image">
@@ -123,7 +122,7 @@ Attempts to alter these attribute values are ignored.
 <P> Acceptable values for the <CODE>pointer</CODE> attribute
 are illustrated in the following figure.
 For compatibility with other systems, some pointers have multiple names.
-<BR><CENTER>
+<P><CENTER>
 	<IMG WIDTH=442 HEIGHT=302 SRC=pointers.gif ALT="pointer shapes">
 </CENTER>
 <H3>Deprecated Features</H3>
