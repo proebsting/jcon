@@ -1,0 +1,16 @@
+See ../doc/notes.txt for bug list etc.
+
+
+Grep for '#%#%' in the code to find places that need revisiting.
+
+
+Java names are assigned as follows.
+
+    i.....	infrastructure classes
+    f$.....	runtime function classes
+    k$.....	keyword classes
+    l$.....	linked file classes
+    o.....	runtime operator classes
+    p$.....	user procedure classes
+    v$.....	user variables
+    v.....	implementation value and variable classes
