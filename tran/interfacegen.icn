@@ -129,12 +129,15 @@ procedure methodrefs()
             ["Call", "([Lrts/vDescriptor;)Lrts/vDescriptor;",
              "rts/vDescriptor",  "CallV"],
             ["New", "()Lrts/vNull;", "rts/vNull", "New_vNull"],
-            ["New", "(J)Lrts/vInteger;", "rts/vInteger", "New_vInteger"],
+            ["New", "(J)Lrts/vInteger;", "rts/vInteger",
+	     "New_vInteger"],
+            ["New", "(Ljava/lang/String;)Lrts/vBigInt;", "rts/vBigInt",
+	     "New_vBigInt"],
             ["New", "(Lrts/vClosure;)Lrts/vCoexp;", "rts/vCoexp", "New_vCoexp"],
             ["New", "(Ljava/lang/String;)Lrts/vCset;", "rts/vCset","New_vCset"],
             ["New", "(Ljava/lang/String;)Lrts/vReal;", "rts/vReal","New_vReal"],
             ["New", "(Ljava/lang/String;Lrts/vDescriptor;)Lrts/vSimpleVar;",
-	     "rts/vSimpleVar", "New_vSimpleVar_Assign"],
+             "rts/vSimpleVar", "New_vSimpleVar_Assign"],
             ["New", "(Ljava/lang/String;)Lrts/vSimpleVar;", "rts/vSimpleVar",
              "New_vSimpleVar"],
             ["New", "(Ljava/lang/String;)Lrts/vString;", "rts/vString",
@@ -177,9 +180,9 @@ procedure methodrefs()
     write("\treturn case N of {")
     args := ""
     every i := 0 to 9 do {
-	write("\t", i, ": j_create_methodref(c, \"Call\", \"(", args,
-	      ")Lrts/vDescriptor;\", \"rts/vDescriptor\")")
-	args ||:= "Lrts/vDescriptor;"
+        write("\t", i, ": j_create_methodref(c, \"Call\", \"(", args,
+              ")Lrts/vDescriptor;\", \"rts/vDescriptor\")")
+        args ||:= "Lrts/vDescriptor;"
     }
     write("\tdefault : runerr(500, N)")
     write("\t}")
@@ -189,9 +192,9 @@ procedure methodrefs()
     write("\treturn case N of {")
     args := ""
     every i := 0 to 9 do {
-	write("\t", i, ": j_create_methodref(c, \"Call\", \"(Ljava/lang/String;ILrts/vDescriptor;", args,
-	      ")Lrts/vDescriptor;\", \"rts/iTrampoline\")")
-	args ||:= "Lrts/vDescriptor;"
+        write("\t", i, ": j_create_methodref(c, \"Call\", \"(Ljava/lang/String;ILrts/vDescriptor;", args,
+              ")Lrts/vDescriptor;\", \"rts/iTrampoline\")")
+        args ||:= "Lrts/vDescriptor;"
     }
     write("\tdefault : j_create_methodref(c, \"Call\", \"(Ljava/lang/String;ILrts/vDescriptor;[Lrts/vDescriptor;)Lrts/vDescriptor;\", \"rts/iTrampoline\")")
     write("\t}")
@@ -201,9 +204,9 @@ procedure methodrefs()
     write("\treturn case N of {")
     args := ""
     every i := 0 to 9 do {
-	write("\t", i, ": j_create_methodref(c, \"<init>\", \"(", args,
-	      ")V\", classname)")
-	args ||:= "Lrts/vDescriptor;"
+        write("\t", i, ": j_create_methodref(c, \"<init>\", \"(", args,
+              ")V\", classname)")
+        args ||:= "Lrts/vDescriptor;"
     }
     write("\tdefault : runerr(500, N)")
     write("\t}")
@@ -217,9 +220,9 @@ procedure methods()
     write("\treturn case N of {")
     args := ""
     every i := 0 to 9 do {
-	write("\t", i, ": j_create_method(c, 0, \"Call\", \"(", args,
-	      ")Lrts/vDescriptor;\")")
-	args ||:= "Lrts/vDescriptor;"
+        write("\t", i, ": j_create_method(c, 0, \"Call\", \"(", args,
+              ")Lrts/vDescriptor;\")")
+        args ||:= "Lrts/vDescriptor;"
     }
     write("\tdefault : runerr(500, N)")
     write("\t}")
@@ -229,9 +232,9 @@ procedure methods()
     write("\treturn case N of {")
     args := ""
     every i := 0 to 9 do {
-	write("\t", i, ": j_create_method(c, 0, \"<init>\", \"(", args,
-	      ")V\")")
-	args ||:= "Lrts/vDescriptor;"
+        write("\t", i, ": j_create_method(c, 0, \"<init>\", \"(", args,
+              ")V\")")
+        args ||:= "Lrts/vDescriptor;"
     }
     write("\tdefault : runerr(500, N)")
     write("\t}")

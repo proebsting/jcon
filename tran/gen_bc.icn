@@ -298,7 +298,7 @@ procedure bc_gen_ir_IntLit(s, p)
     i := integer(p.val)
     /bc_integer_table[i] := "li$" || map(i, "-", "m")
     field := j_create_fieldref(bc_current_classptr, bc_integer_table[i],
-                               "Lrts/vInteger;", bc_java_classname)
+                               "Lrts/vNumeric;", bc_java_classname)
     put(s, j_getstatic(field))
     return s
 end
@@ -1894,13 +1894,19 @@ procedure bc_create_class_linkinit(c)
         put(s, j_putstatic(f) )
     }
 
-    newmethod := bc_New_vInteger_methodref(c)
     every k := key(bc_integer_table) do {
-        j_create_field(c, 8, bc_integer_table[k], "Lrts/vInteger;")
-        f := j_create_fieldref(c, bc_integer_table[k], "Lrts/vInteger;",
+        j_create_field(c, 8, bc_integer_table[k], "Lrts/vNumeric;")
+        f := j_create_fieldref(c, bc_integer_table[k], "Lrts/vNumeric;",
                              bc_java_classname)
-        d := j_cp_Long(c, k)
-        put(s, j_ldc2_w(d) )
+	if k >= (2^63) then {
+            newmethod := bc_New_vBigInt_methodref(c)
+            d := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
+            put(s, j_ldc_w(d) )
+	} else {
+            newmethod := bc_New_vInteger_methodref(c)
+            d := j_cp_Long(c, k)
+            put(s, j_ldc2_w(d) )
+	}
         put(s, j_invokestatic(newmethod) )
         put(s, j_putstatic(f) )
     }

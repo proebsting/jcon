@@ -7,7 +7,6 @@ procedure main ()
       stop("large integers not supported")
 
    big :=  111111111111111111111
-   big :=  integer("111111111111111111111")	#%#%#%##%#% REMOVE THIS
    med1 := "2222222222"
    med2 := "3333333333"
    small := 4
