@@ -10,7 +10,7 @@ public abstract class iClosure {
     public int PC;			// "program counter" (initially = 1)
 
     public Object o;			// arbitrary storage for RTS methods
-    public int oint;			// arbitrary storage for RTS methods
+    public int ival;			// integer storage for RTS methods
 
     public String file;			// location in source file
     public int line;
@@ -29,6 +29,8 @@ public iClosure() {		// constructor
 }
 
 public void locals()	{}	// initializes name/variable arrays.
+
+
 
 String trace_coordinate() {
     String file = "";
@@ -106,8 +108,13 @@ public void Free() {
 
 public abstract vDescriptor nextval();
 
+
+
 // copy() is used to return a "refreshed" copy of the closure.
+
 public iClosure copy(int PC) { iRuntime.error(901); return null; } //#%#% NYI?
+
+
 
 public void closure(vDescriptor[] a, iClosure parent) {
     init();
@@ -219,7 +226,9 @@ StringBuffer trace_prototype() {
     return b;
 }
 
+
 // trace() adds line and file information to trace_prototype();
+
 String trace() {
     StringBuffer b = this.trace_prototype();
     if (parent != null && parent.file != null) {

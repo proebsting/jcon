@@ -354,13 +354,12 @@ vDescriptor Select() {			// ?c
 
 vDescriptor Bang(iClosure c) {		// !c
     if (c.PC == 1) {
-	c.o = c;
-	c.oint = 0;
+	c.ival = 0;
 	c.PC = 2;
     }
-    for (int k = c.oint; k <= MAX_VALUE; k++) {
+    for (int k = c.ival; k <= MAX_VALUE; k++) {
 	if (this.member(k)) {
-	    c.oint = k + 1;
+	    c.ival = k + 1;
 	    return vString.New((char) k);
 	}
     }

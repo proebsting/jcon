@@ -555,31 +555,29 @@ vDescriptor SelectVar(vVariable v) {
 
 vDescriptor Bang(iClosure c) {
     if (c.PC == 1) {
-	c.o = c;
-	c.oint = 0;
+	c.ival = 0;
 	c.PC = 2;
     } else {
-	c.oint++;
+	c.ival++;
     }
-    if (c.oint >= tlength) {
+    if (c.ival >= tlength) {
 	return null; /*FAIL*/
     } else {
-	return vString.New(charAt(c.oint));
+	return vString.New(charAt(c.ival));
     }
 }
 
 vDescriptor BangVar(iClosure c, vVariable v) {
-    int i;
     if (c.PC == 1) {
-	c.o = new Integer(i = 1);	//#%#%#% use c.oint instead
+	c.ival = 1;
 	c.PC = 2;
     } else {
-	c.o = new Integer(i = ((Integer)c.o).intValue() + 1);
+	c.ival++;
     }
-    if (i > ((vString)v.deref()).tlength) {
+    if (c.ival > ((vString)v.deref()).tlength) {
 	return null; /*FAIL*/
     } else {
-	return vSubstring.New(v, i, i+1);
+	return vSubstring.New(v, c.ival, c.ival + 1);
     }
 }
 

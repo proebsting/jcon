@@ -253,10 +253,9 @@ vValue Power(vDescriptor v) {
 	    return vInteger.New(0);
 	}
     }
-    //#%#%# slow computation; should use powers of 2
     long p = 1L;
     for (long i = 0; i < y; i++) {
-	p *= x;		//#%#%# totally ignoring overflow.
+	p *= x;
     }
     return vInteger.New(p);
 }

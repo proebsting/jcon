@@ -83,7 +83,7 @@ vDescriptor Bang(iClosure c) {
 }
 
 vValue Sort(int i) {					// sort(L)
-    return vList.New(iUtil.sort(this.mkArray()));
+    return vList.New(iSort.sort(this.mkArray()));
 }
 
 vValue[] mkArray() {

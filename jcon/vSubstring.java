@@ -122,17 +122,16 @@ vDescriptor Select() {				// ?s
 }
 
 vDescriptor Bang(iClosure c) {			// !s
-    int n;			//#%#% use c.oint
     if (c.PC == 1) {
-	c.o = new Integer(n = start);
+	c.ival = start;
 	c.PC = 2;
     } else {
-	c.o = new Integer(n = ((Integer)c.o).intValue() + 1);
+	c.ival++;
     }
-    if (n >= end) {
+    if (c.ival >= end) {
 	return null; /*FAIL*/
     } else {
-	return vSubstring.New(this, n, n + 1);
+	return vSubstring.New(this, c.ival, c.ival + 1);
     }
 }
 

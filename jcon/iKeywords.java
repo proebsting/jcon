@@ -333,7 +333,7 @@ class k$subject extends vSimpleVar {				// &subject
     k$pos pos;		// associated &pos variable
     static k$subject self;
 
-    k$subject() { super("&subject"); self = this; }
+    k$subject()		{ super("&subject"); self = this; }
 
     public vVariable Assign(vValue s) {
 	value = s.mkString();			// &subject := s
@@ -348,7 +348,7 @@ class k$pos extends vSimpleVar {				// &pos
     k$subject subject;		// associated &subject variable
     static k$pos self;
 
-    k$pos() { super("&pos"); self = this; }
+    k$pos()		{ super("&pos"); self = this; }
 
     public vVariable Assign(vValue i) {
 	i = i.mkInteger();
@@ -573,7 +573,7 @@ class k$error extends vSimpleVar {				// &trace
 	if (error != 0 & !iEnv.error_conversion) {
 	    error = 0;
 	    value = vInteger.New(error);
-	    iRuntime.error(904,this);
+	    iRuntime.error(904);
 	}
 	return this;
     }

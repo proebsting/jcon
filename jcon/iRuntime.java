@@ -1,4 +1,6 @@
-//#%#%#% later merge with iInterface?
+//  iRuntime.java -- miscellaneous runtime methods
+
+
 
 package rts;
 
@@ -24,11 +26,8 @@ static boolean upto(String c, String s) {
 // never returns.
 // to keep Java happy, follow error() calls with "return null" in caller.
 
-public static void error(int n)  { error(n, null); }
-
-public static void error(int n, vDescriptor d) {
-    throw new iError(n,d);
-}
+public static void error(int n)			{ error(n, null); }
+public static void error(int n, vDescriptor d)	{ throw new iError(n,d); }
 
 
 
@@ -72,6 +71,8 @@ public static vValue argVal(vDescriptor[] args, int index, int errcode) {
 	return (vValue) args[index];
     }
 }
+
+
 
 // argSubject(args, index) handles string defaulting in scanning functions.
 // returns &subject's vString if args[index] defaulted

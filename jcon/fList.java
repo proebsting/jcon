@@ -90,7 +90,7 @@ class f$sortf extends iValueClosure {				// sortf(X,i)
 	for (int j = 0; j < a.length; j++) {
 	    a[j] = new vSortElem(a[j], i);
 	}
-	iUtil.sort(a);
+	iSort.sort(a);
 	for (int j = 0; j < a.length; j++) {
 	    a[j] = ((vSortElem)a[j]).value;
 	}
@@ -122,7 +122,7 @@ class vSortElem extends vValue {		// key/value pair for sortf()
 	    return d;
 	if (this.key == null) {
 	    if (e.key == null) {
-		return iUtil.compare(this.value, e.value);
+		return iSort.compare(this.value, e.value);
 	    } else {
 		return -1;
 	    }
@@ -130,11 +130,11 @@ class vSortElem extends vValue {		// key/value pair for sortf()
 	    if (e.key == null) {
 		return 1;
 	    } else {
-		d = iUtil.compare(this.key, e.key);
+		d = iSort.compare(this.key, e.key);
 		if (d != 0) {
 		    return d;
 		} else {
-		    return iUtil.compare(this.value, e.value);
+		    return iSort.compare(this.value, e.value);
 		}
 	    }
 	}

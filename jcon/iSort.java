@@ -1,10 +1,14 @@
+//  iSort.java -- sorting methods
+
+
+
 package rts;
 
-class iUtil {
+class iSort {
 
 
 
-//  sort(x) -- sort java array x of vValues, using x[i].compare().
+//  sort(x) -- sort java array x of vValues
 
 static vValue[] sort(vValue x[]) {
     qsort(x, 0, x.length - 1);
@@ -14,6 +18,8 @@ static vValue[] sort(vValue x[]) {
 
 
 //  compare(x, y) -- compare two vValue objects for sorting
+//
+//  uses x.compareTo(y) when x.rank() == y.rank().
 
 static int compare(vValue x, vValue y) {
     int d = x.rank() - y.rank();
@@ -26,7 +32,7 @@ static int compare(vValue x, vValue y) {
 
 
 
-// qsort(x, l, u) -- sort x[l] through x[u] inclusive, using x[i].compare().
+// qsort(x, l, u) -- sort x[l] through x[u] inclusive.
 //
 // based on Jon Bentley, Programming Pearls, CACM 27:4 (Apr 1984) p.289
 
@@ -66,4 +72,4 @@ private static void swap(vValue x[], int i, int j) {
 }
 
 
-} // class iUtil
+} // class iSort

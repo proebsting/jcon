@@ -5,10 +5,10 @@ public class iInterface {
 
 
 public static void init() {    // general runtime initialization
-    (new iBuiltins()).announce();
-    (new wBuiltins()).announce();
-    (new iKeywords()).announce();
-    (new iOperators()).announce();
+    (new iBuiltins()).announce();	// install built-in functions
+    (new wBuiltins()).announce();	// install built-in graphics functions
+    (new iKeywords()).announce();	// install keywords
+    (new iOperators()).announce();	// install operators
 }
 
 public static vList marshal( vDescriptor[] args, int len) {

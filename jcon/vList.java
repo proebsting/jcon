@@ -178,16 +178,15 @@ vDescriptor Select() {					//  ?L
 
 vDescriptor Bang(iClosure c) {				//  !L
     if (c.PC == 1) {
-	c.o = c;
-	c.oint = 0;
+	c.ival = 0;
 	c.PC = 2;
     } else {
-	c.oint++;
+	c.ival++;
     }
-    if (c.oint >= v.size()) {
+    if (c.ival >= v.size()) {
 	return null; /*FAIL*/
     } else {
-	return (vDescriptor) v.elementAt(c.oint);	// generate as variable
+	return (vDescriptor) v.elementAt(c.ival);	// generate as variable
     }
 }
 
@@ -204,7 +203,7 @@ vValue ListConcat(vDescriptor v) {			// L1 ||| L2
 }
 
 vValue Sort(int i) {					// sort(L)
-    return vList.New(iUtil.sort(this.mkArray()));
+    return vList.New(iSort.sort(this.mkArray()));
 }
 
 vValue[] mkArray() {

@@ -136,7 +136,7 @@ vValue Sort(int n) {
 	    a[i++] = new vTableElem(val, key);	// sort by value
 	}
     }
-    iUtil.sort(a);				// sort array of pairs
+    iSort.sort(a);				// sort array of pairs
 
     vValue b[];
     if (n <= 2) {				// return list of lists

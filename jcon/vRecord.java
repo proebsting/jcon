@@ -90,23 +90,22 @@ vDescriptor Select() {
 
 
 vDescriptor Bang(iClosure c) {
-    int i;
     if (c.PC == 1) {
-	c.o = new Integer(i = 0);
+	c.ival = 0;
 	c.PC = 2;
     } else {
-	c.o = new Integer(i = ((Integer)c.o).intValue() + 1);
+	c.ival++;
     }
-    if (i >= values.length) {
+    if (c.ival >= values.length) {
 	return null; /*FAIL*/
     } else {
-	return values[i];
+	return values[c.ival];
     }
 }
 
 
 vValue Sort(int i) {					// sort(L)
-    return vList.New(iUtil.sort(this.mkArray()));
+    return vList.New(iSort.sort(this.mkArray()));
 }
 
 vValue[] mkArray() {
