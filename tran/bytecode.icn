@@ -1577,10 +1577,12 @@ procedure writer_align4(writer, pad)
 end
 
 procedure writer_u1(writer, u1)
+	(0 <= u1 < 256) | runerr(1000, u1)
 	writes(writer, char(iand(u1, 255)))
 end
 
 procedure writer_u2(writer, u2)
+	(0 <= u2 < 65536) | runerr(1000, u2)
 	writes(writer, char(iand(ishift(u2, - 8), 255)),
 	               char(iand(u2, 255)))
 end
@@ -1593,11 +1595,14 @@ procedure writer_u4(writer, u4)
 end
 
 procedure writer_s1(writer, s1)
-	writer_u1(writer, s1)
+	(-128 <= s1 <= 127) | runerr(1000, s1)
+	writes(writer, char(iand(s1, 255)))
 end
 
 procedure writer_s2(writer, s2)
-	writer_u2(writer, s2)
+	(-32768 <= s2 <= 32767) | runerr(1000, s2)
+	writes(writer, char(iand(ishift(s2, - 8), 255)),
+	               char(iand(s2, 255)))
 end
 
 procedure writer_s4(writer, s4)

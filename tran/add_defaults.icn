@@ -107,7 +107,7 @@ end
 # record Binop( op left right )
 procedure add_defaults_Binop(p)
 	p.left := add_defaults(p.left)
-	p.right := add_defaults(p.right)
+	p.right := add_defaults(\p.right) | Key("null")
 	return p
 end
 

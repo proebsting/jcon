@@ -414,7 +414,7 @@ procedure expr11suffix(lhs)
 		eat_token()
 		
 		repeat {
-			left := expr()
+			left := nexpr()
 			if member(expr11suffix_set2, tok_rec) then {
 				op := "[" || eat_token() || "]"
 				right := expr()
@@ -970,5 +970,6 @@ end
 
 
 procedure parse_error(msg)
+runerr(1000)
     stop("File ", tok_rec.coord.file, "; Line ", tok_rec.coord.line, " # ", msg)
 end
