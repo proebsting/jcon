@@ -8,14 +8,12 @@
 #
 #     -b	generate backwards-compatible .u1/u2 files; implies -c
 #     -c	compile only: don't produce an executable
-#     -f flags	enable features indicated by letters in "flags":
-#		    -fe enables error conversion, tracing, detailed traceback
-#		    -fa ("all features") and -fn are equivalent
+#     -f d	enable debugging features (tracing, error conversion)
 #     -h	print this usage message and exit
 #     -j	produce .jar file instead of executable script
 #     -o exe	specify output file for executable
 #     -s	silent: suppress commentary
-#     -t	compile with -fe (to allow tracing) and init &trace to -1
+#     -t	compile with -fd (to allow tracing) and init &trace to -1
 #     -u	diagnose undeclared variables
 #     -x	execute after compilation
 #     -E	preprocess only
@@ -145,7 +143,7 @@ while getopts "bcdjsvtuEJPSo:f:" c 2>$NULLFILE; do
 	f)	TFLAGS="$TFLAGS -f$OPTARG";;
 	j)	XTYPE=.jar;;
 	s)	ANNOUNCE=":";;
-	t)	INITTRACE="\${TRACE-\"-1\"}"; UTRACE=-1; TFLAGS="$TFLAGS -fe";;
+	t)	INITTRACE="\${TRACE-\"-1\"}"; UTRACE=-1; TFLAGS="$TFLAGS -fd";;
 	u)	UNDECLARED="-D-u";;
 	v)	CMDTRACE="set -x"; LINKTRACE="-t";;
 	E)	TARGET="ppsrc"; NOLINK="exit";;
