@@ -165,7 +165,10 @@ procedure optim_def_use(p, this, uses, defs)
     "ir_Succeed" :   { optim_def_use(p.expr, uses, uses, defs);
             optim_def_use(\p.continuation, uses, uses, defs); }
     "ir_Fail" :  { }
-    "ir_Resume" :    { optim_def_use(p.closure, uses, uses, defs);
+    "ir_ResumeValue" :    { optim_def_use(p.value, uses, uses, defs);
+            optim_def_use(p.failLabel, uses, uses, defs);
+            optim_def_use(\p.retValue, defs, uses, defs); }
+    "ir_ResumeClosure" :    { optim_def_use(p.closure, uses, uses, defs);
             optim_def_use(p.failLabel, uses, uses, defs);
             optim_def_use(\p.retValue, defs, uses, defs); }
     "ir_MakeList" :  { optim_def_use(\p.lhs, defs, uses, defs);
@@ -218,7 +221,10 @@ procedure optim_rewrite(p, rename)
     "ir_Succeed" :   { p.expr := optim_rewrite(p.expr, rename);
             p.continuation := optim_rewrite(\p.continuation, rename); }
     "ir_Fail" :  { }
-    "ir_Resume" :    { p.closure := optim_rewrite(p.closure, rename);
+    "ir_ResumeValue" :    { p.value := optim_rewrite(p.value, rename);
+            p.failLabel := optim_rewrite(p.failLabel, rename);
+            p.retValue := optim_rewrite(\p.retValue, rename); }
+    "ir_ResumeClosure" :    { p.closure := optim_rewrite(p.closure, rename);
             p.failLabel := optim_rewrite(p.failLabel, rename);
             p.retValue := optim_rewrite(\p.retValue, rename); }
     "ir_MakeList" :  { p.lhs := optim_rewrite(\p.lhs, rename);
@@ -368,7 +374,11 @@ procedure optim_gotos(p, wl, seen, t)
         p.failLabel := optim_goto_chain(\p.failLabel, t)
         optim_gotos(\p.failLabel, wl, seen, t)
         }
-    "ir_Resume" : {  # ir_Resume : ( closure failLabel retValue )
+    "ir_ResumeValue" : {  # ir_ResumeValue : ( value failLabel retValue )
+        p.failLabel := optim_goto_chain(p.failLabel, t)
+        optim_gotos(p.failLabel, wl, seen, t)
+        }
+    "ir_ResumeClosure" : {  # ir_ResumeClosure : ( closure failLabel retValue )
         p.failLabel := optim_goto_chain(p.failLabel, t)
         optim_gotos(p.failLabel, wl, seen, t)
         }

@@ -2,8 +2,90 @@
 
 procedure main()
     write("#  AUTOMATICALLY GENERATED FILE -- DO NOT EDIT!")
+    operators()
     methodrefs()
     fieldrefs()
+end
+
+procedure operators()
+    local o, ops, signature
+
+    ops := [
+
+	# arity,  op, method name,    return type
+
+	[ 1,     "-", "Negate",       "rts.vNumeric"    ],
+	[ 1,     "*", "Size",         "rts.vInteger"    ],
+	[ 1,     "?", "Select",       "rts.vDescriptor" ],
+	[ 1,     "!", "Bang",         "rts.vDescriptor" ],
+	[ 2,    "[]", "Index",        "rts.vDescriptor" ],
+	[ 3,   "[:]", "Section",      "rts.vDescriptor" ],
+	[ 2,     "+", "Add",          "rts.vValue"      ],
+	[ 2,     "-", "Sub",          "rts.vValue"      ],
+	[ 2,     "*", "Mul",          "rts.vValue"      ],
+	[ 2,     "/", "Div",          "rts.vValue"      ],
+	[ 2,     "%", "Mod",          "rts.vValue"      ],
+	[ 2,     "^", "Power",        "rts.vValue"      ],
+	[ 2,     "<", "NLess",        "rts.vValue"      ],
+	[ 2,    "<=", "NLessEq",      "rts.vValue"      ],
+	[ 2,     "=", "NEqual",       "rts.vValue"      ],
+	[ 2,    "~=", "NUnequal",     "rts.vValue"      ],
+	[ 2,    ">=", "NGreaterEq",   "rts.vValue"      ],
+	[ 2,     ">", "NGreater",     "rts.vValue"      ],
+	[ 2,    "<<", "LLess",        "rts.vValue"      ],
+	[ 2,   "<<=", "LLessEq",      "rts.vValue"      ],
+	[ 2,    "==", "LEqual",       "rts.vValue"      ],
+	[ 2,   "~==", "LUnequal",     "rts.vValue"      ],
+	[ 2,   ">>=", "LGreaterEq",   "rts.vValue"      ],
+	[ 2,    ">>", "LGreater",     "rts.vValue"      ],
+	[ 2,    "||", "Concat",       "rts.vValue"      ],
+	[ 2,   "|||", "ListConcat",   "rts.vValue"      ],
+	[ 1,     "^", "Refresh",      "rts.vValue"      ],
+	[ 1,     "~", "Complement",   "rts.vValue"      ],
+	[ 2,    "**", "Intersect",    "rts.vValue"      ],
+	[ 2,    "++", "Union",        "rts.vValue"      ],
+	[ 2,    "--", "Diff",         "rts.vValue"      ],
+
+	[ 1,     "#", "Limit",        "rts.vValue"      ],
+	[ 2,    ":?", "SubjAssign",   "rts.vValue"      ],
+	[ 2,   ":=:", "Swap",         "rts.vVariable"   ],
+	[ 2,   "<->", "RevSwap",      "rts.vDescriptor" ],
+	[ 2,    "<-", "RevAssign",    "rts.vDescriptor" ],
+	[ 2,    ":=", "Assign",       "rts.vVariable"   ],
+	[ 3,   "...", "ToBy",         "rts.vInteger"    ],
+	[ 3,  "[+:]", "SectPlus",     "rts.vValue"      ],
+	[ 3,  "[-:]", "SectMinus",    "rts.vValue"      ],
+	[ 1,     ".", "Deref",        "rts.vValue"      ],
+	[ 1,     "/", "IsNull",       "rts.vDescriptor" ],
+	[ 1,    "\\", "IsntNull",     "rts.vDescriptor" ],
+	[ 1,     "+", "Numerate",     "rts.vNumeric"    ],
+	[ 2,     "&", "Conjunction",  "rts.vDescriptor" ],
+	[ 2,   "===", "VEqual",       "rts.vValue"      ],
+	[ 2,  "~===", "VUnequal",     "rts.vValue"      ],
+	[ 1,     "=", "TabMatch",     "rts.vString"     ],
+	[ 2,     "@", "Activate",     "rts.vValue"      ],
+	[ 2,     "!", "ProcessArgs",  "rts.vDescriptor" ]
+    ]
+
+    write("procedure bc_op_methodref(c, name, arity)")
+    every o := !ops do {
+	signature := "("
+	every 1 to o[1]-1 do {
+	    signature ||:= "Lrts/vDescriptor;"
+	}
+	signature ||:= ")"
+	signature ||:= "L" || map(o[4], ".", "/") || ";"
+	write("\tif ",
+	      "arity = ", o[1], " & ",
+	      "name == ", image(o[2]), " then ",
+	      "return j_create_methodref(c, ",
+	      image(o[3]), ", ",
+	      image(signature), ", ",
+	      image("rts/vDescriptor"), ")"
+	      )
+    }
+    write("\trunerr(500, name || arity)")
+    write("end")
 end
 
 procedure methodrefs()
@@ -41,6 +123,7 @@ procedure methodrefs()
             ["declareRecord", "(Ljava/lang/String;[Ljava/lang/String;)V",
              "rts/iEnv"],
             ["deref", "()Lrts/vValue;", "rts/vDescriptor"],
+            ["Field", "(Ljava.lang.String;)Lrts/vVariable;", "rts/vDescriptor"],
             ["error", "(I)V", "rts/iRuntime"],
             ["link", "(Ljava/lang/String;)V", "rts/iInterface"],
             ["marshal", "([Lrts/vDescriptor;I)Lrts/vList;", "rts/iInterface"],
@@ -49,6 +132,7 @@ procedure methodrefs()
             ["resolveProc", "(Ljava/lang/String;I)Lrts/vDescriptor;",
              "rts/iEnv"],
             ["resume", "()Lrts/vDescriptor;", "rts/iClosure"],
+            ["resume", "()Lrts/vDescriptor;", "rts/vDescriptor", "resumeValue"],
             ["nextval", "()Lrts/vDescriptor;", "rts/iClosure"],
             ["undeclared", "(Ljava/lang/String;)V", "rts/iEnv"]
         ]
@@ -63,7 +147,6 @@ procedure fieldrefs()
         [ "PC", "I", "rts/iClosure"],
         [ "arguments", "[Lrts/vDescriptor;", "rts/iClosure"],
         [ "cur_coexp", "Lrts/vCoexp;", "rts/iEnv"],
-        [ "field", "Lrts/oField;", "rts/oField"],
         [ "file", "Ljava/lang/String;", "rts/iClosure"],
         [ "line", "I", "rts/iClosure"],
         [ "names", "[Ljava/lang/String;", "rts/iClosure"],

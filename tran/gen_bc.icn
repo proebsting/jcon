@@ -206,17 +206,11 @@ end
 procedure bc_gen_ir_Field(s, p)
     local lab, method, fieldname, field, d
 
-    field := bc_field_fieldref(bc_proc_classptr)
-    put(s, j_getstatic(field) )
     bc_gen_rval(s, p.expr)
     d := j_cp_String(bc_proc_classptr,
                    j_cp_Utf8(bc_proc_classptr, p.field)) | runerr(500)
     put(s, j_ldc_w(d) )
-    put(s, j_aload_0())
-    args := "Lrts/vDescriptor;Ljava/lang/String;Lrts/iClosure;"
-    method := j_create_methodref(bc_proc_classptr, "call",
-                               "(" || args || ")Lrts/vDescriptor;",
-                               "rts/oField")
+    method := bc_Field_methodref(bc_proc_classptr)
     put(s, j_invokevirtual(method))
     if \p.lhs then {
         put(s, j_dup() )
@@ -463,8 +457,29 @@ procedure bc_gen_ir_RunTimeError(s, p)
     return s
 end
 
-# record ir_Resume( closure failLabel retValue )
-procedure bc_gen_ir_Resume(s, p)
+# record ir_ResumeValue( value failLabel retValue )
+procedure bc_gen_ir_ResumeValue(s, p)
+    local c, PC, target, resume, free
+
+    resume := bc_resumeValue_methodref(bc_proc_classptr)
+    bc_gen(s, p.value)
+    put(s, j_invokevirtual(resume))
+    if \p.retValue then {
+        put(s, j_dup())
+        target := j_label()
+        put(s, j_ifnonnull(target))
+        put(s, j_pop())
+        bc_transfer_to(s, p.failLabel)
+        put(s, target)
+        bc_gen_assign_to(s, p.retValue)
+    } else {
+        bc_conditional_transfer_to(s, p.failLabel, j_ifnull, j_ifnonnull)
+    }
+    return s
+end
+
+# record ir_ResumeClosure( closure failLabel retValue )
+procedure bc_gen_ir_ResumeClosure(s, p)
     local c, PC, target, resume, free
 
     PC := bc_PC_fieldref(bc_proc_classptr)
@@ -589,32 +604,12 @@ end
 
 # record ir_OpFunction( lhs fn argList failLabel )
 procedure bc_gen_ir_OpFunction(s, p)
-    local target, args, method, class, i, op, field
-    static optable
-    initial optable := bc_initoptable()
+    local target, method
 
     p.fn.arity = *p.argList | runerr(500, p)
-    op := \optable[p.fn.arity][p.fn.name] | runerr(500, p.fn)
-
-    class := case p.fn.arity of {
-        1 : "rts/iUnaryClosure"
-        2 : "rts/iBinaryClosure"
-        3 : "rts/iTrinaryClosure"
-        default : runerr(500)
-        }
-    field := j_create_fieldref(bc_proc_classptr, "instance",
-                               "L" || class || ";", "rts/" || op)
-    put(s, j_getstatic(field) )
-
-    args := ""
-    every i := 1 to *p.argList do {
-        bc_gen(s, p.argList[i])
-        args ||:= "Lrts/vDescriptor;"
-    }
-    put(s, j_aload_0())
-    args ||:= "Lrts/iClosure;"
-    method := j_create_methodref(bc_proc_classptr, "call",
-                               "(" || args || ")Lrts/vDescriptor;", class)
+    method := bc_op_methodref(bc_proc_classptr, p.fn.name, p.fn.arity)
+    \method | runerr(500)
+    every bc_gen(s, !p.argList)
     put(s, j_invokevirtual(method))
 
     if \p.failLabel then {
@@ -646,6 +641,7 @@ procedure bc_gen_ir_MakeClosure(s, p)
     \p.lhs | return ""
 
     if type(p.fn) == "ir_Operator" then {
+	runerr(500, p)
         return bc_gen_call_op(s, p)
     }
 
@@ -764,7 +760,8 @@ procedure bc_gen(s, p)
     "ir_Restore" : return bc_gen_ir_Restore(s, p)
     "ir_Succeed" : return bc_gen_ir_Succeed(s, p)
     "ir_Fail" : return bc_gen_ir_Fail(s, p)
-    "ir_Resume" : return bc_gen_ir_Resume(s, p)
+    "ir_ResumeClosure" : return bc_gen_ir_ResumeClosure(s, p)
+    "ir_ResumeValue" : return bc_gen_ir_ResumeValue(s, p)
     "ir_MakeList" : return bc_gen_ir_MakeList(s, p)
     "ir_OpFunction" : return bc_gen_ir_OpFunction(s, p)
     "ir_MakeClosure" : return bc_gen_ir_MakeClosure(s, p)

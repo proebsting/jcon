@@ -41,7 +41,8 @@ procedure dot_output(t)
                 }
             "ir_Field" |
             "ir_OpFunction" |
-            "ir_Resume" : {
+            "ir_ResumeClosure" |
+            "ir_ResumeValue" : {
                 write(lab, ":f", i,
                       " ->",
                       image(dot_dump(\insn.failLabel)), " [label=failure]")
