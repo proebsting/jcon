@@ -1,5 +1,5 @@
 JCON 1.0 README
-May 12, 1998
+May 15, 1998
 
 Gregg Townsend, The University of Arizona
 Todd Proebsting, Microsoft Research
@@ -55,8 +55,8 @@ For software see:
 
 3. SEARCH PATH
 
-Executables of icont, javac, java, and jar must be in the search
-path to build or run Jcon or to execute generated binaries.
+Executables of icont, javac, java, and jar must be in the search path
+to build programs with Jcon.  Only java is needed for execution.
 
 
 

@@ -21,6 +21,9 @@ build:
 	cd rts; $(MAKE)
 	cd doc; $(MAKE)
 
+jj:
+	cd tran; $(MAKE) jj
+
 
 test:	build
 	cd test; $(MAKE)
@@ -41,4 +44,4 @@ clean:
 	cd test;  $(MAKE) clean
 	cd expt;  $(MAKE) clean
 	cd bmark; $(MAKE) clean
-	cd bin;  rm -rf $(BUILT)
+	cd bin;  rm -rf $(BUILT) JCON
