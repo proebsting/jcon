@@ -36,7 +36,12 @@ for FNAME; do
 	FAILED="$FAILED $BASE"
 	continue
     fi
-    $JCONT $JCOPT $BASE
+    if $JCONT $JCOPT $BASE; then
+       :
+    else
+	FAILED="$FAILED $BASE"
+	continue
+    fi
     if [ -r $BASE.dat ]; then
 	./$BASE $BASE.dat <$BASE.dat >$BASE.out
     else
