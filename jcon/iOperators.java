@@ -659,22 +659,36 @@ public class oActivate extends iBinaryValueClosure {		//  x @ C
 
 public class oTabMatch extends iClosure {			// =s
     iClosure tab;
+    static vProc tabproc;
+    static vProc matchproc;
 
     public vDescriptor nextval() {
 	if (PC == 1) {
-	    iClosure match = new f$match();
+	    if (tabproc == null) {
+		tabproc = (vProc) iEnv.builtintab.get("tab");
+		matchproc = (vProc) iEnv.builtintab.get("match");
+	    }
+	    iClosure match = matchproc.getClosure();
 	    vDescriptor[] args = { arguments[0].mkString() };
 	    match.closure(args, this);
 	    vDescriptor v = match.resume();
 	    if (v == null) {
 		return null;
 	    }
+	    match.Free();
 	    args[0] = v;
-	    tab = new f$tab();
+	    tab = tabproc.getClosure();
 	    tab.closure(args, this);
 	    PC = 2;
 	}
 	return tab.resume();
+    }
+
+    public void Free() {
+	if (tab != null) {
+	    tab.Free();
+	}
+	super.Free();
     }
 }
 
@@ -690,6 +704,13 @@ public class oProcessArgs extends iClosure {			//  x ! y
         vDescriptor v = func.resume();
         this.PC = func.PC;
         return v;
+    }
+    public void Free() {
+	if (func != null) {
+	    func.Free();
+	    func = null;
+	}
+	super.Free();
     }
     String tfmt() { return "{$1 ! $2}"; }
 }

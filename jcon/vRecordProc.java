@@ -8,6 +8,7 @@ public class vRecordProc extends vValue {
 	String[] fieldnames;	// names of fields
 	String[] varnames;	// variable names
 	int nextsn = 1;		// next serial number
+	iRecordClosure cachedclosure;
 
 	vRecordProc(String name, String[] fieldnames) {
 		this.name = iNew.String(name);
@@ -20,7 +21,11 @@ public class vRecordProc extends vValue {
 	}
 
 	public iClosure instantiate(vDescriptor[] args, iClosure parent) {
-	    return new iRecordClosure(this, args, parent);
+	    if (cachedclosure == null) {
+		cachedclosure = new iRecordClosure();
+	    }
+	    cachedclosure.init(this, args, parent);
+	    return cachedclosure;
 	}
 
 	vValue getproc()	{ return this; }
@@ -60,8 +65,7 @@ class iRecordClosure extends iValueClosure {
 
     vRecordProc constr;
 
-iRecordClosure(vRecordProc constr, vDescriptor[] args, iClosure parent) {
-    super();
+void init(vRecordProc constr, vDescriptor[] args, iClosure parent) {
     init();
     this.constr = constr;
     this.parent = parent;
