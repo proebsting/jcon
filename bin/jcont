@@ -103,7 +103,7 @@ UTRACE="$TRACE"
 #  set reasonably large regions for use by jtran
 export BLKSIZE=6000000
 export STRSIZE=1000000
-export COEXPSIZE=50000
+export COEXPSIZE=300000
 
 # clear other environment variables that might affect jtran
 unset ICONCORE TRACE IPATH NOERRBUF
