@@ -194,6 +194,7 @@ public static vCset Cset(vString s) {
 
 public static vFile File(String kw, InputStream i) { return new vTFile(kw, i); }
 public static vFile File(String kw, PrintStream p) { return new vTFile(kw, p); }
+
 public static vFile File(String filename, String mode) {
     try {
 	if (iRuntime.upto("uU", mode)) {

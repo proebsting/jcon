@@ -60,11 +60,11 @@ public abstract class vValue extends vDescriptor {
     // subscripting
     vDescriptor Index(vValue i)				// x1[x2]
     				{ iRuntime.error(114, this); return null; }
-    vDescriptor Section(vValue i, vValue j)		// x1[i1:i2]
+    vDescriptor Section(int i, int j)			// x1[i1:i2]
     				{ iRuntime.error(110, this); return null; }
     vDescriptor IndexVar(vVariable v, vValue i)
 				{ return this.deref().Index(i); }
-    vDescriptor SectionVar(vVariable v, vValue i, vValue j)
+    vDescriptor SectionVar(vVariable v, int i, int j)
 				{ return this.deref().Section(i,j); }
 
     // simple binary operators

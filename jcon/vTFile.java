@@ -14,11 +14,11 @@ private static boolean nleasy = nlstring.equals("\n");
 
 
 vTFile(String kwname, InputStream i) {		// new vTFile(&input, System.in)
-    super(kwname, new DataInputStream(i), null);
+    super(kwname, new DataInputStream(new BufferedInputStream(i)), null);
 }
 
 vTFile(String kwname, PrintStream p) {		// new vTFile(&output/&errout..)
-    super(kwname, null, new DataOutputStream(p));
+    super(kwname, null, new DataOutputStream(new BufferedOutputStream(p)));
 }
 
 vTFile(String name, String mode)		// new vTFile(name, mode)

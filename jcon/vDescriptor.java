@@ -59,8 +59,8 @@ public abstract class vDescriptor {
     abstract vDescriptor Bang(iClosure c);	//  !x
 
     // subscripting
-    abstract vDescriptor Index(vValue v);		 // x1[x2]
-    abstract vDescriptor Section(vValue v1, vValue v2);  // x1[i1:i2]
+    abstract vDescriptor Index(vValue v);	// x1[x2]
+    abstract vDescriptor Section(int i, int j);	// x1[i1:i2]
 
     // simple binary operators
     abstract vValue Add(vDescriptor v);		//  n1 + n2

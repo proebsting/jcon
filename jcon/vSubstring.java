@@ -101,10 +101,10 @@ vDescriptor Index(vValue i) {			// s[i]
     return iNew.Substring(var, m, m+1);
 }
 
-vDescriptor Section(vValue i, vValue j) {	// s[i:j]
+vDescriptor Section(int i, int j) {		// s[i:j]
     this.strval();	// validate
-    int m = this.posEq(i.mkInteger().value);
-    int n = this.posEq(j.mkInteger().value);
+    int m = this.posEq(i);
+    int n = this.posEq(j);
     if (m == 0 || n == 0) {
     	return null; /*FAIL*/
     }

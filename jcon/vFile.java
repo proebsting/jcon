@@ -134,9 +134,9 @@ static vFile argVal(vDescriptor[] args, int index, vFile dflt)	// optional arg
 
 
 vFile flush() { 					// flush()
-    if (outstream instanceof DataOutputStream) {
+    if (outstream instanceof OutputStream) {
     	try {
-    	    ((DataOutputStream)outstream).flush();
+    	    ((OutputStream)outstream).flush();
 	} catch (IOException e) {
 	    iRuntime.error(214, this);	// I/O error
 	}
@@ -206,7 +206,7 @@ vString read() {					// read()
 	iRuntime.error(212, this);	// not open for reading
     }
 
-    if (instream instanceof DataInputStream) {		// if possibly tty
+    if (instream instanceof InputStream) {		// if possibly tty
 	if (fileToSync != null) {
 	    fileToSync.flush();		// flush pending graphics output
 	}

@@ -140,9 +140,11 @@ public static void display(iClosure parent) {
 }
 
 public static void exit(int status, iClosure parent) {
+	k$output.file.flush();
 	if (k$dump.dump != 0) {
 		iRuntime.display(parent);
 	}
+	k$errout.file.flush();
 	System.exit(status);
 }
 

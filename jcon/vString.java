@@ -452,9 +452,9 @@ vDescriptor IndexVar(vVariable v, vValue i) {
     return iNew.Substring(v, m, m + 1);
 }
 
-vDescriptor Section(vValue i, vValue j) {
-    int m = this.posEq(i.mkInteger().value);
-    int n = this.posEq(j.mkInteger().value);
+vDescriptor Section(int i, int j) {
+    int m = this.posEq(i);
+    int n = this.posEq(j);
     if (m == 0 || n == 0) {
     	return null; /*FAIL*/
     }
@@ -465,9 +465,9 @@ vDescriptor Section(vValue i, vValue j) {
     }
 }
 
-vDescriptor SectionVar(vVariable v, vValue i, vValue j) {
-    int m = this.posEq(i.mkInteger().value);
-    int n = this.posEq(j.mkInteger().value);
+vDescriptor SectionVar(vVariable v, int i, int j) {
+    int m = this.posEq(i);
+    int n = this.posEq(j);
     if (m == 0 || n == 0) {
     	return null; /*FAIL*/
     }

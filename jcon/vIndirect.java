@@ -41,8 +41,7 @@ public abstract class vIndirect extends vDescriptor {
     vDescriptor Select()		{ return this.deref().Select(); }
     vDescriptor Bang(iClosure c)	{ return this.deref().Bang(c); }
     vDescriptor Index(vValue i)		{ return this.deref().Index(i); }
-    vDescriptor Section(vValue i, vValue j)
-					{ return this.deref().Section(i, j); }
+    vDescriptor Section(int i, int j)	{ return this.deref().Section(i, j); }
 
     vValue Refresh()			{ return this.deref().Refresh(); }
     vValue Sort(int i)			{ return this.deref().Sort(i); }

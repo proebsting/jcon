@@ -29,7 +29,7 @@ public abstract class vVariable extends vIndirect {
 
     vDescriptor Index(vValue i)
     				{ return this.deref().IndexVar(this, i); }
-    vDescriptor Section(vValue i, vValue j)
+    vDescriptor Section(int i, int j)
     				{ return this.deref().SectionVar(this, i, j); }
 
 }

@@ -256,26 +256,25 @@ public class oField extends iBinaryRefClosure {			// R . s
 	public static oField field = new oField();
 	String s;
 	vDescriptor function() {
-		return argument0.field(s = argument1.mkString().toString());
+	    return argument0.field(s = argument1.mkString().toString());
 	}
-
-	public vDescriptor call(vDescriptor arg0, String arg1, iClosure parent){
-		argument0 = arg0;
-		argument1 = null;
-		this.parent = parent;
+	public vDescriptor call(vDescriptor arg0, String arg1, iClosure parent) {
+	    argument0 = arg0;
+	    argument1 = null;
+	    this.parent = parent;
+	    try {
 		try {
-			try {
-				return arg0.field(s = arg1);
-			} catch (OutOfMemoryError e) {
-				iRuntime.error(307); //#%#% really out of memory
-				return null;
-			}
-		} catch (iError e) {
-			e.report(this);	// returns only on error conversion
-			return null;
-		}
+		    return arg0.field(s = arg1);
+		} catch (OutOfMemoryError e) {
+		    iRuntime.error(307);	// #%#%# really out of memory.
+		    return null;
+	    }
+	} catch (iError e) {
+	    e.report(this);  // returns only on error->failure conversion.
+	    return null;
 	}
-	String tfmt() { return "{$1 . " + s + "}"; }
+    }
+    String tfmt() { return "{$1 . " + s + "}"; }
 }
 
 public class oIndex extends iBinaryRefClosure {			//  x1[x2]
@@ -289,7 +288,9 @@ public class oIndex extends iBinaryRefClosure {			//  x1[x2]
 public class oSection extends iTrinaryRefClosure {		//  x1[x2:x3]
 	public static iTrinaryClosure instance = new oSection();
 	vDescriptor function() {
-		return argument0.Section(argument1.deref(), argument2.deref());
+		int i = (int) argument1.mkInteger().value;
+		int j = (int) argument2.mkInteger().value;
+		return argument0.Section(i, j);
 	}
 	String tfmt() { return "{$1[$2:$3]}"; }
 }
@@ -297,8 +298,10 @@ public class oSection extends iTrinaryRefClosure {		//  x1[x2:x3]
 public class oSectPlus extends iTrinaryRefClosure {		//  x1[x2+:x3]
 	public static iTrinaryClosure instance = new oSectPlus();
 	vDescriptor function() {
-		return argument0.Section(argument1.deref(),
-			argument1.mkInteger().Add(argument2.mkInteger()));
+		int i = (int) argument1.mkInteger().value;
+		int j = (int) argument2.mkInteger().value;
+		return argument0.Section(i, i + j);
+
 	}
 	String tfmt() { return "{$1[$2+:$3]}"; }
 }
@@ -306,8 +309,9 @@ public class oSectPlus extends iTrinaryRefClosure {		//  x1[x2+:x3]
 public class oSectMinus extends iTrinaryRefClosure {		//  x1[x2-:x3]
 	public static iTrinaryClosure instance = new oSectMinus();
 	vDescriptor function() {
-		return argument0.Section(argument1.deref(),
-			argument1.mkInteger().Sub(argument2.mkInteger()));
+		int i = (int) argument1.mkInteger().value;
+		int j = (int) argument2.mkInteger().value;
+		return argument0.Section(i, i - j);
 	}
 	String tfmt() { return "{$1[$2-:$3]}"; }
 }

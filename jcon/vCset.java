@@ -217,7 +217,7 @@ vReal mkReal() {
 
 
 vDescriptor Index(vValue i)		{ return this.mkString().Index(i); }
-vDescriptor Section(vValue i, vValue j)	{ return this.mkString().Section(i,j); }
+vDescriptor Section(int i, int j)	{ return this.mkString().Section(i,j); }
 
 
 

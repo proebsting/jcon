@@ -140,9 +140,9 @@ vDescriptor Index(vValue i) {				//  L[i]
 
 
 
-vDescriptor Section(vValue i, vValue j) {		//  L[i:j]
-    int m = this.posEq(i.mkInteger().value);
-    int n = this.posEq(j.mkInteger().value);
+vDescriptor Section(int i, int j) {			//  L[i:j]
+    int m = this.posEq(i);
+    int n = this.posEq(j);
     if (m == 0 || n == 0) {
     	return null; /*FAIL*/
     }
