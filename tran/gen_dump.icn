@@ -1,81 +1,81 @@
 global dump_emit_table
 
 procedure dump_emit(label, code)
-	dump_emit_table[label] := code
+    dump_emit_table[label] := code
 end
 
 procedure dump_invocables(all, L)
-	writes("invocable")
-	writes(\all & " all")
-	every writes(" ", image(!L))
-	write()
+    writes("invocable")
+    writes(\all & " all")
+    every writes(" ", image(!L))
+    write()
 end
 
 procedure dump_links(L)
-	writes("link ")
-	every writes(" ", !L)
-	write()
+    writes("link ")
+    every writes(" ", !L)
+    write()
 end
 
 procedure dump_records(name, fields, coord)
-	writes("record ", name, "(")
-	every writes(" ", !fields)
-	write(")")
+    writes("record ", name, "(")
+    every writes(" ", !fields)
+    write(")")
 end
 
 procedure dump_globals(L)
-	writes("global ")
-	every writes(" ", !L)
-	write()
+    writes("global ")
+    every writes(" ", !L)
+    write()
 end
 
 procedure dump_function(name, params, accumulate, locals, statics, code, coord)
-	writes("procedure ", name, "(")
-	every writes(" ", !params)
-	writes(\accumulate & "[]")
-	writes(" )")
-	write()
-	writes("local")
-	every writes(" ", !locals)
-	write()
-	writes("static")
-	every writes(" ", !statics)
-	write()
-	dump_emit_table := table()
-	ir(code)
-	dump_emit_table := optimize(dump_emit_table, code.ir.start)
-	dump_table(&output, dump_emit_table)
-	write("end ", name)
+    writes("procedure ", name, "(")
+    every writes(" ", !params)
+    writes(\accumulate & "[]")
+    writes(" )")
+    write()
+    writes("local")
+    every writes(" ", !locals)
+    write()
+    writes("static")
+    every writes(" ", !statics)
+    write()
+    dump_emit_table := table()
+    ir(code)
+    dump_emit_table := optimize(dump_emit_table, code.ir.start)
+    dump_table(&output, dump_emit_table)
+    write("end ", name)
 end
 
 procedure dump_table(p, t)
-	local lab, c
+    local lab, c
 
-	every lab := key(t) & c := t[lab] do {
-		write(p, ir_dump(lab))
-		every write(p, "\t", ir_dump(!c))
-	}
+    every lab := key(t) & c := t[lab] do {
+        write(p, ir_dump(lab))
+        every write(p, "\t", ir_dump(!c))
+    }
 end
 
 procedure dump_File(parse, flagList)
-	local p
+    local p
 
-	CG := dump_CG()
-	if match("-O", !flagList) then {
-		optimize_flag := 1
-	}
-	while p := @parse do {
-		ir(p)
-	}
+    CG := dump_CG()
+    if match("-O", !flagList) then {
+        optimize_flag := 1
+    }
+    while p := @parse do {
+        ir(p)
+    }
 end
 
 procedure dump_CG()
-	return code_gen(dump_emit,
-			dump_globals,
-			dump_invocables,
-			dump_links,
-			dump_function,
-			dump_records,
-			dump_File
-			)
+    return code_gen(dump_emit,
+            dump_globals,
+            dump_invocables,
+            dump_links,
+            dump_function,
+            dump_records,
+            dump_File
+            )
 end

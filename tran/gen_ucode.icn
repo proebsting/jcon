@@ -88,26 +88,26 @@ record u_value()
 record u_var(s)
 
 procedure u_emit(i)
-	local s
+    local s
 
-	type(i) ? ="u_" | runerr(1000, i)
+    type(i) ? ="u_" | runerr(1000, i)
 
-	case type(i) of {
-	"u_var": {
-		return "\tvar\t" || u_variables[i.s]
-	}
-	"u_lab": {
-		return "lab " || i.n
-	}
-	default: {
-		type(i) ? {
-			="u_"
-			s := "\t" || tab(0)
-			every s ||:= "\t" || \!i
-			return s
-		}
-	}
-	}
+    case type(i) of {
+    "u_var": {
+        return "\tvar\t" || u_variables[i.s]
+    }
+    "u_lab": {
+        return "lab " || i.n
+    }
+    default: {
+        type(i) ? {
+            ="u_"
+            s := "\t" || tab(0)
+            every s ||:= "\t" || \!i
+            return s
+        }
+    }
+    }
 end
 
 record u_loopinfo(nextlab, breaklab, markcount, everyflag)
@@ -119,465 +119,466 @@ global u_u1, u_u2
 global u_lastline, u_lastfile, u_lastcolm
 
 procedure reset_coord()
-	u_lastline := u_lastfile := u_lastcolm := &null
+    u_lastline := u_lastfile := u_lastcolm := &null
 end
 procedure u_coord(s, p)
-	\p.coord | return
+    \p.coord | return
 
-	if not (\u_lastfile == p.coord.file) then {
-		put(s, u_filen(p.coord.file))
-		u_lastfile := p.coord.file
-	}
-	if (not (\u_lastline == p.coord.line)) | (not (\u_lastcolm == p.coord.column)) then {
-		put(s, u_line(p.coord.line))
-		u_lastline := p.coord.line
-		put(s, u_colm(p.coord.column))
-		u_lastcolm := p.coord.column
-	}
+    if not (\u_lastfile == p.coord.file) then {
+        put(s, u_filen(p.coord.file))
+        u_lastfile := p.coord.file
+    }
+    if (not (\u_lastline == p.coord.line)) |
+       (not (\u_lastcolm == p.coord.column)) then {
+        put(s, u_line(p.coord.line))
+        u_lastline := p.coord.line
+        put(s, u_colm(p.coord.column))
+        u_lastcolm := p.coord.column
+    }
 end
 
 # record NoOp( )
 procedure ucode_NoOp(s, p)
-	runerr(1000, p)
+    runerr(1000, p)
 end
 
 # record ProcCode( init body )
 procedure ucode_ProcCode(s, p)
-	ucode(s, p.init)
-	ucode(s, p.body)
+    ucode(s, p.init)
+    ucode(s, p.body)
 end
 
 # record Field( expr field )
 procedure ucode_Field(s, p)
-	put(s, u_pnull())
-	ucode(s, p.expr)
-	u_coord(s, p)
-	put(s, u_field(p.field.id))
+    put(s, u_pnull())
+    ucode(s, p.expr)
+    u_coord(s, p)
+    put(s, u_field(p.field.id))
 end
 
 # record Case( expr clauseList dflt)
 procedure ucode_Case(s, p)
-	local endlab, nextlab, i
+    local endlab, nextlab, i
 
-	endlab := @u_nextlab
-	put(s, u_mark0())
-	u_loops[1].ir.markcount +:= 1
-	ucode(s, p.expr)
-	u_loops[1].ir.markcount -:= 1
-	put(s, u_eret())
-	every i := !p.clauseList do {
-		nextlab := @u_nextlab
-		put(s, u_mark(nextlab))
-		u_loops[1].ir.markcount +:= 1
-		put(s, u_ccase())
-		ucode(s, i.expr)
-		u_coord(s, p)
-		put(s, u_eqv())
-		u_loops[1].ir.markcount -:= 1
-		put(s, u_unmark())
-		put(s, u_pop())
-		ucode(s, i.body)
-		put(s, u_goto(endlab))
-		put(s, u_lab(nextlab))
-	}
-	if \p.dflt then {
-		put(s, u_pop())
-		ucode(s, p.dflt)
-	} else {
-		put(s, u_efail())
-	}
-	put(s, u_lab(endlab))
+    endlab := @u_nextlab
+    put(s, u_mark0())
+    u_loops[1].ir.markcount +:= 1
+    ucode(s, p.expr)
+    u_loops[1].ir.markcount -:= 1
+    put(s, u_eret())
+    every i := !p.clauseList do {
+        nextlab := @u_nextlab
+        put(s, u_mark(nextlab))
+        u_loops[1].ir.markcount +:= 1
+        put(s, u_ccase())
+        ucode(s, i.expr)
+        u_coord(s, p)
+        put(s, u_eqv())
+        u_loops[1].ir.markcount -:= 1
+        put(s, u_unmark())
+        put(s, u_pop())
+        ucode(s, i.body)
+        put(s, u_goto(endlab))
+        put(s, u_lab(nextlab))
+    }
+    if \p.dflt then {
+        put(s, u_pop())
+        ucode(s, p.dflt)
+    } else {
+        put(s, u_efail())
+    }
+    put(s, u_lab(endlab))
 end
 
 # record Cclause( expr body )
 procedure ucode_Cclause(s, p)
-	runerr(1000)	# should be handled in ucode_Case()
+    runerr(1000)    # should be handled in ucode_Case()
 end
 
 # record Not( expr )
 procedure ucode_Not(s, p)
-	local lab
+    local lab
 
-	lab := @u_nextlab
-	put(s, u_mark(lab))
-	u_loops[1].ir.markcount +:= 1
-	ucode(s, p.expr)
-	u_loops[1].ir.markcount -:= 1
-	put(s, u_unmark())
-	put(s, u_efail())
-	put(s, u_lab(lab))
-	put(s, u_pnull())
+    lab := @u_nextlab
+    put(s, u_mark(lab))
+    u_loops[1].ir.markcount +:= 1
+    ucode(s, p.expr)
+    u_loops[1].ir.markcount -:= 1
+    put(s, u_unmark())
+    put(s, u_efail())
+    put(s, u_lab(lab))
+    put(s, u_pnull())
 end
 
 # record RepAlt( expr )
 procedure ucode_RepAlt(s, p)
-	local lab
+    local lab
 
-	lab := @u_nextlab
-	put(s, u_lab(lab))
-	put(s, u_mark0())
-	u_loops[1].ir.markcount +:= 1
-	ucode(s, p.expr)
-	u_loops[1].ir.markcount -:= 1
-	put(s, u_chfail(lab))
-	put(s, u_esusp())
+    lab := @u_nextlab
+    put(s, u_lab(lab))
+    put(s, u_mark0())
+    u_loops[1].ir.markcount +:= 1
+    ucode(s, p.expr)
+    u_loops[1].ir.markcount -:= 1
+    put(s, u_chfail(lab))
+    put(s, u_esusp())
 end
 
 # record Call( fn args )
 procedure ucode_Call(s, p)
-	ucode(s, p.fn)
-	ucode(s, p.args)
-	u_coord(s, p)
-	if type(p.args) == "CoexpList" then {
-		put(s, u_invoke(1))
-	} else {
-		put(s, u_invoke(*p.args.exprList))
-	}
+    ucode(s, p.fn)
+    ucode(s, p.args)
+    u_coord(s, p)
+    if type(p.args) == "CoexpList" then {
+        put(s, u_invoke(1))
+    } else {
+        put(s, u_invoke(*p.args.exprList))
+    }
 end
 
 # record ExclAlt( e1 e2 )
 procedure ucode_ExclAlt(s, p)
-	ucode(s, p.e1)
-	ucode(s, p.e2)
+    ucode(s, p.e1)
+    ucode(s, p.e2)
 end
 
 # record Alt( eList )
 # procedure ucode_Alt(s, p)
-# 	local i, endlab, nextlab
+#   local i, endlab, nextlab
 # 
-# 	endlab := @u_nextlab
-# 	every i := 1 to *p.eList-1 do {
-# 		nextlab := @u_nextlab
-# 		put(s, u_mark(nextlab))
-#		u_loops[1].ir.markcount +:= 1
-# 		ucode(s, p.eList[i])
-#		u_loops[1].ir.markcount -:= 1
-# 		put(s, u_esusp())
-# 		put(s, u_goto(endlab))
-# 		put(s, u_lab(nextlab))
-# 	}
-# 	ucode(s, p.eList[-1])
-# 	put(s, u_lab(endlab))
+#   endlab := @u_nextlab
+#   every i := 1 to *p.eList-1 do {
+#       nextlab := @u_nextlab
+#       put(s, u_mark(nextlab))
+#       u_loops[1].ir.markcount +:= 1
+#       ucode(s, p.eList[i])
+#       u_loops[1].ir.markcount -:= 1
+#       put(s, u_esusp())
+#       put(s, u_goto(endlab))
+#       put(s, u_lab(nextlab))
+#   }
+#   ucode(s, p.eList[-1])
+#   put(s, u_lab(endlab))
 # end
 
 # The following is used rather than the more natural solution above to get
 # .u1 files that match icont.
 # record Alt( eList )
 procedure ucode_Alt0(s, L)
-	local i, endlab, nextlab
+    local i, endlab, nextlab
 
-	if *L > 1 then {
-		nextlab := @u_nextlab
-		endlab := @u_nextlab
-		put(s, u_mark(nextlab))
-		u_loops[1].ir.markcount +:= 1
-		ucode(s, L[1])
-		u_loops[1].ir.markcount -:= 1
-		put(s, u_esusp())
-		put(s, u_goto(endlab))
-		put(s, u_lab(nextlab))
-		ucode_Alt0(s, L[2:0])
-		put(s, u_lab(endlab))
-	} else {
-		ucode(s, L[1])
-	}
+    if *L > 1 then {
+        nextlab := @u_nextlab
+        endlab := @u_nextlab
+        put(s, u_mark(nextlab))
+        u_loops[1].ir.markcount +:= 1
+        ucode(s, L[1])
+        u_loops[1].ir.markcount -:= 1
+        put(s, u_esusp())
+        put(s, u_goto(endlab))
+        put(s, u_lab(nextlab))
+        ucode_Alt0(s, L[2:0])
+        put(s, u_lab(endlab))
+    } else {
+        ucode(s, L[1])
+    }
 end
 procedure ucode_Alt(s, p)
-	ucode_Alt0(s, p.eList)
+    ucode_Alt0(s, p.eList)
 end
 
 # record Limitation( expr limit )
 procedure ucode_Limitation(s, p)
-	ucode(s, p.limit)
-	u_coord(s, p)
-	put(s, u_limit())
-	u_loops[1].ir.markcount +:= 1
-	ucode(s, p.expr)
-	u_loops[1].ir.markcount -:= 1
-	put(s, u_lsusp())
+    ucode(s, p.limit)
+    u_coord(s, p)
+    put(s, u_limit())
+    u_loops[1].ir.markcount +:= 1
+    ucode(s, p.expr)
+    u_loops[1].ir.markcount -:= 1
+    put(s, u_lsusp())
 end
 
 # record Scan( op expr body )
 procedure ucode_Scan(s, p)
-	case p.op of {
-	"?": {
-		ucode(s, p.expr)
-		u_coord(s, p)
-		put(s, u_bscan())
-		ucode(s, p.body)
-		u_coord(s, p)
-		put(s, u_escan())
-	}
-	"?:=": {
-		put(s, u_pnull())
-		ucode(s, p.expr)
-		put(s, u_sdup())
-		u_coord(s, p)
-		put(s, u_bscan())
-		ucode(s, p.body)
-		u_coord(s, p)
-		put(s, u_escan())
-		put(s, u_asgn())
-	}
-	default: runerr(1000, p)
-	}
+    case p.op of {
+    "?": {
+        ucode(s, p.expr)
+        u_coord(s, p)
+        put(s, u_bscan())
+        ucode(s, p.body)
+        u_coord(s, p)
+        put(s, u_escan())
+    }
+    "?:=": {
+        put(s, u_pnull())
+        ucode(s, p.expr)
+        put(s, u_sdup())
+        u_coord(s, p)
+        put(s, u_bscan())
+        ucode(s, p.body)
+        u_coord(s, p)
+        put(s, u_escan())
+        put(s, u_asgn())
+    }
+    default: runerr(1000, p)
+    }
 end
 
 # record Every( expr body )
 procedure ucode_Every(s, p)
-	p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1, "every")
-	push(u_loops, p)
-	put(s, u_mark0())
-	ucode(s, p.expr)
-	put(s, u_pop())
-	if \p.body then {
-		put(s, u_mark0())
-		p.ir.everyflag := &null
-		u_loops[1].ir.markcount +:= 1
-		ucode(s, p.body)
-		u_loops[1].ir.markcount -:= 1
-		put(s, u_unmark())
-	}
-	put(s, u_lab(p.ir.nextlab))
-	put(s, u_efail())
-	put(s, u_lab(p.ir.breaklab))
-	pop(u_loops)
+    p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1, "every")
+    push(u_loops, p)
+    put(s, u_mark0())
+    ucode(s, p.expr)
+    put(s, u_pop())
+    if \p.body then {
+        put(s, u_mark0())
+        p.ir.everyflag := &null
+        u_loops[1].ir.markcount +:= 1
+        ucode(s, p.body)
+        u_loops[1].ir.markcount -:= 1
+        put(s, u_unmark())
+    }
+    put(s, u_lab(p.ir.nextlab))
+    put(s, u_efail())
+    put(s, u_lab(p.ir.breaklab))
+    pop(u_loops)
 end
 
 # record Sectionop( op val left right )
 procedure ucode_Sectionop(s, p)
-	static fn
-	initial {
-		fn := table()
-		fn["[+:]"] := u_plus
-		fn["[-:]"] := u_minus
-	}
+    static fn
+    initial {
+        fn := table()
+        fn["[+:]"] := u_plus
+        fn["[-:]"] := u_minus
+    }
 
-	if *p.op > *"[:]" then {
-		put(s, u_pnull())
-		ucode(s, p.val)
-		ucode(s, p.left)
-		put(s, u_dup())
-		ucode(s, p.right)
-		u_coord(s, p)
-		put(s, (\fn[p.op])()) | runerr(1000, p)
-		u_coord(s, p)
-		put(s, u_sect())
-	} else {
-		put(s, u_pnull())
-		ucode(s, p.val)
-		ucode(s, p.left)
-		ucode(s, p.right)
-		u_coord(s, p)
-		put(s, u_sect())
-	}
+    if *p.op > *"[:]" then {
+        put(s, u_pnull())
+        ucode(s, p.val)
+        ucode(s, p.left)
+        put(s, u_dup())
+        ucode(s, p.right)
+        u_coord(s, p)
+        put(s, (\fn[p.op])()) | runerr(1000, p)
+        u_coord(s, p)
+        put(s, u_sect())
+    } else {
+        put(s, u_pnull())
+        ucode(s, p.val)
+        ucode(s, p.left)
+        ucode(s, p.right)
+        u_coord(s, p)
+        put(s, u_sect())
+    }
 end
 
 # record Binop( op left right )
 procedure ucode_Binop(s, p)
-	local op
-	static fn
-	initial {
-		fn := table()
-		fn[":="] := u_asgn
-		fn["&:="] := u_asgn
-		fn["||"] := u_cat
-		fn["@"] := u_coact
-		fn["--"] := u_diff
-		fn["/"] := u_div
-		fn["==="] := u_eqv
-		fn["**"] := u_inter
-		fn["|||"] := u_lconcat
-		fn["=="] := u_lexeq
-		fn[">>="] := u_lexge
-		fn[">>"] := u_lexgt
-		fn["<<="] := u_lexle
-		fn["<<"] := u_lexlt
-		fn["~=="] := u_lexne
-		fn["-"] := u_minus
-		fn["%"] := u_mod
-		fn["*"] := u_mult
-		fn["~==="] := u_neqv
-		fn["="] := u_numeq
-		fn[">="] := u_numge
-		fn[">"] := u_numgt
-		fn["<="] := u_numle
-		fn["<"] := u_numlt
-		fn["~="] := u_numne
-		fn["+"] := u_plus
-		fn["^"] := u_power
-		fn["<-"] := u_rasgn
-		fn["<->"] := u_rswap
-		fn["[]"] := u_subsc
-		fn[":=:"] := u_swap
-		fn["++"] := u_unions
-	}
+    local op
+    static fn
+    initial {
+        fn := table()
+        fn[":="] := u_asgn
+        fn["&:="] := u_asgn
+        fn["||"] := u_cat
+        fn["@"] := u_coact
+        fn["--"] := u_diff
+        fn["/"] := u_div
+        fn["==="] := u_eqv
+        fn["**"] := u_inter
+        fn["|||"] := u_lconcat
+        fn["=="] := u_lexeq
+        fn[">>="] := u_lexge
+        fn[">>"] := u_lexgt
+        fn["<<="] := u_lexle
+        fn["<<"] := u_lexlt
+        fn["~=="] := u_lexne
+        fn["-"] := u_minus
+        fn["%"] := u_mod
+        fn["*"] := u_mult
+        fn["~==="] := u_neqv
+        fn["="] := u_numeq
+        fn[">="] := u_numge
+        fn[">"] := u_numgt
+        fn["<="] := u_numle
+        fn["<"] := u_numlt
+        fn["~="] := u_numne
+        fn["+"] := u_plus
+        fn["^"] := u_power
+        fn["<-"] := u_rasgn
+        fn["<->"] := u_rswap
+        fn["[]"] := u_subsc
+        fn[":=:"] := u_swap
+        fn["++"] := u_unions
+    }
 
-	if p.op == "@" then {
-		ucode(s, p.left)
-		ucode(s, p.right)
-		u_coord(s, p)
-		put(s, u_coact())
-	} else if p.op == "@:=" then {
-		put(s, u_pnull())
-		ucode(s, p.left)
-		put(s, u_sdup())
-		ucode(s, p.right)
-		put(s, u_coact())
-		u_coord(s, p)
-		put(s, u_asgn())
-	} else if p.op == "&" then {
-		ucode(s, p.left)
-		put(s, u_pop())
-		ucode(s, p.right)
-	} else if p.op == "!" then {
-		ucode(s, p.left)
-		ucode(s, p.right)
-		# u_coord(s, p)
-		put(s, u_invoke(-1))
-	} else if op := (p.op ? tab(find(":="))) & op ~== "" & op ~== "&" then {
-		put(s, u_pnull())
-		ucode(s, p.left)
-		put(s, u_dup())
-		ucode(s, p.right)
-		put(s, (\fn[op])()) | runerr(1000, p)
-		u_coord(s, p)
-		put(s, u_asgn())
-	} else {
-		put(s, u_pnull())
-		ucode(s, p.left)
-		ucode(s, p.right) 
-		u_coord(s, p)
-		put(s, (\fn[p.op])()) | runerr(1000, p)
-	}
+    if p.op == "@" then {
+        ucode(s, p.left)
+        ucode(s, p.right)
+        u_coord(s, p)
+        put(s, u_coact())
+    } else if p.op == "@:=" then {
+        put(s, u_pnull())
+        ucode(s, p.left)
+        put(s, u_sdup())
+        ucode(s, p.right)
+        put(s, u_coact())
+        u_coord(s, p)
+        put(s, u_asgn())
+    } else if p.op == "&" then {
+        ucode(s, p.left)
+        put(s, u_pop())
+        ucode(s, p.right)
+    } else if p.op == "!" then {
+        ucode(s, p.left)
+        ucode(s, p.right)
+        # u_coord(s, p)
+        put(s, u_invoke(-1))
+    } else if op := (p.op ? tab(find(":="))) & op ~== "" & op ~== "&" then {
+        put(s, u_pnull())
+        ucode(s, p.left)
+        put(s, u_dup())
+        ucode(s, p.right)
+        put(s, (\fn[op])()) | runerr(1000, p)
+        u_coord(s, p)
+        put(s, u_asgn())
+    } else {
+        put(s, u_pnull())
+        ucode(s, p.left)
+        ucode(s, p.right) 
+        u_coord(s, p)
+        put(s, (\fn[p.op])()) | runerr(1000, p)
+    }
 
 end
 
 # record Unop( op operand )
 procedure ucode_Unop(s, p)
-	static fn
-	initial {
-		fn := table()
-		fn["!"] := u_bang
-		fn["~"] := u_compl
-		fn["-"] := u_neg
-		fn["\\"] := u_nonnull
-		fn["/"] := u_null
-		fn["+"] := u_number
-		fn["?"] := u_random
-		fn["^"] := u_refresh
-		fn["*"] := u_size
-		fn["="] := u_tabmat
-		fn["."] := u_value
-	}
+    static fn
+    initial {
+        fn := table()
+        fn["!"] := u_bang
+        fn["~"] := u_compl
+        fn["-"] := u_neg
+        fn["\\"] := u_nonnull
+        fn["/"] := u_null
+        fn["+"] := u_number
+        fn["?"] := u_random
+        fn["^"] := u_refresh
+        fn["*"] := u_size
+        fn["="] := u_tabmat
+        fn["."] := u_value
+    }
 
-	if p.op == "@" then {
-		put(s, u_pnull())
-		ucode(s, p.operand)
-		u_coord(s, p)
-		put(s, u_coact())
-		return
-	}
-	put(s, u_pnull())
-	ucode(s, p.operand)
-	u_coord(s, p)
-	put(s, (\fn[p.op])()) | runerr(1000, p)
+    if p.op == "@" then {
+        put(s, u_pnull())
+        ucode(s, p.operand)
+        u_coord(s, p)
+        put(s, u_coact())
+        return
+    }
+    put(s, u_pnull())
+    ucode(s, p.operand)
+    u_coord(s, p)
+    put(s, (\fn[p.op])()) | runerr(1000, p)
 end
 
 # record Global( idList )
 procedure ucode_Global(s, p)
-	put(s, p)
+    put(s, p)
 end
 
 # record If( expr thenexpr elseexpr )
 procedure ucode_If(s, p)
-	local elselab, endlab
+    local elselab, endlab
 
-	if \p.elseexpr then {
-		elselab := @u_nextlab
-		endlab := @u_nextlab
-		put(s, u_mark(elselab))
-		u_loops[1].ir.markcount +:= 1
-		ucode(s, p.expr)
-		u_loops[1].ir.markcount -:= 1
-		put(s, u_unmark())
-		ucode(s, p.thenexpr)
-		put(s, u_goto(endlab))
-		put(s, u_lab(elselab))
-		ucode(s, p.elseexpr)
-		put(s, u_lab(endlab))
-	} else {
-		put(s, u_mark0())
-		u_loops[1].ir.markcount +:= 1
-		ucode(s, p.expr)
-		u_loops[1].ir.markcount -:= 1
-		put(s, u_unmark())
-		ucode(s, p.thenexpr)
-	}
+    if \p.elseexpr then {
+        elselab := @u_nextlab
+        endlab := @u_nextlab
+        put(s, u_mark(elselab))
+        u_loops[1].ir.markcount +:= 1
+        ucode(s, p.expr)
+        u_loops[1].ir.markcount -:= 1
+        put(s, u_unmark())
+        ucode(s, p.thenexpr)
+        put(s, u_goto(endlab))
+        put(s, u_lab(elselab))
+        ucode(s, p.elseexpr)
+        put(s, u_lab(endlab))
+    } else {
+        put(s, u_mark0())
+        u_loops[1].ir.markcount +:= 1
+        ucode(s, p.expr)
+        u_loops[1].ir.markcount -:= 1
+        put(s, u_unmark())
+        ucode(s, p.thenexpr)
+    }
 end
 
 # record Initial( expr )
 procedure ucode_Initial(s, p)
-	local lab
+    local lab
 
-	if \p.expr then {
-		lab := @u_nextlab
-		put(s, u_init(lab))
-		put(s, u_mark(lab))
-		ucode(s, p.expr)
-		put(s, u_unmark())
-		put(s, u_lab(lab))
-	}
+    if \p.expr then {
+        lab := @u_nextlab
+        put(s, u_init(lab))
+        put(s, u_mark(lab))
+        ucode(s, p.expr)
+        put(s, u_unmark())
+        put(s, u_lab(lab))
+    }
 end
 
 # record Invocable( ivocopList )
 procedure ucode_Invocable(s, p)
-	put(s, p)
+    put(s, p)
 end
 
 # record Link( linkfileList )
 procedure ucode_Link(s, p)
-	put(s, p)
+    put(s, p)
 end
 
 # record Intlit( int )
 procedure ucode_Intlit(s, p)
-	local v
+    local v
 
-	v := p.int
-	type(v) == "integer" | runerr(1000, v)
-	/u_constants[v] := *u_constants & put(u_constList, v)
-	put(s, u_int(u_constants[v]))
+    v := p.int
+    type(v) == "integer" | runerr(1000, v)
+    /u_constants[v] := *u_constants & put(u_constList, v)
+    put(s, u_int(u_constants[v]))
 end
 
 # record Reallit( real )
 procedure ucode_Reallit(s, p)
-	local v
+    local v
 
-	v := p.real
-	type(v) == "real" | runerr(1000, v)
-	/u_constants[v] := *u_constants & put(u_constList, v)
-	put(s, u_real(u_constants[v]))
+    v := p.real
+    type(v) == "real" | runerr(1000, v)
+    /u_constants[v] := *u_constants & put(u_constList, v)
+    put(s, u_real(u_constants[v]))
 end
 
 # record Stringlit( str )
 procedure ucode_Stringlit(s, p)
-	local v
+    local v
 
-	v := p.str
-	type(v) == "string" | runerr(1000, v)
-	/u_constants[v] := *u_constants & put(u_constList, v)
-	put(s, u_str(u_constants[v]))
+    v := p.str
+    type(v) == "string" | runerr(1000, v)
+    /u_constants[v] := *u_constants & put(u_constList, v)
+    put(s, u_str(u_constants[v]))
 end
 
 # record Csetlit( str )
 procedure ucode_Csetlit(s, p)
-	local v
+    local v
 
-	v := p.str
-	type(v) == "cset" | runerr(1000, v)
-	/u_constants[v] := *u_constants & put(u_constList, v)
-	put(s, u_cset(u_constants[v]))
+    v := p.str
+    type(v) == "cset" | runerr(1000, v)
+    /u_constants[v] := *u_constants & put(u_constList, v)
+    put(s, u_cset(u_constants[v]))
 end
 
 # record Locals( idList )
@@ -590,390 +591,392 @@ end
 
 # record ProcDecl( ident paramList localsList code )
 procedure ucode_ProcDecl(s, p)
-	local x, i, k, code
+    local x, i, k, code
 
-	put(s, p)
+    put(s, p)
 
-	u_constants := table()
-	u_constList := []
-	u_nextlab := create ("L" || seq())
-	u_loops := []
-	code := []
-	reset_coord()
-	u_coord(code, p)
-	ucode(code, p.code)
+    u_constants := table()
+    u_constList := []
+    u_nextlab := create ("L" || seq())
+    u_loops := []
+    code := []
+    reset_coord()
+    u_coord(code, p)
+    ucode(code, p.code)
 
-	write(u_u1, "proc ", p.ident.id)
-	u_variables := table()
-	i := 0
-	every x := !p.paramList do {
-		write(u_u1, "\tlocal\t", i, ",", "001000", ",", x.id)
-		i +:= 1
-		u_variables[x.id] := *u_variables
-	}
-	every x := !p.localsList do {
-		every k := !x.idList do {
-			write(u_u1, "\tlocal\t", i, ",", if type(x) == "Statics" then "000040" else "000020", ",", k.id)
-			i +:= 1
-			u_variables[k.id] := *u_variables
-		}
-	}
-	every x := !code do {
-		if type(x) == "u_var" & /u_variables[x.s] then {
-			u_variables[x.s] := *u_variables
-			write(u_u1, "\tlocal\t", i, ",", "000000", ",", x.s)
-			i +:= 1
-		}
-	}
+    write(u_u1, "proc ", p.ident.id)
+    u_variables := table()
+    i := 0
+    every x := !p.paramList do {
+        write(u_u1, "\tlocal\t", i, ",", "001000", ",", x.id)
+        i +:= 1
+        u_variables[x.id] := *u_variables
+    }
+    every x := !p.localsList do {
+        every k := !x.idList do {
+            write(u_u1, "\tlocal\t", i, ",",
+		  if type(x) == "Statics" then "000040" else "000020",
+		  ",", k.id)
+            i +:= 1
+            u_variables[k.id] := *u_variables
+        }
+    }
+    every x := !code do {
+        if type(x) == "u_var" & /u_variables[x.s] then {
+            u_variables[x.s] := *u_variables
+            write(u_u1, "\tlocal\t", i, ",", "000000", ",", x.s)
+            i +:= 1
+        }
+    }
 
-	every i := 1 to *u_constList & x := u_constList[i] do {
-		writes(u_u1, "\tcon\t", i-1, ",")
-		case type(x) of {
-		"string": {
-			writes(u_u1, "010000", ",", *x)
-			every writes(u_u1, ",", octal(ord(!x)))
-			write(u_u1)
-		}
-		"cset": {
-			writes(u_u1, "020000", ",", *x)
-			every writes(u_u1, ",", octal(ord(!x)))
-			write(u_u1)
-		}
-		"integer": {
-			write(u_u1, "002000", ",", *x, ",", x)
-		}
-		"real": {
-			write(u_u1, "004000", ",", x)
-		}
-		default: runerr(1000, u_constList[i])
-		}
-	}
-	write(u_u1, "\tdeclend")
-	every write(u_u1, u_emit(!code))
-	write(u_u1, "\tend")
+    every i := 1 to *u_constList & x := u_constList[i] do {
+        writes(u_u1, "\tcon\t", i-1, ",")
+        case type(x) of {
+        "string": {
+            writes(u_u1, "010000", ",", *x)
+            every writes(u_u1, ",", octal(ord(!x)))
+            write(u_u1)
+        }
+        "cset": {
+            writes(u_u1, "020000", ",", *x)
+            every writes(u_u1, ",", octal(ord(!x)))
+            write(u_u1)
+        }
+        "integer": {
+            write(u_u1, "002000", ",", *x, ",", x)
+        }
+        "real": {
+            write(u_u1, "004000", ",", x)
+        }
+        default: runerr(1000, u_constList[i])
+        }
+    }
+    write(u_u1, "\tdeclend")
+    every write(u_u1, u_emit(!code))
+    write(u_u1, "\tend")
 end
 
 # record ProcBody( nexprList )
 procedure ucode_ProcBody(s, p)
-	local lab, i
+    local lab, i
 
-	every i := !p.nexprList do {
-		lab := @u_nextlab
-		put(s, u_mark(lab))
-		if \i then {
-			ucode(s, i)
-		} else {
-			put(s, u_pnull())
-		}
-		put(s, u_unmark())
-		put(s, u_lab(lab))
-	}
-	if *p.nexprList > 0 then {
-		put(s, u_pnull())
-	}
-	u_coord(s, p)
-	put(s, u_pfail())
+    every i := !p.nexprList do {
+        lab := @u_nextlab
+        put(s, u_mark(lab))
+        if \i then {
+            ucode(s, i)
+        } else {
+            put(s, u_pnull())
+        }
+        put(s, u_unmark())
+        put(s, u_lab(lab))
+    }
+    if *p.nexprList > 0 then {
+        put(s, u_pnull())
+    }
+    u_coord(s, p)
+    put(s, u_pfail())
 end
 
 # record Record( ident idlist )
 procedure ucode_Record(s, p)
-	put(s, p)
+    put(s, p)
 end
 
 # record Repeat( expr )
 procedure ucode_Repeat(s, p)
-	local lab
+    local lab
 
-	lab := @u_nextlab
-	p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1)
-	push(u_loops, p)
-	put(s, u_lab(lab))
-	put(s, u_mark(lab))
-	ucode(s, p.expr)
-	put(s, u_lab(p.ir.nextlab))
-	put(s, u_unmark())
-	put(s, u_goto(lab))
-	put(s, u_lab(p.ir.breaklab))
-	pop(u_loops)
+    lab := @u_nextlab
+    p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1)
+    push(u_loops, p)
+    put(s, u_lab(lab))
+    put(s, u_mark(lab))
+    ucode(s, p.expr)
+    put(s, u_lab(p.ir.nextlab))
+    put(s, u_unmark())
+    put(s, u_goto(lab))
+    put(s, u_lab(p.ir.breaklab))
+    pop(u_loops)
 end
 
 # record Return( expr )
 procedure ucode_Return(s, p)
-	local lab
+    local lab
 
-	/u_createflag | semantic_error("invalid context for return", p.coord)
-	lab := @u_nextlab
-	put(s, u_mark(lab))
-	if \p.expr then {
-		u_loops[1].ir.markcount +:= 1
-		ucode(s, p.expr)
-		u_loops[1].ir.markcount -:= 1
-	} else {
-		put(s, u_pnull())
-	}
-	u_coord(s, p)
-	put(s, u_pret())
-	put(s, u_lab(lab))
-	u_coord(s, p)
-	put(s, u_pfail())
+    /u_createflag | semantic_error("invalid context for return", p.coord)
+    lab := @u_nextlab
+    put(s, u_mark(lab))
+    if \p.expr then {
+        u_loops[1].ir.markcount +:= 1
+        ucode(s, p.expr)
+        u_loops[1].ir.markcount -:= 1
+    } else {
+        put(s, u_pnull())
+    }
+    u_coord(s, p)
+    put(s, u_pret())
+    put(s, u_lab(lab))
+    u_coord(s, p)
+    put(s, u_pfail())
 end
 
 # record Fail( )
 procedure ucode_Fail(s, p)
-	u_coord(s, p)
-	put(s, u_pfail())
+    u_coord(s, p)
+    put(s, u_pfail())
 end
 
 # record Suspend( expr body )
 procedure ucode_Suspend(s, p)
-	/u_createflag | semantic_error("invalid context for suspend", p.coord)
-	p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1, "every")
-	push(u_loops, p)
-	put(s, u_mark0())
-	ucode(s, p.expr)
-	u_coord(s, p)
-	put(s, u_psusp())
-	put(s, u_pop())
-	if \p.body then {
-		put(s, u_mark0())
-		u_loops[1].ir.markcount +:= 1
-		p.ir.everyflag := &null
-		ucode(s, p.body)
-		u_loops[1].ir.markcount -:= 1
-		put(s, u_unmark())
-	}
-	put(s, u_lab(p.ir.nextlab))
-	put(s, u_efail())
-	put(s, u_lab(p.ir.breaklab))
-	pop(u_loops)
+    /u_createflag | semantic_error("invalid context for suspend", p.coord)
+    p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1, "every")
+    push(u_loops, p)
+    put(s, u_mark0())
+    ucode(s, p.expr)
+    u_coord(s, p)
+    put(s, u_psusp())
+    put(s, u_pop())
+    if \p.body then {
+        put(s, u_mark0())
+        u_loops[1].ir.markcount +:= 1
+        p.ir.everyflag := &null
+        ucode(s, p.body)
+        u_loops[1].ir.markcount -:= 1
+        put(s, u_unmark())
+    }
+    put(s, u_lab(p.ir.nextlab))
+    put(s, u_efail())
+    put(s, u_lab(p.ir.breaklab))
+    pop(u_loops)
 end
 
 # record Until( expr body )
 procedure ucode_Until(s, p)
-	local exprlab, bodylab
+    local exprlab, bodylab
 
-	exprlab := @u_nextlab
-	bodylab := @u_nextlab
-	p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1)
-	push(u_loops, p)
-	put(s, u_lab(exprlab))
-	put(s, u_mark(bodylab))
-	ucode(s, p.expr)
-	put(s, u_unmark())
-	put(s, u_efail())
-	put(s, u_lab(bodylab))
-	put(s, u_mark(exprlab))
-	ucode(s, p.body)
-	put(s, u_lab(p.ir.nextlab))
-	put(s, u_unmark())
-	put(s, u_goto(exprlab))
-	put(s, u_lab(p.ir.breaklab))
-	pop(u_loops)
+    exprlab := @u_nextlab
+    bodylab := @u_nextlab
+    p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1)
+    push(u_loops, p)
+    put(s, u_lab(exprlab))
+    put(s, u_mark(bodylab))
+    ucode(s, p.expr)
+    put(s, u_unmark())
+    put(s, u_efail())
+    put(s, u_lab(bodylab))
+    put(s, u_mark(exprlab))
+    ucode(s, p.body)
+    put(s, u_lab(p.ir.nextlab))
+    put(s, u_unmark())
+    put(s, u_goto(exprlab))
+    put(s, u_lab(p.ir.breaklab))
+    pop(u_loops)
 end
 
 # record While( expr body )
 procedure ucode_While(s, p)
-	local lab
+    local lab
 
-	lab := @u_nextlab
-	p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1)
-	push(u_loops, p)
-	put(s, u_lab(lab))
-	put(s, u_mark0())
-	ucode(s, p.expr)
-	if \p.body then {
-		put(s, u_unmark())
-		put(s, u_mark(lab))
-		ucode(s, p.body)
-	}
-	put(s, u_lab(p.ir.nextlab))
-	put(s, u_unmark())
-	put(s, u_goto(lab))
-	put(s, u_lab(p.ir.breaklab))
-	pop(u_loops)
+    lab := @u_nextlab
+    p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1)
+    push(u_loops, p)
+    put(s, u_lab(lab))
+    put(s, u_mark0())
+    ucode(s, p.expr)
+    if \p.body then {
+        put(s, u_unmark())
+        put(s, u_mark(lab))
+        ucode(s, p.body)
+    }
+    put(s, u_lab(p.ir.nextlab))
+    put(s, u_unmark())
+    put(s, u_goto(lab))
+    put(s, u_lab(p.ir.breaklab))
+    pop(u_loops)
 end
 
 # record Create( expr )
 procedure ucode_Create(s, p)
-	local exprlab, faillab, createlab
+    local exprlab, faillab, createlab
 
-	exprlab := @u_nextlab
-	faillab := @u_nextlab
-	createlab := @u_nextlab
-	put(s, u_goto(createlab))
-	put(s, u_lab(exprlab))
-	put(s, u_pop())
-	put(s, u_mark(faillab))
-	u_loops[1].ir.markcount +:= 1
-	u_createflag := p.expr
-	ucode(s, p.expr)
-	u_createflag := &null
-	u_loops[1].ir.markcount -:= 1
-	u_coord(s, p)
-	put(s, u_coret())
-	put(s, u_efail())
-	put(s, u_lab(faillab))
-	put(s, u_cofail())
-	put(s, u_goto(faillab))
-	put(s, u_lab(createlab))
-	put(s, u_create(exprlab))
+    exprlab := @u_nextlab
+    faillab := @u_nextlab
+    createlab := @u_nextlab
+    put(s, u_goto(createlab))
+    put(s, u_lab(exprlab))
+    put(s, u_pop())
+    put(s, u_mark(faillab))
+    u_loops[1].ir.markcount +:= 1
+    u_createflag := p.expr
+    ucode(s, p.expr)
+    u_createflag := &null
+    u_loops[1].ir.markcount -:= 1
+    u_coord(s, p)
+    put(s, u_coret())
+    put(s, u_efail())
+    put(s, u_lab(faillab))
+    put(s, u_cofail())
+    put(s, u_goto(faillab))
+    put(s, u_lab(createlab))
+    put(s, u_create(exprlab))
 end
 
 # record Ident( id )
 procedure ucode_Ident(s, p)
-	put(s, u_var(p.id))
+    put(s, u_var(p.id))
 end
 
 # record Next( )
 procedure ucode_Next(s, p)
-	*u_loops > 0 | semantic_error("invalid context for next", p.coord)
-	if /u_loops[1].ir.everyflag then {
-		every 1 to u_loops[1].ir.markcount-1 do {
-			put(s, u_unmark())
-		}
-	}
-	put(s, u_goto(u_loops[1].ir.nextlab))
+    *u_loops > 0 | semantic_error("invalid context for next", p.coord)
+    if /u_loops[1].ir.everyflag then {
+        every 1 to u_loops[1].ir.markcount-1 do {
+            put(s, u_unmark())
+        }
+    }
+    put(s, u_goto(u_loops[1].ir.nextlab))
 end
 
 # record Break( expr )
 procedure ucode_Break(s, p)
-	local tmp
+    local tmp
 
-	*u_loops > 0 | semantic_error("invalid context for break", p.coord)
-	every 1 to u_loops[1].ir.markcount do {
-		put(s, u_unmark())
-	}
-	tmp := pop(u_loops)
-	ucode(s, p.expr)
-	push(u_loops, tmp)
-	put(s, u_goto(tmp.ir.breaklab))
+    *u_loops > 0 | semantic_error("invalid context for break", p.coord)
+    every 1 to u_loops[1].ir.markcount do {
+        put(s, u_unmark())
+    }
+    tmp := pop(u_loops)
+    ucode(s, p.expr)
+    push(u_loops, tmp)
+    put(s, u_goto(tmp.ir.breaklab))
 end
 
 # record ToBy( fromexpr toexpr byexpr )
 procedure ucode_ToBy(s, p)
-	put(s, u_pnull())
-	ucode(s, p.fromexpr)
-	ucode(s, p.toexpr)
-	if \p.byexpr then {
-		ucode(s, p.byexpr)
-	} else {
-		put(s, u_push1())
-	}
-	u_coord(s, p)
-	put(s, u_toby())
+    put(s, u_pnull())
+    ucode(s, p.fromexpr)
+    ucode(s, p.toexpr)
+    if \p.byexpr then {
+        ucode(s, p.byexpr)
+    } else {
+        put(s, u_push1())
+    }
+    u_coord(s, p)
+    put(s, u_toby())
 end
 
 # record Mutual( exprList )
 procedure ucode_Mutual(s, p)
-	if *p.exprList = 0 then {
-		put(s, u_pnull())
-	} else if *p.exprList = 1 then {
-		ucode(s, p.exprList[1])
-	} else {
-		put(s, u_pushn1())
-		every ucode(s, !p.exprList)
-		put(s, u_invoke(*p.exprList))
-	}
+    if *p.exprList = 0 then {
+        put(s, u_pnull())
+    } else if *p.exprList = 1 then {
+        ucode(s, p.exprList[1])
+    } else {
+        put(s, u_pushn1())
+        every ucode(s, !p.exprList)
+        put(s, u_invoke(*p.exprList))
+    }
 end
 
 # record CoexpList( exprList )
 procedure ucode_CoexpList(s, p)
-	local L
+    local L
 
-	L := []
-	every put(L, Create(!p.exprList))
-	p := Arglist([ListConstructor(L)])
-	ucode(s, p)
+    L := []
+    every put(L, Create(!p.exprList))
+    p := Arglist([ListConstructor(L)])
+    ucode(s, p)
 end
 
 # record Arglist( exprList )
 procedure ucode_Arglist(s, p)
-	every ucode(s, !p.exprList)
+    every ucode(s, !p.exprList)
 end
 
 # record Compound( exprList )
 procedure ucode_Compound(s, p)
-	local i, lab
+    local i, lab
 
-	every i := 1 to *p.exprList-1 do {
-		lab := @u_nextlab
-		put(s, u_mark(lab))
-		u_loops[1].ir.markcount +:= 1
-		ucode(s, p.exprList[i])
-		u_loops[1].ir.markcount -:= 1
-		put(s, u_unmark())
-		put(s, u_lab(lab))
-	}
-	ucode(s, p.exprList[-1])
+    every i := 1 to *p.exprList-1 do {
+        lab := @u_nextlab
+        put(s, u_mark(lab))
+        u_loops[1].ir.markcount +:= 1
+        ucode(s, p.exprList[i])
+        u_loops[1].ir.markcount -:= 1
+        put(s, u_unmark())
+        put(s, u_lab(lab))
+    }
+    ucode(s, p.exprList[-1])
 end
 
 # record ListConstructor( exprList )
 procedure ucode_ListConstructor(s, p)
-	put(s, u_pnull())
-	every ucode(s, !p.exprList)
-	put(s, u_llist(*p.exprList))
+    put(s, u_pnull())
+    every ucode(s, !p.exprList)
+    put(s, u_llist(*p.exprList))
 end
 
 # record Key( id )
 procedure ucode_Key(s, p)
-	u_coord(s, p)
-	put(s, u_keywd(p.id))
+    u_coord(s, p)
+    put(s, u_keywd(p.id))
 end
 
 procedure ucode(s, p)
-	case type(p) of {
+    case type(p) of {
 
-	"null" : return put(s, u_pnull())
+    "null" : return put(s, u_pnull())
 
-	"Alt" : return ucode_Alt(s, p)
-	"ExclAlt" : return ucode_ExclAlt(s, p)
-	"Call" : return ucode_Call(s, p)
-	"Not" : return ucode_Not(s, p)
-	"RepAlt" : return ucode_RepAlt(s, p)
-	"Field" : return ucode_Field(s, p)
-	"NoOp" : return ucode_NoOp(s, p)
-	"Case" : return ucode_Case(s, p)
-	"Cclause" : return ucode_Cclause(s, p)
-	"Every" : return ucode_Every(s, p)
-	"Scan" : return ucode_Scan(s, p)
-	"Limitation" : return ucode_Limitation(s, p)
-	"Sectionop" : return ucode_Sectionop(s, p)
-	"Binop" : return ucode_Binop(s, p)
-	"Unop" : return ucode_Unop(s, p)
-	"Global" : return ucode_Global(s, p)
-	"If" : return ucode_If(s, p)
-	"Initial" : return ucode_Initial(s, p)
-	"Invocable" : return ucode_Invocable(s, p)
-	"Link" : return ucode_Link(s, p)
-	"Intlit" : return ucode_Intlit(s, p)
-	"Reallit" : return ucode_Reallit(s, p)
-	"Stringlit" : return ucode_Stringlit(s, p)
-	"Csetlit" : return ucode_Csetlit(s, p)
-	"Locals" : return ucode_Locals(s, p)
-	"Statics" : return ucode_Statics(s, p)
-	"ProcDecl" : return ucode_ProcDecl(s, p)
-	"ProcBody" : return ucode_ProcBody(s, p)
-	"ProcCode" : return ucode_ProcCode(s, p)
-	"Record" : return ucode_Record(s, p)
-	"Repeat" : return ucode_Repeat(s, p)
-	"Return" : return ucode_Return(s, p)
-	"Fail" : return ucode_Fail(s, p)
-	"Suspend" : return ucode_Suspend(s, p)
-	"Until" : return ucode_Until(s, p)
-	"While" : return ucode_While(s, p)
-	"Create" : return ucode_Create(s, p)
-	"Ident" : return ucode_Ident(s, p)
-	"Next" : return ucode_Next(s, p)
-	"Break" : return ucode_Break(s, p)
-	"ToBy" : return ucode_ToBy(s, p)
-	"Mutual" : return ucode_Mutual(s, p)
-	"Arglist" : return ucode_Arglist(s, p)
-	"CoexpList" : return ucode_CoexpList(s, p)
-	"Compound" : return ucode_Compound(s, p)
-	"ListConstructor" : return ucode_ListConstructor(s, p)
-	"Key" : return ucode_Key(s, p)
-	default : { runerr(1000, p) }
-	}
+    "Alt" : return ucode_Alt(s, p)
+    "ExclAlt" : return ucode_ExclAlt(s, p)
+    "Call" : return ucode_Call(s, p)
+    "Not" : return ucode_Not(s, p)
+    "RepAlt" : return ucode_RepAlt(s, p)
+    "Field" : return ucode_Field(s, p)
+    "NoOp" : return ucode_NoOp(s, p)
+    "Case" : return ucode_Case(s, p)
+    "Cclause" : return ucode_Cclause(s, p)
+    "Every" : return ucode_Every(s, p)
+    "Scan" : return ucode_Scan(s, p)
+    "Limitation" : return ucode_Limitation(s, p)
+    "Sectionop" : return ucode_Sectionop(s, p)
+    "Binop" : return ucode_Binop(s, p)
+    "Unop" : return ucode_Unop(s, p)
+    "Global" : return ucode_Global(s, p)
+    "If" : return ucode_If(s, p)
+    "Initial" : return ucode_Initial(s, p)
+    "Invocable" : return ucode_Invocable(s, p)
+    "Link" : return ucode_Link(s, p)
+    "Intlit" : return ucode_Intlit(s, p)
+    "Reallit" : return ucode_Reallit(s, p)
+    "Stringlit" : return ucode_Stringlit(s, p)
+    "Csetlit" : return ucode_Csetlit(s, p)
+    "Locals" : return ucode_Locals(s, p)
+    "Statics" : return ucode_Statics(s, p)
+    "ProcDecl" : return ucode_ProcDecl(s, p)
+    "ProcBody" : return ucode_ProcBody(s, p)
+    "ProcCode" : return ucode_ProcCode(s, p)
+    "Record" : return ucode_Record(s, p)
+    "Repeat" : return ucode_Repeat(s, p)
+    "Return" : return ucode_Return(s, p)
+    "Fail" : return ucode_Fail(s, p)
+    "Suspend" : return ucode_Suspend(s, p)
+    "Until" : return ucode_Until(s, p)
+    "While" : return ucode_While(s, p)
+    "Create" : return ucode_Create(s, p)
+    "Ident" : return ucode_Ident(s, p)
+    "Next" : return ucode_Next(s, p)
+    "Break" : return ucode_Break(s, p)
+    "ToBy" : return ucode_ToBy(s, p)
+    "Mutual" : return ucode_Mutual(s, p)
+    "Arglist" : return ucode_Arglist(s, p)
+    "CoexpList" : return ucode_CoexpList(s, p)
+    "Compound" : return ucode_Compound(s, p)
+    "ListConstructor" : return ucode_ListConstructor(s, p)
+    "Key" : return ucode_Key(s, p)
+    default : { runerr(1000, p) }
+    }
 end
 
 procedure ucode_emit(label, code)
@@ -995,98 +998,99 @@ procedure ucode_function(name, params, accumulate, locals, statics, code, coord)
 end
 
 procedure ucode_File(parse, flagList)
-	local g, p, i, t, outfile
+    local g, p, i, t, outfile
 
-	outfile := (!flagList ? (="-out:" & tab(0)))
-	if \outfile then {
-		u_u1 := open(outfile || ".u1", "w") | stop("ERROR: ", outfile)
-		u_u2 := open(outfile || ".u2", "w") | stop("ERROR: ", outfile)
-	}
+    outfile := (!flagList ? (="-out:" & tab(0)))
+    if \outfile then {
+        u_u1 := open(outfile || ".u1", "w") | stop("ERROR: ", outfile)
+        u_u2 := open(outfile || ".u2", "w") | stop("ERROR: ", outfile)
+    }
 
-	g := []
-	while p := @parse do {
-		ucode(g, p)
-	}
-	# every ucode(g, parse(getline))
+    g := []
+    while p := @parse do {
+        ucode(g, p)
+    }
+    # every ucode(g, parse(getline))
 
-	# g contains nodes for global declarations
-	write(/u_u2, "# stuff for .u2 file")
-	write(u_u2, "version\t", "U9.0.00")
-	every p := !g & type(p) == "Record" do {
-		write(u_u2, "record\t", p.ident.id, ",", *p.idlist)
-		every i := 1 to *p.idlist do {
-			write(u_u2, "\t", i-1, ",", p.idlist[i].id)
-		}
-	}
-	write(u_u2, "impl\t", "local")
-	every p := !g & type(p) == "Link" do {
-		every i := !p.linkfileList do {
-			write(u_u2, "link\t", i, ".u1")
-		}
-	}
-	every p := !g & type(p) == "Invocable" do {
-		every i := !p.ivocopList do {
-			case type(i) of {
-			"Ident": {
-				t := i.id
-				if i.id == "all" then t := 0
-			}
-			"Stringlit": {
-				t := i.str
-			}
-			}
-			write(u_u2, "invocable\t", t)
-		}
-	}
+    # g contains nodes for global declarations
+    write(/u_u2, "# stuff for .u2 file")
+    write(u_u2, "version\t", "U9.0.00")
+    every p := !g & type(p) == "Record" do {
+        write(u_u2, "record\t", p.ident.id, ",", *p.idlist)
+        every i := 1 to *p.idlist do {
+            write(u_u2, "\t", i-1, ",", p.idlist[i].id)
+        }
+    }
+    write(u_u2, "impl\t", "local")
+    every p := !g & type(p) == "Link" do {
+        every i := !p.linkfileList do {
+            write(u_u2, "link\t", i, ".u1")
+        }
+    }
+    every p := !g & type(p) == "Invocable" do {
+        every i := !p.ivocopList do {
+            case type(i) of {
+            "Ident": {
+                t := i.id
+                if i.id == "all" then t := 0
+            }
+            "Stringlit": {
+                t := i.str
+            }
+            }
+            write(u_u2, "invocable\t", t)
+        }
+    }
 
-	t := 0
-	every p := !g do {
-		case type(p) of {
-		"Record":	t +:= 1
-		"Global":	t +:= *p.idList
-		"ProcDecl":	t +:= 1
-		}
-	}
-	write(u_u2, "global\t", t)
-	t := 0
-	every p := !g do {
-		case type(p) of {
-		"Record": {
-			write(u_u2, "\t", t, ",", "000011", ",", p.ident.id, ",", *p.idlist)
-			t +:= 1
-		}
-		"Global": {
-			every i := !p.idList do {
-				write(u_u2, "\t", t, ",", "000001", ",", i.id, ",", 0)
-				t +:= 1
-			}
-		}
-		"ProcDecl": {
-			write(u_u2, "\t", t, ",", "000005", ",", p.ident.id, ",", *p.paramList)
-			t +:= 1
-		}
-		}
-	}
+    t := 0
+    every p := !g do {
+        case type(p) of {
+        "Record":   t +:= 1
+        "Global":   t +:= *p.idList
+        "ProcDecl": t +:= 1
+        }
+    }
+    write(u_u2, "global\t", t)
+    t := 0
+    every p := !g do {
+        case type(p) of {
+        "Record": {
+            write(u_u2, "\t", t, ",", "000011", ",", p.ident.id, ",", *p.idlist)
+            t +:= 1
+        }
+        "Global": {
+            every i := !p.idList do {
+                write(u_u2, "\t", t, ",", "000001", ",", i.id, ",", 0)
+                t +:= 1
+            }
+        }
+        "ProcDecl": {
+            write(u_u2, "\t", t, ",", "000005", ",",
+		  p.ident.id, ",", *p.paramList)
+            t +:= 1
+        }
+        }
+    }
 end
 
 procedure ucode_CG()
-	return code_gen(ucode_emit,
-			ucode_globals,
-			ucode_invocables,
-			ucode_links,
-			ucode_function,
-			ucode_records,
-			ucode_File
-			)
+    return code_gen(ucode_emit,
+            ucode_globals,
+            ucode_invocables,
+            ucode_links,
+            ucode_function,
+            ucode_records,
+            ucode_File
+            )
 end
 
 procedure octal(x)
-	local s
-	s := ""
-	while x > 0 do {
-		s := (x%8) || s
-		x /:= 8
-	}
-	s := right(s, 3, "0")
-	return s
+    local s
+    s := ""
+    while x > 0 do {
+        s := (x%8) || s
+        x /:= 8
+    }
+    s := right(s, 3, "0")
+    return s
 end

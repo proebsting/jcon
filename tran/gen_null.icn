@@ -14,28 +14,28 @@ procedure null_globals(L)
 end
 
 procedure null_function(name, params, accumulate, locals, statics, code, coord)
-	ir(code)
+    ir(code)
 end
 
 procedure null_File(parse, flagList)
-	local p
+    local p
 
-	CG := null_CG()
-	if match("-O", !flagList) then {
-		optimize_flag := 1
-	}
-	while p := @parse do {
-		ir(p)
-	}
+    CG := null_CG()
+    if match("-O", !flagList) then {
+        optimize_flag := 1
+    }
+    while p := @parse do {
+        ir(p)
+    }
 end
 
 procedure null_CG()
-	return code_gen(null_emit,
-			null_globals,
-			null_invocables,
-			null_links,
-			null_function,
-			null_records,
-			null_File
-			)
+    return code_gen(null_emit,
+            null_globals,
+            null_invocables,
+            null_links,
+            null_function,
+            null_records,
+            null_File
+            )
 end

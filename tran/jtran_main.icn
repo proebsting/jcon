@@ -42,6 +42,13 @@ procedure cat(getline, args)
 	}
 end
 
+procedure stdout(c)
+	local p
+	while p := @\c do {
+		write(p)
+	}
+end
+
 procedure echo(c)
 	local p
 	while p := @\c do {
