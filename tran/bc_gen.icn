@@ -987,7 +987,7 @@ end
 procedure bc_create_nextval(c, start, params, locals, undeclared, accumulate)
 	local PC, nextval, nextvalcode, k, lab, switch, insns, deflab
 	local runtimeerror, r
-	local a, s, tmplab, prologue, var_load_label, t
+	local a, s, tmplab, prologue, var_load_label, t, tmpset
 
 	nextval := create_method(c, 0, "nextval", "()Lrts/vDescriptor;")
 	nextvalcode := create_code(c, 10, 10)
@@ -1112,7 +1112,12 @@ procedure bc_create_nextval(c, start, params, locals, undeclared, accumulate)
 
 	deflab := label()
 	
-	switch := tableswitch(0, deflab, 1, *bc_emit_table, list(*bc_emit_table))
+	member(bc_indirect_targets, start) & runerr(1000)
+	switch := tableswitch(0, deflab, 1, *bc_indirect_targets+1, list(*bc_indirect_targets+1))
+	every k := (!bc_indirect_targets | start) do {
+		switch.offsets[\bc_labels[k]] := \bc_ir2bc_labels[k] | runerr(1000,k)
+	}
+
 	if \bc_save_restore_flag then {
 		put(nextvalcode.code, goto_w(bc_switch_label) )
 	}
@@ -1143,7 +1148,7 @@ procedure bc_emit_code0(s, switch, k)
 	if member(bc_emitted, k) then return
 	insert(bc_emitted, k)
 
-	lab := switch.offsets[bc_labels[k]] := bc_ir2bc_labels[k]
+	lab := bc_ir2bc_labels[k]
 	put(s, lab)
 	insns := bc_emit_table[k]
 	every gen_bc(s, insns[1 to *insns-1])
