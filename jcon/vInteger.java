@@ -400,11 +400,12 @@ public vDescriptor ToBy(vDescriptor v2, vDescriptor v3) {
 	    { retval = vInteger.this; }
 
 	    public vDescriptor resume() {
-		if ((n += k) <= j) {
-		    retval = New(n);
-		    return this;
+		long oldn = n;
+		if ((n += k) <= j && n > oldn) {  // 2nd test catches overflow
+		    return New(n);
+		} else {
+		    return null; /*FAIL*/
 		}
-		return null; /*FAIL*/
 	    };
 	};
 
@@ -418,11 +419,12 @@ public vDescriptor ToBy(vDescriptor v2, vDescriptor v3) {
 	    { retval = vInteger.this; }
 
 	    public vDescriptor resume() {
-		if ((n += k) >= j) {
-		    retval = New(n);
-		    return this;
+		long oldn = n;
+		if ((n += k) >= j && n < oldn) {  // 2nd test catches overflow
+		    return New(n);
+		} else {
+		    return null; /*FAIL*/
 		}
-		return null; /*FAIL*/
 	    };
 	};
 
