@@ -40,6 +40,7 @@ public static void bomb(String s) {
     k$errout.file.flush();
     System.err.println();
     System.err.println("Runtime malfunction: " + s);
+    (new Exception()).printStackTrace();
     System.exit(1);
 }
 

@@ -89,7 +89,7 @@ public vDescriptor resume() {
 	    ret = null;
 	}
     } catch (iError e) {
-	e.printStackTrace();
+	if (k$error.error == 0) { e.printStackTrace(); } //#%#%#%#% DEBUGGING
 	e.report(this);		// returns only on error->failure conversion
 	ret = null;
     }

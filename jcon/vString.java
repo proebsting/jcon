@@ -415,28 +415,23 @@ vCset mkCset() {						// cset(s)
 
 
 //  =s : tab(match(s))
-//#%#% shouldn't tab() return a modifyable substring?
 
 public vDescriptor TabMatch() {
+    vString subj = (vString) k$subject.self.Deref();
+    final vInteger oldpos = (vInteger) k$pos.self.Deref();
+    int pos = (int) oldpos.value;
+    if (! matches(subj, pos - 1)) {
+	return null;
+    }
+    k$pos.self.SafeAssign(vInteger.New(pos + tlength));
+    final vString newstr = vString.New(subj, pos, pos + tlength);
     return new vClosure () {
-        vInteger oldpos = (vInteger) k$pos.self.Deref();
+	{ retval = newstr; }
         public vDescriptor resume() {
-            if (retval == null) {
-                int pos = (int) oldpos.value;
-                vString subj = (vString) k$subject.self.Deref();
-                if (matches(subj, pos - 1)) {
-                    k$pos.self.SafeAssign(vInteger.New(pos + tlength));
-                    retval = vString.New(subj, pos, pos+tlength);
-                    return this;
-                } else {
-                    return null;
-                }
-            } else {
-                k$pos.self.Assign(oldpos);
-                return null;
-            }
+	    k$pos.self.Assign(oldpos);
+	    return null;
         }
-    }.resume();
+    };
 }
 
 
