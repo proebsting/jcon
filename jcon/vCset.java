@@ -7,7 +7,7 @@ static final int MAX_VALUE = 255;		// maximum char value in Jcon
     private java.util.BitSet t;
 
 
-vCset(java.util.BitSet x) {			// new Cset(Bitset b)
+private vCset(java.util.BitSet x) {		// new Cset(Bitset b)
     t = (java.util.BitSet) x.clone();
 }
 
