@@ -44,6 +44,8 @@ vFile(String name, String flags) throws IOException {
 
     String mode;
 
+    img = "file(" + name + ")";				// save image
+
     if (any("pP", flags)) {
     	throw new IOException("can't open pipe"); /*FAIL*/	//%#%#%#
     }

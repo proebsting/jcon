@@ -45,7 +45,7 @@ public class iKeywords extends iFile {
 		// files
 		iEnv.declareKey("input",  new k$input());
 		iEnv.declareKey("output", new k$output());
-		iEnv.declareKey("errout", new k$output());
+		iEnv.declareKey("errout", new k$errout());
 
 		//incestuous
 		k$subject s = new k$subject();		// &subject

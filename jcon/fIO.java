@@ -31,7 +31,7 @@ class fIO {
 class f$open extends iFunctionClosure {				// open(s1,s2)
 	vDescriptor function(vDescriptor[] args) {
 		String fname = vString.argVal(args, 0);
-		String mode = vString.argVal(args, 1, "rw");
+		String mode = vString.argVal(args, 1, "r");
 		return iNew.File(fname, mode);
 	}
 }
