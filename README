@@ -119,7 +119,7 @@ The subdirectories within the Jcon tree are as follows:
 	tran	source code for the translator
 	rts	source code for the runtime system
 	doc	such documentation as exists; builds bin/notes.txt
-	test	automated test collection for validating Icon
+	test	automated test collection for validating Jcon
 	expt	other tests, demos, and experiments to be run manually
 
 
