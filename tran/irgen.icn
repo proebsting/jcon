@@ -596,6 +596,7 @@ procedure ir_Intlit(p)
 
 	init4ir(p)
 
+	p.int := integer(p.int) | semantic_error(p.int || ": illegal integer literal", p.coord)
 	CG.emit(p.ir.start, [
 		irMove(p.ir.value, irIntLit(p.int)),
 		irGoto(p.ir.success)
@@ -608,6 +609,7 @@ procedure ir_Reallit(p)
 
 	init4ir(p)
 
+	p.real := real(p.real) | semantic_error(p.real || ": illegal real literal", p.coord)
 	CG.emit(p.ir.start, [
 		irMove(p.ir.value, irRealLit(p.real)),
 		irGoto(p.ir.success)
