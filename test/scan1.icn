@@ -1,6 +1,8 @@
 #SRC: JCON
 
 procedure main()
+   write(any('ab', "1234ab", 0, 7) | "fail")
+   write(any('ab', "1234ab", 7, 0) | "fail")
    write(any('ab', "1234ab", 6, 0) | "fail")
    write(any('ab', "1234ab", 6) | "fail")
    write(any('ab', "1234ab") | "fail")
