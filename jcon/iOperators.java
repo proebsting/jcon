@@ -78,7 +78,7 @@ class oToBy extends iClosure {				// i1 to i2 by i3
 
 	vInteger i1, i2, i3, iprev, ivar;
 
-	void resume() {
+	void nextval() {
 		if (PC == 1) {
 			for (int i = 0; i < arguments.length; i++) {
 				arguments[i] = arguments[i].deref();
@@ -149,7 +149,7 @@ class oSelect extends iFunctionClosure {		//  ?x
 }
 
 class oBang extends iClosure {		//  !x
-	void resume() {
+	void nextval() {
 		retvalue = arguments[0].deref().Bang(this);
 	}
 }

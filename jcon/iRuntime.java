@@ -13,17 +13,7 @@ static void error(int n)  { error(n, null); }
 
 static void error(int n, vDescriptor d)
 {
-    //#%#% if &error is zero, issue message and abort
-    //#%#% if &error is not zero, decrement it and set other error keywords
-    //#%#% throw exception for handling as failure at proper point
-
-    System.out.flush();
-    System.err.println("Run-time error " + n);
-    System.err.println(iRunerr.text(n));
-    if (d != null) {
-	System.err.println("offending value: " + d.report());
-    }
-    System.exit(1);
+    throw new iError(n,d);
 }
 
 

@@ -14,7 +14,15 @@ abstract class iClosure {
 		PC = 1;
 	}
 
-	abstract void resume();
+	final void resume() {
+		try {
+			nextval();
+		} catch (iError e) {
+			e.error();
+		}
+	}
+
+	abstract void nextval();
 
 	void closure(iEnv e, vDescriptor[] a, iClosure parent) {
 		env = e;
