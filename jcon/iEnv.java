@@ -129,8 +129,13 @@ static void declareBuiltin(String name, int arity, iInstantiate i) {
     }
 }
 
-static Enumeration enumBuiltins() {
-    return builtintab.keys();
+static vString[] listBuiltins() {
+    vString[] v = new vString[builtintab.size()];
+    Enumeration e = builtintab.keys();
+    for (int i = 0; e.hasMoreElements(); i++) {
+	v[i] = vString.New((String) e.nextElement());
+    }
+    return v;
 }
 
 static vProc getBuiltin(String s) {

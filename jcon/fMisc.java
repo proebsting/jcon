@@ -68,11 +68,12 @@ final class f$variable extends vProc1 {				// variable(x)
 
 final class f$function extends vProc0 {				// function()
     public vDescriptor Call() {
-	final java.util.Enumeration e = iEnv.enumBuiltins();
+	final vValue[] v = iSort.sort(iEnv.listBuiltins());
 	return new vClosure() {
+	    int i = 0;
 	    public vDescriptor Resume() {
-		if (e.hasMoreElements()) {
-		    retval = vString.New((String) e.nextElement());
+		if (i < v.length) {
+		    retval = v[i++];
 		    return this;
 		} else {
 		    return null;

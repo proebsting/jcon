@@ -41,7 +41,7 @@ public void propagate(String fname, int lineno, vDescriptor record,
     String call;
     call = "{"
 	   + record.Deref().report()
-	   + "."
+	   + " . "
 	   + field
 	   + "}";
     propagate(fname, lineno, call);
