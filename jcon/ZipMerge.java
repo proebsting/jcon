@@ -53,6 +53,7 @@ public static void addZipEntry(ZipEntry ze, ZipOutputStream zos,
 	    len = is.read(buffer, 0, buffer.length);
 	}
     } catch (EOFException e) {	// this happens with some files; ignore
+				// (fixed in JDK 1.2b4; Sun bug #4040920)
     }
 
     zos.closeEntry();
@@ -78,7 +79,8 @@ public static void compose(String dst, Enumeration files) {
 	    ZipFile zsrc;
 	    try {
 		zsrc = new ZipFile(fname);
-	    } catch (ZipException ze) {
+	    } catch (Exception e) {
+		// (most Javas throw ZipException, but 1.2b4 throws IOException)
 		// handle regular file, not zip.
 		FileInputStream fis = new FileInputStream(fname);
 		BufferedInputStream bis = new BufferedInputStream(fis);

@@ -210,6 +210,7 @@ static void readlinks(String fname) {
 	f.close();
     } catch (Exception e) {
 	// ignore EOFException, which happens with some Zip files
+	//	(fixed in JDK 1.2b4; Sun bug #4040920)
 	if (! (e instanceof EOFException)) {
 	    error(fname + ": " + e);
 	}
