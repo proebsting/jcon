@@ -37,6 +37,7 @@ install:
 
 
 clean:
+	rm -f */.#*
 	cd tran;  $(MAKE) clean
 	cd rts;   $(MAKE) clean
 	cd doc;   $(MAKE) clean
