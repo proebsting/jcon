@@ -66,9 +66,9 @@ public static vFile File(String filename, String mode)
 				{ return vFile.New(filename, mode, null); }
 
 
-public static vDescriptor[] ArgArray(int i)  { return vDescriptor.ArgArray(i); }
+public static vDescriptor[] ArgArray(int i)  { return iClosure.ArgArray(i); }
 
-public static void FreeArgs(vDescriptor[] a) { vDescriptor.FreeArgs(a); }
+public static void FreeArgs(vDescriptor[] a) { iClosure.FreeArgs(a); }
 
 
 
