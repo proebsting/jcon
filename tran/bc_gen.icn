@@ -15,7 +15,7 @@ global bc_function_name
 global bc_file_name
 
 global bc_create_exists
-global bc_suspend_flag		#%#% This flag may cause verification errors.
+global bc_save_restore_flag	#%#% This flag may cause verification errors.
 global bc_declare_set
 global bc_undeclared_set
 global bc_function_name
@@ -339,7 +339,7 @@ procedure gen_bc_irSucceed(s, p)
 
 	PC := PC_fieldref(bc_proc_classptr)
 	if \p.continuation then {
-		\bc_suspend_flag | runerr(1000)
+		\bc_save_restore_flag | runerr(1000)
 
 		put(s, aload_0())
 		gen_bc(s, p.continuation)
@@ -616,6 +616,8 @@ procedure gen_bc_irCreate(s, p)
 
 	bc_create_exists := 1
 
+	\bc_save_restore_flag | runerr(1000)
+
 	copymethod := create_methodref(bc_proc_classptr, "copy", "(I)Lrts/iClosure;", bc_proc_classname)
 	createmethod := create_methodref(bc_proc_classptr, "create", "(Lrts/iClosure;)Lrts/vCoexp;", "rts/iCoexp")
 	put(s, aload_0())
@@ -812,7 +814,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	put(initcode.code, aload_0() )
 	put(initcode.code, invokenonvirtual(constructor) )
 
-	if 1 | \bc_suspend_flag then {
+	if \bc_save_restore_flag then {
 
 		put(initcode.code, aload_0() )
 		put(initcode.code, ipush(*bc_tmp_table) )
@@ -911,9 +913,12 @@ procedure bc_create_nextval(c, start)
 	nextvalcode.max_locals := bc_var_offset + *bc_var_table
 	s := nextvalcode.code
 
-	bc_suspend_flag := &null
+	bc_save_restore_flag := &null
 	if a := !!bc_emit_table & type(a)=="irSucceed" & \a.continuation then {
-		bc_suspend_flag := 1
+		bc_save_restore_flag := 1
+	}
+	if a := !!!bc_emit_table & type(a)=="irCreate" then {
+		bc_save_restore_flag := 1
 	}
 
 	bc_switch_label := label()
@@ -925,7 +930,7 @@ procedure bc_create_nextval(c, start)
 	put(nextvalcode.code, getfield(PC))
 
 	#%#% this use of flag causes spurious verification errors.
-	if 1 | \bc_suspend_flag then {
+	if \bc_save_restore_flag then {
 		put(nextvalcode.code, dup())
 		put(nextvalcode.code, iconst_1())
 		put(nextvalcode.code, if_icmpne(tmplab))
@@ -949,7 +954,7 @@ procedure bc_create_nextval(c, start)
 	}
 
 	#%#% this use of flag causes spurious verification errors.
-	if 1 | \bc_suspend_flag then {
+	if \bc_save_restore_flag then {
 		put(s, goto_w(var_load_label))
 		put(nextvalcode.code, tmplab)
 		a := create_fieldref(bc_proc_classptr,
