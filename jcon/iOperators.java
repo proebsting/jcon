@@ -9,6 +9,8 @@ void announce(iEnv env) {
 
     declare(env, ":=,2", "oAssign");
     declare(env, "<-,2", "oRevAssign");
+    declare(env, "<->,2", "oRevSwap");
+    declare(env, ":=:,2", "oSwap");
     declare(env, ":?,2", "oSubjAssign");	// assign for `s ? e'
 
     declare(env, "...,3", "oToBy");
@@ -90,6 +92,15 @@ class oAssign extends iRefClosure {			// x1 := x2
 	String tfmt() { return "{$1 := $2}"; }
 }
 
+class oSwap extends iRefClosure {			// x1 :=: x2
+	vDescriptor function(vDescriptor[] args) {
+		vValue tmp = args[1].deref();
+		args[1].Assign(args[0].deref());
+		return args[0].Assign(tmp);
+	}
+	String tfmt() { return "{$1 :=: $2}"; }
+}
+
 class oRevAssign extends iClosure {			// x1 <- x2
 	void nextval() {
 		if (this.o == null) {
@@ -101,6 +112,23 @@ class oRevAssign extends iClosure {			// x1 <- x2
 		}
 	}
 	String tfmt() { return "{$1 <- $2}"; }
+}
+
+class oRevSwap extends iClosure {			// x1 <-> x2
+	void nextval() {
+		if (this.o == null) {
+			vValue[] tmp = { arguments[0].deref(), arguments[1].deref() };
+			this.o = tmp;
+			arguments[1].Assign(tmp[0]);
+			retvalue = arguments[0].Assign(tmp[1]);
+		} else {
+			vValue[] tmp = (vValue[]) this.o;
+			arguments[0].Assign(tmp[0]);
+			arguments[1].Assign(tmp[1]);
+			retvalue = null;
+		}
+	}
+	String tfmt() { return "{$1 <-> $2}"; }
 }
 
 
