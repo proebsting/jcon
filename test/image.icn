@@ -47,7 +47,7 @@ procedure main(args)
    	"25e-2" | "25e-1" | " 4e+3 " | " 3.8e3  " |
    	"" | " " | "  9  " |  "  4.7  ")
 
-   s := string(&cset)[1:140] || string(&cset)[250:256]
+   s := &cset[1:140] || &cset[250:256]
    write()
    write(image(s))
    write()
