@@ -10,7 +10,7 @@
 #   to clean up: make clean
 
 
-BUILT = jtran jlink rts.zip jcon.txt
+BUILT = jtran jlink jjtran jjlink rts.zip jcon.txt
 INSTALL = jcont $(BUILT)
 
 DEST = /must/specify/DEST/to/install
@@ -41,4 +41,4 @@ clean:
 	cd test;  $(MAKE) clean
 	cd expt;  $(MAKE) clean
 	cd bmark; $(MAKE) clean
-	cd bin;  rm -rf $(BUILT) JCON
+	cd bin;  rm -rf $(BUILT)
