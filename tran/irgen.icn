@@ -24,7 +24,9 @@ procedure ir_Field(p)
 	CG.emit(p.ir.resume, [ irGoto(p.expr.ir.resume) ])
 	CG.emit(p.expr.ir.success, [
 		irCoord(p.coord),
-		irMakeClosure(closure, irOperator(".", 2), [ p.expr.ir.value, irStrLit(p.field.id) ]),
+		# irMakeClosure(closure, irOperator(".", 2), [ p.expr.ir.value, irStrLit(p.field.id) ]),
+		irOpClosure(closure, irOperator(".", 2)),
+		irInstallArgs(closure, [ p.expr.ir.value, irStrLit(p.field.id) ]),
 		irResume(closure, p.expr.ir.resume, p.ir.value),
 		irGoto(p.ir.success)
 		])
@@ -245,7 +247,9 @@ procedure ir_Case(p)
 		every i := 1 to *L do {
 			CG.emit(L[i].expr.ir.success, [
 				irCoord(p.coord),
-				irMakeClosure(closure, irOperator("===", 2), [ p.expr.ir.value, L[i].expr.ir.value ]),
+				# irMakeClosure(closure, irOperator("===", 2), [ p.expr.ir.value, L[i].expr.ir.value ]),
+				irOpClosure(closure, irOperator("===", 2)),
+				irInstallArgs(closure, [ p.expr.ir.value, L[i].expr.ir.value ]),
 				irResume(closure, L[i].expr.ir.resume, dummy),
 				irGoto(L[i].body.ir.start)
 				])
@@ -360,10 +364,38 @@ procedure ir_Binop(p)
 	static funcs	# functions for which resumption fails immediately.
 	initial {
 		funcs := set([
-			"+",
+			":=",
+			":=:",
+			"&",
 			".",
 			"[]",
-			":="
+			"+",
+			"-",
+			"/",
+			"*",
+			"%",
+			"^",
+			"**",
+			"++",
+			"--",
+			"<",
+			"<=",
+			"=",
+			"~=",
+			">=",
+			">",
+			"<<",
+			"<<=",
+			"==",
+			"~==",
+			">>=",
+			">=",
+			">>",
+			"===",
+			"~===",
+			"|||",
+			"||",
+			"@"
 		])
 	}
 
@@ -386,20 +418,26 @@ procedure ir_Binop(p)
 		CG.emit(p.ir.resume, [ irGoto(p.right.ir.resume) ]) # augmented ops not resumed
 		CG.emit(p.right.ir.success, [
 			irCoord(p.coord),
-			irMakeClosure(closure, irOperator(op, 2), [ p.left.ir.value, p.right.ir.value ]),
+			# irMakeClosure(closure, irOperator(op, 2), [ p.left.ir.value, p.right.ir.value ]),
+			irOpClosure(closure, irOperator(op, 2)),
+			irInstallArgs(closure, [ p.left.ir.value, p.right.ir.value ]),
 			irResume(closure, p.right.ir.resume, tmp),
-			irMakeClosure(closure, irOperator(":=", 2), [ p.left.ir.value, tmp ]),
+			# irMakeClosure(closure, irOperator(":=", 2), [ p.left.ir.value, tmp ]),
+			irOpClosure(closure, irOperator(":=", 2)),
+			irInstallArgs(closure, [ p.left.ir.value, tmp ]),
 			irResume(closure, p.right.ir.resume, p.ir.value),
 			irGoto(p.ir.success)
 			])
 	} else {
-		if member(funcs, op) then {
+		if member(funcs, p.op) then {
 			CG.emit(p.ir.resume, [
-				irGoto(p.ir.failure)
+				irGoto(p.right.ir.resume)
 				])
 			CG.emit(p.right.ir.success, [
 				irCoord(p.coord),
-				irMakeClosure(closure, irOperator(p.op, 2), [ p.left.ir.value, p.right.ir.value ]),
+				# irMakeClosure(closure, irOperator(p.op, 2), [ p.left.ir.value, p.right.ir.value ]),
+				irOpClosure(closure, irOperator(p.op, 2)),
+				irInstallArgs(closure, [ p.left.ir.value, p.right.ir.value ]),
 				irResume(closure, p.right.ir.resume, p.ir.value),
 				irGoto(p.ir.success)
 				])
@@ -421,6 +459,20 @@ end
 # record Unop( op operand )
 procedure ir_Unop(p)
 	local closure
+	static funcs	# functions for which resumption fails immediately.
+	initial {
+		funcs := set([
+			".",
+			"/",
+			"\\",
+			"*",
+			"?",
+			"+",
+			"-",
+			"~",
+			"^"
+		])
+	}
 
 	ir(p.operand)
 
@@ -429,16 +481,30 @@ procedure ir_Unop(p)
 	closure := ir_tmp_closure(p, "closure")
 
 	CG.emit(p.ir.start, [ irGoto(p.operand.ir.start) ])
-	CG.emit(p.ir.resume, [
-		irCoord(p.coord),
-		irResume(closure, p.operand.ir.resume, p.ir.value),
-		irGoto(p.ir.success)
-		])
-	CG.emit(p.operand.ir.success, [
-		irCoord(p.coord),
-		irMakeClosure(closure, irOperator(p.op,1), [ p.operand.ir.value ]),
-		irGoto(p.ir.resume)
-		])
+	if member(funcs, p.op) then {
+		CG.emit(p.ir.resume, [
+			irGoto(p.operand.ir.resume)
+			])
+		CG.emit(p.operand.ir.success, [
+			irCoord(p.coord),
+			# irMakeClosure(closure, irOperator(p.op,1), [ p.operand.ir.value ]),
+			irOpClosure(closure, irOperator(p.op, 1)),
+			irInstallArgs(closure, [ p.operand.ir.value ]),
+			irResume(closure, p.operand.ir.resume, p.ir.value),
+			irGoto(p.ir.success)
+			])
+	} else {
+		CG.emit(p.ir.resume, [
+			irCoord(p.coord),
+			irResume(closure, p.operand.ir.resume, p.ir.value),
+			irGoto(p.ir.success)
+			])
+		CG.emit(p.operand.ir.success, [
+			irCoord(p.coord),
+			irMakeClosure(closure, irOperator(p.op,1), [ p.operand.ir.value ]),
+			irGoto(p.ir.resume)
+			])
+	}
 	CG.emit(p.operand.ir.failure, [ irGoto(p.ir.failure) ])
 end
 

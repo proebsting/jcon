@@ -495,11 +495,82 @@ procedure gen_bc_irMakeList(s, p)
 	return s
 end
 
+# record irOpClosure( lhs op )
+procedure gen_bc_irOpClosure(s, p)
+	local field
+	static optable
+	initial {
+		optable := [ table(), table(), table() ]
+		optable[1]["."] := "oDeref"
+		optable[1]["/"] := "oIsNull"
+		optable[1]["\\"] := "oIsntNull"
+		optable[1]["*"] := "oSize"
+		optable[1]["?"] := "oSelect"
+		optable[1]["+"] := "oNumerate"
+		optable[1]["-"] := "oNegate"
+		optable[1]["~"] := "oComplement"
+		optable[1]["^"] := "oRefresh"
+		optable[2][":="] := "oAssign"
+		optable[2][":=:"] := "oSwap"
+		optable[2]["&"] := "oConjunction"
+		optable[2]["."] := "oField"
+		optable[2]["[]"] := "oIndex"
+		optable[2]["+"] := "oAdd"
+		optable[2]["-"] := "oSub"
+		optable[2]["*"] := "oMul"
+		optable[2]["/"] := "oDiv"
+		optable[2]["%"] := "oMod"
+		optable[2]["^"] := "oPower"
+		optable[2]["**"] := "oIntersect"
+		optable[2]["++"] := "oUnion"
+		optable[2]["--"] := "oDiff"
+		optable[2]["<"] := "oNLess"
+		optable[2]["<="] := "oNLessEq"
+		optable[2]["="] := "oNEqual"
+		optable[2]["~="] := "oNUnequal"
+		optable[2][">="] := "oNGreaterEq"
+		optable[2][">"] := "oNGreater"
+		optable[2]["<<"] := "oLLess"
+		optable[2]["<<="] := "oLLessEq"
+		optable[2]["=="] := "oLEqual"
+		optable[2]["~=="] := "oLUnequal"
+		optable[2][">>="] := "oLGreaterEq"
+		optable[2][">>"] := "oLGreater"
+		optable[2]["==="] := "oVEqual"
+		optable[2]["~==="] := "oVUnequal"
+		optable[2]["|||"] := "oListConcat"
+		optable[2]["||"] := "oConcat"
+		optable[2]["@"] := "oActivate"
+	}
+
+	\optable[p.op.arity][p.op.name] | runerr(1000, p)
+
+	field := create_fieldref(bc_proc_classptr, "instance", "Lrts/iClosure;", "rts/" || optable[p.op.arity][p.op.name])
+	put(s, getstatic(field) )
+	gen_bc_assign_to(s, p.lhs)
+	return s
+end
+
+# record irInstallArgs( closure argList )
+procedure gen_bc_irInstallArgs(s, p)
+	local args, i, method
+
+	gen_bc(s, p.closure)
+	args := ""
+	every i := 1 to *p.argList do {
+		gen_bc(s, p.argList[i])
+		args ||:= "Lrts/vDescriptor;"
+	}
+	put(s, aload_0())
+	method := create_methodref(bc_proc_classptr, "closure", "(" || args || "Lrts/iClosure;)V", "rts/iClosure")
+	put(s, invokevirtual(method))
+	return s
+end
+
 procedure gen_bc_call_op(s, p)
 	local r, l, f, v, n, i, method
 
-	type(p.fn) == "irOperator" |
-		stop("internal error ", image(&file), " ", image(&line))
+	type(p.fn) == "irOperator" | runerr(1000, p.fn)
 
 	gen_bc(s, p.fn)
 	args := ""
@@ -635,6 +706,8 @@ procedure gen_bc(s, p)
 	"irResume" : return gen_bc_irResume(s, p)
 	"irMakeList" : return gen_bc_irMakeList(s, p)
 	"irMakeClosure" : return gen_bc_irMakeClosure(s, p)
+	"irOpClosure" : return gen_bc_irOpClosure(s, p)
+	"irInstallArgs" : return gen_bc_irInstallArgs(s, p)
 	"irOperator" : return gen_bc_irOperator(s, p)
 	"irCreate" : return gen_bc_irCreate(s, p)
 	"irCoRet" : return gen_bc_irCoRet(s, p)

@@ -20,9 +20,13 @@ public int column;
 public String[] names;		// arrays created by locals() for returning
 public vVariable[] variables;	//	contents of active closure.
 
+void init() {
+    PC = 1;
+    returned = false;
+}
 
 public iClosure() {		// constructor
-    PC = 1;
+    init();
 }
 
 public void locals()	{}	// initializes name/variable arrays.
@@ -94,19 +98,23 @@ public abstract void nextval();
 public iClosure copy(int PC) { iRuntime.error(901); return null; }
 
 void closure(vDescriptor[] a, iClosure parent) {
+    init();
     arguments = a;
     this.parent = parent;
 }
 
 void closure(vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosure parent) {
+    init();
     vDescriptor[] args = { arg0, arg1, arg2 };
     closure(args, parent);
 }
 void closure(vDescriptor arg0, vDescriptor arg1, iClosure parent) {
+    init();
     vDescriptor[] args = { arg0, arg1 };
     closure(args, parent);
 }
 void closure(vDescriptor arg0, iClosure parent) {
+    init();
     vDescriptor[] args = { arg0 };
     closure(args, parent);
 }

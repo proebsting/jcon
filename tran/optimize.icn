@@ -115,6 +115,10 @@ procedure def_use(p, this, uses, defs)
 			def_use(p.retValue, defs, uses, defs); }
 	"irMakeList" :	{ def_use(p.lhs, defs, uses, defs);
 			every def_use(!p.valueList, uses, uses, defs); }
+	"irOpClosure":{ def_use(p.lhs, defs, uses, defs);
+			def_use(p.op, uses, uses, defs); }
+	"irInstallArgs":{ def_use(p.closure, defs, uses, defs);
+			every def_use(!p.argList, uses, uses, defs); }
 	"irMakeClosure":{ def_use(p.lhs, defs, uses, defs);
 			def_use(p.fn, uses, uses, defs);
 			every def_use(!p.argList, uses, uses, defs); }
@@ -163,6 +167,13 @@ procedure opt_rewrite(p, rename)
 			every i := 1 to *p.valueList do {
 				p.valueList[i] := opt_rewrite(p.valueList[i],
 							      rename); }
+			}
+	"irOpClosure":{ p.lhs := opt_rewrite(p.lhs, rename);
+			p.op := opt_rewrite(p.op, rename); }
+	"irInstallArgs":{ p.closure := opt_rewrite(p.closure, rename);
+			every i := 1 to *p.argList do {
+				p.argList[i] := opt_rewrite(p.argList[i],
+							    rename); }
 			}
 	"irMakeClosure":{ p.lhs := opt_rewrite(p.lhs, rename);
 			p.fn := opt_rewrite(p.fn, rename);
@@ -248,6 +259,8 @@ procedure gotos(p, wl, seen, t)
 	"irRunTimeError" |
 	"irMakeList" |
 	"irMakeClosure" |
+	"irOpClosure" |
+	"irInstallArgs" |
 	"irOperator" |
 	"irFail" |
 	"irVar" |
