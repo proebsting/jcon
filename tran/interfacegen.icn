@@ -104,9 +104,7 @@ procedure methodrefs()
     m := [
             ["<init>", "()V", &null, "init"],
             ["<init>", "([Lrts/vDescriptor)V", &null, "initV"],
-            ["ArgArray", "(I)[Lrts/vDescriptor;", "rts/iClosure"],
             ["Assign", "(Lrts/vDescriptor;)Lrts/vVariable;", "rts/vDescriptor"],
-            ["Free", "()V", "rts/iClosure"],
             ["Call", "([Lrts/vDescriptor;)Lrts/vDescriptor;",
              "rts/vDescriptor",  "CallV"],
             ["New", "()Lrts/vNull;", "rts/vNull", "New_vNull"],
@@ -120,9 +118,9 @@ procedure methodrefs()
             ["New", "([Lrts/vDescriptor;)Lrts/vList;", "rts/vList",
              "New_vList"],
             ["cofail", "()V", "rts/vCoexp"],
-            ["copy", "(I)Lrts/iClosure;", &null],
+            ["copy", "(I)Lrts/vClosure;", &null],
             ["coret", "(Lrts/vDescriptor;)V", "rts/vCoexp"],
-            ["create", "(Lrts/iClosure;)Lrts/vCoexp;", "rts/iCoexp","a_Create"],
+            ["create", "(Lrts/vClosure;)Lrts/vCoexp;", "rts/iCoexp","a_Create"],
             ["createVars", "()V", &null],
             ["declareGlobal", "(Ljava/lang/String;)V", "rts/iEnv"],
             ["declareInvoke", "(Ljava/lang/String;)V", "rts/iEnv"],
@@ -142,7 +140,6 @@ procedure methodrefs()
             ["resolveProc", "(Ljava/lang/String;I)Lrts/vDescriptor;",
              "rts/iEnv"],
             ["Resume", "()Lrts/vDescriptor;", "rts/vDescriptor"],
-            ["nextval", "()Lrts/vDescriptor;", "rts/iClosure"],
             ["undeclared", "(Ljava/lang/String;)V", "rts/iEnv"]
         ]
     def := [ "name", "type", "class" ]
@@ -207,14 +204,10 @@ procedure fieldrefs()
     local f, def
 
     f := [
-        [ "PC", "I", "rts/iClosure"],
-        [ "arguments", "[Lrts/vDescriptor;", "rts/iClosure"],
+        [ "PC", "I", "rts/vClosure"],
+        [ "arguments", "[Lrts/vDescriptor;", "rts/vClosure"],
         [ "retval", "Lrts/vDescriptor;", "rts/vClosure"],
-        [ "cur_coexp", "Lrts/vCoexp;", "rts/iEnv"],
-        [ "file", "Ljava/lang/String;", "rts/iClosure"],
-        [ "line", "I", "rts/iClosure"],
-        [ "names", "[Ljava/lang/String;", "rts/iClosure"],
-        [ "variables", "[Lrts/vVariable;", "rts/iClosure"]
+        [ "cur_coexp", "Lrts/vCoexp;", "rts/iEnv"]
     ]
     def := [ "name", "type", "class" ]
     every gen_procedure(!f, def, "fieldref")
