@@ -340,8 +340,10 @@ class f$seq extends iClosure {					// seq(i1,i2)
 
 	void nextval() {
 		if (i1 == null) {
-			i1 = (arguments.length >= 1) ? arguments[0].mkInteger(): iNew.Integer(1);
-			i2 = (arguments.length >= 2) ? arguments[1].mkInteger(): iNew.Integer(1);
+			i1 = (arguments.length >= 1) ?
+				arguments[0].mkInteger(): iNew.Integer(1);
+			i2 = (arguments.length >= 2) ?
+				arguments[1].mkInteger(): iNew.Integer(1);
 		}
 		retvalue = i1;
 		i1 = iNew.Integer(i1.value + i2.value);

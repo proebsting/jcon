@@ -165,7 +165,7 @@ vDescriptor Select() {					//  ?L
     if (v.size() == 0) {
 	return null; /*FAIL*/
     }
-    return (vDescriptor) v.elementAt(v.size()-(int)k$random.random(v.size())-1);
+    return (vDescriptor) v.elementAt(v.size()-(int)k$random.choose(v.size())-1);
     							// return as variable
 }
 

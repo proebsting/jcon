@@ -75,7 +75,7 @@ vDescriptor Select() {
     if (values.length == 0) {
 	return null; /*FAIL*/
     }
-    int i = (int) k$random.random(values.length);
+    int i = (int) k$random.choose(values.length);
     return values[i];
 }
 

@@ -220,10 +220,11 @@ class oToBy extends iClosure {				// i1 to i2 by i3
 
 
 class oField extends iRefClosure {			// R . s
+	String s;
 	vDescriptor function(vDescriptor[] args) {
-	    return args[0].field((String)(this.o = args[1].mkString().value));
+	    return args[0].field(s = args[1].mkString().value);
 	}
-	String tfmt() { return "{$1 . " + (String)this.o + "}"; }
+	String tfmt() { return "{$1 . " + s + "}"; }
 }
 
 class oIndex extends iRefClosure {			//  x1[x2]

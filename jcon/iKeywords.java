@@ -255,9 +255,12 @@ class k$trace extends vSimpleVar {		// &trace
 
 
 
+//  this random number generator is compatible with Icon v9
+//  see Icon Analyst 38 (October, 1996) for an extensive analysis
+
 class k$random extends vSimpleVar {		// &random
 
-private static long random;			// current value
+private static long randval;			// current value
 
 private static final long RandA = 1103515245;
 private static final long RandC = 453816694;
@@ -267,21 +270,21 @@ private static final double RanScale = 4.65661286e-10;
 
 	public vVariable Assign(vValue i) {		// assign
 		value = i.mkInteger();
-		random = ((vInteger)value).value;
+		randval = ((vInteger)value).value;
 		return this;
 	}
 
 	public vValue deref() {				// dereference
-		return value = iNew.Integer(random);
+		return value = iNew.Integer(randval);
 	}
 
-	public static double random() {		// return value in [0.0,1.0)
-	    k$random.random = (RandA * k$random.random + RandC) & 0x7fffffff;
-	    return RanScale * k$random.random;
+	public static double nextVal() {		// gen val in [0.0, 1.0)
+		randval = (RandA * randval + RandC) & 0x7fffffff;
+		return RanScale * randval;
 	}
 
-	public static long random(long limit) {	// return value in [0, limit)
-	    return (long) (limit * random());
+	public static long choose(long limit) {		// gen val in [0, limit)
+		return (long) (limit * nextVal());
 	}
 }
 
