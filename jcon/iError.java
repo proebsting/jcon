@@ -24,13 +24,20 @@ void report(iClosure c) {		// print message and abort
     System.out.flush();
     System.err.println();
     System.err.println("Run-time error " + num);
-    System.err.println("File " + c.parent.file + "; Line " + c.parent.line);
+    if (c.parent != null) {
+        System.err.println("File " + c.parent.file + "; Line " + c.parent.line);
+    }
     System.err.println(iRunerr.text(num));
     if (desc != null) {
         System.err.println("offending value: " + desc.report());
     }
     System.err.println("Traceback:");
-    traceback(c, 100);		// limit to 100 levels  //#%#%# 100?
+
+    try {
+	traceback(c, 100);		// limit to 100 levels  //#%#%# 100?
+    } catch (OutOfMemoryError e) {
+	System.err.println("   [out of memory; traceback truncated]");
+    }
     System.exit(1);
 }
 
