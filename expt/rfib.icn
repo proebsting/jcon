@@ -2,6 +2,8 @@
 
 # print the nth Fibonacci number using a slow, recursive formula
 
+# intense use of procedure calls
+
 procedure main(args)
    local n
 

@@ -3,3 +3,16 @@ jcon/demo -- graphics demonstration programs
 This directory contains source code for programs that demonstrate
 Icon's graphics abilities.  Most are from the Icon Program Library.
 See the individual program comments for more details.
+
+binpack.icn	bin packing algorithm animation
+bouncing.icn	bouncing ball animation
+colrbook.icn	color selection book
+concen.icn	concentration (a solitaire version of the card game)
+fetti.icn	confetti maker -- created the margin image of Jcon web pages
+keypunch.icn	keypunch machine simulator
+rects.icn	random rectangles -- produces "modern art"
+sier.icn	Sierpinski's triangle
+tgdemo.icn	turtle graphics demo -- spirals, tilings, and more
+tgrmap.icn	map drawing, based on Census Bureau "TIGER94" data
+   dcmall.llk	   sample data file -- Washington, DC, centered on the mall
+travels.icn	traveling salesman algorithm animation

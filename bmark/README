@@ -19,3 +19,5 @@ To run the benchmarks, just type "make".
 To redisplay the most recent timings, type "make report".
 To rerun the timings, type "make rerun".
 To clean up, type "make clean".
+
+[ To run the translator benchmark, run "make bmark" in the "tran" directory. ]

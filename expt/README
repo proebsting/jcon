@@ -4,4 +4,4 @@ This directory contains programs not suitable for inclusion in the
 automated test suite -- including interactive, irreproducible, and
 system-dependent tests, demonstrations, and experiments.
 
-See the Makefile for more information.
+See the Makefile for a little more information.

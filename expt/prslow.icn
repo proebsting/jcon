@@ -2,6 +2,8 @@
 
 # a simple and slow prime number counter
 
+# makes intense use of arithmetic operators
+
 procedure main(args)
    local i, n, lim
 
