@@ -85,7 +85,7 @@ end
 
 # assign top-of-stack to p
 procedure bc_gen_assign_to(s, p)
-    local assign
+    local assign, call
 
     case type(p) of {
     default: { runerr(500, p) }
@@ -95,8 +95,16 @@ procedure bc_gen_assign_to(s, p)
     "ir_TmpLabel": {
         bc_gen_ir_TmpLabel_assign(s, p)
     }
-    "ir_Var" |
     "ir_Key": {
+        bc_gen(s, p)
+        assign := bc_Assign_methodref(bc_current_classptr)
+        call := bc_CallN_methodref(bc_current_classptr, 0)
+        put(s, j_invokevirtual(call))
+        put(s, j_swap())
+        put(s, j_invokevirtual(assign))
+        put(s, j_pop())
+    }
+    "ir_Var" : {
         bc_gen(s, p)
         assign := bc_Assign_methodref(bc_current_classptr)
         put(s, j_swap())
@@ -188,11 +196,15 @@ end
 
 # record ir_Move( lhs rhs )
 procedure bc_gen_ir_Move(s, p)
-    local deref
+    local deref, call
 
     \p.lhs | return s
 
     bc_gen_rval(s, p.rhs)
+    if type(p.lhs) == ("ir_Key") then {
+        call := bc_CallN_methodref(bc_current_classptr, 0)
+        put(s, j_invokevirtual(call))
+    }
     if type(p.lhs) == ("ir_Key" | "ir_Var") then {
         deref := bc_Deref_methodref(bc_current_classptr)
         put(s, j_invokevirtual(deref))
@@ -203,10 +215,15 @@ end
 
 # record ir_ScanSwap( subject pos )
 procedure bc_gen_ir_ScanSwap(s, p)
-    local subject, pos, Ksubject, Kpos, deref, assign
+    local subject, pos, Ksubject, Kpos, deref, assign, call
+
+    call := bc_CallN_methodref(bc_current_classptr, 0)
 
     Ksubject := bc_gen([], ir_Key("subject"))
+    put(Ksubject, j_invokevirtual(call) )
     Kpos := bc_gen([], ir_Key("pos"))
+    put(Kpos, j_invokevirtual(call) )
+
     subject := bc_gen([], p.subject)
     pos := bc_gen([], p.pos)
 

@@ -43,9 +43,10 @@ end
 
 # record a_Scan( op expr body )       op == "?" or "?:="
 procedure ir_a_Scan(p, st, inuse, target, bounded)
-    local lv, rv
+    local lv, rv, tmp
 
     ir_init(p)
+    tmp := ir_tmp(st, inuse)
     lv := ir_tmp(st, inuse)
     if p.op == "?" then {
         rv := target
@@ -69,9 +70,11 @@ procedure ir_a_Scan(p, st, inuse, target, bounded)
         ])
     suspend ir_Chunk(p.expr.ir.success, [
         ir_Coord(p.coord),
-        ir_Move(p.ir.x.oldsubject, ir_Deref(ir_Key("subject"))),
-        ir_Move(p.ir.x.oldpos, ir_Deref(ir_Key("pos"))),
-        ir_opfn(target, ir_Operator(":?", 2), [ ir_Key("subject"), lv ],
+        ir_Call(tmp, ir_key("pos"), [], &null),
+	ir_Move(p.ir.x.oldpos, ir_Deref(tmp)),
+        ir_Call(tmp, ir_key("subject"), [], &null),
+	ir_Move(p.ir.x.oldsubject, ir_Deref(tmp)),
+        ir_opfn(target, ir_Operator(":?", 2), [ tmp, lv ],
                 p.expr.ir.resume),
         ir_Goto(p.body.ir.start)
         ])
