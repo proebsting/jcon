@@ -1,0 +1,12 @@
+procedure main()
+   local f, i, n
+
+   f := loadfunc("myfunc.zip", "myfunc")
+   write(image(f), " : ", args(f), " args")
+
+   every i := 1 to 30 do {
+       writes(i)
+       every writes(" ", f(i))
+       write()
+   }
+end
