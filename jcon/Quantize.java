@@ -4,6 +4,17 @@
 
 
 
+//  Cold-hearted orb that rules the night
+//  Removes the colours from our sight
+//  Red is gray, and yellow white
+//  But we decide which is right
+//  And which is quantization error
+//
+//	Jef Poskanzer, after Justin Hayward
+//	(from the "ppmtopgm" man page)
+
+
+
 package rts;
 
 import java.awt.*;
