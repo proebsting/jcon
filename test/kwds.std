@@ -33,7 +33,6 @@
    &features: pipes
    &features: system function
    &features: graphics
-       &host: huron.CS.Arizona.EDU
       &input: &input
    &interval: [failed]
       &lcase: &lcase  [size 26]
