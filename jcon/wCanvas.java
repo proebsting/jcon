@@ -12,6 +12,8 @@ final class wCanvas extends Canvas {
     Frame f;			// enclosing Frame object
     Image i;			// backing image for refreshing visable image
 
+    int width, height;		// last known width and height
+
     vList evq;			// event queue
     wTTY tty;			// file I/O stuff
 
@@ -34,12 +36,12 @@ wCanvas(vWindow win, String label, int w, int h) {
     wlist = new Vector();
     wlist.addElement(win);
 
-    this.setSize(w, h);
+    this.setSize(width = w, height = h);
 
     f = new Frame(label);
-    f.setTitle(label);
-    f.add(this, "North");
+    f.add(this, "Center");
     f.pack();
+    f.setResizable(false);
 
     i = this.createImage(w, h);
 
@@ -49,6 +51,17 @@ wCanvas(vWindow win, String label, int w, int h) {
     wEvent.register(this);			// register event handlers
 
     Pointer(win, "arrow");
+}
+
+
+
+//  dispose() -- mark as closed
+
+void dispose() {
+    f.dispose();	// dispose frame
+    i.flush();		// dispose backing image
+    f = null;
+    i = null;
 }
 
 
@@ -96,7 +109,7 @@ void defconfig(vWindow win) {
     if (! have_set_width) {
 	r.width = 80 * win.Fwidth();
     }
-    if (! have_set_width) {
+    if (! have_set_height) {
 	r.height = 12 * win.Leading();
     }
     resize(win, r.width, r.height);
@@ -108,12 +121,13 @@ void defconfig(vWindow win) {
 
 void resize(vWindow win, int w, int h) {
 
-    Dimension d = this.getSize();		// get current size
-    if (d.width == w && d.height == h) {
-	return;					// nothing to do
+    if (width != w || height != h) {
+	boolean b = f.isResizable();
+	f.setResizable(true);
+	this.setSize(width = w, height = h);	// alter size
+	f.pack();				// alter size of enclosing frame
+	f.setResizable(b);
     }
-    this.setSize(w, h);				// alter size
-    f.pack();					// alter size of enclosing frame
 
     int iw = i.getWidth(null);
     int ih = i.getHeight(null);
@@ -137,6 +151,11 @@ void resize(vWindow win, int w, int h) {
     // we can now use it without affecting anything else
 
     // clear the new image, then copy in the old portion
+    if (win == null) {
+	// we don't know which Icon graphics context to use, because the
+	// window was resized via the mouse;  so, just use the firstj
+	win = (vWindow) wlist.elementAt(0);	
+    }
     g.setColor(win.getBg());
     g.fillRect(0, 0, iw, ih);
     g.drawImage(i, 0, 0, null);
@@ -189,6 +208,24 @@ vString Canvas(vWindow win, String s) {
 	return vString.New(visibility);
     }
 }
+
+
+
+//  Resize(win, s) -- set "resize" attribute
+
+vString Resize(vWindow win, String s) {
+    if (s != null) {
+	if (s.equals("off")) {
+	    f.setResizable(false);
+	} else if (s.equals("on")) {
+	    f.setResizable(true);
+	} else {
+	    return null; /*FAIL*/
+	}
+    }
+    return vString.New(f.isResizable() ? "on" : "off");
+}
+
 
 
 //  Label(win, s) -- set "label" attribute

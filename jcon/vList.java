@@ -21,7 +21,6 @@ static int nextsn = 1;				// next serial number
 
 public static vList New(int n, vValue x)	{ return new vList(n, x); }
 public static vList New(vDescriptor[] elements)	{ return new vList(elements); }
-public static vList New(Vector v)		{ return new vList(v); }
 
 private vList(int n, vValue x) {		// new Vlist(n, x)
     super(nextsn++);
@@ -39,10 +38,11 @@ private vList(vDescriptor[] elements) {		// new Vlist(elements[])
     }
 }
 
-private vList(Vector oldv) {			// new Vlist(Vector v)
+private vList(Vector oldv, int newsize) {	// new Vlist(oldvector, newsize)
     super(nextsn++);
-    v = new Vector(oldv.size());
-    for (int i = 0; i < oldv.size(); i++) {
+    v = new Vector(newsize);
+    int n = oldv.size();
+    for (int i = 0; i < n; i++) {
 	vValue vv = ((vDescriptor)(oldv.elementAt(i))).Deref();
 	v.addElement(new vListVar(this, vv));
     }
@@ -120,7 +120,7 @@ public vInteger Size()	{				//  *L
 }
 
 public vValue Copy() {					// copy(L)
-    return vList.New(this.v);
+    return new vList(this.v, this.v.size());
 }
 
 
@@ -226,9 +226,12 @@ public vList ListConcat(vDescriptor v) {		// L1 ||| L2
     if (!(v instanceof vList)) {
 	iRuntime.error(108, v);
     }
-    vList result = new vList(this.v);
-    for (int i = 0; i < ((vList)v).v.size(); i++) {
-	result.v.addElement(((vList)v).v.elementAt(i));
+    Vector v2 = ((vList)v).v;
+    int size2 = v2.size();
+    vList result = new vList(this.v, this.v.size() + size2);
+    for (int i = 0; i < size2; i++) {
+	vValue vv = ((vDescriptor)(v2.elementAt(i))).Deref();
+	result.v.addElement(new vListVar(result, vv));
     }
     return result;
 }

@@ -26,11 +26,12 @@ static {
     // The following attributes are implemented:
 
     newatt("canvas", new aCanvas());	//#%#% only normal and hidden, for now
+    newatt("resize", new aResize());
+    newatt("label", new aLabel());
     newatt("pointer", new aPointer());
     newatt("depth", new aDepth());
     newatt("displayheight", new aDisplayheight());
     newatt("displaywidth", new aDisplaywidth());
-    newatt("label", new aLabel());
 
     newatt("dx", new aDx());
     newatt("dy", new aDy());
@@ -69,7 +70,6 @@ static {
     // The following attributes are incompletely implemented:
     // they are recognized as legal, but changes are ignored
 
-    newatt("resize",	new aDummy(vString.New("on"))); //#%#%# DO THIS ONE
     newatt("display",	new aDummy(vString.New(":0.0")));
     newatt("pos",	new aDummy(vString.New("0,0")));
     newatt("posx",	new aDummy(vString.New("0")));
@@ -174,6 +174,11 @@ final class aDummy extends wAttrib {
 final class aCanvas extends wAttrib {
     vValue get(vWindow win)	{ return win.getCanvas().Canvas(win, null); }
     vValue set(vWindow win)	{ return win.getCanvas().Canvas(win, val); }
+}
+
+final class aResize extends wAttrib {
+    vValue get(vWindow win)	{ return win.getCanvas().Resize(win, null); }
+    vValue set(vWindow win)	{ return win.getCanvas().Resize(win, val); }
 }
 
 final class aLabel extends wAttrib {

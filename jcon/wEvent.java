@@ -7,7 +7,7 @@ import java.awt.event.*;
 
 
 
-final class wEvent implements WindowListener,  //#%#% ComponentListener,
+final class wEvent implements WindowListener, ComponentListener,
     KeyListener, MouseListener, MouseMotionListener
 {
     wCanvas c;		// associated canvas
@@ -49,13 +49,14 @@ static void register(wCanvas cv) {		// register event handlers
     cv.addKeyListener(handler);
     cv.addMouseListener(handler);
     cv.addMouseMotionListener(handler);
+    cv.addComponentListener(handler);
 }
 
 
 
-//  enqueue(a, e) -- enqueue Icon event code a derived from Java event e
+//  enqueue(a, x, y, e) -- enqueue Icon event code a derived from Java event e
 
-void enqueue(vValue a, InputEvent e) {
+void enqueue(vValue a, int x, int y, InputEvent e) {
 
     int msec = 0;			// msec values not known 
     int expo = 0;
@@ -65,40 +66,45 @@ void enqueue(vValue a, InputEvent e) {
     }
 
     int flags = 0;
-    if (e.isControlDown()) {
-	flags += ControlFlag;
-    }
-    if (e.isShiftDown()) {
-	flags += ShiftFlag;
-    }
-    if (!(e instanceof MouseEvent) && (e.isMetaDown() || e.isAltDown())) {
-	flags += MetaFlag;
+    if (e != null) {
+	if (e.isControlDown()) {
+	    flags += ControlFlag;
+	}
+	if (e.isShiftDown()) {
+	    flags += ShiftFlag;
+	}
+	if (!(e instanceof MouseEvent) && (e.isMetaDown() || e.isAltDown())) {
+	    flags += MetaFlag;
+	}
     }
 
     c.enqueue(a,
-	vInteger.New(flags | (xloc & 0xFFFF)),
-	vInteger.New((expo << 28) | (msec << 16) | (yloc & 0xFFFF)));
+	vInteger.New(flags | (x & 0xFFFF)),
+	vInteger.New((expo << 28) | (msec << 16) | (y & 0xFFFF)));
 }
 
 
 
-//  dequeue(list, dx, dy) -- get next event from a window
+//  dequeue(canvas, dx, dy) -- get next event from a window
 
-static vValue dequeue(vList evq, int dx, int dy) {
+static vValue dequeue(wCanvas c, int dx, int dy) {
     vValue a, xv, yv;
 
-    a = evq.Get();
+    a = c.evq.Get();
     while (a == null) {		//#%#% is polling really the way to do this?
 	try {
 	    Thread.sleep(iConfig.PollDelay);
 	} catch (InterruptedException e) {
 	}
-	a = evq.Get();
+	if (c.i == null) {
+	    iRuntime.error(142);	// window was closed while waiting
+	}
+	a = c.evq.Get();
     }
 
     //  get two more values, which must be integers
-    xv = evq.Get();
-    yv = evq.Get();
+    xv = c.evq.Get();
+    yv = c.evq.Get();
     if (xv == null || !(xv instanceof vInteger)
     ||  yv == null || !(yv instanceof vInteger)) {
 	iRuntime.error(143);		// malformed queue
@@ -136,8 +142,26 @@ public void windowDeactivated(WindowEvent e)	{}
 public void windowIconified(WindowEvent e)	{}
 public void windowDeiconified(WindowEvent e)	{}
 
-public void windowClosing(WindowEvent e) {
-    iRuntime.bomb("WINDOW WAS KILLED... EXITING");	//#%#% should be smarter
+public void windowClosing(WindowEvent e) {		// user has closed it
+    vWindow win = (vWindow)c.wlist.elementAt(0);
+    if (win != null) {
+	win.close();					// mark closed to Icon
+    }
+}
+
+
+
+public void componentHidden(ComponentEvent e)	{}
+public void componentMoved(ComponentEvent e)	{}
+public void componentShown(ComponentEvent e)	{}
+
+public void componentResized(ComponentEvent e) {
+    Dimension d = e.getComponent().getSize();			// get new size
+    if (c.width == d.width && c.height == d.height) {
+	return;		// discard program-generated resize
+    }
+    c.resize(null, d.width, d.height);				// resize image
+    enqueue(vInteger.New(Resize), d.width, d.height, null);	// enqueue event
 }
 
 
@@ -151,9 +175,9 @@ public void keyReleased(KeyEvent e)	{
 	c = '\r';				// v9 compatibility
     }
     if (c != KeyEvent.CHAR_UNDEFINED) {
-	enqueue(vString.New((char)c), e);
+	enqueue(vString.New((char)c), xloc, yloc, e);
     } else if (e.isActionKey()) {
-	enqueue(vInteger.New(e.getKeyCode()), e);
+	enqueue(vInteger.New(e.getKeyCode()), xloc, yloc, e);
     }
 }
 
@@ -168,19 +192,19 @@ public void mouseExited(MouseEvent e)	{ xloc = yloc = 0; }
 public void mousePressed(MouseEvent e) {
     xloc = e.getX();
     yloc = e.getY();
-    enqueue(vInteger.New(LPress + mouseMod(e)), e);
+    enqueue(vInteger.New(LPress + mouseMod(e)), xloc, yloc, e);
 }
 
 public void mouseReleased(MouseEvent e) {
     xloc = e.getX();
     yloc = e.getY();
-    enqueue(vInteger.New(LRelease + mouseMod(e)), e);
+    enqueue(vInteger.New(LRelease + mouseMod(e)), xloc, yloc, e);
 }
 
 public void mouseDragged(MouseEvent e) {
     xloc = e.getX();
     yloc = e.getY();
-    enqueue(vInteger.New(LDrag + mouseMod(e)), e);
+    enqueue(vInteger.New(LDrag + mouseMod(e)), xloc, yloc, e);
 }
 
 static int mouseMod(MouseEvent e) {	// adjust event code based on modifiers

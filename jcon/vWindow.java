@@ -89,8 +89,8 @@ int compareTo(vValue v)	{ return title().compareTo(((vWindow)v).title()); }
 
 vWindow(String title, String mode, vDescriptor args[]) throws IOException {
 
-    int w = 480;	// default width	// #%#% should depend on font
-    int h = 156;	// default height	// #%#% should depend on font
+    int w = 480;	// default initial width (later reset depending on font)
+    int h = 156;	// default initial height
 
     c = new wCanvas(this, title, w, h);
     wnum = ++wcount;
@@ -230,10 +230,9 @@ vFile close() {
     if (a == null) {
 	return this;		// already closed
     }
-    c.f.dispose();		// dispose frame
-    c.i.flush();		// dispose backing image
     a.dispose();		// dispose graphics contexts
     b.dispose();
+    c.dispose();		// dispose frame and image
 
     Vector v = c.wlist;		// list of windows sharing the canvas
     for (int j = 0; j < v.size(); j++) {
@@ -333,7 +332,7 @@ vValue Event() {
     if (c.evq.Size().value == 0) {	// if we're going to block
 	iKeyword.output.file().flush();	// flush stdout first
     }
-    vValue e = wEvent.dequeue(c.evq, dx, dy);
+    vValue e = wEvent.dequeue(c, dx, dy);
     setCurrent(this);
     return e;
 }

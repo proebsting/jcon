@@ -15,7 +15,7 @@ final class cColors extends cPalette {
 cColors(int n) {
 
     name = vString.New("c" + n);
-    dim = n - 1;
+    dim = n;
 
     // choose the labeling characters
     switch (n) {
