@@ -19,12 +19,24 @@ hello!
 mom!
 hello
 hello pop
+i=-4: failed
+i=-3: a
+i=-2: b
+i=-1: c
+i=0: failed
+i=1: a
+i=2: b
+i=3: c
+i=4: failed
 1
 2
 3
 4
 5
 6
+1
+5
+9
 10
 30
 50
@@ -40,3 +52,4 @@ hello pop
 repl: xxxxyzxyzxyzxyz
 reverse: xba54321
 char: @ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~
+done

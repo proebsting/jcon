@@ -25,9 +25,12 @@ procedure main()
    every (write|"write")! [ (1|2) ! ["hello", "mom"], "!"]
    write ! message("hello")
    write ! message("hello", " ", "pop")
+   every i := -4 to 4 do
+      write("i=", i, ": ", i("a","b","c") | "failed")
 
    every write(seq() \ 3)
    every write(seq(4) \ 3)
+   every write(seq(,4) \ 3)
    every write(seq(10,20) \ 3)
 
    pairs { 1 to 100, 11 to 99 by 11 }
@@ -39,6 +42,10 @@ procedure main()
    writes("char: ") 
    every writes(char((64 to 126) | 10))
 
+   # the following should all be harmless, at least
+   every collect(&null | (0 to 3), &null | 0 | 1 | 100 | 1000)
+
+   write("done")
    exit()
    write("oops!")
 end
