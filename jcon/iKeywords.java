@@ -46,7 +46,7 @@ void announce() {
     iEnv.declareKey("lcase", new kConstant(lcase));
     iEnv.declareKey("ldrag", new kConstant(vInteger.New(wEvent.LDrag)));
     iEnv.declareKey("letters", new kConstant(lcase.Union(ucase)));
-    iEnv.declareKey("level", new kConstant(null));	// always fails (?) #%#%
+    iEnv.declareKey("level", new k$level());
     iEnv.declareKey("lpress", new kConstant(vInteger.New(wEvent.LPress)));
     iEnv.declareKey("lrelease", new kConstant(vInteger.New(wEvent.LRelease)));
     iEnv.declareKey("main", new k$main());
@@ -249,6 +249,27 @@ class k$source extends vProc0 {					// &source
 	    return iEnv.main;
 	}
 	return (vCoexp) iEnv.cur_coexp.callers.peek();
+    }
+}
+
+class k$level extends vProc0 {					// &level
+    public vDescriptor Call() {
+	StringWriter w = new StringWriter();
+	PrintWriter p = new PrintWriter(w);
+	(new Exception()).printStackTrace(p);
+	LineNumberReader r =
+	    new LineNumberReader(new StringReader(w.toString()));
+	String s;
+	int n = 0;
+	try {
+	    while ((s = r.readLine()) != null) {
+		if (s.indexOf("p_l$") >= 0) {
+		    n++;
+		}
+	    }
+	} catch (IOException e) {
+	}
+	return vInteger.New(n);
     }
 }
 
