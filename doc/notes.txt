@@ -1,21 +1,25 @@
-running the scripts:
+running jcont:
 -- add /cs/jive/<platform>/bin to your Unix search path
 -- <platform> is one of {linux,digital,solaris}
 
 what's implemented:
 -- all datatypes except "file" (but there are no large integers)
--- some keywords (see list)
--- some built-in functions (see list)
+-- many keywords (see list)
+-- many built-in functions (see list)
 -- no "link" declaration support
 -- no "invocable" declaration support
 -- no graphics
 -- no preprocessor
 
 general caveats:
--- scripts etc. are still somewhat primitive
--- separate compilation is not available
 -- no optimization has been done
 -- crude tracing can be enabled by setting &trace
+
+building programs:
+-- jcont is a complex script that only runs on Unix
+-- "jcont foo.zip" doesn't search IPATH (only link'd files are searched for)
+-- link directives must give a simple name (not a path)
+-- compiled files cannot be renamed: the .zip name must match original .icn name
 
 strings and csets:
 -- characters are 16-bit Unicode, but all I/O is to/from 8-bit ASCII files
@@ -35,8 +39,7 @@ error reporting:
 -- long strings are not elided, list contents are omitted, etc.
 
 miscellaneous:
--- system(s) connects the new process's stdout/stderr to
-   nonexistent files, and stdin will not be written to
+-- commands run by system(s) do not inherit stdin/stdout/error 
 -- random selection from sets and tables differs from v9
 -- read() and write() don't accept file arguments
 -- display() ignores its arguments (and displays everything)

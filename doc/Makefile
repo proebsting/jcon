@@ -4,8 +4,8 @@ OUT = jcon.txt
 
 DASHES = -------------------------------------
 
-$(OUT):	sep.t hdr.t jcont.t jconx.t kwds.t funcs.t notes.txt
-	cat hdr.t sep.t jcont.t sep.t jconx.t sep.t kwds.t sep.t \
+$(OUT):	sep.t hdr.t jcont.t kwds.t funcs.t notes.txt
+	cat hdr.t sep.t jcont.t sep.t kwds.t sep.t \
 	    funcs.t sep.t notes.txt >$(OUT)
 sep.t:
 	echo ""						> sep.t
@@ -18,9 +18,6 @@ hdr.t:	FORCE
 
 jcont.t:  ../test/jcont shdoc.sed
 	sed -f shdoc.sed ../test/jcont			> jcont.t
-
-jconx.t:  ../test/jconx shdoc.sed
-	sed -f shdoc.sed ../test/jconx			> jconx.t
 
 kwds.t:	  ../rts/iKeywords.java kwds.sed
 	echo "Keywords implemented:"			> kwds.t
