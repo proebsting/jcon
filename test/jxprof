@@ -1,0 +1,12 @@
+#!/bin/ksh -p
+#
+#  jxprof filename [args] -- execute Jcon program with profiling
+#
+#  creates filename.prof 
+
+if [ $# = 0 ]; then
+   echo "usage: $0 file [args]" 1>&2
+   exit 1
+fi
+
+JXOPTS="-prof:$1.prof -nojit -noasyncgc" "$@"
