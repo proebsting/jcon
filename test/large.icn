@@ -1,0 +1,71 @@
+#SRC: JCON
+
+# test large integers
+
+procedure main()
+   boundaries()
+   interesting()
+end
+
+
+procedure boundaries()
+   local minint, maxint
+   write()
+   write("minint = ", minint := -(2^64))
+   write("maxint = ", maxint := 2^64 - 1)
+   write("-minint = ", -minint)
+   write("abs(min) = ", abs(minint))
+   write("minint * -1 = ", minint * -1)
+   write("minint / -1 = ", minint / -1)
+   write("(2^32)^2 = ", (2 ^ 32) ^ 2)
+   return
+end
+
+
+procedure interesting()
+   write(); every fact(1 to 55 by 11)
+   write(); every fib(35 to 341 by 34)
+   write(); every mersenne(61 | 89 | 107 | 127)
+   write(); every perfect(31 | 61 | 89 | 107)
+   write(); every power(11213, 2 to 16)
+   return
+end
+
+
+
+procedure fact(n)
+   local f
+   f := 1
+   every f *:= 2 to n
+   write(n, "! = ", f)
+   return
+end
+
+procedure fib(n)
+   local a, b, i, t
+   a := b := t := 1
+   every i := 3 to n do {
+      t := a + b
+      a := b
+      b := t
+      }
+   write("F(", n, ") = ", t)
+   return
+end
+
+procedure power(b, n)
+   write(b, " ^ ", n, " = ", b ^ n)
+   return
+end
+
+procedure mersenne(m)
+   write("M(", m, ") = ", 2 ^ m - 1)
+   return
+end
+
+procedure perfect(m)
+   write("P(", m, ") = ", (2 ^ m - 1) * (2 ^ (m - 1)))
+   return
+end
+
+
