@@ -103,6 +103,7 @@ procedure methodrefs()
 
     m := [
             ["<init>", "()V", &null, "init"],
+            ["<init>", "([Lrts/vDescriptor)V", &null, "initV"],
             ["ArgArray", "(I)[Lrts/vDescriptor;", "rts/iClosure"],
             ["Assign", "(Lrts/vDescriptor;)Lrts/vVariable;", "rts/vDescriptor"],
             ["Free", "()V", "rts/iClosure"],
@@ -158,6 +159,18 @@ procedure methodrefs()
     write("\tdefault : runerr(500, N)")
     write("\t}")
     write("end")
+
+    write("procedure bc_initN_methodref(c, classname, N)")
+    write("\treturn case N of {")
+    args := ""
+    every i := 0 to 9 do {
+	write("\t", i, ": j_create_methodref(c, \"<init>\", \"(", args,
+	      ")V\", classname)")
+	args ||:= "Lrts/vDescriptor;"
+    }
+    write("\tdefault : runerr(500, N)")
+    write("\t}")
+    write("end")
 end
 
 procedure methods()
@@ -175,6 +188,19 @@ procedure methods()
 	  "\"([Lrts/vDescriptor;)Lrts/vDescriptor;\")")
     write("\t}")
     write("end")
+
+    write("procedure bc_initN_method(c, N)")
+    write("\treturn case N of {")
+    args := ""
+    every i := 0 to 9 do {
+	write("\t", i, ": j_create_method(c, 0, \"<init>\", \"(", args,
+	      ")V\")")
+	args ||:= "Lrts/vDescriptor;"
+    }
+    write("\tdefault : j_create_method(c, 0, \"<init>\", ",
+	  "\"([Lrts/vDescriptor;)V;\")")
+    write("\t}")
+    write("end")
 end
 
 procedure fieldrefs()
@@ -183,6 +209,7 @@ procedure fieldrefs()
     f := [
         [ "PC", "I", "rts/iClosure"],
         [ "arguments", "[Lrts/vDescriptor;", "rts/iClosure"],
+        [ "retval", "Lrts/vDescriptor;", "rts/vClosure"],
         [ "cur_coexp", "Lrts/vCoexp;", "rts/iEnv"],
         [ "file", "Ljava/lang/String;", "rts/iClosure"],
         [ "line", "I", "rts/iClosure"],

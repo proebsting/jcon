@@ -658,23 +658,12 @@ end
 
 procedure ir_value0(p)
     local x
-    static functions
-    initial {
-        functions := key_functions()
-    }
-
 
     case type(p) of {
     "a_Intlit" : return ir_IntLit(p.int)
     "a_Reallit" : return ir_RealLit(p.real)
     "a_Stringlit": return ir_StrLit(p.str)
     "a_Csetlit" : return ir_CsetLit(p.str)
-    "a_Key" : {
-        if not member(functions, p.id) then {
-            return ir_key0(p)
-        }
-    }
-    "a_KeyX" : return ir_key0(p)
     "a_Ident" : return ir_ident(p.id)
     }
 end
@@ -1267,55 +1256,46 @@ end
 
 procedure ir_key0(p)
     case (p.id) of {
-    "fail" : fail
-    "line" : { return ir_IntLit(p.coord.line) }
-    "file" : { return ir_StrLit(p.coord.file) }
     default: { return ir_key(p.id) }
-    }
-end
-
-record a_KeyX(id, coord, ir)
-procedure ir_a_KeyX(p, st, inuse, target, bounded)
-    local k
-    
-    if type(\target) ~== "ir_Tmp" then {
-        # #%#%# prevents nasty interaction with targeting.
-        # %#%#% probably a symptom of bad design....
-        target := &null
-    }
-
-    ir_init(p)
-
-    case (p.id) of {
-    "fail" : {
-        suspend ir_Chunk(p.ir.start, [ ir_Goto(p.ir.failure) ])
-        /bounded & suspend ir_Chunk(p.ir.resume, [ ir_RunTimeError() ])
-        }
-    default: {
-        k := ir_key0(p)
-        suspend ir_Chunk(p.ir.start, [
-            ir_Move(target, k),
-            ir_Goto(p.ir.success)
-            ])
-        /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.ir.failure) ])
-        }
     }
 end
 
 # record a_Key( id )
 procedure ir_a_Key(p, st, inuse, target, bounded)
-    local t
-    static functions
-    initial {
-        functions := key_functions()
+    local closure
+
+    ir_init(p)
+
+    case (p.id) of {
+    "line" : {
+	suspend ir_Chunk(p.ir.start, [
+	    ir_Move(target, ir_IntLit(p.coord.line) ),
+	    ir_Goto(p.ir.success)
+	    ])
+	suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.ir.failure) ])
     }
-    if member(functions, p.id) then {
-        t := a_Call(a_KeyX(p.id), a_Arglist([]))
-        suspend ir(t, st, inuse, target, bounded)
-        p.ir := t.ir
-        fail
+    "file" : {
+	suspend ir_Chunk(p.ir.start, [
+	    ir_Move(target, ir_StrLit(p.coord.file) ),
+	    ir_Goto(p.ir.success)
+	    ])
+	suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.ir.failure) ])
     }
-    suspend ir_a_KeyX(p, st, inuse, target, bounded)
+    default : {
+        closure := ir_tmp(st, inuse)
+        suspend ir_Chunk(p.ir.start, [
+            ir_Coord(p.coord),
+            ir_Call(closure, ir_key(p.id), [], p.ir.failure),
+            ir_Move(target, closure),
+            ir_Goto(p.ir.success)
+	    ])
+        suspend ir_Chunk(p.ir.resume, [
+            ir_Coord(p.coord),
+            ir_ResumeValue(closure, p.ir.failure, target),
+            ir_Goto(p.ir.success)
+            ])
+    }
+    }
 end
 
 # record a_Arglist( exprList )
@@ -1369,7 +1349,6 @@ end
 
 procedure ir(p, st, inuse, target, bounded)
     case type(p) of {
-    "a_KeyX" : suspend ir_a_KeyX(p, st, inuse, target, bounded)
     "a_NoOp" : suspend ir_a_NoOp(p, st, inuse, target, bounded)
     "a_Field" : suspend ir_a_Field(p, st, inuse, target, bounded)
     "a_Call" : suspend ir_a_Call(p, st, inuse, target, bounded)

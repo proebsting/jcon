@@ -21,8 +21,8 @@ procedure main(L)
     put(init.attributes, initcode)
     put(initcode.code, j_aload_0())
     constructor := j_create_methodref(c, "<init>", "()V", "java/lang/Object")
-    put(initcode.code, j_invokenonvirtual(constructor))
-    put(initcode.code, j_vreturn())
+    put(initcode.code, j_invokespecial(constructor))
+    put(initcode.code, j_return())
 
     m := j_create_method(c, 9, "main", "([Ljava/lang/String;)V")
     mcode := j_create_code(c, 10, 10)
@@ -44,7 +44,7 @@ procedure main(L)
          "start", "([Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;)V",
          "rts/iInterface")
     put(mcode.code, j_invokestatic(start) )
-    put(mcode.code, j_vreturn() )
+    put(mcode.code, j_return() )
 
     j_writer_j_ClassFile(f, c)
 end

@@ -23,7 +23,6 @@ LEXSRC = \
 
 PARSESRC = \
 	ast.icn \
-	key.icn \
 	parse.icn
 
 IRGENSRC = \

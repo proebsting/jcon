@@ -229,7 +229,7 @@ record j_lreturn()
 record j_freturn()
 record j_dreturn()
 record j_areturn()
-record j_vreturn()
+record j_return()
 record j_breakpoint()
 record j_tableswitch(pad, default_offset, low, high, offsets)
 record j_lookupswitch(pad, default_offset, npairs, offsets)
@@ -238,7 +238,7 @@ record j_getfield(index)
 record j_putstatic(index)
 record j_getstatic(index)
 record j_invokevirtual(index)
-record j_invokenonvirtual(index)
+record j_invokespecial(index)
 record j_invokestatic(index)
 record j_invokeinterface(index)
 record j_athrow()
@@ -702,7 +702,7 @@ procedure j_writer_opcodes(writer, p)
         opcode_table["j_freturn"] := 174
         opcode_table["j_dreturn"] := 175
         opcode_table["j_areturn"] := 176
-        opcode_table["j_vreturn"] := 177
+        opcode_table["j_return"] := 177
         opcode_table["j_breakpoint"] := 202
         opcode_table["j_tableswitch"] := 170
         opcode_table["j_lookupswitch"] := 171
@@ -711,7 +711,7 @@ procedure j_writer_opcodes(writer, p)
         opcode_table["j_putstatic"] := 179
         opcode_table["j_getstatic"] := 178
         opcode_table["j_invokevirtual"] := 182
-        opcode_table["j_invokenonvirtual"] := 183
+        opcode_table["j_invokespecial"] := 183
         opcode_table["j_invokestatic"] := 184
         opcode_table["j_invokeinterface"] := 185
         opcode_table["j_athrow"] := 191
@@ -766,7 +766,7 @@ procedure j_writer_opcodes(writer, p)
             "j_fcmpl", "j_fcmpg",
             "j_dcmpl", "j_dcmpg",
             "j_ireturn", "j_lreturn", "j_freturn", "j_dreturn", "j_areturn",
-            "j_vreturn",
+            "j_return",
             "j_breakpoint",
             "j_athrow",
             "j_monitorenter",
@@ -839,7 +839,7 @@ procedure j_writer_opcodes(writer, p)
     "j_invokevirtual": {
         j_writer_u2(writer, p.index)
     }
-    "j_invokenonvirtual": {
+    "j_invokespecial": {
         j_writer_u2(writer, p.index)
     }
     "j_invokestatic": {
@@ -1037,7 +1037,7 @@ procedure j_offset_opcodes(p, offset, locations)
         offset_table["j_putstatic"] := 2
         offset_table["j_getstatic"] := 2
         offset_table["j_invokevirtual"] := 2
-        offset_table["j_invokenonvirtual"] := 2
+        offset_table["j_invokespecial"] := 2
         offset_table["j_invokestatic"] := 2
         offset_table["j_invokeinterface"] := 2
         offset_table["j_sipush"] := 2
@@ -1235,7 +1235,7 @@ procedure j_offset_opcodes(p, offset, locations)
         offset_table["j_freturn"] := 0
         offset_table["j_dreturn"] := 0
         offset_table["j_areturn"] := 0
-        offset_table["j_vreturn"] := 0
+        offset_table["j_return"] := 0
         offset_table["j_breakpoint"] := 0
         offset_table["j_athrow"] := 0
         offset_table["j_new"] := 2
