@@ -2,13 +2,19 @@ global optimize_flag
 global ref_count
 
 procedure optimize(t, start)
-	local new
+	local new, i
 
 	new := t
 	if \optimize_flag then {
 		new := goto_elimination(t, start)
 		new := copy_propagation(new, start)
 		new := coord_optimize(new, start)
+	}
+	if i := new[start] &
+	   type(i[1]) == "irEnterInit" &
+	   type(i[2]) == "irGoto" &
+	   i[1].startlabel === i[2].location then {
+		new[start] := [ i[2] ]
 	}
 	return new
 end
