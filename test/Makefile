@@ -6,22 +6,9 @@
 #
 #  to compile a file:		./jcont filename
 #  to execute:			./filename [args]
-#
-#  to run benchmarks of tgrlink and geddump
-#				compile them with icont or jcont
-#				make bmark
-
 
 run:
 	./runtest
-
-
-bmark:	tgrlink geddump
-	JXOPTS='-noverify' time ./tgrlink tgrlink.bmk >/dev/null
-	JXOPTS='-noverify -mx50m -ms50m' time ./geddump geddump.bmk >/dev/null
-
-
-#  "make clean" removes most generated files
 
 clean:
 	rm -rf tmp.* *.out *.err *.sum

@@ -82,13 +82,9 @@ tracing.icn  :   51  | | divide failed
 tracing.icn  :   47  | divall returned &null
 tracing.icn  :   12  | varargs()
 tracing.icn  :   60  | | vproc()
-tracing.icn  :   72  | | vproc suspended &null
-tracing.icn  :   60  | | vproc resumed
-                     | | vproc failed
+tracing.icn  :   72  | | vproc returned &null
 tracing.icn  :   61  | | vproc(1)
-tracing.icn  :   72  | | vproc suspended 1
-tracing.icn  :   61  | | vproc resumed
-                     | | vproc failed
+tracing.icn  :   72  | | vproc returned 1
 tracing.icn  :   62  | | vproc(1,2)
 tracing.icn  :   73  | | vproc suspended (variable = 2)
 tracing.icn  :   62  | | vproc resumed
@@ -126,12 +122,8 @@ tracing.icn  :   73  | | vproc suspended (variable = 2)
 tracing.icn  :   67  | | vproc resumed
 tracing.icn  :   74  | | vproc failed
 tracing.icn  :   67  | | vproc(1)
-tracing.icn  :   72  | | vproc suspended 1
-tracing.icn  :   67  | | vproc resumed
-                     | | vproc failed
+tracing.icn  :   72  | | vproc returned 1
 tracing.icn  :   67  | | vproc()
-tracing.icn  :   72  | | vproc suspended &null
-tracing.icn  :   67  | | vproc resumed
-                     | | vproc failed
+tracing.icn  :   72  | | vproc returned &null
 tracing.icn  :   68  | varargs returned &null
 tracing.icn  :   13  main failed
