@@ -654,7 +654,7 @@ end
 
 # record irEnterInit( startlabel )
 procedure gen_bc_irEnterInit(s, p)
-	local r, l, target, prologue, initialized
+	local target, initialized
 
 	initialized := create_fieldref(bc_proc_classptr, "initialized", "Z", bc_proc_classname)
 	put(s, getstatic(initialized))
@@ -802,7 +802,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	bc_params_set := set(params)
 	bc_statics_set := set(statics)
 
-	bc_create_nextval(c, code.ir.start)
+	bc_create_nextval(c, code.ir.start, params, accumulate)
 
 	init := create_method(c, 1, "<init>", "()V")
 	initcode := create_code(c, 10, 10)
@@ -871,7 +871,6 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 		sort(bc_var_set ++ set(params) ++ set(locals) ++ set(statics))
 
 	bc_create_locals(c, undeclared, set(statics), sortedvars)
-	bc_create_prologue(c, params, accumulate)
 	bc_create_createvars(c, params, locals, undeclared)
 	bc_create_copy(c, params, locals, undeclared)
 
@@ -909,7 +908,7 @@ procedure bc_register0(op)
 	}
 end
 
-procedure bc_create_nextval(c, start)
+procedure bc_create_nextval(c, start, params, accumulate)
 	local PC, nextval, nextvalcode, k, lab, switch, insns, deflab
 	local runtimeerror, r
 	local a, s, tmplab, prologue, var_load_label
@@ -949,9 +948,10 @@ procedure bc_create_nextval(c, start)
 		put(nextvalcode.code, if_icmpne(tmplab))
 	}
 
-	prologue := create_methodref(bc_proc_classptr, "prologue", "()V", bc_proc_classname)
-	put(s, aload_0())
-	put(s, invokevirtual(prologue))
+	bc_emit_prologue(s, c, params, accumulate)
+	# prologue := create_methodref(bc_proc_classptr, "prologue", "()V", bc_proc_classname)
+	# put(s, aload_0())
+	# put(s, invokevirtual(prologue))
 
 	every k := key(bc_tmp_table) do {
 		put(s, aconst_null())
@@ -1141,49 +1141,45 @@ procedure bc_create_locals(c, undeclared, statics, sortedvars)
 	put(localscode.code, vreturn() )
 end
 
-procedure bc_create_prologue(c, params, accumulate)
-	local prologue, prologuecode, createvars, arguments, marshall
+procedure bc_emit_prologue(s, c, params, accumulate)
+	local createvars, arguments, marshall
 	local deref, assign, i, k, field
 
-	prologue := create_method(c, 0, "prologue", "()V")
-	prologuecode := create_code(c, 10, 10)
-	put(prologue.attributes, prologuecode)
-
 	createvars := create_methodref(c, "createVars", "()V", bc_proc_classname)
-	put(prologuecode.code, aload_0() )
-	put(prologuecode.code, invokevirtual(createvars) )
+	put(s, aload_0() )
+	put(s, invokevirtual(createvars) )
 	arguments := create_fieldref(c, "arguments", "[Lrts/vDescriptor;", "rts/iClosure")
 	if *params > 0 then {
 		marshall := create_methodref(c, "marshall", "([Lrts/vDescriptor;IZ)[Lrts/vDescriptor;", "rts/iInterface")
-		put(prologuecode.code, aload_0() )
+		put(s, aload_0() )
 
-		put(prologuecode.code, aload_0() )
-		put(prologuecode.code, getfield(arguments) )
-		put(prologuecode.code, ipush(*params) )
+		put(s, aload_0() )
+		put(s, getfield(arguments) )
+		put(s, ipush(*params) )
 		if \accumulate then {
-			put(prologuecode.code, iconst_1() )
+			put(s, iconst_1() )
 		} else {
-			put(prologuecode.code, iconst_0() )
+			put(s, iconst_0() )
 		}
-		put(prologuecode.code, invokestatic(marshall) )
-		put(prologuecode.code, putfield(arguments) )
+		put(s, invokestatic(marshall) )
+		put(s, putfield(arguments) )
 	}
 	deref := deref_methodref(c)
 	assign := assign_methodref(c)
 	every i := 1 to *params do {
 		k := params[i]
 		field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
-		put(prologuecode.code, aload_0() )
-		put(prologuecode.code, getfield(field) )
-		put(prologuecode.code, aload_0() )
-		put(prologuecode.code, getfield(arguments) )
-		put(prologuecode.code, ipush(i-1) )
-		put(prologuecode.code, aaload() )
-		put(prologuecode.code, invokevirtual(deref) )
-		put(prologuecode.code, invokevirtual(assign) )
-		put(prologuecode.code, Pop())
+		put(s, aload_0() )
+		put(s, getfield(field) )
+		put(s, aload_0() )
+		put(s, getfield(arguments) )
+		put(s, ipush(i-1) )
+		put(s, aaload() )
+		put(s, invokevirtual(deref) )
+		put(s, invokevirtual(assign) )
+		put(s, Pop())
 	}
-	put(prologuecode.code, vreturn() )
+	# put(s, vreturn() )
 end
 
 procedure bc_create_createvars(c, params, locals, undeclared)
