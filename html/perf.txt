@@ -1,5 +1,3 @@
-<H3>Performance</H3>
-
 <P> Programs built by Jcon typically run somewhat slower than when
 built and run by Version 9 of Icon.
 We use the ratio of execution times as our basic benchmark measurement.

@@ -97,7 +97,7 @@ is more convenient than using a fixed argument list.)
 not dereferenced.
 In the Jcon implementation, this is the responsibility of the called procedure.
 Often this is done by using the vDescriptor arguments
-in operations that implicitly derefence them.
+in operations that implicitly dereference them.
 
 <P> The <CODE>Call</CODE> method returns a Java null to fail or
 a vDescriptor, usually a vValue, to succeed.
@@ -157,12 +157,10 @@ The vClosure object encapsulates two key items:
 <LI> a <CODE>Resume()</CODE> method for generating subsequent values
 </UL>
 
-<P> In general, any will procedure that suspends will require
-a new subclass of vClosure to implement its particular
+<P> In general, any procedure that suspends requires
+its own subclass of vClosure to implement its particular
 <CODE>Resume()</CODE> method.
 Java's "inner classes" are useful for this.
-The usual approach is to create a new vClosure instance,
-initialize its <CODE>retval</CODE>, and return it.
 
 <P> The <CODE>Resume()</CODE> method takes no arguments and
 returns a vDescriptor.
@@ -178,12 +176,12 @@ procedure is resumed.
 </UL>
 It is not possible for <CODE>Resume()</CODE> to "return" in the
 Icon sense.
-It must suspend a value and then fail if later resumed.
+It must instead suspend a value and then fail upon later resumption.
 
 <P> Here is an example of a procedure that generates the
 factors of an integer.
 To avoid a special case, even the first value is produced
-by the <CODE>Resume()</CODE> method.
+by calling the <CODE>Resume()</CODE> method.
 
 <BLOCKQUOTE><PRE>
 import rts.*;

@@ -1,5 +1,5 @@
 <P> Version 1.0 of Jcon implemented the classic core of the
-Icon programming language and some basic graphics facilites.
+Icon programming language and some basic graphics facilities.
 Version 2.0 adds large integers, dynamic loading, and graphics.
 
 <P> Version 2.0 also incorporates radical changes in the implementation

@@ -26,30 +26,27 @@ substituting for <CODE>.u1/.u2</CODE> file pairs.
 
 <H3>Implementation</H3>
 
-<P> The Jcon translator is a 9500-line Icon program that produces Java
+<P> The Jcon translator is a 10,000-line Icon program that produces Java
 class files.
 (It can also produce <CODE>.u1/.u2</CODE> files,
 but it provides no way to link them.)
-The Icon translator, written in C, is comparable in size.
+This is about the same size as the translator in Version 9 of Icon,
+which is written in C.
 
-<P> The Jcon runtime system is written in 17000 lines of Java code.
-$$$$$$$$$ CONTRAST v9, need to re-measure with graphics included $$$$$$$$$$$$
+<P> The Jcon runtime system comprises 18,000 lines of Java code.
+The corresponding portion of Version 9, counting only the Unix code,
+is over 50,000 lines of C code.
 
 <P> The <CODE>jcont</CODE> script that directs compilation and linking
 is a 400-line Korn shell script.
-While this has worked well for Unix, it is the single largest impediment
+While this works well for Unix, it is the single largest impediment
 to a non-Unix port.
+We believe that a replacement program would be the easiest route
+to a Windows or Macintosh port.
 
 <P> Jcon includes an automated test suite containing 8000 lines of
 Icon programs.
 These are drawn from the standard Icon test suite,
-other existing Icon programs, and 2300 (????--CHECK--????) lines of new tests.
-
-<PRE>
-what's implemented:
--- all datatypes including large integers
--- all keywords, although resource keywords produce zeroes
--- preprocessing
--- graphics
--- most functions; missing chdir(), getch()/getche()/kbhit()
-</PRE>
+other existing Icon programs, and 3000 lines of new tests.
+Jcon also includes additional manually-run graphics tests and
+a small collection of graphics demos.

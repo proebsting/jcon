@@ -1,18 +1,25 @@
 <HTML><HEAD>
-<TITLE>Jcon: A Java-Based Implementation of Icon</TITLE>
-<LINK REL=STYLESHEET TYPE="text/css" HREF=jstyle.css>
+    <TITLE>Jcon: A Java-Based Implementation of Icon</TITLE>
+    <LINK REL=STYLESHEET TYPE="text/css" HREF=jstyle.css>
 </HEAD><BODY>
+
 <H1>Jcon: A Java-Based Implementation of Icon</H1>
 
-<P>Gregg M. Townsend, The University of Arizona
-<BR>
-Todd A. Proebsting, Microsoft Research
+<CENTER>
+    <TABLE><TR><TD>
+	<IMG SRC=bluelogo.gif WIDTH=100 HEIGHT=100 ALT="Icon logo">
+    </TD><TD>
 
-<P> Icon Project Document 999  (IPD999)
-<BR> Department of Computer Science
-<BR> The University of Arizona
-<BR> August 33, 1998
-<BR> http://www.cs.arizona.edu/icon/docs/ipd999.htm 
+	<P>  Gregg M. Townsend, The University of Arizona
+	<BR> Todd A. Proebsting, Microsoft Research
+
+	<P>  Icon Project Document 286  (IPD286)
+	<BR> Department of Computer Science
+	<BR> The University of Arizona
+	<BR> August 33, 1998
+	<BR> http://www.cs.arizona.edu/icon/docs/ipd286.htm 
+    </TD></TR></TABLE>
+</CENTER>
 
 <P><HR>
 
