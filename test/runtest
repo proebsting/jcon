@@ -63,7 +63,7 @@ for FNAME; do
     #	it is newer than its own source code
     F=`find . -name $BASE -type f -perm -0100 \
 	-newer $BASE.icn -newer $JCONT -newer ../bin/jtran`
-    if [ "$F" != "" ] && grep -q '^# built by.*jcon' $F; then
+    if [ "$F" != "" ] && grep '^# built by.*jcon' $F >/dev/null; then
 	:
     else
 
