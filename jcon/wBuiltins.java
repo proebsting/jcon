@@ -1,4 +1,4 @@
-//  wBuiltins.java -- built-in graphics functions
+//  wBuiltins.java -- announce built-in graphics functions
 
 package rts;
 
@@ -11,8 +11,6 @@ public final class wBuiltins extends iFile {
 
 static void announce() {
 
-    // graphics functions that are at least partially implemented:
-
     iEnv.declareBuiltin("Active", 0, wFunctions.self);
     iEnv.declareBuiltin("Alert", 1, wFunctions.self);
     iEnv.declareBuiltin("Bg", 2, wFunctions.self);
@@ -21,9 +19,10 @@ static void announce() {
     iEnv.declareBuiltin("Color", -1, wFunctions.self);		// always fails
     iEnv.declareBuiltin("ColorValue", 2, wFunctions.self);
     iEnv.declareBuiltin("CopyArea", 8, wFunctions.self);
+    //			"Couple"				// not possible?
     iEnv.declareBuiltin("DrawArc", -1, wFunctions.self);
     iEnv.declareBuiltin("DrawCircle", -1, wFunctions.self);
-    iEnv.declareBuiltin("DrawCurve", -1, wFunctions.self);	// just DrawLine
+    iEnv.declareBuiltin("DrawCurve", -1, wFunctions.self);
     iEnv.declareBuiltin("DrawImage", 4, wFunctions.self);
     iEnv.declareBuiltin("DrawLine", -1, wFunctions.self);
     iEnv.declareBuiltin("DrawPoint", -1, wFunctions.self);
@@ -57,11 +56,8 @@ static void announce() {
     iEnv.declareBuiltin("WAttrib", -1, wFunctions.self);
     iEnv.declareBuiltin("WDefault", 3, wFunctions.self);	// always fails
     iEnv.declareBuiltin("WFlush", 1, wFunctions.self);
+    //			"WriteImage"				// not done
     iEnv.declareBuiltin("WSync", 1, wFunctions.self);
-
-    //#%#% Not implemented:
-    // iEnv.declareBuiltin("WriteImage", 6);
-    // iEnv.declareBuiltin("Couple", 2);	// may not be possible
 }
 
 

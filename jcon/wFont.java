@@ -14,7 +14,6 @@ final class wFont extends Font {
 
 static double szmul =		// pixel-to-pointsize multiplier
     72.0 / Toolkit.getDefaultToolkit().getScreenResolution();
-//#%#%#%  static { System.err.println("szmul = " + szmul); }
 
 
 

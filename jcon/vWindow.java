@@ -138,9 +138,6 @@ vWindow(String title, String mode, vDescriptor args[]) throws IOException {
     this.flush();
 
     setCurrent(this);		// remember as "current" window
-
-    //#%#% might want to consider spawning a background thread
-    //#%#% that would sync the canvas (handle exposure events) periodically
 }
 
 
@@ -148,7 +145,6 @@ vWindow(String title, String mode, vDescriptor args[]) throws IOException {
 //  new vWindow(w) -- for implementing WClone()
 
 vWindow(vWindow w) {
-    //#%#% really clone it, to ensure it gets all attribs??
     c = w.c;
     wnum = w.wnum;
     c.wlist.addElement(this);
@@ -345,7 +341,7 @@ vValue Event() {
 	this.flush();				// flush & sync window
    	e = wEvent.dequeue(c, dx, dy);		// try again
     }
-    while (e == null) {		//#%#% is polling really the way to do this?
+    while (e == null) {	
 	try {
 	    Thread.sleep(iConfig.PollDelay);
 	} catch (InterruptedException x) {
@@ -627,6 +623,81 @@ void DrawLine(wCoords c) {
     b.drawPolyline(c.xPoints, c.yPoints, c.nPoints);
     a.drawPolyline(c.xPoints, c.yPoints, c.nPoints);
 }
+
+
+
+//  DrawCurve - draw a smooth curve through a set of points
+//
+//  The first and last points of the argument array are not drawn, but
+//  they establish the curvature at the second and penultimate points.
+//
+//  The algorithm is from
+//	Barry, Phillip J., and Goldman, Ronald N. (1988).
+//	A Recursive Evaluation Algorithm for a class of Catmull-Rom Splines.
+//	Computer Graphics 22(4), 199-204.
+
+void DrawCurve(int xpts[], int ypts[]) {
+    int i, j, nsteps;
+    double ax, ay, bx, by, stepsize, stepsize2, stepsize3;
+    double x, dx, d2x, d3x, y, dy, d2y, d3y;
+
+    for (i = 3; i < xpts.length; i++) {		// for each segment
+	
+	//  build the coefficients ax, ay, bx and by, using:
+	//                              _              _   _    _
+	//    i                 i    1 | -1   3  -3   1 | | Pi-3 |
+	//   Q (t) = T * M   * G   = - |  2  -5   4  -1 | | Pi-2 |
+	//                CR    Bs   2 | -1   0   1   0 | | Pi-1 |
+	//                             |_ 0   2   0   0_| |_Pi  _|
+
+	ax = xpts[i] - 3 * xpts[i-1] + 3 * xpts[i-2] - xpts[i-3];
+	ay = ypts[i] - 3 * ypts[i-1] + 3 * ypts[i-2] - ypts[i-3];
+	bx = 2 * xpts[i-3] - 5 * xpts[i-2] + 4 * xpts[i-1] - xpts[i];
+	by = 2 * ypts[i-3] - 5 * ypts[i-2] + 4 * ypts[i-1] - ypts[i];
+
+	//  compute step size
+	dx = xpts[i-2] - xpts[i-1];
+	dy = ypts[i-2] - ypts[i-1];
+	nsteps = (int) Math.sqrt(dx * dx + dy * dy) + 4;
+	stepsize = 1.0 / nsteps;
+	stepsize2 = stepsize * stepsize;
+	stepsize3 = stepsize * stepsize2;
+
+	//  compute forward differences
+	dx = (stepsize3*0.5) * ax + (stepsize2*0.5) * bx +
+				(stepsize*0.5) * (xpts[i-1] - xpts[i-3]);
+	dy = (stepsize3*0.5) * ay + (stepsize2*0.5) * by +
+				(stepsize*0.5) * (ypts[i-1] - ypts[i-3]);
+	d2x = (stepsize3*3) * ax + stepsize2 * bx;
+	d2y = (stepsize3*3) * ay + stepsize2 * by;
+	d3x = (stepsize3*3) * ax;
+	d3y = (stepsize3*3) * ay;
+
+	//  initialize point calculations
+	int[] xdraw = new int[nsteps+1];
+	int[] ydraw = new int[nsteps+1];
+	x = xdraw[0] = xpts[i-2];
+	y = ydraw[0] = ypts[i-2];
+
+	//  compute points for drawing the curve segment
+	for (j = 1; j <= nsteps; j++) {
+	    x = x + dx;
+	    y = y + dy;
+	    dx = dx + d2x;
+	    dy = dy + d2y;
+	    d2x = d2x + d3x;
+	    d2y = d2y + d3y;
+	    xdraw[j] = (int) x;
+	    ydraw[j] = (int) y;
+	}
+
+	//  draw the segment
+	b.drawPolyline(xdraw, ydraw, nsteps + 1);
+	a.drawPolyline(xdraw, ydraw, nsteps + 1);
+    }
+}
+
+
 
 void DrawPolygon(wCoords c) {
     b.drawPolygon(c.xPoints, c.yPoints, c.nPoints);

@@ -335,14 +335,6 @@ final class f$DrawLine extends vProcV {		// DrawLine(W,x,y,...)
     }
 }
 
-final class f$DrawCurve extends vProcV {	// DrawCurve(W,x,y,...)
-    public vDescriptor Call(vDescriptor[] args) {
-	vWindow win = vWindow.winArg(args);
-	win.DrawLine(new wCoords(args));	//#%#% poor substitute for curve
-	return win;
-    }
-}
-
 final class f$DrawSegment extends vProcV {	// DrawSegment(W,x,y,...)
     public vDescriptor Call(vDescriptor[] args) {
 	vWindow win = vWindow.winArg(args);
@@ -357,6 +349,50 @@ final class f$DrawSegment extends vProcV {	// DrawSegment(W,x,y,...)
 	return win;
     }
 }
+
+
+
+
+final class f$DrawCurve extends vProcV {	// DrawCurve(W,x,y,...)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	wCoords c = new wCoords(args);
+	int n = c.nPoints;
+	if (n < 2) {
+	    win.DrawLine(c);
+	    return win;
+	}
+
+	int[] xpts = new int[n+2];
+	int[] ypts = new int[n+2];
+	System.arraycopy(c.xPoints, 0, xpts, 1, n);
+	System.arraycopy(c.yPoints, 0, ypts, 1, n);
+
+	int x0 = c.xPoints[0];
+	int y0 = c.yPoints[0];
+	int xN = c.xPoints[n-1];
+	int yN = c.yPoints[n-1];
+
+	if (x0 == xN && y0 == yN) {
+	    // this is a closed curve -- copy first point to end & v.v.
+	    xpts[0] = xN;
+	    ypts[0] = yN;
+	    xpts[n+1] = x0;
+	    ypts[n+1] = y0;
+	} else {
+	    // this is an open curve -- duplicate first and last points
+	    xpts[0] = x0;
+	    ypts[0] = y0;
+	    xpts[n+1] = xN;
+	    ypts[n+1] = yN;
+	}
+
+	win.DrawCurve(xpts, ypts);
+	return win;
+    }
+}
+
+
 
 final class f$DrawPolygon extends vProcV {	// DrawPolygon(W,x,y,...)
     public vDescriptor Call(vDescriptor[] args) {

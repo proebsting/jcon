@@ -564,7 +564,7 @@ final class k$x extends kPaired {				// &x
     void assign(long i) {
 	vWindow win = vWindow.getCurrent();
 	set(i);
-	iKeyword.col.set(1 + i / 12);		// #%#% should depend on font
+	iKeyword.col.set(1 + i / win.Fwidth());
     }
 }
 
@@ -574,7 +574,7 @@ final class k$y extends kPaired {				// &y
     void assign(long i) {
 	vWindow win = vWindow.getCurrent();
 	set(i);
-	iKeyword.row.set(1 + i / 7);		// #%#% should depend on font
+	iKeyword.row.set(1 + i / win.Leading()); 
     }
 }
 
@@ -584,7 +584,7 @@ final class k$row extends kPaired {				// &row
     void assign(long i) {
 	vWindow win = vWindow.getCurrent();
 	set(i);
-	iKeyword.y.set(12 * i);			// #%#% should depend on font
+	iKeyword.y.set(i * win.Leading());
     }
 }
 
@@ -594,6 +594,6 @@ final class k$col extends kPaired {				// &col
     void assign(long i) {
 	vWindow win = vWindow.getCurrent();
 	set(i);
-	iKeyword.x.set(7 * i);			// #%#% should depend on font
+	iKeyword.x.set(i * win.Fwidth());
     }
 }
