@@ -250,7 +250,7 @@ for FNAME in $IFILES; do
 		    cd $TDIR
 		    JVM=../$FNAME.jvm
 		    cat $NULLFILE >$JVM
-		    for c in p_l*class; do
+		    for c in l*class p_l*class; do
 			echo "======================================" $c >>$JVM
 			echo "" >>$JVM
 			CLASSNAME=`basename $c .class`
