@@ -48,4 +48,5 @@ procedure main()
    write("c3: ", image("" || "b"))
    write("c4: ", image("cd" || "ef"))
    write("c5: ", image(3.14 || 159))
+   write("c6: ", image('abc' || 'def'))
 end
