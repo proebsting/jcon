@@ -629,13 +629,17 @@ procedure bc_gen_ir_Operator(s, p)
     return s
 end
 
-# record ir_Create( location )
+# record ir_Create( lhs location )
 procedure bc_gen_ir_Create(s, p)
     local class, init, newmethod, createmethod, vararray
 
     bc_create_exists := 1
 
     \bc_save_restore_flag | runerr(500)
+
+    if /p.lhs then {
+	return s
+    }
 
     class := j_cp_Class(bc_current_classptr, 
                         j_cp_Utf8(bc_current_classptr, bc_vClosure_classname))
@@ -654,6 +658,7 @@ procedure bc_gen_ir_Create(s, p)
     put(s, j_invokestatic(newmethod))
     put(s, j_dup() )
     put(s, j_invokevirtual(createmethod))
+    bc_gen_assign_to(s, p.lhs)
     return s
 end
 
@@ -777,7 +782,7 @@ procedure bc_target_bookkeeping()
             insert(bc_indirect_targets, t)
         }
     }
-    every a := !!!bc_emit_table & type(a) == "ir_Create" do {
+    every a := !!bc_emit_table & type(a) == "ir_Create" do {
         t := a.location
         if type(t) == "ir_Label" then {
             insert(bc_indirect_targets, t)
@@ -800,7 +805,7 @@ procedure bc_find_save_restore(code)
     if a := !!code & type(a)=="ir_Succeed" & \a.continuation then {
         bc_save_restore_flag := 1
     }
-    if a := !!!code & type(a)=="ir_Create" then {
+    if a := !!code & type(a)=="ir_Create" then {
         bc_save_restore_flag := 1
     }
 end

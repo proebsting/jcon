@@ -1049,6 +1049,11 @@ procedure ir_a_Create(p, st, inuse, target, bounded, rval)
     local t
 
     ir_init(p)
+    if /target then {
+        suspend ir_Chunk(p.ir.start, [ ir_Goto(p.ir.success) ])
+        /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.ir.failure) ])
+	fail
+    }
     t := (\target | ir_tmp(st, inuse))
 
     ir_createflag := 1
@@ -1056,7 +1061,7 @@ procedure ir_a_Create(p, st, inuse, target, bounded, rval)
     ir_createflag := &null
 
     suspend ir_Chunk(p.ir.start, [
-        ir_Move(target, ir_Create(p.expr.ir.start)),
+        ir_Create(target, p.expr.ir.start),
         ir_Goto(p.ir.success)
         ])
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.ir.failure) ])
