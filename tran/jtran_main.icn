@@ -1,73 +1,73 @@
 invocable all
 
 procedure predefs()
-	local t
+    local t
 
-	t := table()
-	t["_JAVA"] := "1"
-	t["_ASCII"] := "1"
-	t["_CO_EXPRESSIONS"] := "1"
-	t["_PIPES"] := "1"
-	t["_SYSTEM_FUNCTION"] := "1"
-	# there is no predefn for "environment variables" feature
-	return t
+    t := table()
+    t["_JAVA"] := "1"
+    t["_ASCII"] := "1"
+    t["_CO_EXPRESSIONS"] := "1"
+    t["_PIPES"] := "1"
+    t["_SYSTEM_FUNCTION"] := "1"
+    # there is no predefn for "environment variables" feature
+    return t
 end
 
 procedure getline(f)
-	if \f then {
-		return create preprocessor(f, predefs())
-	} else {
-		return create !&input
-	}
+    if \f then {
+        return create preprocessor(f, predefs())
+    } else {
+        return create !&input
+    }
 end
 
 procedure preproc(dummy, args)
-	suspend preprocessor(args[1], predefs())
+    suspend preprocessor(args[1], predefs())
 end
 
 procedure cat(getline, args)
-	local f, p
+    local f, p
 
-	while f := !args do {
-		suspend |open(f)
-	}
-	if *args = 0 then {
-		if /getline then {
-			suspend |&input
-		} else {
-			while p := @getline do {
-				suspend p
-			}
-		}
-	}
+    while f := !args do {
+        suspend |open(f)
+    }
+    if *args = 0 then {
+        if /getline then {
+            suspend |&input
+        } else {
+            while p := @getline do {
+                suspend p
+            }
+        }
+    }
 end
 
 procedure stdout(c)
-	local p
-	while p := @\c do {
-		write(p)
-	}
+    local p
+    while p := @\c do {
+        write(p)
+    }
 end
 
 procedure echo(c)
-	local p
-	while p := @\c do {
-		write(dump(p))
-	}
+    local p
+    while p := @\c do {
+        write(dump(p))
+    }
 end
 
 procedure main(L) 
-	local args, k, fn, c
+    local args, k, fn, c
 
-	while L[1] do {
-		args := []
-		while k := pop(L) & k ~== ":" do {
-			put(args, k)
-		}
-		fn := pop(args) | stop("ERROR: malformed command-line arguments")
-		fn := proc(fn) | stop("ERROR: unknown command-line procedure, ", fn)
-		c := create fn(c, args)
-	}
-	c := create echo(c)
-	while @c
+    while L[1] do {
+        args := []
+        while k := pop(L) & k ~== ":" do {
+            put(args, k)
+        }
+        fn := pop(args) | stop("ERROR: malformed command-line arguments")
+        fn := proc(fn) | stop("ERROR: unknown command-line procedure, ", fn)
+        c := create fn(c, args)
+    }
+    c := create echo(c)
+    while @c
 end

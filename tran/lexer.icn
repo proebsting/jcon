@@ -3,164 +3,167 @@ record coordinate(file, line, column)
 record TOK(sym, str, coord)
 
 procedure yylex(getline)
-	local last_pos, t, ptok
-	static last_token
+    local last_pos, t, ptok
+    static last_token
 
-	initial {
-		initialize()
-	}
+    initial {
+        initialize()
+    }
 
-	newline := 0
-	yyline := 0
-	yyfile := "<<stdin>>"
+    newline := 0
+    yyline := 0
+    yyfile := "<<stdin>>"
 
-	"" ? {
-		every t := yylex0(getline) do {
-			if newline = 1 then {
-				newline := 0
-				if member(ender_set,\last_token) & member(beginner_set,\t) then {
-					SEMICOL.coord := coordinate(yyfile, yyline-1, last_pos)
-					suspend SEMICOL
-					last_token := SEMICOL
-				}
-			}
-			t.coord := coordinate(yyfile, yyline, coord_pos)
-			last_pos := &pos
-			suspend t
-			last_token := t
-		}
-		ptok := EOFX
-		ptok.str := &null
-        	ptok.coord := coordinate(yyfile, yyline, coord_pos)
-	        last_pos := &pos
-		suspend ptok
-	}
+    "" ? {
+        every t := yylex0(getline) do {
+            if newline = 1 then {
+                newline := 0
+                if member(ender_set,\last_token) &
+		   member(beginner_set,\t) then {
+                    SEMICOL.coord := coordinate(yyfile, yyline-1, last_pos)
+                    suspend SEMICOL
+                    last_token := SEMICOL
+                }
+            }
+            t.coord := coordinate(yyfile, yyline, coord_pos)
+            last_pos := &pos
+            suspend t
+            last_token := t
+        }
+        ptok := EOFX
+        ptok.str := &null
+            ptok.coord := coordinate(yyfile, yyline, coord_pos)
+            last_pos := &pos
+        suspend ptok
+    }
 end
 
 
 procedure yylex0(getline)
-	local sym, str, op, ptok
-	static let_und, let_und_dig, let_dig
+    local sym, str, op, ptok
+    static let_und, let_und_dig, let_dig
 
-	initial {
-		let_und := &letters ++ '_'
-		let_und_dig := &letters ++ '_' ++ &digits
-        	let_dig := &letters ++ &digits
-	}
+    initial {
+        let_und := &letters ++ '_'
+        let_und_dig := &letters ++ '_' ++ &digits
+            let_dig := &letters ++ &digits
+    }
 
-	repeat {
+    repeat {
 
-	        if pos(1) then {
-			newline := 1
-			if ="#line " then {
-				tab(upto(&digits)) &
-				yyline := integer(tab(many(&digits))) &
-				tab(upto('"')) &
-				move(1) &
-				yyfile := tab(upto('"'))
-				tab(0)
-			}
-		}
+            if pos(1) then {
+            newline := 1
+            if ="#line " then {
+                tab(upto(&digits)) &
+                yyline := integer(tab(many(&digits))) &
+                tab(upto('"')) &
+                move(1) &
+                yyfile := tab(upto('"'))
+                tab(0)
+            }
+        }
 
-		# skip whitespace
-		tab(many(' \t\f\r'))
-		coord_pos := &pos
+        # skip whitespace
+        tab(many(' \t\f\r'))
+        coord_pos := &pos
 
-		# check if EOL
-		if pos(0) then {
-			&subject := nextline(getline) | fail
-			next
-		}
+        # check if EOL
+        if pos(0) then {
+            &subject := nextline(getline) | fail
+            next
+        }
 
-		# check if comment
-		if ="#" then {
- 			tab(0)
-			next
-		}
+        # check if comment
+        if ="#" then {
+            tab(0)
+            next
+        }
 
-		# check if identifier
-		if str := tab(many(let_und)) then {
-			str ||:= tab(many(let_und_dig))
-	    
-			# check if reserved word
-			if ptok := do_reserveds(str) then {
-				suspend ptok
-				next
-			}
-			ptok := IDENT
-			ptok.str := str
-			suspend ptok
-			next
-		}
+        # check if identifier
+        if str := tab(many(let_und)) then {
+            str ||:= tab(many(let_und_dig))
+        
+            # check if reserved word
+            if ptok := do_reserveds(str) then {
+                suspend ptok
+                next
+            }
+            ptok := IDENT
+            ptok.str := str
+            suspend ptok
+            next
+        }
 
-		# check if int lit  (digit or radix)
-		# check if digit
-		if str := tab(many(&digits)) then {
-			sym := INTLIT
-			if str ||:= =("r"|"R") then { # radix
-				str ||:= tab(many(let_dig))
-			}
+        # check if int lit  (digit or radix)
+        # check if digit
+        if str := tab(many(&digits)) then {
+            sym := INTLIT
+            if str ||:= =("r"|"R") then { # radix
+                str ||:= tab(many(let_dig))
+            }
 
-			# check if real lit
-			if str ||:= ="." then {
-				str ||:= tab(many(&digits))
-				sym := REALLIT
-			}
+            # check if real lit
+            if str ||:= ="." then {
+                str ||:= tab(many(&digits))
+                sym := REALLIT
+            }
 
-			if str ||:= =("e"|"E") then { # exponent lit
-				str ||:= =("+"|"-")
-				str ||:= tab(many(&digits)) | lex_error("invalid real literal")
-				sym := REALLIT
-			}
-			ptok := sym
-			ptok.str := str
-			suspend ptok
-			next
-		}
+            if str ||:= =("e"|"E") then { # exponent lit
+                str ||:= =("+"|"-")
+                str ||:= tab(many(&digits)) | lex_error("invalid real literal")
+                sym := REALLIT
+            }
+            ptok := sym
+            ptok.str := str
+            suspend ptok
+            next
+        }
 
-		# the following special cases ".123" as a real.
-		if str <- ="." & str ||:= tab(many(&digits)) then {
-			sym := REALLIT
-			if str ||:= =("e"|"E") then { # exponent lit
-				str ||:= =("+"|"-")
-				str ||:= tab(many(&digits)) | lex_error("invalid real literal")
-			}
-			ptok := sym
-			ptok.str := str
-			suspend ptok
-			next
-		}
+        # the following special cases ".123" as a real.
+        if str <- ="." & str ||:= tab(many(&digits)) then {
+            sym := REALLIT
+            if str ||:= =("e"|"E") then { # exponent lit
+                str ||:= =("+"|"-")
+                str ||:= tab(many(&digits)) | lex_error("invalid real literal")
+            }
+            ptok := sym
+            ptok.str := str
+            suspend ptok
+            next
+        }
 
-		# check if op
-		if op := do_ops() then {
-	    		suspend op
-	    		next
-		}
+        # check if op
+        if op := do_ops() then {
+                suspend op
+                next
+        }
 
-		# check if string lit
-		if str := parse_quoted("\"", getline) then {
-            		ptok := STRINGLIT
-			ptok.str := str
-			suspend ptok
-			next
-		}
+        # check if string lit
+        if str := parse_quoted("\"", getline) then {
+                    ptok := STRINGLIT
+            ptok.str := str
+            suspend ptok
+            next
+        }
 
-		# check if cset
-		if str := parse_quoted("'", getline) then {
-			ptok := CSETLIT
-			ptok.str := str
-			suspend ptok
-			next
-		}
+        # check if cset
+        if str := parse_quoted("'", getline) then {
+            ptok := CSETLIT
+            ptok.str := str
+            suspend ptok
+            next
+        }
 
-		# default
-		lex_error("invalid character: "||&subject)
-	}
+        # default
+        lex_error("invalid character: "||&subject)
+    }
 end
 
 procedure lex_error(msg)
     if \tok_rec then {
-      write(&errout,"File ", tok_rec.coord.file, "; Line ", tok_rec.coord.line, " # ", msg)
+      write(&errout,
+	    "File ", tok_rec.coord.file, ": ",
+	    "Line ", tok_rec.coord.line, " # ", msg)
     }
     else {
       write(&errout, msg)
@@ -169,80 +172,80 @@ procedure lex_error(msg)
 end
 
 procedure nextline(getline)
-	local s
+    local s
 
-	s := @getline | fail
-	yyline +:= 1
-	return s
+    s := @getline | fail
+    yyline +:= 1
+    return s
 end
 
 procedure parse_quoted(delim, getline) 
-	static lookup
+    static lookup
         local str, dset, hex, h, ch, octal, o
-	initial {
-		lookup := table()
-		lookup["b"] := "\b"
-		lookup["d"] := "\d"
-		lookup["e"] := "\e"
-		lookup["f"] := "\f"
-		lookup["l"] := "\l"
-		lookup["n"] := "\n"
-		lookup["r"] := "\r"
-		lookup["t"] := "\t"
-		lookup["v"] := "\v"
-		lookup["'"] := "\'"
-		lookup["\""] := "\""
-		lookup["\\"] := "\\"
-	}
-	if =delim then {
-		str := ""
-		dset := '\\' ++ delim
-		repeat {
-			if str ||:= tab(upto(dset)) then {
-				if =delim then {
-					return str
-				}
-				="\\" | stop("FATAL ERROR in lexer: ", image(&file), ", ", &line, " (input line ", yyline, ")")
-				if ="x" | ="X" then {
-					if hex := tab(many('0123456789abcdefABCDEF',,,&pos+2))  then {
-						h := "16r" || hex
-						str ||:= char(h)
-						next
-					} else {
-						str ||:= "\\x"
-					}
-				} else if ="^" then {
-					if ch := move(1) then {
-						str ||:= char(iand(ord(ch),16r1f))
-						next
-					} else {
-						str ||:= "\\^"
-					}	
-				} else if octal := tab(many('01234567',,,&pos+3)) then {
-					o := "8r" || octal
-					str ||:= char(o)
-					next
-				} else if ch := move(1) then {
-					str ||:= (\lookup[ch] | ch)
-					next
-				} else {
-					lex_error("Malformed escape sequence")
-				}
-			} else {
-				every (str ||:= tab(upto('_'))) do {
-					if pos(-1) then {
-						&subject := nextline(getline) | fail
-						tab(many(' \t\f'))
-						break next
-					} else {
-						str ||:= move(1)
-					}
-				}
-				lex_error("unclosed quote")
-			}
-			stop("FATAL ERROR in lexer: ", image(&file), ", ", &line, " (input line ", yyline, ")")
-		}
-		stop("FATAL ERROR in lexer: ", image(&file), ", ", &line, " (input line ", yyline, ")")
-	}
-	fail
+    initial {
+        lookup := table()
+        lookup["b"] := "\b"
+        lookup["d"] := "\d"
+        lookup["e"] := "\e"
+        lookup["f"] := "\f"
+        lookup["l"] := "\l"
+        lookup["n"] := "\n"
+        lookup["r"] := "\r"
+        lookup["t"] := "\t"
+        lookup["v"] := "\v"
+        lookup["'"] := "\'"
+        lookup["\""] := "\""
+        lookup["\\"] := "\\"
+    }
+    if =delim then {
+        str := ""
+        dset := '\\' ++ delim
+        repeat {
+            if str ||:= tab(upto(dset)) then {
+                if =delim then {
+                    return str
+                }
+                ="\\" | runerr(1000, yyline)
+                if ="x" | ="X" then {
+                    if hex:= tab(many('0123456789abcdefABCDEF',,,&pos+2)) then {
+                        h := "16r" || hex
+                        str ||:= char(h)
+                        next
+                    } else {
+                        str ||:= "\\x"
+                    }
+                } else if ="^" then {
+                    if ch := move(1) then {
+                        str ||:= char(iand(ord(ch),16r1f))
+                        next
+                    } else {
+                        str ||:= "\\^"
+                    }   
+                } else if octal := tab(many('01234567',,,&pos+3)) then {
+                    o := "8r" || octal
+                    str ||:= char(o)
+                    next
+                } else if ch := move(1) then {
+                    str ||:= (\lookup[ch] | ch)
+                    next
+                } else {
+                    lex_error("Malformed escape sequence")
+                }
+            } else {
+                every (str ||:= tab(upto('_'))) do {
+                    if pos(-1) then {
+                        &subject := nextline(getline) | fail
+                        tab(many(' \t\f'))
+                        break next
+                    } else {
+                        str ||:= move(1)
+                    }
+                }
+                lex_error("unclosed quote")
+            }
+            runerr(1000, yyline)
+        }
+        runerr(1000, yyline)
+    }
+    fail
 end
