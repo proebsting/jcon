@@ -34,14 +34,18 @@ UNZIP="unzip"
 JAVAC="javac -nowarn"
 JAVA="java -verify"
 
+export BLKSIZE=2000000
+export STRSIZE=500000
+
 #  save command line and user IPATH
 #  (remove spaces from IPATH to work around SGI java bug in argument handling)
 CMDLINE="$0 $*"
 UIPATH=`echo "$IPATH" | tr ' ' ':'`
 
-#  clear Icon and other environments
+#  clear inherited environment variables
+#  (but note that BLKSIZE and STRSIZE are set above)
 unset ICONX ICONCORE TRACE IPATH LPATH NOERRBUF
-unset BLKSIZE HEAPSIZE STRSIZE COEXPSIZE MSTKSIZE QLSIZE
+unset HEAPSIZE COEXPSIZE MSTKSIZE QLSIZE
 
 #  set tracing modes
 ANNOUNCE=echo
@@ -126,7 +130,7 @@ case $IDIR in
 esac
 
 #  set paths for translator and for runtime files
-JCON="$IDIR/jtran $JCOPT -target=$TARGET"
+JTRAN="$IDIR/jtran $JCOPT -target=$TARGET"
 JRTS="$IDIR/rts.zip"
 
 
@@ -165,7 +169,7 @@ for FNAME in $IFILES; do
     # Icon to Java
     $ANNOUNCE 1>&2 $FNAME.icn:
     if $PREPROC $FNAME.icn | 
-		$JCON -class=l\$$FNAME -dir=$TDIR/ >$TDIR/$FNAME.java; then
+		$JTRAN -class=l\$$FNAME -dir=$TDIR/ >$TDIR/$FNAME.java; then
 	# if using java target, make "links" file and compile the code
 	if [ $TARGET = java ]; then
 	    sed -n 's=^//JCON//links:==p' $TDIR/$FNAME.java >$TDIR/links
