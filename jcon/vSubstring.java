@@ -87,7 +87,7 @@ vString report() {
 public vVariable Assign(vDescriptor x) {
     vString s = x.mkString();		// coerce assigned value
     var.Assign(vString.New(this.strval(), start, end, s));
-    return vSubstring.New(this, start, start + s.length());
+    return vSubstring.New(var, start, start + s.length());
 }
 
 public vDescriptor Index(vDescriptor i) {			// s[i]
