@@ -874,7 +874,6 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     bc_labels := table()
     bc_ir2bc_labels := table()
     bc_labels[codestart] := 1
-    bc_emit_table := optim_optimize(bc_emit_table, codestart)
 
     bc_find_save_restore(bc_emit_table)
 
@@ -1580,9 +1579,6 @@ procedure bc_process_flags(flagList)
 
     if "-debug" == !flagList then {
         bc_debug := 1
-    }
-    if match("-O", !flagList) then {
-        optim_optimize_flag := 1
     }
 
     !flagList ? {

@@ -50,7 +50,6 @@ procedure symbolic_function(name, params, accumulate, locals, statics, code,
     every i := !code do {
         symbolic_emit_table[i.label] := i.insnList
     }
-    symbolic_emit_table := optim_optimize(symbolic_emit_table, codestart)
     symbolic_table(&output, symbolic_emit_table)
     write("end ", name)
 end
@@ -67,9 +66,6 @@ end
 procedure symbolic_File(irgen, flagList)
     local p
 
-    if match("-O", !flagList) then {
-        optim_optimize_flag := 1
-    }
     while p := @irgen do {
         case type(p) of {
         "ir_Global" : {

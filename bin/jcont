@@ -259,7 +259,8 @@ for FNAME in $IFILES; do
 	    ;;
 	bytecode)
 	    if $JTRAN preproc $FNAME.icn : yylex : parse : ast2ir $TFLAGS : \
-		bc_File $OFLAG $TFLAGS -class:l\$${FNAME##*/} -dir:$TDIR/; then
+		optim $OFLAG : \
+		bc_File $TFLAGS -class:l\$${FNAME##*/} -dir:$TDIR/; then
 		# bundle .class files (and linkage info) into .zip file
 		(cd $TDIR; $JAVA jcon.ZipMerge ../$FNAME.zip links *.class)
 		# disassemble if requested

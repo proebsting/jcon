@@ -1,16 +1,12 @@
 #  optimize.icn -- intermediate representation optimizer routines.
 
-global optim_optimize_flag
-
 procedure optim_optimize(t, start)
     local new, i
 
     new := t
-    if \optim_optimize_flag then {
-        new := optim_dead_assignment(new, start)
-        new := optim_goto_elimination(new, start)
-        new := optim_copy_propagation(new, start)
-    }
+    new := optim_dead_assignment(new, start)
+    new := optim_goto_elimination(new, start)
+    new := optim_copy_propagation(new, start)
     return new
 end
 
@@ -402,3 +398,33 @@ procedure optim_test_elimination(t, start)
 	}
 end
 
+procedure optim(irgen, flagList)
+    local p, T, L, i
+
+    while p := @irgen do {
+        case type(p) of {
+        "ir_Global" |
+        "ir_Record" |
+        "ir_Invocable" |
+        "ir_Link" : {
+		suspend p
+	}
+        "ir_Function" : {
+            if match("-O", !flagList) then {
+	        T := table()
+	        every i := !p.codeList do {
+		    T[i.label] := i.insnList
+	        }
+	        T := optim_optimize(T, p.codeStart)
+	        L := []
+	        every i := key(T) do {
+		    put(L, ir_Chunk(i, T[i]))
+	        }
+	        p.codeList := L
+            }
+	    suspend p
+        }
+        default: runerr(500, p)
+        }
+    }
+end
