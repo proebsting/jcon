@@ -14,6 +14,9 @@ procedure main(L)
 	# there is no predefn for "environment variables" feature
 
 	cg_flags := []
+	nodebuginfo := 1
+	nointrospection := 1
+	noerror2failure := 1
 	while L[1] do {	# process flags
 		pop(L) ? {
 			if ="-E" then {
@@ -28,13 +31,13 @@ procedure main(L)
 				java_classname := tab(0)
 			} else if ="-f" then {
 				if find("e") | find("a") then {
-					noerror2failure := 1
+					noerror2failure := &null
 				}
 				if find("n") | find("a") then {
-					nodebuginfo := 1
+					nodebuginfo := &null
 				}
 				if find("d") | find("a") then {
-					nointrospection := 1
+					nointrospection := &null
 				}
 			} else if ="-" then {
 				put(cg_flags, &subject)
