@@ -35,10 +35,11 @@ public class iInterface {
 		return a;
 	}
 
-	public static void start(iFile[] files, String[] args) {
+	public static void start(iFile[] files, String[] args, String name) {
 		for (int i = 0; i < files.length; i++) {
 			files[i].announce();
 		}
+		k$progname.name = name;
 		iInterface.init();
 		vDescriptor m = iEnv.resolve("main");
 		if (m == null) {

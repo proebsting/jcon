@@ -39,6 +39,7 @@ public class iKeywords extends iFile {
 		iEnv.declareKey("dateline", new k$dateline());
 		iEnv.declareKey("main", new k$main());
 		iEnv.declareKey("source", new k$source());
+		iEnv.declareKey("progname", new k$progname());
 
 		//incestuous
 		k$subject s = new k$subject();		// &subject
@@ -61,6 +62,8 @@ public class iKeywords extends iFile {
 		// generators
 		iEnv.declareKey("features", 
 			iNew.Proc((new k$features()).getClass(), 0));
+		iEnv.declareKey("level", 
+			iNew.Proc((new k$level()).getClass(), 0));
 
 		// special behavior
 		iEnv.declareKey("trace", new k$trace());
@@ -179,6 +182,14 @@ class k$dateline extends k$Value {			// &dateline
 	}
 }
 
+class k$progname extends k$Value {		// &progname
+	static String name;
+
+	public vValue deref() {
+		return iNew.String(name);
+	}
+}
+
 
 
 class k$subject extends vSimpleVar {		// &subject
@@ -269,5 +280,15 @@ class k$errorvalue extends iFunctionClosure {
 
 	vDescriptor function(vDescriptor args[]) {
 		return value;
+	}
+}
+
+class k$level extends iFunctionClosure {
+	vDescriptor function(vDescriptor args[]) {
+		int i = 0;
+		for (iClosure p = this.parent; p != null; p = p.parent) {
+			i++;
+		}
+		return iNew.Integer(i);
 	}
 }
