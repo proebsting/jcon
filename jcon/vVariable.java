@@ -81,7 +81,7 @@ public vDescriptor ToBy(vDescriptor j,vDescriptor k) {return Deref().ToBy(j,k);}
 public vNumeric Negate()		{ return Deref().Negate(); }
 public vNumeric Numerate()		{ return Deref().Numerate(); }
 public vInteger Size()			{ return Deref().Size(); }
-public vValue Complement()		{ return Deref().Complement(); }
+public vCset Complement()		{ return Deref().Complement(); }
 public vCoexp Refresh()			{ return Deref().Refresh(); }
 public vDescriptor TabMatch()		{ return Deref().TabMatch(); }
 public vNumeric Abs()			{ return Deref().Abs(); }

@@ -750,7 +750,7 @@ public vString LGreater(vDescriptor v) {
     return this.compareTo(s) > 0 ? s : null;
 }
 
-public vValue Complement()		{ return this.mkCset().Complement(); }
+public vCset Complement()		{ return this.mkCset().Complement(); }
 public vValue Intersect(vDescriptor x)	{ return this.mkCset().Intersect(x); }
 public vValue Union(vDescriptor x)	{ return this.mkCset().Union(x); }
 public vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }

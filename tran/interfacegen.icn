@@ -108,7 +108,7 @@ procedure operators()
 	[ 1,     "+", "Numerate",   "jcon.vNumeric"    ],
 	[ 1,     "-", "Negate",     "jcon.vNumeric"    ],
 	[ 1,     "*", "Size",       "jcon.vInteger"    ],
-	[ 1,     "~", "Complement", "jcon.vValue"      ],
+	[ 1,     "~", "Complement", "jcon.vCset"       ],
 	[ 1,     "^", "Refresh",    "jcon.vCoexp"      ],
 	[ 1,     "=", "TabMatch",   "jcon.vDescriptor" ],
 

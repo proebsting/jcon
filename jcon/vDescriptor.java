@@ -52,7 +52,7 @@ public abstract vDescriptor ToBy(vDescriptor j, vDescriptor k);	// i to j by k
 public abstract vNumeric Numerate();			//  +n
 public abstract vNumeric Negate();			//  -n
 public abstract vInteger Size();			//  *x
-public abstract vValue Complement();			//  ~x
+public abstract vCset Complement();			//  ~x
 public abstract vCoexp Refresh();			//  ^C
 public abstract vDescriptor TabMatch();			//  =s
 public abstract vNumeric Abs();				//  abs(x)
@@ -113,7 +113,7 @@ public abstract vList Put(vDescriptor v);		//  put(L, x)
 // table/set operations
 public abstract vValue Member(vDescriptor i);		//  member(X, x)
 public abstract vValue Delete(vDescriptor i);		//  delete(X, x)
-public abstract vValue Insert(vDescriptor i, vDescriptor val);  //  insert(X, x)
+public abstract vValue Insert(vDescriptor i, vDescriptor val); // insert(X,x,y)
 
 // set/cset operations
 public abstract vValue Intersect(vDescriptor i);	//  x ** x

@@ -52,7 +52,7 @@ public vDescriptor ToBy(vDescriptor j, vDescriptor k)
 public vNumeric Numerate()	{ iRuntime.error(102, this); return null; }
 public vNumeric Negate()	{ return this.Numerate().Negate(); }
 public vInteger Size()		{ iRuntime.error(112, this); return null; }
-public vValue Complement()	{ iRuntime.error(104, this); return null; }
+public vCset Complement()	{ iRuntime.error(104, this); return null; }
 public vCoexp Refresh()		{ iRuntime.error(118, this); return null; }
 public vDescriptor TabMatch()	{ return this.mkString().TabMatch(); }
 public vNumeric Abs()		{ return this.Numerate().Abs(); }

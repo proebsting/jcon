@@ -53,7 +53,7 @@ public vDescriptor ToBy(vDescriptor j, vDescriptor k)
 public vNumeric Negate()		{ return retval.Negate(); }
 public vNumeric Numerate()		{ return retval.Numerate(); }
 public vInteger Size()			{ return retval.Size(); }
-public vValue Complement()		{ return retval.Complement(); }
+public vCset Complement()		{ return retval.Complement(); }
 public vCoexp Refresh()			{ return retval.Refresh(); }
 public vDescriptor TabMatch()		{ return retval.TabMatch(); }
 public vNumeric Abs()			{ return retval.Abs(); }

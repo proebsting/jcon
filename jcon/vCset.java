@@ -396,7 +396,7 @@ public vDescriptor Bang() {		// !c
 
 
 
-public vValue Complement() {		// ~c
+public vCset Complement() {		// ~c
     vCset result = new vCset();
     result.w1 = ~w1;
     result.w2 = ~w2;
