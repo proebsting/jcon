@@ -2,17 +2,18 @@
 
 package rts;
 
-
 public class iError extends Error {
 
     int num;				// error number
     vDescriptor desc;			// offending value
 
 
+
 iError(int num, vDescriptor desc) {	// constructor
     this.num = num;
     this.desc = desc;
 }
+
 
 
 void report(iClosure c) {		// print message and abort
@@ -51,6 +52,7 @@ void report(iClosure c) {		// print message and abort
 }
 
 
+
 //  traceback(c, n) -- trace back up to n previous closure levels
 
 static void traceback(iClosure c, int n) {
@@ -68,7 +70,6 @@ static void traceback(iClosure c, int n) {
 
     System.err.println("   " + c.trace());  // report this closure
 }
-
 
 
 

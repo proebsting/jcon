@@ -98,8 +98,7 @@ void announce() {
 }
 
 
-static void declare(String name, int args)
-{
+static void declare(String name, int args) {
     iEnv.declareBuiltin(name, iNew.Proc(
 	"function " + name, iConfig.FuncPrefix + name, args));
 }

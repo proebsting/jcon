@@ -6,8 +6,7 @@ class iUtil {
 
 //  sort(x) -- sort java array x of vValues, using x[i].compare().
 
-static vValue[] sort(vValue x[])
-{
+static vValue[] sort(vValue x[]) {
     qsort(x, 0, x.length - 1);
     return x;
 }
@@ -16,8 +15,7 @@ static vValue[] sort(vValue x[])
 
 //  compare(x, y) -- compare two vValue objects for sorting
 
-static int compare(vValue x, vValue y)
-{
+static int compare(vValue x, vValue y) {
     int d = x.rank() - y.rank();
     if (d == 0) {
 	return x.compareTo(y);
@@ -32,8 +30,7 @@ static int compare(vValue x, vValue y)
 //
 // based on Jon Bentley, Programming Pearls, CACM 27:4 (Apr 1984) p.289
 
-private static void qsort(vValue x[], int l, int u)
-{
+private static void qsort(vValue x[], int l, int u) {
     int d, i, r, llow;
     vValue t, v;
 
@@ -62,8 +59,7 @@ private static void qsort(vValue x[], int l, int u)
 
 // swap(x, i, j) -- exchange x[i] and x[j].
 
-private static void swap(vValue x[], int i, int j)
-{
+private static void swap(vValue x[], int i, int j) {
     vValue o = x[i];
     x[i] = x[j];
     x[j] = o;

@@ -7,10 +7,9 @@ import java.awt.event.*;
 
 
 
-class wEvent implements WindowListener,  //#%#%# ComponentListener,
+class wEvent implements WindowListener,  //#%#% ComponentListener,
     KeyListener, MouseListener, MouseMotionListener
 {
-
     wCanvas c;		// associated canvas
     int xloc;		// mouse x-coordinate
     int yloc;		// mouse y-coordinate
@@ -135,7 +134,7 @@ static vValue dequeue(vList evq) {
 
     x = (int)(short)x;			// extract signed coordinate values
     y = (int)(short)y;
-    //#%#%#%# need to translate x/y to this window's coordinate system
+    //#%#% need to translate x/y to this window's coordinate system
 
     k$x.self.Assign(iNew.Integer(x));	// also sets k$col
     k$y.self.Assign(iNew.Integer(y));	// also sets k$row
@@ -153,7 +152,8 @@ public void windowIconified(WindowEvent e)	{}
 public void windowDeiconified(WindowEvent e)	{}
 
 public void windowClosing(WindowEvent e) {
-    System.out.println("WINDOW CLOSING... EXITING");	//#%#%##%#%#
+    //#%#% window was closed. don't know how to handle; bail out.
+    System.out.println("WINDOW CLOSING... EXITING");
     c.f.dispose();
     System.exit(0);
 }

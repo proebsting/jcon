@@ -36,19 +36,22 @@ vInteger mkInteger()	{
 vString write()		{ return this.mkString(); }
 vString image()		{ return this.mkString(); }
 
-vString mkString()		{	//#%#%# differs from v9 formatting
+vString mkString() {	// #%#% differs from v9 formatting
     if (cachedString != null) {
 	return cachedString;
     }
-    String s = Double.toString(value + 0.0);	 // +0.0 eliminates "-0"
+    String s = Double.toString(value + 0.0);	// +0.0 eliminates "-0"
     if (s.indexOf('E') >= 0) {
-	s = s.replace('E','e');		// if E notation, change to 'e'
+	s = s.replace('E','e');			// if E notation, change to 'e'
     }
     return cachedString = iNew.String(s);
 }
 
+
+
 static vString typestring = iNew.String("real");
 vString type()		{ return typestring; }
+
 int rank()		{ return 20; }		// reals sort after integers
 
 int compareTo(vValue v) {
@@ -76,8 +79,7 @@ void NumBoth(iBinaryValueClosure c) {
 
 //  static methods for argument processing and defaulting
 
-static double argVal(vDescriptor[] args, int index)		// required arg
-{
+static double argVal(vDescriptor[] args, int index) {		// required arg
     if (index >= args.length) {
 	iRuntime.error(102);
 	return 0.0;
@@ -86,8 +88,7 @@ static double argVal(vDescriptor[] args, int index)		// required arg
     }
 }
 
-static double argVal(vDescriptor[] args, int index, double dflt) // optional arg
-{
+static double argVal(vDescriptor[] args, int index, double dflt) { // opt arg
     if (index >= args.length || args[index] instanceof vNull) {
 	return dflt;
     } else {
@@ -138,7 +139,6 @@ vValue Mod(vDescriptor v) {
 	iRuntime.error(204);
     }
     return iNew.Real(this.value % ((vReal)v).value);
-	//#%#% is that the correct definition of % for Icon?
 }
 
 vValue Abs() {

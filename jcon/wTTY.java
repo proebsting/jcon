@@ -22,7 +22,7 @@ class wTTY {
 
 wTTY() {
     xloc = 0;
-    yloc = 20;	//#%#%#%#%#%#%#%#%#%##%#%# should depend on font
+    yloc = 20;	//#%#% should depend on font
 }
 
 
@@ -113,7 +113,7 @@ private char rchar(vWindow win, StringBuffer b) {
 
 //  writes(win, s) -- write string to window
 
-//#%#%#%##% need to handle \r and \t
+//  #%#% also should handle \r and \t
 
 void writes(vWindow win, vString vs) {
     int i = 0;

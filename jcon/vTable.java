@@ -7,7 +7,10 @@ public class vTable extends vStructure {
     private java.util.Hashtable t;
     vValue dflt;
 
+
+
 static int nextsn = 1;	// next serial number
+
 
 
 vTable(vValue dflt) {
@@ -33,6 +36,7 @@ void put(vValue key, vValue val) {
 
 static vString typestring = iNew.String("table");
 vString type()		{ return typestring; }
+
 int rank()		{ return 110; }		// tables rank after sets
 
 vInteger Size() {
@@ -159,6 +163,8 @@ vValue Sort(int n) {
     return iNew.List(b);			// turn results into Icon list
 }
 
+
+
 } // class vTable
 
 
@@ -168,29 +174,29 @@ class vTrappedTable extends vVariable {
     vTable table;
     vValue key;
 
-vString report()	{
-    return iNew.String(
-	"(variable = " + this.table.report() + "[" + this.key.report() + "])");
-}
+    vString report()	{
+	return iNew.String("(variable = " + this.table.report() +
+	    "[" + this.key.report() + "])");
+    }
 
-vTrappedTable(vTable table, vValue key) {
-    this.table = table;
-    this.key = key;
-}
+    vTrappedTable(vTable table, vValue key) {
+	this.table = table;
+	this.key = key;
+    }
 
-public vValue deref() {
-    vValue v = table.get(key);
-    return (v == null) ? table.dflt : v;
-}
+    public vValue deref() {
+	vValue v = table.get(key);
+	return (v == null) ? table.dflt : v;
+    }
 
-public vVariable Assign(vValue v) {
-    table.put(key, v);
-    return this;
-}
+    public vVariable Assign(vValue v) {
+	table.put(key, v);
+	return this;
+    }
 
-vString Name() {
-    return key.image().surround("T[", "]");
-}
+    vString Name() {
+	return key.image().surround("T[", "]");
+    }
 
 } // class vTrappedTable
 
@@ -222,7 +228,7 @@ class vTableElem extends vValue {	// key/value pair for sorting
     }
 
     static vString typestring = iNew.String("telem");
-    vString type()   { return typestring; }
-    int rank()      { return -1; }		// never compared to other types
+    vString type()	{ return typestring; }
+    int rank()		{ return -1; }		// never compared to other types
 
 } // class vTableElem

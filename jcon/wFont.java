@@ -28,7 +28,7 @@ wFont(String name, int style, int ptsize, vString spec) {
 static wFont parse(vString spec) {
     int size = 0;
     int style = 0;
-    String s = spec.toString();		//#%#% unnecessary?
+    String s = spec.toString();
 
     // check for special-cased X name, and model (imperfectly)
     if (s.equals("fixed")) {
@@ -72,9 +72,6 @@ static wFont parse(vString spec) {
     if (size == 0) {
 	size = iConfig.FontSize;
     }
-
-    //#%#%#% convert pixels to points here
-    //#%#%#% (doesn't seem to be needed?)
 
     return new wFont(family, style, size, spec);
 }

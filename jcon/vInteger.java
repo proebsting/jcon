@@ -21,7 +21,9 @@ public boolean equals(Object o)	{
 }
 
 vInteger mkInteger()	{ return this; }
+
 vReal mkReal()		{ return iNew.Real(this.value); }
+
 vString mkString() {
     if (cachedString != null) {
 	return cachedString;
@@ -30,10 +32,12 @@ vString mkString() {
 }
 
 vString write()		{ return iNew.String(this.value); }
+
 vString image()		{ return iNew.String(this.value); }
 
 static vString typestring = iNew.String("integer");
 vString type()		{ return typestring; }
+
 int rank()		{ return 10; }	// integers sort right after &null
 
 int compareTo(vValue v) {
@@ -47,9 +51,7 @@ int compareTo(vValue v) {
     }
 }
 
-vValue getproc() {
-    return new vIntegerProc(this);
-}
+vValue getproc()	{ return new vIntegerProc(this); }
 
 
 
@@ -76,8 +78,7 @@ void NumBoth(iBinaryValueClosure c) {
 
 //  static methods for argument processing and defaulting
 
-static long argVal(vDescriptor[] args, int index)		// required arg
-{
+static long argVal(vDescriptor[] args, int index) {		// required arg
     if (index >= args.length) {
 	iRuntime.error(101);
 	return 0;
@@ -86,8 +87,7 @@ static long argVal(vDescriptor[] args, int index)		// required arg
     }
 }
 
-static long argVal(vDescriptor[] args, int index, int dflt)	// optional arg
-{
+static long argVal(vDescriptor[] args, int index, int dflt) {	// optional arg
     if (index >= args.length || args[index] instanceof vNull) {
 	return dflt;
     } else {
@@ -102,8 +102,7 @@ static long argVal(vDescriptor[] args, int index, int dflt)	// optional arg
 //  assumes s has been trimmed
 //  returns vInteger, or null
 
-static vInteger radixParse(String s)
-{
+static vInteger radixParse(String s) {
     boolean negate = false;
 
     int i = s.indexOf('r');
@@ -158,6 +157,8 @@ static vInteger radixParse(String s)
 
 
 //  operations
+//
+//  #%#% overflow is not detected by integer operations
 
 vNumeric Negate()	{ return iNew.Integer(-value); }
 
@@ -170,34 +171,6 @@ vDescriptor Select() {
 	iRuntime.error(205, this);
 	return null;
     }
-}
-
-
-//#%#%#% need to rewrite these to handle overflow:
-vValue Power(vDescriptor v) {
-    if (! (v instanceof vInteger)) {
-	return this.mkReal().Power(v);
-    }
-    long x = this.value;
-    long y = ((vInteger)v).value;
-    if (x == 0 && y <= 0) {
-	iRuntime.error(204);
-    }
-    if (y < 0) {
-	if (x == 1) {
-	    return iNew.Integer(1);
-	} else if (x == -1) {
-	    y = -y;
-	} else {
-	    return iNew.Integer(0);
-	}
-    }
-    //#%#%# slow computation; should use powers of 2
-    long p = 1L;
-    for (long i = 0; i < y; i++) {
-	p *= x;		//#%#%# totally ignoring overflow.
-    }
-    return iNew.Integer(p);
 }
 
 vValue Add(vDescriptor v) {
@@ -236,6 +209,32 @@ vValue Abs() {
     } else {
 	return iNew.Integer(-this.value);
     }
+}
+
+vValue Power(vDescriptor v) {
+    if (! (v instanceof vInteger)) {
+	return this.mkReal().Power(v);
+    }
+    long x = this.value;
+    long y = ((vInteger)v).value;
+    if (x == 0 && y <= 0) {
+	iRuntime.error(204);
+    }
+    if (y < 0) {
+	if (x == 1) {
+	    return iNew.Integer(1);
+	} else if (x == -1) {
+	    y = -y;
+	} else {
+	    return iNew.Integer(0);
+	}
+    }
+    //#%#%# slow computation; should use powers of 2
+    long p = 1L;
+    for (long i = 0; i < y; i++) {
+	p *= x;		//#%#%# totally ignoring overflow.
+    }
+    return iNew.Integer(p);
 }
 
 
@@ -297,7 +296,7 @@ class vIntegerProc extends vValue {
     static vString typestring = iNew.String("procedure");
     vString type()	{ return typestring; }
 
-    int rank()		{ return 80; }	// integer "procedure"
+    int rank()		{ return 80; }		// integer "procedure"
     int compareTo(vValue v)
 			{ return vProc.compareLastWord(this.image(),v.image());}
 

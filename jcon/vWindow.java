@@ -208,7 +208,7 @@ void newline()			{ c.tty.newline(this); }
 
 vFile flush()			{ toolkit.sync(); return this; }
 
-vFile close()			{ return this; } //#%#%#%#%#% TO BE WRITTEN
+vFile close()			{ return this; } //#%#% TO BE DONE
 
 
 
@@ -360,7 +360,7 @@ void CopyArea(int x1, int y1, int w, int h, int x2, int y2) {
     // copy source region, if anything remains
     if (w > 0 && h > 0) {
 	// remaining source area is within bounds of window
-	// #%#%##%#% although it might be obscured -- need to handle that
+	// #%#% although it might be obscured -- need to handle that
 	b.copyArea(x1, y1, w, h, x2 - x1, y2 - y1);
 	a.copyArea(x1, y1, w, h, x2 - x1, y2 - y1);
     }
@@ -424,7 +424,6 @@ void DrawString(int x, int y, String s) {
     b.drawString(s, x, y);
     a.drawString(s, x, y);
 }
-
 
 
 

@@ -48,10 +48,10 @@ void announce() {
     iBuiltins.declare("WFlush", 1);
     iBuiltins.declare("WSync", 1);
 
-    // #%#%#%#%#%# IMPLEMENTED AS NO-OPS
+    // #%#% IMPLEMENTED AS NO-OPS:
     // close(win)	(see wTTY.java)
 
-    // #%#%#%#%#%# NOT YET IMPLEMENTED:
+    // #%#% NOT YET IMPLEMENTED:
     //
     // iBuiltins.declare("Clip", 5);
     // iBuiltins.declare("Pattern", 2);
@@ -103,7 +103,7 @@ class f$WAttrib extends iClosure {		// WAttrib(W,attribs,...)
 		wAttrib a = alist[i];
 		if (a.val != null) {		// if nm=val arg
 		    if (a.set(win) == null) {
-			alist[i] = null;  // set failed
+			alist[i] = null;	// set failed
 		    }
 		}
 	    }
@@ -116,7 +116,7 @@ class f$WAttrib extends iClosure {		// WAttrib(W,attribs,...)
 	    if (a != null) {
 		v = a.get(win);
 		if (v != null) {
-		    break;	// generate value
+		    break;			// generate value
 		}
 	    }
 	}
@@ -132,17 +132,15 @@ class f$Clone extends iValueClosure {		// Clone(W,attribs...)
 	int b = vWindow.argBase(arguments);
 	wAttrib alist[] = wAttrib.parseAtts(args, b);
 
-	win = win.Clone();				// clone window
-	for (int i = 0; i < alist.length; i++) {	// apply attribs
+	win = win.Clone();			// clone window
+	for (int i = 0; i < alist.length; i++) { // apply attribs
 	    wAttrib a = alist[i];
-	    if (a.val != null) {			// if val given
+	    if (a.val != null) {		// if val given
 		if (a.set(win) == null) {	// if set fails
-		    //#%#%#%#% win.close();
 		    return null;		// clone failed
 		}
 	    }
 	}
-
 	return win;
     }
 }

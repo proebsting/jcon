@@ -20,6 +20,7 @@ import java.text.*;
 import java.util.*;
 
 
+
 public class iKeywords extends iFile {
 
     void announce() {
@@ -77,18 +78,14 @@ public class iKeywords extends iFile {
 	iEnv.declareKey("dump", new k$dump());
 
 	// generators
-	iEnv.declareKey("features", iNew.Proc(
-	    "&features", "rts.k$features", 0));
-	iEnv.declareKey("level", iNew.Proc(
-	    "&level", "rts.k$level", 0));
+	iEnv.declareKey("features", iNew.Proc("&features","rts.k$features",0));
+	iEnv.declareKey("level", iNew.Proc("&level", "rts.k$level", 0));
 
 	// bogus generators
-	vProc proc = iNew.Proc(
-	    "k$gen4zeroes", "rts.k$gen4zeros", 0);
+	vProc proc = iNew.Proc("k$gen4zeroes", "rts.k$gen4zeros", 0);
 	iEnv.declareKey("allocated", proc);
 	iEnv.declareKey("collections", proc);
-	proc = iNew.Proc(
-	    "k$gen3zeroes", "rts.k$gen3zeros", 0);
+	proc = iNew.Proc("k$gen3zeroes", "rts.k$gen3zeros", 0);
 	iEnv.declareKey("regions", proc);
 	iEnv.declareKey("storage", proc);
 
@@ -115,12 +112,9 @@ public class iKeywords extends iFile {
 	iEnv.declareKey("row", new k$row());		// &row
 	iEnv.declareKey("col", new k$col());		// &col
 	iEnv.declareKey("interval", new k$interval());	// &interval
-	iEnv.declareKey(
-	    "control", iNew.Proc("&control", "rts.k$control", 0));
-	iEnv.declareKey(
-	    "meta", iNew.Proc("&meta", "rts.k$meta", 0));
-	iEnv.declareKey(
-	    "shift", iNew.Proc("&shift", "rts.k$shift", 0));
+	iEnv.declareKey("control", iNew.Proc("&control", "rts.k$control", 0));
+	iEnv.declareKey("meta", iNew.Proc("&meta", "rts.k$meta", 0));
+	iEnv.declareKey("shift", iNew.Proc("&shift", "rts.k$shift", 0));
     }
 }
 
@@ -148,6 +142,7 @@ class k$features extends iClosure {				// &features
 	    return null;
 	}
     }
+
     String tfmt() { return "&features"; }
 }
 
@@ -263,15 +258,10 @@ class k$host extends k$Value {					// &host
     static vString hostname;
 
     public vValue deref() {
-	if (hostname == null) {
-	    inithost();
+	if (hostname != null) {
+	    return hostname;
 	}
-	return hostname;
-    }
-
-    //#%#% warning: ugly unixisms follow
-
-    static void inithost() {
+	// warning: ugly unixisms follow
 	try {
 	    Process p = Runtime.getRuntime().exec("uname -n");
 	    hostname = iNew.String(
@@ -287,6 +277,7 @@ class k$host extends k$Value {					// &host
 		hostname = iNew.String("Jcon");
 	    }
 	}
+	return hostname;
     }
 
 }
@@ -304,7 +295,7 @@ class k$progname extends k$Value {				// &progname
 
 
 class k$input extends k$Value {					// &input
-    static vFile file;	// referenced externally
+    static vFile file;		// referenced externally
 
     k$input() {
 	file = iNew.File("&input",
@@ -315,7 +306,7 @@ class k$input extends k$Value {					// &input
 }
 
 class k$output extends k$Value {				// &output
-    static vFile file;	// referenced externally
+    static vFile file;		// referenced externally
 
     k$output() {
 	file = iNew.File("&output", null,
@@ -326,7 +317,7 @@ class k$output extends k$Value {				// &output
 }
 
 class k$errout extends k$Value {				// &errout
-    static vFile file;	// referenced externally
+    static vFile file;		// referenced externally
 
     k$errout() {		// unbuffered
 	file = iNew.File("&errout", null, new DataOutputStream(System.err));
@@ -377,7 +368,7 @@ class k$pos extends vSimpleVar {				// &pos
 
 class k$trace extends vSimpleVar {				// &trace
 
-    static long trace;		// #%#%#% referenced in iClosure
+    static long trace;		// referenced in iClosure
 
     k$trace() { super("&trace"); }
 
@@ -414,7 +405,7 @@ private static final double RanScale = 4.65661286e-10;
 	return this;
     }
 
-    public vValue deref() {				// dereference
+    public vValue deref() {			// dereference
 	return value = iNew.Integer(randval);
     }
 
@@ -423,7 +414,7 @@ private static final double RanScale = 4.65661286e-10;
 	return RanScale * randval;
     }
 
-    public static long choose(long limit) {		// gen val in [0, limit)
+    public static long choose(long limit) {	// gen val in [0, limit)
 	return (long) (limit * nextVal());
     }
 }
@@ -434,9 +425,9 @@ class k$window extends vSimpleVar {				// &window
 
     private static vValue value = iNew.Null();	// current value
 
-    k$window() { super("&window"); }	// constructor
+    k$window() { super("&window"); }		// constructor
 
-    public vVariable Assign(vValue w) {	// assign
+    public vVariable Assign(vValue w) {		// assign
 	if (! (w instanceof vWindow) && ! (w instanceof vNull)) {
 	    iRuntime.error(140, w);
 	}
@@ -449,7 +440,7 @@ class k$window extends vSimpleVar {				// &window
 	return value;
     }
 
-    public static vWindow getWindow() {	// get &window, must be !null
+    public static vWindow getWindow() {		// get &window, must be !null
 	if (! (value instanceof vWindow)) {
 	    iRuntime.error(140);
 	}
@@ -477,20 +468,20 @@ class k$shift extends iValueClosure {				// &shift
 abstract class k$intWatcher extends vVariable { // super for "watched" int kwds
     String name;
     long value;
-    abstract void newValue(long i);		// subclass must impl this
+    abstract void newValue(long i);		// subclass must implement this
 
-    k$intWatcher(String name) {		// constructor just saves name
+    k$intWatcher(String name) {			// constructor just saves name
 	this.name = name;
     }
 
     public vValue deref() {
-	return iNew.Integer(value);	// deref just returns value
+	return iNew.Integer(value);		// deref just returns value
     }
 
-    public vVariable Assign(vValue v) {	// assignment
-	long i = v.mkInteger().value;	// must be integer
-	newValue(i);			// call subclass (may give err)
-	value = i;			// if no error, set value
+    public vVariable Assign(vValue v) {		// assignment
+	long i = v.mkInteger().value;		// must be integer
+	newValue(i);				// call subclass (may give err)
+	value = i;				// if no error, set value
 	return this;
     }
 
@@ -498,7 +489,7 @@ abstract class k$intWatcher extends vVariable { // super for "watched" int kwds
 	value = i;
     }
 
-    vString Name()		{ return iNew.String(name); }
+    vString Name()				{ return iNew.String(name); }
 
     vString report()	{ return iNew.String("(" + name + " = " + value + ")");}
 }
@@ -515,7 +506,7 @@ class k$x extends k$intWatcher {				// &x
 
     void newValue(long i) {
 	vWindow win = vWindow.getCurrent();
-	k$col.self.set(1 + i / 12);	//#%#%#%#%# bogus
+	k$col.self.set(1 + i / 12);	// #%#% should depend on font
     }
 }
 
@@ -525,7 +516,7 @@ class k$y extends k$intWatcher {				// &y
 
     void newValue(long i) {
 	vWindow win = vWindow.getCurrent();
-	k$row.self.set(1 + i / 7);	//#%#%#%#%# bogus
+	k$row.self.set(1 + i / 7);	// #%#% should depend on font
     }
 }
 
@@ -535,7 +526,7 @@ class k$row extends k$intWatcher {				// &row
 
     void newValue(long i) {
 	vWindow win = vWindow.getCurrent();
-	k$y.self.set(12 * i);		//#%#%#%#%# bogus
+	k$y.self.set(12 * i);		// #%#% should depend on font
     }
 }
 
@@ -545,7 +536,7 @@ class k$col extends k$intWatcher {				// &col
 
     void newValue(long i) {
 	vWindow win = vWindow.getCurrent();
-	k$x.self.set(7 * i);		//#%#%#%#%# bogus
+	k$x.self.set(7 * i);		// #%#% should depend on font
     }
 }
 
@@ -553,7 +544,7 @@ class k$col extends k$intWatcher {				// &col
 
 class k$dump extends vSimpleVar {				// &dump
 
-    public static long dump;	// #%#%#% referenced externally
+    public static long dump;	// referenced externally
 
     k$dump() { super("&dump"); }
 
@@ -570,7 +561,7 @@ class k$dump extends vSimpleVar {				// &dump
 
 class k$error extends vSimpleVar {				// &trace
 
-    static long error;		// #%#%#% referenced in iClosure
+    static long error;		// referenced in iClosure
 
     k$error() { super("&error"); }
 

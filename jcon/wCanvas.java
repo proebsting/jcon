@@ -9,18 +9,18 @@ import java.util.*;
 
 class wCanvas extends Canvas {
 
-    Frame f;		// enclosing Frame object
-    Image i;		// backing image used for refreshing visable image
+    Frame f;			// enclosing Frame object
+    Image i;			// backing image for refreshing visable image
 
-    vList evq;		// event queue
-    wTTY tty;		// file I/O stuff
+    vList evq;			// event queue
+    wTTY tty;			// file I/O stuff
 
-    Vector wlist;	// list of associated vWindows
+    Vector wlist;		// list of associated vWindows
 
-    String visibility;	// value of "canvas" (visibility) attribute
+    String visibility;		// value of "canvas" (visibility) attribute
 
-    boolean have_set_width;		// was width set explicitly?
-    boolean have_set_height;		// was height set explicitly?
+    boolean have_set_width;	// was width set explicitly?
+    boolean have_set_height;	// was height set explicitly?
 
 
 
@@ -52,7 +52,7 @@ wCanvas(vWindow win, String label, int w, int h) {
 
 //  config(win, multiplier, x, y, w, h) -- reconfigure geometry
 //
-//  #%#%#%#% for now, x and y are ignored; only size counts
+//  #%#% for now, x and y are ignored; only size counts
 //
 //  arguments are *String* values a la WAttrib()
 //  any particular argument can be null

@@ -1,18 +1,20 @@
 //  vList -- an Icon list
 //
 //  java.util.vectors are used to implement lists.
-//  push(), pop(), and get() take O(N) time where N is list size.
+//  push(), pop(), and get() presumably take O(N) time where N is list size.
 
 package rts;
 
 import java.util.*;
 
+
+
 public class vList extends vStructure {
 
     private Vector v;
 
-
 static int nextsn = 1;				// next serial number
+
 
 
 vList(int n, vValue x) {			// new Vlist(n, x)
@@ -41,10 +43,11 @@ vList(Vector v) {				// new Vlist(Vector v)
 // runtime primitives
 
 
-vString report()	{ return this.image(); } //#%#% redo with elem details
+vString report()	{ return this.image(); } //#%#% should show some elems
 
 static vString typestring = iNew.String("list");
 vString type()		{ return typestring; }
+
 int rank()		{ return 90; }		// lists sort after procedures
 
 
@@ -53,8 +56,7 @@ int rank()		{ return 90; }		// lists sort after procedures
 //  L.posEq(n) -- return positive equivalent of position n in list L,
 //		  or zero if out of bounds
 
-int posEq(long n)
-{
+int posEq(long n) {
     long len = v.size();
     if (n <= 0) {
 	n += len + 1;
@@ -70,11 +72,9 @@ int posEq(long n)
 
 // elements() is used when creating vSets and for the binary "!" operator.
 // Elements must be generated in order.
+
 java.util.Enumeration elements() {
     return new vListEnumeration(this.v);
-}
-int intsize() {
-    return v.size();
 }
 
 
@@ -262,7 +262,6 @@ class vListVar extends vSimpleVar {
 	    }
 	    i++;
 	}
-	// %#%##% can this happen?
 	return null;
     }
 }

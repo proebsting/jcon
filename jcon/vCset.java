@@ -5,8 +5,8 @@ public class vCset extends vValue {
     int size;			// cset size; -1 if unknown
     long w1, w2, w3, w4;	// four words of cset bits
 
-    static final int MAX_VALUE = 255;		// maximum char value in Jcon
-    private static final int UNKNOWN_SIZE = -1;	// indicator for unknown size
+static final int MAX_VALUE = 255;		// maximum char value in Jcon
+private static final int UNKNOWN_SIZE = -1;	// indicates unknown cset size
 
 
 
@@ -384,8 +384,7 @@ vValue Diff(vDescriptor x) {		// c1 || c2
 
 //  static methods for argument processing and defaulting
 
-static vCset argVal(vDescriptor[] args, int index)		// required arg
-{
+static vCset argVal(vDescriptor[] args, int index) {		// required arg
     if (index >= args.length) {
 	iRuntime.error(104);
 	return null;
@@ -394,8 +393,7 @@ static vCset argVal(vDescriptor[] args, int index)		// required arg
     }
 }
 
-static vCset argVal(vDescriptor[] args, int index, vCset dflt)	// optional arg
-{
+static vCset argVal(vDescriptor[] args, int index, vCset dflt){	// optional arg
     if (index >= args.length || args[index] instanceof vNull) {
 	return dflt;
     } else {

@@ -1,7 +1,5 @@
 //  iOperators.java -- Icon operators
 
-//#%#% tfmt() methods need to be double-checked vs. v9 Icon
-
 package rts;
 
 public class iOperators extends iFile {
@@ -78,8 +76,7 @@ void announce() {
 }
 
 
-static void declare(String opr, int args, String name)
-{
+static void declare(String opr, int args, String name) {
     iEnv.declareProc(opr, args,
 	iNew.Proc("function " + opr, "rts." + name, args));
 }
@@ -90,6 +87,7 @@ static void declare(String opr, int args, String name)
 
 
 //------------------------------------------  individual operators follow
+
 
 
 public class oLimit extends iUnaryValueClosure {		//  #x
@@ -103,6 +101,8 @@ public class oLimit extends iUnaryValueClosure {		//  #x
     }
     String tfmt() { return "limit counter: $1"; }
 }
+
+
 
 public class oAssign extends iBinaryRefClosure {		// x1 := x2
     public static iBinaryClosure instance = new oAssign();
@@ -175,7 +175,6 @@ public class oRevSwap extends iClosure {			// x1 <-> x2
     String tfmt() { return "{$1 <-> $2}"; }
 }
 
-
 //  special assignment operator used to assign &subject for string scanning
 //  (exactly the same as := except for the error message)
 
@@ -202,7 +201,7 @@ public class oConjunction extends iBinaryRefClosure {		// x1 & x2
 
 
 
-public class oToBy extends iClosure {				// i1 to i2 by i3
+public class oToBy extends iClosure {			// i1 to i2 by i3
 
     long i2, i3, ivar;
 
@@ -277,6 +276,8 @@ public class oField extends iBinaryRefClosure {			// R . s
     String tfmt() { return "{$1 . " + s + "}"; }
 }
 
+
+
 public class oIndex extends iBinaryRefClosure {			//  x1[x2]
     public static iBinaryClosure instance = new oIndex();
     vDescriptor function() {
@@ -315,7 +316,6 @@ public class oSectMinus extends iTrinaryRefClosure {		//  x1[x2-:x3]
     }
     String tfmt() { return "{$1[$2-:$3]}"; }
 }
-
 
 
 

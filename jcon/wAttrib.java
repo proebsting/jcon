@@ -123,8 +123,7 @@ static wAttrib[] parseAtts(vDescriptor[] args, int n) {
 
 //  unsettable(name, value) -- report error 147 (attrib can't be read/written)
 
-static vValue unsettable(String name, String value)
-{
+static vValue unsettable(String name, String value) {
     iRuntime.error(147, iNew.String(name + "=" + value));
     return null;
 }

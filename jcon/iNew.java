@@ -214,6 +214,22 @@ public static vWindow Window(String name, String mode, vDescriptor args[]) {
 
 
 
+// for construction of internal types
+
+public static vSimpleVar SimpleVar(String name)
+				{ return new vSimpleVar(name); }
+
+public static vSimpleVar SimpleVar(String name, vDescriptor x)
+				{ return new vSimpleVar(name, x.deref()); }
+
+public static vSubstring Substring(vVariable v, int i1, int i2)
+				{ return new vSubstring(v, i1, i2); }
+
+public static vSubstring Substring(vSubstring v, int i1, int i2)
+				{ return new vSubstring(v, i1, i2); }
+
+
+
 static vDescriptor[][][] argCache = new vDescriptor[20][20][];
 static int[] argCacheSP = new int[20];
 public static vDescriptor[] ArgArray(int i) {
@@ -234,19 +250,5 @@ public static void FreeArgs(vDescriptor[] a) {
 }
 
 
-
-// for construction of internal types
-
-public static vSimpleVar SimpleVar(String name)
-				{ return new vSimpleVar(name); }
-
-public static vSimpleVar SimpleVar(String name, vDescriptor x)
-				{ return new vSimpleVar(name, x.deref()); }
-
-public static vSubstring Substring(vVariable v, int i1, int i2)
-				{ return new vSubstring(v, i1, i2); }
-
-public static vSubstring Substring(vSubstring v, int i1, int i2)
-				{ return new vSubstring(v, i1, i2); }
 
 } // class iNew

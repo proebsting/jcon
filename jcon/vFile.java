@@ -153,7 +153,7 @@ void newpipe(String name, String flags) throws IOException {
 
 	// open pipe for writing
 	if (iRuntime.upto("rbRB", flags)) {
-	    throw new IOException();	// cannot open bidirectionally
+	    throw new IOException();		// cannot open bidirectionally
 	}
 	outstream = new DataOutputStream(
 	    new BufferedOutputStream(pipe.getOutputStream()));
@@ -172,8 +172,7 @@ void newpipe(String name, String flags) throws IOException {
 
 //  static methods for argument processing and defaulting
 
-static vFile argVal(vDescriptor[] args, int index)		// required arg
-{
+static vFile argVal(vDescriptor[] args, int index) {	// required arg
     if (index >= args.length) {
 	iRuntime.error(105);	// file expected
 	return null;
@@ -185,8 +184,7 @@ static vFile argVal(vDescriptor[] args, int index)		// required arg
     }
 }
 
-static vFile argVal(vDescriptor[] args, int index, vFile dflt)	// optional arg
-{
+static vFile argVal(vDescriptor[] args, int index, vFile dflt){	// optional arg
     if (index >= args.length || args[index] instanceof vNull) {
 	return dflt;
     } else if (args[index] instanceof vFile) {
@@ -199,11 +197,11 @@ static vFile argVal(vDescriptor[] args, int index, vFile dflt)	// optional arg
 
 
 
-// ------------- input buffering for random-access input files ------------
+// ------------- input buffering: MUST USE THIS FOR ALL INPUT ------------
 
 
 
-//  rchar() -- read one character.  MUST USE THIS FOR ALL INPUT.
+//  rchar() -- read one character
 
 char rchar() throws IOException, EOFException {
     if (icount > 0) {			// if buffer is not empty
@@ -226,19 +224,17 @@ char rchar() throws IOException, EOFException {
 
 
 
-
-
 // --------------------------- Icon I/O operations --------------------------
 
 
 
-vFile flush() {					// flush()
+vFile flush() {							// flush()
 
     if (outstream != null && outstream instanceof OutputStream) {
 	try {
 	    ((OutputStream)outstream).flush();
 	} catch (IOException e) {
-	    iRuntime.error(214, this);	// I/O error
+	    iRuntime.error(214, this);		// I/O error
 	}
     }
     inext = icount = 0;
@@ -247,7 +243,7 @@ vFile flush() {					// flush()
 
 
 
-vFile close() {						// close()
+vFile close() {							// close()
 
     if (! openfiles.containsKey(this)) {
 	return this;				// already closed
@@ -315,23 +311,23 @@ static void copy(InputStream ifile, vFile ofile) throws IOException {
 
 
 
-vFile seek(long n) {					// seek(n)
-    if (randfile == null) {		// if not seekable
+vFile seek(long n) {						// seek(n)
+    if (randfile == null) {			// if not seekable
 	return null; /*FAIL*/
     }
     try {
 	long len;
 
 	if (ibuf != null) {
-	    len = iflen;		// file length known if read-buffered
+	    len = iflen;			// length known if read-buffered
 	} else {
-	    len = randfile.length();	// otherwise can change; must ask
+	    len = randfile.length();		// others can change; must ask
 	}
 
 	if (n > 0) {
-	    n--;			// remove Icon bias from seek address
+	    n--;				// remove Icon bias from address
 	} else {
-	    n = len + n;		// distance from end
+	    n = len + n;			// distance from end
 	}
 
 	if (n < 0 || n > len) {
@@ -350,9 +346,9 @@ vFile seek(long n) {					// seek(n)
 	}
 
 	// not buffered, or position is not in buffer
-	randfile.seek(n);		// reposition file
-	ifpos = n;			// record new position
-	inext = icount = 0;		// clear input buffer
+	randfile.seek(n);			// reposition file
+	ifpos = n;				// record new position
+	inext = icount = 0;			// clear input buffer
 	return this;
 
     } catch (IOException e) {
@@ -362,7 +358,7 @@ vFile seek(long n) {					// seek(n)
 
 
 
-vInteger where() {					// where()
+vInteger where() {						// where()
     if (randfile == null) {
 	return null; /*FAIL*/
     }
@@ -378,13 +374,13 @@ vInteger where() {					// where()
 
 
 
-vString read() {					// read()
+vString read() {						// read()
     if (instream == null) {
 	iRuntime.error(212, this);	// not open for reading
     }
 
     if (fileToSync != null && instream == System.in) {
-	fileToSync.flush();			// flush pending graphics output
+	fileToSync.flush();		// flush pending graphics output
     }
 
     vByteBuffer b = new vByteBuffer(100);

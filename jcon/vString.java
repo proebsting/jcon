@@ -68,7 +68,7 @@ vString(vString s, int i, int j, vString t) {	// new vString := (s[i:j] := t)
 
 
 
-//  special vString primitives
+//  special vString methods
 
 final int length() {			// s.length()
     return tlength;
@@ -243,7 +243,7 @@ vString type()		{ return typestring; }
 int rank()		{ return 30; }		// strings rank after reals
 
 vString image()		{ return image(tlength); }
-vString report()	{ return image(16); }	 // limit to max of 16 chars
+vString report()	{ return image(16); }	// limit to max of 16 chars
 
 
 vString image(int maxlen) {		// make image, up to maxlen chars
@@ -286,7 +286,7 @@ int compareTo(vValue v) {		// compare strings lexicographically
 
 
 
-vNumeric mkNumeric()	{
+vNumeric mkNumeric()	{					// numeric(s)
 
     if (cachedNumeric != null) {
 	return cachedNumeric;
@@ -328,7 +328,7 @@ vNumeric mkNumeric()	{
     return null;
 }
 
-vInteger mkInteger()	{
+vInteger mkInteger()	{					// integer(s)
     try {
 	return this.mkNumeric().mkInteger();	// allows integer("3e6")
     } catch (iError e) {
@@ -337,21 +337,18 @@ vInteger mkInteger()	{
     }
 }
 
-vReal mkReal()		{
+vReal mkReal()		{					// real(s)
     return this.mkNumeric().mkReal();
 }
 
-
-
-vCset mkCset() {
+vCset mkCset() {						// cset(s)
     return iNew.Cset(this);
 }
 
 
 //  static methods for argument processing and defaulting
 
-static vString argDescr(vDescriptor[] args, int index)		// required arg
-{
+static vString argDescr(vDescriptor[] args, int index) {	// required arg
     if (index >= args.length) {
 	iRuntime.error(103);
 	return null;
@@ -360,8 +357,7 @@ static vString argDescr(vDescriptor[] args, int index)		// required arg
     }
 }
 
-static vString argDescr(vDescriptor[] args, int index, vString dflt) // opt arg
-{
+static vString argDescr(vDescriptor[] args, int index, vString dflt){ // opt arg
     if (index >= args.length || args[index] instanceof vNull) {
 	return dflt;
     } else {
@@ -371,14 +367,13 @@ static vString argDescr(vDescriptor[] args, int index, vString dflt) // opt arg
 
 
 
-//  append escaped char to StringBuffer; also used for csets
+//  append escaped char to ByteBuffer; also used for csets
 
 private static char[] ecodes = { 'b', 't', 'n', 'v', 'f', 'r' };
 private static char[] xcodes =
     { '0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f' };
 
-static void appendEscaped(vByteBuffer b, char c)
-{
+static void appendEscaped(vByteBuffer b, char c) {
     if (c >= ' ' && c <= '~') {		// printable range
 	if (c == '\\') {
 	    b.append('\\');
@@ -389,13 +384,13 @@ static void appendEscaped(vByteBuffer b, char c)
 	b.append(ecodes[c - 0x08]);	//  \b \t \n \v \f \r
     } else if (c == 0x1B) {
 	b.append('\\');
-	b.append('e');		//  \e
+	b.append('e');			//  \e
     } else if (c == 0x7F) {
 	b.append('\\');
-	b.append('d');		//  \d
+	b.append('d');			//  \d
     } else {
 	b.append('\\');
-	b.append('x');		//  \xnn
+	b.append('x');			//  \xnn
 	b.append(xcodes[(c >> 4) & 0xF]);
 	b.append(xcodes[c & 0xF]);
     }
@@ -406,8 +401,7 @@ static void appendEscaped(vByteBuffer b, char c)
 //  s.posEq(n) -- return positive equivalent of position n in string s,
 //		  or zero if out of bounds
 
-int posEq(long n)
-{
+int posEq(long n) {
     if (n <= 0) {
 	n += tlength + 1;
     }

@@ -26,8 +26,7 @@ static boolean upto(String c, String s) {
 
 public static void error(int n)  { error(n, null); }
 
-public static void error(int n, vDescriptor d)
-{
+public static void error(int n, vDescriptor d) {
     throw new iError(n,d);
 }
 
@@ -35,16 +34,14 @@ public static void error(int n, vDescriptor d)
 
 //  bomb(s) -- abort with message due to internal error
 
-public static void bomb(String s)
-{
+public static void bomb(String s) {
     System.out.flush();
     System.err.println();
     System.err.println("Runtime malfunction: " + s);
     System.exit(1);
 }
 
-public static void bomb(Exception e)
-{
+public static void bomb(Exception e) {
     System.out.flush();
     System.err.println();
     System.err.println("Runtime malfunction: Java exception");
@@ -59,8 +56,7 @@ public static void bomb(Exception e)
 //
 //  (both assume that arg arrays have already been dereferenced.)
 
-public static vValue argVal(vDescriptor[] args, int index)
-{
+public static vValue argVal(vDescriptor[] args, int index) {
     if (args.length <= index) {
 	return iNew.Null();
     } else {
@@ -68,8 +64,7 @@ public static vValue argVal(vDescriptor[] args, int index)
     }
 }
 
-public static vValue argVal(vDescriptor[] args, int index, int errcode)
-{
+public static vValue argVal(vDescriptor[] args, int index, int errcode) {
     if (args.length <= index) {
 	iRuntime.error(errcode);
 	return null;
@@ -107,6 +102,7 @@ public static long argPos(vDescriptor[] args, int index) {
     }
     return args[index].mkInteger().value;
 }
+
 
 
 public static void display(iClosure parent) {

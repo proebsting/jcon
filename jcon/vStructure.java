@@ -11,7 +11,9 @@ abstract public class vStructure extends vValue {
 
     int snum;		// serial number
 
-abstract vValue Copy();		// must be implemented by subclass
+
+
+abstract vValue Copy();			// must be implemented by subclass
 
 
 
@@ -41,10 +43,9 @@ vString image() {			// type_snum(size)
 //  x.compareTo(y) -- common comparison method for lists, sets, tables
 //
 //  called only for two sets, two lists, or two tables;
-//  for records, overridden by a different implementation
+//  for records, overridden by a different method
 
-int compareTo(vValue v)
-{
+int compareTo(vValue v) {
     return (int) (this.snum - ((vStructure)v).snum);
 }
 

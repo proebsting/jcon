@@ -76,7 +76,7 @@ wColor(vString s, int rgb) {
 
 static wColor parse(vString s) {
 
-    String js = s.toString();	//#%#% unnecessary?
+    String js = s.toString();
     int rgb = parseInts(js);
     if (rgb < 0) {
 	rgb = parseName(js);
@@ -136,10 +136,10 @@ private static int parseName(String k) {
 	    t = tkr.nextToken();
 	}
 
-	wHue h1, h2;		// two (or possibly just one) named hues
-	double weight;		// weight of first hue (25%, 50%, 100%)
+	wHue h1, h2;			// two (or possibly just one) named hues
+	double weight;			// weight of first hue (25%, 50%, 100%)
 
-	h1 = parseIsh(t);	// check for "ish" form
+	h1 = parseIsh(t);		// check for "ish" form
 
 	if (h1 != null) {
 
@@ -260,7 +260,6 @@ private static wHue parseHue(String s) {
 	return (wHue) hueTable.get(s);
     }
 }
-
 
 
 

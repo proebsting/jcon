@@ -21,13 +21,14 @@ vString Name() {
     return iNew.String(vname +"[" + start + ":" + end + "]");
 }
 
+
+
 //  ss.strval() -- return underlying vString value.
 //
 //  Verifies that the underlying variable is still a string
 //  and that the indices are still in range, and return String.
 
-vString strval()
-{
+vString strval() {
     vDescriptor v = var.deref();
     if (! (v instanceof vString)) {
 	iRuntime.error(205);
@@ -44,8 +45,7 @@ vString strval()
 //  ss.posEq(n) -- return positive equivalent of position n in substring ss,
 //		   or zero if out of bounds
 
-int posEq(long n)
-{
+int posEq(long n) {
     int len = end - start;
     if (n <= 0) {
 	n += len + 1;
@@ -86,9 +86,9 @@ public vVariable Assign(vValue x) {
 
 
 
-vDescriptor isNull()	{ return null; /*FAIL*/ }
+vDescriptor isNull()		{ return null; /*FAIL*/ }
 
-vDescriptor isntNull()	{ return this; }
+vDescriptor isntNull()		{ return this; }
 
 
 
@@ -126,7 +126,7 @@ vDescriptor Select() {				// ?s
 }
 
 vDescriptor Bang(iClosure c) {			// !s
-    int n;
+    int n;			//#%#% use c.oint
     if (c.PC == 1) {
 	c.o = new Integer(n = start);
 	c.PC = 2;

@@ -102,8 +102,7 @@ public static void main(String a[]) {
 
 //  trace(s) -- output tracing information to stderr, if enabled
 
-static void trace(String s)
-{
+static void trace(String s) {
     if (tracing) {
 	System.err.println(s);
     }
@@ -113,8 +112,7 @@ static void trace(String s)
 
 //  error(s) -- report fatal error
 
-static void error(String s)
-{
+static void error(String s) {
     System.err.println(s);
     errorcount++;
 }
@@ -126,8 +124,7 @@ static void error(String s)
 //  allows path components to be separated either by spaces
 //  or by the standard pathSeparator character.
 
-static String[] crackpath(String s)
-{
+static String[] crackpath(String s) {
     Vector v = new Vector();
 
     s = s.replace(IconPathSeparator, File.pathSeparatorChar)
@@ -154,8 +151,7 @@ static String[] crackpath(String s)
 
 //  findfile(name) -- find .zip file on IPATH
 
-static String findfile(String name)
-{
+static String findfile(String name) {
     for (int i = 0; i < ipath.length; i++) {
 	File f = new File(ipath[i], name + ".zip");
 	if (f.canRead()) {
@@ -173,8 +169,8 @@ static String findfile(String name)
 //  adds the basename to the list of found names
 //  scans the file for additional names to link
 
-static void addfile(String fname)
-{
+static void addfile(String fname) {
+
     // add file name to list
     trace("file: " + fname);
     files.addElement(new File(fname).getAbsolutePath());
@@ -196,8 +192,7 @@ static void addfile(String fname)
 
 //  readlinks(fname) -- read links from .zip file and add to list
 
-static void readlinks(String fname)
-{
+static void readlinks(String fname) {
     try {
 	ZipFile f = new ZipFile(fname);
 	ZipEntry e = f.getEntry("links");

@@ -2,24 +2,28 @@ package rts;
 
 public class vNull extends vValue {
 
-    vDescriptor isNull()	{ return this; }
-    vDescriptor isntNull()	{ return null; /*FAIL*/ }
 
-    vString write()		{ return iNew.String(); }
 
-    static vString imagestring = iNew.String("&null");
-    vString image()		{ return imagestring; }
+vDescriptor isNull()		{ return this; }
+vDescriptor isntNull()		{ return null; /*FAIL*/ }
 
-    public int hashCode()	{ return 0; }
+vString write()			{ return iNew.String(); }
 
-    static vString typestring = iNew.String("null");
-    vString type()		{ return typestring; }
+static vString imagestring = iNew.String("&null");
+vString image()			{ return imagestring; }
 
-    int rank()			{ return 0; }	// nulls sort first
-    int compareTo(vValue v)	{ return 0; }	// all nulls are equal
+public int hashCode()		{ return 0; }
 
-    public boolean equals(Object o)	{
-	return (o instanceof vNull);
-    }
+static vString typestring = iNew.String("null");
+vString type()			{ return typestring; }
 
+int rank()			{ return 0; }	// nulls sort first
+int compareTo(vValue v)		{ return 0; }	// all nulls are equal
+
+public boolean equals(Object o)	{
+    return (o instanceof vNull);
 }
+
+
+
+} // class vNull

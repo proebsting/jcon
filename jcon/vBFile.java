@@ -10,9 +10,7 @@ public class vBFile extends vFile {
 
 
 
-vBFile(String name, String mode)		 // new vBFile(name, mode)
-    throws IOException
-{
+vBFile(String name, String mode) throws IOException {	// new vBFile(nm, mode)
     super(name, mode);
 }
 

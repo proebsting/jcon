@@ -14,22 +14,26 @@ package rts;
 
 public abstract class vVariable extends vIndirect {
 
-    // must be implemented:
 
-    public abstract vValue deref();		// dereference
-    public abstract vVariable Assign(vValue x);	// assign
 
-    abstract vString Name();			// name
-    abstract vString report();			// report for traceback
+// must be implemented:
 
-    // operations that produce vVarExprs
+public abstract vValue deref();			// dereference
+public abstract vVariable Assign(vValue x);	// assign
 
-    vDescriptor Select()	  { return this.deref().SelectVar(this); }
-    vDescriptor Bang(iClosure c)  { return this.deref().BangVar(c, this); }
+abstract vString Name();			// name
+abstract vString report();			// report for traceback
 
-    vDescriptor Index(vValue i)
-				{ return this.deref().IndexVar(this, i); }
-    vDescriptor Section(int i, int j)
-				{ return this.deref().SectionVar(this, i, j); }
 
-}
+
+// operations that produce vVarExprs
+
+vDescriptor Select()		{ return this.deref().SelectVar(this); }
+vDescriptor Bang(iClosure c)	{ return this.deref().BangVar(c, this); }
+
+vDescriptor Index(vValue i)	{ return this.deref().IndexVar(this, i); }
+vDescriptor Section(int i,int j){ return this.deref().SectionVar(this, i, j); }
+
+
+
+} // class vVariable

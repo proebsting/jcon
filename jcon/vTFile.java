@@ -29,7 +29,7 @@ vString reads(long n) {
     vByteBuffer b = new vByteBuffer((int) n);
 
     if (instream == null) {
-	iRuntime.error(212, this);	// not open for reading
+	iRuntime.error(212, this);		// not open for reading
     }
 
     if (fileToSync != null && instream == System.in) {
@@ -52,7 +52,7 @@ vString reads(long n) {
 	if (b.length() == 0)
 	    return null; /*FAIL*/
     } catch (IOException e) {
-	iRuntime.error(214, this);	// I/O error
+	iRuntime.error(214, this);		// I/O error
 	return null;
     }
     return b.mkString();
@@ -64,7 +64,7 @@ vString reads(long n) {
 
 void writes(vString s) {
     if (outstream == null) {
-	iRuntime.error(213, this);	// not open for writing
+	iRuntime.error(213, this);		// not open for writing
     }
     byte b[] = s.getBytes();
     try {
@@ -87,7 +87,7 @@ void writes(vString s) {
 	    }
 	}
     } catch (IOException e) {
-	iRuntime.error(214, this);	// I/O error
+	iRuntime.error(214, this);		// I/O error
     }
 }
 
@@ -97,12 +97,12 @@ void writes(vString s) {
 
 void newline() {
     if (outstream == null) {
-	iRuntime.error(213, this);	// not open for writing
+	iRuntime.error(213, this);		// not open for writing
     }
     try {
 	outstream.writeBytes(nlstring);
     } catch (IOException e) {
-	iRuntime.error(214, this);	// I/O error
+	iRuntime.error(214, this);		// I/O error
     }
 }
 

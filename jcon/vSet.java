@@ -156,4 +156,4 @@ vValue Diff(vDescriptor x) {
     return result;
 }
 
-} // class vTable
+} // class vSet
