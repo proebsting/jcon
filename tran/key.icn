@@ -1,4 +1,5 @@
-# returns the set of keywords that are implemented as functions.
+#  key.icn -- routine that enumerates keywords implemented as functions.
+
 procedure key_functions()
     return set([
         "errornumber",

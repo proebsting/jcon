@@ -1,3 +1,5 @@
+#  dump.icn -- routines for creating string representations of data
+
 procedure echo(c, flags)
     local p
     while p := @\c do {

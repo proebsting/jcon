@@ -1,3 +1,5 @@
+#  lexer.icn -- routines that do lexical analysis.
+
 global newline, yyline, coord_pos, yyfile
 record lex_coordinate(file, line, column)
 record lex_TOK(sym, str, coord)

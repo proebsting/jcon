@@ -1,4 +1,7 @@
+#  interfacegen.icn -- utility to create bytecode emitter routines
+
 procedure main()
+    write("#  AUTOMATICALLY GENERATED FILE -- DO NOT EDIT!")
     methodrefs()
     fieldrefs()
 end

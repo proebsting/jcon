@@ -1,3 +1,5 @@
+#  bytecode.icn -- data structures and routines for manipulating class files.
+
 record j_CONSTANT_Class(name_index, pool_index)
 record j_CONSTANT_a_Fieldref(class_index, name_and_type_index, pool_index)
 record j_CONSTANT_Methodref(class_index, name_and_type_index, pool_index)

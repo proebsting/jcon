@@ -1,3 +1,5 @@
+#  ir.icn -- data structures for Jcon's intermediate representation.
+
 record ir_Invocable(nameList, all)
 record ir_Link(nameList)
 record ir_Record(name, fieldList)

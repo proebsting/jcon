@@ -1,3 +1,5 @@
+#  parse.icn -- LL(1) parser that maps tokens to abstract syntax trees.
+
 global parse_tok        # This is the co_expression that represents the scanner
 global parse_tok_rec    # This is the current token record
 

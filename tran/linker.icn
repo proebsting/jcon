@@ -1,5 +1,6 @@
-# linker outputclassname inputclassname*
+#  linker.icn -- Jcon's "linker" routines.
 
+# linker outputclassname inputclassname*
 procedure main(L)
     local init, initcode, m, mcode, constructor
     local outclass, i, atype, start, f, c

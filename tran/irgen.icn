@@ -1,3 +1,5 @@
+#  irgen.icn -- translate abstract syntax trees to intermediate representation.
+
 global ir_noerror2failure
 global ir_createflag
 

@@ -1,3 +1,5 @@
+#  oplexgen.icn -- utility that generates lexical analysis routines.
+
 global primitives, reserveds, operators
 
 procedure init_lex_tables()
@@ -135,6 +137,8 @@ end
 
 procedure main(L)
     local toks, prim, actual, token, res, op, elem
+
+    write("#  AUTOMATICALLY GENERATED FILE -- DO NOT EDIT!")
 
     init_lex_tables()
     toks := table()

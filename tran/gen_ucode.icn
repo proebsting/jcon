@@ -1,3 +1,5 @@
+#  gen_ucode.icn -- create Icon .u[12] files from abstract syntax trees.
+
 record u_arg(n)
 record u_asgn()
 record u_bang()

@@ -1,3 +1,5 @@
+#  gen_dot.icn -- create "dot" input from intermediate representation.
+
 global dot_emit_table
 
 procedure dot_emit(label, code)

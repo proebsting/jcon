@@ -1,3 +1,5 @@
+#  optimize.icn -- intermediate representation optimizer routines.
+
 global optim_optimize_flag
 global optim_refcount
 

@@ -1,3 +1,5 @@
+#  gen_bc.icn -- filter to create class files from intermediate representation
+
 global bc_nodebuginfo
 global bc_nointrospection
 

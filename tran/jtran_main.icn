@@ -1,3 +1,5 @@
+#  jtran_main.icn -- (generic) driver for Jcon.
+
 invocable all
 
 procedure cat(getline, args)

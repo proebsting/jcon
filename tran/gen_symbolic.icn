@@ -1,3 +1,5 @@
+#  gen_symbolic.icn -- create symbolic output from intermediate represenation.
+
 global symbolic_emit_table
 
 procedure symbolic_emit(label, code)
