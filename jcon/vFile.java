@@ -290,16 +290,18 @@ void closepipe() throws IOException {
 	    // nothing
 	};
 	copy(pipe.getInputStream(), k$output.file);  // copy stdout from process
+    } else {
+	k$output.file.flush();			// only need to flush stdout
     }
 
-    k$output.file.flush();			// flush stdout
     copy(pipe.getErrorStream(), k$errout.file);	// copy stderr from process
-    k$errout.file.flush();
 
     pipe.destroy();				// kill process
 }
 
 
+
+//  vFile.copy(instream, ofile) -- copy pipe output, and flush
 
 static void copy(InputStream ifile, vFile ofile) throws IOException {
     byte b[] = new byte[BufferSize];
@@ -308,6 +310,7 @@ static void copy(InputStream ifile, vFile ofile) throws IOException {
     while ((n = ifile.read(b)) >= 0) {
 	ofile.outstream.write(b, 0, n);
     }
+    ofile.flush();
 }
 
 

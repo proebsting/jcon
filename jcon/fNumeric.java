@@ -14,6 +14,25 @@ class f$abs extends iValueClosure {				// abs(n)
 
 
 
+class f$seq extends iClosure {					// seq(i1,i2)
+    long i1, i2;
+
+    public vDescriptor nextval() {
+	if (PC == 1) {
+	    PC = 2;
+	    i1 = vInteger.argVal(arguments, 0, 1);
+	    i2 = vInteger.argVal(arguments, 1, 1);
+	} else {
+	    i1 += i2;
+	}
+	return iNew.Integer(i1);
+    }
+}
+
+
+
+//  bit-manipulation functions
+
 class f$icom extends iValueClosure {				// icom(n)
     vDescriptor function(vDescriptor[] args) {
 	return iNew.Integer(~vInteger.argVal(args, 0)); 

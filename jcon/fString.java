@@ -102,6 +102,8 @@ class f$left extends iValueClosure {				// left(s,i,s)
     }
 }
 
+
+
 class f$right extends iValueClosure {				// right(s,i,s)
     static vString space = iNew.String(' ');
     vDescriptor function(vDescriptor[] args) {
@@ -137,6 +139,8 @@ class f$right extends iValueClosure {				// right(s,i,s)
     return iNew.String(dst);
     }
 }
+
+
 
 class f$center extends iValueClosure {				// center(s,i,s)
     static vString space = iNew.String(' ');
@@ -182,11 +186,13 @@ class f$center extends iValueClosure {				// center(s,i,s)
        }
     }
 
-    // now copy string atop background
+    // finally, copy string
     System.arraycopy(src, 0, dst, offset, srclen);
     return iNew.String(dst);
     }
 }
+
+
 
 class f$trim extends iValueClosure {				// trim(s,c)
     static vCset defset = iNew.Cset(' ');
@@ -204,6 +210,8 @@ class f$trim extends iValueClosure {				// trim(s,c)
     return iNew.String(s, 1, i + 2);
     }
 }
+
+
 
 class f$map extends iValueClosure {				// map(s1,s2,s3)
 

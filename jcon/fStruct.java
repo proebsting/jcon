@@ -1,4 +1,4 @@
-//  fStruct.java -- functions dealing with sets and tables
+//  fStruct.java -- functions dealing with sets, tables, structures in general
 
 package rts;
 
@@ -57,5 +57,21 @@ class f$key extends iClosure {					//  key(T)
 	iRuntime.error(124);
     }
     return arguments[0].Key(this);
+    }
+}
+
+
+
+class f$copy extends iValueClosure {				// copy(x)
+    vDescriptor function(vDescriptor[] args) {
+	return iRuntime.argVal(args, 0).Copy();
+    }
+}
+
+
+
+class f$serial extends iValueClosure {				// serial(x)
+    vDescriptor function(vDescriptor[] args) {
+	return iRuntime.argVal(args, 0).Serial();
     }
 }

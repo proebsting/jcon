@@ -4,6 +4,8 @@ package rts;
 
 class fScanning {} // dummy
 
+
+
 class f$pos extends iValueClosure {			// pos(i)
     vDescriptor function(vDescriptor[] args) {
 	long i = vInteger.argVal(args, 0);
@@ -15,6 +17,8 @@ class f$pos extends iValueClosure {			// pos(i)
 	return null;
     }
 }
+
+
 
 class f$any extends iValueClosure {			// any(c,s,i1,i2)
     vDescriptor function(vDescriptor[] args) {
@@ -37,6 +41,8 @@ class f$any extends iValueClosure {			// any(c,s,i1,i2)
 	return null;
     }
 }
+
+
 
 class f$many extends iValueClosure {			// many(c,s,i1,i2)
     vDescriptor function(vDescriptor[] args) {
@@ -71,6 +77,8 @@ class f$many extends iValueClosure {			// many(c,s,i1,i2)
     }
 }
 
+
+
 class f$match extends iValueClosure {			// match(s1,s2,i1,i2)
     vDescriptor function(vDescriptor[] args) {
 	vString s1 = vString.argDescr(args, 0);
@@ -103,6 +111,8 @@ class f$match extends iValueClosure {			// match(s1,s2,i1,i2)
 	}
     }
 }
+
+
 
 class f$find extends iClosure {				// find(s1,s2,i1,i2)
 
@@ -144,6 +154,8 @@ class f$find extends iClosure {				// find(s1,s2,i1,i2)
     }
 }
 
+
+
 class f$upto extends iClosure {				// upto(c,s2,i1,i2)
 
     vCset c;
@@ -183,6 +195,8 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
 	return null;
     }
 }
+
+
 
 class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 
@@ -241,6 +255,8 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
     }
 }
 
+
+
 class f$move extends iClosure {				// move(j)
 
     vInteger oldpos;
@@ -270,6 +286,8 @@ class f$move extends iClosure {				// move(j)
 	}
     }
 }
+
+
 
 class f$tab extends iClosure {				// tab(j)
 

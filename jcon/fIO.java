@@ -133,3 +133,33 @@ class f$where extends iValueClosure {				// where(f)
 	return(vFile.argVal(args, 0).where());
     }
 }
+
+
+
+class f$remove extends iValueClosure {				// remove(s)
+    vDescriptor function(vDescriptor[] args) {
+	String s = vString.argDescr(args, 0).toString();
+	java.io.File f = new java.io.File(s);
+	if (f.delete()) {
+	    return iNew.Null();
+	} else {
+	    return null;
+	}
+    }
+}
+
+
+
+class f$rename extends iValueClosure {				// rename(s1,s2)
+    vDescriptor function(vDescriptor[] args) {
+	String s1 = vString.argDescr(args, 0).toString();
+	String s2 = vString.argDescr(args, 1).toString();
+	java.io.File f1 = new java.io.File(s1);
+	java.io.File f2 = new java.io.File(s2);
+	if (f1.renameTo(f2)) {
+	    return iNew.Null();
+	} else {
+	    return null;
+	}
+    }
+}
