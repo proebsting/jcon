@@ -74,5 +74,5 @@ known bugs:
 -- e[e+:e] and e[e-:e] function identically to v9, which is wrong
 -- local variables are not dereferenced prior to being returned
 -- "invocable" procedures are computed incorrectly.  "invocable all" works.
-   Basically, too many user proceedures are considered invocable.
+   Basically, too many user procedures are considered invocable.
 -- on the Dec Alpha, a rightward ishift() doesn't sign extend  [Java bug]
