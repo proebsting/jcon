@@ -10,6 +10,7 @@ public final class vCoexp extends vValue implements Runnable {
     vDescriptor incomingValue;
     Semaphore lock;
     int snum;		// serial number
+    int depth;		// call depth for tracing
     int resultCount;
 
 static int nextsn = 1;			// next serial number

@@ -8,6 +8,14 @@ public final class iTrace {
 
 
 
+//  location of "return" or "suspend"
+//  (set by generated code when compiled in trace mode)
+
+public static String file;	// file name
+public static int line;		// line number
+
+
+
 public static vDescriptor Call(String fname, int lineno,
 			vDescriptor a, vDescriptor[] args) {
 
@@ -29,17 +37,21 @@ public static vDescriptor Call(String fname, int lineno,
 	trace(fname, lineno, p, b.toString());
     }
 
+    file = null;		// clear for called procedure to set (or not)
+    line = 0;
     vDescriptor result = vTracedClosure.New(p, args, p.Call(args));
 
     if (iKeyword.trace.check()) {
 	if (result instanceof vClosure) {
-	    trace(fname, lineno, p, " suspended", result);
+	    trace(file, line, p, " suspended", result);
 	} else {
-	    trace(fname, lineno, p, " returned", result);
+	    trace(file, line, p, " returned", result);
 	}
     }
 
-    return result;
+    file = null;		// prevent confusion by caller's caller
+    line = 0;
+    return result;		// return/suspend result
 }
 
 
@@ -48,14 +60,23 @@ public static vDescriptor Resume(String fname, int lineno, vDescriptor object) {
     if (! (object instanceof vTracedClosure)) {		// don't trace to-by etc
 	return object.Resume();
     }
+    iEnv.cur_coexp.depth++;
     if (iKeyword.trace.check()) {
 	trace(fname, lineno, object, " resumed");
     }
-    vDescriptor v = object.Resume();
+
+    file = null;		// clear for suspended procedure to set (or not)
+    line = 0;
+    vDescriptor result = object.Resume();	// resume
+
     if (iKeyword.trace.check()) {
-	trace(fname, lineno, object, " suspended", v);
+	trace(file, line, object, " suspended", result);
     }
-    return v;
+
+    iEnv.cur_coexp.depth--;
+    file = null;		// prevent confusion by caller's caller
+    line = 0;
+    return result;		// return/suspend result
 }
 
 
@@ -74,19 +95,24 @@ static void trace(String fn, int ln, vDescriptor o, String s, vDescriptor v) {
 static void trace(String fname, int lineno, vDescriptor obj, String s) {
     StringBuffer out = new StringBuffer(80);
 
-    out.append(fname);
-    while (out.length() < 12) {
-	    out.append(" ");
+    if (fname == null || lineno == 0) {
+	out.append("                     ");
+    } else {
+	out.append(fname);
+	while (out.length() < 12) {
+		out.append(" ");
+	}
+	out.append(" :");
+	String ln = String.valueOf(lineno);
+	for (int i = ln.length(); i < 5; i++) {
+		out.append(" ");
+	}
+	out.append(ln).append("  ");
     }
-    out.append(" : ");
 
-    String ln = String.valueOf(lineno);
-    for (int i = ln.length(); i <= 4; i++) {
-	    out.append(" ");
+    for (int n = iEnv.cur_coexp.depth - 1; n > 0; n--) {
+	out.append("| ");
     }
-    out.append(ln).append(" ");
-
-    out.append("|...| ");	//#%#%#%#
 
     if (obj == null) {
 	out.append("?");

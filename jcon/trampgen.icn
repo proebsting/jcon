@@ -133,8 +133,12 @@ procedure op_trampoline(arity, op, name, type)
 	every writes(" a", 2 to arity, ",")
 	write(" };")
 	write("\ttry {")
-	write("\t\treturn iTrace.Call(fname, lineno, a1, args);")
+	write("\t\tiEnv.cur_coexp.depth++;")
+	write("\t\tvDescriptor retval = iTrace.Call(fname, lineno, a1, args);")
+	write("\t\tiEnv.cur_coexp.depth--;")
+	write("\t\treturn retval;")
 	write("\t} catch (iError e) {")
+	write("\t\tiEnv.cur_coexp.depth--;")
 	write("\t\te.propagate(fname, lineno, a1, args);")
 	write("\t\treturn null;")
 	write("\t}")
@@ -157,8 +161,12 @@ procedure boilerplate()
 "",
 "public static vDescriptor Call(String fname, int lineno, vDescriptor a, vDescriptor[] args) {",
 "	try {",
-"		return iTrace.Call(fname, lineno, a, args);",
+"		iEnv.cur_coexp.depth++;",
+"		vDescriptor retval = iTrace.Call(fname, lineno, a, args);",
+"		iEnv.cur_coexp.depth--;",
+"		return retval;",
 "	} catch (iError e) {",
+"		iEnv.cur_coexp.depth--;",
 "		e.propagate(fname, lineno, a, args);",
 "		return null;",
 "	}",
