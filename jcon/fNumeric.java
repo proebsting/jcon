@@ -40,6 +40,9 @@ final class f$seq extends vProc2 {				// seq(i1,i2)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	final long i1 = a.isnull() ? 1 : a.mkInteger().value;
 	final long i2 = b.isnull() ? 1 : b.mkInteger().value;
+	if (i2 == 0) {
+	    iRuntime.error(211, b);
+	}
 	return new vClosure() {
 	    { retval = vInteger.New(i1); }
 	    long n = i1;
