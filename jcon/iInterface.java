@@ -7,17 +7,28 @@ class iInterface {
 	}
 
 	static vDescriptor[] marshall(
-	    vDescriptor[] args, int len, boolean accumulate) {
+	    vDescriptor[] args, int len, boolean varargs) {
 
 		vDescriptor[] a = new vDescriptor[len];
 
-		// KLUDGE: do not handle accumulate yet.
-		for (int i = 0; i < len; i++) {
+		int max = varargs ? len-1 : len;
+		for (int i = 0; i < max; i++) {
 			if (i < args.length) {
 				a[i] = args[i].deref();
 			} else {
 				a[i] = iNew.Null();
 			}
+		}
+		if (varargs) {
+			int varlen = args.length - len + 1;
+			if (varlen < 0) {
+				varlen = 0;
+			}
+			vDescriptor[] varray = new vDescriptor[len];
+			for (int i = 0; i < varlen; i++) {
+				varray[i] = a[len+i-1];
+			}
+			a[len] = iNew.List(varray);
 		}
 		return a;
 	}
