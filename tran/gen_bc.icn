@@ -830,8 +830,8 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     bc_vClosure_classname := "c_" || bc_java_classname || "$" || name
 
     bc_current_classname := bc_vProc_classname
-    c := bc_current_classptr := j_ClassFile(3, 45, [&null], table(), 1, &null,
-                                         &null, [], [], [], [])
+    c := bc_current_classptr := j_ClassFile(3, 45, [&null], table(), 16r11,
+					&null, &null, [], [], [], [])
     superclass := "rts/vProc" || ((/accumulate & 9 >= *params) | "V")
     c.super_class := j_cp_Class(c, j_cp_Utf8(c, superclass))
     c.this_class := j_cp_Class(c, j_cp_Utf8(c, bc_current_classname))
@@ -852,8 +852,8 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
 
     if \bc_save_restore_flag then {
         bc_current_classname := bc_vClosure_classname
-        c := bc_current_classptr := j_ClassFile(3, 45, [&null], table(), 1, &null,
-                                             &null, [], [], [], [])
+        c := bc_current_classptr := j_ClassFile(3, 45, [&null], table(), 16r11,
+					&null, &null, [], [], [], [])
         superclass := "rts/vClosure"
         c.super_class := j_cp_Class(c, j_cp_Utf8(c, superclass))
         c.this_class := j_cp_Class(c, j_cp_Utf8(c, bc_current_classname))
@@ -1675,7 +1675,7 @@ procedure bc_File(irgen, flagList)
         }
     }
 
-    c := j_ClassFile(3, 45, [&null], table(), 1, &null,
+    c := j_ClassFile(3, 45, [&null], table(), 16r11, &null,
                                          &null, [], [], [], [])
     c.super_class := j_cp_Class(c, j_cp_Utf8(c, "rts/iFile"))
     c.this_class := j_cp_Class(c, j_cp_Utf8(c, bc_java_classname))

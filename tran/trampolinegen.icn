@@ -87,7 +87,7 @@ procedure operators()
 	[ 2,    "--", "Diff",         "vValue"      ]
     ]
 
-    write("public class iTrampoline {")
+    write("public final class iTrampoline {")
     every o := !ops do {
         writes("public static ", o[4], " ", o[3], "(String fname, int lineno")
 	every i := 1 to o[1] do {

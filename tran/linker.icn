@@ -8,7 +8,7 @@ procedure main(L)
     outclass := pop(L) | stop("missing output class name")
 
     f := open(outclass || ".class", "w")
-    c := j_ClassFile(3, 45, [&null], table(), 1,
+    c := j_ClassFile(3, 45, [&null], table(), 16r11,
         &null,
         &null,
         [],[],[],[]
