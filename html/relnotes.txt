@@ -51,8 +51,8 @@ on other platforms.
     <LI>DEC Java 1.1.6 sometimes writes different fonts to the window
 	and its backup image, leading to bizarre effects from
 	<CODE>CopyArea()</CODE> and window repair
-    <LI>Sun Java installations typically specify the <CODE>mono</CODE>
-   	font using a name that is not understood by non-Solaris X servers
+    <LI>The <CODE>mono</CODE> font is unpredictable for Solaris Java
+	displaying on a non-Solaris X server
     <LI><CODE>WOpen("image=file.gif")</CODE> does not initialize the
    	window contents if presented with a multi-part (animated) GIF image
     <LI><CODE>drawop=reverse</CODE> draws the wrong color under rare

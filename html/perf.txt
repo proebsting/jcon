@@ -56,12 +56,12 @@ not the dominating factor.
 	<TD>3.6</TD><TD>9.2</TD><TD>2.7</TD><TD>1.5</TD><TD>3.2</TD>
 	<TD>3.2</TD><TD>2.2</TD><TD>3.4</TD></TR>
 <TR ALIGN=RIGHT>
-	<TD ALIGN=LEFT>Sun Solaris 5.5.1</TD>
+	<TD ALIGN=LEFT>Sun Solaris 2.6</TD>
 	<TD ALIGN=LEFT>JDK 1.1.6</TD>
-	<TD>5.5</TD><TD>6.5</TD><TD>4.3</TD><TD>3.7</TD><TD>5.0</TD>
-	<TD>4.1</TD><TD>3.3</TD><TD>4.3</TD></TR>
+	<TD>5.2</TD><TD>6.1</TD><TD>4.3</TD><TD>3.4</TD><TD>5.1</TD>
+	<TD>4.1</TD><TD>3.5</TD><TD>4.6</TD></TR>
 <TR ALIGN=RIGHT>
-	<TD ALIGN=LEFT>Sun Solaris 5.6</TD>
+	<TD ALIGN=LEFT>Sun Solaris 2.6</TD>
 	<TD ALIGN=LEFT>JDK 1.2beta4</TD>
 	<TD>2.7</TD><TD>3.7</TD><TD>1.9</TD><TD>1.5</TD><TD>3.0</TD>
 	<TD>1.8</TD><TD>1.9</TD><TD>2.6</TD></TR>
