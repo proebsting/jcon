@@ -61,7 +61,7 @@ class f$match extends iFunctionClosure {		// match(s1,s2,i1,i2)
 	int i1 = s2.posEq(iRuntime.argPos(args, 2));
 	int i2 = s2.posEq(vInteger.argVal(args, 3, 0));
 
-	if (i1 > i2) {
+	if (i1 > i2-s1.length()) {
 	    return null;
 	}
 	if (s2.value.length() < i1+s1.length()-1) {
@@ -101,7 +101,7 @@ class f$find extends iClosure {				// find(s1,s2,i1,i2)
 	    retvalue = null;
 	}
 	int i = s2.value.indexOf(s1, i1-1);
-	if (i >= 0) {
+	if (i >= 0 && i+s1.length() < i2) {
 	    i1 = i+2;
 	    retvalue = iNew.Integer(i+1);
 	} else {
@@ -173,8 +173,7 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 	    }
 	    if (c2.member(s.value.charAt(i1-1))) {
 		balance++;
-	    }
-	    if (c3.member(s.value.charAt(i1-1))) {
+	    } else if (c3.member(s.value.charAt(i1-1))) {
 		balance--;
 		if (balance < 0) {
 		    retvalue = null;
