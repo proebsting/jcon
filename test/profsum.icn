@@ -13,19 +13,16 @@ link numbers
 record proc(name, ncalls, tself, tcalled, tlocal)
 
 global ptab
-global tmax
 
 
 
 procedure main(args)
-   local f, line, p, l, tlocal, pct
+   local f, line, p, l, tlocal, ttotal, pct
 
    if *args > 0 then
       f := open(args[1]) | stop(&progname, ": can't open ", args[1])
    else
       f := &input
-
-   tmax := 0
 
    while line := read(f) do line ? {
       if ="count" then
@@ -36,8 +33,11 @@ procedure main(args)
       }
 
    l := []
+   ttotal := 0
    every p := !ptab do {
       p.tlocal := p.tself - p.tcalled
+      if p.tlocal > 0 then
+         ttotal +:= p.tlocal
       put(l, p)
    }
    l := sortf(l, 5)
@@ -45,9 +45,10 @@ procedure main(args)
    write("   ncalls  tottime inmethod  pct  method")
 
    while p := pull(l) do {
-      if p.ncalls == 0 then
-	 next
-      pct := (100 * p.tlocal + tmax / 2) / tmax
+      if p.tlocal > 0 then
+	 pct := (100 * p.tlocal + ttotal / 2) / ttotal
+      else
+	 pct := (100 * p.tlocal - ttotal / 2) / ttotal
       write(
 	 right(p.ncalls, 9),
 	 right(p.tself, 9),
@@ -95,8 +96,6 @@ procedure accumulate()
 
    q := lookup(caller)
    q.tcalled +:= time
-
-   tmax <:= time
 
    return
 end

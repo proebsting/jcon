@@ -13,9 +13,9 @@
 .SUFFIXES: .prof .sum
 
 .prof.sum:
-	-if [ ! -f profsum ]; then $(MAKE) $(MFLAGS) profsum; fi
+	$(MAKE) $(MFLAGS) profsum
 	./profsum <$*.prof >$@
-	
+
 
 run:
 	./runtest
