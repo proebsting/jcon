@@ -37,7 +37,9 @@ on other platforms.
 <H3>Known problems (nongraphical)</H3>
 <UL>
     <LI><CODE>&amp;clock</CODE> and <CODE>&amp;dateline</CODE>
-	may be off by one hour due to Java library bugs
+	may be off by one hour (Java bug #4059431)
+    <LI>On Solaris systems, <CODE>&amp;hostname</CODE>
+	may be wrong (Java bug #4073539)
     <LI>Extremely large procedures (thousands of lines long)
 	can generate code that is too large for Java to handle
 </UL>
