@@ -201,7 +201,7 @@ procedure bc_gen_ir_Move(s, p)
     \p.lhs | return s
 
     bc_gen_rval(s, p.rhs)
-    if type(p.lhs) == ("ir_Key") then {
+    if type(p.rhs) == ("ir_Key") then {
         call := bc_CallN_methodref(bc_current_classptr, 0)
         put(s, j_invokevirtual(call))
     }
@@ -866,6 +866,7 @@ procedure bc_create_vClosure_constructor(c, params, locals, undeclared, accumula
     initcode := j_create_code(c, 10, 10)
     put(init.attributes, initcode)
     s := initcode.code
+
     if *bc_tmp_table > 0 then {
         j_create_field(bc_current_classptr, 0, "tmpArray",
                        "[Lrts/vDescriptor;")
@@ -875,6 +876,7 @@ procedure bc_create_vClosure_constructor(c, params, locals, undeclared, accumula
     }
     j_create_field(bc_current_classptr, 0, "tmpVarArray",
                        "[Lrts/vDescriptor;")
+
     superclass := "rts/vClosure"
     constructor := bc_init_methodref(c, superclass)
     put(s, j_aload_0() )
@@ -887,6 +889,58 @@ procedure bc_create_vClosure_constructor(c, params, locals, undeclared, accumula
     PC := bc_PC_fieldref(bc_current_classptr, bc_vClosure_classname)
     put(s, j_aload_0() )
     put(s, j_iconst_1() )
+    put(s, j_putfield(PC) )
+
+    bc_alloc_tmps(s, c, bc_current_classptr, bc_current_classname)
+    bc_alloc_tmplabels(s, c, bc_current_classptr, bc_current_classname)
+
+    put(s, j_return() )
+end
+
+procedure bc_create_vClosure_copy_constructor(c, params, locals, undeclared, accumulate)
+    local init, initcode, constructor, createvars, s, superclass, PC
+    local class_index, vararray, v
+    local newsimplevar, k, linkvalue, lab1, refresharray
+
+    init := j_create_method(c, 1, "<init>", "([Lrts/vDescriptor;I)V")
+    initcode := j_create_code(c, 10, 10)
+    put(init.attributes, initcode)
+    s := initcode.code
+    superclass := "rts/vClosure"
+    constructor := bc_init_methodref(c, superclass)
+    put(s, j_aload_0() )
+    put(s, j_invokespecial(constructor) )
+    vararray := j_create_fieldref(bc_current_classptr, "tmpVarArray",
+                                  "[Lrts/vDescriptor;", bc_current_classname)
+    refresharray := j_create_fieldref(bc_current_classptr, "RefreshArray",
+                                  "[Lrts/vDescriptor;", bc_current_classname)
+    every k := (!params|!locals|!undeclared) do {
+        newsimplevar := bc_New_vSimpleVar_methodref(c)
+	put(s, j_dup() )
+	put(s, j_ipush(bc_var_table[k]) )
+    
+        linkvalue := j_create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
+                                     bc_java_classname)
+        lab1 := j_label()
+        v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
+        put(s, j_getstatic(linkvalue) )
+        put(s, j_dup() )
+        put(s, j_ifnonnull(lab1) )
+        put(s, j_pop() )
+        put(s, j_ldc_w(v) )
+        put(s, j_invokestatic(newsimplevar) )
+        put(s, lab1 )
+	put(s, j_aastore() )
+#     store as appropriate in new SimpleVar
+#     store in refresh array
+    }
+    put(s, j_aload_0() )
+    put(s, j_aload_1() )
+    put(s, j_putfield(vararray) )
+
+    PC := bc_PC_fieldref(bc_current_classptr, bc_vClosure_classname)
+    put(s, j_aload_0() )
+    put(s, j_iload_2() )
     put(s, j_putfield(PC) )
 
     bc_alloc_tmps(s, c, bc_current_classptr, bc_current_classname)
