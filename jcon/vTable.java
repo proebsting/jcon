@@ -83,9 +83,7 @@ vValue Insert(vDescriptor i, vDescriptor val) {
     return this;
 }
 
-vValue Sort(vDescriptor n) {
-
-    long flag = n.mkInteger().value;
+vValue Sort(int n) {
 
     vTableElem a[] = new vTableElem[t.size()];	// make array of key/val pairs
 
@@ -93,7 +91,7 @@ vValue Sort(vDescriptor n) {
     for (Enumeration e = t.keys(); e.hasMoreElements(); ) {
         vValue key = (vValue)e.nextElement();
 	vValue val = (vValue)t.get(key);
-	if ((flag & 1) != 0) {
+	if ((n & 1) != 0) {
 	    a[i++] = new vTableElem(key, val);	// sort by key
 	} else {
 	    a[i++] = new vTableElem(val, key);	// sort by value
@@ -102,11 +100,11 @@ vValue Sort(vDescriptor n) {
     iUtil.sort(a);				// sort array of pairs
 
     vValue b[];
-    if (flag <= 2) {				// return list of lists
+    if (n <= 2) {				// return list of lists
 	b = new vValue[t.size()];
     	vValue pair[] = new vValue[2];
 	for (i = 0; i < t.size(); i++) {
-	    if ((flag & 1) != 0) {		// sorted by key
+	    if ((n & 1) != 0) {			// sorted by key
 		pair[0] = a[i].sortkey;
 		pair[1] = a[i].other;
 	    } else {				// sorted by value
@@ -120,7 +118,7 @@ vValue Sort(vDescriptor n) {
     	b = new vValue[2 * t.size()];
 	int j = 0;
 	for (i = 0; i < t.size(); i++) {
-	    if ((flag & 1) != 0) {		// sorted by key
+	    if ((n & 1) != 0) {			// sorted by key
 	    	b[j++] = a[i].sortkey;
 	    	b[j++] = a[i].other;
 	    } else {				// sorted by value

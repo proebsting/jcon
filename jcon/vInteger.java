@@ -230,7 +230,7 @@ class iIntegerClosure extends iRefClosure {
     vDescriptor function(vDescriptor[] args) {
 	long i = value.value;
 	if (i <= 0) {
-	    i += args.length;
+	    i += args.length + 1;
 	}
 	i -= 1;
 	if (i < 0 || i >= args.length) {

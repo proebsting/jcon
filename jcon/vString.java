@@ -55,15 +55,24 @@ int compareTo(vValue v) { return this.value.compareTo(((vString) v).value); }
 
 
 vNumeric mkNumeric()	{
+
     String s = value.trim();
+    if (s.length() > 0 && s.charAt(0) == '+') {	// allow leading +, by trimming 
+	s = s.substring(1);
+    }
+
     try {
 	return iNew.Integer(Long.parseLong(s));		//#%#% not exactly right
     } catch (NumberFormatException e) {
     }
+
     try {
 	return iNew.Real(Double.valueOf(s).doubleValue());  //#%#% likewise
     } catch (NumberFormatException e) {
     }
+
+    //#%#% check here for 'r' or 'R' and parse radix integer
+
     iRuntime.error(102, this);
     return null;
 }

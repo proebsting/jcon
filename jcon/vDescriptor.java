@@ -111,7 +111,7 @@ public abstract class vDescriptor {
     abstract vValue Refresh();
 
     // other data-oriented operations
-    abstract vValue Sort(vDescriptor i);	// sort(X, i)
+    abstract vValue Sort(int i);		// sort(X, i)
 
     //#%#%#%# not-yet-implemented abort
     void NYI(String s) {

@@ -11,6 +11,8 @@ public class iInterface {
 	public static vDescriptor[] marshall(
 	    vDescriptor[] args, int len, boolean varargs) {
 
+//#%#%#% System.err.println("marshall " + args.length + " args, len=" + len + ", varargs=" + varargs);
+
 		vDescriptor[] a = new vDescriptor[len];
 
 		int max = varargs ? len-1 : len;
@@ -26,11 +28,11 @@ public class iInterface {
 			if (varlen < 0) {
 				varlen = 0;
 			}
-			vDescriptor[] varray = new vDescriptor[len];
+			vDescriptor[] varray = new vDescriptor[varlen];
 			for (int i = 0; i < varlen; i++) {
-				varray[i] = a[len+i-1];
+				varray[i] = args[len+i-1];
 			}
-			a[len] = iNew.List(varray);
+			a[len-1] = iNew.List(varray);
 		}
 		return a;
 	}

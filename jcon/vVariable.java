@@ -124,5 +124,5 @@ public abstract class vVariable extends vDescriptor {
 
     vValue Refresh()		{ return this.deref().Refresh(); }
 
-    vValue Sort(vDescriptor i)	{ return this.deref().Sort(i); }
+    vValue Sort(int i)		{ return this.deref().Sort(i); }
 }

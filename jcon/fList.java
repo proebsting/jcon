@@ -71,30 +71,20 @@ class f$put extends iFunctionClosure {				// put(L, x...)
 class f$sort extends iFunctionClosure {				// sort(X,i)
 	vDescriptor function(vDescriptor[] args) {
 		vValue x = iRuntime.argVal(args, 0, 115);
-		vInteger i;
-		if (args.length > 1) {
-			i = iRuntime.argVal(args, 1).mkInteger();
-			if (i.value < 1 || i.value > 4) {
-				iRuntime.error(205, i);
-			}
-		} else {
-			i = iNew.Integer(1);
+		long i = vInteger.argVal(args, 1, 1);
+		if (i < 1 || i > 4) {
+			iRuntime.error(205, args[1]);
 		}
-		return x.Sort(i);
+		return x.Sort((int) i);
 	}
 }
 
 class f$sortf extends iFunctionClosure {			// sortf(X,i)
 	vDescriptor function(vDescriptor[] args) {
 		vValue[] a = iRuntime.argVal(args, 0, 125).mkArray();
-		vInteger i;
-		if (args.length > 1) {
-			i = iRuntime.argVal(args, 1).mkInteger();
-			if (i.value == 0) {
-				iRuntime.error(205, i);
-			}
-		} else {
-			i = iNew.Integer(1);
+		vInteger i = iNew.Integer(vInteger.argVal(args, 1, 1));
+		if (i.value == 0) {
+			iRuntime.error(205, i);
 		}
 		for (int j = 0; j < a.length; j++) {
 			a[j] = new vSortElem(a[j], i);

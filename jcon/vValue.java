@@ -123,5 +123,5 @@ public abstract class vValue extends vDescriptor {
     vValue Refresh()		{ iRuntime.error(118, this); return null; }
 
     // other data operations
-    vValue Sort(vDescriptor i)	{ iRuntime.error(115, this); return null; }
+    vValue Sort(int i)		{ iRuntime.error(115, this); return null; }
 }

@@ -195,7 +195,7 @@ vValue ListConcat(vDescriptor v) {			// L1 ||| L2
     return result;
 }
 
-vValue Sort(vDescriptor n) {				// sort(L)
+vValue Sort(int i) {					// sort(L)
     return iNew.List(iUtil.sort(this.mkArray()));
 }
 

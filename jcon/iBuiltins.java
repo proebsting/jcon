@@ -180,13 +180,15 @@ class f$collect extends iFunctionClosure {			// collect(i,j)
 				iRuntime.error(205, args[1]);
 			}
 			System.gc();
-			try {
+			if (ii2 > 0) {
+			    try {
 				byte[] dummy = new byte[ii2];
 				// the following (not the preceding) line
 				// actually triggers the out of memory error.
 				dummy[0] = dummy[ii2-1] = 1;
-			} catch (OutOfMemoryError e) {
+			    } catch (OutOfMemoryError e) {
 				return null;
+			    }
 			}
 			return n;
 		} else {
@@ -205,16 +207,11 @@ class f$args extends iFunctionClosure {				// args(x)
 class f$proc extends iFunctionClosure {				// proc(s, i)
 	vDescriptor function(vDescriptor[] args) {
 		vValue v = iRuntime.argVal(args, 0);
-		vInteger i;
-		if (args.length < 2) {
-			i = iNew.Integer(1);
-		} else {
-			i = args[1].mkInteger();
+		long i = vInteger.argVal(args, 1, 1);
+		if (i < 0 || i > 3) {
+			iRuntime.error(205, args[1]);
 		}
-		if (i.value < 0 || i.value > 3) {
-			iRuntime.error(205, i);
-		}
-		return v.Proc(i.value);
+		return v.Proc(i);
 	}
 }
 
@@ -348,18 +345,17 @@ class f$function extends iClosure {				// function()
 }
 
 class f$seq extends iClosure {					// seq(i1,i2)
-	vInteger i1;
-	vInteger i2;
+	long i1, i2;
 
 	public void nextval() {
-		if (i1 == null) {
-			i1 = (arguments.length >= 1) ?
-				arguments[0].mkInteger(): iNew.Integer(1);
-			i2 = (arguments.length >= 2) ?
-				arguments[1].mkInteger(): iNew.Integer(1);
+		if (PC == 1) {
+			PC = 2;
+			i1 = vInteger.argVal(arguments, 0, 1);
+			i2 = vInteger.argVal(arguments, 1, 1);
+		} else {
+			i1 += i2;
 		}
-		retvalue = i1;
-		i1 = iNew.Integer(i1.value + i2.value);
+		retvalue = iNew.Integer(i1);
 	}
 }
 

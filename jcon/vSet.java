@@ -67,7 +67,7 @@ vDescriptor Bang(iClosure c) {
     return e.hasMoreElements() ? (vDescriptor) e.nextElement() : null;
 }
 
-vValue Sort(vDescriptor n) {				// sort(L)
+vValue Sort(int i) {					// sort(L)
     return iNew.List(iUtil.sort(this.mkArray()));
 }
 

@@ -172,11 +172,11 @@ class f$trim extends iFunctionClosure {				// trim(s,c)
 class f$map extends iFunctionClosure {				// map(s1,s2,s3)
 
 	static char[] map, initmap;
-	static String s1prev, s2prev;
+	static String s2prev, s3prev;
 
 	static {
-		initmap = new char[(int) vCset.MAX_VALUE];
-		for (char i = 0; i < vCset.MAX_VALUE; i++) {
+		initmap = new char[(int) vCset.MAX_VALUE + 1];
+		for (char i = 0; i <= vCset.MAX_VALUE; i++) {
 			initmap[i] = i;
 		}
 	}
@@ -190,14 +190,14 @@ class f$map extends iFunctionClosure {				// map(s1,s2,s3)
 			iRuntime.error(208);
 		}
 
-		if (s1 != s1prev || s2 != s2prev) {
-			map = new char[(int) vCset.MAX_VALUE];
+		if (s2 != s2prev || s3 != s3prev) {
+			map = new char[(int) vCset.MAX_VALUE + 1];
 			System.arraycopy(initmap, 0, map, 0, map.length);
 			for (int i = 0; i < s2.length(); i++) {
 				map[s2.charAt(i)] = s3.charAt(i);
 			}
-			s1prev = s1;
 			s2prev = s2;
+			s3prev = s3;
 		}
 
 		char[] s = new char[s1.length()];

@@ -106,7 +106,7 @@ vDescriptor Bang(iClosure c) {
 }
 
 
-vValue Sort(vDescriptor n) {				// sort(L)
+vValue Sort(int i) {					// sort(L)
     return iNew.List(iUtil.sort(this.mkArray()));
 }
 
