@@ -6,11 +6,9 @@ public class vInteger extends vNumeric {
 
 
 
-//  constructors
+//  constructor
 
 vInteger(long n)	{ value = n; }
-vInteger(double x)	{ value = (long)x; } //#%#%#% handle overflow
-vInteger(String s)	{ value = Long.parseLong(s); } //#%#% errs??
 
 
 

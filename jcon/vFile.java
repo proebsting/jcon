@@ -189,8 +189,9 @@ vString read() {					// read()
 	iRuntime.error(212, this);	// not open for reading
     }
 
-    vWindow.sync();			// flush pending graphics output
-    	//#%#%##% should only sync graphics if input file is a tty
+    if (instream instanceof DataInputStream) {		// if possibly tty
+	vWindow.sync();			// flush pending graphics output
+    }
 
     StringBuffer b = new StringBuffer(100);
     byte c = '\0';

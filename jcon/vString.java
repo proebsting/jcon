@@ -6,12 +6,9 @@ public class vString extends vValue {
 
 
 
-// constructors
+vString(String s)	{ value = s; }		// constructor
 
-vString(String s)		{ value = s; }
-vString(char c)			{ value = "" + c; }
-
-vString mkString()		{ return this; }
+vString mkString()	{ return this; }	// value extractor
 
 
 
