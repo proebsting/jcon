@@ -12,6 +12,7 @@ void announce(iEnv env) {
     declare(env, "\\,1", "oIsntNull");
     declare(env, "*,1", "oSize");
     declare(env, "?,1", "oSelect");
+    declare(env, "!,1", "oBang");
 
     declare(env, "+,1", "oNumerate");
     declare(env, "-,1", "oNegate");
@@ -131,6 +132,12 @@ class oSize extends iFunctionClosure {		//  ?x
 class oSelect extends iFunctionClosure {		//  ?x
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].Select();
+	}
+}
+
+class oBang extends iClosure {		//  !x
+	void resume() {
+		retvalue = arguments[0].deref().Bang(this);
 	}
 }
 

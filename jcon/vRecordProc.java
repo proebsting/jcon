@@ -47,6 +47,20 @@ class vRecord extends vValue {
 		return null;
 	}
 
+	vDescriptor Bang(iClosure c) {
+            int i;
+            if (c.o == null) {
+                c.o = new Integer(i = 0);
+            } else {
+                c.o = new Integer(i = ((Integer)c.o).intValue() + 1);
+            }
+            if (i >= values.length) {
+                return null; /*FAIL*/
+            } else {
+                return values[i];
+            }
+	}
+
 	String image() {
 		return "record " + name + "()";
 	}

@@ -105,7 +105,7 @@ vDescriptor Bang(iClosure c) {
     } else {
 	c.o = new Integer(i = ((Integer)c.o).intValue() + 1);
     }
-    if (i >= value.length()) {
+    if (i > value.length()) {
 	return null; /*FAIL*/
     } else {
 	return iNew.String(value.substring(i - 1, i));
@@ -119,7 +119,7 @@ vDescriptor BangVar(iClosure c, vSimpleVar v) {
     } else {
 	c.o = new Integer(i = ((Integer)c.o).intValue() + 1);
     }
-    if (i >= ((vString)v.value).value.length()) {
+    if (i > ((vString)v.value).value.length()) {
 	return null; /*FAIL*/
     } else {
 	return iNew.Substring(v, i, i+1);
