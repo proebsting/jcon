@@ -2,10 +2,12 @@
 #
 #  jcont -- build file.zip containing classes of icon executable
 #
-#  usage:  jcont [-d] [-v] file[.icn] ...
+#  usage:  jcont [-d] [-v] file[.icn] ... [-x [arguments]]
 #
 #	-d	debug: use ./jtmp for temp files, and don't delete
 #	-v	verbose: echo shell commands
+#
+#	-x	execute after compilation
 
 PROJHOME=/cs/jive
 SUMATRA=/cs/sumatra
@@ -18,6 +20,9 @@ unset BLKSIZE HEAPSIZE STRSIZE COEXPSIZE MSTKSIZE QLSIZE
 CMDTRACE=
 TDIR=./jcon$$
 NODELETE=
+
+#  assume no execute
+NOEXECUTE=exit
 
 #  process options
 
@@ -38,14 +43,22 @@ if [ $# = 0 ]; then
     exit 1
 fi
 
-#  accumulate .icn file names
-for FNAME; do
-    BASE=${FNAME%.icn}
-    FILES="$FILES $BASE.icn"
-done
-
 #  set output file name
 OFILE="${1%.icn}.zip"
+
+#  accumulate .icn file names
+for FNAME; do
+    case $FNAME in
+	-x) NOEXECUTE=
+	    shift
+	    break
+	    ;;
+	*)  BASE=${FNAME%.icn}
+	    FILES="$FILES $BASE.icn"
+	    shift
+	    ;;
+    esac
+done
 
 #  determine installed directory
 PRG=`whence $0`
@@ -56,8 +69,7 @@ case $IDIR in
 esac
 
 #  determine architecture type
-set `uname -sr`
-case "$1$2" in
+case `uname -sr | sed 's/ //'` in
     SunOS4*)    ARCH=sunos;;
     SunOS5*)    ARCH=solaris;;
     IRIX*)      ARCH=irix;;
@@ -111,3 +123,8 @@ export CLASSPATH=$CLASSPATH
 
 # bundle up .class files in a zip file
 $ZIP -0 -j -q $OFILE $TDIR/*.class
+
+# execute, or don't
+$NOEXECUTE
+export CLASSPATH=$OFILE:$CLASSPATH
+exec $JAVA a_out "$@"

@@ -1,0 +1,71 @@
+# test sorting 
+
+procedure main()
+   local n, x, S, L1, L2, L3
+
+   every n := (0 to 10) | 23 | 47 | 91 do {
+
+      write(n, ":")
+      S := set()
+      while *S < n do
+         insert(S, randval())
+
+      L1 := list()
+      every put (L1, !S)
+
+      L2 := sort(L1)
+      #wlist(L2)
+
+      L3 := sort(set(L1))
+      check(L2, L3)
+
+   }
+end
+
+
+
+#  randval() -- return random integer, real, or string value
+
+procedure randval()
+   return case ?3 of {
+      1:  ?999
+      2:  ?99 / 10.0
+      3:  ?&letters || ?&letters || ?&letters
+      }
+end
+
+
+#  check that two lists have identical components
+#  and that they are in ascending order
+
+procedure check(a, b)
+   local i, ai, ai1, bi, d
+
+   if *a ~= *b then
+      stop("different sizes: ", image(a), " / ", image(b))
+   every i := 1 to *a do {
+      ai := a[i]
+      bi := b[i]
+      ai1 := a[i-1] | &null
+      if ai ~=== bi then
+         stop("element ", i, " differs")
+      if type(ai) === type(ai1) then {
+         case type(ai) of {
+	    "integer":	d := (ai1 > ai) | &null
+	    "real":	d := (ai1 > ai) | &null
+	    "string":	d := (ai1 >> ai) | &null
+	    }
+	 stop("element ", i, " out of order: ", image(\d))
+         }
+      }
+   return
+end
+
+
+#  write list
+
+procedure wlist(L)
+   writes(*L, ":")
+   every writes(right(!L, 4) | "\n")
+   return
+end
