@@ -1,7 +1,7 @@
 global dump_emit_table
 
-procedure dump_emit(label, code)
-    dump_emit_table[label] := code
+procedure dump_emit(j_label, code)
+    dump_emit_table[j_label] := code
 end
 
 procedure dump_invocables(all, L)
@@ -46,7 +46,7 @@ procedure dump_function(name, params, accumulate, locals, statics, code,
     write()
     dump_emit_table := table()
     every i := !code do {
-	dump_emit_table[i.label] := i.insnList
+	dump_emit_table[i.j_label] := i.insnList
     }
     dump_emit_table := optimize(dump_emit_table, codestart)
     dump_table(&output, dump_emit_table)

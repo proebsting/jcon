@@ -1,7 +1,7 @@
 global dot_emit_table
 
-procedure dot_emit(label, code)
-    dot_emit_table[label] := code
+procedure dot_emit(j_label, code)
+    dot_emit_table[j_label] := code
 end
 
 procedure dot_dump(i)
@@ -9,14 +9,14 @@ procedure dot_dump(i)
 end
 
 procedure dot_output(t)
-    local label, code, lab, s, i, insn
+    local j_label, code, lab, s, i, insn
 
-    every label := key(t) & code := t[label] do {
-        lab := image(dot_dump(label))
+    every j_label := key(t) & code := t[j_label] do {
+        lab := image(dot_dump(j_label))
         writes(lab)
-        writes(" [shape=record,label=")
+        writes(" [shape=record,j_label=")
         s := "{ <f0> "
-        s ||:= dot_dump(label) || ":"
+        s ||:= dot_dump(j_label) || ":"
         every i := 1 to *code do {
             s ||:= " |"
             s ||:= "<f" || i || "> " || dot_dump(code[i])
@@ -42,25 +42,25 @@ procedure dot_output(t)
             "ir_Resume" : {
                 write(lab, ":f", i,
                       " ->",
-                      image(dot_dump(\insn.failLabel)), " [label=failure]")
+                      image(dot_dump(\insn.failLabel)), " [j_label=failure]")
                 }
             "ir_Succeed" : {
                 write(lab, ":f", i,
                       " ->",
                       image(dot_dump(\insn.continuation)),
-                      " [label=continuation]")
+                      " [j_label=continuation]")
                 }
             "ir_CoRet" : {
                 write(lab, ":f", i,
                       " ->",
                       image(dot_dump(insn.continuation)),
-                      " [label=continuation]")
+                      " [j_label=continuation]")
                 }
             "ir_EnterInit" : {
                 write(lab, ":f", i,
                       " ->",
-                      image(dot_dump(insn.startlabel)),
-                      " [label=start]")
+                      image(dot_dump(insn.startj_label)),
+                      " [j_label=start]")
                 }
             }
         }
@@ -76,7 +76,7 @@ procedure dot_function(name, params, accumulate, locals, statics, code,
     write("page=\"8.5,11\";")
     dot_emit_table := table()
     every i := !code do {
-	dot_emit_table[i.label] := i.insnList
+	dot_emit_table[i.j_label] := i.insnList
     }
     dot_emit_table := optimize(dot_emit_table, codestart)
     dot_output(dot_emit_table)

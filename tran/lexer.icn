@@ -1,4 +1,4 @@
-global newline, yyline, coord_pos, yyfile
+global j_newline, yyline, coord_pos, yyfile
 record coordinate(file, line, column)
 record TOK(sym, str, coord)
 
@@ -10,14 +10,14 @@ procedure yylex(getline)
         initialize()
     }
 
-    newline := &null
+    j_newline := &null
     yyline := 0
     yyfile := "<<stdin>>"
 
     "" ? {
         every t := yylex0(getline) do {
-            if \newline then {
-                newline := &null
+            if \j_newline then {
+                j_newline := &null
                 if member(ender_set,\last_token) &
                    member(beginner_set,\t) then {
                     SEMICOL.coord := coordinate(yyfile, yyline-1, last_pos)
@@ -51,7 +51,7 @@ procedure yylex0(getline)
 
     repeat {
             if pos(1) then {
-            newline := 1
+            j_newline := 1
             if ="#line " then {
                 tab(upto(&digits)) &
                 yyline := integer(tab(many(&digits))) &

@@ -7,7 +7,7 @@ procedure main(L)
     outclass := pop(L) | stop("missing output class name")
 
     f := open(outclass || ".class", "w")
-    c := ClassFile(3, 45, [&null], table(), 1,
+    c := j_ClassFile(3, 45, [&null], table(), 1,
         &null,
         &null,
         [],[],[],[]
@@ -18,10 +18,10 @@ procedure main(L)
     init := create_method(c, 1, "<init>", "()V")
     initcode := create_code(c, 2, 2)
     put(init.attributes, initcode)
-    put(initcode.code, aload_0())
+    put(initcode.code, j_aload_0())
     constructor := create_methodref(c, "<init>", "()V", "java/lang/Object")
-    put(initcode.code, invokenonvirtual(constructor))
-    put(initcode.code, vreturn())
+    put(initcode.code, j_invokenonvirtual(constructor))
+    put(initcode.code, j_vreturn())
 
     m := create_method(c, 9, "main", "([Ljava/lang/String;)V")
     mcode := create_code(c, 10, 10)
@@ -29,21 +29,21 @@ procedure main(L)
 
     put(mcode.code, ipush(*L) )
     atype := cp_Class(c, cp_Utf8(c, "java/lang/String"))
-    put(mcode.code, anewarray(atype) )
+    put(mcode.code, j_anewarray(atype) )
     every i := 1 to *L do {
-        put(mcode.code, dup() )
+        put(mcode.code, j_dup() )
         put(mcode.code, ipush(i-1) )
-        put(mcode.code, ldc(cp_String(c, cp_Utf8(c, L[i]))) )
-        put(mcode.code, aastore() )
+        put(mcode.code, j_ldc(cp_String(c, cp_Utf8(c, L[i]))) )
+        put(mcode.code, j_aastore() )
     }
-    put(mcode.code, aload_0() )
-    put(mcode.code, ldc(cp_String(c, cp_Utf8(c, outclass))) )
+    put(mcode.code, j_aload_0() )
+    put(mcode.code, j_ldc(cp_String(c, cp_Utf8(c, outclass))) )
 
     start := create_methodref(c,
 	 "start", "([Ljava/lang/String;[Ljava/lang/String;Ljava/lang/String;)V",
 	 "rts/iInterface")
-    put(mcode.code, invokestatic(start) )
-    put(mcode.code, vreturn() )
+    put(mcode.code, j_invokestatic(start) )
+    put(mcode.code, j_vreturn() )
 
-    writer_ClassFile(f, c)
+    writer_j_ClassFile(f, c)
 end

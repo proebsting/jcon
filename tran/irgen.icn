@@ -1,7 +1,7 @@
 record ir_info(start, resume, failure, success, x)
-record ir_loopinfo(scanlevel, nextlabel, continue, in_st, out_st, value,
+record ir_loopinfo(scanlevel, nextj_label, continue, in_st, out_st, value,
                    bounded, inuse)
-record ir_scaninfo(oldsubject, oldpos)
+record ir_scaninfo(olj_dsubject, oldpos)
 record ir_stacks(tmp, lab, clo)
 
 global loops, scans
@@ -48,7 +48,7 @@ procedure ir_a_Scan(p, st, inuse, target, bounded)
 
     p.ir.x := ir_scaninfo()
     p.ir.x.oldpos := ir_tmp(st, inuse)
-    p.ir.x.oldsubject := ir_tmp(st, inuse)
+    p.ir.x.olj_dsubject := ir_tmp(st, inuse)
 
     suspend ir(p.expr, st, inuse, lv, &null)
     put(scans, p)
@@ -57,12 +57,12 @@ procedure ir_a_Scan(p, st, inuse, target, bounded)
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.expr.ir.start) ])
     /bounded & suspend ir_Chunk(p.ir.resume, [
-        ir_ScanSwap( p.ir.x.oldsubject, p.ir.x.oldpos ),
+        ir_ScanSwap( p.ir.x.olj_dsubject, p.ir.x.oldpos ),
         ir_Goto(p.body.ir.resume)
         ])
     suspend ir_Chunk(p.expr.ir.success, [
         ir_Coord(p.coord),
-        ir_Move(p.ir.x.oldsubject, ir_Deref(ir_Key("subject"))),
+        ir_Move(p.ir.x.olj_dsubject, ir_Deref(ir_Key("subject"))),
         ir_Move(p.ir.x.oldpos, ir_Deref(ir_Key("pos"))),
         ir_opfn(target, ir_Operator(":?", 2), [ ir_Key("subject"), lv ],
                 p.expr.ir.resume),
@@ -70,21 +70,21 @@ procedure ir_a_Scan(p, st, inuse, target, bounded)
         ])
     suspend ir_Chunk(p.expr.ir.failure, [ ir_Goto(p.ir.failure) ])
     suspend ir_Chunk(p.body.ir.failure, [
-        ir_Move(ir_Key("subject"), p.ir.x.oldsubject),
+        ir_Move(ir_Key("subject"), p.ir.x.olj_dsubject),
         ir_Move(ir_Key("pos"), p.ir.x.oldpos),
         ir_Goto(p.expr.ir.resume)
         ])
 
     if p.op == "?" then {
         suspend ir_Chunk(p.body.ir.success, [
-            ir_ScanSwap( p.ir.x.oldsubject, p.ir.x.oldpos ),
+            ir_ScanSwap( p.ir.x.olj_dsubject, p.ir.x.oldpos ),
             ir_Goto(p.ir.success)
             ])
     } else {
         # p.op == "?:="
         suspend ir_Chunk(p.body.ir.success, [
             ir_opfn(target, ir_Operator(":=", 2), [ lv, rv ], p.body.ir.resume),
-            ir_ScanSwap( p.ir.x.oldsubject, p.ir.x.oldpos ),
+            ir_ScanSwap( p.ir.x.olj_dsubject, p.ir.x.oldpos ),
             ir_Goto(p.ir.success)
             ])
     }
@@ -124,7 +124,7 @@ procedure ir_a_Not(p, st, inuse, target, bounded)
 
     init4ir(p)
 
-    tiu := new_inuse()
+    tiu := j_new_inuse()
     suspend ir(p.expr, copy(st), tiu, &null, "always bounded")
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.expr.ir.start) ])
@@ -205,14 +205,14 @@ procedure ir_a_Case(p, st, inuse, target, bounded)
     e := ir_tmp(st, inuse)
     v := (\target | ir_tmp(st, inuse))
 
-    eiu := new_inuse()
+    eiu := j_new_inuse()
     suspend ir(p.expr, st, eiu, e, "always bounded")
 
     tmp2 := copy(st)
     ciu := []
     tiu := []
     every i := 1 to *p.clauseList do {
-        put(ciu, new_inuse())
+        put(ciu, j_new_inuse())
         suspend ir(p.clauseList[i].expr, copy(st), ciu[i], v, &null)
         tmp1 := copy(st)
         put(tiu, copy_inuse(inuse))
@@ -274,12 +274,12 @@ procedure ir_a_Every(p, st, inuse, target, bounded)
     init4ir_loop(p, st, inuse, target, bounded)
     put(loops, p)
     tmp := copy(st)
-    suspend ir(p.expr, tmp, new_inuse(), &null, &null)
-    tiu := new_inuse()
+    suspend ir(p.expr, tmp, j_new_inuse(), &null, &null)
+    tiu := j_new_inuse()
     suspend ir(p.body, tmp, tiu, &null, "always bounded")
     pull(loops)
 
-    suspend ir_Chunk(p.ir.x.nextlabel, [ ir_Goto(p.expr.ir.resume) ])
+    suspend ir_Chunk(p.ir.x.nextj_label, [ ir_Goto(p.expr.ir.resume) ])
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.expr.ir.start) ])
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.ir.x.continue) ])
     suspend ir_Chunk(p.expr.ir.success, [ ir_Goto(p.body.ir.start) ])
@@ -291,8 +291,8 @@ procedure ir_a_Every(p, st, inuse, target, bounded)
     suspend ir_Chunk(p.body.ir.failure, [ ir_Goto(p.expr.ir.resume) ])
 end
 
-# record a_Sectionop( op val left right )
-procedure ir_a_Sectionop(p, st, inuse, target, bounded)
+# record a_Sectioj_nop( op val left right )
+procedure ir_a_Sectioj_nop(p, st, inuse, target, bounded)
     local vv, lv, rv
 
     init4ir(p)
@@ -409,8 +409,8 @@ procedure ir_binary(p, target, bounded, lv, rv, closure, funcs)
     }
 end
 
-# record a_Binop( op left right )
-procedure ir_a_Binop(p, st, inuse, target, bounded)
+# record a_Bij_nop( op left right )
+procedure ir_a_Bij_nop(p, st, inuse, target, bounded)
     local closure, tmp, op, lv, rv
     static funcs    # functions for which resumption fails immediately.
     initial {
@@ -454,7 +454,7 @@ end
 procedure ir_unary_coexp(p, st, inuse, target, bounded)
     local t
 
-    t := a_Binop("@", a_Key("null"), p.operand, p.coord)
+    t := a_Bij_nop("@", a_Key("null"), p.operand, p.coord)
     suspend ir(t, st, inuse, target, bounded)
     p.ir := t.ir
 end
@@ -481,8 +481,8 @@ procedure ir_unary(p, target, bounded, v, closure, funcs)
     }
 end
 
-# record a_Unop( op operand )
-procedure ir_a_Unop(p, st, inuse, target, bounded)
+# record a_Uj_nop( op operand )
+procedure ir_a_Uj_nop(p, st, inuse, target, bounded)
     local closure, v, t
     static funcs    # functions for which resumption fails immediately.
     initial {
@@ -525,7 +525,7 @@ procedure ir_a_If(p, st, inuse, target, bounded)
     init4ir(p)
     /bounded & (t := ir_tmploc(st, inuse))
 
-    tiu := new_inuse()
+    tiu := j_new_inuse()
     suspend ir(p.expr, copy(st), tiu, &null, "always bounded")
     tmp := copy(st)
     xiu := copy_inuse(inuse)
@@ -562,7 +562,7 @@ procedure ir_a_Initial(p, st, inuse, target, bounded)
     scans := []
 
     init4ir(p)
-    tiu := new_inuse()
+    tiu := j_new_inuse()
     suspend ir(p.expr, st, tiu, target, "always bounded")
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.expr.ir.start) ])
@@ -736,7 +736,7 @@ procedure ir_a_ProcBody(p, st, inuse, target, bounded)
     L := make_sentinel(p.nexprList)
     tiu := []
     every i := 1 to *p.nexprList do {
-        put(tiu, new_inuse())
+        put(tiu, j_new_inuse())
         suspend ir(p.nexprList[i], ir_stacks(0,0,0), tiu[i], &null,
                  "always bounded")
     }
@@ -798,12 +798,12 @@ procedure ir_a_Repeat(p, st, inuse, target, bounded)
 
     init4ir_loop(p, st, inuse, target, bounded)
     put(loops, p)
-    tiu := new_inuse()
+    tiu := j_new_inuse()
     suspend ir(p.expr, copy(st), tiu, &null, "always bounded")
     pull(loops)
 
 
-    suspend ir_Chunk(p.ir.x.nextlabel, [ ir_Goto(p.expr.ir.start) ])
+    suspend ir_Chunk(p.ir.x.nextj_label, [ ir_Goto(p.expr.ir.start) ])
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.expr.ir.start) ])
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.ir.x.continue) ])
     suspend ir_Chunk(p.expr.ir.success, [
@@ -822,20 +822,20 @@ procedure ir_a_Return(p, st, inuse, target, bounded)
     init4ir(p)
     t := ir_tmp(st, inuse)
 
-    tiu := new_inuse()
+    tiu := j_new_inuse()
     suspend ir(p.expr, copy(st), tiu, t, "always bounded")
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.expr.ir.start) ])
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Fail() ])
     if scans[1] then {
         suspend ir_Chunk(p.expr.ir.success, [
-            ir_Move(ir_Key("subject"), scans[1].ir.x.oldsubject),
+            ir_Move(ir_Key("subject"), scans[1].ir.x.olj_dsubject),
             ir_Move(ir_Key("pos"), scans[1].ir.x.oldpos),
             ir_Free(tiu),
             ir_Succeed(t, &null)
             ])
         suspend ir_Chunk(p.expr.ir.failure, [
-            ir_Move(ir_Key("subject"), scans[1].ir.x.oldsubject),
+            ir_Move(ir_Key("subject"), scans[1].ir.x.olj_dsubject),
             ir_Move(ir_Key("pos"), scans[1].ir.x.oldpos),
             ir_Fail()
             ])
@@ -855,12 +855,12 @@ procedure ir_a_Fail(p, st, inuse, target, bounded)
 
     if scans[1] then {
         suspend ir_Chunk(p.ir.start, [
-            ir_Move(ir_Key("subject"), scans[1].ir.x.oldsubject),
+            ir_Move(ir_Key("subject"), scans[1].ir.x.olj_dsubject),
             ir_Move(ir_Key("pos"), scans[1].ir.x.oldpos),
             ir_Fail()
             ])
         /bounded & suspend ir_Chunk(p.ir.resume, [
-            ir_Move(ir_Key("subject"), scans[1].ir.x.oldsubject),
+            ir_Move(ir_Key("subject"), scans[1].ir.x.olj_dsubject),
             ir_Move(ir_Key("pos"), scans[1].ir.x.oldpos),
             ir_Fail()
             ])
@@ -877,27 +877,27 @@ procedure ir_a_Suspend(p, st, inuse, target, bounded)
     /p.body := a_Key("fail") & /p.expr := a_Key("null")
 
     init4ir_loop(p, st, inuse, target, bounded)
-    t := ir_label(p, "suspend")
+    t := ir_j_label(p, "suspend")
     susp := ir_tmp(st, inuse)
 
     put(loops, p)
     tmp := copy(st)
-    suspend ir(p.expr, tmp, new_inuse(), susp, &null)
-    tiu := new_inuse()
+    suspend ir(p.expr, tmp, j_new_inuse(), susp, &null)
+    tiu := j_new_inuse()
     suspend ir(p.body, tmp, tiu, &null, "always bounded")
     pull(loops)
 
-    suspend ir_Chunk(p.ir.x.nextlabel, [ ir_Goto(p.expr.ir.resume) ])
+    suspend ir_Chunk(p.ir.x.nextj_label, [ ir_Goto(p.expr.ir.resume) ])
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.expr.ir.start) ])
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.ir.x.continue) ])
     if scans[1] then {
         suspend ir_Chunk(p.expr.ir.success, [
-            ir_ScanSwap( scans[1].ir.x.oldsubject, scans[1].ir.x.oldpos ),
+            ir_ScanSwap( scans[1].ir.x.olj_dsubject, scans[1].ir.x.oldpos ),
             ir_Succeed(susp, t)
             ])
         suspend ir_Chunk(t, [
             ir_Restore(),
-            ir_ScanSwap( scans[1].ir.x.oldsubject, scans[1].ir.x.oldpos ),
+            ir_ScanSwap( scans[1].ir.x.olj_dsubject, scans[1].ir.x.oldpos ),
             ir_Goto(p.body.ir.start)
             ])
     } else {
@@ -923,13 +923,13 @@ procedure ir_a_Until(p, st, inuse, target, bounded)
 
     init4ir_loop(p, st, inuse, target, bounded)
     put(loops, p)
-    eiu := new_inuse()
+    eiu := j_new_inuse()
     suspend ir(p.expr, copy(st), eiu, &null, "always bounded")
-    biu := new_inuse()
+    biu := j_new_inuse()
     suspend ir(p.body, copy(st), biu, &null, "always bounded")
     pull(loops)
 
-    suspend ir_Chunk(p.ir.x.nextlabel, [ ir_Goto(p.expr.ir.start) ])
+    suspend ir_Chunk(p.ir.x.nextj_label, [ ir_Goto(p.expr.ir.start) ])
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.expr.ir.start) ])
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.ir.x.continue) ])
     suspend ir_Chunk(p.expr.ir.success, [
@@ -952,13 +952,13 @@ procedure ir_a_While(p, st, inuse, target, bounded)
 
     init4ir_loop(p, st, inuse, target, bounded)
     put(loops, p)
-    eiu := new_inuse()
+    eiu := j_new_inuse()
     suspend ir(p.expr, copy(st), eiu, &null, "always bounded")
-    biu := new_inuse()
+    biu := j_new_inuse()
     suspend ir(p.body, copy(st), biu, &null, "always bounded")
     pull(loops)
 
-    suspend ir_Chunk(p.ir.x.nextlabel, [ ir_Goto(p.expr.ir.start) ])
+    suspend ir_Chunk(p.ir.x.nextj_label, [ ir_Goto(p.expr.ir.start) ])
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.expr.ir.start) ])
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.ir.x.continue) ])
     suspend ir_Chunk(p.expr.ir.success, [
@@ -980,7 +980,7 @@ procedure ir_a_Create(p, st, inuse, target, bounded)
     init4ir(p)
     t := (\target | ir_tmp(st, inuse))
 
-    suspend ir(p.expr, st, new_inuse(), t, &null)
+    suspend ir(p.expr, st, j_new_inuse(), t, &null)
 
     suspend ir_Chunk(p.ir.start, [
         ir_Coord(p.coord),
@@ -1023,12 +1023,12 @@ procedure ir_a_Next(p, st, inuse, target, bounded)
     sl := curloop.ir.x.scanlevel
     if scans[sl+1] then {
         suspend ir_Chunk(p.ir.start, [
-            ir_Move(ir_Key("subject"), scans[sl+1].ir.x.oldsubject),
+            ir_Move(ir_Key("subject"), scans[sl+1].ir.x.olj_dsubject),
             ir_Move(ir_Key("pos"), scans[sl+1].ir.x.oldpos),
-            ir_Goto(curloop.ir.x.nextlabel)
+            ir_Goto(curloop.ir.x.nextj_label)
             ])
     } else {
-        suspend ir_Chunk(p.ir.start, [ ir_Goto(curloop.ir.x.nextlabel) ])
+        suspend ir_Chunk(p.ir.start, [ ir_Goto(curloop.ir.x.nextj_label) ])
     }
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_RunTimeError() ])
 end
@@ -1055,7 +1055,7 @@ procedure ir_a_Break(p, st, inuse, target, bounded)
 
     if scans[clx.scanlevel+1] then {
         suspend ir_Chunk(p.ir.start, [
-            ir_Move(ir_Key("subject"), scans[clx.scanlevel+1].ir.x.oldsubject),
+            ir_Move(ir_Key("subject"), scans[clx.scanlevel+1].ir.x.olj_dsubject),
             ir_Move(ir_Key("pos"), scans[clx.scanlevel+1].ir.x.oldpos),
             ir_Move(clx.continue, p.ir.resume),
             ir_Goto(p.expr.ir.start)
@@ -1145,7 +1145,7 @@ procedure ir_a_Compound(p, st, inuse, target, bounded)
 
     tiu := []
     every i := 1 to *p.exprList-1 do {
-        put(tiu, new_inuse())
+        put(tiu, j_new_inuse())
         suspend ir(p.exprList[i], copy(st), tiu[i], &null, "always bounded")
     }
     suspend ir(p.exprList[-1], st, inuse, target, bounded)
@@ -1284,9 +1284,9 @@ procedure ir(p, st, inuse, target, bounded)
     "a_RepAlt" : suspend ir_a_RepAlt(p, st, inuse, target, bounded)
     "a_Case" : suspend ir_a_Case(p, st, inuse, target, bounded)
     "a_Every" : suspend ir_a_Every(p, st, inuse, target, bounded)
-    "a_Sectionop" : suspend ir_a_Sectionop(p, st, inuse, target, bounded)
-    "a_Binop" : suspend ir_a_Binop(p, st, inuse, target, bounded)
-    "a_Unop" : suspend ir_a_Unop(p, st, inuse, target, bounded)
+    "a_Sectioj_nop" : suspend ir_a_Sectioj_nop(p, st, inuse, target, bounded)
+    "a_Bij_nop" : suspend ir_a_Bij_nop(p, st, inuse, target, bounded)
+    "a_Uj_nop" : suspend ir_a_Uj_nop(p, st, inuse, target, bounded)
     "a_Global" : suspend ir_a_Global(p, st, inuse, target, bounded)
     "a_If" : suspend ir_a_If(p, st, inuse, target, bounded)
     "a_Initial" : suspend ir_a_Initial(p, st, inuse, target, bounded)
@@ -1343,10 +1343,10 @@ end
 
 procedure init4ir(p)
     p.ir := ir_info()
-    p.ir.start := ir_label(p, "start")
-    p.ir.resume := ir_label(p, "resume")
-    p.ir.success := ir_label(p, "success")
-    p.ir.failure := ir_label(p, "failure")
+    p.ir.start := ir_j_label(p, "start")
+    p.ir.resume := ir_j_label(p, "resume")
+    p.ir.success := ir_j_label(p, "success")
+    p.ir.failure := ir_j_label(p, "failure")
     return p
 end
 
@@ -1354,7 +1354,7 @@ procedure init4ir_loop(p, st, inuse, target, bounded)
     init4ir(p)
     p.ir.x := ir_loopinfo()
     /bounded & (p.ir.x.continue := ir_tmploc(st, inuse))
-    p.ir.x.nextlabel := ir_label(p, "next")
+    p.ir.x.nextj_label := ir_j_label(p, "next")
     p.ir.x.scanlevel := *scans
     p.ir.x.in_st := copy(st)
     p.ir.x.out_st := st
@@ -1364,7 +1364,7 @@ procedure init4ir_loop(p, st, inuse, target, bounded)
     return p
 end
 
-procedure ir_label(p, suffix)
+procedure ir_j_label(p, suffix)
     return ir_Label(ir_naming(p, suffix))
 end
 
@@ -1433,7 +1433,7 @@ procedure max_st(st, t)
     st.clo <:= t.clo
 end
 
-procedure new_inuse()
+procedure j_new_inuse()
     return ir_stacks(set(), set(), set())
 end
 

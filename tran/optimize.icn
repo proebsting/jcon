@@ -2,29 +2,29 @@ global optimize_flag
 global ref_count
 
 procedure optimize(t, start)
-    local new, i
+    local j_new, i
 
-    new := t
+    j_new := t
     if \optimize_flag then {
-        new := free_elimination(new, start)
-        new := dead_assignment(new, start)
-        new := goto_elimination(new, start)
-        new := copy_propagation(new, start)
-        new := coord_optimize(new, start)
+        j_new := free_elimination(j_new, start)
+        j_new := dead_assignment(j_new, start)
+        j_new := j_goto_elimination(j_new, start)
+        j_new := copy_propagation(j_new, start)
+        j_new := coord_optimize(j_new, start)
     }
-    if i := new[start] &
+    if i := j_new[start] &
        type(i[1]) == "ir_EnterInit" &
        type(i[2]) == "ir_Goto" &
-       i[1].startlabel === i[2].location then {
-        new[start] := [ i[2] ]
+       i[1].startj_label === i[2].location then {
+        j_new[start] := [ i[2] ]
     }
-    return new
+    return j_new
 end
 
 procedure dead_assignment(t, start)
-    local k, chunk, new, c, i
+    local k, chunk, j_new, c, i
 
-    new := table()
+    j_new := table()
     every k := key(t) & chunk := t[k] do {
         c := []
         every i := !chunk do {
@@ -33,29 +33,29 @@ procedure dead_assignment(t, start)
             }
             put(c, i)
         }
-        new[k] := c
+        j_new[k] := c
     }
-    return new
+    return j_new
 end
 
 procedure free_elimination(t, start)
-    local new, c, i, lab
+    local j_new, c, i, lab
 
-    new := table()
+    j_new := table()
     every lab := key(t) do {
         c := t[lab]
-        new[lab] := []
+        j_new[lab] := []
         every i := !c do {
             if (type(i) ~== "ir_Free") |
                # (*i.v.tmp > 0) |
                # (*i.v.lab > 0) |
                (*i.v.clo > 0)
                then {
-                put(new[lab], i)
+                put(j_new[lab], i)
             }
         }
     }
-    return new
+    return j_new
 end
 
 procedure coord_optimize(t, start)
@@ -89,7 +89,7 @@ procedure coord_optimize(t, start)
 end
 
 procedure copy_propagation(t, start)
-    local rename, uses, defs, chunk, insn, newchunk, changes
+    local rename, uses, defs, chunk, insn, j_newchunk, changes
     local k, i
 
     repeat {
@@ -103,7 +103,7 @@ procedure copy_propagation(t, start)
         }
         rename := table()
         every k := key(t) & chunk := t[k] do {
-            newchunk := []
+            j_newchunk := []
             every insn := !chunk do {
                 if type(insn) == "ir_Move" &
                    defs[insn.lhs] = 1 &
@@ -122,10 +122,10 @@ procedure copy_propagation(t, start)
                     rename[insn.lhs] := insn.rhs
                     changes := 1
                 } else {
-                    put(newchunk, insn)
+                    put(j_newchunk, insn)
                 }
             }
-            t[k] := newchunk
+            t[k] := j_newchunk
         }
         if /changes then break;
         every chunk := !t do {
@@ -182,7 +182,7 @@ procedure def_use(p, this, uses, defs)
     "ir_Restore" :   { }
     "ir_CoFail" :    { }
     "ir_RunTimeError":{ }
-    "ir_EnterInit" : { def_use(p.startlabel, uses, uses, defs) }
+    "ir_EnterInit" : { def_use(p.startj_label, uses, uses, defs) }
     "ir_Coord" : { }
 
     default :   { runerr(500, p); }
@@ -247,7 +247,7 @@ procedure opt_rewrite(p, rename)
             p.continuation := opt_rewrite(p.continuation, rename);}
     "ir_CoFail" :    { }
     "ir_RunTimeError":{ }
-    "ir_EnterInit" : { p.startlabel := opt_rewrite(p.startlabel, rename) }
+    "ir_EnterInit" : { p.startj_label := opt_rewrite(p.startj_label, rename) }
     "ir_Coord" : { }
 
     default :   { runerr(500,p); }
@@ -255,40 +255,40 @@ procedure opt_rewrite(p, rename)
     return p;
 end
 
-procedure goto_elimination(t, start)
-    local new, wl, seen, lab, insn, chunk
+procedure j_goto_elimination(t, start)
+    local j_new, wl, seen, lab, insn, chunk
 
     ref_count := table(0)
 
-    new := table()
+    j_new := table()
     wl := []
     seen := set()
-    add_label(start, wl, seen)
+    add_j_label(start, wl, seen)
 
     while lab := pop(wl) do {
-        new[lab] := \t[lab]
+        j_new[lab] := \t[lab]
         every insn := !\t[lab] do {
-            gotos(insn, wl, seen,t)
+            j_gotos(insn, wl, seen,t)
         }
     }
 
-    every lab := key(new) do {
-        while chunk := \new[lab] &
+    every lab := key(j_new) do {
+        while chunk := \j_new[lab] &
               insn := chunk[-1] &
               type(insn) == "ir_Goto" &
               type(insn.location) == "ir_Label" &
               ref_count[insn.location] = 1 do {
-            if /new[insn.location] then {
+            if /j_new[insn.location] then {
                 runerr(500, insn.location)
             }
-            new[lab] := chunk[1:-1] ||| new[insn.location]
-            delete(new, insn.location)
+            j_new[lab] := chunk[1:-1] ||| j_new[insn.location]
+            delete(j_new, insn.location)
         }
     }
-    return new
+    return j_new
 end
 
-procedure add_label(lab, wl, seen)
+procedure add_j_label(lab, wl, seen)
     ref_count[lab] +:= 1
     if not member(seen, lab) then {
         insert(seen, lab)
@@ -296,7 +296,7 @@ procedure add_label(lab, wl, seen)
     }
 end
 
-procedure goto_chain(lab, t)
+procedure j_goto_chain(lab, t)
     local chunk, seen
 
     seen := set([])
@@ -309,7 +309,7 @@ procedure goto_chain(lab, t)
     return lab
 end
 
-procedure goto_chain_defer(lab, t)
+procedure j_goto_chain_defer(lab, t)
     local chunk
 
     while chunk := \t[lab] &
@@ -320,7 +320,7 @@ procedure goto_chain_defer(lab, t)
     return lab
 end
 
-procedure gotos(p, wl, seen, t)
+procedure j_gotos(p, wl, seen, t)
     case type(p) of {
     "ir_Free" |
     "ir_Restore" |
@@ -344,43 +344,43 @@ procedure gotos(p, wl, seen, t)
         # nothing
         }
     "ir_Label" : {  # ir_Label : ( value )
-        add_label(p, wl, seen)
+        add_j_label(p, wl, seen)
         }
     "ir_Move" : {  # ir_Move : ( lhs rhs )
-        p.rhs := goto_chain_defer(p.rhs, t)
-        gotos(p.rhs, wl, seen, t)
+        p.rhs := j_goto_chain_defer(p.rhs, t)
+        j_gotos(p.rhs, wl, seen, t)
         }
     "ir_Goto" : {  # ir_Goto : ( location )
-        p.location := goto_chain(p.location, t)
-        gotos(p.location, wl, seen, t)
+        p.location := j_goto_chain(p.location, t)
+        j_gotos(p.location, wl, seen, t)
         }
     "ir_Succeed" : {  # ir_Succeed : ( expr continuation )
-        p.continuation := goto_chain(\p.continuation, t)
-        gotos(\p.continuation, wl, seen, t)
+        p.continuation := j_goto_chain(\p.continuation, t)
+        j_gotos(\p.continuation, wl, seen, t)
         }
     "ir_Field" : {  # ir_Field : ( lhs expr field failLabel )
-        p.failLabel := goto_chain(\p.failLabel, t)
-        gotos(\p.failLabel, wl, seen, t)
+        p.failLabel := j_goto_chain(\p.failLabel, t)
+        j_gotos(\p.failLabel, wl, seen, t)
         }
     "ir_OpFunction" : {  # ir_OpFunction : ( lhs fn argList failLabel )
-        p.failLabel := goto_chain(\p.failLabel, t)
-        gotos(\p.failLabel, wl, seen, t)
+        p.failLabel := j_goto_chain(\p.failLabel, t)
+        j_gotos(\p.failLabel, wl, seen, t)
         }
     "ir_Resume" : {  # ir_Resume : ( closure failLabel retValue )
-        p.failLabel := goto_chain(p.failLabel, t)
-        gotos(p.failLabel, wl, seen, t)
+        p.failLabel := j_goto_chain(p.failLabel, t)
+        j_gotos(p.failLabel, wl, seen, t)
         }
     "ir_Create" : {  # ir_Create : ( location )
-        p.location := goto_chain(p.location, t)
-        gotos(p.location, wl, seen, t)
+        p.location := j_goto_chain(p.location, t)
+        j_gotos(p.location, wl, seen, t)
         }
     "ir_CoRet" : {  # ir_CoRet : ( value continuation )
-        p.continuation := goto_chain(p.continuation, t)
-        gotos(p.continuation, wl, seen, t)
+        p.continuation := j_goto_chain(p.continuation, t)
+        j_gotos(p.continuation, wl, seen, t)
         }
-    "ir_EnterInit" : {  # ir_EnterInit : ( startlabel )
-        p.startlabel := goto_chain(p.startlabel, t)
-        gotos(p.startlabel, wl, seen, t)
+    "ir_EnterInit" : {  # ir_EnterInit : ( startj_label )
+        p.startj_label := j_goto_chain(p.startj_label, t)
+        j_gotos(p.startj_label, wl, seen, t)
         }
     default : runerr(500, p)
     }

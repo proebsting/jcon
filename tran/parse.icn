@@ -115,7 +115,7 @@ procedure expr()
     while tok_rec === CONJUNC do {
         op := eat_token()
         right := expr1a()
-        ret := a_Binop(op, ret, right, ret.coord)
+        ret := a_Bij_nop(op, ret, right, ret.coord)
     }
     return ret
 end
@@ -140,7 +140,7 @@ procedure expr1()
         if op == "?:=" then {
             ret := a_Scan(op, ret, right, ret.coord)
         } else {
-            ret := a_Binop(op, ret, right, ret.coord)
+            ret := a_Bij_nop(op, ret, right, ret.coord)
         }
     }
     return ret
@@ -170,7 +170,7 @@ procedure expr10()
         case (op) of {
         "|":        return a_RepAlt(operand, coord)
         "not":      return a_Not(operand, coord)
-        default:    return a_Unop(op, operand, coord)
+        default:    return a_Uj_nop(op, operand, coord)
         }
     } else if member(expr10_set3, tok_rec) then {
         tmp_tok := tok_rec
@@ -180,9 +180,9 @@ procedure expr10()
         case tmp_tok of {
         CONCAT  : return a_RepAlt(operand, coord)
         LCONCAT : return a_RepAlt(operand, coord)
-        UNION     : return a_Unop("+", operand, coord)
-        INTER     : return a_Unop("*",a_Unop("*", operand, coord), coord)
-        DIFF      : return a_Unop("-",a_Unop("-", operand, coord), coord)
+        UNION     : return a_Uj_nop("+", operand, coord)
+        INTER     : return a_Uj_nop("*",a_Uj_nop("*", operand, coord), coord)
+        DIFF      : return a_Uj_nop("-",a_Uj_nop("-", operand, coord), coord)
         default     : runerr(500)
         }
     } else {
@@ -349,9 +349,9 @@ procedure expr11suffix(lhs)
             if member(expr11suffix_set2, tok_rec) then {
                 op := "[" || eat_token() || "]"
                 right := expr()
-                lhs := a_Sectionop(op, lhs, left, right, lhs.coord)
+                lhs := a_Sectioj_nop(op, lhs, left, right, lhs.coord)
             } else {
-                lhs := a_Binop("[]", lhs, left, lhs.coord)
+                lhs := a_Bij_nop("[]", lhs, left, lhs.coord)
             }
             if tok_rec ~=== COMMA then break
             match_token(COMMA)
@@ -427,7 +427,7 @@ procedure expr4()
     while member(expr4_set, tok_rec) do {
         op := eat_token()
         right := expr5()
-        ret := a_Binop(op, ret, right, ret.coord)
+        ret := a_Bij_nop(op, ret, right, ret.coord)
     }
     return ret
 end
@@ -440,7 +440,7 @@ procedure expr5()
     while tok_rec === CONCAT | tok_rec === LCONCAT do {
         op := eat_token()
         right := expr6()
-        ret := a_Binop(op, ret, right, ret.coord)
+        ret := a_Bij_nop(op, ret, right, ret.coord)
     }
     return ret
 end
@@ -459,7 +459,7 @@ procedure expr6()
     while member(expr6_set, tok_rec) do {
         op := eat_token()
         right := expr7()
-        ret := a_Binop(op, ret, right, ret.coord)
+        ret := a_Bij_nop(op, ret, right, ret.coord)
     }
     return ret
 end
@@ -478,7 +478,7 @@ procedure expr7()
     while member(expr7_set, tok_rec) do {
         op := eat_token()
         right := expr8()
-        ret := a_Binop(op, ret, right, ret.coord)
+        ret := a_Bij_nop(op, ret, right, ret.coord)
     }
     return ret
 end
@@ -491,7 +491,7 @@ procedure expr8()
     while tok_rec === CARET do {
         op := eat_token()
         right := expr8()
-        ret := a_Binop(op, ret, right, ret.coord)
+        ret := a_Bij_nop(op, ret, right, ret.coord)
     }
     return ret
 end
@@ -507,7 +507,7 @@ procedure expr9()
         if op == "\\" then {
             ret := a_Limitation(ret, right, ret.coord)
         } else {
-            ret := a_Binop(op, ret, right, ret.coord)
+            ret := a_Bij_nop(op, ret, right, ret.coord)
         }
     }
     return ret
