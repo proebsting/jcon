@@ -1,5 +1,7 @@
-global optim_optimize_flag, nolink_flag, java_classname, noerror2failure
-global nodebuginfo, nointrospection
+global bc_nodebuginfo
+global bc_nointrospection
+
+global bc_java_classname
 
 global bc_indirect_targets
 global bc_directory
@@ -130,7 +132,7 @@ end
 procedure bc_gen_ir_Coord(s, p)
     local f, line, column, field
 
-    /nodebuginfo | return s
+    /bc_nodebuginfo | return s
 
     if f := j_cp_String(bc_proc_classptr,
               j_cp_Utf8(bc_proc_classptr, \(\p.coord).file)) then {
@@ -303,7 +305,7 @@ procedure bc_gen_ir_Key_register(p)
     bc_keys_link[p.name] := 1
     /bc_key_table[p.name] := j_create_fieldref(bc_proc_classptr, "$" || p.name,
                                              "Lrts/vDescriptor;",
-                                             java_classname)
+                                             bc_java_classname)
 end
 procedure bc_gen_ir_Key_rval(s, p)
     bc_gen_ir_Key_register(p)
@@ -318,7 +320,7 @@ procedure bc_gen_ir_IntLit(s, p)
     i := integer(p.val)
     /bc_integer_table[i] := "li$" || map(i, "-", "m")
     field := j_create_fieldref(bc_proc_classptr, bc_integer_table[i],
-                             "Lrts/vInteger;", java_classname)
+                             "Lrts/vInteger;", bc_java_classname)
     put(s, j_getstatic(field))
     return s
 end
@@ -330,7 +332,7 @@ procedure bc_gen_ir_RealLit(s, p)
     r := real(p.val)
     /bc_real_table[r] := "lr$" || map(r, ".-+", "dmp")
     field := j_create_fieldref(bc_proc_classptr, bc_real_table[r], "Lrts/vReal;",
-                             java_classname)
+                             bc_java_classname)
     put(s, j_getstatic(field))
     return s
 end
@@ -341,7 +343,7 @@ procedure bc_gen_ir_StrLit(s, p)
 
     /bc_string_table[p.val] := "ls$" || *bc_string_table
     field := j_create_fieldref(bc_proc_classptr, bc_string_table[p.val],
-                             "Lrts/vString;", java_classname)
+                             "Lrts/vString;", bc_java_classname)
     put(s, j_getstatic(field))
     return s
 end
@@ -352,7 +354,7 @@ procedure bc_gen_ir_CsetLit(s, p)
 
     /bc_cset_table[p.val] := "lc$" || *bc_cset_table
     field := j_create_fieldref(bc_proc_classptr, bc_cset_table[p.val],
-                             "Lrts/vCset;", java_classname)
+                             "Lrts/vCset;", bc_java_classname)
     put(s, j_getstatic(field))
     return s
 end
@@ -670,7 +672,7 @@ procedure bc_gen_ir_Operator(s, p)
     n := p.name || "," || p.arity
     /bc_op_table[n] := "proc_" || *bc_op_table
     field := j_create_fieldref(bc_proc_classptr, bc_op_table[n],
-                             "Lrts/vDescriptor;", java_classname)
+                             "Lrts/vDescriptor;", bc_java_classname)
     put(s, j_getstatic(field))
     return s
 end
@@ -906,7 +908,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     }
     insert(bc_declare_set, name)
 
-    bc_proc_classname := "p_" || java_classname || "$" || name
+    bc_proc_classname := "p_" || bc_java_classname || "$" || name
     c := bc_proc_classptr := j_ClassFile(3, 45, [&null], table(), 1, &null, &null,
                                        [], [], [], [])
     c.super_class := j_cp_Class(c, j_cp_Utf8(c, "rts/iClosure"))
@@ -1226,7 +1228,7 @@ procedure bc_create_locals(c, undeclared, statics)
     put(locals.attributes, localscode)
     s := localscode.code
 
-    if \nointrospection then {
+    if \bc_nointrospection then {
         m := bc_error_methodref(c)
         put(s, j_ipush(905))
         put(s, j_invokestatic(m))
@@ -1253,7 +1255,7 @@ procedure bc_create_locals(c, undeclared, statics)
         lab := j_label()
         if member(undeclared, k) then {
             shadow := j_create_fieldref(c, "v$" || k || "$", "Lrts/vVariable;",
-                                      java_classname)
+                                      bc_java_classname)
             put(s, j_getstatic(shadow) )
             put(s, j_ifnonnull(lab) )
         }
@@ -1372,7 +1374,7 @@ procedure bc_emit_prologue_undeclared(s, c, undeclared)
 
     every k := !undeclared do {
         linkvalue := j_create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
-                                     java_classname)
+                                     bc_java_classname)
         lab1 := j_label()
         field := j_create_fieldref(c, "v$" || k, "Lrts/vVariable;",
                                  bc_proc_classname)
@@ -1410,7 +1412,7 @@ procedure bc_createvars(s, c, params, locals, undeclared)
 
     every k := !undeclared do {
         linkvalue := j_create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
-                                     java_classname)
+                                     bc_java_classname)
         lab1 := j_label()
         v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         field := j_create_fieldref(c, "v$" || k, "Lrts/vVariable;",
@@ -1483,7 +1485,7 @@ procedure bc_create_copy(c, params, locals, undeclared)
         }
         every k := !undeclared do {
             linkvalue := j_create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
-                                         java_classname)
+                                         bc_java_classname)
             lab1 := j_label()
             put(s, j_getstatic(linkvalue) )
             put(s, j_ifnonnull(lab1) )
@@ -1510,25 +1512,25 @@ procedure bc_process_flags(flagList)
     }
 
     !flagList ? {
-        ="-class:" & java_classname := tab(0)
+        ="-class:" & bc_java_classname := tab(0)
         &fail
     }
-    \java_classname | stop("ERROR: must specify -class:<name>")
+    \bc_java_classname | stop("ERROR: must specify -class:<name>")
 
-    nodebuginfo := 1
-    nointrospection := 1
-    noerror2failure := 1
+    bc_nodebuginfo := 1
+    bc_nointrospection := 1
+    ir_noerror2failure := 1
     every k := !flagList do {
         k ? {
             if ="-f" then {
                 if find("e") | find("a") then {
-                    noerror2failure := &null
+                    ir_noerror2failure := &null
                 }
                 if find("n") | find("a") then {
-                    nodebuginfo := &null
+                    bc_nodebuginfo := &null
                 }
                 if find("d") | find("a") then {
-                    nointrospection := &null
+                    bc_nointrospection := &null
                 }
             }
         }
@@ -1575,7 +1577,7 @@ procedure bc_File(irgen, flagList)
     c := bc_proc_classptr := j_ClassFile(3, 45, [&null], table(), 1, &null, &null,
                                        [], [], [], [])
     c.super_class := j_cp_Class(c, j_cp_Utf8(c, "rts/iFile"))
-    c.this_class := j_cp_Class(c, j_cp_Utf8(c, java_classname))
+    c.this_class := j_cp_Class(c, j_cp_Utf8(c, bc_java_classname))
 
     bc_create_declare(c)
     bc_create_unresolved(c)
@@ -1584,7 +1586,7 @@ procedure bc_File(irgen, flagList)
     bc_create_linkinit(c)
     bc_create_class_linkinit(c)
 
-    f := open(bc_directory || java_classname || ".class","wu") | runerr(500)
+    f := open(bc_directory || bc_java_classname || ".class","wu") | runerr(500)
     j_writer_j_ClassFile(f, c)
     close(f)
 end
@@ -1597,7 +1599,7 @@ procedure bc_create_declare(c)
     declarecode := j_create_code(c, 10, 10)
     put(declare.attributes, declarecode)
 
-    if \noerror2failure then {
+    if \ir_noerror2failure then {
         declareNoErrorConversion := bc_declareNoErrorConversion_methodref(c)
         put(declarecode.code, j_invokestatic(declareNoErrorConversion) )
     }
@@ -1612,7 +1614,7 @@ procedure bc_create_declare(c)
     every k := key(bc_proc_table) do {
         s := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(declarecode.code, j_ldc_w(s) )
-        s := j_cp_String(c, j_cp_Utf8(c, "p_" || java_classname || "$" || k)) |
+        s := j_cp_String(c, j_cp_Utf8(c, "p_" || bc_java_classname || "$" || k)) |
             runerr(500)
         put(declarecode.code, j_ldc_w(s) )
         put(declarecode.code, j_ipush(bc_proc_table[k]) )
@@ -1678,7 +1680,7 @@ procedure bc_create_linked(c)
         linkedcode := j_create_code(c, 10, 10)
         put(linked.attributes, linkedcode)
 
-        linkref := j_create_fieldref(c, "linked", "Z", java_classname)
+        linkref := j_create_fieldref(c, "linked", "Z", bc_java_classname)
         put(linkedcode.code, j_getstatic(linkref) )
         lab := j_label()
         put(linkedcode.code, j_ifne(lab) )
@@ -1712,7 +1714,7 @@ procedure bc_create_resolve(c)
     resolvemethod := bc_resolve_methodref(c)
     every k := !bc_undeclared_set do {
         f := j_create_fieldref(c, "v$" || k || "$", "Lrts/vVariable;",
-                             java_classname)
+                             bc_java_classname)
         s := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(resolvecode.code, j_ldc_w(s) )
         put(resolvecode.code, j_invokestatic(resolvemethod) )
@@ -1722,7 +1724,7 @@ procedure bc_create_resolve(c)
     resolvemethod := bc_resolveKey_methodref(c)
     every k := key(bc_keys_link) do {
         f := j_create_fieldref(c, "$" || k, "Lrts/vDescriptor;",
-                             java_classname)
+                             bc_java_classname)
         s := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(resolvecode.code, j_ldc_w(s) )
         put(resolvecode.code, j_invokestatic(resolvemethod) )
@@ -1737,7 +1739,7 @@ procedure bc_create_resolve(c)
             args := integer(tab(0))
         }
         f := j_create_fieldref(c, bc_op_table[k], "Lrts/vDescriptor;",
-                             java_classname)
+                             bc_java_classname)
         s := j_cp_String(c, j_cp_Utf8(c, op)) | runerr(500)
         put(resolvecode.code, j_ldc_w(s) )
         put(resolvecode.code, j_ipush(args) )
@@ -1778,7 +1780,7 @@ procedure bc_create_class_linkinit(c)
     every k := key(bc_real_table) do {
         j_create_field(c, 8, bc_real_table[k], "Lrts/vReal;")
         f := j_create_fieldref(c, bc_real_table[k], "Lrts/vReal;",
-                             java_classname)
+                             bc_java_classname)
         d := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(s, j_ldc_w(d) )
         put(s, j_invokestatic(newmethod) )
@@ -1789,7 +1791,7 @@ procedure bc_create_class_linkinit(c)
     every k := key(bc_integer_table) do {
         j_create_field(c, 8, bc_integer_table[k], "Lrts/vInteger;")
         f := j_create_fieldref(c, bc_integer_table[k], "Lrts/vInteger;",
-                             java_classname)
+                             bc_java_classname)
         d := j_cp_Long(c, k)
         put(s, j_ldc2_w(d) )
         put(s, j_invokestatic(newmethod) )
@@ -1800,7 +1802,7 @@ procedure bc_create_class_linkinit(c)
     every k := key(bc_string_table) do {
         j_create_field(c, 8, bc_string_table[k], "Lrts/vString;")
         f := j_create_fieldref(c, bc_string_table[k], "Lrts/vString;",
-                             java_classname)
+                             bc_java_classname)
         d := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(s, j_ldc_w(d) )
         put(s, j_invokestatic(newmethod) )
@@ -1811,7 +1813,7 @@ procedure bc_create_class_linkinit(c)
     every k := key(bc_cset_table) do {
         j_create_field(c, 8, bc_cset_table[k], "Lrts/vCset;")
         f := j_create_fieldref(c, bc_cset_table[k], "Lrts/vCset;",
-                             java_classname)
+                             bc_java_classname)
         d := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(s, j_ldc_w(d) )
         put(s, j_invokestatic(newmethod) )

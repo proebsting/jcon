@@ -1,5 +1,5 @@
 global optim_optimize_flag
-global ref_count
+global optim_refcount
 
 procedure optim_optimize(t, start)
     local new, i
@@ -258,7 +258,7 @@ end
 procedure optim_goto_elimination(t, start)
     local new, wl, seen, lab, insn, chunk
 
-    ref_count := table(0)
+    optim_refcount := table(0)
 
     new := table()
     wl := []
@@ -277,7 +277,7 @@ procedure optim_goto_elimination(t, start)
               insn := chunk[-1] &
               type(insn) == "ir_Goto" &
               type(insn.location) == "ir_Label" &
-              ref_count[insn.location] = 1 do {
+              optim_refcount[insn.location] = 1 do {
             if /new[insn.location] then {
                 runerr(500, insn.location)
             }
@@ -289,7 +289,7 @@ procedure optim_goto_elimination(t, start)
 end
 
 procedure optim_add_label(lab, wl, seen)
-    ref_count[lab] +:= 1
+    optim_refcount[lab] +:= 1
     if not member(seen, lab) then {
         insert(seen, lab)
         push(wl, lab)

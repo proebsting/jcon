@@ -18,11 +18,11 @@ procedure yylex(getline)
         every t := lex_yylex0(getline) do {
             if \newline then {
                 newline := &null
-                if member(ender_set,\last_token) &
-                   member(beginner_set,\t) then {
-                    SEMICOL.coord := lex_coordinate(yyfile, yyline-1, last_pos)
-                    suspend SEMICOL
-                    last_token := SEMICOL
+                if member(lex_ender_set,\last_token) &
+                   member(lex_beginner_set,\t) then {
+                    lex_SEMICOL.coord := lex_coordinate(yyfile, yyline-1, last_pos)
+                    suspend lex_SEMICOL
+                    last_token := lex_SEMICOL
                 }
             }
             t.coord := lex_coordinate(yyfile, yyline, coord_pos)
@@ -30,7 +30,7 @@ procedure yylex(getline)
             suspend t
             last_token := t
         }
-        ptok := EOFX
+        ptok := lex_EOFX
         ptok.str := &null
         ptok.coord := lex_coordinate(yyfile, yyline, coord_pos)
         last_pos := &pos
@@ -87,7 +87,7 @@ procedure lex_yylex0(getline)
                 suspend ptok
                 next
             }
-            ptok := IDENT
+            ptok := lex_IDENT
             ptok.str := str
             suspend ptok
             next
@@ -96,7 +96,7 @@ procedure lex_yylex0(getline)
         # check if int lit  (digit or radix)
         # check if digit
         if str := tab(many(&digits)) then {
-            sym := INTLIT
+            sym := lex_INTLIT
             if str ||:= =("r"|"R") then { # radix
                 str ||:= tab(many(let_dig)) |
                     lex_error("invalid integer literal")
@@ -109,13 +109,13 @@ procedure lex_yylex0(getline)
             # check if real lit
             if str ||:= ="." then {
                 str ||:= tab(many(&digits))
-                sym := REALLIT
+                sym := lex_REALLIT
             }
 
             if str ||:= =("e"|"E") then { # exponent lit
                 str ||:= =("+"|"-")
                 str ||:= tab(many(&digits)) | lex_error("invalid real literal")
-                sym := REALLIT
+                sym := lex_REALLIT
             }
             ptok := sym
             ptok.str := str
@@ -125,7 +125,7 @@ procedure lex_yylex0(getline)
 
         # the following special cases ".123" as a real.
         if str <- ="." & str ||:= tab(many(&digits)) then {
-            sym := REALLIT
+            sym := lex_REALLIT
             if str ||:= =("e"|"E") then { # exponent lit
                 str ||:= =("+"|"-")
                 str ||:= tab(many(&digits)) | lex_error("invalid real literal")
@@ -144,7 +144,7 @@ procedure lex_yylex0(getline)
 
         # check if string lit
         if str := lex_quoted("\"", getline) then {
-            ptok := STRINGLIT
+            ptok := lex_STRINGLIT
             ptok.str := str
             suspend ptok
             next
@@ -152,7 +152,7 @@ procedure lex_yylex0(getline)
 
         # check if cset
         if str := lex_quoted("'", getline) then {
-            ptok := CSETLIT
+            ptok := lex_CSETLIT
             ptok.str := str
             suspend ptok
             next
@@ -164,7 +164,7 @@ procedure lex_yylex0(getline)
 end
 
 procedure lex_error(msg)
-    if \tok_rec then {
+    if \parse_tok_rec then {
         stop("File ", yyfile, ": ", "Line ", yyline, " # ", msg)
     } else {
         stop(msg)

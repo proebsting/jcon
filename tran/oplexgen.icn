@@ -144,30 +144,30 @@ procedure main(L)
         token := elem[2]
         if /toks[token] then {
         toks[token] := actual
-        write("global ", token)
+        write("global lex_", token)
         }
     }
 
-    write("global beginner_set")
-    write("global ender_set")
+    write("global lex_beginner_set")
+    write("global lex_ender_set")
 
     write("procedure initialize()")
     every elem := (!primitives | !reserveds | !operators) do {
         actual := elem[1]
         token := elem[2]
         if toks[token] == actual then {
-            write("\t", token, ":= lex_TOK(", image(token), ",", image(actual), ")")
+            write("\tlex_", token, ":= lex_TOK(", image(token), ",", image(actual), ")")
         }
     }
 
-    write("\tbeginner_set := set()")
-    write("\tender_set := set()")
+    write("\tlex_beginner_set := set()")
+    write("\tlex_ender_set := set()")
     every elem := !primitives | !reserveds | !operators do {
         if find("b", elem[3]) then {
-            write("\tinsert(beginner_set, ", elem[2], ")")
+            write("\tinsert(lex_beginner_set, lex_", elem[2], ")")
         }
         if find("e", elem[3]) then {
-            write("\tinsert(ender_set, ", elem[2], ")")
+            write("\tinsert(lex_ender_set, lex_", elem[2], ")")
         }
     }
     write("end # end initialize")
@@ -200,7 +200,7 @@ procedure lexgen_reserveds()
         put(l[*actual], res)
     }
     every i := !l[10 to 1 by -1] do {
-        write("\t\treserved_sym_tbl[", image(i[1]), "] := ", i[2])
+        write("\t\treserved_sym_tbl[", image(i[1]), "] := lex_", i[2])
     }
 end
 
@@ -261,7 +261,7 @@ end
 procedure buildtree(a, sofar, token, t)
     t.actual := sofar
     if a == "" then {
-        t.token := token
+        t.token := "lex_" || token
         return
     }
     /t.t[a[1]] := node(&null, &null, table())
