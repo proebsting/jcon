@@ -2,9 +2,6 @@
 
 global bc_function_name
 
-global bc_coordinate_table
-global bc_coordinate_list
-
 global bc_nodebuginfo
 
 global bc_java_classname
@@ -132,12 +129,6 @@ end
 procedure bc_gen_ir_Coord(s, p)
     local f, line, column, field, lab
 
-    if \p.coord then {
-        lab := j_label()
-        put(s, lab)
-        bc_coordinate_table[lab] := p.coord
-        put(bc_coordinate_list, lab)
-    }
     return s
 end
 
@@ -181,7 +172,7 @@ procedure bc_gen_ir_Label_rval(s, p)
     return s
 end
 
-# record ir_Field(lhs, expr, field, failLabel)
+# record ir_Field(coord, lhs, expr, field, failLabel)
 procedure bc_gen_ir_Field(s, p)
     local lab, method, fieldname, field, d
 
@@ -429,13 +420,33 @@ procedure bc_gen_ir_RunTimeError(s, p)
     return s
 end
 
-# record ir_ResumeValue( value failLabel retValue )
+procedure bc_push_coordinate(s, coord)
+    local c
+
+    if \coord then {
+        c := j_cp_String(bc_current_classptr, j_cp_Utf8(bc_current_classptr, coord.file))
+        put(s, j_ldc_w(c))
+	put(s, j_ipush(coord.line) )
+    } else {
+        put(s, j_aconst_null() )
+        put(s, j_iconst_0() )
+    }
+end
+
+# record ir_ResumeValue( coord value failLabel retValue )
 procedure bc_gen_ir_ResumeValue(s, p)
     local c, PC, target, resume, free
 
-    resume := bc_Resume_methodref(bc_current_classptr)
-    bc_gen(s, p.value)
-    put(s, j_invokevirtual(resume))
+    if \bc_nodebuginfo then {
+        resume := bc_Resume_methodref(bc_current_classptr)
+        bc_gen(s, p.value)
+        put(s, j_invokevirtual(resume))
+    } else {
+        resume := bc_trampoline_Resume_methodref(bc_current_classptr)
+	bc_push_coordinate(s, p.coord)
+        bc_gen(s, p.value)
+        put(s, j_invokestatic(resume))
+    }
     if \p.retValue then {
         put(s, j_dup())
         target := j_label()
@@ -473,15 +484,23 @@ procedure bc_gen_ir_MakeList(s, p)
     return s
 end
 
-# record ir_OpFunction( lhs fn argList failLabel )
+# record ir_OpFunction( coord lhs fn argList failLabel )
 procedure bc_gen_ir_OpFunction(s, p)
     local method
 
     p.fn.arity = *p.argList | runerr(500, p)
-    method := bc_op_methodref(bc_current_classptr, p.fn.name, p.fn.arity)
-    \method | runerr(500)
-    every bc_gen(s, !p.argList)
-    put(s, j_invokevirtual(method))
+    if \bc_nodebuginfo then {
+        method := bc_op_methodref(bc_current_classptr, p.fn.name, p.fn.arity)
+        \method | runerr(500)
+        every bc_gen(s, !p.argList)
+        put(s, j_invokevirtual(method))
+    } else {
+	bc_push_coordinate(s, p.coord)
+        method := bc_trampoline_op_methodref(bc_current_classptr, p.fn.name, p.fn.arity)
+        \method | runerr(500)
+        every bc_gen(s, !p.argList)
+        put(s, j_invokestatic(method))
+    }
     return ir_CallTail(s, p)
 end
 
@@ -510,12 +529,15 @@ procedure ir_CallTail(s, p)
     return s
 end
 
-# record ir_Call( lhs fn argList failLabel )
+# record ir_Call( coord lhs fn argList failLabel )
 procedure bc_gen_ir_Call(s, p)
     local r, l, f, v, n, i, method, class_index
 
     type(p.fn) ~== "ir_Operator" | runerr(500, p)
 
+    if /bc_nodebuginfo then {
+	bc_push_coordinate(s, p.coord)
+    }
     bc_gen(s, p.fn)
     if *p.argList <= 9 then {			#%#%#% hard-wired constant!!!!!
         every bc_gen(s, !p.argList)
@@ -533,7 +555,12 @@ procedure bc_gen_ir_Call(s, p)
         }
         method := bc_CallV_methodref(bc_current_classptr)
     }
-    put(s, j_invokevirtual(method))
+    if \bc_nodebuginfo then {
+        put(s, j_invokevirtual(method))
+    } else {
+        method := bc_trampoline_CallN_methodref(bc_current_classptr, *p.argList)
+        put(s, j_invokestatic(method))
+    }
     return ir_CallTail(s, p)
 end
 
@@ -781,8 +808,6 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     bc_emit_table := table()
     bc_create_exists := &null
     bc_key_table := table()
-    bc_coordinate_table := table()
-    bc_coordinate_list := []
 
     every i := !code do {
         bc_emit_table[i.label] := i.insnList
@@ -1160,7 +1185,7 @@ procedure bc_nextval_code(nextvalcode, c, start, params, locals, undeclared, acc
     local k, lab, switch, insns, deflab
     local runtimeerror, r, s, PC
     local a, tmplab, prologue, var_load_label, t, tmpset
-    local last_label, i, endlab, propagate, jsrlab, class_index, f
+    local last_label, i, endlab, class_index, f, beginlab
 
     nextvalcode.max_locals := bc_var_offset + *bc_var_table
     s := nextvalcode.code
@@ -1182,6 +1207,9 @@ procedure bc_nextval_code(nextvalcode, c, start, params, locals, undeclared, acc
         bc_load_statics(s)
         bc_initialize_tmps(s)
     }
+
+    beginlab := j_label()
+    put(s, beginlab)
 
     deflab := j_label()
     member(bc_indirect_targets, start) & runerr(500)
@@ -1211,46 +1239,15 @@ procedure bc_nextval_code(nextvalcode, c, start, params, locals, undeclared, acc
     endlab := j_label()
     put(s, endlab)
 
-    if *bc_coordinate_list > 0 then {
-	jsrlab := j_label()
-	put(s, jsrlab)
-	put(s, j_astore(11) )
-        f := j_cp_String(bc_current_classptr,
-                       j_cp_Utf8(bc_current_classptr, bc_function_name))
-        put(s, j_ldc_w(f) )
-        put(s, j_ipush(*params))
-        class_index := j_cp_Class(bc_current_classptr,
-                              j_cp_Utf8(bc_current_classptr, "rts/vDescriptor"))
-        put(s, j_anewarray(class_index) )
-        every i := 1 to *params do {
-            k := params[i]
-            put(s, j_dup() )
-	    put(s, j_ipush(i-1) )
-            if \bc_var_table[k] then {
-                put(s, j_aload(bc_var_table[k]+bc_var_offset) )
-	    } else {
-		put(s, j_aconst_null() )
-	    }
-            put(s, j_aastore() )
-        }
-        propagate := bc_propagate_methodref(c)
-        put(s, j_invokevirtual(propagate) )
-	put(s, j_ret(11) )	#%#%# hard-wired register number!
+    if \bc_nodebuginfo then {
+        bc_emit_exception(c, s, params, nextvalcode.exception_table, beginlab, endlab)
     }
 
-    last_label := &null
-    every i := !bc_coordinate_list do {
-	if \last_label then {
-	    bc_emit_exception(c, s, nextvalcode.exception_table, last_label, i, jsrlab)
-	}
-	last_label := i
-    }
-    bc_emit_exception(c, s, nextvalcode.exception_table, \last_label, endlab, jsrlab)
 
 end
 
-procedure bc_emit_exception(c, s, etab, last_label, i, jsrlab)
-    local catch_type, lab, e, f, coord
+procedure bc_emit_exception(c, s, params, etab, last_label, i)
+    local catch_type, lab, e, f, coord, class_index, k, propagate, v
 
     catch_type := j_cp_Class(bc_current_classptr,
                              j_cp_Utf8(bc_current_classptr, "rts/iError"))
@@ -1258,12 +1255,29 @@ procedure bc_emit_exception(c, s, etab, last_label, i, jsrlab)
     e := j_exception_table_info(last_label, i, lab, catch_type)
     put(etab, e)
     put(s, lab)
-    coord := \bc_coordinate_table[last_label] | runerr(500)
-    f := j_cp_String(bc_current_classptr,
-                   j_cp_Utf8(bc_current_classptr, coord.file))
-    put(s, j_ldc_w(f) )
-    put(s, j_ipush(coord.line) )
-    put(s, j_jsr_w(jsrlab) )
+
+    v := j_cp_String(bc_current_classptr, j_cp_Utf8(bc_current_classptr, bc_function_name))
+    put(s, j_ldc_w(v) )
+
+    put(s, j_ipush(*params))
+    class_index := j_cp_Class(bc_current_classptr,
+                              j_cp_Utf8(bc_current_classptr, "rts/vDescriptor"))
+    put(s, j_anewarray(class_index) )
+    every i := 1 to *params do {
+        k := params[i]
+        put(s, j_dup() )
+        put(s, j_ipush(i-1) )
+        if \bc_var_table[k] then {
+            put(s, j_aload(bc_var_table[k]+bc_var_offset) )
+        } else {
+	    put(s, j_aconst_null() )
+        }
+        put(s, j_aastore() )
+    }
+
+    propagate := bc_propagate_methodref(c)
+    put(s, j_invokevirtual(propagate) )
+    put(s, j_aconst_null() )
     put(s, j_areturn() )
 end
 
@@ -1613,9 +1627,11 @@ procedure bc_process_flags(flagList)
             if ="-f" then {
                 if find("e") | find("a") then {
                     ir_noerror2failure := &null
+                    bc_nodebuginfo := &null
                 }
                 if find("n") | find("a") then {
                     bc_nodebuginfo := &null
+                    ir_noerror2failure := &null
                 }
             }
         }

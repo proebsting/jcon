@@ -7,7 +7,15 @@
 #  When a change affects other classes, run "make clean" before rebuilding.
 
 
-build:
+build: iTrampoline.java compile
+
+iTrampoline.java: trampolinegen
+	./trampolinegen > iTrampoline.java
+
+trampolinegen: ../tran/trampolinegen.icn
+	icont -o trampolinegen ../tran/trampolinegen.icn
+
+compile:
 	./upclass *.java
 	cd ..; jar cfM bin/rts.zip rts/*.class 2>&1 | sed '/<GC: /d'
 

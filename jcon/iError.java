@@ -7,7 +7,6 @@ public class iError extends Error {
     int num;				// error number
     vDescriptor desc;			// offending value
     String message = "";		// propagated message
-    String call = "<runtime system>";
     String filename;
     int lineno;
 
@@ -35,7 +34,6 @@ void report() {				// print message and abort
 	f.println("offending value: " + desc.report());
     }
     f.println("Traceback:");
-    f.println("   " + call);
     f.println(message);
 
     // this.printStackTrace(); 	//#%#% temporary
@@ -43,36 +41,92 @@ void report() {				// print message and abort
     iRuntime.exit(1);
 }
 
-public vDescriptor propagate(String fname, int lineno, String procname, vDescriptor[] args) {
+public void propagate(String fname, int lineno, String template,
+		             vDescriptor a1) {
+    String call;
+    call = "{"
+	   + template
+	   + " "
+	   + a1.Deref().report()
+	   + "}";
+    propagate(fname, lineno, call);
+}
+public void propagate(String fname, int lineno, String template,
+		             vDescriptor a1, vDescriptor a2) {
+    String call;
+    call = "{"
+	   + a1.Deref().report()
+	   + " "
+	   + template
+	   + " "
+	   + a2.Deref().report()
+	   + "}";
+    propagate(fname, lineno, call);
+}
+public void propagate(String fname, int lineno, String template,
+		             vDescriptor a1, vDescriptor a2, vDescriptor a3) {
+    String call;
+    call = "{"
+	   + template
+	   + " "
+	   + a1.Deref().report()
+	   + ", "
+	   + a2.Deref().report()
+	   + ", "
+	   + a3.Deref().report()
+	   + "}";
+    propagate(fname, lineno, call);
+}
+
+public void propagate(String fname, int lineno,
+		      vDescriptor a, vDescriptor[] args) {
+    String call = a.Deref().report() + args2string(args);
+    propagate(fname, lineno, call);
+}
+
+String args2string(vDescriptor[] args) {
+    String call = "(";
+    if (args.length > 0) {
+        if (args[0] == null) {
+            call += "~";
+        } else {
+            call += args[0].Deref().report();
+        }
+        for (int i = 1; i < args.length; i++) {
+            if (args[i] == null) {
+                call += ",~";
+            } else {
+                call += "," + args[i].Deref().report();
+            }
+        }
+    }
+    call += ")";
+    return call;
+}
+
+void propagate(String procname, vDescriptor[] args) {
+    String call = procname + args2string(args);
+    propagate(null, 0, call);
+}
+
+void propagate(String fname, int lineno, String call) {
     // if &error is zero, issue message and abort
     // if &error is not zero, decrement it and set other error keywords
     if (k$error.self.check()) {
 	k$errornumber.self.set(vInteger.New(this.num));
 	k$errortext.self.set(vString.New(iRunerr.text(num)));
 	k$errorvalue.self.set((this.desc == null) ? null : this.desc.Deref());
-        return null;
+	return;
     } else {
 	if (filename == null) {
 	    this.lineno = lineno;
 	    this.filename = fname;
 	}
-	message = "   " + call + " from line " + lineno + " in " + fname + "\n" + message;
-	call = procname + "(";
-	if (args.length > 0) {
-	    if (args[0] == null) {
-	        call += "~";
-	    } else {
-	        call += args[0].Deref().report();
-	    }
-	    for (int i = 1; i < args.length; i++) {
-	        if (args[i] == null) {
-	            call += ",~";
-	        } else {
-	            call += "," + args[i].Deref().report();
-	        }
-	    }
+	String coord = "";
+	if (fname != null) {
+	    coord = " from line " + lineno + " in " + fname;
 	}
-	call += ")";
+	message = "   " + call + coord + "\n" + message;
         throw this;
     }
 }
