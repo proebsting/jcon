@@ -320,8 +320,8 @@ final class f$CopyArea extends vProcV {	    // CopyArea(W1,W2,x1,y1,w,h,x2,y2)
 	Dimension d = win1.getCanvas().getSize();
 	int x1 = (int) vInteger.argVal(args, b + 0, -win1.dx);
 	int y1 = (int) vInteger.argVal(args, b + 1, -win1.dy);
-	int w  = (int) vInteger.argVal(args, b + 2, d.width - x1 + win1.dx);
-	int h  = (int) vInteger.argVal(args, b + 3, d.height - y1 + win1.dy);
+	int w  = (int) vInteger.argVal(args, b + 2, d.width - x1 - win1.dx);
+	int h  = (int) vInteger.argVal(args, b + 3, d.height - y1 - win1.dy);
 	int x2 = (int) vInteger.argVal(args, b + 4, -win2.dx);
 	int y2 = (int) vInteger.argVal(args, b + 5, -win2.dy);
 
@@ -366,8 +366,8 @@ final class f$WriteImage extends vProc7 {	// WriteImage(W,s,x,y,w,h,q)
 	String fname = b.mkString().toString();
 	int x = c.isnull() ? -win.dx : ((int) c.mkInteger().value);
 	int y = d.isnull() ? -win.dy : ((int) d.mkInteger().value);
-	int w = e.isnull() ? (wd.width-x+win.dx) : ((int) e.mkInteger().value);
-	int h = f.isnull() ? (wd.height-y+win.dy) : ((int) f.mkInteger().value);
+	int w = e.isnull() ? (wd.width-x-win.dx) : ((int) e.mkInteger().value);
+	int h = f.isnull() ? (wd.height-y-win.dy) : ((int) f.mkInteger().value);
 	double q = g.isnull() ? -1.0 : g.mkReal().value;
 	return wImage.Write(win, fname, x, y, w, h, q);
     }
@@ -385,8 +385,8 @@ final class f$Pixel extends vProc5 {		// Pixel(W, x, y, w, h)
 	Dimension wd = win.getCanvas().getSize();
 	int x = b.isnull() ? -win.dx : ((int) b.mkInteger().value);
 	int y = c.isnull() ? -win.dy : ((int) c.mkInteger().value);
-	int w = d.isnull() ? wd.width-x+win.dy : ((int) d.mkInteger().value);
-	int h = e.isnull() ? wd.height-y+win.dy : ((int) e.mkInteger().value);
+	int w = d.isnull() ? wd.width-x-win.dx : ((int) d.mkInteger().value);
+	int h = e.isnull() ? wd.height-y-win.dy : ((int) e.mkInteger().value);
 	return wImage.Pixel(win, x, y, w, h);
     }
 }

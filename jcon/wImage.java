@@ -260,20 +260,17 @@ private static int hexdigit(int c)
 public static vValue Write(vWindow win, String fname,
 			    int x, int y, int w, int h, double q) {
 
-    final int[] data = Grab(win, x, y, w, h);
+    Rectangle r = limitBounds(win, x, y, w, h);
+    final int[] data = Grab(win, r);
     if (data == null) {
     	return null; /*FAIL*/
     }
 
-    // AFTER grabbing, convert w & h to positive
-    if (w < 0) { w = -w; }
-    if (h < 0) { h = -h; }
-
     String lfname = fname.toLowerCase();
     if (lfname.endsWith(".jpg") || lfname.endsWith(".jpeg")) {
-	return writeJPEG(win, data, fname, w, h, q);
+	return writeJPEG(win, data, fname, r.width, r.height, q);
     } else {
-	return writeGIF(win, data, fname, w, h, q);
+	return writeGIF(win, data, fname, r.width, r.height, q);
     }
 }
 
@@ -394,7 +391,7 @@ public static vValue writeJPEG(vWindow win, int[] data, String fname,
 
 public static vDescriptor Pixel(vWindow win, int x, int y, int w, int h) {
     final double gamma = win.gamma;
-    final int[] data = Grab(win, x, y, w, h);
+    final int[] data = Grab(win, limitBounds(win, x, y, w, h));
     if (data == null) {
     	return null; /*FAIL*/
     }
@@ -425,11 +422,11 @@ public static vDescriptor Pixel(vWindow win, int x, int y, int w, int h) {
 
 
 
-//  wImage.Grab(window, x, y, w, h) -- grab pixels as array of RGB ints
+//  limitBounds(win, x, y, w, h) -- return intersection of x,y,w,h with window
+//
+//  The resulting rectangle has been adjusted by dx/dy.
 
-public static int[] Grab(vWindow win, int x, int y, int w, int h) {
-
-    Image im = win.getCanvas().i;
+private static Rectangle limitBounds (vWindow win, int x, int y, int w, int h) {
 
     // adjust negative width and height
     if (w < 0) {
@@ -443,7 +440,7 @@ public static int[] Grab(vWindow win, int x, int y, int w, int h) {
     x += win.dx;
     y += win.dy;
 
-    // trim to image bounds	//#%#% should gen bg color instead??
+    // trim to image bounds
     if (x < 0) {
 	w += x;
 	x = 0;
@@ -452,19 +449,33 @@ public static int[] Grab(vWindow win, int x, int y, int w, int h) {
 	w += y;
 	y = 0;
     }
-    if (w > im.getWidth(null)) {
-	w = im.getWidth(null);
+    if (w > win.getWidth() - x) {
+	w = win.getWidth() - x;
     }
-    if (h > im.getHeight(null)) {
-	h = im.getHeight(null);
-    }
-    if (w <= 0 || h <= 0) {
-	return null; /*FAIL*/
+    if (h > win.getHeight() - y) {
+	h = win.getHeight() - y;
     }
 
-    // get data
-    final int[] data = new int[w * h];
-    PixelGrabber pg = new PixelGrabber(im, x, y, w, h, data, 0, w);
+    if (w <= 0 || h <= 0) {
+	return new Rectangle(0, 0, 0, 0);
+    } else {
+        return new Rectangle(x, y, w, h);
+    }
+}
+
+
+
+//  Grab(window, rectangle) -- grab pixels as array of RGB ints
+
+private static int[] Grab(vWindow win, Rectangle r) {
+
+    if (r.width == 0 || r.height == 0) {
+    	return null;
+    }
+    Image im = win.getCanvas().i;
+    final int[] data = new int[r.width * r.height];
+    PixelGrabber pg =
+        new PixelGrabber(im, r.x, r.y, r.width, r.height, data, 0, r.width);
     try {
 	pg.grabPixels();
 	return data;

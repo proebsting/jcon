@@ -5,7 +5,7 @@
 #  (rebuild all .class files if any are out of date;
 #   not easily expressed in "make")
 
-JAVAC="javac -O"
+JC=${JC-"javac -O"}
 BZIP=bin/rts.zip
 ZIP=../$BZIP
 
@@ -18,8 +18,8 @@ fi
 
 if [ "$NEWER" != "" ]; then
     set -e
-    echo "+ $JAVAC *.java"
-    $JAVAC *.java
+    echo "+ CLASSPATH=.. $JC *.java"
+    CLASSPATH=.. $JC *.java
     echo "+ cd ..; jar cfM $BZIP rts/*.class"
     cd ..
     jar cfM $BZIP rts/*.class 2>&1 
