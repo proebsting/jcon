@@ -145,11 +145,13 @@ void newgcb(Graphics g) {
 //  "current window" maintenance  (not the same as &window)
 //  set by open() and Event()
 //  used by assignment to &x, &y, &row, &col
+//  and for synching with reads from tty
 
 private static vWindow curwin;
 
 static void setCurrent(vWindow win) {
     curwin = win;
+    vFile.fileToSync = win;
 }
 
 static vWindow getCurrent() {
@@ -161,13 +163,7 @@ static vWindow getCurrent() {
 
 
 
-//  static functions that reference the toolkit
-
-static void sync() {		// sync graphics, if any, with tty input
-    if (curwin != null) {
-    	toolkit.sync();
-    }
-}
+//  static function that references the toolkit
 
 static void beep() {		// send a beep
     toolkit.beep();

@@ -38,6 +38,16 @@ vDescriptor Bang(iClosure c)	{ return this.read(); }
 
 
 
+// synchronization: The graphics code sets fileToSync to register a vWindow
+// file that needs to be synchronized before tty (actually dataInputStream)
+// input.  This is here and not in vWindow because we don't want to
+// initialize the vWindow class in a non-graphics execution.
+// Synchronization is done by calling fileToSync.flush().
+
+static vFile fileToSync;	// file to sync, if non-null
+
+
+
 // new vFile(kwname, instream, outstream) -- constructor for keyword files
 
 vFile(String kwname, DataInput i, DataOutput o) {
@@ -196,7 +206,9 @@ vString read() {					// read()
     }
 
     if (instream instanceof DataInputStream) {		// if possibly tty
-	vWindow.sync();			// flush pending graphics output
+	if (fileToSync != null) {
+	    fileToSync.flush();		// flush pending graphics output
+	}
     }
 
     StringBuffer b = new StringBuffer(100);

@@ -38,7 +38,9 @@ vString reads(long n) {
     }
 
     if (instream instanceof DataInputStream) {		// if possibly tty
-	vWindow.sync();			// flush pending graphics output
+	if (fileToSync != null) {
+	    fileToSync.flush();		// flush pending graphics output
+	}
     }
 
     try {

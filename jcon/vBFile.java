@@ -27,7 +27,7 @@ vString reads(long n) {
 	iRuntime.error(212, this);	// not open for reading
     }
 
-    // no vWindow.sync() done for binary file input
+    // no window synchronization is done for binary file input
 
     try {
 	// suppress initial LF if previous call was to read()
