@@ -4,7 +4,20 @@ package rts;
 
 
 
-final class fScan {
+final class fScan extends iInstantiate {
+    public static fScan self = new fScan();
+    public vProc instantiate(String name) {
+        if (name.compareTo( "f$pos" ) == 0) return new f$pos();
+        if (name.compareTo( "f$any" ) == 0) return new f$any();
+        if (name.compareTo( "f$many" ) == 0) return new f$many();
+        if (name.compareTo( "f$match" ) == 0) return new f$match();
+        if (name.compareTo( "f$find" ) == 0) return new f$find();
+        if (name.compareTo( "f$upto" ) == 0) return new f$upto();
+        if (name.compareTo( "f$bal" ) == 0) return new f$bal();
+        if (name.compareTo( "f$move" ) == 0) return new f$move();
+        if (name.compareTo( "f$tab" ) == 0) return new f$tab();
+        return null;
+    } // vProc instantiate(String)
 
     //  fScan.subj(arg) -- return explicit or defaulted subject argument
 

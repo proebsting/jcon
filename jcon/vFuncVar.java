@@ -31,7 +31,7 @@ public vValue Deref() {						// Deref
     if (value != null) {
 	return value;
     } else {
-	vProc p = (vProc) iEnv.instantiate(classname);
+	vProc p = iEnv.instantiate_builtin(classname);
 	p.img = this.img;
 	p.args = this.args;
 	value = p;

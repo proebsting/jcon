@@ -4,7 +4,13 @@ package rts;
 
 
 
-final class fTab {
+final class fTab extends iInstantiate {
+    public static fTab self = new fTab();
+    public vProc instantiate(String name) {
+        if (name.compareTo( "f$detab" ) == 0) return new f$detab();
+        if (name.compareTo( "f$entab" ) == 0) return new f$entab();
+        return null;
+    } // vProc instantiate(String)
 
 static int[] deftabs = {1, 9};
 

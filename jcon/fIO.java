@@ -6,7 +6,23 @@ import java.io.*;
 
 
 
-final class fIO {
+final class fIO extends iInstantiate {
+    public static fIO self = new fIO();
+    public vProc instantiate(String name) {
+        if (name.compareTo( "f$open" ) == 0) return new f$open();
+        if (name.compareTo( "f$flush" ) == 0) return new f$flush();
+        if (name.compareTo( "f$close" ) == 0) return new f$close();
+        if (name.compareTo( "f$read" ) == 0) return new f$read();
+        if (name.compareTo( "f$reads" ) == 0) return new f$reads();
+        if (name.compareTo( "f$write" ) == 0) return new f$write();
+        if (name.compareTo( "f$writes" ) == 0) return new f$writes();
+        if (name.compareTo( "f$stop" ) == 0) return new f$stop();
+        if (name.compareTo( "f$seek" ) == 0) return new f$seek();
+        if (name.compareTo( "f$where" ) == 0) return new f$where();
+        if (name.compareTo( "f$remove" ) == 0) return new f$remove();
+        if (name.compareTo( "f$rename" ) == 0) return new f$rename();
+        return null;
+    } // vProc instantiate(String)
 
     // print(f, arglist, newline) -- helper for write(), writes(), stop()
 

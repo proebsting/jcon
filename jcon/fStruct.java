@@ -2,8 +2,20 @@
 
 package rts;
 
-final class fStruct {} // dummy
-
+final class fStruct extends iInstantiate {
+    public static fStruct self = new fStruct();
+    public vProc instantiate(String name) {
+        if (name.compareTo( "f$set" ) == 0) return new f$set();
+        if (name.compareTo( "f$table" ) == 0) return new f$table();
+        if (name.compareTo( "f$insert" ) == 0) return new f$insert();
+        if (name.compareTo( "f$member" ) == 0) return new f$member();
+        if (name.compareTo( "f$delete" ) == 0) return new f$delete();
+        if (name.compareTo( "f$key" ) == 0) return new f$key();
+        if (name.compareTo( "f$copy" ) == 0) return new f$copy();
+        if (name.compareTo( "f$serial" ) == 0) return new f$serial();
+        return null;
+    } // vProc instantiate(String)
+}
 
 
 final class f$set extends vProc1 {				// set(x)

@@ -5,8 +5,25 @@ package rts;
 import java.io.*;
 import java.util.*;
 
-final class fMisc {} //dummy
-
+final class fMisc extends iInstantiate {
+    public static fMisc self = new fMisc();
+    public vProc instantiate(String name) {
+        if (name.compareTo( "f$name" ) == 0) return new f$name();
+        if (name.compareTo( "f$display" ) == 0) return new f$display();
+        if (name.compareTo( "f$variable" ) == 0) return new f$variable();
+        if (name.compareTo( "f$function" ) == 0) return new f$function();
+        if (name.compareTo( "f$args" ) == 0) return new f$args();
+        if (name.compareTo( "f$proc" ) == 0) return new f$proc();
+        if (name.compareTo( "f$collect" ) == 0) return new f$collect();
+        if (name.compareTo( "f$delay" ) == 0) return new f$delay();
+        if (name.compareTo( "f$exit" ) == 0) return new f$exit();
+        if (name.compareTo( "f$getenv" ) == 0) return new f$getenv();
+        if (name.compareTo( "f$system" ) == 0) return new f$system();
+        if (name.compareTo( "f$errorclear" ) == 0) return new f$errorclear();
+        if (name.compareTo( "f$runerr" ) == 0) return new f$runerr();
+        return null;
+    } // vProc instantiate(String)
+}
 
 
 final class f$name extends vProc1 {				// name(v)

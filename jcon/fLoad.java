@@ -6,8 +6,13 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.*;
 
-final class fLoad {} //dummy
-
+final class fLoad extends iInstantiate {
+    public static fLoad self = new fLoad();
+    public vProc instantiate(String name) {
+        if (name.compareTo( "f$loadfunc" ) == 0) return new f$loadfunc();
+        return null;
+    } // vProc instantiate(String)
+}
 
 
 //  loadfunc(library, funcname)

@@ -2,7 +2,19 @@
 
 package rts;
 
-final class fConvert {} //dummy
+final class fConvert extends iInstantiate {
+public static fConvert self = new fConvert();
+public vProc instantiate(String name) {
+	if (name.compareTo( "f$type" ) == 0) return new f$type();
+	if (name.compareTo( "f$image" ) == 0) return new f$image();
+	if (name.compareTo( "f$integer" ) == 0) return new f$integer();
+	if (name.compareTo( "f$numeric" ) == 0) return new f$numeric();
+	if (name.compareTo( "f$real" ) == 0) return new f$real();
+	if (name.compareTo( "f$string" ) == 0) return new f$string();
+	if (name.compareTo( "f$cset" ) == 0) return new f$cset();
+	return null;
+} // vProc instantiate(String)
+}
 
 
 

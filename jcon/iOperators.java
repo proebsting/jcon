@@ -58,6 +58,59 @@ static void announce() {
     iEnv.declareOpr("--",  2, "oDiff");
 }
 
+public static vProc instantiate(String name) {
+	if (name.compareTo( "oDeref" ) == 0) return new oDeref();
+	if (name.compareTo( "oAssign" ) == 0) return new oAssign();
+	if (name.compareTo( "oRevAssign" ) == 0) return new oRevAssign();
+	if (name.compareTo( "oSwap" ) == 0) return new oSwap();
+	if (name.compareTo( "oRevSwap" ) == 0) return new oRevSwap();
+	if (name.compareTo( "oConjunction" ) == 0) return new oConjunction();
+	if (name.compareTo( "oProcessArgs" ) == 0) return new oProcessArgs();
+	if (name.compareTo( "oActivate" ) == 0) return new oActivate();
+	if (name.compareTo( "oToBy" ) == 0) return new oToBy();
+	if (name.compareTo( "oNumerate" ) == 0) return new oNumerate();
+	if (name.compareTo( "oNegate" ) == 0) return new oNegate();
+	if (name.compareTo( "oSize" ) == 0) return new oSize();
+	if (name.compareTo( "oComplement" ) == 0) return new oComplement();
+	if (name.compareTo( "oRefresh" ) == 0) return new oRefresh();
+	if (name.compareTo( "oTabMatch" ) == 0) return new oTabMatch();
+	if (name.compareTo( "oIsNull" ) == 0) return new oIsNull();
+	if (name.compareTo( "oIsntNull" ) == 0) return new oIsntNull();
+	if (name.compareTo( "oSelect" ) == 0) return new oSelect();
+	if (name.compareTo( "oBang" ) == 0) return new oBang();
+	if (name.compareTo( "oField" ) == 0) return new oField();
+	if (name.compareTo( "oIndex" ) == 0) return new oIndex();
+	if (name.compareTo( "oSection" ) == 0) return new oSection();
+	if (name.compareTo( "oSectPlus" ) == 0) return new oSectPlus();
+	if (name.compareTo( "oSectMinus" ) == 0) return new oSectMinus();
+	if (name.compareTo( "oAdd" ) == 0) return new oAdd();
+	if (name.compareTo( "oSub" ) == 0) return new oSub();
+	if (name.compareTo( "oMul" ) == 0) return new oMul();
+	if (name.compareTo( "oDiv" ) == 0) return new oDiv();
+	if (name.compareTo( "oMod" ) == 0) return new oMod();
+	if (name.compareTo( "oPower" ) == 0) return new oPower();
+	if (name.compareTo( "oNLess" ) == 0) return new oNLess();
+	if (name.compareTo( "oNLessEq" ) == 0) return new oNLessEq();
+	if (name.compareTo( "oNEqual" ) == 0) return new oNEqual();
+	if (name.compareTo( "oNUnequal" ) == 0) return new oNUnequal();
+	if (name.compareTo( "oNGreaterEq" ) == 0) return new oNGreaterEq();
+	if (name.compareTo( "oNGreater" ) == 0) return new oNGreater();
+	if (name.compareTo( "oLLess" ) == 0) return new oLLess();
+	if (name.compareTo( "oLLessEq" ) == 0) return new oLLessEq();
+	if (name.compareTo( "oLEqual" ) == 0) return new oLEqual();
+	if (name.compareTo( "oLUnequal" ) == 0) return new oLUnequal();
+	if (name.compareTo( "oLGreaterEq" ) == 0) return new oLGreaterEq();
+	if (name.compareTo( "oLGreater" ) == 0) return new oLGreater();
+	if (name.compareTo( "oVEqual" ) == 0) return new oVEqual();
+	if (name.compareTo( "oVUnequal" ) == 0) return new oVUnequal();
+	if (name.compareTo( "oConcat" ) == 0) return new oConcat();
+	if (name.compareTo( "oListConcat" ) == 0) return new oListConcat();
+	if (name.compareTo( "oIntersect" ) == 0) return new oIntersect();
+	if (name.compareTo( "oUnion" ) == 0) return new oUnion();
+	if (name.compareTo( "oDiff" ) == 0) return new oDiff();
+	return null;
+} // vProc instantiate(String)
+
 } // class iOperators
 
 

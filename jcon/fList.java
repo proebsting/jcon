@@ -2,8 +2,20 @@
 
 package rts;
 
-final class fList {} //dummy
-
+final class fList extends iInstantiate {
+    public static fList self = new fList();
+    public vProc instantiate(String name) {
+        if (name.compareTo( "f$list" ) == 0) return new f$list();
+        if (name.compareTo( "f$push" ) == 0) return new f$push();
+        if (name.compareTo( "f$pull" ) == 0) return new f$pull();
+        if (name.compareTo( "f$pop" ) == 0) return new f$pop();
+        if (name.compareTo( "f$get" ) == 0) return new f$get();
+        if (name.compareTo( "f$put" ) == 0) return new f$put();
+        if (name.compareTo( "f$sort" ) == 0) return new f$sort();
+        if (name.compareTo( "f$sortf" ) == 0) return new f$sortf();
+        return null;
+    } // vProc instantiate(String)
+}
 
 
 final class f$list extends vProc2 {				// list(i, x)

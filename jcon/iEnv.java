@@ -26,7 +26,14 @@ static Object instantiate(String classname) {
     }
 }
 
-
+static Hashtable builtin_instantiator = new Hashtable();
+public static vProc instantiate_builtin(String classname) {
+    iInstantiate i = (iInstantiate) builtin_instantiator.get(classname);
+    if (i == null) {
+	return null;
+    }
+    return i.instantiate(classname);
+}
 
 public static void declareDebugging() {
     debugging = true;
@@ -110,10 +117,13 @@ public static void declareRecord(String name, String[] fields) {
 
 private static Hashtable builtintab = new Hashtable();
 
-static void declareBuiltin(String name, int arity) {
+static void declareBuiltin(String name, int arity, iInstantiate i) {
     vFuncVar f = new vFuncVar(
 	name, "function " + name, iConfig.FunctionPrefix + name, arity);
     builtintab.put(name, f);
+    if (i != null) {
+        builtin_instantiator.put(iConfig.FunctionPrefix + name, i);
+    }
     if (!symtab.containsKey(name)) {
 	declareGlobalInit(name, f);
     }
@@ -184,7 +194,7 @@ static vProc getOpr(vString repr, long arity) {
     if (classname == null) {
 	return null;				// unknown operation
     }
-    oproc[i].put(repr, v = (vProc) instantiate(classname));
+    oproc[i].put(repr, v = iOperators.instantiate(classname));
     v.img = repr.surround("function ", "");
     return v;					// return new instance
 }
