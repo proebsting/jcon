@@ -117,7 +117,13 @@ static vFile argVal(vDescriptor[] args, int index, vFile dflt)	// optional arg
 
 
 vFile flush() { 					// flush()
-    // nothing to flush when there's no buffering...
+    if (outstream instanceof DataOutputStream) {
+    	try {
+    	    ((DataOutputStream)outstream).flush();
+	} catch (IOException e) {
+	    iRuntime.error(214, this);	// I/O error
+	}
+    }
     return this;
 }
 
@@ -182,6 +188,10 @@ vString read() {					// read()
     if (instream == null) {
 	iRuntime.error(212, this);	// not open for reading
     }
+
+    vWindow.sync();			// flush pending graphics output
+    	//#%#%##% should only sync graphics if input file is a tty
+
     StringBuffer b = new StringBuffer(100);
     byte c = '\0';
     try {

@@ -13,6 +13,9 @@ static final String PREFIX = "rts.f$";	// classname prefix for built-in funcs
 
 
 void announce() {
+
+	// graphics functions that are at least partially implemented:
+
 	iBuiltins.declare("Bg", 2);
 	iBuiltins.declare("Clone", -1);
 	iBuiltins.declare("Color", -1);
@@ -32,7 +35,8 @@ void announce() {
 	iBuiltins.declare("WFlush", 1);
 	iBuiltins.declare("WSync", 1);
 
-	//#%#%#% graphics functions still to do:
+	// #%#%#%#%#%# NOT YET IMPLEMENTED:
+	//
 	// iBuiltins.declare("Active", 0);
 	// iBuiltins.declare("Alert", 1);
 	// iBuiltins.declare("Clip", 5);
@@ -243,14 +247,18 @@ class f$FreeColor extends iValueClosure {	// FreeColor(W,k,...) is a no-op
 
 //  some other functions just don't do anything
 
-class f$WFlush extends iValueClosure {		// WFlush(W) just returns
+class f$WFlush extends iValueClosure {		// WFlush(W) syncs w/ toolkit
 	vDescriptor function(vDescriptor[] args) {
-		return vWindow.winArg(args);
+		vWindow win = vWindow.winArg(args);	// validate arg
+		vWindow.sync();
+		return win;
 	}
 }
 
-class f$WSync extends iValueClosure {		// WSync(W) just returns
+class f$WSync extends iValueClosure {		// WSync(W) syncs w/ toolkit
 	vDescriptor function(vDescriptor[] args) {
-		return vWindow.winArg(args);
+		vWindow win = vWindow.winArg(args);	// validate arg
+		vWindow.sync();
+		return win;
 	}
 }

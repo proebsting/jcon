@@ -23,6 +23,8 @@ public class vWindow extends vValue {
 
 
 
+private static Toolkit toolkit = Toolkit.getDefaultToolkit();
+
 private static int wcount = 0;	// count of windows allocated
 private static int gcount = 0;	// count of graphics contexts allocated
 
@@ -65,6 +67,8 @@ vWindow(String title, int w, int h) {		// new vWindow(s, w, h)
     fg = wColor.Black;
     bg = wColor.White;
     EraseArea(0, 0, w, h);
+
+    //#%#% before returning, should wait for window to appear
 }
 
 vWindow(vWindow w) {				// new vWindow(w)  [a Clone()]
@@ -100,6 +104,16 @@ static vWindow getCurrent() {
 	iRuntime.error(140);
     }
     return curwin;
+}
+
+
+
+//  static synchronizer function
+
+static void sync() {
+    if (curwin != null) {
+    	toolkit.sync();
+    }
 }
 
 

@@ -26,6 +26,10 @@ vString reads(long n) {
     if (instream == null) {
 	iRuntime.error(212, this);	// not open for reading
     }
+
+    vWindow.sync();			// flush pending graphics output
+    	//#%#%##% should only sync graphics if input file is a tty
+
     try {
 	// suppress initial LF if previous call was to read()
 	// and it consumed CR but not yet LF

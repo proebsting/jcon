@@ -36,6 +36,10 @@ vString reads(long n) {
     if (instream == null) {
 	iRuntime.error(212, this);	// not open for reading
     }
+
+    vWindow.sync();			// flush pending graphics output
+    	//#%#%##% should only sync graphics if input file is a tty
+
     try {
 	while (b.length() < n) {
 	    byte c = instream.readByte();
