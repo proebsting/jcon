@@ -1,71 +1,39 @@
-#SRC: JCON
+#SRC: V9GEN
 
-# test large integers
+procedure main ()
+   local big, med1, med2, small, i
 
-procedure main()
-   boundaries()
-   interesting()
-end
+   if not(&features == "large integers") then
+      stop("large integers not supported")
 
+   big :=  111111111111111111111
+   big :=  integer("111111111111111111111")	#%#%#%##%#% REMOVE THIS
+   med1 := "2222222222"
+   med2 := "3333333333"
+   small := 4
 
-procedure boundaries()
-   local minint, maxint
-   write()
-   write("minint = ", minint := -(2^64))
-   write("maxint = ", maxint := 2^64 - 1)
-   write("-minint = ", -minint)
-   write("abs(min) = ", abs(minint))
-   write("minint * -1 = ", minint * -1)
-   write("minint / -1 = ", minint / -1)
-   write("(2^32)^2 = ", (2 ^ 32) ^ 2)
-   return
-end
+   every optest ("+" | "-" | "*" | "/" | "%" |"iand"|"ior"|"ixor"|"<"|"=",
+	  big | -big | small | -small, 
+	  big | -big | small | -small)
+   every optest ("+" | "-" | "*" | "/" | "%" |"iand"|"ior"|"ixor"|"<"|"=",
+	  big | med1 | -med1,
+	  med1 | med2 | -med2)
 
+   every optest ("^", big | -big | small | -small, 2 | 5)
+   every optest ("^", 2 | 3, 10 | 30 )
+   every optest ("ishift", big |-big | med1 | -med1 | small, 1 | 8 | -1 | -39)
 
-procedure interesting()
-   write(); every fact(1 to 55 by 11)
-   write(); every fib(35 to 341 by 34)
-   write(); every mersenne(61 | 89 | 107 | 127)
-   write(); every perfect(31 | 61 | 89 | 107)
-   write(); every power(11213, 2 to 16)
-   return
-end
-
-
-
-procedure fact(n)
-   local f
-   f := 1
-   every f *:= 2 to n
-   write(n, "! = ", f)
-   return
-end
-
-procedure fib(n)
-   local a, b, i, t
-   a := b := t := 1
-   every i := 3 to n do {
-      t := a + b
-      a := b
-      b := t
+   #&trace := -1
+   every i := 10 | 30 | 70 | 100 do {
+      write(2 ^ i)
+      write(2 ^ i || ":" || image(2 ^ i))
+      foo(2 ^ i)
       }
-   write("F(", n, ") = ", t)
-   return
 end
 
-procedure power(b, n)
-   write(b, " ^ ", n, " = ", b ^ n)
-   return
+procedure optest (op, a, b)
+    write (a, " ", op, " ", b, " = ", op(a,b)|"none")
 end
 
-procedure mersenne(m)
-   write("M(", m, ") = ", 2 ^ m - 1)
-   return
+procedure foo(x)
 end
-
-procedure perfect(m)
-   write("P(", m, ") = ", (2 ^ m - 1) * (2 ^ (m - 1)))
-   return
-end
-
-

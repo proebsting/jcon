@@ -200,13 +200,13 @@ procedure messtest()
    write()
    L1 := [
       '', '0cs', 4.4, set(), 2.2, "a", &null, integer, wlist, "epsilons",
-      r0, "delta", push, "beta", table(5), [], write, '123cs', [3,4],
+      r0, "delta", push, "beta", table(5), [], write, '123cs', [3,4], -3^41,
       image, insert(table(3),4,7), &input, 3.3, reverse, r1(1), [], table(4),
-      r5, r5(1,23), &null, create 1 | 2, 5.5, set([5,6]), "", r2(5,6),
+      r5, r5(1,23), &null, create 1 | 2, 5.5, set([5,6]), "", r2(5,6), -7^23,
       "epsilon", [1,2,3], r5(7,8,9), r2, &output, 4, , set([0,1,2]), 1,
-      r5(1,2,3), r1, check, create 3 | 4, serial, 'XYZcs', 1.1, r1(5),
+      r5(1,2,3), r1, check, create 3 | 4, serial, 'XYZcs', 1.1, r1(5), 5^28,
       '1234cs', 5, r0(), read, "gamma", r5(4,5,6,7,8), 2, create 5 to 7,
-      table, r2(1,2), right, r0(), "alpha", messtest, &errout,
+      table, r2(1,2), right, r0(), "alpha", messtest, &errout, 11^19,
       listtest, "gamma", main, 3]
    put(L1, L1)
    L2 := copy(L1)
