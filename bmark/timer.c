@@ -29,6 +29,7 @@ int main (int argc, char *argv[]) {
     	n += strlen(argv[i] + 1);	/* total lengths of command words */
     }
     cmd = malloc(n + 1);		/* alloc command buffer */
+    cmd[0] = '\0';
     for (i = 0; i < argc; i++) {
     	strcat(cmd, argv[i]);		/* construct command string */
 	strcat(cmd, " ");
