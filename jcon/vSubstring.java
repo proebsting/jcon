@@ -21,6 +21,8 @@ private vSubstring(vVariable v, int i1, int i2) {	// construct from String
 
 
 
+boolean isNull()			{ return false; }
+
 vString Name() {
     String vname = var.Name().toString();
     return vString.New(vname +"[" + start + ":" + end + "]");
@@ -82,20 +84,11 @@ vString report() {
 
 //  operators
 
-
 public vVariable Assign(vValue x) {
     vString s = x.mkString();		// coerce assigned value
     var.Assign(vString.New(this.strval(), start, end, s));
     return vSubstring.New(this, start, start + s.length());
 }
-
-
-
-vDescriptor isNull()		{ return null; /*FAIL*/ }
-
-vDescriptor isntNull()		{ return this; }
-
-
 
 vDescriptor Index(vValue i) {			// s[i]
     this.strval();	// validate
@@ -119,8 +112,6 @@ vDescriptor Section(int i, int j) {		// s[i:j]
 	return vSubstring.New(var, m, n);
     }
 }
-
-
 
 vDescriptor Select() {				// ?s
     if (start == end) {

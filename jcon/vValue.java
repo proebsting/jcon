@@ -25,7 +25,8 @@ int compareTo(vValue v)		{ return 0; }//#%#% for procs & others undefined
 // accessing functions
 vVariable field(String s)	{ iRuntime.error(107, this); return null;}
 
-// type conversion
+// type checking and conversion
+boolean isNull()		{ return false; }
 vString mkString()		{ iRuntime.error(103, this); return null; }
 vInteger mkInteger()		{ iRuntime.error(101, this); return null; }
 vReal mkReal()			{ iRuntime.error(102, this); return null; }
@@ -44,12 +45,8 @@ vInteger Size()			{ iRuntime.error(112, this); return null; }
 vInteger Serial()		{ return null; /*FAIL*/ }
 vValue Copy()			{ return this; }
 
-// simple unary operators that may return variables
-vDescriptor isNull()		{ return null; /*FAIL*/ }
-vDescriptor isntNull()		{ return this; }
+// other unary operators
 vDescriptor Select()		{ iRuntime.error(113, this); return null; }
-
-// unary operators that are generators
 vDescriptor Bang(iClosure c)	{ iRuntime.error(116, this); return null; }
 
 // unary operations on variables

@@ -25,7 +25,7 @@ private vSet(java.util.Hashtable x) {
 private vSet(vValue x) {
     super(nextsn++);
     t = new java.util.Hashtable();
-    if (x != null && !(x instanceof vNull)) {
+    if (x != null && !x.isNull()) {
 	if (!(x instanceof vList)) {
 	    iRuntime.error(108, x);
 	}

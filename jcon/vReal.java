@@ -91,7 +91,7 @@ static double argVal(vDescriptor[] args, int index) {		// required arg
 }
 
 static double argVal(vDescriptor[] args, int index, double dflt) { // opt arg
-    if (index >= args.length || args[index] instanceof vNull) {
+    if (index >= args.length || args[index].isNull()) {
 	return dflt;
     } else {
 	return args[index].mkReal().value;

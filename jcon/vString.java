@@ -421,7 +421,7 @@ static vString argDescr(vDescriptor[] args, int index) {	// required arg
 }
 
 static vString argDescr(vDescriptor[] args, int index, vString dflt){ // opt arg
-    if (index >= args.length || args[index] instanceof vNull) {
+    if (index >= args.length || args[index].isNull()) {
 	return dflt;
     } else {
 	return args[index].mkString();

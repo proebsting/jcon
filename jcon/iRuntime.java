@@ -78,7 +78,7 @@ public static vValue argVal(vDescriptor[] args, int index, int errcode) {
 // o/w returns vString value.
 
 public static vString argSubject(vDescriptor[] args, int index) {
-    if (index >= args.length || args[index].deref() instanceof vNull) {
+    if (index >= args.length || args[index].isNull()) {
 	return (vString) k$subject.self.deref();
     }
     return args[index].mkString();
@@ -91,13 +91,12 @@ public static vString argSubject(vDescriptor[] args, int index) {
 
 public static long argPos(vDescriptor[] args, int index) {
     if ((index - args.length > 0)	// both defaulted
-	|| ((index-args.length==0) && (args[index-1].deref() instanceof vNull))
-	|| ((args[index-1].deref() instanceof vNull)
-	    && (args[index].deref() instanceof vNull))
+	|| ((index - args.length == 0) && args[index-1].isNull())
+	|| ((args[index-1].isNull()) && (args[index].isNull()))
     ) {
 	return ((vInteger)k$pos.self.deref()).value;
     }
-    if ((index - args.length == 0) || (args[index].deref() instanceof vNull)) {
+    if ((index - args.length == 0) || args[index].isNull()) {
 	return 1;
     }
     return args[index].mkInteger().value;

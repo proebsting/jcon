@@ -112,7 +112,7 @@ static long argVal(vDescriptor[] args, int index) {		// required arg
 }
 
 static long argVal(vDescriptor[] args, int index, int dflt) {	// optional arg
-    if (index >= args.length || args[index] instanceof vNull) {
+    if (index >= args.length || args[index].isNull()) {
 	return dflt;
     } else {
 	return args[index].mkInteger().value;

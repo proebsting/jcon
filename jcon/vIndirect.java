@@ -24,6 +24,7 @@ public int hashCode()		{ return this.deref().hashCode(); }
 public iClosure instantiate(vDescriptor[] args, iClosure parent)
 				{ return this.deref().instantiate(args,parent);}
 
+boolean isNull()		{ return this.deref().isNull(); }
 vString mkString()		{ return this.deref().mkString(); }
 vInteger mkInteger()		{ return this.deref().mkInteger(); }
 vReal mkReal()			{ return this.deref().mkReal(); }
@@ -100,23 +101,6 @@ vValue Diff(vDescriptor x)	{ return this.deref().Diff(x); }
 vInteger Args()			{ return this.deref().Args(); }
 vValue Proc(long i)		{ return this.deref().Proc(i); }
 
-
-
-vDescriptor isNull()	{
-    if (this.deref().isNull() != null) {
-	return this;	// return variable
-    } else {
-	return null;	// fail
-    }
-}
-
-vDescriptor isntNull()	{
-    if (this.deref().isNull() != null) {
-	return null;	// fail
-    } else {
-	return this;	// return variable
-    }
-}
 
 
 

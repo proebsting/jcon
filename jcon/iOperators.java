@@ -332,7 +332,11 @@ public class oDeref extends iUnaryValueClosure {		//  .x
 public class oIsNull extends iUnaryRefClosure {			//  /x
     public static iUnaryClosure instance = new oIsNull();
     vDescriptor function(vDescriptor arg) {
-	return arg.isNull();
+	if (arg.isNull()) {
+	    return arg;
+	} else {
+	    return null; /*FAIL*/
+	}
     }
     String tfmt() { return "{/$1}"; }
 }
@@ -340,7 +344,11 @@ public class oIsNull extends iUnaryRefClosure {			//  /x
 public class oIsntNull extends iUnaryRefClosure {		//  \x
     public static iUnaryClosure instance = new oIsntNull();
     vDescriptor function(vDescriptor arg) {
-	return arg.isntNull();
+	if (arg.isNull()) {
+	    return null; /*FAIL*/
+	} else {
+	    return arg;
+	}
     }
     String tfmt() { return "{\\$1}"; }
 }

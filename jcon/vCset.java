@@ -447,7 +447,7 @@ static vCset argVal(vDescriptor[] args, int index) {		// required arg
 }
 
 static vCset argVal(vDescriptor[] args, int index, vCset dflt){	// optional arg
-    if (index >= args.length || args[index] instanceof vNull) {
+    if (index >= args.length || args[index].isNull()) {
 	return dflt;
     } else {
 	return args[index].mkCset();

@@ -22,7 +22,8 @@ public abstract vVariable Assign(vValue x);	// assign
 // access functions
 abstract vVariable field(String s);		// field access
 
-// type conversion
+// type checking and conversion
+abstract boolean isNull();			// check for null
 abstract vString mkString();			// convert to Icon string
 abstract vInteger mkInteger();			// convert to Icon integer
 abstract vReal mkReal();			// convert to Icon real
@@ -48,12 +49,8 @@ abstract vInteger Size();			//  *x
 abstract vInteger Serial();			//  serial(x)
 abstract vValue Copy();				//  copy(x)
 
-// simple unary operators that may return variables
-abstract vDescriptor isNull();			//  /x
-abstract vDescriptor isntNull();		//  \x
+// other unary operators
 abstract vDescriptor Select();			//  ?x
-
-// unary operators that are generators
 abstract vDescriptor Bang(iClosure c);		//  !x
 
 // subscripting

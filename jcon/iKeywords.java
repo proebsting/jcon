@@ -428,12 +428,14 @@ class k$window extends vSimpleVar {				// &window
     k$window() { super("&window"); }		// constructor
 
     public vVariable Assign(vValue w) {		// assign
-	if (! (w instanceof vWindow) && ! (w instanceof vNull)) {
+	if ((w instanceof vWindow) || w.isNull()) {
+	    value = w;
+	    vWindow.setCurrent((vWindow) value);
+	    return this;
+	} else {
 	    iRuntime.error(140, w);
+	    return null;
 	}
-	value = w;
-	vWindow.setCurrent((vWindow) value);
-	return this;
     }
 
     public vValue deref() {			// dereference
