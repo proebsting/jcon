@@ -57,10 +57,18 @@ int posEq(long n)
 
 
 
-//  dereference
+//  internal methods
 
 vValue deref() {
     return iNew.String(this.strval().substring(start - 1, end - 1));
+}
+
+String report() {
+    if (start + 1 == end) {
+	return var.value.report() + "[" + start + "]";
+    } else {
+	return var.value.report() + "[" + start + ":" + end + "]";
+    }
 }
 
 

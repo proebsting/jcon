@@ -9,6 +9,9 @@ class vSimpleVar extends vVariable {
 
     vVariable Assign(vValue x)	{ value = x; return this; }
 
+    String report()	{ return "(variable = " + this.value.report() + ")"; }
+
+
 
     vDescriptor isNull()	{
     	if (value instanceof vNull) {
