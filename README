@@ -1,5 +1,5 @@
 JCON 0.6.0 README
-September 12, 1997
+December 5, 1997
 
 Gregg Townsend
 Todd Proebsting
@@ -9,10 +9,7 @@ jcon@cs.arizona.edu
 
 
 
-Copyright 1997 Arizona Board of Regents; see COPYRIGHT file for details.
-
-
-
+Copyright 1997 Arizona Board of Regents; all rights reserved.
 This is an initial, limited release of Jcon.
 Please do not redistribute it further.
 
@@ -28,13 +25,13 @@ REQUIREMENTS
 Building and running Jcon requires various Unix utilities including
 the Korn Shell.  Unix systems with /bin/ksh qualify, of course.
 Similar environments are also available for other platforms; in
-particular, Jcon runs on Windows NT using the MKS Toolkit.
+particular, Jcon has also run on Windows NT using the MKS Toolkit.
 
 2.  INSTALLED SOFTWARE
 
 Jcon requires version 9 of Icon and version 1.1 of Java.  Prebuilt
-binaries are available for many platforms.  Installation of Java
-may require system privileges, and proper functioning may require
+binaries of these are available for many platforms.  Installation of
+Java may require system privileges, and proper functioning may require
 installation of some OS patches.
 
 For software see:
