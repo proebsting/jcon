@@ -158,10 +158,10 @@ public static void display(vFile f, iClosure parent, long ancestors) {
 //  exit()-- common termination routine for all exits except internal errors.
 
 public static void exit(int status, iClosure parent) {
-    vFile.shutdown();				// flush output files etc.
     if (k$dump.dump != 0) {			// honor &dump
 	iRuntime.display(k$errout.file, parent, 1000000);
     }
+    vFile.shutdown();				// flush output files etc.
     System.exit(status);			// shut down
 }
 
