@@ -6,8 +6,7 @@ additions in v2:
 
 losses in v2:
 -- variable(), display(), and &dump can access only global variables
--- compilation with "-fn" is needed to see line numbers in traceback messages
--- tracing (&trace) does not function
+-- compilation with "-fn" is needed for tracing or for detailed error traceback
 
 ------------------------------------------------------------------------------
 
