@@ -6,7 +6,7 @@
 #
 #	Authors:  Ralph E. Griswold, Gregg M. Townsend, Clinton L. Jeffery
 #
-#	Date:     September 10, 1997
+#	Date:     July 14, 1998
 #
 ############################################################################
 #
@@ -18,39 +18,10 @@
 #  by "outboard" keys such as Key_F1, Key_Insert, Key_Pause, and so on.
 #
 ############################################################################
-
-$ifdef _JAVA
-
-$define Key_PrSc		154
-$define Key_ScrollLock		145
-$define Key_Pause		19
-
-$define Key_Insert		155
-$define Key_Home		36
-$define Key_PgUp		33
-$define Key_End			35
-$define Key_PgDn		34
-
-$define Key_Left		37
-$define Key_Up			38
-$define Key_Right		39
-$define Key_Down		40
-
-$define Key_F1			112
-$define Key_F2			113
-$define Key_F3			114
-$define Key_F4			115
-$define Key_F5			116
-$define Key_F6			117
-$define Key_F7			118
-$define Key_F8			119
-$define Key_F9			120
-$define Key_F10			121
-$define Key_F11			122
-$define Key_F12			123
-
-$endif
-
+#
+#  Requires:  Version 9.0 of Icon
+#
+############################################################################
 
 $ifdef _X_WINDOW_SYSTEM
 $define Key_Compose		65312
@@ -125,7 +96,6 @@ $define Key_Select		65376
 $define Key_Up			65362
 $endif
 
-
 $ifdef _MS_WINDOWS
 $define Key_Down		40
 $define Key_End			35
@@ -165,4 +135,32 @@ $define Key_PrSc		44
 $define Key_Right		39
 $define Key_Select		41
 $define Key_Up			38
+$endif
+
+$ifdef _JAVA
+$define Key_PrSc		154
+$define Key_ScrollLock		145
+$define Key_Pause		19
+$define Key_Insert		155
+$define Key_PgUp		33
+$define Key_PgDn		34
+$define Key_Home		36
+$define Key_End			35
+$define Key_Left		37
+$define Key_Up			38
+$define Key_Right		39
+$define Key_Down		40
+$define Key_F1			112
+$define Key_F2			113
+$define Key_F3			114
+$define Key_F4			115
+$define Key_F5			116
+$define Key_F6			117
+$define Key_F7			118
+$define Key_F8			119
+$define Key_F9			120
+$define Key_F10			121
+$define Key_F11			122
+$define Key_F12			123
+
 $endif
