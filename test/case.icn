@@ -1,12 +1,13 @@
 record rec(a)
 
-procedure main()
-   local L, s, x
+procedure main(args)
+   local L, s, x, r, c
 
+   r := rec(45)
+   c := create 1 | 2
    L := [&null, 0, 1, 2, 0.0, 1.0, 2.0, "", "0", "1", "2", '', '0', '1', '2',
-      rec, main, foo ]
-   #%#% removed from list, because no serial numbers yet:  rec(), rec(1), []
-   #%#% also removed:  put(L, L)
+      rec, main, foo, rec, rec(), r, c, []]
+   put(L, L)
 
    every x := !L do {
       s := case x of {
@@ -18,6 +19,8 @@ procedure main()
         main:     "main"
         rec:	  "rec"
 	rec():    "rec()"	# shouldn't ever match
+	r:        "r"
+	c:        "c"
 	L:        "L"
         default:  "default"
         }
