@@ -9,7 +9,7 @@ public abstract class iBinaryValueClosure extends iBinaryClosure {
 		if (PC == 1) {
 			argument0 = argument0.deref();
 			argument1 = argument1.deref();
-			vDescriptor v = function(argument0, argument1);
+			vDescriptor v = function();
 			returned = true;
 			PC = 0;
 			return v;
@@ -24,7 +24,7 @@ public abstract class iBinaryValueClosure extends iBinaryClosure {
 	    this.parent = parent;
 	    try {
 		try {
-		    return function(argument0, argument1);
+		    return function();
 		} catch (OutOfMemoryError e) {
 		    iRuntime.error(307);	// #%#%# really out of memory.
 		    return null;

@@ -106,18 +106,18 @@ public class oLimit extends iUnaryValueClosure {		//  #x
 
 public class oAssign extends iBinaryRefClosure {		// x1 := x2
 	public static iBinaryClosure instance = new oAssign();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		return arg0.Assign(arg1.deref());
+	vDescriptor function() {
+		return argument0.Assign(argument1.deref());
 	}
 	String tfmt() { return "{$1 := $2}"; }
 }
 
 public class oSwap extends iBinaryRefClosure {			// x1 :=: x2
 	public static iBinaryClosure instance = new oSwap();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		vValue tmp = arg1.deref();
-		arg1.Assign(arg0.deref());
-		return arg0.Assign(tmp);
+	vDescriptor function() {
+		vValue tmp = argument1.deref();
+		argument1.Assign(argument0.deref());
+		return argument0.Assign(tmp);
 	}
 	String tfmt() { return "{$1 :=: $2}"; }
 }
@@ -163,8 +163,8 @@ public class oRevSwap extends iClosure {			// x1 <-> x2
 public class oSubjAssign extends iBinaryRefClosure {		// s ? e assign
 	public static iBinaryClosure instance = new oSubjAssign();
 
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		return arg0.Assign(arg1.deref());
+	vDescriptor function() {
+		return argument0.Assign(argument1.deref());
 	}
 	String tfmt() { return "{$2 ? ..}"; }
 }
@@ -174,9 +174,9 @@ public class oSubjAssign extends iBinaryRefClosure {		// s ? e assign
 public class oConjunction extends iBinaryRefClosure {		// x1 & x2
 	public static iBinaryClosure instance = new oConjunction();
 
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		arg0.deref();
-		return arg1;
+	vDescriptor function() {
+		argument0.deref();
+		return argument1;
 	}
 	String tfmt() { return "{$1 & $2}"; }
 }
@@ -235,16 +235,16 @@ public class oToBy extends iClosure {				// i1 to i2 by i3
 public class oField extends iBinaryRefClosure {			// R . s
 	public static iBinaryClosure instance = new oField();
 	String s;
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-	    return arg0.field(s = arg1.mkString().value);
+	vDescriptor function() {
+	    return argument0.field(s = argument1.mkString().value);
 	}
 	String tfmt() { return "{$1 . " + s + "}"; }
 }
 
 public class oIndex extends iBinaryRefClosure {			//  x1[x2]
 	public static iBinaryClosure instance = new oIndex();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		return arg0.Index(arg1.deref());
+	vDescriptor function() {
+		return argument0.Index(argument1.deref());
 	}
 	String tfmt() { return "{$1[$2]}"; }
 }
@@ -346,7 +346,7 @@ public class oNegate extends iUnaryValueClosure {		//  -n
 
 public class oAdd extends iBinaryValueClosure {			//  n1 + n2
 	public static iBinaryClosure instance = new oAdd();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
+	vDescriptor function() {
 		vNumeric.Coerce(this);
 		return argument0.Add(argument1);
 	}
@@ -355,7 +355,7 @@ public class oAdd extends iBinaryValueClosure {			//  n1 + n2
 
 public class oSub extends iBinaryValueClosure {			//  n1 - n2
 	public static iBinaryClosure instance = new oSub();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
+	vDescriptor function() {
 		vNumeric.Coerce(this);
 		return argument0.Sub(argument1);
 	}
@@ -364,7 +364,7 @@ public class oSub extends iBinaryValueClosure {			//  n1 - n2
 
 public class oMul extends iBinaryValueClosure {			//  n1 * n2
 	public static iBinaryClosure instance = new oMul();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
+	vDescriptor function() {
 		vNumeric.Coerce(this);
 		return argument0.Mul(argument1);
 	}
@@ -373,7 +373,7 @@ public class oMul extends iBinaryValueClosure {			//  n1 * n2
 
 public class oDiv extends iBinaryValueClosure {			//  n1 / n2
 	public static iBinaryClosure instance = new oDiv();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
+	vDescriptor function() {
 		vNumeric.Coerce(this);
 		return argument0.Div(argument1);
 	}
@@ -382,7 +382,7 @@ public class oDiv extends iBinaryValueClosure {			//  n1 / n2
 
 public class oMod extends iBinaryValueClosure {			//  n1 % n2
 	public static iBinaryClosure instance = new oMod();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
+	vDescriptor function() {
 		vNumeric.Coerce(this);
 		return argument0.Mod(argument1);
 	}
@@ -391,11 +391,11 @@ public class oMod extends iBinaryValueClosure {			//  n1 % n2
 
 public class oPower extends iBinaryValueClosure {		//  n1 ^ n2
 	public static iBinaryClosure instance = new oPower();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
+	vDescriptor function() {
 		// NOTE: usual coercion rules do not apply to n1 ^ n2
-		arg0 = arg0.mkNumeric();
-		arg1 = arg1.mkNumeric();
-		return arg0.Power(arg1);
+		argument0 = argument0.mkNumeric();
+		argument1 = argument1.mkNumeric();
+		return argument0.Power(argument1);
 	}
 	String tfmt() { return "{$1 ^ $2}"; }
 }
@@ -414,24 +414,24 @@ public class oComplement extends iUnaryValueClosure {		//  ~n
 
 public class oIntersect extends iBinaryValueClosure {		//  n1 ** n2
 	public static iBinaryClosure instance = new oIntersect();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		return arg0.Intersect(arg1);
+	vDescriptor function() {
+		return argument0.Intersect(argument1);
 	}
 	String tfmt() { return "{$1 ** $2}"; }
 }
 
 public class oUnion extends iBinaryValueClosure {		//  n1 ++ n2
 	public static iBinaryClosure instance = new oUnion();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		return arg0.Union(arg1);
+	vDescriptor function() {
+		return argument0.Union(argument1);
 	}
 	String tfmt() { return "{$1 ++ $2}"; }
 }
 
 public class oDiff extends iBinaryValueClosure {		//  n1 -- n2
 	public static iBinaryClosure instance = new oDiff();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		return arg0.Diff(arg1);
+	vDescriptor function() {
+		return argument0.Diff(argument1);
 	}
 	String tfmt() { return "{$1 -- $2}"; }
 }
@@ -442,7 +442,7 @@ public class oDiff extends iBinaryValueClosure {		//  n1 -- n2
 
 public class oNLess extends iBinaryValueClosure {		//  n1 < n2
 	public static iBinaryClosure instance = new oNLess();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
+	vDescriptor function() {
 		vNumeric.Coerce(this);
 		return argument0.NLess(argument1);
 	}
@@ -451,7 +451,7 @@ public class oNLess extends iBinaryValueClosure {		//  n1 < n2
 
 public class oNLessEq extends iBinaryValueClosure {		//  n1 <= n2
 	public static iBinaryClosure instance = new oNLessEq();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
+	vDescriptor function() {
 		vNumeric.Coerce(this);
 		return argument0.NLessEq(argument1);
 	}
@@ -460,7 +460,7 @@ public class oNLessEq extends iBinaryValueClosure {		//  n1 <= n2
 
 public class oNEqual extends iBinaryValueClosure {		//  n1 = n2
 	public static iBinaryClosure instance = new oNEqual();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
+	vDescriptor function() {
 		vNumeric.Coerce(this);
 		return argument0.NEqual(argument1);
 	}
@@ -469,7 +469,7 @@ public class oNEqual extends iBinaryValueClosure {		//  n1 = n2
 
 public class oNUnequal extends iBinaryValueClosure {		//  n1 ~= n2
 	public static iBinaryClosure instance = new oNUnequal();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
+	vDescriptor function() {
 		vNumeric.Coerce(this);
 		return argument0.NUnequal(argument1);
 	}
@@ -478,7 +478,7 @@ public class oNUnequal extends iBinaryValueClosure {		//  n1 ~= n2
 
 public class oNGreaterEq extends iBinaryValueClosure {		//  n1 >= n2
 	public static iBinaryClosure instance = new oNGreaterEq();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
+	vDescriptor function() {
 		vNumeric.Coerce(this);
 		return argument0.NGreaterEq(argument1);
 	}
@@ -487,7 +487,7 @@ public class oNGreaterEq extends iBinaryValueClosure {		//  n1 >= n2
 
 public class oNGreater extends iBinaryValueClosure {		//  n1 > n2
 	public static iBinaryClosure instance = new oNGreater();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
+	vDescriptor function() {
 		vNumeric.Coerce(this);
 		return argument0.NGreater(argument1);
 	}
@@ -500,60 +500,60 @@ public class oNGreater extends iBinaryValueClosure {		//  n1 > n2
 
 public class oLLess extends iBinaryValueClosure {		//  n1 << n2
 	public static iBinaryClosure instance = new oLLess();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		arg0 = arg0.mkString();
-		arg1 = arg1.mkString();
-		return arg0.LLess(arg1);
+	vDescriptor function() {
+		argument0 = argument0.mkString();
+		argument1 = argument1.mkString();
+		return argument0.LLess(argument1);
 	}
 	String tfmt() { return "{$1 << $2}"; }
 }
 
 public class oLLessEq extends iBinaryValueClosure {		//  n1 <<= n2
 	public static iBinaryClosure instance = new oLLessEq();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		arg0 = arg0.mkString();
-		arg1 = arg1.mkString();
-		return arg0.LLessEq(arg1);
+	vDescriptor function() {
+		argument0 = argument0.mkString();
+		argument1 = argument1.mkString();
+		return argument0.LLessEq(argument1);
 	}
 	String tfmt() { return "{$1 <<= $2}"; }
 }
 
 public class oLEqual extends iBinaryValueClosure {		//  n1 == n2
 	public static iBinaryClosure instance = new oLEqual();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		arg0 = arg0.mkString();
-		arg1 = arg1.mkString();
-		return arg0.LEqual(arg1);
+	vDescriptor function() {
+		argument0 = argument0.mkString();
+		argument1 = argument1.mkString();
+		return argument0.LEqual(argument1);
 	}
 	String tfmt() { return "{$1 == $2}"; }
 }
 
 public class oLUnequal extends iBinaryValueClosure {		//  n1 ~== n2
 	public static iBinaryClosure instance = new oLUnequal();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		arg0 = arg0.mkString();
-		arg1 = arg1.mkString();
-		return arg0.LUnequal(arg1);
+	vDescriptor function() {
+		argument0 = argument0.mkString();
+		argument1 = argument1.mkString();
+		return argument0.LUnequal(argument1);
 	}
 	String tfmt() { return "{$1 ~== $2}"; }
 }
 
 public class oLGreaterEq extends iBinaryValueClosure {		//  n1 >>= n2
 	public static iBinaryClosure instance = new oLGreaterEq();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		arg0 = arg0.mkString();
-		arg1 = arg1.mkString();
-		return arg0.LGreaterEq(arg1);
+	vDescriptor function() {
+		argument0 = argument0.mkString();
+		argument1 = argument1.mkString();
+		return argument0.LGreaterEq(argument1);
 	}
 	String tfmt() { return "{$1 >>= $2}"; }
 }
 
 public class oLGreater extends iBinaryValueClosure {		//  n1 >> n2
 	public static iBinaryClosure instance = new oLGreater();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		arg0 = arg0.mkString();
-		arg1 = arg1.mkString();
-		return arg0.LGreater(arg1);
+	vDescriptor function() {
+		argument0 = argument0.mkString();
+		argument1 = argument1.mkString();
+		return argument0.LGreater(argument1);
 	}
 	String tfmt() { return "{$1 >> $2}"; }
 }
@@ -564,16 +564,16 @@ public class oLGreater extends iBinaryValueClosure {		//  n1 >> n2
 
 public class oVEqual extends iBinaryValueClosure {		//  n1 === n2
 	public static iBinaryClosure instance = new oVEqual();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		return (arg0.equals(arg1)) ? arg1 : null;
+	vDescriptor function() {
+		return (argument0.equals(argument1)) ? argument1 : null;
 	}
 	String tfmt() { return "{$1 === $2}"; }
 }
 
 public class oVUnequal extends iBinaryValueClosure {		//  n1 ~=== n2
 	public static iBinaryClosure instance = new oVUnequal();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		return (arg0.equals(arg1)) ? null : arg1;
+	vDescriptor function() {
+		return (argument0.equals(argument1)) ? null : argument1;
 	}
 	String tfmt() { return "{$1 ~=== $2}"; }
 }
@@ -584,16 +584,16 @@ public class oVUnequal extends iBinaryValueClosure {		//  n1 ~=== n2
 
 public class oListConcat extends iBinaryValueClosure {		//  L1 ||| L2
 	public static iBinaryClosure instance = new oListConcat();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		return arg0.ListConcat(arg1);
+	vDescriptor function() {
+		return argument0.ListConcat(argument1);
 	}
 	String tfmt() { return "{$1 ||| $2}"; }
 }
 
 public class oConcat extends iBinaryValueClosure {		//  s1 || s2
 	public static iBinaryClosure instance = new oConcat();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		return arg0.mkString().Concat(arg1.mkString());
+	vDescriptor function() {
+		return argument0.mkString().Concat(argument1.mkString());
 	}
 	String tfmt() { return "{$1 || $2}"; }
 }
@@ -608,11 +608,11 @@ public class oRefresh extends iUnaryValueClosure {		//  ^x
 
 public class oActivate extends iBinaryValueClosure {		//  x @ C
 	public static iBinaryClosure instance = new oActivate();
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		if (!(arg1 instanceof vCoexp)) {
-			iRuntime.error(118, arg1);
+	vDescriptor function() {
+		if (!(argument1 instanceof vCoexp)) {
+			iRuntime.error(118, argument1);
 		}
-		return iEnv.cur_coexp.activate(arg0, arg1);
+		return iEnv.cur_coexp.activate(argument0, argument1);
 	}
 	String tfmt() { return "{$1 @ $2}"; }
 }

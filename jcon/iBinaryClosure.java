@@ -4,7 +4,7 @@ public abstract class iBinaryClosure extends iClosure {
 
 	vDescriptor argument0, argument1;
 
-	abstract vDescriptor function(vDescriptor arg0, vDescriptor arg1);
+	abstract vDescriptor function();
 
 	abstract public vDescriptor call(vDescriptor arg0, vDescriptor arg1, iClosure parent); 
 

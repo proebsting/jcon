@@ -7,7 +7,7 @@ public abstract class iBinaryRefClosure extends iBinaryClosure {
 
 	public vDescriptor nextval() {
 		if (PC == 1) {
-			vDescriptor v = function(argument0, argument1);
+			vDescriptor v = function();
 			returned = true;
 			PC = 0;
 			return v;
@@ -22,7 +22,7 @@ public abstract class iBinaryRefClosure extends iBinaryClosure {
 	    this.parent = parent;
 	    try {
 		try {
-		    return function(argument0, argument1);
+		    return function();
 		} catch (OutOfMemoryError e) {
 		    iRuntime.error(307);	// #%#%# really out of memory.
 		    return null;
