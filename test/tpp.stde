@@ -24,6 +24,7 @@ File define.tst; Line 5 # $define: syntax error
 File define.tst; Line 6 # $define: syntax error
 File define.tst; Line 7 # $define: syntax error
 File define.tst; Line 8 # $define: syntax error
+File define.tst; Line 9 # $define: syntax error
 File define.tst; Line 32 # $define: redefinition of pi = 3.14159
 File error.tst; Line 2 # $error: 
 File error.tst; Line 3 # $error: 
