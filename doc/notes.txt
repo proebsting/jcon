@@ -23,6 +23,7 @@ execution:
 known bugs:
 -- local variables are not dereferenced prior to being returned
 -- more procedures may be "invocable" than in v9
+-- termination dump (&dump) gets errors if program not compiled for debugging
 
 ------------------------------------------------------------------------------
 
