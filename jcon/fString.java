@@ -189,7 +189,7 @@ class f$center extends iValueClosure {			// center(s,i,s)
 }
 
 class f$trim extends iValueClosure {				// trim(s,c)
-	static vCset defset = iNew.Cset(' ', ' ');
+	static vCset defset = iNew.Cset(' ');
 	vDescriptor function(vDescriptor[] args) {
 		vString s = vString.argDescr(args, 0);
 		vCset c = vCset.argVal(args, 1, defset);

@@ -21,10 +21,6 @@ public static vNull Null() 			{ return TheNull; }	// reuse
 public static vReal Real(double x) 		{ return new vReal(x); }
 public static vReal Real(String x) 		{ return new vReal(x); }
 
-public static vCset Cset(String x) 		{ return new vCset(x); }
-public static vCset Cset(vString x) 		{ return new vCset(x); }
-public static vCset Cset(int low, int high)	{ return new vCset(low, high); }
-
 public static vList List(int n, vValue x)	{ return new vList(n, x); }
 public static vList List(vDescriptor[] elements){ return new vList(elements); }
 public static vList List(Vector v)		{ return new vList(v); }
@@ -146,6 +142,54 @@ public static vString String(long x) {
 }
 
 
+
+//  for csets, preallocate and reuse empty and one-character csets.
+
+private static vCset zcset = new vCset();
+private static vCset cslist[] = new vCset[vCset.MAX_VALUE];
+
+static {
+    for (int i = 0; i < cslist.length; i++) {
+	cslist[i] = new vCset(i, i);
+    }
+}
+
+public static vCset Cset(int c) {
+    return cslist[c];
+}
+
+public static vCset Cset(int low, int high) {
+    if (low == high) {
+	return cslist[low];
+    } else {
+	return new vCset(low, high);
+    }
+}
+
+public static vCset Cset(String s) {
+    int len = s.length();
+    if (len < 1) {
+	return zcset;
+    } else if (len == 1) {
+	return cslist[s.charAt(0)];
+    } else {
+	return new vCset(s);
+    }
+}
+
+public static vCset Cset(vString s) {
+    int len = s.length();
+    if (len < 1) {
+	return zcset;
+    } else if (len == 1) {
+	return cslist[s.charAt(0)];
+    } else {
+	return new vCset(s);
+    }
+}
+
+
+
 //  for files, the actual type depends on the flags passed to open()
 
 public static vFile File(String kw, InputStream i) { return new vTFile(kw, i); }
@@ -167,6 +211,7 @@ public static vWindow Window(String name, String mode, vDescriptor args[]) {
 }
 
 
+
 static vDescriptor[][][] argCache = new vDescriptor[20][20][];
 static int[] argCacheSP = new int[20];
 public static vDescriptor[] ArgArray(int i) {
@@ -185,6 +230,7 @@ public static void FreeArgs(vDescriptor[] a) {
 		}
 	}
 }
+
 
 
 // for construction of internal types

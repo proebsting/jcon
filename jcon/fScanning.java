@@ -195,8 +195,8 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
     byte[] b;
 
     static vCset c1def = iNew.Cset(0, vCset.MAX_VALUE);
-    static vCset c2def = iNew.Cset('(', '(');
-    static vCset c3def = iNew.Cset(')', ')');
+    static vCset c2def = iNew.Cset('(');
+    static vCset c3def = iNew.Cset(')');
 
     public vDescriptor nextval() {
 

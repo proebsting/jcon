@@ -2,43 +2,81 @@ package rts;
 
 public class vCset extends vValue {
 
-static final int MAX_VALUE = 255;		// maximum char value in Jcon
+    int size;			// cset size; -1 if unknown
+    long w1, w2, w3, w4;	// four words of cset bits
 
-    private java.util.BitSet t;
+    static final int MAX_VALUE = 255;		// maximum char value in Jcon
+    private static final int UNKNOWN_SIZE = -1;	// indicator for unknown size
 
 
-private vCset(java.util.BitSet x) {		// new Cset(Bitset b)
-    t = (java.util.BitSet) x.clone();
+
+vCset()	{					// new Cset()
+    size = 0;
 }
 
-vCset(String s) {				// new Cset(String s)
-    t = new java.util.BitSet();
-    for (int i = 0; i < s.length(); i++) {
-	t.set( (int) s.charAt(i) );
+vCset(int c, int d) {				// new Cset(c..d)
+    size = d - c + 1;
+    while (c <= d && c < 64) {
+	w1 |= 1L << c++;
+    }
+    while (c <= d && c < 128) {
+	w2 |= 1L << c++;
+    }
+    while (c <= d && c < 192) {
+	w3 |= 1L << c++;
+    }
+    while (c <= d) {
+	w4 |= 1L << c++;
     }
 }
 
 vCset(vString s) {				// new Cset(vString s)
-    t = new java.util.BitSet();
-    for (int i = 0; i < s.length(); i++) {
-	t.set( (int) s.charAt(i) );
+    byte[] b = s.getBytes();
+    for (int i = 0; i < b.length; i++) {
+	int c = b[i] & 0xFF;
+	long m = 1L << c;
+	switch (c >> 6) {
+	    case 0:  if ((w1 & m) == 0)  { w1 |= m; size++; }  break;
+	    case 1:  if ((w2 & m) == 0)  { w2 |= m; size++; }  break;
+	    case 2:  if ((w3 & m) == 0)  { w3 |= m; size++; }  break;
+	    case 3:  if ((w4 & m) == 0)  { w4 |= m; size++; }  break;
+	}
     }
 }
 
-vCset(int low, int high) {			// new Cset(int low, high)
-    t = new java.util.BitSet();
-    for (int i = low; i <= high; i++) {
-	t.set(i);
+vCset(String s) {				// new Cset(String s)
+    for (int i = 0; i < s.length(); i++) {
+	int c = s.charAt(i);
+	long m = 1L << c;
+	switch (c >> 6) {
+	    case 0:  if ((w1 & m) == 0)  { w1 |= m; size++; }  break;
+	    case 1:  if ((w2 & m) == 0)  { w2 |= m; size++; }  break;
+	    case 2:  if ((w3 & m) == 0)  { w3 |= m; size++; }  break;
+	    case 3:  if ((w4 & m) == 0)  { w4 |= m; size++; }  break;
+	}
     }
+}
+
+
+
+final boolean member(int c) {			// cs.member(c)
+    long m = 1L << c;
+    switch (c >> 6) {
+	case 0: return (w1 & m) != 0;
+	case 1: return (w2 & m) != 0;
+	case 2: return (w3 & m) != 0;
+	case 3: return (w4 & m) != 0;
+    }
+    return false;	// not reached
 }
 
 
 
 vString image() {	//#%#% should recognize keyword csets & treat specially
-    vByteBuffer b = new vByteBuffer(80);	// arbitrary size estimate
+    vByteBuffer b = new vByteBuffer(this.size + 10);  // arbitrary size guess
     b.append('\'');
-    for (char c = 0; c < t.size(); c++) {
-	if (t.get(c)) {
+    for (char c = 0; c <= MAX_VALUE; c++) {
+	if (this.member(c)) {
 	    if (c == '\'') {
 		b.append('\\');
 		b.append('\'');
@@ -51,20 +89,20 @@ vString image() {	//#%#% should recognize keyword csets & treat specially
     return b.mkString();
 }
 
+
+
 static vString typestring = iNew.String("cset");
 vString type()		{ return typestring;}
 
+
+
 int rank()		{ return 40; }		// csets sort after strings
 
-boolean member(char c) {
-    return this.t.get((int)c);
-}
-
-int compareTo(vValue v) {
-    java.util.BitSet vset = ((vCset)v).t;
+int compareTo(vValue v) { 
+    vCset vset = (vCset) v;
     int i;
     for (i = 0; i <= vCset.MAX_VALUE; i++) {
-	if (this.t.get(i) ^ vset.get(i)) {
+	if (this.member(i) ^ vset.member(i)) {
 	    break;
 	}
     }
@@ -72,9 +110,9 @@ int compareTo(vValue v) {
 	return 0;		// identical csets
     }
 
-    if (this.t.get(i)) {	// first bit found in this
+    if (this.member(i)) {	// first bit found in this
 	while (++i <= vCset.MAX_VALUE) {
-	   if (vset.get(i)) {
+	   if (vset.member(i)) {
 		return -1;	// v is not empty
 	   }
 	}
@@ -82,7 +120,7 @@ int compareTo(vValue v) {
 
     } else {			// first bit found in v
 	while (++i <= vCset.MAX_VALUE) {
-	   if (this.t.get(i)) {
+	   if (this.member(i)) {
 		return 1;	// this is not empty
 	   }
 	}
@@ -90,14 +128,24 @@ int compareTo(vValue v) {
     }
 }
 
+
+
 public boolean equals(Object o) {
-    return (o instanceof vCset)
-	  && (((vCset)o).mkString().equals(this.mkString()));
+    if (! (o instanceof vCset)) {
+	return false;
+    }
+    vCset v = (vCset) o;
+    return ((w1 ^ v.w1) | (w2 ^ v.w2 | (w3 ^ v.w3)) | (w4 ^ v.w4)) == 0;
 }
 
-public int hashCode()	{ return this.mkString().hashCode(); }
+public int hashCode() {
+    long x = w1 - w2 - w3 - w4;
+    return (int) (x - (x >> 32));
+}
 
 vCset mkCset()		{ return this; }
+
+
 
 
 // the catch clauses in these conversions ensure correct "offending values"
@@ -134,105 +182,141 @@ vReal mkReal() {
 vDescriptor Index(vValue i)		{ return this.mkString().Index(i); }
 vDescriptor Section(vValue i, vValue j)	{ return this.mkString().Section(i,j); }
 
-vString mkString() {
-    vByteBuffer b = new vByteBuffer(80);	// arbitrary size estimate
-    for (int i = 0; i < t.size(); i++) {
-	if (t.get(i)) {
+
+
+vString mkString() {			// string(c)
+    vByteBuffer b;
+    if (size == 0) {
+	return iNew.String();		// known empty cset
+    } else if (size > 0) {
+	b = new vByteBuffer(size);	// known size
+    } else {
+    	b = new vByteBuffer(64);	// arbitrary guess;
+    }
+    for (int i = 0; i <= MAX_VALUE; i++) {
+	if (this.member(i)) {
 	    b.append((char)i);
 	}
     }
     return b.mkString();
 }
 
-vInteger Size() {
-    int count = 0;
-    for (int i = 0; i < t.size(); i++) {
-	if (t.get(i)) {
-	    count++;
+vInteger Size() {			// *c
+
+    if (size < 0) {			// if size not already known
+	size = 0;
+	for (int i = 0; i <= MAX_VALUE; i++) {
+	    if (this.member(i)) {
+		size++;
+	    }
 	}
     }
-    return iNew.Integer(count);
+    return iNew.Integer(size);
 }
 
-vDescriptor Select() {
-    return this.mkString().Select();
+
+
+vDescriptor Select() {			// ?c
+    if (size < 0) {
+	this.Size();			// must know size
+    }
+    if (size == 0) {
+	return null; /*FAIL*/
+    }
+    int n = (int) k$random.choose(size) + 1;
+    int c = -1;
+    for (int i = 0; i < n; i++) {
+	while (! this.member(++c)) {
+	    ;
+	}
+    }
+    return iNew.String((char) c);
 }
 
-vDescriptor Bang(iClosure c) {
+
+
+vDescriptor Bang(iClosure c) {		// !c
     if (c.PC == 1) {
         c.o = c;
 	c.oint = 0;
 	c.PC = 2;
     }
-    for (int k = c.oint; k < t.size(); k++) {
-	if (t.get(k)) {
-	    c.oint = k+1;
+    for (int k = c.oint; k <= MAX_VALUE; k++) {
+	if (this.member(k)) {
+	    c.oint = k + 1;
 	    return iNew.String((char) k);
 	}
     }
     return null;
 }
 
-vValue Complement() {
-    vCset result = new vCset(0, -1);
-    result.t = new java.util.BitSet(vCset.MAX_VALUE);
-    for (int i = 0; i < result.t.size(); i++) {
-	if (!this.t.get(i)) {
-	    result.t.set(i);
-	}
-    }
-    return result;
-}
 
-vValue Union(vDescriptor x) {
-    vCset right = null;
-    try {
-	right = x.mkCset();
-    } catch (iError e) {
-	iRuntime.error(120, x);		// two sets or two csets expected
-    }
-    // all the bigger/smaller nonsense below is due to Sun's
-    // brain-damaged definition of BitSet.or().
-    java.util.BitSet bigger;
-    java.util.BitSet smaller;
-    if (right.t.size() < this.t.size()) {
-	bigger = this.t;
-	smaller = right.t;
+
+vValue Complement() {			// ~c
+    vCset result = new vCset();
+    result.w1 = ~w1;
+    result.w2 = ~w2;
+    result.w3 = ~w3;
+    result.w4 = ~w4;
+    if (size >= 0) {
+	result.size = MAX_VALUE + 1 - size;
     } else {
-	bigger = right.t;
-	smaller = this.t;
+	result.size = UNKNOWN_SIZE;
     }
-    vCset result = new vCset(bigger);
-    result.t.or(smaller);
     return result;
 }
 
-vValue Intersect(vDescriptor x) {
+
+
+vValue Union(vDescriptor x) {		// c1 ++ c2
+    vCset r = null;
     try {
-	x = x.mkCset();
+	r = x.mkCset();
     } catch (iError e) {
 	iRuntime.error(120, x);		// two sets or two csets expected
     }
-    vCset result = new vCset((java.util.BitSet) ((vCset)x).t);
-    result.t.and(this.t);
+    vCset result = new vCset();
+    result.w1 = w1 | r.w1;
+    result.w2 = w2 | r.w2;
+    result.w3 = w3 | r.w3;
+    result.w4 = w4 | r.w4;
+    result.size = UNKNOWN_SIZE;
     return result;
 }
 
-vValue Diff(vDescriptor x) {
+vValue Intersect(vDescriptor x) {	// c1 && c2
+    vCset r = null;
     try {
-	x = x.mkCset();
+	r = x.mkCset();
     } catch (iError e) {
 	iRuntime.error(120, x);		// two sets or two csets expected
     }
-    java.util.BitSet b = ((vCset)x).t;
-    vCset result = new vCset((java.util.BitSet) this.t);
-    for (int i = 0; i < b.size(); i++) {
-	if (b.get(i)) {
-	    result.t.clear(i);
-	}
-    }
+    vCset result = new vCset();
+    result.w1 = w1 & r.w1;
+    result.w2 = w2 & r.w2;
+    result.w3 = w3 & r.w3;
+    result.w4 = w4 & r.w4;
+    result.size = UNKNOWN_SIZE;
     return result;
 }
+
+vValue Diff(vDescriptor x) {		// c1 || c2
+    vCset r = null;
+    try {
+	r = x.mkCset();
+    } catch (iError e) {
+	iRuntime.error(120, x);		// two sets or two csets expected
+    }
+    vCset result = new vCset();
+    result.w1 = w1 & ~r.w1;
+    result.w2 = w2 & ~r.w2;
+    result.w3 = w3 & ~r.w3;
+    result.w4 = w4 & ~r.w4;
+    result.size = UNKNOWN_SIZE;
+    return result;
+}
+
+
 
 //  static methods for argument processing and defaulting
 
@@ -254,5 +338,7 @@ static vCset argVal(vDescriptor[] args, int index, vCset dflt)	// optional arg
 	return args[index].mkCset();
     }
 }
+ 
+
 
 } // class vCset
