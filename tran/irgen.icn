@@ -1281,6 +1281,9 @@ procedure ir_a_Key(p, st, inuse, target, bounded)
 	    ])
 	suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.ir.failure) ])
     }
+    "fail" : {
+	return ir_Chunk(p.ir.start, [ ir_Goto(p.ir.failure) ])
+    }
     default : {
         closure := ir_tmp(st, inuse)
         suspend ir_Chunk(p.ir.start, [

@@ -362,7 +362,7 @@ end
 procedure bc_gen_ir_Succeed(s, p)
     local r, e, PC, k, a
 
-    PC := bc_PC_fieldref(bc_current_classptr)
+    PC := bc_PC_fieldref(bc_current_classptr, bc_vClosure_classname)
     if \p.continuation then {
         \bc_save_restore_flag | runerr(500)
 
@@ -754,6 +754,10 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     bc_register(bc_emit_table)
     bc_target_bookkeeping()
 
+    bc_tmp_offset := 12
+    bc_tmplabel_offset := bc_tmp_offset + *bc_tmp_table
+    bc_var_offset := bc_tmplabel_offset + *bc_tmplabel_table
+
     bc_vProc_classname    := "p_" || bc_java_classname || "$" || name
     bc_vClosure_classname := "c_" || bc_java_classname || "$" || name
 
@@ -764,8 +768,8 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     c.super_class := j_cp_Class(c, j_cp_Utf8(c, superclass))
     c.this_class := j_cp_Class(c, j_cp_Utf8(c, bc_current_classname))
 
+    undeclared := bc_function_variables(c, params, locals)
     if /bc_save_restore_flag then {
-        undeclared := bc_function_variables(c, params, locals)
         every insert(bc_undeclared_set, !undeclared)
         bc_class_constructor(c, statics)
     }
@@ -785,6 +789,8 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
         superclass := "rts/vClosure"
         c.super_class := j_cp_Class(c, j_cp_Utf8(c, superclass))
         c.this_class := j_cp_Class(c, j_cp_Utf8(c, bc_current_classname))
+
+        j_create_field(bc_current_classptr, 0, "PC", "I")
     
         undeclared := bc_function_variables(c, params, locals)
         every insert(bc_undeclared_set, !undeclared)
@@ -792,7 +798,6 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
         bc_create_Resume(c, codestart, params, locals, undeclared, accumulate)
 
         bc_create_vClosure_constructor(c, params, locals, undeclared, accumulate)
-        bc_create_createvars(c, params, locals, undeclared)
         bc_create_copy(c, params, locals, undeclared)
 
         f := open(bc_directory || bc_current_classname || ".class","wu") |
@@ -838,40 +843,38 @@ end
 
 procedure bc_create_vClosure_constructor(c, params, locals, undeclared, accumulate)
     local init, initcode, constructor, createvars, s, superclass, PC
+    local class_index, vararray
 
-    init := bc_initN_method(c, (/accumulate & 9 >= *params) | 1)
+    init := j_create_method(c, 1, "<init>", "([Lrts/vDescriptor;)V")
     initcode := j_create_code(c, 10, 10)
     put(init.attributes, initcode)
     s := initcode.code
-    if \bc_save_restore_flag then {
-        if *bc_tmp_table > 0 then {
-            j_create_field(bc_current_classptr, 0, "tmpArray",
-                           "[Lrts/vDescriptor;")
-        }
-        if *bc_tmplabel_table > 0 then {
-            j_create_field(bc_current_classptr, 0, "tmpLabelArray", "[I")
-        }
+    if *bc_tmp_table > 0 then {
+        j_create_field(bc_current_classptr, 0, "tmpArray",
+                       "[Lrts/vDescriptor;")
     }
+    if *bc_tmplabel_table > 0 then {
+        j_create_field(bc_current_classptr, 0, "tmpLabelArray", "[I")
+    }
+    j_create_field(bc_current_classptr, 0, "tmpVarArray",
+                       "[Lrts/vDescriptor;")
     superclass := "rts/vClosure"
     constructor := bc_init_methodref(c, superclass)
     put(s, j_aload_0() )
     put(s, j_invokespecial(constructor) )
-    createvars := bc_createVars_methodref(c, bc_current_classname)
-    PC := bc_PC_fieldref(bc_current_classptr)
+    vararray := j_create_fieldref(bc_current_classptr, "tmpVarArray",
+                                  "[Lrts/vDescriptor;", bc_current_classname)
+    put(s, j_aload_0() )
+    put(s, j_aload_1() )
+    put(s, j_putfield(vararray) )
+    PC := bc_PC_fieldref(bc_current_classptr, bc_vClosure_classname)
     put(s, j_aload_0() )
     put(s, j_iconst_1() )
     put(s, j_putfield(PC) )
-    put(s, j_aload_0() )
-    put(s, j_invokevirtual(createvars) )
 
-    bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
+    bc_alloc_tmps(s, c, bc_current_classptr, bc_current_classname)
+    bc_alloc_tmplabels(s, c, bc_current_classptr, bc_current_classname)
 
-    if \bc_save_restore_flag then {
-        bc_alloc_tmps(s, c, bc_current_classptr,
-                      bc_current_classname)
-        bc_alloc_tmplabels(s, c, bc_current_classptr,
-                           bc_current_classname)
-    }
     put(s, j_return() )
 end
 
@@ -944,45 +947,47 @@ end
 procedure bc_create_Call(c, start, params, locals, undeclared, accumulate)
     local nextval, nextvalcode
 
-    nextval := bc_CallN_method(c, *params)
+    if \accumulate | (*params > 9) then {
+        nextval := j_create_method(c, 0, "Call", "([Lrts/vDescriptor;)Lrts/vDescriptor;")
+    } else {
+        nextval := bc_CallN_method(c, *params)
+    }
     nextvalcode := j_create_code(c, 10, 10)
     put(nextval.attributes, nextvalcode)
     if \bc_save_restore_flag then {
-	bc_trampoline(nextvalcode, c, params, accumulate)
+	bc_trampoline(nextvalcode, c, params, locals, undeclared, accumulate)
     } else {
         bc_nextval_code(nextvalcode, c, start, params, locals, undeclared,
 			accumulate)
     }
 end
 
-procedure bc_trampoline(nextvalcode, c, params, accumulate)
-    local s, count, class, init, resume, target, retval
+procedure bc_trampoline(nextvalcode, c, params, locals, undeclared, accumulate)
+    local s, class, init, resume, target, retval
 
     s := nextvalcode.code
     class := j_cp_Class(c, j_cp_Utf8(c, bc_vClosure_classname))
-    if \accumulate | (*params > 9) then {
-	count := 1
-        init := bc_initV_methodref(c, bc_vClosure_classname) 
-    } else {
-	count := *params
-        init := bc_initN_methodref(c, bc_vClosure_classname, *params)
-    }
+    init := bc_initV_methodref(c, bc_vClosure_classname) 
     resume := bc_Resume_methodref(c)
     retval := bc_retval_fieldref(c)
     target := j_label()
 
     put(s, j_new(class))
     put(s, j_dup())
-    every put(s, j_Aload(1 to count))
+
+    bc_createvars_into_array(s, c, params, locals, undeclared, accumulate)
+
     put(s, j_invokespecial(init))
     put(s, j_dup())
     put(s, j_dup())
-    put(s, j_invokevirtual(resume))
-    put(s, j_ifnull(target))
-    put(s, j_putfield(retval))
-    put(s, j_areturn())
+    put(s, j_invokevirtual(resume) )
+    put(s, j_dup() )
+    put(s, j_ifnull(target) )
+    put(s, j_putfield(retval) )
+    put(s, j_areturn() )
+
     put(s, target)
-    put(s, j_aconst_null())
+    put(s, j_aconst_null() )
     put(s, j_areturn())
 end
 
@@ -991,9 +996,6 @@ procedure bc_nextval_code(nextvalcode, c, start, params, locals, undeclared, acc
     local runtimeerror, r, s, PC
     local a, tmplab, prologue, var_load_label, t, tmpset
 
-    bc_tmp_offset := 12
-    bc_tmplabel_offset := bc_tmp_offset + *bc_tmp_table
-    bc_var_offset := bc_tmplabel_offset + *bc_tmplabel_table
     nextvalcode.max_locals := bc_var_offset + *bc_var_table
     s := nextvalcode.code
 
@@ -1002,28 +1004,17 @@ procedure bc_nextval_code(nextvalcode, c, start, params, locals, undeclared, acc
     tmplab := j_label()
 
     if \bc_save_restore_flag then {
-        PC := bc_PC_fieldref(c)
-        put(s, j_aload_0() )
-        put(s, j_getfield(PC))
-        put(s, j_dup())
-        put(s, j_iconst_1())
-        put(s, j_if_icmpne(tmplab))
-    }
-    if /bc_save_restore_flag then {
-	bc_createvars(s, c, params, locals, undeclared)
-        bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
-    }
-    bc_initialize_tmps(s)
-    if \bc_save_restore_flag then {
-        put(s, j_goto_w(var_load_label))
-        put(s, tmplab)
+        PC := bc_PC_fieldref(c, bc_vClosure_classname)
         bc_restore_tmps(s)
         bc_restore_tmplabels(s)
-    }
-
-    put(s, var_load_label)
-    if \bc_save_restore_flag then {
         bc_load_variables(s)
+        put(s, j_aload_0() )
+        put(s, j_getfield(PC))
+    } else {
+	bc_createvars(s, c, params, locals, undeclared)
+        bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
+        bc_load_statics(s)
+        bc_initialize_tmps(s)
     }
 
     deflab := j_label()
@@ -1054,7 +1045,7 @@ procedure bc_nextval_code(nextvalcode, c, start, params, locals, undeclared, acc
 end
 
 procedure bc_load_variables(s)
-    local k
+    local k, vararray
 
     every k := key(bc_var_table) do {
         /bc_var_field[k] := j_create_fieldref(bc_current_classptr, "v$" || k,
@@ -1063,9 +1054,25 @@ procedure bc_load_variables(s)
         if member(bc_statics_set, k) then {
             put(s, j_getstatic(bc_var_field[k]))
         } else {
+            vararray := j_create_fieldref(bc_current_classptr, "tmpVarArray",
+                                  "[Lrts/vDescriptor;", bc_current_classname)
             put(s, j_aload_0() )
-            put(s, j_getfield(bc_var_field[k]))
+            put(s, j_getfield(vararray) )
+	    put(s, j_ipush(bc_var_table[k]) )
+	    put(s, j_aaload() )
         }
+        put(s, j_Astore(bc_var_table[k] + bc_var_offset))
+    }
+end
+
+procedure bc_load_statics(s)
+    local k
+
+    every k := key(bc_var_table) & member(bc_statics_set, k) do {
+        /bc_var_field[k] := j_create_fieldref(bc_current_classptr, "v$" || k,
+                                            "Lrts/vVariable;",
+                                            bc_current_classname)
+        put(s, j_getstatic(bc_var_field[k]))
         put(s, j_Astore(bc_var_table[k] + bc_var_offset))
     }
 end
@@ -1112,46 +1119,51 @@ procedure bc_emit_code(s, switch, start)
     every bc_emit_code0(s, switch, key(bc_emit_table))
 end
 
-procedure bc_emit_prologue_params(s, c, params, accumulate)
-    local marshal, i, k, field, elselab, endlab
-    local null, deref, assign, newsimplevar
+procedure bc_emit_param_rval(s, c, params, accumulate, i)
+    local marshal, k, field, elselab, endlab, newsimplevar
+    local null, deref, assign
 
     null := bc_New_vNull_methodref(bc_current_classptr)
     deref := bc_Deref_methodref(c)
-    assign := bc_Assign_methodref(c)
 
+    if \accumulate | (*params > 9) then {	#%#%#% hard-wired constant!!!!
+        if i = *params & \accumulate then {
+            marshal := bc_marshal_methodref(c)
+            put(s, j_aload_1() )	#%#%# arguments array
+            put(s, j_ipush(*params))
+            put(s, j_invokestatic(marshal))
+        } else {
+            elselab := j_label()
+            endlab := j_label()
+            put(s, j_aload_1() )	#%#%# arguments array
+            put(s, j_arraylength())
+            put(s, j_ipush(i))
+            put(s, j_if_icmpge(elselab))
+                put(s, j_invokestatic(null))
+                put(s, j_goto(endlab))
+            put(s, elselab)
+                put(s, j_aload_1() )	#%#%# arguments array
+                put(s, j_ipush(i-1))
+                put(s, j_aaload())
+                put(s, j_invokevirtual(deref) )
+            put(s, endlab)
+        }
+    } else {
+        put(s, j_Aload(i))
+        put(s, j_invokevirtual(deref) )
+    }
+end
+
+procedure bc_emit_prologue_params(s, c, params, accumulate)
+    local marshal, i, k, field, elselab, endlab, newsimplevar
+    local null, deref, assign
+
+    assign := bc_Assign_methodref(c)
     every i := 1 to *params do {
 	k := params[i]
-	put(s, j_Aload(bc_var_table[k] + bc_var_offset))
-	if \accumulate | (*params > 9) then {	#%#%#% hard-wired constant!!!!
-            if i = *params & \accumulate then {
-                marshal := bc_marshal_methodref(c)
-                put(s, j_aload_1() )	#%#%# arguments array
-                put(s, j_ipush(*params))
-                put(s, j_invokestatic(marshal))
-                put(s, j_invokevirtual(assign) )
-                put(s, j_pop())
-            } else {
-                elselab := j_label()
-                endlab := j_label()
-                put(s, j_aload_1() )	#%#%# arguments array
-                put(s, j_arraylength())
-                put(s, j_ipush(i))
-                put(s, j_if_icmpge(elselab))
-                    put(s, j_invokestatic(null))
-                    put(s, j_goto(endlab))
-                put(s, elselab)
-                    put(s, j_aload_1() )	#%#%# arguments array
-                    put(s, j_ipush(i-1))
-                    put(s, j_aaload())
-                    put(s, j_invokevirtual(deref) )
-                put(s, endlab)
-                put(s, j_invokevirtual(assign) )
-                put(s, j_pop())
-            }
-	} else {
-	    put(s, j_Aload(i))
-            put(s, j_invokevirtual(deref) )
+	if \bc_var_table[k] then {
+	    put(s, j_Aload(bc_var_table[k] + bc_var_offset))
+            bc_emit_param_rval(s, c, params, accumulate, i)
             put(s, j_invokevirtual(assign) )
             put(s, j_pop())
 	}
@@ -1166,10 +1178,12 @@ procedure bc_emit_prologue_locals(s, c, locals)
     assign := bc_Assign_methodref(c)
 
     every k := !locals do {
-	put(s, j_Aload(bc_var_table[k] + bc_var_offset))
-        put(s, j_invokestatic(null))
-        put(s, j_invokevirtual(assign) )
-        put(s, j_pop())
+	if \bc_var_table[k] then {
+	    put(s, j_Aload(bc_var_table[k] + bc_var_offset))
+            put(s, j_invokestatic(null))
+            put(s, j_invokevirtual(assign) )
+            put(s, j_pop())
+	}
     }
 end
 
@@ -1196,8 +1210,62 @@ end
 
 procedure bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
     bc_emit_prologue_params(s, c, params, accumulate)
-    bc_emit_prologue_locals(s, c, locals)
-    bc_emit_prologue_undeclared(s, c, undeclared)
+    #bc_emit_prologue_locals(s, c, locals)
+    #bc_emit_prologue_undeclared(s, c, undeclared)
+end
+
+procedure bc_createvars_into_array(s, c, params, locals, undeclared, accumulate)
+    local newsimplevar, k, field, v, i
+    local linkvalue, lab1, class_index
+
+    put(s, j_ipush(*bc_var_table))
+    class_index := j_cp_Class(bc_current_classptr,
+                              j_cp_Utf8(bc_current_classptr, "rts/vDescriptor"))
+    put(s, j_anewarray(class_index) )
+
+    newsimplevar := bc_New_vSimpleVar_Assign_methodref(c)
+    every i := 1 to *params do {
+	k := params[i]
+	if \bc_var_table[k] then {
+	    put(s, j_dup() )
+	    put(s, j_ipush(bc_var_table[k]) )
+            v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
+            put(s, j_ldc_w(v) )
+	    bc_emit_param_rval(s, c, params, accumulate, i)
+            put(s, j_invokestatic(newsimplevar) )
+	    put(s, j_aastore() )
+	}
+    }
+
+    newsimplevar := bc_New_vSimpleVar_methodref(c)
+    every k := !locals do {
+	if \bc_var_table[k] then {
+	    put(s, j_dup() )
+	    put(s, j_ipush(bc_var_table[k]) )
+            v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
+            put(s, j_ldc_w(v) )
+            put(s, j_invokestatic(newsimplevar) )
+	    put(s, j_aastore() )
+	}
+    }
+
+    every k := !undeclared do {
+	put(s, j_dup() )
+	put(s, j_ipush(bc_var_table[k]) )
+
+        linkvalue := j_create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
+                                     bc_java_classname)
+        lab1 := j_label()
+        v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
+        put(s, j_getstatic(linkvalue) )
+        put(s, j_dup() )
+        put(s, j_ifnonnull(lab1) )
+        put(s, j_pop() )
+        put(s, j_ldc_w(v) )
+        put(s, j_invokestatic(newsimplevar) )
+        put(s, lab1 )
+	put(s, j_aastore() )
+    }
 end
 
 procedure bc_createvars(s, c, params, locals, undeclared)
@@ -1206,10 +1274,12 @@ procedure bc_createvars(s, c, params, locals, undeclared)
 
     newsimplevar := bc_New_vSimpleVar_methodref(c)
     every k := !params | !locals do {
-        v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
-        put(s, j_ldc_w(v) )
-        put(s, j_invokestatic(newsimplevar) )
-	put(s, j_Astore(bc_var_table[k] + bc_var_offset))
+	if \bc_var_table[k] then {
+            v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
+            put(s, j_ldc_w(v) )
+            put(s, j_invokestatic(newsimplevar) )
+	    put(s, j_Astore(bc_var_table[k] + bc_var_offset))
+	}
     }
 
     every k := !undeclared do {
@@ -1292,7 +1362,7 @@ procedure bc_create_copy(c, params, locals, undeclared)
             bc_copy_variable(s, c, k)
             put(s, lab1 )
         }
-        PC := bc_PC_fieldref(c)
+        PC := bc_PC_fieldref(c, bc_vClosure_classname)
         put(s, j_aload_2() )
         put(s, j_iload_1() )
         put(s, j_putfield(PC) )
@@ -1313,7 +1383,6 @@ procedure bc_process_flags(flagList)
 
     !flagList ? {
         ="-class:" & bc_java_classname := tab(0)
-        &fail
     }
     \bc_java_classname | stop("ERROR: must specify -class:<name>")
 

@@ -103,7 +103,7 @@ procedure methodrefs()
 
     m := [
             ["<init>", "()V", &null, "init"],
-            ["<init>", "([Lrts/vDescriptor)V", &null, "initV"],
+            ["<init>", "([Lrts/vDescriptor;)V", &null, "initV"],
             ["Assign", "(Lrts/vDescriptor;)Lrts/vVariable;", "rts/vDescriptor"],
             ["Call", "([Lrts/vDescriptor;)Lrts/vDescriptor;",
              "rts/vDescriptor",  "CallV"],
@@ -111,6 +111,8 @@ procedure methodrefs()
             ["New", "(J)Lrts/vInteger;", "rts/vInteger", "New_vInteger"],
             ["New", "(Ljava/lang/String;)Lrts/vCset;", "rts/vCset","New_vCset"],
             ["New", "(Ljava/lang/String;)Lrts/vReal;", "rts/vReal","New_vReal"],
+            ["New", "(Ljava/lang/String;Lrts/vDescriptor;)Lrts/vSimpleVar;",
+	     "rts/vSimpleVar", "New_vSimpleVar_Assign"],
             ["New", "(Ljava/lang/String;)Lrts/vSimpleVar;", "rts/vSimpleVar",
              "New_vSimpleVar"],
             ["New", "(Ljava/lang/String;)Lrts/vString;", "rts/vString",
@@ -181,8 +183,7 @@ procedure methods()
 	      ")Lrts/vDescriptor;\")")
 	args ||:= "Lrts/vDescriptor;"
     }
-    write("\tdefault : j_create_method(c, 0, \"Call\", ",
-	  "\"([Lrts/vDescriptor;)Lrts/vDescriptor;\")")
+    write("\tdefault : runerr(500, N)")
     write("\t}")
     write("end")
 
@@ -194,8 +195,7 @@ procedure methods()
 	      ")V\")")
 	args ||:= "Lrts/vDescriptor;"
     }
-    write("\tdefault : j_create_method(c, 0, \"<init>\", ",
-	  "\"([Lrts/vDescriptor;)V;\")")
+    write("\tdefault : runerr(500, N)")
     write("\t}")
     write("end")
 end
@@ -204,7 +204,7 @@ procedure fieldrefs()
     local f, def
 
     f := [
-        [ "PC", "I", "rts/vClosure"],
+        [ "PC", "I", &null],
         [ "arguments", "[Lrts/vDescriptor;", "rts/vClosure"],
         [ "retval", "Lrts/vDescriptor;", "rts/vClosure"],
         [ "cur_coexp", "Lrts/vCoexp;", "rts/iEnv"]
