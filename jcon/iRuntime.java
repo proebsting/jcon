@@ -29,6 +29,30 @@ static void bomb(String s)
 
 
 
+//  argVal(args[], i)    -- return arg i, defaulting to &null
+//  argVal(args[], i, e) -- return arg i, signalling error e if missing
+//
+//  (both assume that arg arrays have already been dereferenced.)
+
+static vValue argVal(vDescriptor[] args, int index)
+{
+    if (args.length <= index) {
+	return iNew.Null();
+    } else {
+    	return (vValue) args[index];
+    }
+}
+
+static vValue argVal(vDescriptor[] args, int index, int errcode)
+{
+    if (args.length <= index) {
+    	iRuntime.error(errcode);
+	return null;
+    } else {
+    	return (vValue) args[index];
+    }
+}
+
 
 
 // #%#%#% redo later to use Icon's &random etc.

@@ -14,7 +14,8 @@ vInteger(String s)	{ value = Long.parseLong(s); } //#%#% errs??
 
 //  runtime primitives
 
-public int hashCode()	{ return (int) value; }
+public int hashCode()	{ return (int) ((13255 * value) >> 10); } // same as v9
+
 public boolean equals(Object o)	{
 	return (o instanceof vInteger) && (((vInteger)o).value == value);
 }

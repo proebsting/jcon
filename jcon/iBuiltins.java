@@ -59,22 +59,14 @@ static void declare(iEnv env, String name)
 
 class f$type extends iFunctionClosure {				// type(x)
 	vDescriptor function(vDescriptor[] args) {
-		if (args.length == 0) {
-		    return iNew.String("null");
-		} else {
-		    return iNew.String(args[0].type());
-		}
+		return iNew.String(iRuntime.argVal(args, 0).type());
 	}
 }
 
 
 class f$image extends iFunctionClosure {			// image(x)
 	vDescriptor function(vDescriptor[] args) {
-		if (args.length == 0) {
-		    return iNew.String("&null");
-		} else {
-		    return iNew.String(args[0].image());
-		}
+		return iNew.String(iRuntime.argVal(args, 0).image());
 	}
 }
 
@@ -168,73 +160,51 @@ class f$exit extends iFunctionClosure {				// exit(n)
 
 class f$table extends iFunctionClosure {			// table(x)
 	vDescriptor function(vDescriptor[] args) {
-		vValue x;
-		if (args.length > 1) {
-			x = (vValue) args[0].deref();
-		} else {
-			x = iNew.Null();
-		}
-		return iNew.Table(x);
+		return iNew.Table(iRuntime.argVal(args, 0));
 	}
 }
+
 
 class f$set extends iFunctionClosure {				// set(x)
 	vDescriptor function(vDescriptor[] args) {
-		vValue x;
-		if (args.length > 0) {
-			x = (vValue) args[0];
-		} else {
-			x = null;
-		}
-		return iNew.Set(x);
+		return iNew.Set(iRuntime.argVal(args, 0));
 	}
 }
+
 
 class f$delete extends iFunctionClosure {			// delete(X,x)
 	vDescriptor function(vDescriptor[] args) {
-		if (args.length != 2) {
-			iRuntime.error(122);
-			return null;
-		} else {
-			return args[0].Delete(args[1]);
-		}
+		vValue X = iRuntime.argVal(args, 0, 122);
+		return X.Delete(iRuntime.argVal(args, 1));
 	}
 }
+
 
 class f$member extends iFunctionClosure {			// member(X,x)
 	vDescriptor function(vDescriptor[] args) {
-		if (args.length != 2) {
-			iRuntime.error(122);
-			return null;
-		} else {
-			return args[0].Member(args[1]);
-		}
+		vValue X = iRuntime.argVal(args, 0, 122);
+		return X.Member(iRuntime.argVal(args, 1));
 	}
 }
 
+
 class f$insert extends iFunctionClosure {			// insert(X,x,y)
 	vDescriptor function(vDescriptor[] args) {
-		vValue x;
-		if (args.length > 2) {
-			x = (vValue) args[2];
-		} else {
-			x = iNew.Null();
-		}
-		if (args.length < 2) {
-			iRuntime.error(122);
-			return null;
-		} else {
-			return args[0].Insert(args[1], x);
-		}
+		vValue X = iRuntime.argVal(args, 0, 122);
+		vValue x = iRuntime.argVal(args, 1);
+		vValue y = iRuntime.argVal(args, 2);
+		return X.Insert(x, y);
 	}
 }
+
 
 class f$key extends iClosure {					//  key(X)
 	void nextval() {
 		retvalue = arguments[0].Key(this);
 	}
-	String tfmt() { return "key($1)"; }
 }
+
+
 
 class f$delay extends iFunctionClosure {			// delay(i)
 	vDescriptor function(vDescriptor[] args) {

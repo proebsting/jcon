@@ -8,7 +8,7 @@ vSet(java.util.Hashtable x) {
 
 vSet(vValue x) {
     t = new java.util.Hashtable();
-    if (x != null) {
+    if (x != null && !(x instanceof vNull)) {
         if (!(x instanceof vList)) {
 	    iRuntime.error(108, x);
 	}
