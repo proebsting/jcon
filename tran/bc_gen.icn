@@ -514,6 +514,10 @@ procedure initoptable()
 		optable[2]["|||"] := "oListConcat"
 		optable[2]["||"] := "oConcat"
 		optable[2]["@"] := "oActivate"
+		optable[2][":?"] := "oSubjAssign"
+		optable[3]["[:]"] := "oSection"
+		optable[3]["[+:]"] := "oSectPlus"
+		optable[3]["[-:]"] := "oSectMinus"
 	}
 	return optable
 end
@@ -548,6 +552,7 @@ procedure gen_bc_irOpFunction(s, p)
 	class := case p.fn.arity of {
 		1 : "rts/iUnaryClosure"
 		2 : "rts/iBinaryClosure"
+		3 : "rts/iTrinaryClosure"
 		default : runerr(1000)
 		}
 	field := create_fieldref(bc_proc_classptr, "instance", "L" || class || ";", "rts/" || op)

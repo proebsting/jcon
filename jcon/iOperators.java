@@ -266,25 +266,28 @@ public class oIndex extends iBinaryRefClosure {			//  x1[x2]
 	String tfmt() { return "{$1[$2]}"; }
 }
 
-public class oSection extends iRefClosure {			//  x1[x2:x3]
-	vDescriptor function(vDescriptor[] args) {
-		return args[0].Section(args[1].deref(), args[2].deref());
+public class oSection extends iTrinaryRefClosure {		//  x1[x2:x3]
+	public static iTrinaryClosure instance = new oSection();
+	vDescriptor function() {
+		return argument0.Section(argument1.deref(), argument2.deref());
 	}
 	String tfmt() { return "{$1[$2:$3]}"; }
 }
 
-public class oSectPlus extends iRefClosure {			//  x1[x2+:x3]
-	vDescriptor function(vDescriptor[] args) {
-		return args[0].Section(args[1].deref(),
-			args[1].mkInteger().Add(args[2].mkInteger()));
+public class oSectPlus extends iTrinaryRefClosure {		//  x1[x2+:x3]
+	public static iTrinaryClosure instance = new oSectPlus();
+	vDescriptor function() {
+		return argument0.Section(argument1.deref(),
+			argument1.mkInteger().Add(argument2.mkInteger()));
 	}
 	String tfmt() { return "{$1[$2+:$3]}"; }
 }
 
-public class oSectMinus extends iRefClosure {			//  x1[x2-:x3]
-	vDescriptor function(vDescriptor[] args) {
-		return args[0].Section(args[1].deref(),
-			args[1].mkInteger().Sub(args[2].mkInteger()));
+public class oSectMinus extends iTrinaryRefClosure {		//  x1[x2-:x3]
+	public static iTrinaryClosure instance = new oSectMinus();
+	vDescriptor function() {
+		return argument0.Section(argument1.deref(),
+			argument1.mkInteger().Sub(argument2.mkInteger()));
 	}
 	String tfmt() { return "{$1[$2-:$3]}"; }
 }

@@ -14,11 +14,9 @@ end
 
 # record Field( expr field )
 procedure ir_Field(p)
-	local closure
 
 	ir(p.expr)
 	init4ir(p)
-	closure := ir_tmp_closure(p, "closure")
 
 	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
 	CG.emit(p.ir.resume, [ irGoto(p.expr.ir.resume) ])
@@ -32,15 +30,12 @@ end
 
 # record Scan( op expr body )		op == "?" or "?:="
 procedure ir_Scan(p)
-	local closure
 
 	init4ir(p)
 
 	p.ir.x := ir_scaninfo()
 	p.ir.x.oldpos := ir_tmp(p, "oldpos")
 	p.ir.x.oldsubject := ir_tmp(p, "oldsubject")
-
-	closure := ir_tmp_closure(p, "closure")
 
 	ir(p.expr)
 	put(scans, p)
@@ -56,8 +51,9 @@ procedure ir_Scan(p)
 		irCoord(p.coord),
 		irMove(p.ir.x.oldsubject, irDeref(irKey("subject"))),
 		irMove(p.ir.x.oldpos, irDeref(irKey("pos"))),
-		irMakeClosure(closure, irOperator(":?", 2), [ irKey("subject"), p.expr.ir.value ]),
-		irResume(closure, p.expr.ir.resume, p.ir.value),
+
+		ir_opfn(p.ir.value, irOperator(":?", 2), [ irKey("subject"), p.expr.ir.value ], p.expr.ir.resume),
+
 		irGoto(p.body.ir.start)
 		])
 	CG.emit(p.expr.ir.failure, [ irGoto(p.ir.failure) ])
@@ -76,8 +72,9 @@ procedure ir_Scan(p)
 	} else {
 		# p.op == "?:="
 		CG.emit(p.body.ir.success, [
-			irMakeClosure(closure, irOperator(":=", 2), [ p.expr.ir.value, p.body.ir.value ]),
-			irResume(closure, p.body.ir.resume, p.ir.value),
+
+			ir_opfn(p.ir.value, irOperator(":=", 2), [ p.expr.ir.value, p.body.ir.value ], p.body.ir.resume),
+
 			irScanSwap( p.ir.x.oldsubject, p.ir.x.oldpos ),
 			irGoto(p.ir.success)
 			])
@@ -86,13 +83,12 @@ end
 
 # record Limitation( expr limit )
 procedure ir_Limitation(p)
-	local c, closure
+	local c
 
 	ir(p.expr)
 	ir(p.limit)
 	init4ir(p)
 	c := ir_tmp(p, "ctr")
-	closure := ir_tmp_closure(p, "closure")
 
 	CG.emit(p.ir.start, [ irGoto(p.limit.ir.start) ])
 	CG.emit(p.ir.resume, [
@@ -218,7 +214,7 @@ end
 
 # record Case( expr clauseList dflt )
 procedure ir_Case(p)
-	local closure, dummy, t, L, i
+	local dummy, t, L, i
 
 	ir(p.expr)
 	every ir((!p.clauseList).expr)
@@ -226,7 +222,6 @@ procedure ir_Case(p)
 	ir(p.dflt)
 
 	init4ir(p)
-	closure := ir_tmp_closure(p, "closure")
 	dummy := ir_tmp(p, "dummy")
 
 	t := ir_tmploc(p, "gate")
@@ -284,7 +279,6 @@ end
 
 # record Sectionop( op val left right )
 procedure ir_Sectionop(p)
-	local closure
 
 	ir(p.val)
 	ir(p.left)
@@ -292,13 +286,9 @@ procedure ir_Sectionop(p)
 
 	init4ir(p)
 
-	closure := ir_tmp_closure(p, "closure")
-
 	CG.emit(p.ir.start, [ irGoto(p.val.ir.start) ])
 	CG.emit(p.ir.resume, [
-		irCoord(p.coord),
-		irResume(closure, p.right.ir.resume, p.ir.value),
-		irGoto(p.ir.success)
+		irGoto(p.right.ir.resume)
 		])
 	CG.emit(p.val.ir.success, [ irGoto(p.left.ir.start) ])
 	CG.emit(p.val.ir.failure, [ irGoto(p.ir.failure) ])
@@ -306,8 +296,10 @@ procedure ir_Sectionop(p)
 	CG.emit(p.left.ir.failure, [ irGoto(p.val.ir.resume) ])
 	CG.emit(p.right.ir.success, [
 		irCoord(p.coord),
-		irMakeClosure(closure, irOperator(p.op, 3), [ p.val.ir.value, p.left.ir.value, p.right.ir.value ]),
-		irGoto(p.ir.resume)
+
+		ir_opfn(p.ir.value, irOperator(p.op, 3), [ p.val.ir.value, p.left.ir.value, p.right.ir.value ], p.right.ir.resume),
+
+		irGoto(p.ir.success)
 		])
 	CG.emit(p.right.ir.failure, [ irGoto(p.left.ir.resume) ])
 end
