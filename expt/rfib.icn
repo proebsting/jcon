@@ -1,0 +1,17 @@
+#SRC: JCON
+
+# print the nth Fibonacci number using a slow, recursive formula
+
+procedure main(args)
+   local n
+
+   n := integer(args[1]) | 25
+   write("F(", n, ") = ", rfib(n))
+end
+
+procedure rfib(n)
+   if n < 3 then
+      return 1
+   else
+      return rfib(n - 2) + rfib(n - 1)
+end

@@ -1,0 +1,69 @@
+#  tcompare -- collate outputs from "timings.icn" runs
+#  3-mar-98/gmt
+#
+#  usage:  tcompare file...
+#
+#  Reads output files created by the "timings.icn" program and prints
+#  corresponding timings in columns.  Time ratios WRT the first column
+#  are also printed.
+#
+#  Entries labeled "nothing" are skipped for lack of a better plan.
+#  Check them manually to be sure they're not too far from zero.
+#
+#  Error checking is minimal.  Input is assumed to be valid and the files
+#  are assumed to be outputs from the same version of "timings.icn".
+
+
+link numbers
+
+
+procedure main(args)
+   local i, d, label, flist, slist, tlist
+
+   flist := list()
+   every put(flist, mustopen(!args))
+
+   every writes(fit(!args, 8), " ")
+   writes("  operation     ")
+   every writes(" ", fit(args[2 to *args], 8))
+   write()
+
+   every !args do writes("-------- ")
+   writes("  ------------  ")
+   every 2 to *args do writes(" --------")
+   write()
+
+   slist := list(*args)
+   tlist := list(*args)
+
+   repeat {
+
+      every i := 1 to *args do {
+         slist[i] := read(flist[i]) | break break
+         tlist[i] := integer(slist[i] ? move(10)) | stop("non-integer time")
+         }
+
+      label := (!slist)[13:0]
+      if label ~== (!slist)[13:0] then stop("files out of sync")
+      if label == "nothing" then next
+
+      every writes(right(!tlist, 8), " ")
+      writes("  ", left(label, 14))
+      d := real(tlist[1])
+      every writes(decipos(tlist[2 to *args] / d, 8, 9))
+      write()
+   }
+end
+
+
+procedure mustopen(s)
+   return open(s) | stop("can't open ", s)
+end
+
+
+procedure fit(s, n)
+   if *s > n then
+      return s[1+:n]
+   else
+      return right(s, n)
+end
