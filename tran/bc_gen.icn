@@ -495,9 +495,7 @@ procedure gen_bc_irMakeList(s, p)
 	return s
 end
 
-# record irOpClosure( lhs op )
-procedure gen_bc_irOpClosure(s, p)
-	local field
+procedure initoptable()
 	static optable
 	initial {
 		optable := [ table(), table(), table() ]
@@ -542,6 +540,14 @@ procedure gen_bc_irOpClosure(s, p)
 		optable[2]["||"] := "oConcat"
 		optable[2]["@"] := "oActivate"
 	}
+	return optable
+end
+
+# record irOpClosure( lhs op )
+procedure gen_bc_irOpClosure(s, p)
+	local field
+	static optable
+	initial optable := initoptable()
 
 	\optable[p.op.arity][p.op.name] | runerr(1000, p)
 

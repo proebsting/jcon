@@ -288,6 +288,32 @@ procedure gen_java_irMakeList(p)
 	return s
 end
 
+# record irOpClosure( lhs op )
+procedure gen_java_irOpClosure(p)
+	local s, lhs
+	static optable
+	initial optable := initoptable()
+
+	\optable[p.op.arity][p.op.name] | runerr(1000, p)
+
+	lhs := gen_java(p.lhs)
+	s := lhs || " = rts." || optable[p.op.arity][p.op.name] || ".instance;"
+	return s
+end
+
+# record irInstallArgs( closure argList )
+procedure gen_java_irInstallArgs(p)
+	local s, i
+
+	s := gen_java(p.closure)
+	s ||:= ".closure("
+	every i := 1 to *p.argList do {
+		s ||:= gen_java(p.argList[i]) || ", "
+	}
+	s ||:= "this);"
+	return s
+end
+
 procedure gen_java_call_op(p)
 	local s, l, f, v, n, i
 
@@ -404,6 +430,8 @@ procedure gen_java(p)
 	"irResume" : return gen_java_irResume(p)
 	"irMakeList" : return gen_java_irMakeList(p)
 	"irMakeClosure" : return gen_java_irMakeClosure(p)
+	"irOpClosure" : return gen_java_irOpClosure(p)
+	"irInstallArgs" : return gen_java_irInstallArgs(p)
 	"irOperator" : return gen_java_irOperator(p)
 	"irCreate" : return gen_java_irCreate(p)
 	"irCoRet" : return gen_java_irCoRet(p)

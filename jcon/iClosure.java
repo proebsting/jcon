@@ -96,23 +96,23 @@ public abstract void nextval();
 // copy() is used to return a "refreshed" copy of the closure.
 public iClosure copy(int PC) { iRuntime.error(901); return null; }
 
-void closure(vDescriptor[] a, iClosure parent) {
+public void closure(vDescriptor[] a, iClosure parent) {
     init();
     arguments = a;
     this.parent = parent;
 }
 
-void closure(vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosure parent) {
+public void closure(vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosure parent) {
     init();
     vDescriptor[] args = { arg0, arg1, arg2 };
     closure(args, parent);
 }
-void closure(vDescriptor arg0, vDescriptor arg1, iClosure parent) {
+public void closure(vDescriptor arg0, vDescriptor arg1, iClosure parent) {
     init();
     vDescriptor[] args = { arg0, arg1 };
     closure(args, parent);
 }
-void closure(vDescriptor arg0, iClosure parent) {
+public void closure(vDescriptor arg0, iClosure parent) {
     init();
     vDescriptor[] args = { arg0 };
     closure(args, parent);
