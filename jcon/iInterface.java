@@ -6,14 +6,6 @@ class iInterface {
 		(new iOperators()).announce(env);
 	}
 
-	static vDescriptor[] main_args(String[] args) {
-		vDescriptor[] vargs = new vDescriptor[args.length];
-		for (int i = 0; i < args.length; i++) {
-			vargs[i] = iNew.String(args[i]);
-		}
-		return vargs;
-	}
-
 	static vDescriptor[] marshall(
 	    vDescriptor[] args, int len, boolean accumulate) {
 
@@ -28,5 +20,26 @@ class iInterface {
 			}
 		}
 		return a;
+	}
+
+	static void start(iFile[] files, String[] args) {
+		iEnv env = iNew.Env();
+		for (int i = 0; i < files.length; i++) {
+			files[i].announce(env);
+		}
+		iInterface.init(env);
+		vDescriptor p = env.resolve("main").deref();
+		vDescriptor[] vargs = new vDescriptor[args.length];
+		for (int i = 0; i < args.length; i++) {
+			vargs[i] = iNew.String(args[i]);
+		}
+		vDescriptor list = iNew.List(vargs);
+		vDescriptor[] v = { list };
+		iClosure closure = p.instantiate(v, null);
+		vCoexp coexp = new vCoexp(closure);
+		env.cur_coexp = coexp;
+		coexp.lock.V();
+		coexp.run();
+		System.exit(0);
 	}
 }

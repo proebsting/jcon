@@ -25,6 +25,9 @@ static vProc Proc(Class c, iEnv e)	{ return new vProc(c, e); }
 static vRecordProc RecordProc(String name, String[] fields)
 					{ return new vRecordProc(name, fields);}
 
+static vDescriptor List(vDescriptor[] elements)
+					{ return null; }
+
 // for construction of internal types
 
 static iEnv Env()			{ return new iEnv(); }
@@ -38,7 +41,5 @@ static vSubstring Substring(vSimpleVar v, int i1, int i2)
 
 static vSubstring Substring(vSubstring v, int i1, int i2)
 					{ return new vSubstring(v, i1, i2); }
-
-
 
 } // class iNew
