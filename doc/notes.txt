@@ -18,6 +18,7 @@ general caveats:
 -- crude tracing can be enabled by setting &trace
 
 strings and csets:
+-- characters are 16-bit Unicode, but all I/O is to/from 8-bit ASCII files
 -- image() doesn't escape special characters
 -- image(c) doesn't recognize &digits, &lcase, etc.
 -- csets may be up to 2^16 characters; big ones run slowly; &cset is missing
@@ -36,7 +37,7 @@ error reporting:
 miscellaneous:
 -- system(s) connects the new process's stdout/stderr to
    nonexistent files, and stdin will not be written to
--- random selection of elements of some types differs from v9
+-- random selection from sets and tables differs from v9
 -- read() and write() don't accept file arguments
 -- display() ignores its arguments (and displays everything)
 -- display() prints globals in an unsorted order
