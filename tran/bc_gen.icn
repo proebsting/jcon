@@ -465,26 +465,17 @@ procedure gen_bc_irResume(s, p)
 	put(s, Pop())
 	transfer_to(s, p.failLabel)
 	put(s, target)
-	put(s, dup())
 	put(s, invokevirtual(resume))
 	if \p.retValue then {
 		put(s, dup())
 		target := label()
 		put(s, ifnonnull(target))
 		put(s, Pop())
-		put(s, Pop())
 		transfer_to(s, p.failLabel)
 		put(s, target)
-		put(s, swap())
-		put(s, Pop())
 		gen_bc_assign_to(s, p.retValue)
 	} else {
-		target := label()
-		put(s, ifnonnull(target))
-		put(s, Pop())
-		transfer_to(s, p.failLabel)
-		put(s, target)
-		put(s, Pop())
+		conditional_transfer_to(s, p.failLabel, ifnull, ifnonnull)
 	}
 	return s
 end
