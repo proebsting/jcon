@@ -35,9 +35,10 @@ az-install:
 
 
 clean:
-	cd tran; $(MAKE) clean
-	cd rts;  $(MAKE) clean
-	cd doc;  $(MAKE) clean
-	cd test; $(MAKE) clean
-	cd expt; $(MAKE) clean
+	cd tran;  $(MAKE) clean
+	cd rts;   $(MAKE) clean
+	cd doc;   $(MAKE) clean
+	cd test;  $(MAKE) clean
+	cd expt;  $(MAKE) clean
+	cd bmark; $(MAKE) clean
 	cd bin;  rm -rf $(BUILT) JCON
