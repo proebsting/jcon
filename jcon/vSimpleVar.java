@@ -28,4 +28,9 @@ class vSimpleVar extends vVariable {
 
     vDescriptor Select()	  { return value.deref().SelectVar(this); }
     vDescriptor Bang(iClosure c)  { return value.deref().BangVar(c, this); }
+
+    vDescriptor Index(vValue i)
+    				{ return value.deref().IndexVar(this, i); }
+    vDescriptor Section(vValue i, vValue j)
+    				{ return value.deref().SectionVar(this, i, j); }
 }

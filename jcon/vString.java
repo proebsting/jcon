@@ -58,29 +58,77 @@ static String argVal(vDescriptor[] args, int index, String dflt) // optional arg
 
 
 
-//  special methods for strings
-
 //  s.posEq(n) -- return positive equivalent of position n in string s,
 //		  or zero if out of bounds
 
 int posEq(long n)
 {
     long len = ((String) value).length();
-    if (n <= 0)
+    if (n <= 0) {
     	n += len + 1;
-    if (n > 0 && n <= len + 1)
+    }
+    if (n > 0 && n <= len + 1) {
     	return (int)n;
-    else
+    } else {
     	return 0;
+    }
 }
 
 
 
 //  operations
 
+
+
 vInteger Size()	{
     return iNew.Integer(value.length());
 }
+
+
+
+vDescriptor Index(vValue i) {
+    int m = this.posEq(i.mkInteger().value);
+    if (m == 0 || m > value.length()) {
+    	return null; /*FAIL*/
+    }
+    return iNew.String(value.substring(m, m+1));
+}
+
+vDescriptor IndexVar(vSimpleVar v, vValue i) {
+    int m = this.posEq(i.mkInteger().value);
+    if (m == 0 || m > value.length()) {
+    	return null; /*FAIL*/
+    }
+    return iNew.Substring(v, m, m+1);
+}
+
+vDescriptor Section(vValue i, vValue j) {
+    int m = this.posEq(i.mkInteger().value);
+    int n = this.posEq(j.mkInteger().value);
+    if (m == 0 || n == 0) {
+    	return null; /*FAIL*/
+    }
+    if (m > n) {
+	return iNew.String(value.substring(n, m));
+    } else {
+	return iNew.String(value.substring(m, n));
+    }
+}
+
+vDescriptor SectionVar(vSimpleVar v, vValue i, vValue j) {
+    int m = this.posEq(i.mkInteger().value);
+    int n = this.posEq(j.mkInteger().value);
+    if (m == 0 || n == 0) {
+    	return null; /*FAIL*/
+    }
+    if (m > n) {
+	return iNew.Substring(v, n, m);
+    } else {
+	return iNew.Substring(v, m, n);
+    }
+}
+
+
 
 vDescriptor Select() {
     if (value.length() == 0) {

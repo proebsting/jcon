@@ -45,6 +45,10 @@ abstract class vDescriptor {
     // unary operators that are generators
     abstract vDescriptor Bang(iClosure c);	//  !x
 
+    // subscripting
+    abstract vDescriptor Index(vValue v);		 // x1[x2]
+    abstract vDescriptor Section(vValue v1, vValue v2);  // x1[i1:i2]
+
     // simple binary operators
     abstract vValue Add(vDescriptor v);		//  n1 + n2
     abstract vValue Sub(vDescriptor v);		//  n1 - n2

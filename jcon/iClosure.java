@@ -23,6 +23,7 @@ final void resume() {
 	try {
 		nextval();
 	} catch (iError e) {
+		//  e.printStackTrace();  //#%#%#% TEMP: enable for debugging
 		//#%#%# check &error here and fail or:
 		e.report(this);
 	}

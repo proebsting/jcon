@@ -12,6 +12,11 @@ void announce(iEnv env) {
 
     declare(env, "...,3", "oToBy");
 
+    declare(env, "[],2", "oIndex");
+    declare(env, "[:],3", "oSection");
+    declare(env, "[+:],3", "oSectPlus");
+    declare(env, "[-:],3", "oSectMinus");
+
     declare(env, "/,1", "oIsNull");
     declare(env, "\\,1", "oIsntNull");
     declare(env, "*,1", "oSize");
@@ -20,7 +25,6 @@ void announce(iEnv env) {
 
     declare(env, "+,1", "oNumerate");
     declare(env, "-,1", "oNegate");
-
 
     declare(env, "+,2", "oAdd");
     declare(env, "-,2", "oSub");
@@ -125,6 +129,39 @@ class oToBy extends iClosure {				// i1 to i2 by i3
 
 	String tfmt() { return "{$1 to $2 by $3}"; }
 }
+
+
+
+class oIndex extends iRefClosure {			//  x1[x2]
+	vDescriptor function(vDescriptor[] args) {
+		return args[0].Index(args[1].deref());
+	}
+	String tfmt() { return "{$1[$2]}"; }
+}
+
+class oSection extends iRefClosure {			//  x1[x2:x3]
+	vDescriptor function(vDescriptor[] args) {
+		return args[0].Section(args[1].deref(), args[2].deref());
+	}
+	String tfmt() { return "{$1[$2:$3]}"; }
+}
+
+class oSectPlus extends iRefClosure {			//  x1[x2+:x3]
+	vDescriptor function(vDescriptor[] args) {
+		return args[0].Section(args[1].deref(),
+			args[1].mkInteger().Add(args[2].mkInteger()));
+	}
+	String tfmt() { return "{$1[$2+:$3]}"; }
+}
+
+class oSectMinus extends iRefClosure {			//  x1[x2-:x3]
+	vDescriptor function(vDescriptor[] args) {
+		return args[0].Section(args[1].deref(),
+			args[1].mkInteger().Sub(args[2].mkInteger()));
+	}
+	String tfmt() { return "{$1[$2-:$3]}"; }
+}
+
 
 
 

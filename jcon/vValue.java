@@ -46,6 +46,16 @@ abstract class vValue extends vDescriptor {
     vDescriptor BangVar(iClosure c, vSimpleVar v)
     				{ return this.deref().Bang(c); }
 
+    // subscripting
+    vDescriptor Index(vValue i)				// x1[x2]
+    				{ iRuntime.error(114, this); return null; }
+    vDescriptor Section(vValue i, vValue j)		// x1[i1:i2]
+    				{ iRuntime.error(110, this); return null; }
+    vDescriptor IndexVar(vSimpleVar v, vValue i)
+				{ return this.deref().Index(i); }
+    vDescriptor SectionVar(vSimpleVar v, vValue i, vValue j)
+				{ return this.deref().Section(i,j); }
+
     // simple binary operators
     vValue Add(vDescriptor v)	{ iRuntime.error(102, this); return null; }
     vValue Sub(vDescriptor v)	{ iRuntime.error(102, this); return null; }

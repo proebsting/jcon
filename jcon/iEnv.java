@@ -38,6 +38,12 @@ class iEnv {
 		vDescriptor v = (vDescriptor) proctab.get(s);
 		if (v == null) {
 			v = iNew.Null();
+			//#%#%#% temp for better diagnosis of missing oprs:
+			char c = s.charAt(0);
+			if (c != '_' && ! Character.isLetter(c)) {
+				System.err.println(
+					"warning: operation not found: " + s);
+			}
 		}
 		return v;
 	}
