@@ -30,6 +30,7 @@ public abstract class vDescriptor {
     abstract vReal mkReal();			// convert to Icon real
     abstract vNumeric mkNumeric();		// convert to Icon numeric
     abstract vCset mkCset();			// convert to Icon numeric
+    abstract vDescriptor[] mkArgs();		// convert to Icon argument list
 
     // conversion to (Java) string for special purposes
     abstract String write();			// convert for use in write()

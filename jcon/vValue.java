@@ -30,6 +30,7 @@ public abstract class vValue extends vDescriptor {
     vReal mkReal()		{ iRuntime.error(102, this); return null; }
     vNumeric mkNumeric()	{ iRuntime.error(102, this); return null; }
     vCset mkCset()		{ iRuntime.error(104, this); return null; }
+    vDescriptor[] mkArgs()	{ iRuntime.error(126, this); return null; }
 
     String write()		{ return this.mkString().write(); }
     String report()		{ return this.image(); }

@@ -201,6 +201,16 @@ vValue Sort(vDescriptor n) {				// sort(L)
     return iNew.List(a);
 }
 
+vDescriptor[] mkArgs() {
+	vDescriptor[] arglist = new vDescriptor[v.size()];
+	java.util.Enumeration e = this.elements();
+	int i = 0;
+	while (e.hasMoreElements()) {
+		arglist[i] = (vDescriptor) e.nextElement();
+		i++;
+	}
+	return arglist;
+}
 
 
 } // class vList

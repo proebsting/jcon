@@ -93,5 +93,12 @@ vValue Sort(vDescriptor n) {
     return iNew.List(a);
 }
 
+vDescriptor[] mkArgs() {
+    vValue a[] = new vValue[values.length];
+    for (int i = 0; i < values.length; i++) {
+	a[i] = values[i].deref();
+    }
+    return a;
+}
 
 } // class vRecord
