@@ -11,13 +11,13 @@ public abstract class vClosure extends vDescriptor {
 
 
 
-// every subclass must implement a resume() method
+// every subclass must implement a Resume() method
 
-public abstract vDescriptor resume();
+public abstract vDescriptor Resume();
 
 
 
-// most methods other than resume() just get applied to the retval field.
+// most methods other than Resume() just get applied to the retval field.
 
 public boolean equals(Object o)		{ return retval.equals(o); }
 public int hashCode()			{ return retval.hashCode(); }
@@ -148,6 +148,47 @@ vNumeric BkwEqual(vReal a)		{ return retval.BkwEqual(a); }
 vNumeric BkwUnequal(vReal a)		{ return retval.BkwUnequal(a); }
 vNumeric BkwGreaterEq(vReal a)		{ return retval.BkwGreaterEq(a); }
 vNumeric BkwGreater(vReal a)		{ return retval.BkwGreater(a); }
+
+public vDescriptor Call(vDescriptor v[]) {
+	return retval.Call(v);
+}
+public vDescriptor Call() {
+	return retval.Call();
+}
+public vDescriptor Call(vDescriptor a) {
+	return retval.Call(a);
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	return retval.Call(a, b);
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
+	return retval.Call(a, b, c);
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d) {
+	return retval.Call(a, b, c, d);
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e) {
+	return retval.Call(a, b, c, d, e);
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f) {
+	return retval.Call(a, b, c, d, e, f);
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g) {
+	return retval.Call(a, b, c, d, e, f, g);
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h) {
+	return retval.Call(a, b, c, d, e, f, g, h);
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h,
+    vDescriptor i) {
+	return retval.Call(a, b, c, d, e, f, g, h, i);
+}
 
 
 

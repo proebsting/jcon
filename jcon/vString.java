@@ -435,7 +435,7 @@ public vDescriptor TabMatch() {
     final vString newstr = vString.New(subj, pos, pos + tlength);
     return new vClosure () {
 	{ retval = newstr; }
-        public vDescriptor resume() {
+        public vDescriptor Resume() {
 	    k$pos.self.Assign(oldpos);
 	    return null;
         }
@@ -612,7 +612,7 @@ public vDescriptor Bang() {
     return new vClosure() {
 	{ retval = New(charAt(0)); }
 	int i = 0;
-	public vDescriptor resume() {
+	public vDescriptor Resume() {
 	    if (++i >= tlength) {
 		return null; /*FAIL*/
 	    } else {
@@ -633,7 +633,7 @@ public vDescriptor BangVar(final vVariable v) {
     return new vClosure() {
 	{ retval = vSubstring.New(v, 1, 2); }
 	int i = 1;
-	public vDescriptor resume() {
+	public vDescriptor Resume() {
 	    if (++i > len) {
 		return null; /*FAIL*/
 	    } else {

@@ -54,7 +54,7 @@ String trace_coordinate() {
     return file + " : " + line + " ";
 }
 
-public vDescriptor resume() {
+public vDescriptor Resume() {
     vDescriptor ret;
 
     try {

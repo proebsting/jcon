@@ -136,7 +136,7 @@ public vDescriptor Select() {				// ?s
 public vDescriptor Bang() {				// !s
     return new vClosure() {
 	int i = start;
-	public vDescriptor resume() {
+	public vDescriptor Resume() {
 	    if (i < end) {
 		retval = vSubstring.New(var, i, i+1);
 		i++;
@@ -145,7 +145,7 @@ public vDescriptor Bang() {				// !s
 		return null; /*FAIL*/
 	    }
 	}
-    }.resume();
+    }.Resume();
 }
 
 

@@ -59,7 +59,7 @@ public vDescriptor Bang() {
     }
     return new vClosure() {
 	{ retval = s; }
-	public vDescriptor resume() {
+	public vDescriptor Resume() {
 	    return vFile.this.read();
 	}
     };

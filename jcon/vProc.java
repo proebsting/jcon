@@ -1,6 +1,17 @@
+//  vProc is the parent class of all Icon and built-in procedures.
+//  Every procedure extends one of these abstract subclasses:
+//
+//	vProc0	for procedures having no parameters
+//	vProc1	for procedures having one parameter
+//	  ...
+//	vProc9	for procedures having nine parameters
+//	vProcV	for varargs procedures and procedures with >9 fixed parameters
+
+
+
 package rts;
 
-public class vProc extends vValue {
+public abstract class vProc extends vValue {
 
     vString img;	// image for printing
     Class proc;		// class that implements proc
@@ -15,7 +26,7 @@ public class vProc extends vValue {
 // constructors
 
 public static vProc New(String s, String classname, int args) {
-    return new vProc(s, classname, args);
+    return null; //#%#%#%  return new vProc(s, classname, args);
 }
 
 private vProc(String img, String classname, int args) {
@@ -23,6 +34,8 @@ private vProc(String img, String classname, int args) {
     this.classname = classname;
     this.args = args;
 }
+
+public vProc () {}; //#%#%#% TEMP to make vProcX compile
 
 
 
@@ -80,7 +93,7 @@ public vDescriptor ProcessArgs(vDescriptor x) {
     }
     return new vClosure() {
 	{ retval = rv; }
-	public vDescriptor resume() {
+	public vDescriptor Resume() {
 	    return func.nextval();
 	}
     };

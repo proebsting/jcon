@@ -39,7 +39,7 @@ public vVariable Assign(vDescriptor x) { iRuntime.error(111,this); return null;}
 public vVariable SubjAssign(vDescriptor x)
 				{ iRuntime.error(111,this); return null; }
 
-public vDescriptor resume()	{ return null; /*FAIL*/ }
+public vDescriptor Resume()	{ return null; /*FAIL*/ }
 public vInteger Limit()		{ return this.mkInteger().Limit(); }
 public vDescriptor Conjunction(vDescriptor x)	{ return x; }
 public vDescriptor ProcessArgs(vDescriptor x)
@@ -162,6 +162,58 @@ public vDescriptor IndexVar(vVariable v, vDescriptor i)
 					{ return this.Deref().Index(i); }
 public vDescriptor SectionVar(vVariable v, vDescriptor i, vDescriptor j)
 					{ return this.Deref().Section(i, j); }
+
+public vDescriptor Call(vDescriptor v[]) {
+	iRuntime.error(106, this);
+	return null;
+}
+public vDescriptor Call() {
+	iRuntime.error(106, this);
+	return null;
+}
+public vDescriptor Call(vDescriptor a) {
+	iRuntime.error(106, this);
+	return null;
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	iRuntime.error(106, this);
+	return null;
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c){
+	iRuntime.error(106, this);
+	return null;
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d) {
+	iRuntime.error(106, this);
+	return null;
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e) {
+	iRuntime.error(106, this);
+	return null;
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f) {
+	iRuntime.error(106, this);
+	return null;
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g) {
+	iRuntime.error(106, this);
+	return null;
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h) {
+	iRuntime.error(106, this);
+	return null;
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h,
+    vDescriptor i) {
+	iRuntime.error(106, this);
+	return null;
+}
 
 
 

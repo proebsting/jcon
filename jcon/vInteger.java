@@ -399,7 +399,7 @@ public vDescriptor ToBy(vDescriptor v2, vDescriptor v3) {
 	    long n = i;
 	    { retval = vInteger.this; }
 
-	    public vDescriptor resume() {
+	    public vDescriptor Resume() {
 		long oldn = n;
 		if ((n += k) <= j && n > oldn) {  // 2nd test catches overflow
 		    return New(n);
@@ -418,7 +418,7 @@ public vDescriptor ToBy(vDescriptor v2, vDescriptor v3) {
 	    long n = i;
 	    { retval = vInteger.this; }
 
-	    public vDescriptor resume() {
+	    public vDescriptor Resume() {
 		long oldn = n;
 		if ((n += k) >= j && n < oldn) {  // 2nd test catches overflow
 		    return New(n);
@@ -432,6 +432,125 @@ public vDescriptor ToBy(vDescriptor v2, vDescriptor v3) {
         iRuntime.error(211, v3);
         return null;
     }
+}
+
+
+
+//  i(a, b, c, ...)
+
+public vDescriptor Call(vDescriptor v[]) {
+    int i;
+    if (value < 0) {
+	i = v.length + (int) value;
+    } else {
+	i = (int) value - 1;
+    }
+    if (i >= 0 && i < v.length) {
+	return v[i - 1];
+    } else {
+	return null; /*FAIL*/
+    }
+}
+public vDescriptor Call() {
+    return null; /*FAIL*/
+}
+public vDescriptor Call(vDescriptor a) {
+    if (value == 1 || value == -1) {
+	return a;
+    } else {
+	return null; /*FAIL*/
+    }
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	switch ((int) value) {
+	    case 1:  case -2:	return a;
+	    case 2:  case -1:	return b;
+	    default:		return null; /*FAIL*/
+	}
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
+	switch ((int) value) {
+	    case 1:  case -3:	return a;
+	    case 2:  case -2:	return b;
+	    case 3:  case -1:	return c;
+	    default:		return null; /*FAIL*/
+	}
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d) {
+	switch ((int) value) {
+	    case 1:  case -4:	return a;
+	    case 2:  case -3:	return b;
+	    case 3:  case -2:	return c;
+	    case 4:  case -1:	return d;
+	    default:		return null; /*FAIL*/
+	}
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e) {
+	switch ((int) value) {
+	    case 1:  case -5:	return a;
+	    case 2:  case -4:	return b;
+	    case 3:  case -3:	return c;
+	    case 4:  case -2:	return d;
+	    case 5:  case -1:	return e;
+	    default:		return null; /*FAIL*/
+	}
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f) {
+	switch ((int) value) {
+	    case 1:  case -6:	return a;
+	    case 2:  case -5:	return b;
+	    case 3:  case -4:	return c;
+	    case 4:  case -3:	return d;
+	    case 5:  case -2:	return e;
+	    case 6:  case -1:	return f;
+	    default:		return null; /*FAIL*/
+	}
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g) {
+	switch ((int) value) {
+	    case 1:  case -7:	return a;
+	    case 2:  case -6:	return b;
+	    case 3:  case -5:	return c;
+	    case 4:  case -4:	return d;
+	    case 5:  case -3:	return e;
+	    case 6:  case -2:	return f;
+	    case 7:  case -1:	return g;
+	    default:		return null; /*FAIL*/
+	}
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h) {
+	switch ((int) value) {
+	    case 1:  case -8:	return a;
+	    case 2:  case -7:	return b;
+	    case 3:  case -6:	return c;
+	    case 4:  case -5:	return d;
+	    case 5:  case -4:	return e;
+	    case 6:  case -3:	return f;
+	    case 7:  case -2:	return g;
+	    case 8:  case -1:	return h;
+	    default:		return null; /*FAIL*/
+	}
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h,
+    vDescriptor i) {
+	switch ((int) value) {
+	    case 1:  case -9:	return a;
+	    case 2:  case -8:	return b;
+	    case 3:  case -7:	return c;
+	    case 4:  case -6:	return d;
+	    case 5:  case -5:	return e;
+	    case 6:  case -4:	return f;
+	    case 7:  case -3:	return g;
+	    case 8:  case -2:	return h;
+	    case 9:  case -1:	return i;
+	    default:		return null; /*FAIL*/
+	}
 }
 
 

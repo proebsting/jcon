@@ -374,7 +374,7 @@ public vDescriptor Select() {		// ?c
 public vDescriptor Bang() {		// !c
     return new vClosure() {
 	int i = 0;
-	public vDescriptor resume() {
+	public vDescriptor Resume() {
 	    while (i <= MAX_VALUE) {
 		if (member(i)) {
 		    retval = vString.New((char) i++);
@@ -384,7 +384,7 @@ public vDescriptor Bang() {		// !c
 	    }
 	    return null; /*FAIL*/
 	}
-    }.resume();
+    }.Resume();
 }
 
 

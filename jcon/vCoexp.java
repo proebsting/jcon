@@ -42,7 +42,7 @@ public void run() {
     } catch (InterruptedException e) {
 	iRuntime.error(902);
     }
-    closure.resume();  // should never return;
+    closure.Resume();  // should never return;
 }
 
 public void coret(vDescriptor retValue) {

@@ -79,7 +79,7 @@ public vDescriptor Bang() {
     return new vClosure() {
 	{ retval = a[0]; }
 	int j = 1;
-	public vDescriptor resume() {
+	public vDescriptor Resume() {
 	    while (j < a.length) {
 		vValue v = a[j++];
 		if (t.containsKey(v)) {		// if not stale

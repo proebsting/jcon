@@ -96,7 +96,7 @@ public vDescriptor Bang() {
     return new vClosure() {
 	{ retval = values[0]; }
 	int i = 1;
-	public vDescriptor resume() {
+	public vDescriptor Resume() {
 	    if (i < values.length) {
 		return values[i++];
 	    } else {

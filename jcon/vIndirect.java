@@ -38,7 +38,7 @@ vString image()				{ return Deref().image(); }
 vString report()			{ return Deref().report(); }
 
 public vVariable SubjAssign(vDescriptor x)	{ return this.Assign(x); }
-public vDescriptor resume()			{ return null; /*FAIL*/ }
+public vDescriptor Resume()			{ return null; /*FAIL*/ }
 public vInteger Limit()				{ return Deref().Limit(); }
 public vDescriptor Conjunction(vDescriptor x)	{return Deref().Conjunction(x);}
 public vDescriptor ProcessArgs(vDescriptor x)   {return Deref().ProcessArgs(x);}
@@ -146,6 +146,46 @@ vNumeric BkwUnequal(vReal a)		{ return Deref().BkwUnequal(a);}
 vNumeric BkwGreaterEq(vReal a)		{ return Deref().BkwGreaterEq(a) ;}
 vNumeric BkwGreater(vReal a)		{ return Deref().BkwGreater(a); }
 
+public vDescriptor Call(vDescriptor v[]) {
+	return Deref().Call(v);
+}
+public vDescriptor Call() {
+	return Deref().Call();
+}
+public vDescriptor Call(vDescriptor a) {
+	return Deref().Call(a);
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	return Deref().Call(a, b);
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
+	return Deref().Call(a, b, c);
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d) {
+	return Deref().Call(a, b, c, d);
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e) {
+	return Deref().Call(a, b, c, d, e);
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f) {
+	return Deref().Call(a, b, c, d, e, f);
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g) {
+	return Deref().Call(a, b, c, d, e, f, g);
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h) {
+	return Deref().Call(a, b, c, d, e, f, g, h);
+}
+public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h,
+    vDescriptor i) {
+	return Deref().Call(a, b, c, d, e, f, g, h, i);
+}
 
 
 public iClosure instantiate(vDescriptor[] args, iClosure parent) //#%#%#%

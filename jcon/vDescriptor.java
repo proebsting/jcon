@@ -35,7 +35,7 @@ public abstract vVariable Assign(vDescriptor x);	// v := x
 public abstract vVariable SubjAssign(vDescriptor x);	// &subject := x  
 
 // control-structure-like operations
-public abstract vDescriptor resume();			// resume vClosure
+public abstract vDescriptor Resume();			// Resume vClosure
 public abstract vInteger Limit();			// ... \ n
 public abstract vDescriptor Conjunction(vDescriptor x);	// v & x
 public abstract vDescriptor ProcessArgs(vDescriptor x);	// v ! x
@@ -151,6 +151,27 @@ abstract vNumeric BkwUnequal(vReal a);		// a ~= b ==> b.BkwUnequal(a)
 abstract vNumeric BkwGreaterEq(vReal a);	// a < b  ==> b.BkwGreaterEq(a)
 abstract vNumeric BkwGreater(vReal a);		// a >= b ==> b.BkwGreaterEq(a)
 
+// procedure calls for varargs and 0 to 9 args
+
+public abstract vDescriptor Call(vDescriptor v[]);
+public abstract vDescriptor Call();
+public abstract vDescriptor Call(vDescriptor a);
+public abstract vDescriptor Call(vDescriptor a, vDescriptor b);
+public abstract vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c);
+public abstract vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d);
+public abstract vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e);
+public abstract vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f);
+public abstract vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g);
+public abstract vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h);
+public abstract vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h,
+    vDescriptor i);
+
 
 
 //  swapping and reversible assignment are handled here by calling Assign()
@@ -175,7 +196,7 @@ public vDescriptor RevSwap(final vDescriptor v) {
     }
     return new vClosure() {
 	{ retval = rv; }
-	public vDescriptor resume() {
+	public vDescriptor Resume() {
 	    if (rv.Assign(a) != null) {
 		v.Assign(b);
 	    }
@@ -192,7 +213,7 @@ public vDescriptor RevAssign(vDescriptor v) {
     }
     return new vClosure() {
 	{ retval = rv; }
-	public vDescriptor resume() {
+	public vDescriptor Resume() {
 	    rv.Assign(oldval);
 	    return null;
 	}

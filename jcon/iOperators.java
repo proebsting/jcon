@@ -11,15 +11,15 @@ abstract class oOperator {
 }
 
 abstract class oUnary extends oOperator {
-    abstract vDescriptor call(vDescriptor a);
+    abstract vDescriptor Call(vDescriptor a);
 }
 
 abstract class oBinary extends oOperator {
-    abstract vDescriptor call(vDescriptor a, vDescriptor b);
+    abstract vDescriptor Call(vDescriptor a, vDescriptor b);
 }
 
 abstract class oTrinary extends oOperator {
-    abstract vDescriptor call(vDescriptor a, vDescriptor b, vDescriptor c);
+    abstract vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c);
 }
 
 
@@ -33,85 +33,85 @@ static Hashtable trinary = new Hashtable();
 static {
 
     declare(".", new oUnary() {
-	vDescriptor call(vDescriptor a) { return a.Deref(); }
+	vDescriptor Call(vDescriptor a) { return a.Deref(); }
     });
 
     declare(":=", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.Assign(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.Assign(b); }
     });
 
     declare("<=", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.RevAssign(b);}
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.RevAssign(b);}
     });
 
     declare(":=:", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.Swap(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.Swap(b); }
     });
 
     declare("<->", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.RevSwap(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.RevSwap(b); }
     });
 
     declare("&", new oBinary() {
-	vDescriptor call(vDescriptor a,vDescriptor b) {return a.Conjunction(b);}
+	vDescriptor Call(vDescriptor a,vDescriptor b) {return a.Conjunction(b);}
     });
 
     declare("!", new oBinary() {
-        vDescriptor call(vDescriptor a,vDescriptor b) {return a.ProcessArgs(b);}
+        vDescriptor Call(vDescriptor a,vDescriptor b) {return a.ProcessArgs(b);}
     });
 
     declare("@", new oBinary() {	// note reversal of arg order for a @ b
-	vDescriptor call(vDescriptor a, vDescriptor b) { return b.Activate(a); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return b.Activate(a); }
     });
 
     declare("...", new oTrinary() {
-        vDescriptor call(vDescriptor a, vDescriptor b, vDescriptor c) {
+        vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
 	    return a.ToBy(b, c);
 	}
     });
 
     declare("+", new oUnary() {
-	vDescriptor call(vDescriptor a) { return a.Numerate(); }
+	vDescriptor Call(vDescriptor a) { return a.Numerate(); }
     });
 
     declare("-", new oUnary() {
-	vDescriptor call(vDescriptor a) { return a.Negate(); }
+	vDescriptor Call(vDescriptor a) { return a.Negate(); }
     });
 
     declare("*", new oUnary() {
-	vDescriptor call(vDescriptor a) { return a.Size(); }
+	vDescriptor Call(vDescriptor a) { return a.Size(); }
     });
 
     declare("~", new oUnary() {
-	vDescriptor call(vDescriptor a) { return a.Complement(); }
+	vDescriptor Call(vDescriptor a) { return a.Complement(); }
     });
 
     declare("^", new oUnary() {
-	vDescriptor call(vDescriptor a) { return a.Refresh(); }
+	vDescriptor Call(vDescriptor a) { return a.Refresh(); }
     });
 
     declare("=", new oUnary() {
-	vDescriptor call(vDescriptor a) { return a.TabMatch(); }
+	vDescriptor Call(vDescriptor a) { return a.TabMatch(); }
     });
 
     declare("/", new oUnary() {
-	vDescriptor call(vDescriptor a) { return a.IsNull(); }
+	vDescriptor Call(vDescriptor a) { return a.IsNull(); }
     });
 
     declare("\\", new oUnary() {
-	vDescriptor call(vDescriptor a) { return a.IsntNull(); }
+	vDescriptor Call(vDescriptor a) { return a.IsntNull(); }
     });
 
     declare("?", new oUnary() {
-	vDescriptor call(vDescriptor a) { return a.Select(); }
+	vDescriptor Call(vDescriptor a) { return a.Select(); }
     });
 
     declare("!", new oUnary() {
-	vDescriptor call(vDescriptor a) { return a.Bang(); }
+	vDescriptor Call(vDescriptor a) { return a.Bang(); }
     });
 
     declare(".", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) {
+	vDescriptor Call(vDescriptor a, vDescriptor b) {
 	    if (!(a.Deref() instanceof vRecord)) {  // check before converting b
 		iRuntime.error(107, a);
 	    }
@@ -120,125 +120,125 @@ static {
     });
 
     declare("[]", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.Index(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.Index(b); }
     });
 
     declare("[:]", new oTrinary() {
-        vDescriptor call(vDescriptor a, vDescriptor b, vDescriptor c) {
+        vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
 	    return a.Section(b, c);
 	}
     });
 
     declare("[+:]", new oTrinary() {
-        vDescriptor call(vDescriptor a, vDescriptor b, vDescriptor c) {
+        vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
 	    return a.SectPlus(b, c);
 	}
     });
 
     declare("[-:]", new oTrinary() {
-        vDescriptor call(vDescriptor a, vDescriptor b, vDescriptor c) {
+        vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
 	    return a.SectMinus(b, c);
 	}
     });
 
     declare("+", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.Add(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.Add(b); }
     });
 
     declare("-", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.Sub(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.Sub(b); }
     });
 
     declare("*", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.Mul(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.Mul(b); }
     });
 
     declare("/", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.Div(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.Div(b); }
     });
 
     declare("%", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.Mod(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.Mod(b); }
     });
 
     declare("^", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.Power(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.Power(b); }
     });
 
     declare("<", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.NLess(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.NLess(b); }
     });
 
     declare("<=", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.NLessEq(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.NLessEq(b); }
     });
 
     declare("=", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.NEqual(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.NEqual(b); }
     });
 
     declare("~=", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.NUnequal(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.NUnequal(b); }
     });
 
     declare(">=", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) {return a.NGreaterEq(b);}
+	vDescriptor Call(vDescriptor a, vDescriptor b) {return a.NGreaterEq(b);}
     });
 
     declare(">", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.NGreater(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.NGreater(b); }
     });
 
     declare("<<", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.LLess(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.LLess(b); }
     });
 
     declare("<<=", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.LLessEq(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.LLessEq(b); }
     });
 
     declare("==", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.LEqual(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.LEqual(b); }
     });
 
     declare("~==", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.LUnequal(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.LUnequal(b); }
     });
 
     declare(">>=", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) {return a.LGreaterEq(b);}
+	vDescriptor Call(vDescriptor a, vDescriptor b) {return a.LGreaterEq(b);}
     });
 
     declare(">>", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.LGreater(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.LGreater(b); }
     });
 
     declare("===", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.VEqual(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.VEqual(b); }
     });
 
     declare("~===", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.VUnequal(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.VUnequal(b); }
     });
 
     declare("||", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.Concat(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.Concat(b); }
     });
 
     declare("|||", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) {return a.ListConcat(b);}
+	vDescriptor Call(vDescriptor a, vDescriptor b) {return a.ListConcat(b);}
     });
 
     declare("**", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.Intersect(b);}
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.Intersect(b);}
     });
 
     declare("++", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.Union(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.Union(b); }
     });
 
     declare("--", new oBinary() {
-	vDescriptor call(vDescriptor a, vDescriptor b) { return a.Diff(b); }
+	vDescriptor Call(vDescriptor a, vDescriptor b) { return a.Diff(b); }
     });
 }
 
@@ -270,7 +270,7 @@ static vDescriptor invoke(vString s, vDescriptor[] a) {
 	    if (o == null) {
 		break;
 	    } else {
-		return o.call(a[0]);
+		return o.Call(a[0]);
 	    }
 	}
 	case 2: {
@@ -278,7 +278,7 @@ static vDescriptor invoke(vString s, vDescriptor[] a) {
 	    if (o == null) {
 		break;
 	    } else {
-		return o.call(a[0], a[1]);
+		return o.Call(a[0], a[1]);
 	    }
 	}
 	case 3: {
@@ -286,7 +286,7 @@ static vDescriptor invoke(vString s, vDescriptor[] a) {
 	    if (o == null) {
 		break;
 	    } else {
-		return o.call(a[0], a[1], a[2]);
+		return o.Call(a[0], a[1], a[2]);
 	    }
 	}
     }

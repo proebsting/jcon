@@ -219,7 +219,7 @@ public vDescriptor Bang() {				//  !L
 	int i = 0;
 	{ retval = (vDescriptor) v.elementAt(0); }
 
-	public vDescriptor resume() {
+	public vDescriptor Resume() {
 	    if (++i >= v.size()) {
 		return null; /*FAIL*/
 	    }

@@ -67,7 +67,7 @@ class f$key extends iClosure {					//  key(T)
                 return null;
             }
         } else {
-            return c.resume();
+            return c.Resume();
         }
     }
 }
