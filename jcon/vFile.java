@@ -32,7 +32,7 @@ abstract void newline();	// write newline
 
 String type()			{ return "file"; }
 String image()			{ return this.img; }
-int rank()			{ return 60; }	// files sort after csets
+int rank()			{ return 60; }	// files sort after windows
 int compareTo(vValue v)		{ return this.img.compareTo(((vFile) v).img); }
 vDescriptor Bang(iClosure c)	{ return this.read(); }
 

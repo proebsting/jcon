@@ -42,7 +42,7 @@ String type()			{ return "window"; }
 String image()			{ return "window_" + wnum + ":" + gnum 
 				    + "(" + c.f.getTitle() + ")"; } 
 
-int rank()			{ return 62; }	// windows sort after files
+int rank()			{ return 50; }	// windows sort after csets
 int compareTo(vValue v)
 	    { return c.f.getTitle().compareTo(((vWindow)v).c.f.getTitle()); }
 
