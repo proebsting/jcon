@@ -8,6 +8,7 @@
 //
 //  FindFiles scans the named .zip files and (recursively) any others
 //  referenced by "link" directives, writing the combined list to stdout.
+//  A full, absolute path is written for each file.
 
 
 
@@ -174,7 +175,7 @@ static void addfile(String fname)
 {
     // add file name to list
     trace("file: " + fname);
-    files.addElement(fname);
+    files.addElement(new File(fname).getAbsolutePath());
 
     // add basename to found
     int i = fname.lastIndexOf(File.separatorChar) + 1;
