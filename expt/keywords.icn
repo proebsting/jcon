@@ -36,7 +36,7 @@ procedure main()
    kw("line", &line | "[failed]")
    kw("level", &level | "[failed]")
    kw("trace", &trace | "[failed]")
-   kw("dump",  &trace | "[failed]")
+   kw("dump",  &dump | "[failed]")
 
    write()
    write("environment sampler:")
