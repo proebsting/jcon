@@ -63,6 +63,11 @@ procedure main()
    write("done")
    exit()
    write("oops!")
+   dummy()
+end
+
+procedure dummy()
+   image(every 1) | 2	# this triggered a problem once upon a time.
 end
 
 procedure args(x[])	# later replaced by proc("args",0)
