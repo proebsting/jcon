@@ -14,28 +14,7 @@ package rts;
 public abstract class vProc extends vValue {
 
     vString img;	// image for printing
-    Class proc;		// class that implements proc
-    String classname;
     int args;		// number of args
-
-    iFunctionClosure functionclosure;	// cached closure for pure funcs
-    iClosure cachedclosure;		// cached closure
-
-
-
-// constructors
-
-public static vProc New(String s, String classname, int args) {
-    return null; //#%#%#%  return new vProc(s, classname, args);
-}
-
-private vProc(String img, String classname, int args) {
-    this.img = vString.New(img);
-    this.classname = classname;
-    this.args = args;
-}
-
-public vProc () {}; //#%#%#% TEMP to make vProcX compile
 
 
 
@@ -46,7 +25,23 @@ public vString Type()	{ return typestring; }
 
 public vInteger Args()	{ return vInteger.New(args); }
 
-vValue getproc()	{ return this; }
+
+
+//  New(classname, image, nargs) -- create vProc and initialize
+
+static vProc New(String classname, String img, int nargs) {
+    vProc p;
+
+    try {
+	p = (vProc) Class.forName(classname).newInstance();
+    } catch (Exception e) {
+	iRuntime.bomb("can't create instance of vProc class " + classname);
+	p = null;
+    }
+    p.img = vString.New(img);
+    p.args = nargs;
+    return p;
+}
 
 
 
@@ -85,79 +80,7 @@ static int compareLastWord(vString s1, vString s2) {
 
 
 public vDescriptor ProcessArgs(vDescriptor x) {
-    vDescriptor[] a = x.mkArray(126);
-    final iClosure func = iInterface.Instantiate(this, a, null);//#%#% no parent
-    final vDescriptor rv = func.nextval();
-    if (rv == null) {
-	return null;	// call failed
-    }
-    return new vClosure() {
-	{ retval = rv; }
-	public vDescriptor Resume() {
-	    return func.nextval();
-	}
-    };
-}
-
-
-
-iClosure getClosure() {
-    iClosure c = null;
-
-    if (functionclosure != null) {
-	return functionclosure;
-    }
-    if (cachedclosure != null) {
-	iClosure tmp = cachedclosure;
-	cachedclosure = null;
-	return tmp;
-    }
-    try {
-	try {
-	    c = (iClosure) proc.newInstance();
-	} catch (NullPointerException e) {
-	    try {
-		this.proc = Class.forName(classname);
-	    } catch (ClassNotFoundException e1) {
-		iRuntime.bomb("cannot load " + img);
-	    }
-	    c = (iClosure) proc.newInstance();
-	    if (c instanceof iFunctionClosure) {
-		functionclosure = (iFunctionClosure) c;
-	    }
-	}
-    } catch (InstantiationException e) {
-	iRuntime.bomb(e);
-    } catch (IllegalAccessException e) {
-	iRuntime.bomb(e);
-    }
-    c.vproc = this;
-    return c;
-}
-
-public iClosure instantiate(vDescriptor[] args, iClosure parent) {
-    iClosure c = getClosure();
-    c.closure(args, parent);
-    return c;
-}
-
-public iClosure instantiate(
-	vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosure parent) {
-    iClosure c = getClosure();
-    c.closure(arg0, arg1, arg2, parent);
-    return c;
-}
-
-public iClosure instantiate(vDescriptor arg0,vDescriptor arg1,iClosure parent) {
-    iClosure c = getClosure();
-    c.closure(arg0, arg1, parent);
-    return c;
-}
-
-public iClosure instantiate(vDescriptor arg0, iClosure parent) {
-    iClosure c = getClosure();
-    c.closure(arg0, parent);
-    return c;
+    return this.Call(x.mkArray(126));
 }
 
 

@@ -287,10 +287,6 @@ public vDescriptor Index(vDescriptor i)
 				{ return this.mkString().Index(i); }
 public vDescriptor Section(vDescriptor i, vDescriptor j)
 				{ return this.mkString().Section(i,j); }
-public vDescriptor SectPlus(vDescriptor i, vDescriptor j)
-				{ return this.mkString().SectPlus(i,j); }
-public vDescriptor SectMinus(vDescriptor i, vDescriptor j)
-				{ return this.mkString().SectMinus(i,j); }
 
 
 
@@ -451,27 +447,6 @@ public vValue Diff(vDescriptor x) {	// c1 || c2
     result.w4 = w4 & ~r.w4;
     result.size = UNKNOWN_SIZE;
     return result;
-}
-
-
-
-//  static methods for argument processing and defaulting
-
-static vCset argVal(vDescriptor[] args, int index) {		// required arg
-    if (index >= args.length) {
-	iRuntime.error(104);
-	return null;
-    } else {
-	return args[index].mkCset();
-    }
-}
-
-static vCset argVal(vDescriptor[] args, int index, vCset dflt){	// optional arg
-    if (index >= args.length || args[index].isnull()) {
-	return dflt;
-    } else {
-	return args[index].mkCset();
-    }
 }
 
 

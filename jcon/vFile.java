@@ -98,9 +98,9 @@ public static vFile New(String kw, DataInput i, DataOutput o)
 
 public static vFile New(String filename, String mode, vDescriptor args[]) {
     try {
-	if (iRuntime.upto("gG", mode)) {
+	if (upto("gG", mode)) {
 	    return new vWindow(filename, mode, args);
-	} else if (iRuntime.upto("uU", mode)) {
+	} else if (upto("uU", mode)) {
 	    return new vBFile(filename, mode);	// binary (untranslated) file
 	} else {
 	    return new vTFile(filename, mode);	// text (translated) file
@@ -138,14 +138,14 @@ vFile(String name, String flags) throws IOException {
 
     img = vString.New("file(" + name + ")");		// save image
 
-    if (iRuntime.upto("pP", flags)) {
+    if (upto("pP", flags)) {
 	newpipe(name, flags);				// open pipe (or throw)
 	return;
     }
 
-    if (iRuntime.upto("wabcWABC", flags)) {		// planning to write?
+    if (upto("wabcWABC", flags)) {			// planning to write?
 	mode = "rw";
-	if (iRuntime.upto("cC", flags) || ! iRuntime.upto("abrABR", flags)) {
+	if (upto("cC", flags) || ! upto("abrABR", flags)) {
 	    (new FileOutputStream(name)).close();	// truncate
 	}
     } else {
@@ -154,12 +154,12 @@ vFile(String name, String flags) throws IOException {
 
     randfile = new RandomAccessFile(name, mode);	// open file
 
-    if (iRuntime.upto("aA", flags)) {			// if append mode
+    if (upto("aA", flags)) {				// if append mode
 	randfile.seek(randfile.length());
     }
-    if (iRuntime.upto("wabcWABC", flags)) {
+    if (upto("wabcWABC", flags)) {
 	outstream = randfile;				// output side
-	if (iRuntime.upto("rbRB", flags)) {
+	if (upto("rbRB", flags)) {
 	    instream = randfile;			// input side
 	}
     } else {
@@ -185,10 +185,10 @@ void newpipe(String name, String flags) throws IOException {
     String argv[] = { "sh", "-c", name.toString() };
     pipe = Runtime.getRuntime().exec(argv);
 
-    if (iRuntime.upto("wabcWABC", flags)) {
+    if (upto("wabcWABC", flags)) {
 
 	// open pipe for writing
-	if (iRuntime.upto("rbRB", flags)) {
+	if (upto("rbRB", flags)) {
 	    throw new IOException();		// cannot open bidirectionally
 	}
 	outstream = new DataOutputStream(
@@ -208,27 +208,39 @@ void newpipe(String name, String flags) throws IOException {
 
 //  static methods for argument processing and defaulting
 
-static vFile argVal(vDescriptor[] args, int index) {	// required arg
-    if (index >= args.length) {
-	iRuntime.error(105);	// file expected
-	return null;
-    } else if (! (args[index] instanceof vFile)) {
-	iRuntime.error(105, args[index]);	// file expected
-	return null;
+static vFile arg(vDescriptor v) {		// required arg
+    vValue vv = v.Deref();
+    if (vv instanceof vFile) {
+	return (vFile) vv; 
     } else {
-	return (vFile) args[index];
+	iRuntime.error(105, v);		// file expected
+	return null;
     }
 }
 
-static vFile argVal(vDescriptor[] args, int index, vFile dflt){	// optional arg
-    if (index >= args.length || args[index].isnull()) {
+static vFile arg(vDescriptor v, vFile dflt) {	// optional arg
+    vValue vv = v.Deref();
+    if (vv instanceof vFile) {
+	return (vFile) vv; 
+    } else if (vv.isnull()) {
 	return dflt;
-    } else if (args[index] instanceof vFile) {
-	return (vFile) args[index];
     } else {
-	iRuntime.error(105, args[index]);	// file expected
+	iRuntime.error(105, v);		// file expected
 	return null;
     }
+}
+
+
+
+//  upto(c, s) -- is any char of c contained in s?  (like Icon's upto())
+
+static boolean upto(String c, String s) {
+    for (int i = 0; i < c.length(); i++) {
+	if (s.indexOf(c.charAt(i)) >= 0) {
+	    return true;
+	}
+    }
+    return false;
 }
 
 

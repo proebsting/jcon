@@ -72,9 +72,25 @@ public static void declareGlobalInit(String s, vVariable x) {
     global(s,x);
 }
 
+public static void declareKey(String name, String classname) {
+    keytab.put(name, vProc.New(classname, "&" + name, 0));
+}
+
+public static void declareKey(String name, vProc p) {
+    keytab.put(name, p);
+}
+
+public static void declareBuiltin(String name, String classname, int arity) {
+    vProc p = vProc.New(classname, "function " + name, arity);
+    builtintab.put(name, p);
+    if (!symtab.containsKey(name)) {
+	declareGlobalInit(name, vSimpleVar.New(name, p));
+    }
+}
+
 public static void declareProcedure(String name, String classname, int arity) {
-    declareGlobalInit(name, vSimpleVar.New(name,
-	vProc.New("procedure " + name, classname, arity)));
+    declareGlobalInit(name,
+	vSimpleVar.New(name, vProc.New(classname, "procedure " + name, arity)));
 }
 
 public static void declareRecord(String name, String[] fields) {
@@ -86,23 +102,12 @@ public static vValue resolveBuiltin(String s) {
     return v;
 }
 
-public static void declareBuiltin(String s, vValue x) {
-    builtintab.put(s, x);
-    if (!symtab.containsKey(s)) {
-	iEnv.declareGlobalInit(s, vSimpleVar.New(s, x));
-    }
-}
-
 public static vDescriptor resolveKey(String s) {
     vDescriptor v = (vDescriptor) keytab.get(s);
     if (v == null) {
 	iRuntime.bomb("keyword not found: &" + s);
     }
     return v;
-}
-
-public static void declareKey(String s, vDescriptor k) {
-    keytab.put(s, k);
 }
 
 public static vDescriptor resolveProc(String s, int args) {

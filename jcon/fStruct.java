@@ -6,84 +6,64 @@ class fStruct {} // dummy
 
 
 
-class f$set extends iValueClosure {				// set(x)
-    vDescriptor function(vDescriptor[] args) {
-	return vSet.New(iRuntime.argVal(args, 0));
+class f$set extends vProc1 {				// set(x)
+    public vDescriptor Call(vDescriptor a) {
+	return vSet.New(a.Deref());
     }
 }
 
 
 
-class f$table extends iValueClosure {				// table(x)
-    vDescriptor function(vDescriptor[] args) {
-	return vTable.New(iRuntime.argVal(args, 0));
+class f$table extends vProc1 {				// table(x)
+    public vDescriptor Call(vDescriptor a) {
+	return vTable.New(a.Deref());
     }
 }
 
 
 
-class f$insert extends iValueClosure {				// insert(X,x,y)
-    vDescriptor function(vDescriptor[] args) {
-	vValue X = iRuntime.argVal(args, 0, 122);
-	vValue x = iRuntime.argVal(args, 1);
-	vValue y = iRuntime.argVal(args, 2);
-	return X.Insert(x, y);
+class f$insert extends vProc3 {				// insert(X,x,y)
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
+	return a.Insert(b.Deref(), c.Deref());
     }
 }
 
 
 
-class f$member extends iValueClosure {				// member(X,x)
-    vDescriptor function(vDescriptor[] args) {
-	vValue X = iRuntime.argVal(args, 0, 122);
-	return X.Member(iRuntime.argVal(args, 1));
+class f$member extends vProc2 {				// member(X,x)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	return a.Member(b.Deref());
     }
 }
 
 
 
-class f$delete extends iValueClosure {				// delete(X,x)
-    vDescriptor function(vDescriptor[] args) {
-	vValue X = iRuntime.argVal(args, 0, 122);
-	return X.Delete(iRuntime.argVal(args, 1));
+class f$delete extends vProc2 {				// delete(X,x)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	return a.Delete(b.Deref());
     }
 }
 
 
 
-class f$key extends iClosure {					//  key(T)
-    vDescriptor c;
-    public vDescriptor nextval() {
-        if (PC == 1) {
-            if (arguments.length == 0) {
-                iRuntime.error(124);
-                return null;
-            }
-            c = arguments[0].Key();
-            if (c != null) {
-                PC = 2;
-                return c.Deref();
-            } else {
-                return null;
-            }
-        } else {
-            return c.Resume();
-        }
+class f$key extends vProc1 {					//  key(T)
+    public vDescriptor Call(vDescriptor a) {
+	return a.Key();
     }
 }
 
 
 
-class f$copy extends iValueClosure {				// copy(x)
-    vDescriptor function(vDescriptor[] args) {
-	return iRuntime.argVal(args, 0).Copy();
+class f$copy extends vProc1 {				// copy(x)
+    public vDescriptor Call(vDescriptor a) {
+	return a.Copy();
     }
 }
 
 
 
-class f$serial extends iValueClosure {				// serial(x)
-    vDescriptor function(vDescriptor[] args) {
-	return iRuntime.argVal(args, 0).Serial();
+class f$serial extends vProc1 {				// serial(x)
+    public vDescriptor Call(vDescriptor a) {
+	return a.Serial();
     }
 }

@@ -8,7 +8,6 @@ public class vRecordProc extends vValue {
     String[] fieldnames;	// names of fields
     String[] varnames;		// variable names
     int nextsn = 1;		// next serial number
-    iRecordClosure cachedclosure;
 
 
 
@@ -30,16 +29,7 @@ private vRecordProc(String name, String[] fieldnames) {
 
 
 
-
-public iClosure instantiate(vDescriptor[] args, iClosure parent) {
-    if (cachedclosure == null) {
-	cachedclosure = new iRecordClosure();
-    }
-    cachedclosure.init(this, args, parent);
-    return cachedclosure;
-}
-
-vValue getproc()	{ return this; }
+// methods
 
 vString image()		{ return img; }
 
@@ -72,22 +62,3 @@ int find(String s) {
 
 
 } // class vRecordProc
-
-
-
-class iRecordClosure extends iValueClosure {
-
-    vRecordProc constr;
-
-void init(vRecordProc constr, vDescriptor[] args, iClosure parent) {
-    init();
-    this.constr = constr;
-    this.parent = parent;
-    arguments = args;
-}
-
-vDescriptor function(vDescriptor[] args) {
-    return new vRecord(constr, args);
-}
-
-} // class iRecordClosure

@@ -71,10 +71,6 @@ public vVariable Field(String s)	{ return retval.Field(s); }
 public vDescriptor Index(vDescriptor i)	{ return retval.Index(i); }
 public vDescriptor Section(vDescriptor i, vDescriptor j)
 					    { return retval.Section(i, j); }
-public vDescriptor SectPlus(vDescriptor i, vDescriptor j)
-					    { return retval.SectPlus(i, j); }
-public vDescriptor SectMinus(vDescriptor i, vDescriptor j)
-					    { return retval.SectMinus(i, j); }
 
 public vNumeric Add(vDescriptor v)	{ return retval.Add(v); }
 public vNumeric Sub(vDescriptor v)	{ return retval.Sub(v); }
@@ -188,14 +184,6 @@ public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h,
     vDescriptor i) {
 	return retval.Call(a, b, c, d, e, f, g, h, i);
-}
-
-
-
-
-public iClosure instantiate(vDescriptor[] d, iClosure c) {	//#%#%#%#%
-    iRuntime.bomb("vClosure.instantiate");
-    return null;
 }
 
 

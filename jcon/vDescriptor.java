@@ -21,7 +21,7 @@ abstract boolean isnull();			// runtime check for null
 abstract vString mkString();			// convert to Icon string
 abstract vInteger mkInteger();			// convert to Icon integer
 abstract vReal mkReal();			// convert to Icon real
-abstract vCset mkCset();			// convert to Icon numeric
+abstract vCset mkCset();			// convert to Icon cset
 abstract vValue[] mkArray(int errno);		// convert to array of vValues
 
 // special-purpose string conversions
@@ -35,7 +35,6 @@ public abstract vVariable Assign(vDescriptor x);	// v := x
 public abstract vVariable SubjAssign(vDescriptor x);	// &subject := x  
 
 // control-structure-like operations
-public abstract vDescriptor Resume();			// Resume vClosure
 public abstract vInteger Limit();			// ... \ n
 public abstract vDescriptor Conjunction(vDescriptor x);	// v & x
 public abstract vDescriptor ProcessArgs(vDescriptor x);	// v ! x
@@ -69,8 +68,6 @@ public abstract vValue Proc(long i);			//  proc(s, i)
 public abstract vVariable Field(String s);		//  R . s
 public abstract vDescriptor Index(vDescriptor v);	//  x[v]
 public abstract vDescriptor Section(vDescriptor i, vDescriptor j);   //  x[i:j]
-public abstract vDescriptor SectPlus(vDescriptor i, vDescriptor j);  //  x[i+:j]
-public abstract vDescriptor SectMinus(vDescriptor i, vDescriptor j); //  x[i-:j]
 
 // simple binary operators
 public abstract vNumeric Add(vDescriptor v);		//  n1 + n2
@@ -172,6 +169,10 @@ public abstract vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h,
     vDescriptor i);
 
+// only vClosures are resumable; all other vDescriptors fail on resumption
+
+public vDescriptor Resume()			{ return null; /*FAIL*/ }
+
 
 
 //  swapping and reversible assignment are handled here by calling Assign()
@@ -222,28 +223,34 @@ public vDescriptor RevAssign(vDescriptor v) {
 
 
 
-//  general instantiate() method is abstract, requiring subclass implementation
+//  SectPlus and SectMinus are turned into Section calls here.
+//  Wraparound is detected and produces failure.
+//
+//  There are two kinds of position values in Icon
+//	from start:  1,  2,  3, ...
+//	from end:    0, -1, -2, ...
+//  Wraparound occurs when (i) and (i +/- j) are of opposite type.  It is
+//  checked by negating the two values, which makes the sign bit serve as
+//  a classifier, and then checking for sign bit differences.
 
-public abstract iClosure instantiate(vDescriptor[] args,iClosure parent);//#%#%
-
-
-
-//  shortcuts with fixed-size arglists call that general method
-
-public iClosure instantiate(
-	vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosure parent) {
-    vDescriptor[] args = { arg0, arg1, arg2 };
-    return this.instantiate(args, parent);
+public vDescriptor SectPlus(vDescriptor a, vDescriptor b) {	// s[i+:j]
+    vInteger ai = a.mkInteger();
+    long i = ai.value;
+    long j = i + b.mkInteger().value;
+    if ((-i ^ -j) < 0) {	// if wraparound
+	; //#%#% nothing for now; will be failure
+    }
+    return Section(ai, vInteger.New(j));
 }
 
-public iClosure instantiate(vDescriptor arg0,vDescriptor arg1,iClosure parent) {
-    vDescriptor[] args = { arg0, arg1 };
-    return this.instantiate(args, parent);
-}
-
-public iClosure instantiate(vDescriptor arg0, iClosure parent) {
-    vDescriptor[] args = { arg0 };
-    return this.instantiate(args, parent);
+public vDescriptor SectMinus(vDescriptor a, vDescriptor b) {	// s[i-:j]
+    vInteger ai = a.mkInteger();
+    long i = ai.value;
+    long j = i - b.mkInteger().value;
+    if ((-i ^ -j) < 0) {	// if wraparound
+	; //#%#% nothing for now; will be failure
+    }
+    return Section(ai, vInteger.New(j));
 }
 
 

@@ -2,13 +2,8 @@
 
 //  This file implements most of the Icon keywords.  However,
 //  three keywords are implemented entirely in the compiler:
-//	&fail
 //	&file
 //	&line
-//
-//  Also note that "functional" keywords (those that extend iValueClosure,
-//  usually because they can fail) must be registered in ../tran/key.icn.
-
 
 
 package rts;
@@ -22,159 +17,253 @@ import java.util.*;
 public class iKeywords extends iFile {
 
     void announce() {
+	vCset lcase = vCset.New('a', 'z');
+	vCset ucase = vCset.New('A', 'Z');
 
-	// constants
-	iEnv.declareKey("null", vNull.New());
-	iEnv.declareKey("e", vReal.New(Math.E));
-	iEnv.declareKey("phi", vReal.New((1.0 + Math.sqrt(5.0)) / 2.0));
-	iEnv.declareKey("pi", vReal.New(Math.PI));
-	iEnv.declareKey("version", vString.New(iConfig.Version));
+	declare("allocated");
+	declare("ascii", vCset.New(0, 127));
+	declare("clock");
+	declare("col");
+	declare("collections");
+	declare("control");
+	declare("cset", vCset.New(0, vCset.MAX_VALUE));
+	declare("current");
+	declare("date");
+	declare("dateline");
+	declare("digits", vCset.New('0', '9'));
+	declare("dump");
+	declare("e", vReal.New(Math.E));
+	declare("error");
+	declare("errornumber");
+	declare("errortext");
+	declare("errorvalue");
+	declare("errout");
+	declare("fail");
+	declare("features");
+	declare("host");
+	declare("input");
+	declare("interval");
+	declare("lcase", lcase);
+	declare("ldrag", vInteger.New(wEvent.LDrag));
+	declare("letters", lcase.Union(ucase));
+	declare("level", vInteger.New(0));	//#%#%
+	declare("lpress", vInteger.New(wEvent.LPress));
+	declare("lrelease", vInteger.New(wEvent.LRelease));
+	declare("main");
+	declare("mdrag", vInteger.New(wEvent.MDrag));
+	declare("meta");
+	declare("mpress", vInteger.New(wEvent.MPress));
+	declare("mrelease", vInteger.New(wEvent.MRelease));
+	declare("null", vNull.New());
+	declare("output");
+	declare("phi", vReal.New((1.0 + Math.sqrt(5.0)) / 2.0));
+	declare("pi", vReal.New(Math.PI));
+	declare("pos");
+	declare("progname");
+	declare("random");
+	declare("rdrag", vInteger.New(wEvent.RDrag));
+	declare("regions");
+	declare("resize", vInteger.New(wEvent.Resize));
+	declare("row");
+	declare("rpress", vInteger.New(wEvent.RPress));
+	declare("rrelease", vInteger.New(wEvent.RRelease));
+	declare("shift");
+	declare("source");
+	declare("storage");
+	declare("subject");
+	declare("time");
+	declare("trace");
+	declare("ucase", ucase);
+	declare("version", vString.New(iConfig.Version));
+	declare("window");
+	declare("x");
+	declare("y");
+    }
 
-	// cset constants
-	vCset lcase, ucase;
-	iEnv.declareKey("digits", vCset.New('0', '9'));
-	iEnv.declareKey("lcase", lcase = vCset.New('a','z'));
-	iEnv.declareKey("ucase", ucase = vCset.New('A','Z'));
-	iEnv.declareKey("letters", lcase.Union(ucase));
-	iEnv.declareKey("ascii", vCset.New(0, 127));
-	iEnv.declareKey("cset", vCset.New(0, vCset.MAX_VALUE));
+    static void declare(String name) {
+	iEnv.declareKey(name, iConfig.KeywordPrefix + name);
+    }
 
-	// read-only, but variable
-	iEnv.declareKey("clock", new k$clock());
-	iEnv.declareKey("current", new k$current());
-	iEnv.declareKey("date", new k$date());
-	iEnv.declareKey("dateline", new k$dateline());
-	iEnv.declareKey("host", new k$host());
-	iEnv.declareKey("main", new k$main());
-	iEnv.declareKey("progname", new k$progname());
-	iEnv.declareKey("source", new k$source());
-	iEnv.declareKey("time", new k$time());
-
-	// files
-	iEnv.declareKey("input",  new k$input());
-	iEnv.declareKey("output", new k$output());
-	iEnv.declareKey("errout", new k$errout());
-
-	//incestuous
-	k$subject s = new k$subject();		// &subject
-	k$pos p = new k$pos();			// &pos
-	s.pos = p;
-	p.subject = s;
-	s.Assign(vString.New());
-	iEnv.declareKey("subject", s);
-	iEnv.declareKey("pos", p);
-
-	// error-related
-	iEnv.declareKey("error", new k$error());
-	iEnv.declareKey("errornumber", vProc.New(
-	    "&errornumber", "rts.k$errornumber", 0));
-	iEnv.declareKey("errortext", vProc.New(
-	    "&errortext", "rts.k$errortext", 0));
-	iEnv.declareKey("errorvalue", vProc.New(
-	    "&errorvalue", "rts.k$errorvalue", 0));
-
-	iEnv.declareKey("dump", new k$dump());
-
-	// generators
-	iEnv.declareKey("features", vProc.New("&features","rts.k$features",0));
-	iEnv.declareKey("level", vProc.New("&level", "rts.k$level", 0));
-
-	// bogus generators
-	vProc proc = vProc.New("k$gen4zeroes", "rts.k$gen4zeros", 0);
-	iEnv.declareKey("allocated", proc);
-	iEnv.declareKey("collections", proc);
-	proc = vProc.New("k$gen3zeroes", "rts.k$gen3zeros", 0);
-	iEnv.declareKey("regions", proc);
-	iEnv.declareKey("storage", proc);
-
-	// special behavior
-	iEnv.declareKey("trace", new k$trace());
-	iEnv.declareKey("random", new k$random());
-
-	// graphics constants
-	iEnv.declareKey("lpress", vInteger.New(wEvent.LPress));
-	iEnv.declareKey("mpress", vInteger.New(wEvent.MPress));
-	iEnv.declareKey("rpress", vInteger.New(wEvent.RPress));
-	iEnv.declareKey("ldrag", vInteger.New(wEvent.LDrag));
-	iEnv.declareKey("mdrag", vInteger.New(wEvent.MDrag));
-	iEnv.declareKey("rdrag", vInteger.New(wEvent.RDrag));
-	iEnv.declareKey("lrelease", vInteger.New(wEvent.LRelease));
-	iEnv.declareKey("mrelease", vInteger.New(wEvent.MRelease));
-	iEnv.declareKey("rrelease", vInteger.New(wEvent.RRelease));
-	iEnv.declareKey("resize", vInteger.New(wEvent.Resize));
-
-	// graphics variables
-	iEnv.declareKey("window", new k$window());	// &window
-	iEnv.declareKey("x", new k$x());		// &x
-	iEnv.declareKey("y", new k$y());		// &y
-	iEnv.declareKey("row", new k$row());		// &row
-	iEnv.declareKey("col", new k$col());		// &col
-	iEnv.declareKey("interval", new k$interval());	// &interval
-	iEnv.declareKey("control", vProc.New("&control", "rts.k$control", 0));
-	iEnv.declareKey("meta", vProc.New("&meta", "rts.k$meta", 0));
-	iEnv.declareKey("shift", vProc.New("&shift", "rts.k$shift", 0));
+    static void declare(String name, vValue v) {
+	iEnv.declareKey(name, new kConstant(name, v));
     }
 }
 
 
 
-class k$features extends iClosure {				// &features
+//  constant-valued keywords (those initialized above) are kConstant instances
+
+class kConstant extends vProc0 {
+    vValue value;
+
+    kConstant(String name, vValue v) {			// constructor
+	img = vString.New("k$" + name);
+	args = 0;
+	value = v;
+    }
+
+    public vDescriptor Call()	{ return value; }	// reference
+}
+
+
+
+//  simple read-only keywords are assigned by rts calls to k$keyword.self.set().
+//  assigning a Java null makes the keyword fail.
+
+abstract class kReadOnly extends vProc0 {
+    vValue value;			// may be null for failure
+    public void set(vValue v)		{ value = v; }
+    public vDescriptor Call()		{ return value; }
+}
+
+class k$progname extends kReadOnly {				// &progname
+    static k$progname self;
+    k$progname()		{ self = this; }
+}
+
+class k$errornumber extends kReadOnly {				// &errornumber
+    static k$errornumber self;
+    k$errornumber()		{ self = this; }
+}
+
+class k$errortext extends kReadOnly {				// &errortext
+    static k$errortext self;
+    k$errortext()		{ self = this; }
+}
+
+class k$errorvalue extends kReadOnly {				// &errorvalue
+    static k$errorvalue self;
+    k$errorvalue()		{ self = this; }
+}
+
+class k$control extends kReadOnly {				// &control
+    static k$control self;
+    k$control()			{ self = this; }
+}
+
+class k$meta extends kReadOnly {				// &meta
+    static k$meta self;
+    k$meta()			{ self = this; }
+}
+
+class k$shift extends kReadOnly {				// &shift
+    static k$shift self;
+    k$shift()			{ self = this; }
+}
+
+class k$interval extends kReadOnly {				// &interval
+    static k$interval self;
+    k$interval()		{ self = this; }
+}
+
+
+
+//  Decrementing counters (&trace, &error, &dump) are subclasses of kCounter.
+//  Integer values may be assigned.
+//  k$kwname.self.check() succeeds, and decrements, if the counter is nonzero.
+
+abstract class kCounter extends vProc0 {
+    private long count = 0;
+    private vSimpleVar kwvar;
+
+    kCounter(String name) {	// constructor
+
+	kwvar = new vSimpleVar(name, vInteger.New(0)) {
+
+	    public vVariable Assign(vDescriptor v) {
+		count = v.mkInteger().value;
+		return this;
+	    }
+
+	    public vValue Deref() {
+		return vInteger.New(count);
+	    }
+	};
+    }
+
+    public vDescriptor Call() {
+	return kwvar;		// returns assignable vSimpleVar
+    }
+
+    public boolean check() {
+	if (count == 0) {
+	    return false; 
+	} else {
+	    count--;
+	    return true;
+	}
+    }
+}
+
+class k$trace extends kCounter {
+    static k$trace self;
+    k$trace()		{ super("&trace"); self = this; }
+}
+
+class k$error extends kCounter {
+    static k$error self;
+    k$error()		{ super("&error"); self = this; }
+}
+
+class k$dump extends kCounter {
+    static k$dump self;
+    k$dump()		{ super("&dump"); self = this; }
+}
+
+
+
+class k$fail extends vProc0 {					// &fail
+    public vDescriptor Call() {
+	return null; /*FAIL*/
+    }
+}
+
+
+
+class k$features extends vProc0 {				// &features
 
     //  The features list is hard-wired.
     //  (And it's not completely clear what we should report.)
+    private static vString[] flist = {
+	vString.New("UNIX"),
+	vString.New("Java"), 
+	vString.New("ASCII"),
+	vString.New("co-expressions"),
+	vString.New("environment variables"),
+	vString.New("pipes"),
+	vString.New("system function"),
+    };
 
-    static String[] flist = {
-	"UNIX", "Java", "ASCII", "co-expressions",
-	"environment variables", "pipes", "system function" };
-
-    int posn = 0;
-
-    public vDescriptor nextval() {
-	if (PC == 1) {
-	    posn = 0;
-	    PC = 2;
-	}
-	if (posn < flist.length) {
-	    return vString.New(flist[posn++]);
-	} else {
-	    return null;
-	}
+    public vDescriptor Call() {
+	return new vClosure() {
+	    int posn = 0;
+	    public vDescriptor Resume() {
+		if (posn < flist.length) {
+		    return flist[posn++];
+		} else {
+		    return null;
+		}
+	    }
+	}.Resume();
     }
-
-    String tfmt() { return "&features"; }
 }
 
 
 
-abstract class k$Value extends vIndirect {	// super of read-only keywords
-
-    public abstract vValue Deref();		// must implement Deref()
-
-    public vVariable Assign(vDescriptor x)
-	{ iRuntime.error(111, this.Deref()); return null;}
-
-    public vString Name()  { iRuntime.error(111, this.Deref()); return null; }
-}
-
-
-
-class k$current extends k$Value {				// &current
-
-    public vValue Deref() {
+class k$current extends vProc0 {				// &current
+    public vDescriptor Call() {
 	return iEnv.cur_coexp;
     }
 }
 
-class k$main extends k$Value {					// &main
-
-    public vValue Deref() {
+class k$main extends vProc0 {					// &main
+    public vDescriptor Call() {
 	return iEnv.main;
     }
 }
 
-class k$source extends k$Value {				// &source
-
-    public vValue Deref() {
+class k$source extends vProc0 {					// &source
+    public vDescriptor Call() {
 	if (iEnv.cur_coexp.callers.empty()) {
 	    return iEnv.main;
 	}
@@ -182,11 +271,13 @@ class k$source extends k$Value {				// &source
     }
 }
 
-class k$clock extends k$Value {					// &clock
+
+
+class k$clock extends vProc0 {					// &clock
 
     static SimpleDateFormat formatter;
 
-    public vValue Deref() {
+    public vDescriptor Call() {
 	if (formatter == null) {
 	    formatter = new SimpleDateFormat("HH:mm:ss");
 	    formatter.setTimeZone(TimeZone.getDefault());
@@ -199,11 +290,11 @@ class k$clock extends k$Value {					// &clock
 
 
 
-class k$date extends k$Value {					// &date
+class k$date extends vProc0 {					// &date
 
     static SimpleDateFormat formatter;
 
-    public vValue Deref() {
+    public vDescriptor Call() {
 	if (formatter == null) {
 	    formatter = new SimpleDateFormat("yyyy/MM/dd");
 	    formatter.setTimeZone(TimeZone.getDefault());
@@ -216,7 +307,7 @@ class k$date extends k$Value {					// &date
 
 
 
-class k$time extends k$Value {					// &time
+class k$time extends vProc0 {					// &time
 
     private static long tbase;
 
@@ -224,18 +315,18 @@ class k$time extends k$Value {					// &time
 	tbase = System.currentTimeMillis();
     }
 
-    public vValue Deref() {			// read value
+    public vDescriptor Call() {			// read value
 	return vInteger.New(System.currentTimeMillis() - tbase);
     }
 }
 
 
 
-class k$dateline extends k$Value {				// &dateline
+class k$dateline extends vProc0 {				// &dateline
 
     static SimpleDateFormat formatter;
 
-    public vValue Deref() {
+    public vDescriptor Call() {
 	if (formatter == null) {
 	    formatter =
 	    new SimpleDateFormat("EEEEEE, MMMM d, yyyy  h:mm aa");
@@ -251,11 +342,11 @@ class k$dateline extends k$Value {				// &dateline
 
 
 
-class k$host extends k$Value {					// &host
+class k$host extends vProc0 {					// &host
 
-    static vString hostname;
+    private static vString hostname;
 
-    public vValue Deref() {
+    public vDescriptor Call() {
 	if (hostname != null) {
 	    return hostname;
 	}
@@ -282,110 +373,83 @@ class k$host extends k$Value {					// &host
 
 
 
-class k$progname extends k$Value {				// &progname
-    static String name;
+class k$input extends vProc0 {					// &input
 
-    public vValue Deref() {
-	return vString.New(name);
-    }
-}
-
-
-
-class k$input extends k$Value {					// &input
-    static vFile file;		// referenced externally
-
-    k$input() {
-	file = vFile.New("&input",
+    static vFile file =		// referenced externally
+	vFile.New("&input",
 	    new DataInputStream(new BufferedInputStream(System.in)), null);
-    }
+	    //#%#% why is this buffered if we're piling our own buffering atop?
 
-    public vValue Deref()	{ return file; }
+    public vDescriptor Call() {
+	return file;
+    }
 }
 
-class k$output extends k$Value {				// &output
-    static vFile file;		// referenced externally
 
-    k$output() {
-	file = vFile.New("&output", null,
+
+class k$output extends vProc0 {					// &output
+
+    static vFile file =		// referenced externally
+	vFile.New("&output", null,
 	    new DataOutputStream(new BufferedOutputStream(System.out)));
-    }
 
-    public vValue Deref()	{ return file; }
-}
-
-class k$errout extends k$Value {				// &errout
-    static vFile file;		// referenced externally
-
-    k$errout() {		// unbuffered
-	file = vFile.New("&errout", null, new DataOutputStream(System.err));
-    }
-
-    public vValue Deref()	{ return file; }
-}
-
-
-
-class k$subject extends vSimpleVar {				// &subject
-
-    k$pos pos;		// associated &pos variable
-    static k$subject self;
-
-    k$subject()		{ super("&subject"); self = this; }
-
-    public vVariable Assign(vDescriptor s) {
-	value = s.mkString();			// &subject := s
-	pos.SafeAssign(vInteger.New(1));	// &pos := 1
-	return this;
-    }
-}
-
-
-class k$pos extends vSimpleVar {				// &pos
-
-    k$subject subject;		// associated &subject variable
-    static k$pos self;
-
-    k$pos()		{ super("&pos"); self = this; }
-
-    public vVariable Assign(vDescriptor i) {
-	i = i.mkInteger();
-	int n = ((vString)subject.value).posEq(((vInteger)i).value);
-	if (n == 0)
-	    return null;	// fail: position out of range
-	value = vInteger.New(n);
-	return this;
-    }
-    public vVariable SafeAssign(vValue i) {
-	value = i;
-	return this;
+    public vDescriptor Call() {
+	return file;
     }
 }
 
 
 
-class k$trace extends vSimpleVar {				// &trace
+class k$errout extends vProc0 {					// &errout
 
-    static long trace;		// referenced in iClosure
+    static vFile file = 		// referenced externally
+	vFile.New("&errout", null, new DataOutputStream(System.err));
 
-    static {			// initialize from $TRACE
-	try {
-	    trace = Long.parseLong(System.getProperty("TRACE", "0"));
-	} catch (Exception e) {
-	    // nothing
+    public vDescriptor Call() {
+	return file;
+    }
+}
+
+
+
+class k$subject extends vProc0 {				// &subject
+
+    static vSimpleVar self = new vSimpleVar("&subject", vString.New()) {
+	public vVariable Assign(vDescriptor v) {
+	    value = v.mkString();			// &subject := s
+	    k$pos.set(1);				// &pos := 1
+	    return this;
 	}
+    };
+
+    public vDescriptor Call() {
+	return self;
+    }
+}
+
+
+
+class k$pos extends vProc0 {				// &pos
+
+    static vSimpleVar self = new vSimpleVar("&pos", vInteger.New(1)) {
+	public vVariable Assign(vDescriptor v) {
+	    vInteger p = v.mkInteger();
+	    int n = ((vString)k$subject.self.value).posEq(p.value);
+	    if (n > 0) {	// if valid
+		value = p;
+		return this;
+	    } else {
+		return null; /*FAIL*/
+	    }
+	}
+    };
+
+    public vDescriptor Call() {
+	return self;
     }
 
-    k$trace() { super("&trace"); }
-
-    public vVariable Assign(vDescriptor i) {
-	value = i.mkInteger();
-	trace = ((vInteger)value).value;
-	return this;
-    }
-
-    public vValue Deref() {
-	return value = vInteger.New(trace);
+    public static void set(long i) {	// assign value known to be valid
+	self.value = vInteger.New(i);
     }
 }
 
@@ -395,25 +459,25 @@ class k$trace extends vSimpleVar {				// &trace
 //  this random number generator is compatible with Icon v9
 //  see Icon Analyst 38 (October, 1996) for an extensive analysis
 
-class k$random extends vSimpleVar {				// &random
+class k$random extends vProc0 {				// &random
 
-private static long randval;			// current value
+    private static long randval;			// current value
 
-private static final long RandA = 1103515245;
-private static final long RandC = 453816694;
-private static final double RanScale = 4.65661286e-10;
+    private static final long RandA = 1103515245;
+    private static final long RandC = 453816694;
+    private static final double RanScale = 4.65661286e-10;
 
-    k$random() { super("&random"); }		// constructor
+    private static vSimpleVar vrandom = new vSimpleVar("&random") {
 
-    public vVariable Assign(vDescriptor i) {	// assign
-	value = i.mkInteger();
-	randval = ((vInteger)value).value;
-	return this;
-    }
+	public vVariable Assign(vDescriptor v) {	// assign
+	    randval = v.mkInteger().value;
+	    return this;
+	}
 
-    public vValue Deref() {			// dereference
-	return value = vInteger.New(randval);
-    }
+	public vValue Deref() {			// dereference
+	    return vInteger.New(randval);
+	}
+    };
 
     public static double nextVal() {		// gen val in [0.0, 1.0)
 	randval = (RandA * randval + RandC) & 0x7fffffff;
@@ -423,240 +487,155 @@ private static final double RanScale = 4.65661286e-10;
     public static long choose(long limit) {	// gen val in [0, limit)
 	return (long) (limit * nextVal());
     }
+
+    public vDescriptor Call() {
+	return vrandom;
+    }
 }
 
 
 
-class k$window extends vSimpleVar {				// &window
+//  allocation keywords just generate three or four zero values
 
-    private static vValue value = vNull.New();	// current value
+class kZeroes extends vClosure {
+    static vInteger zero = vInteger.New(0);
 
-    k$window() { super("&window"); }		// constructor
+    int count;			// remaining count
 
-    public vVariable Assign(vDescriptor v) {	// assign
-	vValue w = v.Deref();
-	if ((w instanceof vWindow) || w.isnull()) {
-	    value = w;
-	    vWindow.setCurrent((vWindow) value);
-	    return this;
+    kZeroes(int n) {		// constructor
+	retval = zero;
+	count = n - 1;
+    }
+
+    public vDescriptor Resume() {
+	if (count-- > 0) {
+	    return retval; // another integer zero
 	} else {
-	    iRuntime.error(140, w);
-	    return null;
+	    return null; /*FAIL*/
 	}
     }
+}
 
-    public vValue Deref() {			// dereference
-	return value;
+class k$allocated extends vProc0 {			// &allocated
+    public vDescriptor Call() {
+	return new kZeroes(4);
     }
+}
+
+class k$collections extends vProc0 {			// &collections
+    public vDescriptor Call() {
+	return new kZeroes(4);
+    }
+}
+
+class k$regions extends vProc0 {			// &regions
+    public vDescriptor Call() {
+	return new kZeroes(3);
+    }
+}
+
+class k$storage extends vProc0 {			// &storage
+    public vDescriptor Call() {
+	return new kZeroes(3);
+    }
+}
+
+
+
+class k$window extends vProc0 {				// &window
+
+    private static vSimpleVar kwindow = new vSimpleVar("&window") {
+
+	public vVariable Assign(vDescriptor v) {	// assign
+	    vValue w = v.Deref();
+	    if ((w instanceof vWindow) || w.isnull()) {
+		value = w;
+		vWindow.setCurrent((vWindow) value);
+		return this;
+	    } else {
+		iRuntime.error(140, w);
+		return null;
+	    }
+	}
+
+    };
 
     public static vWindow getWindow() {		// get &window, must be !null
-	if (! (value instanceof vWindow)) {
+	if (kwindow.isnull()) {
 	    iRuntime.error(140);
-	}
-	return (vWindow) value;
+	} 
+	return (vWindow) kwindow.value.Deref();
+    }
+
+    public vDescriptor Call() {
+	return kwindow;
     }
 }
 
-class k$control extends iValueClosure {				// &control
-    static vValue value;			// null value produces failure
-    vDescriptor function(vDescriptor args[]) { return value; }
-}
-
-class k$meta extends iValueClosure {				// &meta
-    static vValue value;			// null value produces failure
-    vDescriptor function(vDescriptor args[]) { return value; }
-}
-
-class k$shift extends iValueClosure {				// &shift
-    static vValue value;			// null value produces failure
-    vDescriptor function(vDescriptor args[]) { return value; }
-}
 
 
+abstract class kMirrored extends vProc0 {	// super for "mirrored" int kwds
 
-abstract class k$intWatcher extends vVariable { // super for "watched" int kwds
-    String name;
-    long value;
-    abstract void newValue(long i);		// subclass must implement this
+    private vSimpleVar kwvar;			// trapped variable
 
-    k$intWatcher(String name) {			// constructor just saves name
-	this.name = name;
+    kMirrored(String name) {			// constructor 
+	kwvar = new vSimpleVar(name, vInteger.New(0)) {
+	    public vVariable Assign(vDescriptor v) {
+		vInteger i = v.mkInteger();	// must be integer
+		newValue(i.value);		// call subclass (may give err)
+		value = i;			// if no error, set value
+		return this;
+	    }
+	};
     }
 
-    public vValue Deref() {
-	return vInteger.New(value);		// Deref just returns value
+    abstract void newValue(long v);		// propagate side-effects
+
+    void set(long v) {				// assign without side-effects
+	kwvar.value = vInteger.New(v);
     }
 
-    public vVariable Assign(vDescriptor v) {	// assignment
-	long i = v.mkInteger().value;		// must be integer
-	newValue(i);				// call subclass (may give err)
-	value = i;				// if no error, set value
-	return this;
+    public vDescriptor Call() {
+	return kwvar;
     }
-
-    public void set(long i)	{		// set without side effects
-	value = i;
-    }
-
-    public vString Name()			{ return vString.New(name); }
-
-    vString report()	{ return vString.New("(" + name + " = " + value + ")");}
 }
 
-class k$interval extends k$intWatcher {				// &interval
-    static k$interval self;
-    k$interval()		{ super("k$interval"); self = this; }
-    void newValue(long i) {}		// no side effects
-}
-
-class k$x extends k$intWatcher {				// &x
-    static k$x self;
-    k$x()			{ super("k$x"); self = this; }
+class k$x extends kMirrored {				// &x
+    static kMirrored self;
+    k$x()			{ super("&x"); self = this; }
 
     void newValue(long i) {
 	vWindow win = vWindow.getCurrent();
-	k$col.self.set(1 + i / 12);	// #%#% should depend on font
+	k$col.self.set(1 + i / 12);		// #%#% should depend on font
     }
 }
 
-class k$y extends k$intWatcher {				// &y
-    static k$y self;
-    k$y()			{ super("k$y"); self = this; }
+class k$y extends kMirrored {				// &y
+    static kMirrored self;
+    k$y()			{ super("&y"); self = this; }
 
     void newValue(long i) {
 	vWindow win = vWindow.getCurrent();
-	k$row.self.set(1 + i / 7);	// #%#% should depend on font
+	k$row.self.set(1 + i / 7);		// #%#% should depend on font
     }
 }
 
-class k$row extends k$intWatcher {				// &row
-    static k$row self;
-    k$row()			{ super("k$row"); self = this; }
+class k$row extends kMirrored {				// &row
+    static kMirrored self;
+    k$row()			{ super("&row"); self = this; }
 
     void newValue(long i) {
 	vWindow win = vWindow.getCurrent();
-	k$y.self.set(12 * i);		// #%#% should depend on font
+	k$y.self.set(12 * i);			// #%#% should depend on font
     }
 }
 
-class k$col extends k$intWatcher {				// &col
-    static k$col self;
-    k$col()			{ super("k$col"); self = this; }
+class k$col extends kMirrored {				// &col
+    static kMirrored self;
+    k$col()			{ super("&col"); self = this; }
 
     void newValue(long i) {
 	vWindow win = vWindow.getCurrent();
-	k$x.self.set(7 * i);		// #%#% should depend on font
+	k$x.self.set(7 * i);			// #%#% should depend on font
     }
-}
-
-
-
-class k$dump extends vSimpleVar {				// &dump
-
-    public static long dump;	// referenced externally
-
-    k$dump() { super("&dump"); }
-
-    public vVariable Assign(vDescriptor i) {
-	value = i.mkInteger();
-	dump = ((vInteger)value).value;
-	return this;
-    }
-
-    public vValue Deref() {
-	return value = vInteger.New(dump);
-    }
-}
-
-class k$error extends vSimpleVar {				// &trace
-
-    static long error;		// referenced in iClosure
-
-    k$error() { super("&error"); }
-
-    public vVariable Assign(vDescriptor i) {
-	value = i.mkInteger();
-	error = ((vInteger)value).value;
-	if (error != 0 & !iEnv.error_conversion) {
-	    error = 0;
-	    value = vInteger.New(error);
-	    iRuntime.error(904);
-	}
-	return this;
-    }
-
-    public vValue Deref() {
-	return value = vInteger.New(error);
-    }
-}
-
-class k$errornumber extends iValueClosure {
-    static vInteger number;
-
-    vDescriptor function(vDescriptor args[]) {
-	return number;
-    }
-}
-
-class k$errortext extends iValueClosure {
-    static vString text;
-
-    vDescriptor function(vDescriptor args[]) {
-	return text;
-    }
-}
-
-class k$errorvalue extends iValueClosure {
-    static vValue value;
-
-    vDescriptor function(vDescriptor args[]) {
-	return value;
-    }
-}
-
-class k$level extends iValueClosure {				// &level
-    vDescriptor function(vDescriptor args[]) {
-	int i = 0;
-	for (iClosure p = this.parent; p != null; p = p.parent) {
-	    i++;
-	}
-	return vInteger.New(i);
-    }
-
-    String tfmt() { return "&level"; }
-}
-
-class k$gen4zeros extends iClosure {		// &allocated, &collections
-    int i;
-    public vDescriptor nextval() {
-	if (PC == 1) {
-	    i = 0;
-	    PC = 2;
-	}
-	if (i < 4) {
-	    i++;
-	    return vInteger.New(0);
-	} else {
-	    return null;
-	}
-    }
-
-    String tfmt() { return "&...."; }
-}
-
-class k$gen3zeros extends iClosure {		// &regions, &storage
-    int i;
-    public vDescriptor nextval() {
-	if (PC == 1) {
-	    i = 0;
-	    PC = 2;
-	}
-	if (i < 3) {
-	    i++;
-	    return vInteger.New(0);
-	} else {
-	    return null;
-	}
-    }
-    String tfmt() { return "&..."; }
 }

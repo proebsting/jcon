@@ -68,10 +68,6 @@ public vVariable Field(String s)	{ return Deref().Field(s); }
 public vDescriptor Index(vDescriptor i)	{ return Deref().Index(i); }
 public vDescriptor Section(vDescriptor i, vDescriptor j)
 					{ return Deref().Section(i, j); }
-public vDescriptor SectPlus(vDescriptor i, vDescriptor j)
-					{ return Deref().SectPlus(i, j); }
-public vDescriptor SectMinus(vDescriptor i, vDescriptor j)
-					{ return Deref().SectMinus(i, j); }
 
 public vNumeric Add(vDescriptor v)	{ return Deref().Add(v); }
 public vNumeric Sub(vDescriptor v)	{ return Deref().Sub(v); }
@@ -186,10 +182,6 @@ public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor i) {
 	return Deref().Call(a, b, c, d, e, f, g, h, i);
 }
-
-
-public iClosure instantiate(vDescriptor[] args, iClosure parent) //#%#%#%
-				{ return Deref().instantiate(args,parent);}
 
 
 

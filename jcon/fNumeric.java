@@ -6,26 +6,25 @@ class fNumeric {} // dummy
 
 
 
-class f$abs extends iValueClosure {				// abs(n)
-    vDescriptor function(vDescriptor[] args) {
-	return iRuntime.argVal(args,0).Numerate().Abs();
+class f$abs extends vProc1 {					// abs(n)
+    public vDescriptor Call(vDescriptor a) {
+	return a.Abs();
     }
 }
 
 
 
-class f$seq extends iClosure {					// seq(i1,i2)
-    long i1, i2;
-
-    public vDescriptor nextval() {
-	if (PC == 1) {
-	    PC = 2;
-	    i1 = vInteger.argVal(arguments, 0, 1);
-	    i2 = vInteger.argVal(arguments, 1, 1);
-	} else {
-	    i1 += i2;
-	}
-	return vInteger.New(i1);
+class f$seq extends vProc2 {					// seq(i1,i2)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	final long i1 = a.isnull() ? 1 : a.mkInteger().value;
+	final long i2 = b.isnull() ? 1 : b.mkInteger().value;
+	return new vClosure() {
+	    { retval = vInteger.New(i1); }
+	    long n = i1;
+	    public vDescriptor Resume() {
+		return vInteger.New(n += i2);
+	    }
+	};
     }
 }
 
@@ -33,45 +32,42 @@ class f$seq extends iClosure {					// seq(i1,i2)
 
 //  bit-manipulation functions
 
-class f$icom extends iValueClosure {				// icom(n)
-    vDescriptor function(vDescriptor[] args) {
-	return vInteger.New(~vInteger.argVal(args, 0));
+class f$icom extends vProc1 {					// icom(n)
+    public vDescriptor Call(vDescriptor a) {
+	return vInteger.New(~a.mkInteger().value);
     }
 }
 
 
 
-class f$iand extends iValueClosure {				// iand(n)
-    vDescriptor function(vDescriptor[] args) {
-	return vInteger.New(
-	    vInteger.argVal(args, 0) & vInteger.argVal(args, 1));
+class f$iand extends vProc2 {					// iand(m, n)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	return vInteger.New(a.mkInteger().value & b.mkInteger().value);
     }
 }
 
 
 
-class f$ior extends iValueClosure {				// ior(n)
-    vDescriptor function(vDescriptor[] args) {
-	return vInteger.New(
-	    vInteger.argVal(args, 0) | vInteger.argVal(args, 1));
+class f$ior extends vProc2 {					// ior(m, n)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	return vInteger.New(a.mkInteger().value | b.mkInteger().value);
     }
 }
 
 
 
-class f$ixor extends iValueClosure {				// ixor(n)
-    vDescriptor function(vDescriptor[] args) {
-	return vInteger.New(
-	    vInteger.argVal(args, 0) ^ vInteger.argVal(args, 1));
+class f$ixor extends vProc2 {					// ixor(m, n)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	return vInteger.New(a.mkInteger().value ^ b.mkInteger().value);
     }
 }
 
 
 
-class f$ishift extends iValueClosure {				// ishift(n)
-    vDescriptor function(vDescriptor[] args) {
-	long v = vInteger.argVal(args, 0);
-	long n = vInteger.argVal(args, 1);
+class f$ishift extends vProc2 {					// ishift(m, n)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	long v = a.mkInteger().value;
+	long n = b.mkInteger().value;
 	if (n >= 64) {
 	    return vInteger.New(0);		//#%#% ignoring overflow
 	} else if (n >= 0) {
@@ -88,63 +84,65 @@ class f$ishift extends iValueClosure {				// ishift(n)
 
 //  mathematical functions
 
-class f$sqrt extends iValueClosure {				// sqrt(r)
-    vDescriptor function(vDescriptor[] args) {
-	double d = vReal.argVal(args, 0);
-	if (d < 0) {
-	    iRuntime.error(205, args[0]);
+class f$sqrt extends vProc1 {					// sqrt(r)
+    public vDescriptor Call(vDescriptor a) {
+	double d = a.mkReal().value;
+	if (d >= 0) {
+	    return vReal.New(Math.sqrt(d));
+	} else {
+	    iRuntime.error(205, a);
+	    return null;
 	}
-	return vReal.New(Math.sqrt(d));
     }
 }
 
-class f$exp extends iValueClosure {				// exp(r)
-    vDescriptor function(vDescriptor[] args) {
-	return vReal.New(Math.exp(vReal.argVal(args, 0)));
+class f$exp extends vProc1 {					// exp(r)
+    public vDescriptor Call(vDescriptor a) {
+	return vReal.New(Math.exp(a.mkReal().value));
     }
 }
 
-class f$log extends iValueClosure {				// log(r,b)
-    vDescriptor function(vDescriptor[] args) {
-	double r = vReal.argVal(args, 0);
-	double b = vReal.argVal(args, 1, Math.E);
+class f$log extends vProc2 {					// log(r,b)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	double r = a.mkReal().value;
+	double x = b.isnull() ? Math.E : b.mkReal().value;
 	if (r <= 0.0) {
-	    iRuntime.error(205, args[0]);
+	    iRuntime.error(205, a);
 	}
-	if (b <= 1.0) {
-	    iRuntime.error(205, args[1]);
+	if (x <= 1.0) {
+	    iRuntime.error(205, b);
 	}
-	return vReal.New(Math.log(r) / Math.log(b));
+	return vReal.New(Math.log(r) / Math.log(x));
     }
 }
 
-class f$dtor extends iValueClosure {				// dtor(r)
-    vDescriptor function(vDescriptor[] args) {
-	return vReal.New(vReal.argVal(args, 0) * Math.PI / 180.0);
+class f$dtor extends vProc1 {					// dtor(r)
+    public vDescriptor Call(vDescriptor a) {
+	return vReal.New(a.mkReal().value * Math.PI / 180.0);
     }
 }
 
-class f$rtod extends iValueClosure {				// rtod(r)
-    vDescriptor function(vDescriptor[] args) {
-	return vReal.New(vReal.argVal(args, 0) * 180.0 / Math.PI);
+class f$rtod extends vProc1 {					// rtod(r)
+    public vDescriptor Call(vDescriptor a) {
+	return vReal.New(a.mkReal().value * 180.0 / Math.PI);
     }
 }
 
-class f$sin extends iValueClosure {				// sin(r)
-    vDescriptor function(vDescriptor[] args) {
-	return vReal.New(Math.sin(vReal.argVal(args, 0)));
+class f$sin extends vProc1 {					// sin(r)
+    public vDescriptor Call(vDescriptor a) {
+	return vReal.New(Math.sin(a.mkReal().value));
     }
 }
 
-class f$cos extends iValueClosure {				// cos(r)
-    vDescriptor function(vDescriptor[] args) {
-	return vReal.New(Math.cos(vReal.argVal(args, 0)));
+class f$cos extends vProc1 {					// cos(r)
+    public vDescriptor Call(vDescriptor a) {
+	return vReal.New(Math.cos(a.mkReal().value));
     }
 }
 
-class f$tan extends iValueClosure {				// tan(r)
-    vDescriptor function(vDescriptor[] args) {
-	double d = Math.tan(vReal.argVal(args, 0));
+class f$tan extends vProc1 {					// tan(r)
+    public vDescriptor Call(vDescriptor a) {
+	double d = Math.tan(a.mkReal().value);
 	if (Double.isInfinite(d)) {
 	    iRuntime.error(204);
 	}
@@ -152,30 +150,30 @@ class f$tan extends iValueClosure {				// tan(r)
     }
 }
 
-class f$asin extends iValueClosure {				// asin(r)
-    vDescriptor function(vDescriptor[] args) {
-	double d = Math.asin(vReal.argVal(args, 0));
+class f$asin extends vProc1 {					// asin(r)
+    public vDescriptor Call(vDescriptor a) {
+	double d = Math.asin(a.mkReal().value);
 	if (Double.isNaN(d)) {
-	    iRuntime.error(205, args[0]);
+	    iRuntime.error(205, a);
 	}
 	return vReal.New(d);
     }
 }
 
-class f$acos extends iValueClosure {				// acos(r)
-    vDescriptor function(vDescriptor[] args) {
-	double d = Math.acos(vReal.argVal(args, 0));
+class f$acos extends vProc1 {					// acos(r)
+    public vDescriptor Call(vDescriptor a) {
+	double d = Math.acos(a.mkReal().value);
 	if (Double.isNaN(d)) {
-	    iRuntime.error(205, args[0]);
+	    iRuntime.error(205, a);
 	}
 	return vReal.New(d);
     }
 }
 
-class f$atan extends iValueClosure {				// atan(r1,r2)
-    vDescriptor function(vDescriptor[] args) {
-	double r1 = vReal.argVal(args, 0);
-	double r2 = vReal.argVal(args, 1, 1.0);
+class f$atan extends vProc2 {					// atan(r1,r2)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	double r1 = a.mkReal().value;
+	double r2 = b.isnull() ? 1.0 : b.mkReal().value;
 	if (r2 == 0.0 && r1 == 0.0) {
 	    return vReal.New(0.0);	// define as 0 and avoid "domain error"
 	} else {

@@ -8,23 +8,22 @@ public class iRuntime {
 
 
 
-//  upto(c, s) -- is any char of c contained in s?  (like Icon's upto())
+//  exit()-- common termination routine for all exits except internal errors.
 
-static boolean upto(String c, String s) {
-    for (int i = 0; i < c.length(); i++) {
-	if (s.indexOf(c.charAt(i)) >= 0) {
-	    return true;
-	}
+public static void exit(int status) {
+    if (k$dump.self.check()) {			// honor &dump
+	display(k$errout.file);
     }
-    return false;
+    vFile.shutdown();				// flush output files etc.
+    System.exit(status);			// shut down
 }
 
 
 
-// error(n, d) -- diagnose runtime error.
+//  error(n, d) -- diagnose runtime error.
 //
-// never returns.
-// to keep Java happy, follow error() calls with "return null" in caller.
+//  never returns.
+//  to keep Java happy, follow error() calls with "return null" in caller.
 
 public static void error(int n)			{ error(n, null); }
 public static void error(int n, vDescriptor d)	{ throw new iError(n,d); }
@@ -44,100 +43,58 @@ public static void bomb(String s) {
     System.exit(1);
 }
 
-public static void bomb(Exception e) {
+public static void bomb(Throwable t) {
     k$output.file.flush();
     k$errout.file.flush();
     System.err.println();
     System.err.println("Runtime malfunction: Java exception");
-    e.printStackTrace();
+    t.printStackTrace();
+    System.exit(1);
+}
+
+public static void bomb(String s, Throwable t) {
+    k$output.file.flush();
+    k$errout.file.flush();
+    System.err.println();
+    System.err.println("Runtime malfunction: " + s);
+    t.printStackTrace();
     System.exit(1);
 }
 
 
 
-//  argVal(args[], i)    -- return arg i, defaulting to &null
-//  argVal(args[], i, e) -- return arg i, signalling error e if missing
-//
-//  (both assume that arg arrays have already been dereferenced.)
+//  arg(args[], i)    -- return arg i, defaulting to &null
+//  arg(args[], i, e) -- return arg i, signalling error e if missing
 
-public static vValue argVal(vDescriptor[] args, int index) {
+private static vNull vnull = vNull.New();
+
+public static vDescriptor arg(vDescriptor[] args, int index) {
     if (args.length <= index) {
-	return vNull.New();
+	return vnull;
     } else {
-	return (vValue) args[index];
+	return args[index];
     }
 }
 
-public static vValue argVal(vDescriptor[] args, int index, int errcode) {
+//#%#% is this needed?:
+public static vDescriptor arg(vDescriptor[] args, int index, int errcode) {
     if (args.length <= index) {
 	iRuntime.error(errcode);
 	return null;
     } else {
-	return (vValue) args[index];
+	return args[index];
     }
 }
 
 
 
-// argSubject(args, index) handles string defaulting in scanning functions.
-// returns &subject's vString if args[index] defaulted
-// o/w returns vString value.
+//  display(f) -- display global variables (only) on f
 
-public static vString argSubject(vDescriptor[] args, int index) {
-    if (index >= args.length || args[index].isnull()) {
-	return (vString) k$subject.self.Deref();
-    }
-    return args[index].mkString();
-}
-
-// argPos(args, index) handles defaulting of &pos in scanning functions.
-// returns &pos's value if args[index-1] defaulted,
-// o/w returns 1 if args[index] defaulted,
-// o/w returns argument's integer value.
-
-public static long argPos(vDescriptor[] args, int index) {
-    if ((index - args.length > 0)	// both defaulted
-	|| ((index - args.length == 0) && args[index-1].isnull())
-	|| ((args[index-1].isnull()) && (args[index].isnull()))
-    ) {
-	return ((vInteger)k$pos.self.Deref()).value;
-    }
-    if ((index - args.length == 0) || args[index].isnull()) {
-	return 1;
-    }
-    return args[index].mkInteger().value;
-}
-
-
-
-public static void display(vFile f, iClosure parent, long ancestors) {
+public static void display(vFile f) {
 
     // do the current coexpression
     f.writes(iEnv.cur_coexp.report());
-    f.newline();
-    f.newline();
-
-    // do the call chain.
-    for (iClosure p = parent; p != null; p = p.parent) {
-	if (ancestors-- <= 0) {
-	    break;
-	}
-	String s = p.getClass().getName();
-	int j = s.lastIndexOf('$');
-	if (j >= 0) {				// xxx$file$yyyyy format
-	    s = s.substring(j+1);
-	}
-	f.println(s + " local identifiers:");
-	p.locals();
-	if (p.names == null) {
-	    continue;
-	}
-	for (int i = 0; p.names[i] != null; i++) {
-	    f.println("   " + p.names[i] + " = " +
-		p.variables[i].Deref().report());
-	}
-    }
-
+    
     // do the globals
     f.newline();
     f.println("global identifiers:");
@@ -152,18 +109,6 @@ public static void display(vFile f, iClosure parent, long ancestors) {
 	vVariable v = (vVariable) iEnv.symtab.get(a[i].toString());
 	f.println("   " + a[i] + " = " + v.Deref().report());
     }
-}
-
-
-
-//  exit()-- common termination routine for all exits except internal errors.
-
-public static void exit(int status, iClosure parent) {
-    if (k$dump.dump != 0) {			// honor &dump
-	iRuntime.display(k$errout.file, parent, 1000000);
-    }
-    vFile.shutdown();				// flush output files etc.
-    System.exit(status);			// shut down
 }
 
 

@@ -98,9 +98,9 @@ void announce() {
 }
 
 
-static void declare(String name, int args) {
-    iEnv.declareBuiltin(name, vProc.New(
-	"function " + name, iConfig.FuncPrefix + name, args));
+
+static void declare(String name, int nargs) {
+    iEnv.declareBuiltin(name, iConfig.FuncPrefix + name, nargs);
 }
 
 

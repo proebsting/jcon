@@ -110,27 +110,13 @@ static vValue dequeue(vList evq) {
 	iRuntime.error(143);		// malformed queue
     }
 
-    if ((x & ControlFlag) != 0) {	// check CONTROL flag
-	k$control.value = vNull.New();	// succeed (null) if set
-    } else {
-	k$control.value = null;		// failure value
-    }
-
-    if ((x & MetaFlag) != 0) {		// check META flag
-	k$meta.value = vNull.New();	// succeed (null) if set
-    } else {
-	k$meta.value = null;		// failure value
-    }
-
-    if ((x & ShiftFlag) != 0) {		// check SHIFT flag
-	k$shift.value = vNull.New();	// succeed (null) if set
-    } else {
-	k$shift.value = null;		// failure value
-    }
+    k$control.self.set(((x & ControlFlag) != 0) ? vNull.New() : null);
+    k$meta   .self.set(((x & MetaFlag) != 0)    ? vNull.New() : null);
+    k$shift  .self.set(((x & ShiftFlag) != 0)   ? vNull.New() : null);
 
     long msec = (y >> 16) & 0xFFF;	// set &interval
     long expo = y >> 28;
-    k$interval.self.set(msec << (4 * expo));
+    k$interval.self.Assign(vInteger.New(msec << (4 * expo)));
 
     x = (int)(short)x;			// extract signed coordinate values
     y = (int)(short)y;

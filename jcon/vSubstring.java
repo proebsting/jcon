@@ -113,16 +113,6 @@ public vDescriptor Section(vDescriptor i, vDescriptor j) {	// s[i:j]
     }
 }
 
-public vDescriptor SectPlus(vDescriptor i, vDescriptor j) {	// s[i+:j]
-    return Section(i, 
-	vInteger.New(i.mkInteger().value + j.mkInteger().value)); //#%#% wrong
-}
-
-public vDescriptor SectMinus(vDescriptor i, vDescriptor j) {	// s[i-:j]
-    return Section(i, 
-	vInteger.New(i.mkInteger().value - j.mkInteger().value)); //#%#% wrong
-}
-
 
 
 public vDescriptor Select() {				// ?s

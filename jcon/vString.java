@@ -431,7 +431,7 @@ public vDescriptor TabMatch() {
     if (! matches(subj, pos - 1)) {
 	return null;
     }
-    k$pos.self.SafeAssign(vInteger.New(pos + tlength));
+    k$pos.set(pos + tlength);
     final vString newstr = vString.New(subj, pos, pos + tlength);
     return new vClosure () {
 	{ retval = newstr; }
@@ -557,16 +557,6 @@ public vDescriptor Section(vDescriptor i, vDescriptor j) {
     }
 }
 
-public vDescriptor SectPlus(vDescriptor i, vDescriptor j) {	// s[i+:j]
-    return Section(i, 
-	vInteger.New(i.mkInteger().value + j.mkInteger().value)); //#%#% wrong
-}
-
-public vDescriptor SectMinus(vDescriptor i, vDescriptor j) {	// s[i-:j]
-    return Section(i, 
-	vInteger.New(i.mkInteger().value - j.mkInteger().value)); //#%#% wrong
-}
-
 
 
 public vDescriptor SectionVar(vVariable v, vDescriptor i, vDescriptor j) {
@@ -676,36 +666,5 @@ public vValue Union(vDescriptor x)	{ return this.mkCset().Union(x); }
 public vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }
 
 
-public vValue Proc(long i) {
-    String s = this.toString();
-    if (i == 0) {
-	vValue b = (vValue) iEnv.builtintab.get(s);
-	if (b == null) {
-	    return null;
-	}
-	return b;
-    }
-    vDescriptor v = (vDescriptor) iEnv.symtab.get(s);
-    if (v != null) {
-	return v.Deref().getproc();
-    }
-    v = (vDescriptor) iEnv.builtintab.get(s);
-    if (v != null) {
-	return v.Deref();
-    }
-    try {
-	return this.mkInteger().getproc();
-    } catch (iError e) {
-	// ignore
-    }
-    if (i < 1 || i > 3) {
-	return null;
-    }
-    v = (vDescriptor) iEnv.proctab[(int)i-1].get(s);
-    if (v != null) {
-	return (vValue) v;
-    }
-    return null;
-}
 
 } // class vString

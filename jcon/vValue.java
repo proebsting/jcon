@@ -15,10 +15,6 @@ abstract int rank();			// rank of type in sorting
 abstract int compareTo(vValue v);	// compare to value of same rank
 
 
-// vValue methods with defaults
-vValue getproc()		{ return null; }
-
-
 
 // vDescriptor methods (see it for a commented version of this list).
 // Many of these are default methods, often overridden by individual types.
@@ -67,16 +63,12 @@ public vDescriptor Key()	{ iRuntime.error(124, this); return null; }
 
 public vString Name()		{ iRuntime.error(111, this); return null; }
 public vInteger Args()		{ iRuntime.error(106, this); return null; }
-public vValue Proc(long i)	{ return this.getproc(); }
+public vValue Proc(long i) { iRuntime.bomb("Proc() NYI"); return null; } //#%#%
 
 public vVariable Field(String s){ iRuntime.error(107, this); return null;}
 public vDescriptor Index(vDescriptor i)
 				{ iRuntime.error(114, this); return null; }
 public vDescriptor Section(vDescriptor i, vDescriptor j)
-				{ iRuntime.error(110, this); return null; }
-public vDescriptor SectPlus(vDescriptor i, vDescriptor j)
-				{ iRuntime.error(110, this); return null; }
-public vDescriptor SectMinus(vDescriptor i, vDescriptor j)
 				{ iRuntime.error(110, this); return null; }
 
 public vNumeric Add(vDescriptor v)	{ return Numerate().Add(v); }
@@ -216,8 +208,5 @@ public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
 }
 
 
-
-public iClosure instantiate(vDescriptor[] args, iClosure parent) //#%#%#%
-    { return new iErrorClosure(this, args, parent); }  // will gen err 106
 
 } // class vValue

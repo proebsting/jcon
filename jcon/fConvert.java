@@ -6,18 +6,26 @@ class fConvert {} //dummy
 
 
 
-class f$type extends iValueClosure {				// type(x)
-    vDescriptor function(vDescriptor[] args) {
-	return iRuntime.argVal(args, 0).Type();
+class f$type extends vProc1 {					// type(x)
+    public vDescriptor Call(vDescriptor a) {
+	return a.Type();
     }
 }
 
 
 
-class f$integer extends iValueClosure {				// integer(x)
-    vDescriptor function(vDescriptor[] args) {
+class f$image extends vProc1 {					// image(x)
+    public vDescriptor Call(vDescriptor a) {
+	return a.image();
+    }
+}
+
+
+
+class f$integer extends vProc1 {				// integer(x)
+    public vDescriptor Call(vDescriptor a) {
 	try {
-	    return iRuntime.argVal(args, 0).mkInteger();
+	    return a.mkInteger();
 	} catch (iError e) {
 	    return null; /*FAIL*/
 	}
@@ -26,10 +34,10 @@ class f$integer extends iValueClosure {				// integer(x)
 
 
 
-class f$numeric extends iValueClosure {				// numeric(x)
-    vDescriptor function(vDescriptor[] args) {
+class f$numeric extends vProc1 {				// numeric(x)
+    public vDescriptor Call(vDescriptor a) {
 	try {
-	    return iRuntime.argVal(args, 0).Numerate();
+	    return a.Numerate();
 	} catch (iError e) {
 	    return null; /*FAIL*/
 	}
@@ -38,10 +46,10 @@ class f$numeric extends iValueClosure {				// numeric(x)
 
 
 
-class f$real extends iValueClosure {				// real(x)
-    vDescriptor function(vDescriptor[] args) {
+class f$real extends vProc1 {					// real(x)
+    public vDescriptor Call(vDescriptor a) {
 	try {
-	    return iRuntime.argVal(args, 0).mkReal();
+	    return a.mkReal();
 	} catch (iError e) {
 	    return null; /*FAIL*/
 	}
@@ -50,10 +58,10 @@ class f$real extends iValueClosure {				// real(x)
 
 
 
-class f$string extends iValueClosure {				// string(x)
-    vDescriptor function(vDescriptor[] args) {
+class f$string extends vProc1 {					// string(x)
+    public vDescriptor Call(vDescriptor a) {
 	try {
-	    return iRuntime.argVal(args, 0).mkString();
+	    return a.mkString();
 	} catch (iError e) {
 	    return null; /*FAIL*/
 	}
@@ -62,18 +70,10 @@ class f$string extends iValueClosure {				// string(x)
 
 
 
-class f$image extends iValueClosure {				// image(x)
-    vDescriptor function(vDescriptor[] args) {
-	return iRuntime.argVal(args, 0).image();
-    }
-}
-
-
-
-class f$cset extends iValueClosure {				// cset(x)
-    vDescriptor function(vDescriptor[] args) {
+class f$cset extends vProc1 {					// cset(x)
+    public vDescriptor Call(vDescriptor a) {
 	try {
-	    return iRuntime.argVal(args, 0).mkCset();
+	    return a.mkCset();
 	} catch (iError e) {
 	    return null; /*FAIL*/
 	}

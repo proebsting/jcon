@@ -9,87 +9,76 @@ class fMisc {} //dummy
 
 
 
-class f$name extends iRefClosure {				// name(v)
-    vDescriptor function(vDescriptor[] args) {
-	if (args.length < 1) {
-	    iRuntime.error(111);
-	}
-	return args[0].Name();
+class f$name extends vProc1 {					// name(v)
+    public vDescriptor Call(vDescriptor a) {
+	return a.Name();
     }
 }
 
 
 
-class f$display extends iValueClosure {				// display(x)
-    vDescriptor function(vDescriptor[] args) {
-	long level = vInteger.argVal(args, 0, 1000000);
-	vFile f = vFile.argVal(args, 1, k$errout.file);
-	iRuntime.display(f, parent, level);
+class f$display extends vProc2 {				// display(i,f)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	a.mkInteger();			// validate and ignore level count
+	iRuntime.display(vFile.arg(b, k$errout.file));
 	return vNull.New();
     }
 }
 
 
 
-class f$variable extends iValueClosure {			// variable(x)
-    vDescriptor function(vDescriptor[] args) {
-	vString s = (vString) iRuntime.argVal(args, 0, 103);
-	String sval = s.toString();
-	parent.locals();
-	for (int i = 0; parent.names[i] != null; i++) {
-	    if (sval.equals(parent.names[i])) {
-		return parent.variables[i];
-	    }
-	}
-	vVariable v = (vVariable) iEnv.symtab.get(sval);
+class f$variable extends vProc1 {				// variable(x)
+    public vDescriptor Call(vDescriptor a) {
+	String s = a.mkString().toString();
+	vVariable v = (vVariable) iEnv.symtab.get(s);
 	if (v != null) {
 	    return v;
 	}
-	if (sval.length() > 1 && sval.charAt(0) == '&') {
-	    String k = sval.substring(1);
+	if (s.length() > 1 && s.charAt(0) == '&') {
+	    String k = s.substring(1);
 	    Object o = iEnv.keytab.get(k);
 	    if (o != null && o instanceof vVariable) {
 		return (vVariable) o;
 	    }
 	}
-	return null;
+	return null; /*FAIL*/
     }
 }
 
 
 
-class f$function extends iClosure {				// function()
-    java.util.Enumeration e;
-
-    public vDescriptor nextval() {
-	if (PC == 1) {
-	    e = iEnv.builtintab.keys();
-	    PC = 2;
-	}
-	if (e.hasMoreElements()) {
-	    return vString.New((String) e.nextElement());
-	} else {
-	    return null;
-	}
+class f$function extends vProc0 {				// function()
+    public vDescriptor Call() {
+	final java.util.Enumeration e = iEnv.builtintab.keys();
+	return new vClosure() {
+	    public vDescriptor Resume() {
+		if (e.hasMoreElements()) {
+		    retval = vString.New((String) e.nextElement());
+		    return this;
+		} else {
+		    return null;
+		}
+	    }
+	}.Resume();
     }
 }
 
 
 
-class f$args extends iValueClosure {				// args(x)
-    vDescriptor function(vDescriptor[] args) {
-	return iRuntime.argVal(args, 0).Args();
+class f$args extends vProc1 {					// args(x)
+    public vDescriptor Call(vDescriptor a) {
+	return a.Args();
     }
 }
 
 
 
-class f$proc extends iValueClosure {				// proc(s, i)
-    vDescriptor function(vDescriptor[] args) {
-	vValue v = iRuntime.argVal(args, 0);
-	long i = vInteger.argVal(args, 1, 1);
+class f$proc extends vProc2 {					// proc(s, i)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	vValue v = a.Deref();
+	long i = b.isnull() ? 1 : b.mkInteger().value;
 	if (i < 0 || i > 3) {
-	    iRuntime.error(205, args[1]);
+	    iRuntime.error(205, b);
 	}
 	return v.Proc(i);
     }
@@ -97,21 +86,18 @@ class f$proc extends iValueClosure {				// proc(s, i)
 
 
 
-class f$collect extends iValueClosure {				// collect(i,j)
-    vDescriptor function(vDescriptor[] args) {
-	long i1 = vInteger.argVal(args, 0, 0);
-	long i2 = vInteger.argVal(args, 1, 0);
+class f$collect extends vProc2 {				// collect(i,j)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	long i1 = a.isnull() ? 0 : a.mkInteger().value;
+	long i2 = b.isnull() ? 0 : a.mkInteger().value;
 	vNull n = vNull.New();
 	if (i1 == 0) {
 	    System.gc();
 	    return n;
 	} else if (i1 > 0 && i1 < 4) {
-	    if (i2 < 0) {
-		iRuntime.error(205, args[1]);
-	    }
 	    int ii2 = (int)i2;
 	    if (i2 < 0 || i2 != (long)ii2) {
-		iRuntime.error(205, args[1]);
+		iRuntime.error(205, b);
 	    }
 	    System.gc();
 	    if (ii2 > 0) {
@@ -126,7 +112,7 @@ class f$collect extends iValueClosure {				// collect(i,j)
 	    }
 	    return n;
 	} else {
-	    iRuntime.error(205, args[0]);
+	    iRuntime.error(205, a);
 	    return null;
 	}
     }
@@ -134,9 +120,9 @@ class f$collect extends iValueClosure {				// collect(i,j)
 
 
 
-class f$delay extends iValueClosure {				// delay(i)
-    vDescriptor function(vDescriptor[] args) {
-	int i = (int) vInteger.argVal(args, 0, 1);
+class f$delay extends vProc1 {					// delay(i)
+    public vDescriptor Call(vDescriptor a) {
+	int i = a.isnull() ? 1 : (int) a.mkInteger().value;
 	try {
 	    Thread.sleep(i);
 	} catch (InterruptedException e) {
@@ -148,17 +134,17 @@ class f$delay extends iValueClosure {				// delay(i)
 
 
 
-class f$exit extends iValueClosure {				// exit(n)
-    vDescriptor function(vDescriptor[] args) {
-	int n = (int) vInteger.argVal(args, 0, 0);
-	iRuntime.exit(n, parent);
+class f$exit extends vProc1 {					// exit(n)
+    public vDescriptor Call(vDescriptor a) {
+	int n = a.isnull() ? 0 : (int) a.mkInteger().value;
+	iRuntime.exit(n);
 	return null;	// not reached
     }
 }
 
 
 
-class f$getenv extends iValueClosure {				// getenv(s)
+class f$getenv extends vProc1 {					// getenv(s)
 
     static Hashtable env = new Hashtable();
 
@@ -184,16 +170,16 @@ class f$getenv extends iValueClosure {				// getenv(s)
 	}
     }
 
-    vDescriptor function(vDescriptor[] args) {
-	return (vString) env.get(vString.argDescr(args, 0).toString());
+    public vDescriptor Call(vDescriptor a) {
+	return (vString) env.get(a.mkString().toString());
     }
 }
 
 
 
-class f$system extends iValueClosure {				// system(s)
-    vDescriptor function(vDescriptor[] args) {
-	String argv[] = { "sh", "-c", vString.argDescr(args, 0).toString() };
+class f$system extends vProc1 {					// system(s)
+    public vDescriptor Call(vDescriptor a) {
+	String argv[] = { "sh", "-c", a.mkString().toString() };
 	int status;
 	try {
 	    Process p = Runtime.getRuntime().exec(argv); // start process
@@ -210,21 +196,21 @@ class f$system extends iValueClosure {				// system(s)
 
 
 
-class f$errorclear extends iValueClosure {			// errorclear()
-    vDescriptor function(vDescriptor[] args) {
-	k$errornumber.number = null;
-	k$errortext.text = null;
-	k$errorvalue.value = null;
+class f$errorclear extends vProc0 {				// errorclear()
+    public vDescriptor Call() {
+	k$errornumber.self.set(null);
+	k$errortext.self.set(null);
+	k$errorvalue.self.set(null);
 	return vNull.New();
     }
 }
 
 
 
-class f$runerr extends iValueClosure {				// runerr(i,x)
-    vDescriptor function(vDescriptor[] args) {
-	long i = vInteger.argVal(args, 0);
-	vDescriptor x = iRuntime.argVal(args, 1);
+class f$runerr extends vProc2 {					// runerr(i,x)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	long i = a.mkInteger().value;
+	vDescriptor x = b.Deref();
 	if (x.isnull()) {
 	    iRuntime.error((int) i);
 	} else {

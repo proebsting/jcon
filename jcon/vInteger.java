@@ -79,8 +79,6 @@ int compareTo(vValue v) {
     }
 }
 
-vValue getproc()	{ return new vIntegerProc(this); }
-
 public vDescriptor ProcessArgs(vDescriptor x) {			// i ! X
     vValue[] a = x.mkArray(126);
     long i = (value > 0) ? (value - 1) : (a.length + value);
@@ -556,54 +554,3 @@ public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
 
 
 } // class vInteger
-
-
-
-class vIntegerProc extends vValue {
-    vInteger value;
-
-    vIntegerProc(vInteger value) {
-	this.value = value;
-    }
-
-    public iClosure instantiate (vDescriptor[] args, iClosure parent) {
-	return new iIntegerClosure(this.value, args, parent);
-    }
-
-    vValue getproc()	{ return this; }
-
-    vString image()	{ return value.mkString().surround("function ", ""); }
-
-    static vString typestring = vString.New("procedure");
-    public vString Type()	{ return typestring; }
-
-    int rank()			{ return 80; }		// integer "procedure"
-    int compareTo(vValue v)
-			{ return vProc.compareLastWord(this.image(),v.image());}
-
-    public vInteger Args()	{ return vInteger.New(-1); }
-}
-
-
-class iIntegerClosure extends iRefClosure {
-    vInteger value;
-
-    iIntegerClosure(vInteger value, vDescriptor[] args, iClosure parent) {
-	init();
-	this.value = value;
-	arguments = args;
-	this.parent = parent;
-    }
-
-    vDescriptor function(vDescriptor[] args) {
-	long i = value.value;
-	if (i <= 0) {
-	    i += args.length + 1;
-	}
-	i -= 1;
-	if (i < 0 || i >= args.length) {
-	    return null;
-	}
-	return args[(int)i];
-    }
-}

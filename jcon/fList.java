@@ -6,22 +6,26 @@ class fList {} //dummy
 
 
 
-class f$list extends iValueClosure {				// list(i, x)
-    vDescriptor function(vDescriptor[] args) {
-	int i = (int) vInteger.argVal(args, 0, 0);
-	vValue x = iRuntime.argVal(args, 1);
-	return vList.New(i, x);
+class f$list extends vProc2 {				// list(i, x)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	int i = a.isnull() ? 0 : (int) a.mkInteger().value;
+	return vList.New(i, b.Deref());
     }
 }
 
 
 
-class f$push extends iValueClosure {				// push(L, x...)
-    vDescriptor function(vDescriptor[] args) {
-	vValue L = iRuntime.argVal(args, 0, 108);
-	L.Push(iRuntime.argVal(args, 1));	// always push at least one val
-	for (int i = 2; i < args.length; i++) {
-	    L.Push(args[i]);
+class f$push extends vProcV {				// push(L, x...)
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	return a.Push(b.Deref());
+    }
+
+    public vDescriptor Call(vDescriptor[] v) {
+	vValue L = iRuntime.arg(v, 0).Deref();
+	L.Push(iRuntime.arg(v, 1).Deref());	// always push at least one val
+	for (int i = 2; i < v.length; i++) {
+	    L.Push(v[i].Deref());
 	}
 	return L;
     }
@@ -29,39 +33,45 @@ class f$push extends iValueClosure {				// push(L, x...)
 
 
 
-class f$pull extends iValueClosure {				// pull(L)
-    vDescriptor function(vDescriptor[] args) {
-	return iRuntime.argVal(args, 0, 108).Pull();
+class f$pull extends vProc1 {				// pull(L)
+    public vDescriptor Call(vDescriptor a) {
+	return a.Pull();
     }
 }
 
 
 
-class f$pop extends iValueClosure {				// pop(L)
-    vDescriptor function(vDescriptor[] args) {
-	return iRuntime.argVal(args, 0, 108).Pop();
+class f$pop extends vProc1 {				// pop(L)
+    public vDescriptor Call(vDescriptor a) {
+	return a.Pop();
     }
 }
 
 
 
-class f$get extends iValueClosure {				// get(L)
-    vDescriptor function(vDescriptor[] args) {
-	return iRuntime.argVal(args, 0, 108).Get();
+class f$get extends vProc1 {				// get(L)
+    public vDescriptor Call(vDescriptor a) {
+	return a.Get();
     }
 }
 
 
 
-class f$put extends iValueClosure {				// put(L, x...)
-    vDescriptor function(vDescriptor[] args) {
-	vValue L = iRuntime.argVal(args, 0, 108);
-	L.Put(iRuntime.argVal(args, 1));	// always add at least one val
-	for (int i = 2; i < args.length; i++) {
-	    L.Put(args[i]);
+class f$put extends vProcV {				// put(L, x...)
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	return a.Put(b.Deref());
+    }
+
+    public vDescriptor Call(vDescriptor[] v) {
+	vValue L = iRuntime.arg(v, 0).Deref();
+	L.Put(iRuntime.arg(v, 1).Deref());	// always add at least one val
+	for (int i = 2; i < v.length; i++) {
+	    L.Put(v[i].Deref());
 	}
 	return L;
     }
+
     //#%#% to do (graphics): guarantee that put(L,a,b,c) is an atomic action
 }
 
@@ -69,32 +79,31 @@ class f$put extends iValueClosure {				// put(L, x...)
 
 //  sort() and sortf() process several datatypes but always produce a list
 
-class f$sort extends iValueClosure {				// sort(X,i)
-    vDescriptor function(vDescriptor[] args) {
-	vValue x = iRuntime.argVal(args, 0, 115);
-	long i = vInteger.argVal(args, 1, 1);
+class f$sort extends vProc2 {				// sort(X,i)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	int i = b.isnull() ? 1 : (int) b.mkInteger().value;
 	if (i < 1 || i > 4) {
-	    iRuntime.error(205, args[1]);
+	    iRuntime.error(205, b);
 	}
-	return x.Sort((int) i);
+	return a.Sort(i);
     }
 }
 
-class f$sortf extends iValueClosure {				// sortf(X,i)
-    vDescriptor function(vDescriptor[] args) {
-	vValue[] a = iRuntime.argVal(args, 0).mkArray(125);
-	vInteger i = vInteger.New(vInteger.argVal(args, 1, 1));
+class f$sortf extends vProc2 {				// sortf(X,i)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	vValue[] v = a.mkArray(125);
+	vInteger i = b.isnull() ? vInteger.New(1) : b.mkInteger();
 	if (i.value == 0) {
 	    iRuntime.error(205, i);
 	}
-	for (int j = 0; j < a.length; j++) {
-	    a[j] = new vSortElem(a[j], i);
+	for (int j = 0; j < v.length; j++) {
+	    v[j] = new vSortElem(v[j], i);
 	}
-	iSort.sort(a);
-	for (int j = 0; j < a.length; j++) {
-	    a[j] = ((vSortElem)a[j]).value;
+	iSort.sort(v);
+	for (int j = 0; j < v.length; j++) {
+	    v[j] = ((vSortElem)v[j]).value;
 	}
-	return vList.New(a);
+	return vList.New(v);
     }
 }
 

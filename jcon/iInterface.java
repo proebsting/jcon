@@ -46,7 +46,7 @@ public static void link(String name) {
 	    e = ((ExceptionInInitializerError) e).getException();
 	}
 	e.printStackTrace();
-	iRuntime.exit(1, null);
+	iRuntime.exit(1);
     }
 }
 
@@ -75,44 +75,49 @@ public static void start(String[] filenames, String[] args, String name) {
 	file.resolve();
     }
 
-    k$progname.name = name;
+    k$progname.self.set(vString.New(name));
     vDescriptor m = iEnv.resolve("main");
     if (m == null || !(m.Deref() instanceof vProc)) {
 	System.err.println();
 	System.err.println("Run-time error 117 in startup code");
 	System.err.println("missing main procedure");
-	iRuntime.exit(1, null);
+	System.exit(1);	// not iRuntime.exit: main coexp not set up
     }
     vProc p = (vProc) m.Deref();
-    vDescriptor[] v;
-    if (p.args == 0) {
-	v = new vDescriptor[0];
-    } else {
-	v = new vDescriptor[1];
-	vDescriptor[] vargs = new vDescriptor[args.length];
-	for (int i = 0; i < args.length; i++) {
-	    vargs[i] = vString.New(args[i]);
-	}
-	v[0] = vList.New(vargs);
+    vDescriptor[] vargs = new vDescriptor[args.length];
+    for (int i = 0; i < args.length; i++) {
+	vargs[i] = vString.New(args[i]);
     }
-    iClosure closure = p.instantiate(v, null);
+    vDescriptor[] v = { vList.New(vargs) };
+
+    // initialize &trace from $TRACE
+    try {
+	long t = Long.parseLong(System.getProperty("TRACE", "0"));
+	k$trace.self.Assign(vInteger.New(t));
+    } catch (Exception x) {
+	// nothing
+    }
+
     k$time.reset();				// zero &time
-    iEnv.main = new vCoexp(closure);
+
+    //#%#%#%# need to set up a coexpression, but for now...
+    try {
+	p.Call(v);
+	iRuntime.exit(0);
+    } catch (iError err) {
+	err.report();
+	iRuntime.bomb("iError.report() returned");
+    } catch (Throwable t) {
+	iRuntime.bomb(t);
+    };
+
+    //#%#% iEnv.main = new vCoexp(p, v);
     iEnv.cur_coexp = iEnv.main;
     iEnv.main.lock.V();
     iEnv.main.run();
-    iRuntime.exit(0, null);
+    iRuntime.exit(0);
 }
 
-public static iClosure Instantiate(
-	vDescriptor f, vDescriptor[] args, iClosure parent) {
-    long len = args.length > 0 ? (long) args.length : 1;   // handles proc(x,0)
-    vValue fn = f.Proc(len);
-    if (fn == null) {
-	return new iErrorClosure(f.Deref(), args, parent);
-    }
-    return fn.instantiate(args, parent);
-}
 
 
 } // class iInterface
