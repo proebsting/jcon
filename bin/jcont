@@ -9,11 +9,8 @@
 #     -b	generate backwards-compatible .u1/u2 files; implies -c
 #     -c	compile only: don't produce an executable
 #     -f flags	enable features indicated by letters in "flags":
-#			-f a	all features, equivalent to -f den
-#			-f d	display() and variable() functions
-#			-f e	error conversion to failure
-#			-f n	file and line number tracking
-#			-f o	pass lvalue args to allow ":="(a,b) etc.
+#		    -fe enables error conversion, tracing, detailed traceback
+#		    -fa ("all features") and -fn are equivalent
 #     -h	print this usage message and exit
 #     -j	produce .jar file instead of executable script
 #     -o exe	specify output file for executable
