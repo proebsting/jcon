@@ -13,6 +13,7 @@ procedure main()
    every (write|"write")( (1|2)("hello", "mom"), "!")
    every (write|"write")! [ (1|2) ! ["hello", "mom"], "!"]
    pairs { 1 to 100, 11 to 99 by 11 }
+   write("repl: ", repl("",5), repl("x",3), repl("foo",0), repl("xyz",4))
 
    exit()
    write("oops!")
