@@ -1,12 +1,16 @@
 #SRC: JCON
-#OPTS: -n
+#OPTS: -en
 
 #  test tracing of procedure calls
 
 procedure main()
    &trace := -1
    every recurse(0 to 3)
+   every divall("" | "314" | "x" | "12x")
 end
+
+
+#  test tracing of recursion
 
 procedure recurse(n)
    if n > 0 then
@@ -26,4 +30,18 @@ end
 
 procedure genr(i, j, k)
    suspend i to j by k
+end
+
+
+#  test tracing in combination with errors
+
+procedure divall(s)
+   &error := 1
+   every divide(9, !s)
+   &error := 0
+   return
+end
+
+procedure divide(a, b)
+   return a / b
 end
