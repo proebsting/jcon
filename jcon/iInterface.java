@@ -55,10 +55,10 @@ public class iInterface {
 		vDescriptor list = iNew.List(vargs);
 		vDescriptor[] v = { list };
 		iClosure closure = p.instantiate(v, null);
-		vCoexp coexp = new vCoexp(closure);
-		iEnv.cur_coexp = coexp;
-		coexp.lock.V();
-		coexp.run();
+		iEnv.main = new vCoexp(closure);
+		iEnv.cur_coexp = iEnv.main;
+		iEnv.main.lock.V();
+		iEnv.main.run();
 		System.exit(0);
 	}
 }

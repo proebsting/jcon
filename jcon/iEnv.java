@@ -7,6 +7,7 @@ public class iEnv {
 	static Hashtable keytab = new Hashtable();
 	static Hashtable proctab = new Hashtable();
 
+	public static vCoexp main;
 	public static vCoexp cur_coexp;
 
 	public static vDescriptor resolve(String s) {

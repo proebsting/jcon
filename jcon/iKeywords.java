@@ -28,8 +28,11 @@ public class iKeywords extends iFile {
 
 		// read-only, but variable
 		iEnv.declareKey("clock", new k$clock());
+		iEnv.declareKey("current", new k$current());
 		iEnv.declareKey("date", new k$date());
 		iEnv.declareKey("dateline", new k$dateline());
+		iEnv.declareKey("main", new k$main());
+		iEnv.declareKey("source", new k$source());
 
 		//incestuous
 		k$subject s = new k$subject();		// &subject
@@ -81,6 +84,30 @@ abstract class k$Value extends vValue {		// super of read-only keywords
 }
 
 
+
+class k$current extends k$Value {		// &current
+
+	public vValue deref() {
+		return iEnv.cur_coexp;
+	}
+}
+
+class k$main extends k$Value {			// &main
+
+	public vValue deref() {
+		return iEnv.main;
+	}
+}
+
+class k$source extends k$Value {		// &source
+
+	public vValue deref() {
+		if (iEnv.cur_coexp.callers.empty()) {
+			return iEnv.main;
+		}
+		return (vCoexp) iEnv.cur_coexp.callers.peek();
+	}
+}
 
 class k$clock extends k$Value {			// &clock
 
