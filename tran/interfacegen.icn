@@ -98,7 +98,7 @@ procedure operators()
 end
 
 procedure methodrefs()
-    local m, def
+    local m, def, i, args
 
     m := [
             ["<init>", "()V", &null, "init"],
@@ -145,6 +145,18 @@ procedure methodrefs()
         ]
     def := [ "name", "type", "class" ]
     every gen_procedure(!m, def, "methodref")
+
+    write("procedure bc_CallN_methodref(c, N)")
+    write("\treturn case N of {")
+    args := ""
+    every i := 0 to 9 do {
+	write("\t", i, ": j_create_methodref(c, \"Call\", \"(", args,
+	      ")Lrts/vDescriptor;\", \"rts/vDescriptor\")")
+	args ||:= "Lrts/vDescriptor;"
+    }
+    write("\tdefault : runerr(500, N)")
+    write("\t}")
+    write("end")
 end
 
 procedure fieldrefs()
