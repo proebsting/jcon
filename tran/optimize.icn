@@ -13,8 +13,8 @@ procedure optimize(t, start)
         new := coord_optimize(new, start)
     }
     if i := new[start] &
-       type(i[1]) == "irEnterInit" &
-       type(i[2]) == "irGoto" &
+       type(i[1]) == "ir_EnterInit" &
+       type(i[2]) == "ir_Goto" &
        i[1].startlabel === i[2].location then {
         new[start] := [ i[2] ]
     }
@@ -28,7 +28,7 @@ procedure dead_assignment(t, start)
     every k := key(t) & chunk := t[k] do {
         c := []
         every i := !chunk do {
-            if (type(i) == "irMove") & /i.lhs then {
+            if (type(i) == "ir_Move") & /i.lhs then {
                 next
             }
             put(c, i)
@@ -46,7 +46,7 @@ procedure free_elimination(t, start)
         c := t[lab]
         new[lab] := []
         every i := !c do {
-            if (type(i) ~== "irFree") |
+            if (type(i) ~== "ir_Free") |
                # (*i.v.tmp > 0) |
                # (*i.v.lab > 0) |
                (*i.v.clo > 0)
@@ -66,7 +66,7 @@ procedure coord_optimize(t, start)
         line := 0;
         column := 0;
         every insn := !chunk &
-              type(insn) == "irCoord" &
+              type(insn) == "ir_Coord" &
               coord := copy(\insn.coord) do {
             if file == coord.file then {
                 coord.file := &null
@@ -105,18 +105,18 @@ procedure copy_propagation(t, start)
         every k := key(t) & chunk := t[k] do {
             newchunk := []
             every insn := !chunk do {
-                if type(insn) == "irMove" &
+                if type(insn) == "ir_Move" &
                    defs[insn.lhs] = 1 &
-                   type(insn.lhs) == "irTmp" &
+                   type(insn.lhs) == "ir_Tmp" &
                    (
                    (uses[insn.rhs] = 1 &
-                   type(insn.rhs) == "irTmp") |
-                   type(insn.rhs) == ("irVar" |
-                        "irKey" |
-                        "irIntLit" |
-                        "irRealLit" |
-                        "irStrLit" |
-                        "irCsetLit")
+                   type(insn.rhs) == "ir_Tmp") |
+                   type(insn.rhs) == ("ir_Var" |
+                        "ir_Key" |
+                        "ir_IntLit" |
+                        "ir_RealLit" |
+                        "ir_StrLit" |
+                        "ir_CsetLit")
                    )
                    then {
                     rename[insn.lhs] := insn.rhs
@@ -139,51 +139,51 @@ end
 
 procedure def_use(p, this, uses, defs)
     case type(p) of {
-    "irFree" :  { }
-    "irDeref" : { def_use(p.value, uses, uses, defs) }
-    "irTmp" :   { this[p]+:=1 }
-    "irTmpLabel" :  { this[p]+:=1 }
-    "irTmpClosure": { this[p]+:=1 }
-    "irLabel" : { this[p]+:=1 }
-    "irField" : { def_use(\p.lhs, defs, uses, defs);
+    "ir_Free" :  { }
+    "ir_Deref" : { def_use(p.value, uses, uses, defs) }
+    "ir_Tmp" :   { this[p]+:=1 }
+    "ir_TmpLabel" :  { this[p]+:=1 }
+    "ir_TmpClosure": { this[p]+:=1 }
+    "ir_Label" : { this[p]+:=1 }
+    "ir_Field" : { def_use(\p.lhs, defs, uses, defs);
             def_use(p.expr, uses, uses, defs) }
-    "irMove" :  { def_use(\p.lhs, defs, uses, defs);
+    "ir_Move" :  { def_use(\p.lhs, defs, uses, defs);
             def_use(p.rhs, uses, uses, defs) }
-    "irScanSwap" :  { def_use(p.subject, defs, uses, defs);
+    "ir_ScanSwap" :  { def_use(p.subject, defs, uses, defs);
             def_use(p.subject, uses, uses, defs);
             def_use(p.pos, defs, uses, defs);
             def_use(p.pos, uses, uses, defs); }
-    "irGoto" :  { def_use(p.location, uses, uses, defs); }
-    "irVar" :   { this[p]+:=1 }
-    "irKey" :   { this[p]+:=1 }
-    "irIntLit" :    { this[p]+:=1 }
-    "irRealLit" :   { this[p]+:=1 }
-    "irStrLit" :    { this[p]+:=1 }
-    "irCsetLit" :   { this[p]+:=1 }
-    "irSucceed" :   { def_use(p.expr, uses, uses, defs);
+    "ir_Goto" :  { def_use(p.location, uses, uses, defs); }
+    "ir_Var" :   { this[p]+:=1 }
+    "ir_Key" :   { this[p]+:=1 }
+    "ir_IntLit" :    { this[p]+:=1 }
+    "ir_RealLit" :   { this[p]+:=1 }
+    "ir_StrLit" :    { this[p]+:=1 }
+    "ir_CsetLit" :   { this[p]+:=1 }
+    "ir_Succeed" :   { def_use(p.expr, uses, uses, defs);
             def_use(\p.continuation, uses, uses, defs); }
-    "irFail" :  { }
-    "irResume" :    { def_use(p.closure, uses, uses, defs);
+    "ir_Fail" :  { }
+    "ir_Resume" :    { def_use(p.closure, uses, uses, defs);
             def_use(p.failLabel, uses, uses, defs);
             def_use(\p.retValue, defs, uses, defs); }
-    "irMakeList" :  { def_use(\p.lhs, defs, uses, defs);
+    "ir_MakeList" :  { def_use(\p.lhs, defs, uses, defs);
             every def_use(!p.valueList, uses, uses, defs); }
-    "irOpFunction":{def_use(\p.lhs, defs, uses, defs);
+    "ir_OpFunction":{def_use(\p.lhs, defs, uses, defs);
             def_use(p.fn, uses, uses, defs);
             def_use(\p.failLabel, uses, uses, defs);
             every def_use(!p.argList, uses, uses, defs); }
-    "irMakeClosure":{ def_use(p.lhs, defs, uses, defs);
+    "ir_MakeClosure":{ def_use(p.lhs, defs, uses, defs);
             def_use(p.fn, uses, uses, defs);
             every def_use(!p.argList, uses, uses, defs); }
-    "irOperator" :  { this[p]+:=1 }
-    "irCreate" :    { this[p]+:=1; def_use(p.location, uses, uses, defs); }
-    "irCoRet" : { def_use(p.value, uses, uses, defs);
+    "ir_Operator" :  { this[p]+:=1 }
+    "ir_Create" :    { this[p]+:=1; def_use(p.location, uses, uses, defs); }
+    "ir_CoRet" : { def_use(p.value, uses, uses, defs);
             def_use(p.continuation, uses, uses, defs); }
-    "irRestore" :   { }
-    "irCoFail" :    { }
-    "irRunTimeError":{ }
-    "irEnterInit" : { def_use(p.startlabel, uses, uses, defs) }
-    "irCoord" : { }
+    "ir_Restore" :   { }
+    "ir_CoFail" :    { }
+    "ir_RunTimeError":{ }
+    "ir_EnterInit" : { def_use(p.startlabel, uses, uses, defs) }
+    "ir_Coord" : { }
 
     default :   { runerr(500, p); }
     }
@@ -196,59 +196,59 @@ procedure opt_rewrite(p, rename)
         return opt_rewrite(rename[p], rename)
     }
     case type(p) of {
-    "irDeref" : { p.value := opt_rewrite(p.value, rename); }
-    "irFree" :  { }
-    "irTmp" :   { }
-    "irTmpLabel" :  { }
-    "irTmpClosure": { }
-    "irLabel" : { }
-    "irMove" :  { p.lhs := opt_rewrite(\p.lhs, rename);
+    "ir_Deref" : { p.value := opt_rewrite(p.value, rename); }
+    "ir_Free" :  { }
+    "ir_Tmp" :   { }
+    "ir_TmpLabel" :  { }
+    "ir_TmpClosure": { }
+    "ir_Label" : { }
+    "ir_Move" :  { p.lhs := opt_rewrite(\p.lhs, rename);
             p.rhs := opt_rewrite(p.rhs, rename) }
-    "irScanSwap" :  { }
-    "irGoto" :  { }
-    "irVar" :   { }
-    "irKey" :   { }
-    "irIntLit" :    { }
-    "irRealLit" :   { }
-    "irStrLit" :    { }
-    "irCsetLit" :   { }
-    "irRestore" :   { }
-    "irSucceed" :   { p.expr := opt_rewrite(p.expr, rename);
+    "ir_ScanSwap" :  { }
+    "ir_Goto" :  { }
+    "ir_Var" :   { }
+    "ir_Key" :   { }
+    "ir_IntLit" :    { }
+    "ir_RealLit" :   { }
+    "ir_StrLit" :    { }
+    "ir_CsetLit" :   { }
+    "ir_Restore" :   { }
+    "ir_Succeed" :   { p.expr := opt_rewrite(p.expr, rename);
             p.continuation := opt_rewrite(\p.continuation, rename); }
-    "irFail" :  { }
-    "irResume" :    { p.closure := opt_rewrite(p.closure, rename);
+    "ir_Fail" :  { }
+    "ir_Resume" :    { p.closure := opt_rewrite(p.closure, rename);
             p.failLabel := opt_rewrite(p.failLabel, rename);
             p.retValue := opt_rewrite(\p.retValue, rename); }
-    "irMakeList" :  { p.lhs := opt_rewrite(\p.lhs, rename);
+    "ir_MakeList" :  { p.lhs := opt_rewrite(\p.lhs, rename);
             every i := 1 to *p.valueList do {
                 p.valueList[i] := opt_rewrite(p.valueList[i],
                                   rename); }
             }
-    "irField" : { p.lhs := opt_rewrite(\p.lhs, rename)
+    "ir_Field" : { p.lhs := opt_rewrite(\p.lhs, rename)
             p.expr := opt_rewrite(p.expr, rename)
             p.failLabel := opt_rewrite(\p.failLabel, rename)
             }
-    "irOpFunction":{p.lhs := opt_rewrite(\p.lhs, rename);
+    "ir_OpFunction":{p.lhs := opt_rewrite(\p.lhs, rename);
             p.fn := opt_rewrite(p.fn, rename); 
             every i := 1 to *p.argList do {
                 p.argList[i] := opt_rewrite(p.argList[i],
                                 rename); }
             p.failLabel := opt_rewrite(\p.failLabel, rename);
             }
-    "irMakeClosure":{ p.lhs := opt_rewrite(p.lhs, rename);
+    "ir_MakeClosure":{ p.lhs := opt_rewrite(p.lhs, rename);
             p.fn := opt_rewrite(p.fn, rename);
             every i := 1 to *p.argList do {
                 p.argList[i] := opt_rewrite(p.argList[i],
                                 rename); }
             }
-    "irOperator" :  { }
-    "irCreate" :    { p.location := opt_rewrite(p.location, rename); }
-    "irCoRet" : { p.value := opt_rewrite(p.value, rename);
+    "ir_Operator" :  { }
+    "ir_Create" :    { p.location := opt_rewrite(p.location, rename); }
+    "ir_CoRet" : { p.value := opt_rewrite(p.value, rename);
             p.continuation := opt_rewrite(p.continuation, rename);}
-    "irCoFail" :    { }
-    "irRunTimeError":{ }
-    "irEnterInit" : { p.startlabel := opt_rewrite(p.startlabel, rename) }
-    "irCoord" : { }
+    "ir_CoFail" :    { }
+    "ir_RunTimeError":{ }
+    "ir_EnterInit" : { p.startlabel := opt_rewrite(p.startlabel, rename) }
+    "ir_Coord" : { }
 
     default :   { runerr(500,p); }
     }
@@ -275,8 +275,8 @@ procedure goto_elimination(t, start)
     every lab := key(new) do {
         while chunk := \new[lab] &
               insn := chunk[-1] &
-              type(insn) == "irGoto" &
-              type(insn.location) == "irLabel" &
+              type(insn) == "ir_Goto" &
+              type(insn.location) == "ir_Label" &
               ref_count[insn.location] = 1 do {
             if /new[insn.location] then {
                 runerr(500, insn.location)
@@ -301,7 +301,7 @@ procedure goto_chain(lab, t)
 
     seen := set([])
     while chunk := \t[lab] &
-          type(chunk[1]) == "irGoto" &
+          type(chunk[1]) == "ir_Goto" &
           not member(seen, lab) do {
         lab := chunk[1].location
         insert(seen, lab)
@@ -313,8 +313,8 @@ procedure goto_chain_defer(lab, t)
     local chunk
 
     while chunk := \t[lab] &
-          type(chunk[1]) == "irGoto" &
-          type(chunk[1].location) ~== "irTmpLabel" do {
+          type(chunk[1]) == "ir_Goto" &
+          type(chunk[1].location) ~== "ir_TmpLabel" do {
         lab := chunk[1].location
     }
     return lab
@@ -322,63 +322,63 @@ end
 
 procedure gotos(p, wl, seen, t)
     case type(p) of {
-    "irFree" |
-    "irRestore" |
-    "irCoFail" |
-    "irRunTimeError" |
-    "irMakeList" |
-    "irMakeClosure" |
-    "irOperator" |
-    "irFail" |
-    "irVar" |
-    "irKey" |
-    "irIntLit" |
-    "irRealLit" |
-    "irStrLit" |
-    "irCsetLit" |
-    "irScanSwap" |
-    "irTmp" |
-    "irTmpLabel" |
-    "irDeref" |
-    "irCoord" : {
+    "ir_Free" |
+    "ir_Restore" |
+    "ir_CoFail" |
+    "ir_RunTimeError" |
+    "ir_MakeList" |
+    "ir_MakeClosure" |
+    "ir_Operator" |
+    "ir_Fail" |
+    "ir_Var" |
+    "ir_Key" |
+    "ir_IntLit" |
+    "ir_RealLit" |
+    "ir_StrLit" |
+    "ir_CsetLit" |
+    "ir_ScanSwap" |
+    "ir_Tmp" |
+    "ir_TmpLabel" |
+    "ir_Deref" |
+    "ir_Coord" : {
         # nothing
         }
-    "irLabel" : {  # irLabel : ( value )
+    "ir_Label" : {  # ir_Label : ( value )
         add_label(p, wl, seen)
         }
-    "irMove" : {  # irMove : ( lhs rhs )
+    "ir_Move" : {  # ir_Move : ( lhs rhs )
         p.rhs := goto_chain_defer(p.rhs, t)
         gotos(p.rhs, wl, seen, t)
         }
-    "irGoto" : {  # irGoto : ( location )
+    "ir_Goto" : {  # ir_Goto : ( location )
         p.location := goto_chain(p.location, t)
         gotos(p.location, wl, seen, t)
         }
-    "irSucceed" : {  # irSucceed : ( expr continuation )
+    "ir_Succeed" : {  # ir_Succeed : ( expr continuation )
         p.continuation := goto_chain(\p.continuation, t)
         gotos(\p.continuation, wl, seen, t)
         }
-    "irField" : {  # irField : ( lhs expr field failLabel )
+    "ir_Field" : {  # ir_Field : ( lhs expr field failLabel )
         p.failLabel := goto_chain(\p.failLabel, t)
         gotos(\p.failLabel, wl, seen, t)
         }
-    "irOpFunction" : {  # irOpFunction : ( lhs fn argList failLabel )
+    "ir_OpFunction" : {  # ir_OpFunction : ( lhs fn argList failLabel )
         p.failLabel := goto_chain(\p.failLabel, t)
         gotos(\p.failLabel, wl, seen, t)
         }
-    "irResume" : {  # irResume : ( closure failLabel retValue )
+    "ir_Resume" : {  # ir_Resume : ( closure failLabel retValue )
         p.failLabel := goto_chain(p.failLabel, t)
         gotos(p.failLabel, wl, seen, t)
         }
-    "irCreate" : {  # irCreate : ( location )
+    "ir_Create" : {  # ir_Create : ( location )
         p.location := goto_chain(p.location, t)
         gotos(p.location, wl, seen, t)
         }
-    "irCoRet" : {  # irCoRet : ( value continuation )
+    "ir_CoRet" : {  # ir_CoRet : ( value continuation )
         p.continuation := goto_chain(p.continuation, t)
         gotos(p.continuation, wl, seen, t)
         }
-    "irEnterInit" : {  # irEnterInit : ( startlabel )
+    "ir_EnterInit" : {  # ir_EnterInit : ( startlabel )
         p.startlabel := goto_chain(p.startlabel, t)
         gotos(p.startlabel, wl, seen, t)
         }

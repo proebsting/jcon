@@ -70,20 +70,20 @@ procedure dump_File(irgen, flagList)
     }
     while p := @irgen do {
 	case type(p) of {
-	"irGlobal" : {
+	"ir_Global" : {
 	    dump_globals(p.nameList)
 	}
-	"irRecord" : {
+	"ir_Record" : {
 	    dump_records(p.name, p.fieldList)
 	}
-	"irInvocable" : {
+	"ir_Invocable" : {
 	    dump_invocables(p.all, p.nameList)
 	}
-	"irFunction" : {
+	"ir_Function" : {
 	    dump_function(p.name, p.paramList, p.accumulate, p.localList,
 			p.staticList, p.codeList, p.codeStart)
 	}
-	"irLink" : {
+	"ir_Link" : {
 	    dump_links(p.nameList)
 	}
 	default: runerr(500, p)

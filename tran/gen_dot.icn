@@ -27,36 +27,36 @@ procedure dot_output(t)
         every i := 1 to *code do {
             insn := code[i]
             case type(insn) of {
-            "irMove" : {
-                if type(\insn.lhs) == "irTmpLabel" then {
+            "ir_Move" : {
+                if type(\insn.lhs) == "ir_TmpLabel" then {
                     write(image(dot_dump(insn.lhs)),
                           "->",
                           image(dot_dump(insn.rhs)))
                 }
                 }
-            "irGoto" : {
+            "ir_Goto" : {
                 write(lab, ":f", i, " ->", image(dot_dump(insn.location)))
                 }
-            "irField" |
-            "irOpFunction" |
-            "irResume" : {
+            "ir_Field" |
+            "ir_OpFunction" |
+            "ir_Resume" : {
                 write(lab, ":f", i,
                       " ->",
                       image(dot_dump(\insn.failLabel)), " [label=failure]")
                 }
-            "irSucceed" : {
+            "ir_Succeed" : {
                 write(lab, ":f", i,
                       " ->",
                       image(dot_dump(\insn.continuation)),
                       " [label=continuation]")
                 }
-            "irCoRet" : {
+            "ir_CoRet" : {
                 write(lab, ":f", i,
                       " ->",
                       image(dot_dump(insn.continuation)),
                       " [label=continuation]")
                 }
-            "irEnterInit" : {
+            "ir_EnterInit" : {
                 write(lab, ":f", i,
                       " ->",
                       image(dot_dump(insn.startlabel)),
@@ -90,11 +90,11 @@ procedure dot_File(irgen, flagList)
     }
     while p := @irgen do {
 	case type(p) of {
-	"irGlobal" : { }
-	"irRecord" : { }
-	"irInvocable" : { }
-	"irLink" : { }
-	"irFunction" : {
+	"ir_Global" : { }
+	"ir_Record" : { }
+	"ir_Invocable" : { }
+	"ir_Link" : { }
+	"ir_Function" : {
 	    dot_function(p.name, p.paramList, p.accumulate, p.localList,
 			p.staticList, p.codeList, p.codeStart)
 	}
