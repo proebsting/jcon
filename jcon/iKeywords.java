@@ -23,7 +23,10 @@ public class iKeywords extends iFile {
 		iEnv.declareKey("phi", iNew.Real((1.0 + Math.sqrt(5.0)) / 2.0));
 		iEnv.declareKey("pi", iNew.Real(Math.PI));
 		iEnv.declareKey("version", 
-			    iNew.String("Jcon Version 0.4, Summer, 1997"));
+			    iNew.String("Jcon Version 0.5, Summer, 1997"));
+
+		// constant for lack of a better solution
+		iEnv.declareKey("time", iNew.Integer(0));
 
 	    	// cset constants
 		vCset lcase, ucase;
@@ -116,13 +119,14 @@ class k$features extends iClosure {		// &features
 
 
 
-abstract class k$Value extends vValue {		// super of read-only keywords
+abstract class k$Value extends vIndirect {	// super of read-only keywords
 
 	public abstract vValue deref();		// must implement deref()
 
-	String image()	{ return deref().image(); }
-	String type()	{ return deref().type(); }
-	int rank()	{ return -1; }		// should not appear in sorting
+	public vVariable Assign(vValue x)
+			{ iRuntime.error(111, this.deref()); return null;}
+
+	vString Name()	{ iRuntime.error(111, this.deref()); return null; }
 }
 
 
@@ -245,7 +249,6 @@ class k$input extends k$Value {			// &input
 
 	k$input()		{ file = iNew.File("&input", System.in); }
 	public vValue deref()	{ return file; }
-	public vDescriptor Bang(iClosure c) { return this.file.Bang(c); }
 }
 
 class k$output extends k$Value {		// &output
