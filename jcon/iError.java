@@ -133,7 +133,8 @@ String args2string(vDescriptor[] args) {
 public void propagate(String procname, vDescriptor[] args) {
     // if &error is not zero, print diagnostic, reset to zero, issue
     if (iKeyword.error.check()) {
-	System.err.println("Attempted error conversion in procedure " + procname);
+	System.err.println("Attempted error conversion not possible:");
+	System.err.println("procedure " + procname + " was not compiled with -fd");
 	iKeyword.errornumber.set(vInteger.New(0));
     }
     String call = procname + args2string(args);
