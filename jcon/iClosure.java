@@ -6,7 +6,6 @@ public abstract class iClosure {
 public iClosure parent;		// enclosing closure
 public vDescriptor[] arguments;	// argument list
 
-public boolean initialized;	// first-time flag
 public int PC;			// "program counter" (initially = 1)
 
 public vDescriptor retvalue;	// value returned/suspended, or null for failure
