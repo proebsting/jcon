@@ -60,7 +60,36 @@ public vReal mkReal()		{ return vReal.New(this.value); }
 
 public vString mkString() {
     if (cachedString == null) {
-       cachedString = vString.New(Long.toString(value));
+       if (value == Long.MIN_VALUE) {
+           cachedString = vString.New(Long.toString(value));
+       } else {
+           int i;
+           long v;
+           boolean negative;
+           byte[] b = new byte[21];
+    
+           if (value >= 0) {
+	       negative = false;
+	       v = value;
+           } else {
+	       negative = true;
+	       v = -value;
+           }
+    
+           i = 0;
+           do {
+	       b[i++] = (byte) (((v % 10) + '0') & 0xff);
+	       v /= 10;
+           } while (v > 0);
+	   if (negative) {
+	       b[i++] = '-';
+	   }
+	   byte[] c = new byte[i];
+	   for (int j = 0; j < i; j++) {
+	       c[j] = b[i-j-1];
+	   }
+           cachedString = vString.New(c);
+       }
     }
     return cachedString;
 }
