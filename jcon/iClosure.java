@@ -89,6 +89,7 @@ public vDescriptor resume() {
 	    ret = null;
 	}
     } catch (iError e) {
+	e.printStackTrace();
 	e.report(this);		// returns only on error->failure conversion
 	ret = null;
     }
