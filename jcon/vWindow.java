@@ -193,7 +193,7 @@ static int argBase(vDescriptor args[]) {
 
 static vWindow winArg(vDescriptor args[]) {
     if (argBase(args) == 1) {
-	return (vWindow) args[0];
+	return (vWindow) args[0].Deref();
     } else {
 	return k$window.getWindow();
     }

@@ -153,7 +153,7 @@ final class f$Pending extends vProc1 {		// Pending(W)
 	if (!a.iswin()) {
 	    return Call(k$window.getWindow());
 	}
-	return ((vWindow)a).Pending();
+	return ((vWindow)a.Deref()).Pending();
     }
 }
 
@@ -162,7 +162,7 @@ final class f$Event extends vProc1 {		// Event(W)
 	if (!a.iswin()) {
 	    return Call(k$window.getWindow());
 	}
-	return ((vWindow)a).Event();
+	return ((vWindow)a.Deref()).Event();
     }
 }
 
@@ -173,7 +173,7 @@ final class f$Bg extends vProc2 {		// Bg(W, s)
 	if (!a.iswin()) {
 	    return Call(k$window.getWindow(), a);
 	}
-	return ((vWindow)a).Bg(b.isnull() ? null : b.mkString());
+	return ((vWindow)a.Deref()).Bg(b.isnull() ? null : b.mkString());
     }
 }
 
@@ -182,7 +182,7 @@ final class f$Fg extends vProc2 {		// Fg(W, s)
 	if (!a.iswin()) {
 	    return Call(k$window.getWindow(), a);
 	}
-	return ((vWindow)a).Fg(b.isnull() ? null : b.mkString());
+	return ((vWindow)a.Deref()).Fg(b.isnull() ? null : b.mkString());
     }
 }
 
@@ -210,7 +210,7 @@ final class f$Font extends vProc2 {		// Font(W,s)
 	if (!a.iswin()) {
 	    return Call(k$window.getWindow(), a);
 	}
-	return ((vWindow)a).Font(b.isnull() ? null : b.mkString());
+	return ((vWindow)a.Deref()).Font(b.isnull() ? null : b.mkString());
     }
 }
 
@@ -219,7 +219,7 @@ final class f$TextWidth extends vProc2 {	// TextWidth(W,s)
 	if (!a.iswin()) {
 	    return Call(k$window.getWindow(), a);
 	}
-	return ((vWindow)a).TextWidth(b.mkString().toString());
+	return ((vWindow)a.Deref()).TextWidth(b.mkString().toString());
     }
 }
 
@@ -228,7 +228,7 @@ final class f$GotoXY extends vProc3 {		// GotoXY(W,x,y)
 	if (!a.iswin()) {
 	    return Call(k$window.getWindow(), a, b);
 	}
-	vWindow win = (vWindow)a;
+	vWindow win = (vWindow)a.Deref();
 	long x = b.mkInteger().value;
 	long y = c.mkInteger().value;
 	win.getTTY().X(x + "");
@@ -242,7 +242,7 @@ final class f$GotoRC extends vProc3 {		// GotoXY(W,r,c)
 	if (!a.iswin()) {
 	    return Call(k$window.getWindow(), a, b);
 	}
-	vWindow win = (vWindow)a;
+	vWindow win = (vWindow)a.Deref();
 	long row = b.mkInteger().value;
 	long col = c.mkInteger().value;
 	win.getTTY().Row(win, row + "");
@@ -332,7 +332,7 @@ final class f$EraseArea extends vProcV {	// EraseArea(W,x,y,w,h,...)
 
 final class f$FillRectangle extends vProcV {	// FillRectangle(W,x,y,w,h,...)
     public vDescriptor Call(vDescriptor[] args) {
-	vWindow win = vWindow.winArg(args);
+	vWindow win = vWindow.winArg(args);	//#%#% ClassCastException?!
 	int[] a = wCoords.rectArgs(args, 4);
 	for (int i = 0; i < a.length; i += 4) {
 	    win.FillRectangle(a[i], a[i+1], a[i+2], a[i+3]);
@@ -505,7 +505,7 @@ final class f$Alert extends vProc1 {		// Alert(W) sends a beep
 	if (!a.iswin()) {
 	    return Call(k$window.getWindow());
 	}
-	((vWindow)a).beep();
+	((vWindow)a.Deref()).beep();
 	return a;
     }
 }
@@ -515,7 +515,7 @@ final class f$Uncouple extends vProc1 {		// Uncouple(W) calls close(W)
 	if (!a.iswin()) {
 	    return Call(k$window.getWindow());
 	}
-	((vWindow)a).close();
+	((vWindow)a.Deref()).close();
 	return a;
     }
 }
@@ -534,7 +534,7 @@ final class f$WFlush extends vProc1 {		// WFlush(W) syncs w/ toolkit
 	if (!a.iswin()) {
 	    return Call(k$window.getWindow());
 	}
-	((vWindow)a).flush();
+	((vWindow)a.Deref()).flush();
 	return a;
     }
 }
@@ -544,7 +544,7 @@ final class f$WSync extends vProc1 {		// WSync(W) syncs w/ toolkit
 	if (!a.iswin()) {
 	    return Call(k$window.getWindow());
 	}
-	((vWindow)a).flush();
+	((vWindow)a.Deref()).flush();
 	return a;
     }
 }

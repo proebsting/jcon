@@ -116,14 +116,14 @@ static vValue dequeue(vList evq) {
 
     long msec = (y >> 16) & 0xFFF;	// set &interval
     long expo = y >> 28;
-    k$interval.self.Assign(vInteger.New(msec << (4 * expo)));
+    k$interval.self.set(vInteger.New(msec << (4 * expo)));
 
     x = (int)(short)x;			// extract signed coordinate values
     y = (int)(short)y;
     //#%#% need to translate x/y to this window's coordinate system
 
-    k$x.self.Assign(vInteger.New(x));	// also sets k$col
-    k$y.self.Assign(vInteger.New(y));	// also sets k$row
+    k$x.self.newValue(x);		// also sets k$col
+    k$y.self.newValue(y);		// also sets k$row
 
     return a;				// return event code
 }

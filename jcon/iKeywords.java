@@ -556,7 +556,7 @@ final class k$window extends vProc0 {				// &window
 
 	public vVariable Assign(vDescriptor v) {	// assign
 	    vValue w = v.Deref();
-	    if ((w instanceof vWindow) || w.isnull()) {
+	    if (w.iswin() || w.isnull()) {
 		value = w;
 		vWindow.setCurrent((vWindow) value);
 		return this;
@@ -568,11 +568,11 @@ final class k$window extends vProc0 {				// &window
 
     };
 
-    public static vWindow getWindow() {		// get &window, must be !null
-	if (kwindow.isnull()) {
+    public static vWindow getWindow() {		// get non-null &window value
+	if (kwindow.value.isnull()) {
 	    iRuntime.error(140);
 	} 
-	return (vWindow) kwindow.value.Deref();
+	return (vWindow) kwindow.value;
     }
 
     public vDescriptor Call() {
