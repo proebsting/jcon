@@ -16,6 +16,7 @@ void announce() {
 
 	// graphics functions that are at least partially implemented:
 
+	iBuiltins.declare("Alert", 1);
 	iBuiltins.declare("Bg", 2);
 	iBuiltins.declare("Clone", -1);
 	iBuiltins.declare("Color", -1);
@@ -38,7 +39,6 @@ void announce() {
 	// #%#%#%#%#%# NOT YET IMPLEMENTED:
 	//
 	// iBuiltins.declare("Active", 0);
-	// iBuiltins.declare("Alert", 1);
 	// iBuiltins.declare("Clip", 5);
 	// iBuiltins.declare("ColorValue", 2);
 	// iBuiltins.declare("CopyArea", 8);
@@ -245,7 +245,15 @@ class f$FreeColor extends iValueClosure {	// FreeColor(W,k,...) is a no-op
 
 
 
-//  some other functions just don't do anything
+//  miscellaneous AWT functions
+
+class f$Alert extends iValueClosure {		// Alert(W) sends a beep
+	vDescriptor function(vDescriptor[] args) {
+		vWindow win = vWindow.winArg(args);	// validate arg
+		vWindow.beep();
+		return win;
+	}
+}
 
 class f$WFlush extends iValueClosure {		// WFlush(W) syncs w/ toolkit
 	vDescriptor function(vDescriptor[] args) {

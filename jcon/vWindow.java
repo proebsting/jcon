@@ -108,12 +108,16 @@ static vWindow getCurrent() {
 
 
 
-//  static synchronizer function
+//  static functions that reference the toolkit
 
-static void sync() {
+static void sync() {		// sync graphics, if any, with tty input
     if (curwin != null) {
     	toolkit.sync();
     }
+}
+
+static void beep() {		// send a beep
+    toolkit.beep();
 }
 
 
