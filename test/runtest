@@ -7,6 +7,7 @@
 
 export JCONT="../bin/jcont"
 export JCOPT="-s"
+export JXOPTS="-verify"
 
 USAGE="$0 [-JP] [file...]"
 while getopts :JP c; do
