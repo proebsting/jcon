@@ -49,6 +49,7 @@ void announce() {
 	declare("numeric", 1);
 	declare("ord", 1);
 	declare("pop", 1);
+	declare("pos", 1);
 	declare("proc", 2);
 	declare("pull", 1);
 	declare("push", -2);

@@ -2,6 +2,23 @@
 
 package rts;
 
+class f$pos extends iFunctionClosure {			// pos(i)
+    vDescriptor function(vDescriptor[] args) {
+	long i;
+
+	if (args.length == 0) {
+            iRuntime.error(101);
+	}
+	i = args[0].mkInteger().value;
+	vString s = (vString) k$subject.self.deref();
+	vInteger p = (vInteger) k$pos.self.deref();
+	if (s.posEq(i) == p.value) {
+	    return k$pos.self.deref();
+	}
+	return null;
+    }
+}
+
 class f$any extends iFunctionClosure {			// any(c,s,i1,i2)
     vDescriptor function(vDescriptor[] args) {
 	vCset c;
