@@ -9,56 +9,46 @@ import java.util.zip.*;
 //  loadfunc(library, funcname)
 //
 //  Loads a class (which must extend rts.vProc[0-9V]) from a Zip (or Jar)
-//  library and returns a procedure.  The class chosen is
-//	1.  the first *$*$funcname.class, if any, else
-//	2.  the first *$funcname.class, if any, else
-//	3.  funcname.class
+//  library and returns a procedure.  Loadfunc selects the first class
+//  named either "funcname.class" or "p_l$<anything>$funcname.class".
+//  For the latter case (Icon code) it invokes the Icon resolver.
 
 final class f$loadfunc extends vProc2 {				// loadfunc(s,s)
     private Hashtable loaders = new Hashtable();
 
+    private static final String linkhead = "l$";
+    private static final String prochead = "p_l$";
+
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	String filename = a.mkString().toString();
 	String funcname = b.mkString().toString();
-	String class1 = null;		// matching classname *$*$funcname
-	String class2 = null;		// matching classname *$funcname
-	String class3 = null;		// matching classname funcname
-	String classtail = funcname + ".class";
+	String exact = funcname + ".class";
+	String tail = "$" + funcname + ".class";
 	try {
 	    ZipFile zf = new ZipFile(filename);
+	    ZipEntry ze;
+	    String s;
 	    Enumeration e = zf.entries();
-	    while (e.hasMoreElements()) {
-		ZipEntry ze = (ZipEntry) e.nextElement();
-		String s = ze.getName();
-		if (s.endsWith(classtail)
-		&& (s.length() == s.lastIndexOf('$') + 1 + classtail.length())){
-		    int i1 = s.indexOf('$');
-		    int i2 = s.lastIndexOf('$');
-		    if (i1 != i2) {			// *$*$funcname.class
-			if (class1 == null) {
-			    class1 = s;
-			}
-		    } else if (i1 >= 0) {		// *$funcname.class
-			if (class2 == null) {
-			    class2 = s;
-			}
-		    } else {				// funcname.class
-			if (class3 == null) {
-			    class3 = s;
-			}
-		    }
+	    while (true) {
+		if (! e.hasMoreElements()) {
+		    iRuntime.error(216, b);
+		    return null;
+		}
+		ze = (ZipEntry) e.nextElement();
+		s = ze.getName();
+		if (s.equals(exact)
+		|| (s.startsWith(prochead) && s.endsWith(tail))) {
+		    break;
 		}
 	    }
-	    String entry = 
-		(class1 != null) ? class1 : (class2 != null ? class2 : class3);
-	    if (entry == null) {
-		iRuntime.error(216, b);
-	    }
-	    String classname = entry.substring(0, entry.length() - 6);
+	    String classname = s.substring(0, s.length() - 6);
 
 	    DynamicLoader dl = (DynamicLoader) loaders.get(filename);
-	    if (dl == null) {
+	    if (dl == null) {			// if first time for this file
 		loaders.put(filename, dl = new DynamicLoader(zf));
+		if (s.startsWith(prochead)) {	// if Icon procedure file
+		    preload(dl, zf, s);		// init globals, resolve refs
+		}
 	    } else {
 		zf.close();
 	    }
@@ -89,6 +79,14 @@ final class f$loadfunc extends vProc2 {				// loadfunc(s,s)
 	    return null;
 	}
     }
+
+    private void preload(ClassLoader dl, ZipFile zf, String s) throws Exception{
+	String linkname = s.substring(2, s.lastIndexOf('$'));
+	Class c = dl.loadClass(linkname);
+	iFile r = (iFile) c.newInstance();
+	//#%#%#%# need code mod first:	 	 r.declare();
+	r.resolve();
+    }
 }
 
 
@@ -112,8 +110,9 @@ final class DynamicLoader extends ClassLoader {
 	    } else {
 		byte[] zb = new byte [(int) ze.getSize()];
 		try {
-		    InputStream i = zipfile.getInputStream(ze);
-		    i.read(zb);
+		    DataInputStream i = 
+			new DataInputStream(zipfile.getInputStream(ze));
+		    i.readFully(zb);
 		    i.close();
 		} catch (IOException e) {
 		    throw new ClassNotFoundException(name);
