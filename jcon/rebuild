@@ -15,6 +15,7 @@ else
 fi
 
 if [ "$NEWER" != "" ]; then
+    set -e
     echo "+ javac *.java"
     javac *.java
     echo "+ cd ..; jar cfM $BZIP rts/*.class"

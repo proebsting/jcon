@@ -55,16 +55,11 @@ static void register(wCanvas cv) {		// register event handlers
 //  enqueue(a, x, y, e) -- enqueue Icon event code a derived from Java event e
 
 public void enqueue(vValue a, int x, int y, InputEvent e) {
-
-    long msec = c.interval();
-    int expo = 0;
-    while (msec >= 0x1000) {
-	msec >>= 4;
-	expo++;
-    }
-
     int flags = 0;
+    long msec = 0;
+
     if (e != null) {
+	msec = c.interval(e.getWhen());
 	if (e.isControlDown()) {
 	    flags += ControlFlag;
 	}
@@ -74,6 +69,12 @@ public void enqueue(vValue a, int x, int y, InputEvent e) {
 	if (!(e instanceof MouseEvent) && (e.isMetaDown() || e.isAltDown())) {
 	    flags += MetaFlag;
 	}
+    }
+
+    int expo = 0;
+    while (msec >= 0x1000) {
+	msec >>= 4;
+	expo++;
     }
 
     c.enqueue(a,
@@ -165,10 +166,10 @@ public void componentResized(ComponentEvent e) {
 
 
 
+public void keyPressed(KeyEvent e)		{}
 public void keyTyped(KeyEvent e)		{}
-public void keyReleased(KeyEvent e)		{}
 
-public void keyPressed(KeyEvent e) {
+public void keyReleased(KeyEvent e)		{
     char ch = e.getKeyChar();
     if (ch == '\n' && ! e.isControlDown()) {	// if enter key
 	ch = '\r';				// change to \r for v9 compat

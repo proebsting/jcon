@@ -126,6 +126,8 @@ void defconfig(vWindow win) {
 
 
 //  resize(win, w, h) -- resize canvas
+//
+//  note that win can be null if called from unattributed event code
 
 public void resize(vWindow win, int w, int h) {
 
@@ -134,7 +136,8 @@ public void resize(vWindow win, int w, int h) {
 	f.setResizable(true);
 	this.setSize(width = w, height = h);	// alter size
 	f.pack();				// alter size of enclosing frame
-	win.flush();				// sync
+	Toolkit.getDefaultToolkit().sync();	// sync
+	Thread.yield();
 	f.setResizable(b);
     }
 
@@ -187,12 +190,17 @@ public void paint(Graphics g) {
 
 
 
-//  interval() -- return interval in milliseconds since last event
+//  interval(newtime) -- return interval in milliseconds since last event
 
-public long interval() {
-    long tprev = evtime;
-    evtime = System.currentTimeMillis();
-    return (tprev == 0) ? 0 : (evtime - tprev);
+public long interval(long newtime) {
+    long elapsed;
+    if (evtime == 0) {
+	elapsed = 0;
+    } else {
+	elapsed = newtime - evtime;
+    }
+    evtime = newtime;
+    return elapsed;
 }
 
 

@@ -132,11 +132,6 @@ vWindow(String title, String mode, vDescriptor args[]) throws IOException {
     c.tty.Row(this, "1");	// set text cursor position
     c.tty.Col(this, "1");
 
-    // unless canvas attribute was specified, make visible now
-    if (c.Canvas(this, null) == null) {
-	c.Canvas(this, "normal");
-    }
-
     // clear window and backing store, including out-of-bounds area, with new bg
     EraseArea(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
 
@@ -147,6 +142,11 @@ vWindow(String title, String mode, vDescriptor args[]) throws IOException {
 	c.deferred_image = null;
     }
     c.defer_image = false;
+
+    // unless canvas attribute was specified, make visible now
+    if (c.Canvas(this, null) == null) {
+	c.Canvas(this, "normal");
+    }
 
     this.flush();
     setCurrent(this);		// remember as "current" window
@@ -285,7 +285,6 @@ public static void beep() {		// send a beep
 
 
 
-
 //  static methods for argument processing and defaulting
 
 
@@ -298,6 +297,7 @@ public static int argBase(vDescriptor args[]) {
 	return 0;
     }
 }
+
 
 
 //  winArg(args) -- get explicit window argument, or implicit value from &window
