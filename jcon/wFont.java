@@ -12,7 +12,7 @@ class wFont extends Font {
 
     vString spec;	// original spcification string
 
-static final String DEFAULT_FONT = "mono";	// initial font specification
+static final String DEFAULT_FONT = "fixed";	// initial font specification
 static final int DEFAULT_SIZE = 14;		// default font size
 
 

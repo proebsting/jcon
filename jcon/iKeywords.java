@@ -30,7 +30,7 @@ public class iKeywords extends iFile {
 		iEnv.declareKey("phi", iNew.Real((1.0 + Math.sqrt(5.0)) / 2.0));
 		iEnv.declareKey("pi", iNew.Real(Math.PI));
 		iEnv.declareKey("version", 
-			iNew.String("Jcon Version 0.6.0, October 14, 1997"));
+			iNew.String("Jcon Version 0.6.0, November 4, 1997"));
 
 		// constant for lack of a better solution
 		iEnv.declareKey("time", iNew.Integer(0));
@@ -192,6 +192,7 @@ class k$clock extends k$Value {			// &clock
 
 	static SimpleDateFormat formatter =
 		new SimpleDateFormat("HH:mm:ss");
+	static { formatter.setTimeZone(TimeZone.getDefault()); }
 
 	public vValue deref() {
 		Date d = new Date();
@@ -206,6 +207,7 @@ class k$date extends k$Value {			// &date
 
 	static SimpleDateFormat formatter =
 		new SimpleDateFormat("yyyy/MM/dd");
+	static { formatter.setTimeZone(TimeZone.getDefault()); }
 
 	public vValue deref() {
 		Date d = new Date();
@@ -220,6 +222,7 @@ class k$dateline extends k$Value {		// &dateline
 
 	static SimpleDateFormat formatter =
 		new SimpleDateFormat("EEEEEE, MMMM d, yyyy  h:mm aa");
+	static { formatter.setTimeZone(TimeZone.getDefault()); }
 
 	public vValue deref() {
 		Date d = new Date();
