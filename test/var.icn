@@ -7,7 +7,13 @@ procedure main(a)
    variable("a") := 1
    variable("x") := 2
    variable("y") := 3
-   if variable("z") then write("oops")
+   if variable("z") then write("oops z")
+   &subject := "abcde"
+   &pos := 3
+   write("&pos &subject: ", &pos, " ", variable("&subject"))
+   variable("&subject") := "wxyz"
+   write("&pos &subject: ", &pos, " ", variable("&subject"))
+   if variable("&clock") then write("oops &clock")
    main2()
    write()
 
