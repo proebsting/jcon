@@ -291,7 +291,7 @@ done
 (cd $TDIR; $JLINK $MAIN $ROOTS)
 
 # combine the class files to make a new .zip file
-(cd $TDIR; $JAR cfM combined.zip $MAIN.class [lp]*.class)
+(cd $TDIR; $JAR cfM combined.zip $MAIN.class [lpc]*.class)
 
 # write the output file
 case $XTYPE in
