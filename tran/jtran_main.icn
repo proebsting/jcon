@@ -20,38 +20,46 @@ procedure getline(f)
 	}
 end
 
-procedure main(L) 
-	local filename, cg_flags, cg, g, preonly
+procedure preproc(dummy, args)
+	suspend preprocessor(args[1], predefs())
+end
 
-	cg_flags := []
-	while L[1] do {	# process flags
-		pop(L) ? {
-			if ="-E" then {
-				preonly := 1	# preprocess only
-			} else if ="-target:" then {
-				/CG | stop("ERROR: multiple -target specifications")
-				cg := tab(0)
-				CG := (\proc(cg || "_CG"))()
-				\CG | stop("ERROR: unknown target: ", cg)
-			} else if ="-" then {
-				put(cg_flags, &subject)
-			} else {
-				/filename | stop("ERROR: only one file name")
-				filename := &subject
+procedure cat(getline, args)
+	local f, p
+
+	while f := !args do {
+		suspend |open(f)
+	}
+	if *args = 0 then {
+		if /getline then {
+			suspend |&input
+		} else {
+			while p := @getline do {
+				suspend p
 			}
 		}
 	}
+end
 
-	g := getline(filename)
-
-	if \preonly then {
-		while write(@g)
-	} else {
-		\CG | stop("ERROR: must specify -target")
-		CG.File(g, cg_flags)
+procedure echo(c)
+	local p
+	while p := @\c do {
+		write(\string(p))
 	}
+end
 
-	#every writes(&errout, " ", "  total alloc: " | &allocated | "\n")
-	#every writes(&errout, " ", "  current:     " | &storage | "\n")
-	#every writes(&errout, " ", "  collections: " | &collections | "\n")
+procedure main(L) 
+	local args, k, fn, c
+
+	while L[1] do {
+		args := []
+		while k := pop(L) & k ~== ":" do {
+			put(args, k)
+		}
+		fn := pop(args) | stop("ERROR: malformed command-line arguments")
+		fn := proc(fn) | stop("ERROR: unknown command-line procedure, ", fn)
+		c := create fn(c, args)
+	}
+	c := create echo(c)
+	while @c
 end

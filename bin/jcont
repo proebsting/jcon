@@ -2,18 +2,23 @@
 #
 #  jcont -- compile Icon program
 #
-#  usage:  jcont [-cdjsvJPSU] [-f flags] [-o exe] file[.icn|.zip] [-x [args]]
+#  usage:  jcont [-bcdhjsvEJPSU] [-f flags] [-o exe] file... [-x [args]]
 #
+#     file:	filename.icn (Icon source) or filename.zip (translated code)
+#
+#     -b	generate backwards-compatible .u1/u2 files; implies -c
 #     -c	compile only: don't produce an executable
 #     -f flags	enable features indicated by letters in "flags":
 #			-f a	all features, equivalent to -f den
 #			-f d	display() and variable() functions
 #			-f e	error conversion to failure
 #			-f n	file and line number tracking
+#     -h	print this usage message and exit
 #     -j	produce .jar file instead of executable script
 #     -o exe	specify output file for executable
 #     -s	silent: suppress commentary
 #     -x	execute after compilation
+#     -E	preprocess only
 #
 #  The following are mainly for debugging jcont:
 #
@@ -47,6 +52,7 @@
 #	jcont -j myprog.icn
 #	setenv CLASSPATH myprog.jar:/myhome/jcon/bin/rts.zip
 #	java myprog
+#
 
 JAVAC="javac -nowarn"
 JAVA="java"
@@ -70,78 +76,88 @@ case `uname` in
 	;;
 esac
 
-export BLKSIZE=6000000
-export STRSIZE=500000
+function usage {	# usage message: print header above
+    sed -n '
+       1,3d
+       /^$/q
+       /^[^#]/q
+       s/^#/ /p
+    ' 1>&2 $0
+    exit 1
+}
 
-#  save command line and user IPATH
-#  (remove spaces from IPATH to work around SGI java bug in argument handling)
+# save command line and user IPATH
+# (remove spaces from IPATH to work around SGI java bug in argument handling)
 CMDLINE="$0 $*"
 UIPATH=`echo "$IPATH" | tr ' ' ':'`
 
-#  clear inherited environment variables
-#  (but note that BLKSIZE and STRSIZE are set above)
+# clear inherited environment variables (also see next section)
 unset ICONCORE TRACE IPATH NOERRBUF
 unset HEAPSIZE COEXPSIZE MSTKSIZE QLSIZE
 
-#  set tracing modes
+#  set reasonably large regions for jtran
+export BLKSIZE=6000000
+export STRSIZE=500000
+export COEXPSIZE=30000
+
+# set tracing modes and other defaults
 ANNOUNCE=echo
 CMDTRACE=
+TARGET="bytecode"
 LINKTRACE=
 OFLAG=-O
 JVMDUMP=
 TFLAGS=
-TARGET=bc
 
 # set temporary directory name, and assume its deletion
 TDIR=./jcon$$
 NODELETE=
 
-#  assume an executable script is created
+# assume an executable script is created
 XTYPE=.ksh
 XFILE=
 NOLINK=
 
-#  assume no subsequent execution
+# assume no subsequent execution
 NOEXECUTE=exit
 
-#  process options, changing devault values set above
+# process options, changing devault values set above
 
-USAGE="usage: $0 [-cdjsvJPSU] [-f flags] [-o exe] file[.icn|.zip]... [-x [args]]"
-
-while getopts "cdjsvJPSUo:f:" c 2>$NULLFILE; do
+while getopts "bcdjsvEJPSUo:f:" c 2>$NULLFILE; do
     case $c in
+	b)	TARGET="ucode"; NOLINK="exit";;
 	c)	NOLINK="exit";;
 	d)	TDIR=./jtmp; NODELETE=":";;
 	f)	TFLAGS="$TFLAGS -f$OPTARG";;
 	j)	XTYPE=.jar;;
 	s)	ANNOUNCE=":";;
 	v)	CMDTRACE="set -x"; LINKTRACE="-t";;
+	E)	TARGET="ppsrc"; NOLINK="exit";;
 	J)	TARGET="java";;
 	P)	OFLAG="";;
 	S)	JVMDUMP="javap -c -private -verbose";;
 	U)	TFLAGS="$TFLAGS -U";;
 	o)	XFILE="$OPTARG";;
-    	\?)	echo 1>&2 $USAGE; exit 1;;
+    	\?)	usage;;
     esac
 done
 
-#  check that at least one file argument was given
+# check that at least one file argument was given
 shift `expr $OPTIND - 1`
 if [ $# = 0 ]; then
-    echo 1>&2 "$USAGE"
-    exit 1
+    usage
 fi
 
-#  get name of main class from first file argument
+# get name of main class from first file argument
 MAIN="${1%.icn}"
 MAIN="${MAIN%.zip}"
 
-#  set output file name, if not specified
+# set output file name, if not specified
 if [ "$XFILE" = "" ]; then
     XFILE="$MAIN${XTYPE%.ksh}"
 fi
 
-#  accumulate .icn and .zip file names
+# accumulate .icn and .zip file names
 IFILES=
 ZFILES=
 ZBUILT=
@@ -167,7 +183,7 @@ for FNAME; do
     esac
 done
 
-#  determine installed directory
+# determine installed directory
 PRG=`whence $0`
 IDIR=`dirname $PRG`
 case $IDIR in
@@ -176,11 +192,10 @@ case $IDIR in
     *)		IDIR=`pwd`/$IDIR;;	# relative path
 esac
 
-#  set paths for translator and for runtime files
-JTRAN="$ICONX $IDIR${FILESEP}jtran $OFLAG $TFLAGS -target:$TARGET"
+# set paths for translator and for runtime files
+JTRAN="$ICONX $IDIR${FILESEP}jtran"
 JLINK="$ICONX $IDIR${FILESEP}jlink"
 JRTS="$IDIR${FILESEP}rts.zip"
-
 
 # estimate the needed header size
 HBASE=600		# approximate size of fixed text, plus breathing room
@@ -194,10 +209,10 @@ else
     TANNOUNCE=":"
 fi
 
-#  arrange deletion of temporary directory, if NODELETE is not set
+# arrange deletion of temporary directory, if NODELETE is not set
 $NODELETE trap "rm -rf $TDIR" 0 1 2 15
 
-#  now, finally, do some work
+# now, finally, do some work
 set -e
 $CMDTRACE
 export CLASSPATH="$JRTS"
@@ -213,32 +228,52 @@ fi
 $TANNOUNCE 1>&2 "Translating:"
 ERREXIT=":"
 for FNAME in $IFILES; do
-    rm -f $TDIR/*.class
-    # Icon to Java
     $ANNOUNCE 1>&2 $FNAME.icn:
-    if $JTRAN -class:l\$$FNAME -dir:$TDIR/ $FNAME.icn >$TDIR/$FNAME.java; then
-	# if using java target, make "links" file and compile the code
-	if [ $TARGET = java ]; then
-	    sed -n 's=^//JCON//links:==p' $TDIR/$FNAME.java >$TDIR/links
+    rm -f $TDIR/*.class
+    if case $TARGET in
+	ppsrc)
+	    $JTRAN preproc $FNAME.icn : cat
+	    ;;
+	ucode)
+	    $JTRAN preproc $FNAME.icn : parse : ucode_File -out:$FNAME
+	    ;;
+	bytecode)
+	    $JTRAN preproc $FNAME.icn : parse : \
+		bc_File $OFLAG $TFLAGS -class:l\$$FNAME -dir:$TDIR/
+	    ;;
+	java)
+	    $JTRAN preproc $FNAME.icn : parse : \
+		java -class:l\$$FNAME >$TDIR/$FNAME.java &&
+	    sed -n 's=^//JCON//links:==p' $TDIR/$FNAME.java >$TDIR/links &&
 	    (cd $TDIR; $JAVAC $FNAME.java)
-	fi
-	# bundle .class files (and linkage info) into .zip file
-	(cd $TDIR; $JAR cfM ../$FNAME.zip links *.class)
-	# disassemble if requested
-	if [ "$JVMDUMP" != "" ]; then (
-	    cd $TDIR
-	    JVM=../$FNAME.jvm
-	    cat /dev/null >$JVM
-	    for c in p_l*class; do
-		echo "========================================" $c >>$JVM
-		echo "" >>$JVM
-		CLASSPATH=$JRTS:. $JVMDUMP >>../$FNAME.jvm `basename $c .class`
-		echo "" >>$JVM
-		echo "" >>$JVM
-		echo "" >>$JVM
-	    done
-	    )
-	fi
+	    ;;
+	"" | *)
+	    echo "TARGET=$TARGET unrecognized"
+	    exit 1
+	    ;;
+    esac; then
+	case $TARGET in
+	    bytecode | java)
+		# bundle .class files (and linkage info) into .zip file
+		(cd $TDIR; $JAR cfM ../$FNAME.zip links *.class)
+		# disassemble if requested
+		if [ "$JVMDUMP" != "" ]; then (
+		    cd $TDIR
+		    JVM=../$FNAME.jvm
+		    cat $NULLFILE >$JVM
+		    for c in p_l*class; do
+			echo "======================================" $c >>$JVM
+			echo "" >>$JVM
+			CLASSNAME=`basename $c .class`
+			CLASSPATH=$JRTS:. $JVMDUMP >>../$FNAME.jvm $CLASSNAME
+			echo "" >>$JVM
+			echo "" >>$JVM
+			echo "" >>$JVM
+		    done
+		    )
+		fi
+		;;
+	esac
     else
 	ERREXIT="exit"
     fi

@@ -1428,8 +1428,10 @@ procedure bc_create_copy(c, params, locals, undeclared)
 	}
 end
 
-procedure bc_File(getline, flagList)
-	local k, i, op, c, f
+procedure bc_File(parse, flagList)
+	local k, i, op, c, f, p
+
+	CG := bc_CG()
 
 	outfile := &output
 	if "-debug" == !flagList then {
@@ -1486,7 +1488,10 @@ procedure bc_File(getline, flagList)
 	bc_real_table := table()
 	bc_keys_link := table()
 
-	every ir(add_defaults(parse(getline)))
+	while p := @parse do {
+		ir(add_defaults(p))
+	}
+	#every ir(add_defaults(parse(getline)))
 
 	c := bc_proc_classptr := ClassFile(3, 45, [&null], table(), 1,
 		&null,
