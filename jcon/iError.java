@@ -38,7 +38,7 @@ void report() {				// print message and abort
     f.println("   " + call);
     f.println(message);
 
-    this.printStackTrace(); 	//#%#% temporary
+    // this.printStackTrace(); 	//#%#% temporary
 
     iRuntime.exit(1);
 }
