@@ -41,8 +41,14 @@ String report()		{ return image(); }
 
 String type()		{ return "cset";}
 
+int rank()		{ return 40; }		// csets rank after strings
+
+int compareTo(vValue v) {
+    return v.mkString().compareTo(v.mkString());  //#%#% horribly slow 
+}
+
 public boolean equals(Object o) {
-   return (o instanceof vCset)
+    return (o instanceof vCset)
 	  && (((vCset)o).mkString().equals(this.mkString()));
 }
 

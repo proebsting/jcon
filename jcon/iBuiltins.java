@@ -32,6 +32,7 @@ void announce(iEnv env) {
 	declare(env, "repl");
 	declare(env, "right");
 	declare(env, "set");
+	declare(env, "sort");
 	declare(env, "stop");
 	declare(env, "table");
 	declare(env, "type");
@@ -308,6 +309,22 @@ class f$put extends iFunctionClosure {				// put(L, x...)
 				args[0].Put(args[i]);
 		}
 		return args[0];
+	}
+}
+
+class f$sort extends iFunctionClosure {				// sort(X,i)
+	vDescriptor function(vDescriptor[] args) {
+		vValue x = iRuntime.argVal(args, 0, 115);
+		vInteger i;
+		if (args.length > 1) {
+			i = iRuntime.argVal(args, 1).mkInteger();
+			if (i.value < 1 || i.value > 4) {
+				iRuntime.error(205, i);
+			}
+		} else {
+			i = iNew.Integer(1);
+		}
+		return x.Sort(i);
 	}
 }
 

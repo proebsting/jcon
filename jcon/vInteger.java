@@ -30,6 +30,20 @@ String write()		{ return String.valueOf(value); }
 String image()		{ return String.valueOf(value); }
 String type()		{ return "integer"; }
 
+int rank()		{ return 10; } 	// integers rank right after &null
+
+int compareTo(vValue v) {
+	long x = ((vInteger) v).value;
+	if (this.value < x) {
+		return -1;
+	} else if (this.value > x) {
+		return 1;
+	} else {
+		return 0;
+	}
+		
+}
+
 public iClosure instantiate (vDescriptor[] args, iClosure parent) {
 	return new iIntegerClosure(this, args, parent);
 }

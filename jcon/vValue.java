@@ -17,6 +17,10 @@ public abstract class vValue extends vDescriptor {
     public vValue deref()		{ return this; }
     public vVariable Assign(vValue x)	{ iRuntime.error(111,this);return null;}
 
+    // sorting
+    abstract int rank();	// required of all subclasses
+    int compareTo(vValue v)	{ return 0; } //#%#% later compare serial nums
+
     // accessing functions
     vVariable field(String s)	{ iRuntime.error(107, this); return null;}
 
@@ -98,11 +102,14 @@ public abstract class vValue extends vDescriptor {
 				 { iRuntime.error(122, this); return null; }
 
     // set operations
-    vValue Complement()			{ iRuntime.error(104, this); return null; }
-    vValue Union(vDescriptor x)		{ iRuntime.error(120, this); return null; }
-    vValue Intersect(vDescriptor x)	{ iRuntime.error(120, this); return null; }
-    vValue Diff(vDescriptor x)		{ iRuntime.error(120, this); return null; }
+    vValue Complement()		    { iRuntime.error(104, this); return null; }
+    vValue Union(vDescriptor x)	    { iRuntime.error(120, this); return null; }
+    vValue Intersect(vDescriptor x) { iRuntime.error(120, this); return null; }
+    vValue Diff(vDescriptor x)	    { iRuntime.error(120, this); return null; }
 
     // coexpression operations
-    vValue Refresh()			{ iRuntime.error(118, this); return null; }
+    vValue Refresh()		{ iRuntime.error(118, this); return null; }
+
+    // other data operations
+    vValue Sort(vDescriptor i)	{ iRuntime.error(115, this); return null; }
 }

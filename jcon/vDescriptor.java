@@ -84,13 +84,13 @@ public abstract class vDescriptor {
     abstract vValue Get();
     abstract vValue Put(vDescriptor v);
 
-    // table operations
+    // table/set operations
     abstract vValue Key(iClosure c);
     abstract vValue Member(vDescriptor i);
     abstract vValue Delete(vDescriptor i);
     abstract vValue Insert(vDescriptor i, vDescriptor val);
 
-    // set operations
+    // set/cset operations
     abstract vValue Complement();
     abstract vValue Intersect(vDescriptor i);
     abstract vValue Union(vDescriptor i);
@@ -98,6 +98,9 @@ public abstract class vDescriptor {
 
     // coexpression operations
     abstract vValue Refresh();
+
+    // other data-oriented operations
+    abstract vValue Sort(vDescriptor i);	// sort(X, i)
 
     //#%#%#%# not-yet-implemented abort
     void NYI(String s) {

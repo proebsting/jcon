@@ -40,6 +40,20 @@ String image()		{
 
 String type()		{ return "real"; }
 
+int rank()		{ return 20; }		// reals rank after integers
+
+int compareTo(vValue v) {
+	double x = ((vReal) v).value;
+	if (this.value < x) {
+		return -1;
+	} else if (this.value > x) {
+		return 1;
+	} else {
+		return 0;
+	}
+		
+}
+
 
 
 //  static methods for argument processing and defaulting

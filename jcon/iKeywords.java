@@ -77,6 +77,7 @@ abstract class k$Value extends vValue {		// super of read-only keywords
 
 	String image()	{ return deref().image(); }
 	String type()	{ return deref().type(); }
+	int rank()	{ return -1; }		// should not appear in sorting
 }
 
 

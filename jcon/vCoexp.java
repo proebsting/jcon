@@ -9,6 +9,10 @@ public class vCoexp extends vValue implements Runnable {
 	vDescriptor incomingValue;
 	Semaphore lock;
 
+	int rank() {
+		return 70;		// co-expressions rank after files
+	}
+
 	void setup(Thread thread, iClosure closure) {
 		this.closure = closure;
 		this.thread = thread;

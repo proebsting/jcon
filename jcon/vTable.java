@@ -16,6 +16,8 @@ String report()		{ return image(); }
 
 String type()		{ return "table";}
 
+int rank()		{ return 110; }		// tables rank after sets
+
 vInteger Size() {
     return iNew.Integer(t.size());
 }

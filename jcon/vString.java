@@ -27,6 +27,10 @@ String report()		{ return "\"" + value + "\""; }
 				//#%#%#% trim length, besides escaping
 String type()		{ return "string"; }
 
+int rank()		{ return 30; }		// strings rank after reals
+
+int compareTo(vValue v) { return this.value.compareTo(((vString) v).value); }
+
 vNumeric mkNumeric()	{
     String s = value.trim();
     try {

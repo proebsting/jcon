@@ -21,6 +21,18 @@ public class vRecord extends vValue {
 		}
 	}
 
+	int rank() {
+		return 130;	// records rank last, after record constructors
+	}
+
+	String image() {
+		return "record " + name + "()";	//#%#% needs serial number etc
+	}
+
+	String type() {
+		return name;
+	}
+
 	vVariable field(String s) {
 		for (int i = 0; i < fieldnames.length; i++) {
 			if (s.equals(fieldnames[i])) {
@@ -51,14 +63,6 @@ public class vRecord extends vValue {
             } else {
                 return values[i];
             }
-	}
-
-	String image() {
-		return "record " + name + "()";	//#%#% needs serial number etc
-	}
-
-	String type() {
-		return name;
 	}
 }
 

@@ -33,6 +33,8 @@ vList(vDescriptor[] elements) {			// new Vlist(elements[])
 
 // runtime primitives
 
+int rank()		{ return 90; }		// lists rank after procedures
+
 String image()		{ return "list(" + v.size() + ")"; }	//#%#% add s/n
 
 String report()		{ return this.image(); } //#%#% redo with elem details
@@ -175,7 +177,20 @@ vDescriptor Bang(iClosure c) {				//  !L
 
 
 
+vValue Sort(vDescriptor n) {				// sort(L)
+    vValue a[] = new vValue[v.size()];
+    for (int i = 0; i < a.length; i++) {
+    	a[i] = ((vDescriptor)v.elementAt(i)).deref();
+    }
+    iUtil.sort(a);
+    return iNew.List(a);
+}
+
+
+
 } // class vList
+
+
 
 class vListEnumeration implements java.util.Enumeration {
 	java.util.Vector v;

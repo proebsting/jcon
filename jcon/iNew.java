@@ -25,13 +25,13 @@ public static vCset Cset(int low, int high)	{ return new vCset(low, high); }
 
 public static vString String(String x) 		{ return new vString(x); }
 
-public static vDescriptor List(int n, vValue x)	{ return new vList(n, x); }
-public static vDescriptor List(vDescriptor[] elements)
+public static vList List(int n, vValue x)	{ return new vList(n, x); }
+public static vList List(vDescriptor[] elements)
 						{ return new vList(elements); }
 
-public static vDescriptor Table(vValue x)	{ return new vTable(x); }
+public static vTable Table(vValue x)		{ return new vTable(x); }
 
-public static vDescriptor Set(vValue x)		{ return new vSet(x); }
+public static vSet Set(vValue x)		{ return new vSet(x); }
 
 public static vProc Proc(Class c, iEnv e)	{ return new vProc(c, e); }
 

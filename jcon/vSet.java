@@ -1,5 +1,7 @@
 package rts;
 
+import java.util.*;
+
 public class vSet extends vValue {
 
     java.util.Hashtable t;
@@ -30,6 +32,8 @@ String report()		{ return image(); }
 
 String type()		{ return "set";}
 
+int rank()		{ return 40; }	// sets rank after lists
+
 vInteger Size() {
     return iNew.Integer(t.size());
 }
@@ -52,6 +56,16 @@ vDescriptor Bang(iClosure c) {
     }
     java.util.Enumeration e = (java.util.Enumeration) c.o;
     return e.hasMoreElements() ? (vDescriptor) e.nextElement() : null;
+}
+
+vValue Sort(vDescriptor n) {
+    vValue a[] = new vValue[t.size()];
+    int i = 0;
+    for (Enumeration e = t.keys(); e.hasMoreElements(); ) {
+    	a[i++] = (vValue)e.nextElement();
+    }
+    iUtil.sort(a);
+    return iNew.List(a);
 }
 
 vValue Member(vDescriptor i) {

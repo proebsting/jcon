@@ -14,6 +14,10 @@ public class vProc extends vValue {
 		return this;
 	}
 
+	int rank() {
+		return 80;		// procedures rank after co-expressions
+	}
+
 	String image() {
 
 		String s = proc.getName();
