@@ -1396,6 +1396,7 @@ procedure bc_emit_code0(s, switch, k)
     lab := bc_ir2bc_labels[k]
     put(s, lab)
     insns := bc_emit_table[k]
+    \insns | runerr(500, k)
     every i := insns[1 to *insns-1] do {
         bc_gen(s, i)
     }

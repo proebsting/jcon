@@ -28,6 +28,9 @@ procedure main(L)
     m := j_create_method(c, 9, "main", "([Ljava/lang/String;)V")
     mcode := j_create_code(c, 10, 10)
     put(m.attributes, mcode)
+
+    # put(mcode.code, j_invokestatic(j_create_methodref(c, "init_baseTramp", "()V", "BaseTramp")))
+
     put(mcode.code, j_aload_0() )
     put(mcode.code, j_ldc(j_cp_String(c, j_cp_Utf8(c, outclass))) )
     put(mcode.code, j_new(c.this_class) )

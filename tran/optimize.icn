@@ -104,7 +104,7 @@ procedure optim_def_use(p, this, uses, defs)
             optim_def_use(\p.resumeLabel, uses, uses, defs); }
     "ir_Fail" :  { }
     "ir_ResumeValue" :    { optim_def_use(p.value, uses, uses, defs);
-            optim_def_use(p.failLabel, uses, uses, defs);
+            optim_def_use(\p.failLabel, uses, uses, defs);
             optim_def_use(\p.lhs, defs, uses, defs); }
     "ir_MakeList" :  { optim_def_use(\p.lhs, defs, uses, defs);
             every optim_def_use(!p.valueList, uses, uses, defs); }
@@ -155,7 +155,7 @@ procedure optim_rewrite(p, rename)
             p.resumeLabel := optim_rewrite(\p.resumeLabel, rename); }
     "ir_Fail" :  { }
     "ir_ResumeValue" :    { p.value := optim_rewrite(p.value, rename);
-            p.failLabel := optim_rewrite(p.failLabel, rename);
+            p.failLabel := optim_rewrite(\p.failLabel, rename);
             p.lhs := optim_rewrite(\p.lhs, rename); }
     "ir_MakeList" :  { p.lhs := optim_rewrite(\p.lhs, rename);
             every i := 1 to *p.valueList do {
@@ -311,8 +311,8 @@ procedure optim_goto_transitive(t, new, lab)
 		optim_goto_transitive(t, new, \p.failLabel)
 		}
 	    "ir_ResumeValue" : {  # ir_ResumeValue : ( lhs value failLabel )
-		p.failLabel := optim_goto_chain(p.failLabel, t)
-		optim_goto_transitive(t, new, p.failLabel)
+		p.failLabel := optim_goto_chain(\p.failLabel, t)
+		optim_goto_transitive(t, new, \p.failLabel)
 		}
 	    "ir_Create" : {  # ir_Create : ( lhs location )
 		p.coexpLabel := optim_goto_chain_defer(p.coexpLabel, t)
@@ -372,7 +372,7 @@ procedure optim_refcountX(refcount, p)
 	refcount[p.failLabel] +:= 1
         }
     "ir_ResumeValue" : {  # ir_ResumeValue : ( lhs value failLabel )
-	refcount[p.failLabel] +:= 1
+	refcount[\p.failLabel] +:= 1
         }
     "ir_Create" : {  # ir_Create : ( lhs coexpLabel )
 	refcount[p.coexpLabel] +:= 1
