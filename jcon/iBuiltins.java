@@ -1,14 +1,21 @@
 //  iBuiltins.java -- built-in functions
 
+import java.io.*;
+
+
+
 class iBuiltins extends iFile {
+
 
 
 static final String PREFIX = "f$";	// classname prefix for built-in funcs
 
 
+
 void announce(iEnv env) {
 	declare(env, "image");
 	declare(env, "right");
+	declare(env, "stop");
 	declare(env, "write");
 	declare(env, "writes");
 }
@@ -77,32 +84,48 @@ class f$right extends iFunctionClosure {			// right(s,i,s)
 }
 
 
-class f$write extends iFunctionClosure {			// write(...)
-	// #%#%#% overly simplified code for "write"
-	vDescriptor function(vDescriptor[] args) {
+
+class oOutput {		// common helper for write(), writes(), stop()
+
+	// #%#%#% overly simplified: does not handle file switching
+
+	static vDescriptor print(PrintStream p, vDescriptor[] args) {
 		for (int i = 0; i < args.length; i++) {
-			System.out.print(args[i].write());
+			p.print(args[i].write());
 		}
-		System.out.println();
 		if (args.length == 0) {
 		    return iNew.Null();
 		} else {
-		    return args[args.length-1];
+		    return args[args.length - 1];
 		}
+		
+	}
+
+}
+
+
+class f$write extends iFunctionClosure {			// write(...)
+	vDescriptor function(vDescriptor[] args) {
+		vDescriptor result = oOutput.print(System.out, args);
+		System.out.println();
+		return result;
 	}
 }
 
 
 class f$writes extends iFunctionClosure {			// writes(...)
-	// #%#%#% overly simplified code for "writes"
 	vDescriptor function(vDescriptor[] args) {
-		for (int i = 0; i < args.length; i++) {
-			System.out.print(args[i].write());
-		}
-		if (args.length == 0) {
-		    return iNew.Null();
-		} else {
-		    return args[args.length-1];
-		}
+		return oOutput.print(System.out, args);
+	}
+}
+
+
+class f$stop extends iFunctionClosure {				// stop(...)
+	vDescriptor function(vDescriptor[] args) {
+		System.out.flush();				// flush stdout
+		oOutput.print(System.err, args);		// write msg
+		System.err.println();
+		System.exit(1);					// exit
+		return null;	// not reached
 	}
 }
