@@ -74,6 +74,19 @@ vDescriptor Select() {
 
 
 //#%#%#% need to rewrite these to handle overflow:
+vValue Power(vDescriptor v) {
+    long x = this.value;
+    long y = ((vInteger)v).value;
+    if (x == 0 && y <= 0) {
+	iRuntime.error(204);
+    }
+    long p = 1L;
+    for (long i = 0; i < y; i++) {
+	p *= x;		//#%#%# totally ignoring overflow.
+    }
+    return iNew.Integer(p);
+} 
+
 vValue Add(vDescriptor v) {
     return iNew.Integer(this.value + ((vInteger)v).value);
 } 

@@ -42,6 +42,7 @@ abstract class vVariable extends vDescriptor {
     vNumeric Negate()			{ return this.deref().Negate(); }
     vInteger Size()			{ return this.deref().Size(); }
 
+    vValue Power(vDescriptor v)		{ return this.deref().Power(v); }
     vValue Add(vDescriptor v)		{ return this.deref().Add(v); }
     vValue Sub(vDescriptor v)		{ return this.deref().Sub(v); }
     vValue Mul(vDescriptor v)		{ return this.deref().Mul(v); }

@@ -52,6 +52,7 @@ abstract class vDescriptor {
     abstract vDescriptor Section(vValue v1, vValue v2);  // x1[i1:i2]
 
     // simple binary operators
+    abstract vValue Power(vDescriptor v);	//  n1 ^ n2
     abstract vValue Add(vDescriptor v);		//  n1 + n2
     abstract vValue Sub(vDescriptor v);		//  n1 - n2
     abstract vValue Mul(vDescriptor v);		//  n1 * n2

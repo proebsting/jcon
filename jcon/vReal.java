@@ -69,6 +69,10 @@ vNumeric Negate()	{ return iNew.Real(-value); }
 
 vDescriptor Select()	{ return this.mkInteger().Select(); }
 
+vValue Power(vDescriptor v) {
+    return iNew.Real(Math.pow(this.value, ((vReal)v).value));
+} 
+
 vValue Add(vDescriptor v) {
     return iNew.Real(this.value + ((vReal)v).value);
 } 

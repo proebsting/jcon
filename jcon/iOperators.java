@@ -33,6 +33,7 @@ void announce(iEnv env) {
 
     declare(env, "&,2", "oConjunction");
 
+    declare(env, "^,2", "oPower");
     declare(env, "+,2", "oAdd");
     declare(env, "-,2", "oSub");
     declare(env, "*,2", "oMul");
@@ -306,6 +307,14 @@ class oNegate extends iFunctionClosure {		//  -n
 		return args[0].Negate();
 	}
 	String tfmt() { return "{-$1}"; }
+}
+
+class oPower extends iFunctionClosure {			//  n1 ^ n2
+	vDescriptor function(vDescriptor[] args) {
+		vNumeric.Coerce(args);
+		return args[0].Power(args[1]);
+	}
+	String tfmt() { return "{$1 ^ $2}"; }
 }
 
 class oAdd extends iFunctionClosure {			//  n1 + n2
