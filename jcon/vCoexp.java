@@ -54,14 +54,15 @@ public void run() {
 
 public void coret(vDescriptor retValue) {
     vCoexp caller = (vCoexp) callers.pop();
-    resultCount++;
+    if (retValue != null) {
+       resultCount++;
+    }
     transfer(retValue, caller);
 }
 
 public void cofail() {
     for (;;) {
-	vCoexp caller = (vCoexp) callers.pop();
-	transfer(null, caller);
+	coret(null);
     }
 }
 

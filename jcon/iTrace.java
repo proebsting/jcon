@@ -41,7 +41,10 @@ public static vDescriptor Call(String fname, int lineno,
 
     file = null;		// clear for called procedure to set (or not)
     line = 0;
+
+    iEnv.cur_coexp.depth++;
     vDescriptor result = vTracedClosure.New(p, args, p.Call(args));
+    iEnv.cur_coexp.depth--;
 
     if (iKeyword.trace.check()) {
 	if (result instanceof vClosure) {
@@ -69,7 +72,6 @@ public static vDescriptor Resume(String fname, int lineno, vDescriptor object) {
     if (! (object instanceof vTracedClosure)) {		// don't trace to-by etc
 	return object.Resume();
     }
-    iEnv.cur_coexp.depth++;
     if (iKeyword.trace.check()) {
 	trace(fname, lineno, object, " resumed");
     }
@@ -78,6 +80,7 @@ public static vDescriptor Resume(String fname, int lineno, vDescriptor object) {
     line = 0;
     vDescriptor result;
 
+    iEnv.cur_coexp.depth++;
     try {
 	result = object.Resume();	// resume procedure
     } catch (iError e) {
@@ -86,6 +89,7 @@ public static vDescriptor Resume(String fname, int lineno, vDescriptor object) {
 	line = 0;
 	throw e;
     }
+    iEnv.cur_coexp.depth--;
 
     if (iKeyword.trace.check()) {
 	if (line < 0) {
@@ -94,7 +98,6 @@ public static vDescriptor Resume(String fname, int lineno, vDescriptor object) {
 	trace(file, line, object, " suspended", result);
     }
 
-    iEnv.cur_coexp.depth--;
     file = null;		// prevent confusion by caller's caller
     line = 0;
     return result;		// return/suspend result
@@ -105,7 +108,7 @@ public static vDescriptor Resume(String fname, int lineno, vDescriptor object) {
 //  iTrace.coret -- called by trampolines to issue tracing messages
 
 public static void coret(String fname, int lineno, String caller,
-vCoexp a, vDescriptor val) {
+			vCoexp a, vDescriptor val) {
     if (iKeyword.trace.check()) {
 	String s = caller + "; " + iEnv.cur_coexp.report() +
 	    " returned " + val.report() + " to ";
@@ -116,7 +119,6 @@ vCoexp a, vDescriptor val) {
 	}
 	trace(fname, lineno, s);
     }
-    iEnv.cur_coexp.depth--;
     a.coret(val);
 }
 
@@ -125,17 +127,18 @@ vCoexp a, vDescriptor val) {
 //  iTrace.cofail -- called by trampolines to issue tracing messages
 
 public static void cofail(String fname, int lineno, String caller, vCoexp a) {
-    if (iKeyword.trace.check()) {
-	String s = caller + "; " + iEnv.cur_coexp.report() + " failed to ";
-	try {
-	    s += ((vCoexp) a.callers.peek()).report();
-	} catch (java.util.EmptyStackException e) {
-	    iRuntime.error(900);
+    for (;;) {
+	if (iKeyword.trace.check()) {
+	    String s = caller + "; " + iEnv.cur_coexp.report() + " failed to ";
+	    try {
+		s += ((vCoexp) a.callers.peek()).report();
+	    } catch (java.util.EmptyStackException e) {
+		iRuntime.error(900);
+	    }
+	    trace(fname, lineno, s);
 	}
-	trace(fname, lineno, s);
+	a.coret(null);		// not cofail: need loop HERE, not in cofail
     }
-    iEnv.cur_coexp.depth--;
-    a.cofail();
 }
 
 
@@ -144,7 +147,6 @@ public static void cofail(String fname, int lineno, String caller, vCoexp a) {
 
 public static vDescriptor Activate(String fname, int lineno, String caller,
 					vDescriptor a1, vDescriptor a2) {
-    iEnv.cur_coexp.depth++;
     if (iKeyword.trace.check()) {
 	trace(fname, lineno, caller + "; " + iEnv.cur_coexp.report() +
 	    " : " + a2.Deref().report() + " @ " + a1.Deref().report());
@@ -201,7 +203,7 @@ static void trace(String fname, int lineno, String s) {
 	out.append(ln).append("  ");
     }
 
-    for (int n = iEnv.cur_coexp.depth - 1; n > 0; n--) {
+    for (int n = iEnv.cur_coexp.depth; n > 0; n--) {
 	out.append("| ");
     }
 
