@@ -798,7 +798,7 @@ procedure ir_a_ProcBody(p, st, inuse, target, bounded)
     tiu := []
     every i := 1 to *p.nexprList do {
         put(tiu, ir_new_inuse())
-        suspend ir(p.nexprList[i], ir_stacks(0,0,0), tiu[i], &null,
+        suspend ir(p.nexprList[i], ir_stacks(0,0), tiu[i], &null,
                  "always bounded")
     }
 
@@ -822,8 +822,8 @@ end
 procedure ir_a_ProcCode(p, st, inuse, target, bounded)
     ir_init(p)
 
-    suspend ir(p.init, ir_stacks(0,0,0), inuse, &null, "always bounded")
-    suspend ir(p.body, ir_stacks(0,0,0), inuse, &null, "always bounded")
+    suspend ir(p.init, ir_stacks(0,0), inuse, &null, "always bounded")
+    suspend ir(p.body, ir_stacks(0,0), inuse, &null, "always bounded")
 
     ir_start := p.ir.start
     suspend ir_Chunk(p.ir.start, [
@@ -1524,7 +1524,7 @@ procedure ir_max_st(st, t)
 end
 
 procedure ir_new_inuse()
-    return ir_stacks(set(), set(), set())
+    return ir_stacks(set(), set())
 end
 
 procedure ir_union_inuse(x, L)
