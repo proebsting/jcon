@@ -38,7 +38,6 @@ install:
 clean:
 	rm -f */.#*
 	cd html;  $(MAKE) clean
-	cd paper; $(MAKE) clean
 	cd tran;  $(MAKE) clean
 	cd jcon;  $(MAKE) clean
 	cd test;  $(MAKE) clean
