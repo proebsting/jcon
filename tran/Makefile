@@ -95,7 +95,7 @@ bmark:	jtran jjtran
 	BLKSIZE=6000000 STRSIZE=1000000 COEXPSIZE=50000 time ./jtran $(ARGS)
 	rm -rf tmp/*
 	time ./jjtran $(ARGS)
-	
+
 
 # programs that build programs
 
