@@ -3,9 +3,9 @@ running jcont:
 -- <platform> is one of {linux,digital,solaris}
 
 what's implemented:
--- all datatypes except "file" (but there are no large integers)
--- many keywords (see list)
--- many built-in functions (see list)
+-- all datatypes (but there are no large integers)
+-- most keywords (see list)
+-- most built-in functions (see list)
 -- no "invocable" declaration support
 -- no graphics
 -- "icont -E" used for preprocessing
@@ -32,6 +32,11 @@ numerics:
 -- conversion of reals (& possibly integers) to strings does not match v9
 -- conversion of strings to reals and integers probably follows different rules
 
+files:
+-- no "translated mode" code for Mac or Windows
+-- no buffering, except possibly on &input/&output/&errout
+-- random I/O (seek(), where()) fails for &input/&output/&errout
+
 error reporting:
 -- arg lists in traceback show actual instead of expected number of arguments
    (e.g.: a call to insert() traces as insert() not insert(&null,&null,&null))
@@ -40,7 +45,6 @@ error reporting:
 miscellaneous:
 -- commands run by system(s) do not inherit stdin/stdout/error 
 -- random selection from sets and tables differs from v9
--- read() and write() don't accept file arguments
 -- display() ignores its arguments (and displays everything)
 -- display() prints globals in an unsorted order
 -- function() generates names in an unsorted order
@@ -51,6 +55,7 @@ miscellaneous:
 
 arguably correct differences:
 -- tables sort after sets, as per the Icon book but contrary to v9
+-- seek(-n) fails if n > filesize
 -- to-by handles overflow in "n to MAXINT" case
 -- 1 / 0 gives error 201 instead of error 204
 -- traceback is deliberately limited to the innermost 100 nested calls
@@ -64,6 +69,7 @@ compatible, although the book is unclear or wrong:
 -- procedures, functions, and record constructors all sort together, by name
 -- records sort first by type and then by serial number
 -- args() uses same rules for builtin and declared varargs procedures
+-- flush(f) returns f, not null
 
 known bugs:
 -- e[e+:e] and e[e-:e] function identically to v9, which is wrong
