@@ -23,7 +23,6 @@ building programs:
 
 strings and csets:
 -- characters are 16-bit Unicode, but all I/O is to/from 8-bit ASCII files
--- image() doesn't escape special characters
 -- image(c) doesn't recognize &digits, &lcase, etc.
 -- csets may be up to 2^16 characters; big ones run slowly
 -- &cset is size 256, as in v9; it's not clear that this is correct
