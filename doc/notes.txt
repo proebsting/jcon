@@ -18,6 +18,7 @@ execution:
 -- $PATH must include env and uname commands to use getenv() and &hostname
 -- tracing (set by $TRACE or &trace) includes operators and built-in functions
 -- executables are portable among dissimilar Unix platforms (just need ksh+Java)
+-- very large .icn files (e.g. 9000 lines) may produce bogus ClassFormatErrors
 
 known bugs:
 -- local variables are not dereferenced prior to being returned
