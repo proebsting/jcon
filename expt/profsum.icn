@@ -1,0 +1,109 @@
+#SRC: APP
+
+#  profsum -- read and summarize profiling data from "java -prof"
+#
+#  usage:  profsum [file]	-- typically: profsum java.prof
+#
+#  3-jul-97/gmt
+
+
+
+record method(name, ncalls, tself, tcalled, tlocal)
+
+global ptab
+
+
+
+procedure main(args)
+   local f, line, p, l, tlocal, ttotal, pct
+
+   if *args > 0 then
+      f := open(args[1]) | stop(&progname, ": can't open ", args[1])
+   else
+      f := &input
+
+   while line := read(f) do line ? {
+      if ="count" then
+          next
+      if not any(&digits) then
+          break
+      accumulate()
+      }
+
+   l := []
+   ttotal := 0
+   every p := !ptab do {
+      p.tlocal := p.tself - p.tcalled
+      if p.tlocal > 0 then
+         ttotal +:= p.tlocal
+      put(l, p)
+   }
+   l := sortf(l, 5)
+
+   write("   ncalls  tottime inmethod  pct  method")
+
+   while p := pull(l) do {
+      if p.tlocal > 0 then
+	 pct := (100 * p.tlocal + ttotal / 2) / ttotal
+      else
+	 pct := (100 * p.tlocal - ttotal / 2) / ttotal
+      write(
+	 right(p.ncalls, 9),
+	 right(p.tself, 9),
+	 right(p.tlocal, 9),
+         right(pct, 4), "%",
+	 "  ",
+	 p.name);
+      }
+
+end
+
+
+
+procedure lookup(s)
+   local p
+   initial ptab := table()
+
+   if p := \ptab[s] then
+      return p
+   else
+      return ptab[s] := method(s, 0, 0, 0)
+end
+
+
+
+procedure accumulate()
+   local count, caller, callee, time, p, q
+
+   count := integer(tab(many(&digits)))
+   tab(many(' '))
+   callee := tab(upto(' '))
+   tab(many(' '))
+   caller := tab(upto(' '))
+   if caller ||:= =" caller" then
+      caller ||:= tab(upto(' '))
+   tab(many(' '))
+   time := integer(tab(many(&digits)))
+
+   caller := fixname(caller)
+   callee := fixname(callee)
+
+   p := lookup(callee)
+   p.tself +:= time
+   p.ncalls +:= count
+
+   q := lookup(caller)
+   q.tcalled +:= time
+
+   return
+end
+
+
+
+procedure fixname(s)
+   s ? {
+      # strip "meaningless" prefix
+      ="rts/" | (="java/" & tab(upto('/') + 1)) | (="p_l$" & tab(upto('$')))
+      return tab(0)
+   }
+end

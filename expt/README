@@ -1,0 +1,5 @@
+jcon/expt
+
+This directory contains programs not suitable for inclusion in the
+automated test suite -- including interactive, graphical, and
+system-dependent tests, demonstrations, and experiments.

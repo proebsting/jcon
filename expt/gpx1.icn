@@ -1,0 +1,44 @@
+#SRC: JCON
+
+#  gpx1.icn -- a first test of miscellaneous graphics functions
+
+
+procedure main()
+   local colors, a, i, w, h, e, x, y
+
+   &window := open("window", "g", "size=500,300")
+   DrawRectangle(10, 10, 480, 280)
+
+   every i := 3 to 50 by 3 do
+      DrawRectangle(0,0,i,i)
+
+   every i := 5 to 360 by 10 do {
+      a := dtor(i)
+      w := 75 * cos(a)
+      h := 75 * sin(a)
+      DrawRectangle(250+w-2, 150+h-2, 4, 4)
+      DrawRectangle(250, 150, w, h)
+   }
+
+   colors := ["black", "blue", "brown", "cyan", "gray", "green",
+      "grey", "magenta", "orange", "pink", "purple", "red",
+      "violet", "white", "yellow"]
+
+   every i := 1 to *colors do {
+      Fg(colors[i])
+      FillRectangle(485, 300 - 15 * i, -15, -15)
+   }
+
+   every i := 4 to 360 by 4 do {
+      a := dtor(i)
+      x := 250 + 180 * cos(a)
+      y := 150 + 110 * sin(a)
+      Fg(?colors)
+      FillRectangle(x - 8, y - 8, 15, 15)
+   }
+
+   while e := Event(&window) do {
+      write(image(e))
+      if e === !"\^c\^d\d" then break
+   }
+end
