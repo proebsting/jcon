@@ -273,7 +273,7 @@ procedure writer_cp_info(writer, p)
 
 	case (type(p)) of {
 	default: {
-		stop("ERROR, ", image(&file), " ", &line, ": unknown ", image(p))
+		runerr(1000, p)
 	}
 	"CONSTANT_Class": {
 		writer_u1(writer, 7)
@@ -382,7 +382,7 @@ procedure writer_attribute_info(writer, p)
 
 	case (type(p)) of {
 	default: {
-		stop("ERROR, ", image(&file), " ", &line, ": unknown ", image(p))
+		runerr(1000, p)
 	}
 	"SourceFile_attribute": {
 		writer_u2(writer, p.attribute_name_index)
@@ -944,7 +944,7 @@ insert(opcode_leaf, "label")
 		writer_s4(writer, p.default_offset)
 		writer_s4(writer, p.low)
 		writer_s4(writer, p.high)
-		p.high - p.low +1 = *p.offsets | stop("ERROR ", image(&file), " ", &line)
+		p.high - p.low +1 = *p.offsets | runerr(1000, p)
 		every i := !p.offsets do {
 			writer_s4(writer, i)
 		}
@@ -1287,7 +1287,7 @@ procedure offset_opcodes(p, offset, locations)
 
 	case (type(p)) of {
 	default: {
-		stop("ERROR, ", image(&file), " ", &line, ": unknown ", image(p))
+		runerr(1000, p)
 	}
 	"tableswitch": {
 		p.pad := offset
@@ -1446,7 +1446,7 @@ procedure offset_attribute_info(offset)
 	offset +:= 6
 	case (type(p)) of {
 	default: {
-		stop("ERROR, ", image(&file), " ", &line, ": unknown ", image(p))
+		runerr(1000, p)
 	}
 	"SourceFile_attribute": {
 		offset +:= 2
