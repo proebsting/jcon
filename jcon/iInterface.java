@@ -11,8 +11,6 @@ public class iInterface {
 	public static vDescriptor[] marshall(
 	    vDescriptor[] args, int len, boolean varargs) {
 
-//#%#%#% System.err.println("marshall " + args.length + " args, len=" + len + ", varargs=" + varargs);
-
 		vDescriptor[] a = new vDescriptor[len];
 
 		int max = varargs ? len-1 : len;

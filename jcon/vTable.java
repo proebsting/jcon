@@ -179,7 +179,13 @@ class vTableElem extends vValue {	// key/value pair for sorting
     }
 
     int compareTo(vValue v)	{
-    	return sortkey.compareTo(((vTableElem)v).sortkey);
+	vValue vkey = ((vTableElem)v).sortkey;
+	int d = sortkey.rank() - vkey.rank();
+	if (d == 0) {
+	    return sortkey.compareTo(vkey);
+	} else {
+	    return d;
+	}
     }
 
     String image()  { return "(" + sortkey.image() + "," + other.image() + ")";}
