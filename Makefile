@@ -47,6 +47,7 @@ clean:
 	cd demo;  $(MAKE) clean
 	cd bmark; $(MAKE) clean
 	cd bin;   $(MAKE) clean
+	rm -rf jvmtest
 
 
 # clean up for distribution by removing locally-specific files

@@ -1,0 +1,172 @@
+#!/bin/sh -p
+#
+#  mkjtest -- make ./jvmtest, a stand-along JVM test directory
+#
+#  <<ARIZONA-ONLY>>
+
+DIR=jvmtest	# JVM test directory to make
+JCT=test	# jcon current test directory
+
+
+GEN=
+JAR=
+DAT=
+STD=
+
+
+test -d $DIR || mkdir $DIR
+rm -rf $DIR/*
+
+for SRC in `cd $JCT; ls *.icn`; do
+    BASE=`basename $SRC .icn`
+    if [ -f $JCT/$BASE.std -a ! -f $JCT/$BASE.sh ]; then
+	echo "   $BASE.icn"
+	if [ ! -f $JCT/$BASE.jar ]; then
+	    OPTS=`sed -n 's/^#OPT:  *//p' $JCT/$BASE.icn`
+	    (cd $JCT; ./jcont -js $OPTS $BASE.icn)
+	fi
+	cp $JCT/$BASE.icn $DIR
+	cp $JCT/$BASE.jar $DIR
+	cp $JCT/$BASE.std $DIR
+	cp $JCT/$BASE.dat $DIR  2>/dev/null	# may not exist
+    fi
+    cp bmark/geddump.dat $DIR/geddump.bmd
+    cp bmark/tgrlink.dat $DIR/tgrlink.bmd
+done
+
+echo "   miscellaney"
+cp bin/jcon.zip $DIR
+
+
+
+# =============================== generate a simple Makefile
+
+cat <<'==EOF==' >$DIR/Makefile
+#  Java Virtual Machine Tests from Jcon 2.0
+#  see README for more information
+
+COMMAND=java
+  
+run:	
+	./jvmtest $(COMMAND)
+
+bmark:
+	CLASSPATH=jcon.zip:geddump.jar  time $(COMMAND) \
+		geddump geddump.bmd >geddump.out
+	CLASSPATH=jcon.zip:tgrlink.jar  time $(COMMAND) \
+		tgrlink tgrlink.bmd >tgrlink.out
+
+clean:	
+	rm -f core javacore.txt *.out
+==EOF==
+
+
+
+# =============================== generate a README file for the test directory
+
+cat <<'==EOF==' >$DIR/README
+Java Virtual Machine Tests from Jcon 2.0
+
+Gregg Townsend
+Todd Proebsting
+
+jcon@cs.arizona.edu
+http://www.cs.arizona.edu/jcon
+
+
+This directory contains Jar archives of Java classfiles built by Jcon, a
+Java implementation of the Icon programming language.  Originally written
+to test Jcon, these programs also prove to be a good challenge for Java
+implementations: Most interpreters have no problems, but JIT compilers have
+proven to be less robust.  In response, we have bundled up this collection
+of tests that can be run directly by Java without building Jcon.
+
+To run the tests, execute the "jvmtest" script in this directory, passing a
+java command to the script as its arguments.  For example:
+
+	./jvmtest java
+	./jvmtest /build/java47/bin/java -nojit
+	setenv JAVA_COMPILER NONE; ./jvmtest java
+
+A normal execution outputs the name of each test as it is run.  Any test
+failure indicates a bug in the Java implementation.  Failures can take
+several forms, including segmentation faults in the Java virtual machine
+and incorrect output as reported by "cmp".  No program should run more
+than a few seconds; if a program that runs longer than a minute, then its
+Java process should be killed to allow the script to continue.
+
+Note that Jcon produces Java classfiles directly from Icon source code,
+and and that there is no Java source code for these tests.  Indeed, Jcon
+produces legal classfiles that correspond to no legal Java source program.
+Disassembly via the "javap" program is the best way to examine one of them.
+The original Icon programs are included here for reference, but building
+them requires a full copy of Jcon.  All the test programs link with the
+"jcon" package (jcon.zip); its source code is included in the Jcon
+distribution.
+
+Two of these programs also serve, with larger input files, as Jcon
+benchmarks.  To run them, enter "make bmark COMMAND=java", replacing
+"java" by another command if desired.
+
+This directory was built 28 April 1999 using	
+	Jcon 2.0		http://www.cs.arizona.edu/icon/jcon
+	Icon 9.3.1		http://www.cs.arizona.edu/icon
+	Jikes 0.49		http://www.research.ibm.com/jikes
+	JDK 1.1.7_v1a		http://www.blackdown.org
+	Red Hat Linux 5.2	http://www.redhat.com
+==EOF==
+
+
+
+# =============================== the following script runs the tests
+
+cat <<'==EOF==' >$DIR/jvmtest
+#!/bin/sh
+#
+#  jvmtest [command] -- run JVM test derived from Jcon 2.0
+#
+#  examples:
+#	./jvmtest			-- run with default Java options
+#	./jvmtest java -nojit		-- run with JIT disabled
+
+COMMAND="${*-java}"
+FAILED=
+
+exec 2>& 1	# merge stdout and stderr
+
+echo
+uname -a
+date
+echo JAVA_COMPILER=${JAVA_COMPILER-"<unset>"}
+echo JAVA_FAST_JVM=${JAVA_FAST_JVM-"<unset>"}
+(set -x; $COMMAND -version; $COMMAND -fullversion) || exit
+echo
+
+for TEST in *.jar; do
+    BASE=`basename $TEST .jar`
+    echo ${BASE}:
+
+    if [ -r $BASE.dat ]; then
+    	exec <$BASE.dat
+	ARG=$BASE.dat
+    else
+	exec </dev/null
+	ARG=
+    fi
+
+    CLASSPATH=jcon.zip:$BASE.jar $COMMAND $BASE $ARG >$BASE.out
+    cmp $BASE.std $BASE.out || FAILED="$FAILED $BASE"
+done
+
+# report summary of results
+echo
+case "X$FAILED"  in
+    X)  echo "Testing successful.";  exit 0;;
+    *)  echo "Testing FAILED for: $FAILED"; exit 1;;
+esac
+date
+==EOF==
+chmod +x $DIR/jvmtest
+
+
+echo "   >>> Remember to edit the README (dates and version numbers)"
