@@ -10,6 +10,7 @@ what's implemented:
 -- preprocessing
 -- most functions; missing chdir(), loadfunc(), getch()/getche()/kbhit()
 -- only part of the graphics repertoire (see below)
+-- Icon as defined by LB3/GB; undocumented & deprecated features are omitted
 
 compilation and linking:
 -- jcont is a complex script that only runs on Unix
