@@ -1,6 +1,6 @@
 #!/bin/ksh
 #
-#  jcont file.zip [args...] -- execute Icon program built by jcont
+#  jcont file[.zip] [args...] -- execute Icon program built by jcont
 
 PROJHOME=/cs/jive
 SUMATRA=/cs/sumatra
