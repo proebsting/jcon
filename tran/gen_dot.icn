@@ -37,7 +37,7 @@ procedure dot_output(t)
                 }
                 }
             "ir_Goto" : {
-                write(lab, ":f", i, " ->", image(dot_dump(insn.location)))
+                write(lab, ":f", i, " ->", image(dot_dump(insn.targetLabel)))
                 }
             "ir_Field" |
             "ir_OpFunction" |
