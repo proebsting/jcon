@@ -28,37 +28,39 @@ procedure dot_output(t)
             insn := code[i]
             case type(insn) of {
             "irMove" : {
-                if type(insn.lhs) == "irTmpLabel" then {
+                if type(\insn.lhs) == "irTmpLabel" then {
                     write(image(dot_dump(insn.lhs)),
-			  "->",
-			  image(dot_dump(insn.rhs)))
+                          "->",
+                          image(dot_dump(insn.rhs)))
                 }
                 }
             "irGoto" : {
                 write(lab, ":f", i, " ->", image(dot_dump(insn.location)))
                 }
+            "irField" |
+            "irOpFunction" |
             "irResume" : {
                 write(lab, ":f", i,
-		      " ->",
-		      image(dot_dump(insn.failLabel)), " [label=failure]")
+                      " ->",
+                      image(dot_dump(\insn.failLabel)), " [label=failure]")
                 }
             "irSucceed" : {
                 write(lab, ":f", i,
-		      " ->",
-		      image(dot_dump(insn.continuation)),
-		      " [label=continuation]")
+                      " ->",
+                      image(dot_dump(\insn.continuation)),
+                      " [label=continuation]")
                 }
             "irCoRet" : {
                 write(lab, ":f", i,
-		      " ->",
-		      image(dot_dump(insn.continuation)),
-		      " [label=continuation]")
+                      " ->",
+                      image(dot_dump(insn.continuation)),
+                      " [label=continuation]")
                 }
             "irEnterInit" : {
                 write(lab, ":f", i,
-		      " ->",
-		      image(dot_dump(insn.startlabel)),
-		      " [label=start]")
+                      " ->",
+                      image(dot_dump(insn.startlabel)),
+                      " [label=start]")
                 }
             }
         }
@@ -88,11 +90,15 @@ procedure dot_function(name, params, accumulate, locals, statics, code, coord)
     write("}")
 end
 
-procedure dot_File(getline, flagList)
+procedure dot_File(parse, flagList)
+    local p
     if match("-O", !flagList) then {
         optimize_flag := 1
     }
-    every ir(parse(getline))
+    CG := dot_CG()
+    while p := @parse do {
+        ir(p)
+    }
 end
 
 procedure dot_CG()
