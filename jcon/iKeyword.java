@@ -341,8 +341,7 @@ final class k$dateline extends vProc0 {				// &dateline
 
     public vDescriptor Call() {
 	if (formatter == null) {
-	    formatter =
-	    new SimpleDateFormat("EEEEEE, MMMM d, yyyy  h:mm aa");
+	    formatter = new SimpleDateFormat("EEEEEE, MMMM d, yyyy  h:mm aa");
 	    formatter.setTimeZone(TimeZone.getDefault());
 	}
 	Date d = new Date();
