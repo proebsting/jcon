@@ -35,9 +35,34 @@ public class iInterface {
 		return a;
 	}
 
-	public static void start(iFile[] files, String[] args, String name) {
-		for (int i = 0; i < files.length; i++) {
-			files[i].announce();
+	public static void link(String name) {
+		try {
+			Class c = Class.forName(name);
+			Object o = c.newInstance();
+			iFile file = (iFile) o;
+			file.announce();
+		} catch (ClassNotFoundException e) {
+			System.err.println();
+			System.err.println("linking error in startup code");
+			System.err.println("error linking file " + name);
+			iRuntime.exit(1, null);
+		} catch (InstantiationException e) {
+			System.err.println();
+			System.err.println("linking error in startup code");
+			System.err.println("error linking file " + name);
+			iRuntime.exit(1, null);
+		} catch (IllegalAccessException e) {
+			System.err.println();
+			System.err.println("linking error in startup code");
+			System.err.println("error linking file " + name);
+			iRuntime.exit(1, null);
+		}
+	}
+
+	public static void start(String[] filenames, String[] args, String name) {
+		iFile[] files = new iFile[filenames.length];
+		for (int i = 0; i < filenames.length; i++) {
+			link(filenames[i]);
 		}
 		k$progname.name = name;
 		iInterface.init();
