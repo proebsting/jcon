@@ -1737,6 +1737,7 @@ end
 
 procedure bc_create_linked(c)
     local linked, linkedcode, linkref, lab, linkmethod, k, s, f
+    local linkclassname, ifile, constructor
 
     if *bc_link_set > 0 then {
         j_create_field(c, 8, "linked", "Z")
@@ -1754,7 +1755,13 @@ procedure bc_create_linked(c)
         linkmethod := bc_link_methodref(c)
 
         every k := !bc_link_set do {
-            s := j_cp_String(c, j_cp_Utf8(c, "l$" || k)) | runerr(500)
+	    linkclassname := "l$" || k
+	    ifile := j_cp_Class(c, j_cp_Utf8(c, linkclassname))
+	    put(linkedcode.code, j_new(ifile) )
+	    put(linkedcode.code, j_dup() )
+            constructor := bc_init_methodref(c, linkclassname)
+            put(linkedcode.code, j_invokespecial(constructor) )
+            s := j_cp_String(c, j_cp_Utf8(c, linkclassname))
             put(linkedcode.code, j_ldc_w(s) )
             put(linkedcode.code, j_invokestatic(linkmethod) )
         }

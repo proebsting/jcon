@@ -260,7 +260,7 @@ procedure methodrefs()
             ["Field", "(Ljava/lang/String;)Lrts/vVariable;", "rts/vDescriptor"],
             ["Field", "(Ljava/lang/String;ILrts/vDescriptor;Ljava/lang/String;)Lrts/vVariable;", "rts/iTrampoline", "trampoline_Field"],
             ["error", "(I)V", "rts/iRuntime"],
-            ["link", "(Ljava/lang/String;)V", "rts/iInterface"],
+            ["link", "(Lrts/iFile;Ljava/lang/String;)V", "rts/iInterface"],
             ["marshal", "([Lrts/vDescriptor;I)Lrts/vList;", "rts/iInterface"],
             ["propagate", "(Ljava/lang/String;[Lrts/vDescriptor;)V", "rts/iError"],
             ["resolve", "(Ljava/lang/String;)Lrts/vVariable;", "rts/iEnv"],

@@ -2,6 +2,8 @@ package rts;
 
 public final class iInterface {
 
+static String name;
+static String args[];
 
 
 public static vList marshal( vDescriptor[] args, int len) {
@@ -21,45 +23,34 @@ public static vList marshal( vDescriptor[] args, int len) {
 
 
 static java.util.Hashtable fileTable = new java.util.Hashtable();
-public static void link(String name) {
+public static void link(iFile f, String name) {
     if (fileTable.containsKey(name)) {
 	return;
     }
-    try {
-	Class c = Class.forName(name);
-	Object o = c.newInstance();
-	iFile file = (iFile) o;
-	file.link();
-	fileTable.put(name, file);
-    } catch (Throwable e) {
-	System.err.println();
-	System.err.println("startup error linking " + name + ": " + e);
-	String s = e.getMessage();
-	if (s != null) {
-	    System.err.println("   " + s);
-	}
-	if (e instanceof ExceptionInInitializerError) {
-	    e = ((ExceptionInInitializerError) e).getException();
-	}
-	e.printStackTrace();
-	iRuntime.exit(1);
-    }
+    f.link();
+    fileTable.put(name, f);
 }
-
 
 
 // program startup
 
-public static void start(String[] filenames, String[] args, String name) {
+public static void start(String[] args, String name, iExecutable exe) {
+    iInterface.args = args;
+    iInterface.name = name;
+    exe.start();
+}
+
+public static void start(iFile[] files, String[] names) {
     java.util.Enumeration e;
 
-    for (int i = 0; i < filenames.length; i++) {
-	link(filenames[i]);
+    for (int i = 0; i < files.length; i++) {
+	link(files[i], names[i]);
     }
+
     e = fileTable.elements();
     while (e.hasMoreElements()) {
-	iFile file = (iFile) e.nextElement();
-	file.unresolved();
+	iFile f = (iFile) e.nextElement();
+	f.unresolved();
     }
     iEnv.declareInvoke("main");
 
@@ -70,13 +61,13 @@ public static void start(String[] filenames, String[] args, String name) {
 
     e = fileTable.elements();
     while (e.hasMoreElements()) {
-	iFile file = (iFile) e.nextElement();
-	file.declare();
+	iFile f = (iFile) e.nextElement();
+	f.declare();
     }
     e = fileTable.elements();
     while (e.hasMoreElements()) {
-	iFile file = (iFile) e.nextElement();
-	file.resolve();
+	iFile f = (iFile) e.nextElement();
+	f.resolve();
     }
 
     iKeyword.progname.set(vString.New(name));
