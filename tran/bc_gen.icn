@@ -1130,7 +1130,7 @@ procedure bc_File(getline, flagList)
 		optimize_flag := 1
 	}
 	bc_directory := "./"
-	bc_directory := (!flagList ? (="-dir=" & tab(0)))
+	bc_directory := (!flagList ? (="-dir:" & tab(0)))
 
 	bc_file_name := java_classname
 	bc_link_classname := bc_file_name

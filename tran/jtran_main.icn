@@ -8,12 +8,12 @@ procedure main(L)
 	cg_flags := []
 	while L[1] do {	# process flags
 		pop(L) ? {
-			if ="-target=" then {
+			if ="-target:" then {
 				/CG | stop("ERROR: multiple -target specifications")
 				cg := tab(0)
 				CG := (\proc(cg || "_CG"))()
 				\CG | stop("ERROR: unknown target: ", cg)
-			} else if ="-class=" then {
+			} else if ="-class:" then {
 				/java_classname | stop("ERROR: multiple -class specifications")
 				java_classname := tab(0)
 			} else if ="-" then {

@@ -148,7 +148,7 @@ case $IDIR in
 esac
 
 #  set paths for translator and for runtime files
-JTRAN="$ICONX $IDIR${FILESEP}jtran $JCOPT -target=$TARGET"
+JTRAN="$ICONX $IDIR${FILESEP}jtran $JCOPT -target:$TARGET"
 JRTS="$IDIR${FILESEP}rts.zip"
 
 
@@ -187,7 +187,7 @@ for FNAME in $IFILES; do
     # Icon to Java
     $ANNOUNCE 1>&2 $FNAME.icn:
     if ($PREPROC $FNAME.icn || echo nosuchfile) | 
-		$JTRAN -class=l\$$FNAME -dir=$TDIR/ >$TDIR/$FNAME.java; then
+		$JTRAN -class:l\$$FNAME -dir:$TDIR/ >$TDIR/$FNAME.java; then
 	# if using java target, make "links" file and compile the code
 	if [ $TARGET = java ]; then
 	    sed -n 's=^//JCON//links:==p' $TDIR/$FNAME.java >$TDIR/links
