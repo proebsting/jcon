@@ -1,4 +1,5 @@
 class vCoexp extends vValue implements Runnable {
+	int originalPC;
 	Thread thread;
 	iClosure closure;
 	java.util.Stack callers;
@@ -8,6 +9,7 @@ class vCoexp extends vValue implements Runnable {
 	void setup(Thread thread, iClosure closure) {
 		this.closure = closure;
 		this.thread = thread;
+		this.originalPC = closure.PC;
 		callers = new java.util.Stack();
 		lock = new Semaphore();
 	}
@@ -61,6 +63,10 @@ class vCoexp extends vValue implements Runnable {
 
 	public void create() {
 		thread.start();
+	}
+
+	vValue Refresh() {
+		return new vCoexp(closure.copy(this.originalPC));
 	}
 
 	String image()	{ return "co-expression";}	//#%#% incomplete image

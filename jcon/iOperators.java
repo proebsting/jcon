@@ -65,6 +65,9 @@ void announce(iEnv env) {
     declare(env, "||,2", "oConcat");
 
     declare(env, "@,2", "oActivate");
+    declare(env, "^,1", "oRefresh");
+
+    declare(env, "!,2", "oProcessArgs");
 }
 
 
@@ -519,9 +522,23 @@ class oConcat extends iFunctionClosure {		//  s1 || s2
 	String tfmt() { return "{$1 || $2}"; }
 }
 
+class oRefresh extends iFunctionClosure {		//  ^x
+	vDescriptor function(vDescriptor[] args) {
+		return args[0].Refresh();
+	}
+	String tfmt() { return "{ ^$1 }"; }
+}
+
 class oActivate extends iFunctionClosure {		//  x @ C
 	vDescriptor function(vDescriptor[] args) {
 		return env.cur_coexp.activate(args[0], args[1]);
 	}
 	String tfmt() { return "{$1 @ $2}"; }
+}
+
+class oProcessArgs extends iFunctionClosure {		//  x ! y
+	vDescriptor function(vDescriptor[] args) {
+		iRuntime.error(901); return null;
+	}
+	String tfmt() { return "{$1 ! $2}"; }
 }

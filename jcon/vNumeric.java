@@ -40,5 +40,9 @@ static void Coerce(vDescriptor d[]) {
     }
 }
 
+vValue Complement()		{ return this.mkCset().Complement(); }
+vValue Intersect(vDescriptor x)	{ return this.mkCset().Intersect(x); }
+vValue Union(vDescriptor x)	{ return this.mkCset().Union(x); }
+vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }
 
 } // class vNumeric

@@ -94,6 +94,9 @@ abstract class vDescriptor {
     abstract vValue Union(vDescriptor i);
     abstract vValue Diff(vDescriptor i);
 
+    // coexpression operations
+    abstract vValue Refresh();
+
     //#%#%#%# not-yet-implemented abort
     void NYI(String s) {
 	System.err.println("NYI: " + this + "." + (s != null ? s : "?"));

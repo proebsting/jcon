@@ -33,7 +33,8 @@ final void resume() {
 
 abstract void nextval();
 
-
+// copy() is used to return a "refreshed" copy of the closure.
+iClosure copy(int PC) { iRuntime.error(901); return null; }
 
 void closure(iEnv e, vDescriptor[] a, iClosure parent) {
 	env = e;

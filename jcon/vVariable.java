@@ -108,4 +108,6 @@ abstract class vVariable extends vDescriptor {
     				{ return this.deref().IndexVar(this, i); }
     vDescriptor Section(vValue i, vValue j)
     				{ return this.deref().SectionVar(this, i, j); }
+
+    vValue Refresh()		{ return this.deref().Refresh(); }
 }

@@ -250,4 +250,9 @@ vValue LGreater(vDescriptor v) {
     return this.value.compareTo(vs) > 0 ? (vValue)v : null;
 }
 
+vValue Complement()		{ return this.mkCset().Complement(); }
+vValue Intersect(vDescriptor x)	{ return this.mkCset().Intersect(x); }
+vValue Union(vDescriptor x)	{ return this.mkCset().Union(x); }
+vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }
+
 } // class vString

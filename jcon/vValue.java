@@ -100,4 +100,7 @@ abstract class vValue extends vDescriptor {
     vValue Union(vDescriptor x)		{ iRuntime.error(120, this); return null; }
     vValue Intersect(vDescriptor x)	{ iRuntime.error(120, this); return null; }
     vValue Diff(vDescriptor x)		{ iRuntime.error(120, this); return null; }
+
+    // coexpression operations
+    vValue Refresh()			{ iRuntime.error(118, this); return null; }
 }

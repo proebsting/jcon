@@ -29,6 +29,13 @@ String report()		{ return image(); }
 
 String type()		{ return "cset";}
 
+public boolean equals(Object o) {
+   return (o instanceof vCset)
+	  && (((vCset)o).mkString().equals(this.mkString()));
+}
+
+public int hashCode()	{ return this.mkString().hashCode(); }
+
 vCset mkCset()		{ return this; }
 vNumeric mkNumeric()	{ return this.mkString().mkNumeric(); }
 vInteger mkInteger()	{ return this.mkString().mkInteger(); }
@@ -83,30 +90,35 @@ vValue Complement() {
     return result;
 }
 
-vValue Intersect(vDescriptor x) {
-    if (!(x instanceof vCset)) {
-        iRuntime.error(120, x);
+vValue Union(vDescriptor x) {
+    vCset right = x.mkCset();
+    // all the bigger/smaller nonsense below is due to Sun's
+    // brain-damaged definition of BitSet.or().
+    java.util.BitSet bigger;
+    java.util.BitSet smaller;
+    if (right.t.size() < this.t.size()) {
+	bigger = this.t;
+	smaller = right.t;
+    } else {
+	bigger = right.t;
+	smaller = this.t;
     }
-    vCset result = new vCset((java.util.BitSet) ((vCset)x).t.clone());
+    vCset result = new vCset(bigger);
+    result.t.or(smaller);
+    return result;
+}
+
+vValue Intersect(vDescriptor x) {
+    x = x.mkCset();
+    vCset result = new vCset((java.util.BitSet) ((vCset)x).t);
     result.t.and(this.t);
     return result;
 }
 
-vValue Union(vDescriptor x) {
-    if (!(x instanceof vCset)) {
-        iRuntime.error(120, x);
-    }
-    vCset result = new vCset((java.util.BitSet) ((vCset)x).t.clone());
-    result.t.or(this.t);
-    return result;
-}
-
 vValue Diff(vDescriptor x) {
-    if (!(x instanceof vCset)) {
-        iRuntime.error(120, x);
-    }
+    x = x.mkCset();
     java.util.BitSet b = ((vCset)x).t;
-    vCset result = new vCset((java.util.BitSet) this.t.clone());
+    vCset result = new vCset((java.util.BitSet) this.t);
     for (int i = 0; i < b.size(); i++) {
 	if (b.get(i)) {
 	    result.t.clear(i);
