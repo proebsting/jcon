@@ -415,21 +415,32 @@ vCset mkCset() {						// cset(s)
 
 
 
-public vProc Proc(long i) {
+//  convert string to procedure (implicitly or for proc(s,i))
+
+vProc mkProc(int i) {
+    vProc p;
     String s = this.toString();
-    if (i == 0) {
-	return (vProc) iEnv.getBuiltin(s);
+
+    if (i != 0) {				// check global if not proc(0)
+	if (i == -2) {				// catch recursion
+	    iRuntime.error(106, this);
+	}
+	vDescriptor v = (vDescriptor) iEnv.symtab.get(s);
+	if (v != null) {
+	    return v.mkProc(-2);
+	}
     }
-    
-    vDescriptor v = (vDescriptor) iEnv.symtab.get(s);
-    if (v != null) {
-	return v.Deref().mkProc();
+
+    if ((p = iEnv.getBuiltin(s)) != null) {	// check built-in functions
+	return p;
     }
-    v = (vDescriptor) iEnv.getBuiltin(s);
-    if (v != null) {
-	return (vProc) v;
+
+    if ((p = iEnv.getOpr(this, i)) != null) {	// check operators
+	return p;
     }
-    return iEnv.getOpr(this, i);
+
+    iRuntime.error(106, this);			// nothing worked
+    return null;
 }
 
 

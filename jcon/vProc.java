@@ -25,8 +25,7 @@ public vString Type()		{ return typestring; }
 
 public vInteger Args()		{ return vInteger.New(args); }
 
-public vProc mkProc()		{ return this; }
-public vProc Proc(long i)	{ return this; }
+vProc mkProc(int i)		{ return this; }
 
 
 

@@ -27,7 +27,7 @@ vString mkString()			{ return retval.mkString(); }
 vInteger mkInteger()			{ return retval.mkInteger(); }
 vReal mkReal()				{ return retval.mkReal(); }
 vCset mkCset()				{ return retval.mkCset(); }
-vProc mkProc()				{ return retval.mkProc(); }
+vProc mkProc(int i)			{ return retval.mkProc(i); }
 vValue[] mkArray(int errno)		{ return retval.mkArray(errno); }
 
 vString write()				{ return retval.write(); }
@@ -66,7 +66,6 @@ public vDescriptor Key()		{ return retval.Key(); }
 
 public vString Name()			{ return retval.Name(); }
 public vInteger Args()			{ return retval.Args(); }
-public vProc Proc(long i)		{ return retval.Proc(i); }
 
 public vVariable Field(String s)	{ return retval.Field(s); }
 public vDescriptor Index(vDescriptor i)	{ return retval.Index(i); }

@@ -24,7 +24,7 @@ vString mkString()		{ iRuntime.error(103, this); return null; }
 vInteger mkInteger()		{ iRuntime.error(101, this); return null; }
 vReal mkReal()			{ iRuntime.error(102, this); return null; }
 vCset mkCset()			{ iRuntime.error(104, this); return null; }
-vProc mkProc()			{ iRuntime.error(106, this); return null; }
+vProc mkProc(int i)		{ iRuntime.error(106, this); return null; }
 vValue[] mkArray(int errno)	{ iRuntime.error(errno, this); return null; }
 
 vString write()			{ return this.mkString(); }
@@ -64,7 +64,6 @@ public vDescriptor Key()	{ iRuntime.error(124, this); return null; }
 
 public vString Name()		{ iRuntime.error(111, this); return null; }
 public vInteger Args()		{ iRuntime.error(106, this); return null; }
-public vProc Proc(long i)	{ return null; /*FAIL*/ }
 
 public vVariable Field(String s){ iRuntime.error(107, this); return null;}
 public vDescriptor Index(vDescriptor i)
@@ -156,53 +155,47 @@ public vDescriptor IndexVar(vVariable v, vDescriptor i)
 public vDescriptor SectionVar(vVariable v, vDescriptor i, vDescriptor j)
 					{ return this.Deref().Section(i, j); }
 
-private vProc findproc(long i) {
-    vProc p = this.Proc(i);
-    if (p == null) {
-	iRuntime.error(106, this);
-    }
-    return p;
-}
+
 
 public vDescriptor Call(vDescriptor v[]) {
-	return this.findproc((v.length > 0) ? v.length : -1).Call(v);
+	return this.mkProc((v.length > 0) ? v.length : -1).Call(v);
 }
 public vDescriptor Call() {
-	return this.findproc(-1).Call();	// NOT proc(0)!
+	return this.mkProc(-1).Call();		// -1 so not proc(0)!
 }
 public vDescriptor Call(vDescriptor a) {
-	return this.findproc(1).Call(a);
+	return this.mkProc(1).Call(a);
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b) {
-	return this.findproc(2).Call(a, b);
+	return this.mkProc(2).Call(a, b);
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c){
-	return this.findproc(3).Call(a, b, c);
+	return this.mkProc(3).Call(a, b, c);
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d) {
-	return this.findproc(4).Call(a, b, c, d);
+	return this.mkProc(4).Call(a, b, c, d);
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e) {
-	return this.findproc(5).Call(a, b, c, d, e);
+	return this.mkProc(5).Call(a, b, c, d, e);
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f) {
-	return this.findproc(6).Call(a, b, c, d, e, f);
+	return this.mkProc(6).Call(a, b, c, d, e, f);
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g) {
-	return this.findproc(7).Call(a, b, c, d, e, f, g);
+	return this.mkProc(7).Call(a, b, c, d, e, f, g);
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h) {
-	return this.findproc(8).Call(a, b, c, d, e, f, g, h);
+	return this.mkProc(8).Call(a, b, c, d, e, f, g, h);
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h,
     vDescriptor i) {
-	return this.findproc(9).Call(a, b, c, d, e, f, g, h, i);
+	return this.mkProc(9).Call(a, b, c, d, e, f, g, h, i);
 }
 
 

@@ -82,7 +82,11 @@ final class f$proc extends vProc2 {				// proc(s, i)
 	if (i < 0 || i > 3) {
 	    iRuntime.error(205, b);
 	}
-	return v.Proc(i);
+	try {
+	    return v.mkProc((int) i);
+	} catch (iError e) {
+	    return null;
+	}
     }
 }
 

@@ -31,7 +31,7 @@ vString mkString()			{ return Deref().mkString(); }
 vInteger mkInteger()			{ return Deref().mkInteger(); }
 vReal mkReal()				{ return Deref().mkReal(); }
 vCset mkCset()				{ return Deref().mkCset(); }
-vProc mkProc()				{ return Deref().mkProc(); }
+vProc mkProc(int i)			{ return Deref().mkProc(i); }
 vValue[] mkArray(int errno)		{ return Deref().mkArray(errno); }
 
 vString write()				{ return Deref().write(); }
@@ -63,7 +63,6 @@ public vDescriptor Bang()		{ return Deref().Bang(); }
 public vDescriptor Key()		{ return Deref().Key(); }
 
 public vInteger Args()			{ return Deref().Args(); }
-public vProc Proc(long i)		{ return Deref().Proc(i); }
 
 public vVariable Field(String s)	{ return Deref().Field(s); }
 public vDescriptor Index(vDescriptor i)	{ return Deref().Index(i); }

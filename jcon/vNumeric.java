@@ -13,7 +13,7 @@ protected vString cachedString;		// cached string equivalent
 public vNumeric Numerate()		{ return this; }
 
 vCset mkCset()				{ return this.mkString().mkCset(); }
-vProc mkProc()				{ return this.mkInteger().mkProc(); }
+vProc mkProc(int i)			{ return this.mkInteger().mkProc(i); }
 
 
 // these operators coerce any numeric value to string
