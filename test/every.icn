@@ -25,4 +25,10 @@ procedure main()
    every !s := "." do write("r. ", s)
 
    every write("s. ", (-3|-2|-1|0|1|2|3)(101,102))
+   every write("t. ", (-3|-2|-1|0|1|2|3) ! [201,202])
+   every write("u. ", f ! [5])
+end
+
+procedure f(n)
+   suspend n | -n
 end
