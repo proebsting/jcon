@@ -1,3 +1,11 @@
+record irInvocable(nameList, all)
+record irLink(nameList)
+record irRecord(name, fieldList)
+record irGlobal(nameList)
+record irFunction(name, paramList, accumulate, localList, staticList, codeList,
+		  codeStart)
+record irChunk(label, insnList)
+ 
 record irFree(v)
 record irRestore()
 record irDeref(value)

@@ -29,7 +29,10 @@ procedure dump_globals(L)
     write()
 end
 
-procedure dump_function(name, params, accumulate, locals, statics, code, coord)
+procedure dump_function(name, params, accumulate, locals, statics, code,
+			codestart, coord)
+    local i
+
     writes("procedure ", name, "(")
     every writes(" ", !params)
     writes(\accumulate & "[]")
@@ -42,8 +45,10 @@ procedure dump_function(name, params, accumulate, locals, statics, code, coord)
     every writes(" ", !statics)
     write()
     dump_emit_table := table()
-    ir(code)
-    dump_emit_table := optimize(dump_emit_table, code.ir.start)
+    every i := !code do {
+	dump_emit_table[i.label] := i.insnList
+    }
+    dump_emit_table := optimize(dump_emit_table, codestart)
     dump_table(&output, dump_emit_table)
     write("end ", name)
 end
@@ -57,25 +62,31 @@ procedure dump_table(p, t)
     }
 end
 
-procedure dump_File(parse, flagList)
+procedure dump_File(irgen, flagList)
     local p
 
-    CG := dump_CG()
     if match("-O", !flagList) then {
         optimize_flag := 1
     }
-    while p := @parse do {
-        ir(p)
+    while p := @irgen do {
+	case type(p) of {
+	"irGlobal" : {
+	    dump_globals(p.nameList)
+	}
+	"irRecord" : {
+	    dump_records(p.name, p.fieldList)
+	}
+	"irInvocable" : {
+	    dump_invocables(p.all, p.nameList)
+	}
+	"irFunction" : {
+	    dump_function(p.name, p.paramList, p.accumulate, p.localList,
+			p.staticList, p.codeList, p.codeStart)
+	}
+	"irLink" : {
+	    dump_links(p.nameList)
+	}
+	default: runerr(1000, p)
+	}
     }
-end
-
-procedure dump_CG()
-    return code_gen(dump_emit,
-            dump_globals,
-            dump_invocables,
-            dump_links,
-            dump_function,
-            dump_records,
-            dump_File
-            )
 end

@@ -856,7 +856,8 @@ procedure bc_globals(L)
     every insert(bc_global_set, !L)
 end
 
-procedure bc_function(name, params, accumulate, locals, statics, code, coord)
+procedure bc_function(name, params, accumulate, locals, statics, code,
+		      codestart, coord)
     local undeclared, sortedvars, op, i, classname, k, insns, nextval, c
     local newsimplevar
     local init, initcode, f, n, constructor, a, class_index
@@ -897,12 +898,14 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
     bc_create_exists := &null
     bc_key_table := table()
 
-    ir(code)
+    every i := !code do {
+	bc_emit_table[i.label] := i.insnList
+    }
 
     bc_labels := table()
     bc_ir2bc_labels := table()
-    bc_labels[code.ir.start] := 1
-    bc_emit_table := optimize(bc_emit_table, code.ir.start)
+    bc_labels[codestart] := 1
+    bc_emit_table := optimize(bc_emit_table, codestart)
 
     bc_indirect_targets := set([])
     every a := !!bc_emit_table do {
@@ -968,7 +971,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
         create_field(c, 0, "v$" || k, "Lrts/vVariable;")
     }
 
-    bc_create_nextval(c, code.ir.start, params, locals, undeclared, accumulate)
+    bc_create_nextval(c, codestart, params, locals, undeclared, accumulate)
 
     init := create_method(c, 1, "<init>", "()V")
     initcode := create_code(c, 10, 10)
@@ -1516,10 +1519,8 @@ procedure bc_create_copy(c, params, locals, undeclared)
     }
 end
 
-procedure bc_File(parse, flagList)
+procedure bc_File(irgen, flagList)
     local k, i, op, c, f, p
-
-    CG := bc_CG()
 
     outfile := &output
     if "-debug" == !flagList then {
@@ -1576,8 +1577,26 @@ procedure bc_File(parse, flagList)
     bc_real_table := table()
     bc_keys_link := table()
 
-    while p := @parse do {
-        ir(p)
+    while p := @irgen do {
+	case type(p) of {
+	"irGlobal" : {
+	    bc_globals(p.nameList)
+	}
+	"irRecord" : {
+	    bc_records(p.name, p.fieldList)
+	}
+	"irInvocable" : {
+	    bc_invocables(p.all, p.nameList)
+	}
+	"irFunction" : {
+	    bc_function(p.name, p.paramList, p.accumulate, p.localList,
+			p.staticList, p.codeList, p.codeStart)
+	}
+	"irLink" : {
+	    bc_links(p.nameList)
+	}
+	default: runerr(1000, p)
+	}
     }
 
     c := bc_proc_classptr := ClassFile(3, 45, [&null], table(), 1,
@@ -1845,15 +1864,4 @@ procedure bc_create_linkinit(c)
 
     put(clinitcode.code, vreturn() )
 
-end
-
-procedure bc_CG()
-    return code_gen(bc_emit,
-            bc_globals,
-            bc_invocables,
-            bc_links,
-            bc_function,
-            bc_records,
-            bc_File
-            )
 end

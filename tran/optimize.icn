@@ -261,13 +261,16 @@ procedure goto_elimination(t, start)
     }
 
     every lab := key(new) do {
-        while   chunk := new[lab] &
-            insn := chunk[-1] &
-            type(insn) == "irGoto" &
-            type(insn.location) == "irLabel" &
-            ref_count[insn.location] = 1 do {
-                new[lab] := chunk[1:-1] ||| new[insn.location]
-                delete(new, insn.location)
+        while chunk := new[lab] &
+              insn := chunk[-1] &
+              type(insn) == "irGoto" &
+              type(insn.location) == "irLabel" &
+              ref_count[insn.location] = 1 do {
+	    if /new[insn.location] then {
+		runerr(1000, insn.location)
+	    }
+            new[lab] := chunk[1:-1] ||| new[insn.location]
+            delete(new, insn.location)
         }
     }
     return new

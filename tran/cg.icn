@@ -1,2 +1,0 @@
-global CG
-record code_gen(emit, globals, invocables, links, function, records, File)

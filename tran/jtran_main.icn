@@ -41,11 +41,19 @@ procedure stdout(c)
     }
 end
 
-procedure echo(c)
+procedure echo(c, flags)
     local p
     while p := @\c do {
-        write(dump(p))
+	if "-verbose" == !\flags then {
+            write(verbose(p, "", ""))
+	} else {
+            write(dump(p))
+	}
     }
+end
+
+procedure devnull(c)
+    while @\c
 end
 
 procedure main(L) 

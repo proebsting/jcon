@@ -26,7 +26,6 @@ CODEGENSRC = \
 	gen_dump.icn \
 	gen_dot.icn \
 	gen_ucode.icn \
-	cg.icn \
 	optimize.icn \
 	bytecode.icn 
 

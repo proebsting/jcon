@@ -67,47 +67,38 @@ procedure dot_output(t)
     }
 end
 
-procedure dot_invocables(all, L)
-end
+procedure dot_function(name, params, accumulate, locals, statics, code,
+		       codestart, coord)
+    local i
 
-procedure dot_links(L)
-end
-
-procedure dot_records(name, fields, coord)
-end
-
-procedure dot_globals(L)
-end
-
-procedure dot_function(name, params, accumulate, locals, statics, code, coord)
     write("digraph ", name, " {")
     write("ratio=auto;")
     write("page=\"8.5,11\";")
     dot_emit_table := table()
-    ir(code)
-    dot_emit_table := optimize(dot_emit_table, code.ir.start)
+    every i := !code do {
+	dot_emit_table[i.label] := i.insnList
+    }
+    dot_emit_table := optimize(dot_emit_table, codestart)
     dot_output(dot_emit_table)
     write("}")
 end
 
-procedure dot_File(parse, flagList)
+procedure dot_File(irgen, flagList)
     local p
     if match("-O", !flagList) then {
         optimize_flag := 1
     }
-    CG := dot_CG()
-    while p := @parse do {
-        ir(p)
+    while p := @irgen do {
+	case type(p) of {
+	"irGlobal" : { }
+	"irRecord" : { }
+	"irInvocable" : { }
+	"irLink" : { }
+	"irFunction" : {
+	    dot_function(p.name, p.paramList, p.accumulate, p.localList,
+			p.staticList, p.codeList, p.codeStart)
+	}
+	default: runerr(1000, p)
+	}
     }
-end
-
-procedure dot_CG()
-    return code_gen(dot_emit,
-            dot_globals,
-            dot_invocables,
-            dot_links,
-            dot_function,
-            dot_records,
-            dot_File
-            )
 end
