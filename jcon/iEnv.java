@@ -107,7 +107,7 @@ public static void declareKey(String s, vDescriptor k) {
 
 public static vDescriptor resolveProc(String s, int args) {
     if (args < 1 || args > 3) {
-	iRuntime.error(901);
+	iRuntime.error(902);
     }
     vDescriptor v = (vDescriptor) proctab[args-1].get(s);
     if (v == null) {

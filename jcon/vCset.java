@@ -132,7 +132,10 @@ private static final vString csucase = vString.New("&ucase");
 private static final vString csascii = vString.New("&ascii");
 private static final vString cscset = vString.New("&cset");
 
-vString image() {				// image(cs)
+vString image()		{ return image(MAX_VALUE + 1); }
+vString report()	{ return image(16); }	// limit to max of 16 chars
+
+private vString image(int maxlen) {
 
     // check for predefined cset using a hardwired decision tree
     if (size < 0) {
@@ -164,9 +167,16 @@ vString image() {				// image(cs)
 
     // not a predefined cset
     vByteBuffer b = new vByteBuffer(this.size + 10);  // arbitrary size guess
+    int n = 0;
     b.append('\'');
     for (char c = 0; c <= MAX_VALUE; c++) {
 	if (this.member(c)) {
+	    if (++n > maxlen) {
+		b.append('.');
+		b.append('.');
+		b.append('.');
+		break;
+	    }
 	    if (c == '\'') {
 		b.append('\\');
 		b.append('\'');

@@ -17,7 +17,7 @@ public abstract class iClosure {
     public int column;
 
     public String[] names;		// created by locals() for returning
-    public vVariable[] variables;	//	contents of active closure.
+    public vVariable[] variables;	//	contents of active closure
 
 
 
@@ -28,7 +28,7 @@ public final void init() {
 public iClosure() {		// constructor
 }
 
-public void locals()	{}	// initializes name/variable arrays.
+public void locals()	{}	// initializes name/variable arrays
 
 
 
@@ -85,11 +85,11 @@ public vDescriptor resume() {
 		k$errout.file.println(p);
 	    }
 	} catch (OutOfMemoryError e) {
-	    iRuntime.error(307);	// #%#% really out of memory.
+	    iRuntime.error(307);	// out of memory
 	    ret = null;
 	}
     } catch (iError e) {
-	e.report(this);  // returns only on error->failure conversion.
+	e.report(this);		// returns only on error->failure conversion
 	ret = null;
     }
     if (ret == null) {
@@ -110,9 +110,10 @@ public abstract vDescriptor nextval();
 
 
 
-// copy() is used to return a "refreshed" copy of the closure.
+// copy() is used to return a "refreshed" copy of the closure
+// (overridden by subclasses; this version should never be called.)
 
-public iClosure copy(int PC) { iRuntime.error(901); return null; } //#%#% NYI?
+public iClosure copy(int PC) { iRuntime.error(902); return null; }
 
 
 

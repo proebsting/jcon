@@ -133,7 +133,7 @@ public static void display(vFile f, iClosure parent, long ancestors) {
 	}
 	for (int i = 0; p.names[i] != null; i++) {
 	    f.println("   " + p.names[i] + " = " +
-		p.variables[i].image());
+		p.variables[i].deref().report());
 	}
     }
 
@@ -149,7 +149,7 @@ public static void display(vFile f, iClosure parent, long ancestors) {
     iSort.sort(a);
     for (i = 0; i < a.length; i++) {
 	vVariable v = (vVariable) iEnv.symtab.get(a[i].toString());
-	f.println("   " + a[i] + " = " + v.image());
+	f.println("   " + a[i] + " = " + v.deref().report());
     }
 }
 

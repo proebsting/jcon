@@ -309,7 +309,7 @@ vString image()		{ return image(tlength); }
 vString report()	{ return image(16); }	// limit to max of 16 chars
 
 
-vString image(int maxlen) {		// make image, up to maxlen chars
+private vString image(int maxlen) {	// make image, up to maxlen chars
     this.flatten();
     vByteBuffer b = new vByteBuffer(maxlen + 5);	// optimistic guess
     b.append('"');

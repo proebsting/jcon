@@ -116,7 +116,7 @@ public class oSwap extends iBinaryRefClosure {			// x1 :=: x2
     public static iBinaryClosure instance = new oSwap();
     vDescriptor function() {
 	vValue tmp = argument0.deref();
-	// must check for failure because &pos:=K can fail.
+	// must check for failure because &pos:=K can fail
 	if (argument0.Assign(argument1.deref()) == null) {
 	    return null;
 	}
@@ -265,11 +265,11 @@ public class oField extends iBinaryRefClosure {			// R . s
 	    try {
 		return arg0.field(s = arg1);
 	    } catch (OutOfMemoryError e) {
-		iRuntime.error(307);	// #%#%# really out of memory.
+		iRuntime.error(307);	// out of memory
 		return null;
 	    }
 	} catch (iError e) {
-	    e.report(this);  // returns only on error->failure conversion.
+	    e.report(this);	// returns only on error->failure conversion
 	    return null;
 	}
     }

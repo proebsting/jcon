@@ -49,13 +49,37 @@ private vList(Vector v) {			// new Vlist(Vector v)
 // runtime primitives
 
 
-vString report()	{ return this.image(); } //#%#% should show some elems
 
 static vString typestring = vString.New("list");
 vString type()		{ return typestring; }
 
 int rank()		{ return 90; }		// lists sort after procedures
 
+
+
+vString report() {				// image for display() & tracebk
+    StringBuffer b = new StringBuffer(64);
+    vString s;
+    int n = v.size();
+
+    b.append("list_").append(this.snum).append(" = [");
+    for (int i = 0; i < n; i++) {
+	vValue e = ((vListVar) v.elementAt(i)).deref();
+	if (e instanceof vList && ((vList)e).v.size() > 0) {
+	    s = e.image();	// don't expand non-empty list recursively
+	} else {
+	    s = e.report();	// report (NOT image) all others, esp. string
+	}
+	b.append(s.toString());
+	if (i == 2 && n > 6) {
+	   b.append(",...,");		// elide center if >6 elements
+	   i = n - 4;
+	} else if (i < (n - 1)) {
+	   b.append(',');
+	}
+    }
+    return vString.New(b.append(']').toString());
+}
 
 
 
