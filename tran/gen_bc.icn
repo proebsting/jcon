@@ -419,7 +419,7 @@ procedure bc_gen_ir_Succeed(s, p)
 	put(s, j_invokestatic(free))
     }
     if /bc_nodebuginfo then {
-	bc_emitlineinfo(s, p.coord)
+	bc_emitlineinfo(s, p.coord, if /p.continuation then 1 else -1)
     }
     put(s, j_areturn())
     return s
@@ -440,17 +440,17 @@ procedure bc_gen_ir_Fail(s, p)
 	put(s, j_invokestatic(free))
     }
     if /bc_nodebuginfo then {
-	bc_emitlineinfo(s, p.coord)
+	bc_emitlineinfo(s, p.coord, 1)
     }
     put(s, j_aconst_null())
     put(s, j_areturn())
     return s
 end
 
-procedure bc_emitlineinfo(s, coord)
+procedure bc_emitlineinfo(s, coord, factor)
     local field
 
-    bc_push_coordinate(s, coord)
+    bc_push_coordinate(s, coord, factor)
     field := bc_line_fieldref(bc_current_classptr)
     put(s, j_putstatic(field) )
     field := bc_file_fieldref(bc_current_classptr)
@@ -469,13 +469,15 @@ procedure bc_gen_ir_RunTimeError(s, p)
     return s
 end
 
-procedure bc_push_coordinate(s, coord)
-    local c
+procedure bc_push_coordinate(s, coord, factor)
+    local c, line
 
     if \coord then {
         c := j_cp_String(bc_current_classptr, j_cp_Utf8(bc_current_classptr, coord.file))
         put(s, j_ldc_w(c))
-	put(s, j_ipush(coord.line) )
+	line := coord.line
+	line *:= \factor
+	put(s, j_ipush(line) )
     } else {
         put(s, j_aconst_null() )
         put(s, j_iconst_0() )
@@ -1583,10 +1585,7 @@ procedure bc_process_flags(flagList)
     every k := !flagList do {
         k ? {
             if ="-f" then {
-                if find("e") | find("a") then {
-                    bc_nodebuginfo := &null
-                }
-                if find("n") | find("a") then {
+		if upto('aden') then {
                     bc_nodebuginfo := &null
                 }
             }

@@ -1557,10 +1557,7 @@ procedure ast2ir(parse, flagList)
     every k := !flagList do {
         k ? {
             if ="-f" then {
-                if find("e") | find("a") then {
-                    ir_noerror2failure := &null
-                }
-                if find("n") | find("a") then {
+		if upto('aden') then {
                     ir_noerror2failure := &null
                 }
                 if find("o") | find("a") then {
