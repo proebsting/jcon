@@ -191,6 +191,16 @@ public vDescriptor Resume()			{ return null; /*FAIL*/ }
 
 
 
+// special methods called when result is known to be used only as a value
+
+public vDescriptor SelectVal()			{ return Select(); }	// .?x
+public vDescriptor BangVal()			{ return Bang(); }	// .!x
+public vDescriptor IndexVal(vDescriptor v)	{ return Index(v); }	// .x[i]
+public vDescriptor SectionVal(vDescriptor i, vDescriptor j)	      // .x[i:j]
+						{ return Section(i, j);}
+
+
+
 //  swapping and reversible assignment are handled here by calling Assign()
 
 public vVariable Swap(vDescriptor v) {		// a :=: b
@@ -239,6 +249,8 @@ public vDescriptor RevAssign(vDescriptor v) {
 
 
 
+
+
 //  SectPlus and SectMinus are turned into Section calls here.
 //  Wraparound is detected and produces failure.
 //
@@ -251,7 +263,7 @@ public vDescriptor RevAssign(vDescriptor v) {
 //
 //  #%#% Should still give error (not failure) if object is not subscriptable.
 
-public vDescriptor SectPlus(vDescriptor a, vDescriptor b) {	// s[i+:j]
+public vDescriptor SectPlus(vDescriptor a, vDescriptor b) {	// x[i+:j]
     vInteger ai = a.mkInteger();
     long i = ai.value;
     long j = i + b.mkInteger().value;
@@ -261,7 +273,7 @@ public vDescriptor SectPlus(vDescriptor a, vDescriptor b) {	// s[i+:j]
     return Section(ai, vInteger.New(j));
 }
 
-public vDescriptor SectMinus(vDescriptor a, vDescriptor b) {	// s[i-:j]
+public vDescriptor SectMinus(vDescriptor a, vDescriptor b) {	// x[i-:j]
     vInteger ai = a.mkInteger();
     long i = ai.value;
     long j = i - b.mkInteger().value;
@@ -269,6 +281,26 @@ public vDescriptor SectMinus(vDescriptor a, vDescriptor b) {	// s[i-:j]
 	return null; /*FAIL*/
     }
     return Section(ai, vInteger.New(j));
+}
+
+public vDescriptor SectPlusVal(vDescriptor a, vDescriptor b) {	// .x[i+:j]
+    vInteger ai = a.mkInteger();
+    long i = ai.value;
+    long j = i + b.mkInteger().value;
+    if ((-i ^ -j) < 0) {	// if wraparound
+	return null; /*FAIL*/
+    }
+    return SectionVal(ai, vInteger.New(j));
+}
+
+public vDescriptor SectMinusVal(vDescriptor a, vDescriptor b) {	// .x[i-:j]
+    vInteger ai = a.mkInteger();
+    long i = ai.value;
+    long j = i - b.mkInteger().value;
+    if ((-i ^ -j) < 0) {	// if wraparound
+	return null; /*FAIL*/
+    }
+    return SectionVal(ai, vInteger.New(j));
 }
 
 
