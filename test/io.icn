@@ -68,6 +68,17 @@ procedure main()
 
    every remove("tmp1" | "tmp2")
    every remove("tmp1" | "tmp2")
+
+   write()
+   writes("abc")
+   writes("def\nghi")
+   writes("\njklmno\n")
+   write("pqr\nstu")
+   writes("vwxyz")
+   writes()
+   writes("")
+   writes("\n")
+
 end
 
 
