@@ -333,6 +333,8 @@ vString mkString() {			// string(c)
     return b.mkString();
 }
 
+
+
 public vInteger Size() {		// *c
 
     if (size < 0) {			// if size not already known

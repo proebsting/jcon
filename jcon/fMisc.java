@@ -38,9 +38,9 @@ class f$variable extends vProc1 {				// variable(x)
 	}
 	if (s.length() > 1 && s.charAt(0) == '&') {
 	    String k = s.substring(1);
-	    Object o = iEnv.getKey(k);
-	    if (o != null && o instanceof vVariable) {
-		return (vVariable) o;
+	    vVariable o = iEnv.getKeyVar(k);
+	    if (o != null) {
+		return o;
 	    }
 	}
 	return null; /*FAIL*/

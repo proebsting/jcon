@@ -137,8 +137,17 @@ static void declareKey(String name, vProc p) {
     keytab.put(name, p);
 }
 
-static vProc getKey(String s) {
-    return (vProc) keytab.get(s);
+static vVariable getKeyVar(String s) {
+    vProc p = (vProc)keytab.get(s);
+    if (p == null) {
+	return null;
+    }
+    vDescriptor d = p.Call();
+    if (d instanceof vVariable) {
+	return (vVariable) d;
+    } else {
+	return null;
+    }
 }
 
 public static vDescriptor resolveKey(String s) {	//#%#% s/b vProc
