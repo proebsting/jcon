@@ -47,7 +47,7 @@ public vDescriptor ProcessArgs(vDescriptor x)
 public vDescriptor Activate(vDescriptor x)
 				{ iRuntime.error(118, this); return null; }
 public vDescriptor ToBy(vDescriptor j, vDescriptor k)
-				{ return this.mkInteger().ToBy(j, k); }
+				{ return this.mkFixed().ToBy(j, k); }
 
 public vNumeric Numerate()	{ iRuntime.error(102, this); return null; }
 public vNumeric Negate()	{ return this.Numerate().Negate(); }

@@ -408,9 +408,60 @@ vNumeric Shift(vInteger j) {
 
 //  i to j by k   (i.ToBy(j,k))
 
+static vInteger vOne = vInteger.New(1);
+static vInteger vZero = vInteger.New(0);
+
+public static vDescriptor ToBy(vNumeric v1, vDescriptor v2, vDescriptor v3) {
+    final vNumeric i = v1;
+    final vNumeric j = v2.mkFixed();
+    final vNumeric k = (v3 == null) ? vOne : v3.mkFixed();
+
+    if (k.NGreater(vZero) != null) {	// positive increment
+	if (i.NGreater(j) != null) {
+	    return null; /*FAIL*/	// no iterations
+	} else if (i.NEqual(j) != null) {
+	    return i;			// just once
+	} else return new vClosure() {
+	    vNumeric n = i;
+	    { retval = i; }
+
+	    public vDescriptor Resume() {
+		n = n.Add(k);
+		if (n.NLessEq(j) != null) {
+		    return n;
+		} else {
+		    return null; /*FAIL*/
+		}
+	    };
+	};
+
+    } else if (k.NLess(vZero) != null) {	// negative increment
+	if (i.NLess(j) != null) {
+	    return null; /*FAIL*/	// no iterations
+	} else if (i.NEqual(j) != null) {
+	    return i;			// just once
+	} else return new vClosure() {
+	    vNumeric n = i;
+	    { retval = i; }
+
+	    public vDescriptor Resume() {
+		n = n.Add(k);
+		if (n.NGreaterEq(j) != null) {
+		    return n;
+		} else {
+		    return null; /*FAIL*/
+		}
+	    };
+	};
+
+    } else {				// increment is zero
+        iRuntime.error(211, v3);
+        return null;
+    }
+}
+
 public vDescriptor ToBy(vDescriptor v2, vDescriptor v3) {
-    iRuntime.error(101, this);		// out of range
-    return null;
+    return ToBy(this, v2, v3);
 }
 
 

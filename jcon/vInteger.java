@@ -417,9 +417,23 @@ vNumeric Shift(vInteger j) {
 //  i to j by k   (i.ToBy(j,k))
 
 public vDescriptor ToBy(vDescriptor v2, vDescriptor v3) {
+    final vNumeric v2n = v2.mkFixed();
+    if (!(v2n instanceof vInteger)) {
+	return vBigInt.ToBy(this, v2n, v3);
+    }
+    long t;
+    if (v3 == null) {
+	t = 1;
+    } else {
+        final vNumeric v3n = v3.mkFixed();
+        if (!(v3n instanceof vInteger)) {
+	    return vBigInt.ToBy(this, v2n, v3n);
+        }
+	t = ((vInteger)v3n).value;
+    }
     final long i = this.value;
-    final long j = v2.mkInteger().value;
-    final long k = (v3 == null) ? 1 : v3.mkInteger().value;
+    final long j = ((vInteger)v2n).value;
+    final long k = t;
 
     if (k > 0) {			// positive increment
 	if (i > j) {

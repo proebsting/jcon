@@ -37,17 +37,19 @@ final class f$abs extends vProc1 {				// abs(n)
 
 
 final class f$seq extends vProc2 {				// seq(i1,i2)
+    static final vInteger vOne = vInteger.New(1);
+    static final vInteger vZero = vInteger.New(0);
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
-	final long i1 = a.isnull() ? 1 : a.mkInteger().value;
-	final long i2 = b.isnull() ? 1 : b.mkInteger().value;
-	if (i2 == 0) {
+	final vNumeric i1 = a.isnull() ? vOne : a.mkFixed();
+	final vNumeric i2 = b.isnull() ? vOne : b.mkFixed();
+	if (i2.NEqual(vZero) != null) {
 	    iRuntime.error(211, b);
 	}
 	return new vClosure() {
-	    { retval = vInteger.New(i1); }
-	    long n = i1;
+	    { retval = i1; }
+	    vNumeric n = i1;
 	    public vDescriptor Resume() {
-		return vInteger.New(n += i2);
+		return n = n.Add(i2);
 	    }
 	};
     }
