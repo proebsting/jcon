@@ -2,6 +2,8 @@
 #  14-feb-98/gmt
 #  13-mar-98/gmt
 #  25-mar-98/gmt
+#   2-apr-98/gmt
+#   3-apr-98/gmt
 #
 #  usage:  timings interval
 #
@@ -26,12 +28,14 @@ $define NumOvhLoops 5		# number of overhead measurements to take
 global looptime			# expected loop time, in msec
 global overhead			# measured loop overhead, in nsec
 
+global sink			# output file for I/O tests
 
 
 procedure main(args)
    local olist, ovhtime
 
    looptime := integer(1000 * (args[1] | DefaultTime))
+   sink := open("/dev/null", "w")
 
    # use median of five tries for overhead value
    ovhtime := looptime
@@ -51,7 +55,9 @@ procedure main(args)
 
    report(if0)
    report(case3)
+   report(nulltest)
    report(typef)
+   report(imagef)
    report(everyto)
    report(everyalt)
    report(conj5)
@@ -63,39 +69,61 @@ procedure main(args)
    report(tointeger)
    report(intcoerce)
    report(uplus)
+   report(tostring)
+   report(strcoerce)
    report(absf)
    report(intadd)
    report(addfunc)
+   report(intpow)
    report(intcmp)
-   report(realcmp)
-   report(sqrtf)
-   report(cosf)
-   report(logf)
    report(rfact0)
    report(rfact10)
    report(rfib5)
    report(prslow)
 
-   report(tostring)
-   report(strcoerce)
+   report(toreal)
+   report(realcoerce)
+   report(uplusr)
+   report(rtostring)
+   report(strcoercer)
+   report(realcmp)
+   report(sqrtf)
+   report(cosf)
+   report(logf)
+
+   report(charf)
+   report(ordf)
    report(strsize)
    report(strpick)
    report(strbang)
    report(strsub)
    report(substr)
+   report(subsasg)
    report(strcmp)
+   report(strident)
    report(concat)
-   report(rightf)
+
+   report(reversef)
    report(trimf)
+   report(replf)
+   report(leftf)
+   report(centerf)
+   report(rightf)
+   report(entabf)
+   report(detabf)
    report(mapf)
 
    report(nullscan)
    report(movef)
    report(tabf)
    report(matchf)
+   report(tabmat)
+   report(posf)
+   report(anyf)
    report(manyf)
    report(uptof)
    report(findf)
+   report(balf)
 
    report(tocset)
    report(cssize)
@@ -104,12 +132,15 @@ procedure main(args)
    report(lcreate)
    report(lconst)
    report(lcopy)
+   report(lsort)
    report(lsize)
    report(lpick)
    report(lbang)
    report(lsubscr)
    report(putget)
+   report(putget12)
    report(pushpop)
+   report(pushpop12)
 
    report(setcreate)
    report(setcopy)
@@ -126,6 +157,14 @@ procedure main(args)
    report(recconstr)
    report(reccopy)
    report(recfield)
+   report(bigfield)
+
+   report(readz)
+   report(writec)
+   report(writes)
+
+   report(cxcreate)
+   report(cxget)
 
    report(nothing)
    report(nothing)
@@ -199,6 +238,12 @@ procedure uplus(n)
       +407
 end
 
+procedure uplusr(n)
+   if /n then return "+7.25"
+   every 1 to n do
+      +7.25
+end
+
 procedure absf(n)
    if /n then return "abs(-3)"
    every 1 to n do
@@ -215,6 +260,12 @@ procedure intcmp(n)
    if /n then return "4 < 7"
    every 1 to n do
       4 < 7
+end
+
+procedure intpow(n)
+   if /n then return "4 ^ 7"
+   every 1 to n do
+      4 ^ 7
 end
 
 procedure realcmp(n)
@@ -337,10 +388,22 @@ procedure case3(n)
       }
 end
 
+procedure nulltest(n)
+   if /n then return "\\8"
+   every 1 to n do
+      \8
+end
+
 procedure typef(n)
    if /n then return "type(s)"
    every 1 to n do
       type("abcde")
+end
+
+procedure imagef(n)
+   if /n then return "image(s)"
+   every 1 to n do
+      image("ab\tcd")
 end
 
 
@@ -384,10 +447,22 @@ procedure intcoerce(n)
       +"407"
 end
 
+procedure realcoerce(n)
+   if /n then return "+\"7.25\""
+   every 1 to n do
+      +"7.25"
+end
+
 procedure strcoerce(n)
    if /n then return "*407"
    every 1 to n do
       *407
+end
+
+procedure strcoercer(n)
+   if /n then return "*7.25"
+   every 1 to n do
+      *7.25
 end
 
 
@@ -398,10 +473,22 @@ procedure tointeger(n)
       integer("407")
 end
 
+procedure toreal(n)
+   if /n then return "real(\"7.25\")"
+   every 1 to n do
+      real("407")
+end
+
 procedure tostring(n)
    if /n then return "string(407)"
    every 1 to n do
       string(407)
+end
+
+procedure rtostring(n)
+   if /n then return "string(7.25)"
+   every 1 to n do
+      string(7.25)
 end
 
 procedure tocset(n)
@@ -411,6 +498,18 @@ procedure tocset(n)
 end
 
 
+
+procedure charf(n)
+   if /n then return "char(65)"
+   every 1 to n do
+      char(65)
+end
+
+procedure ordf(n)
+   if /n then return "ord(\"A\")"
+   every 1 to n do
+      ord("A")
+end
 
 procedure strsize(n)
    if /n then return "*\"abcde\""
@@ -448,10 +547,47 @@ procedure substr(n)
       "abcde"[2:5]
 end
 
+procedure subsasg(n)
+   local s
+   if /n then return "s[2:5] := \"x\""
+   every 1 to n do
+      (s := "abcde")[2:5] := "x"
+end
+
 procedure strcmp(n)
    if /n then return "\"abc\">>\"aaa\""
    every 1 to n do
       "abc" >> "aaa"
+end
+
+procedure strident(n)
+   if /n then return "\"abc\"===\"aaa\""
+   every 1 to n do
+      "abc" === "aaa"
+end
+
+procedure replf(n)
+   if /n then return "repl(\"-\",20)"
+   every 1 to n do
+      repl("-", 20)
+end
+
+procedure reversef(n)
+   if /n then return "reverse(\"a...z\")"
+   every 1 to n do
+      reverse("abcdefghijklmnopqrstuvwxyz")
+end
+
+procedure leftf(n)
+   if /n then return "left(\"a\",10)"
+   every 1 to n do
+      left("a",10)
+end
+
+procedure centerf(n)
+   if /n then return "center(\"a\",10)"
+   every 1 to n do
+      center("a",10)
 end
 
 procedure rightf(n)
@@ -464,6 +600,18 @@ procedure trimf(n)
    if /n then return "trim(\"a  ...\")"
    every 1 to n do
       trim("a         ")
+end
+
+procedure entabf(n)
+   if /n then return "entab(\"a  ...\")"
+   every 1 to n do
+      entab("a         ")
+end
+
+procedure detabf(n)
+   if /n then return "detab(\"a\\tb\\tc\")"
+   every 1 to n do
+      detab("a\tb\tc")
 end
 
 procedure mapf(n)
@@ -497,6 +645,24 @@ procedure matchf(n)
       match("abc")
 end
 
+procedure tabmat(n)
+   if /n then return "s1 ? =s2"
+   "abcde" ? every 1 to n do
+      ="abd"
+end
+
+procedure posf(n)
+   if /n then return "pos(-1)"
+   "abcde" ? every 1 to n do
+      pos(-1)
+end
+
+procedure anyf(n)
+   if /n then return "any('aeiou')"
+   "abcde" ? every 1 to n do
+      any('aeiou')
+end
+
 procedure manyf(n)
    if /n then return "many(&lcase)"
    "abcde" ? every 1 to n do
@@ -515,6 +681,11 @@ procedure findf(n)
       find("de")
 end
 
+procedure balf(n)
+   if /n then return "bal('+')"
+   "(a*b)+(c/d)" ? every 1 to n do
+      upto('+')
+end
 
 
 procedure cssize(n)
@@ -550,6 +721,14 @@ procedure lcopy(n)
    if /n then return "copy(L)"
    every 1 to n do
       copy(L)
+end
+
+procedure lsort(n)
+   static L
+   initial L := [2,7,1,8,3]
+   if /n then return "sort(L)"
+   every 1 to n do
+      sort(L)
 end
 
 procedure lsize(n)
@@ -596,6 +775,22 @@ procedure pushpop(n)
    static L
    initial L := []
    if /n then return "pop(push(L,0))"
+   every 1 to n do
+      pop(push(L,0))
+end
+
+procedure putget12(n)
+   static L
+   initial L := [3,1,4,1,5,9,2,6,5,3,5,8]
+   if /n then return "get(put(L12,0))"
+   every 1 to n do
+      get(put(L,0))
+end
+
+procedure pushpop12(n)
+   static L
+   initial L := [3,1,4,1,5,9,2,6,5,3,5,8]
+   if /n then return "pop(push(L12,0))"
    every 1 to n do
       pop(push(L,0))
 end
@@ -683,6 +878,7 @@ end
 
 
 record point(x,y)
+record bigrec(alpha, beta, gamma, delta, epsilon, figaro, guido, horatio)
 
 procedure recconstr(n)
    if /n then return "record(4,7)"
@@ -704,6 +900,14 @@ procedure recfield(n)
    if /n then return "R.f"
    every 1 to n do
       R.y
+end
+
+procedure bigfield(n)
+   static R
+   initial R := bigrec()
+   if /n then return "R2.f"
+   every 1 to n do
+      R.horatio
 end
 
 
@@ -729,3 +933,43 @@ procedure statasgn(n)
    every 1 to n do
       i := 1
 end
+
+
+
+procedure readz(n)
+   static f
+   initial f := open("/dev/zero","ru")
+   if /n then return "reads(zero,8)"
+   every 1 to n do
+       reads(f, 8)
+end
+
+procedure writec(n)
+   if /n then return "write(\"a...z\")"
+   every 1 to n do
+      write(sink, "abcdefghijklmnopqrstuvwxyz")
+end
+
+procedure writes(n)
+   static s
+   initial s := "abcdefghijklmnopqrstuvwxyz"
+   if /n then return "write(s)"
+   every 1 to n do
+      write(sink, s)
+end
+
+
+procedure cxcreate(n)
+   if /n then return "create |\"a\""
+   every 1 to n do
+      create |"a"
+end
+
+procedure cxget(n)
+   static C
+   initial C := create |"a"
+   if /n then return "@C"
+   every 1 to n do
+      @C
+end
+
