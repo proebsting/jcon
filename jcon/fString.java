@@ -9,7 +9,7 @@ class fString {} // dummy
 class f$char extends iFunctionClosure {				// char()
 	vDescriptor function(vDescriptor[] args) {
 		long i = vInteger.argVal(args, 0);
-		if (i < 0 || i > Character.MAX_VALUE) {
+		if (i < 0 || i > vCset.MAX_VALUE) {
 			iRuntime.error(205, args[0]);
 		}
 		return iNew.String((char) i);
@@ -175,8 +175,8 @@ class f$map extends iFunctionClosure {				// map(s1,s2,s3)
 	static String s1prev, s2prev;
 
 	static {
-		initmap = new char[(int) Character.MAX_VALUE];
-		for (char i = 0; i < Character.MAX_VALUE; i++) {
+		initmap = new char[(int) vCset.MAX_VALUE];
+		for (char i = 0; i < vCset.MAX_VALUE; i++) {
 			initmap[i] = i;
 		}
 	}
@@ -191,7 +191,7 @@ class f$map extends iFunctionClosure {				// map(s1,s2,s3)
 		}
 
 		if (s1 != s1prev || s2 != s2prev) {
-			map = new char[(int) Character.MAX_VALUE];
+			map = new char[(int) vCset.MAX_VALUE];
 			System.arraycopy(initmap, 0, map, 0, map.length);
 			for (int i = 0; i < s2.length(); i++) {
 				map[s2.charAt(i)] = s3.charAt(i);

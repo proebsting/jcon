@@ -32,8 +32,7 @@ public class iKeywords extends iFile {
 		iEnv.declareKey("ucase", ucase = iNew.Cset('A','Z'));
 		iEnv.declareKey("letters", lcase.Union(ucase));
 		iEnv.declareKey("ascii", iNew.Cset(0, 127));
-		//#%#% not clear that this is right, but 65K size is REAL slow:
-		iEnv.declareKey("cset", iNew.Cset(0, 255));
+		iEnv.declareKey("cset", iNew.Cset(0, vCset.MAX_VALUE));
 
 		// read-only, but variable
 		iEnv.declareKey("clock", new k$clock());

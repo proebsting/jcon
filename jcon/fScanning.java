@@ -156,7 +156,7 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 		arguments[i] = arguments[i].deref();
 	    }
 	    // %#%#%# c1 should default to &cset....
-	    c1 = vCset.argVal(arguments, 0, 0, 255);
+	    c1 = vCset.argVal(arguments, 0, 0, vCset.MAX_VALUE);
 	    c2 = vCset.argVal(arguments, 1, '(', '(');
 	    c3 = vCset.argVal(arguments, 2, ')', ')');
 	    s = iRuntime.argSubject(arguments, 3);

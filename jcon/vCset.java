@@ -2,6 +2,8 @@ package rts;
 
 public class vCset extends vValue {
 
+static final int MAX_VALUE = 255;		// maximum char value in Jcon
+
     java.util.BitSet t;
 
 
@@ -107,7 +109,7 @@ vDescriptor Bang(iClosure c) {
 
 vValue Complement() {
     vCset result = new vCset("");
-    result.t = new java.util.BitSet((int)Character.MAX_VALUE);
+    result.t = new java.util.BitSet(vCset.MAX_VALUE);
     for (int i = 0; i < result.t.size(); i++) {
 	if (!this.t.get(i)) {
 	    result.t.set(i);
