@@ -4,6 +4,7 @@
 
 uname -a
 date
+icont -us version -x
 echo JAVA_COMPILER=${JAVA_COMPILER-"<unset>"}
 echo JAVA_FAST_JVM=${JAVA_FAST_JVM-"<unset>"}
 java -version 2>&1

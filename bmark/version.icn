@@ -1,0 +1,5 @@
+#  version.icn -- report &version keyword
+
+procedure main()
+   write(&version)
+end
