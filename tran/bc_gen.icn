@@ -232,8 +232,6 @@ end
 
 # record irGoto( location )
 procedure gen_bc_irGoto(s, p)
-	# gen_bc_rval(s, p.location)
-	# put(s, goto_w(bc_switch_label))
 	transfer_to(s, p.location)
 	return s
 end
@@ -949,9 +947,6 @@ procedure bc_create_nextval(c, start, params, accumulate)
 	}
 
 	bc_emit_prologue(s, c, params, accumulate)
-	# prologue := create_methodref(bc_proc_classptr, "prologue", "()V", bc_proc_classname)
-	# put(s, aload_0())
-	# put(s, invokevirtual(prologue))
 
 	every k := key(bc_tmp_table) do {
 		put(s, aconst_null())
@@ -1035,11 +1030,17 @@ procedure bc_create_nextval(c, start, params, accumulate)
 		put(s, Astore(bc_var_table[k] + bc_var_offset))
 	}
 	deflab := label()
-	put(nextvalcode.code, bc_switch_label)
-	put(nextvalcode.code, switch := tableswitch(0, deflab, 1, *bc_emit_table, list(*bc_emit_table)) )
 
+	switch := tableswitch(0, deflab, 1, *bc_emit_table, list(*bc_emit_table))
+	if \bc_save_restore_flag then {
+		put(nextvalcode.code, goto_w(bc_switch_label) )
+	}
 
 	bc_emit_code(nextvalcode.code, switch, start)
+
+	put(nextvalcode.code, bc_switch_label)
+	put(nextvalcode.code, switch)
+
 
 	runtimeerror := runtimeerror_methodref(c)
 	put(nextvalcode.code, deflab)
