@@ -2,15 +2,16 @@ rts/README:  working notes for the runtime system
 
 ------------------------------------------------------------------------------
 
-Java class names are assigned as follows.
+Java names are assigned as follows.
 
-    i.....	infrastructure
-    f$.....	runtime functions
-    k$.....	keywords
-    l$.....	linked files
-    o.....	runtime operators
-    p$.....	(user) procedures
-    v.....	values and variables
+    i.....	infrastructure classes
+    f$.....	runtime function classes
+    k$.....	keyword classes
+    l$.....	linked file classes
+    o.....	runtime operator classes
+    p$.....	user procedure classes
+    v$.....	user variables
+    v.....	implementation value and variable classes
 
 ------------------------------------------------------------------------------
 
