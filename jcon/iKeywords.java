@@ -15,6 +15,8 @@ class iKeywords extends iFile {
 		env.declareKey("subject", s);
 		env.declareKey("pos", p);
 
+		env.declareKey("trace", new k$trace());
+
 		env.declareKey("clock", new k$clock());
 		env.declareKey("date", new k$date());
 		env.declareKey("dateline", new k$dateline());	//#%#% imperfect
@@ -112,7 +114,6 @@ class k$subject extends vSimpleVar {		// &subject
 }
 
 
-
 class k$pos extends vSimpleVar {		// &pos
 
 	k$subject subject;		// associated &subject variable
@@ -124,5 +125,20 @@ class k$pos extends vSimpleVar {		// &pos
 			return null;	// fail: position out of range
 		value = iNew.Integer(n);
 		return this;
+	}
+}
+
+class k$trace extends vSimpleVar {		// &trace
+
+	static long trace;		// #%#%#% referenced in iClosure
+
+	vVariable Assign(vValue i) {
+		value = i.mkInteger();
+		trace = ((vInteger)value).value;
+		return this;
+	}
+
+	vValue deref() {
+		return value = iNew.Integer(trace);
 	}
 }

@@ -9,6 +9,7 @@ abstract class iFunctionClosure extends iClosure {
 				arguments[i] = arguments[i].deref();
 			}
 			retvalue = function(arguments);
+			returned = true;
 			PC = 0;
 		} else {
 			retvalue = null;

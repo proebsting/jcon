@@ -1,10 +1,10 @@
 abstract class iClosure {
 
-
 int PC;
 vDescriptor retvalue;
 boolean initialized;
 iClosure parent;
+boolean returned;		// flag to indicate resumption unnecessary
 
 iEnv env;
 vDescriptor[] arguments;
@@ -23,7 +23,29 @@ iClosure() {			// constructor
 
 final void resume() {
 	try {
+		if (k$trace.trace != 0) {
+			k$trace.trace--;
+			for (iClosure p=this.parent; p != null; p=p.parent) {
+				System.err.print("| ");
+			}
+			System.err.println("Entering  : " + this.trace());
+		}
 		nextval();
+		if (k$trace.trace != 0) {
+			for (iClosure p=this.parent; p != null; p=p.parent) {
+				System.err.print("| ");
+			}
+			String p;
+			k$trace.trace--;
+			if (retvalue == null) {
+				p = "Failed";
+			} else if (returned) {
+				p = "Returned " + retvalue.report();
+			} else {
+				p = "Suspended " + retvalue.report();
+			}
+			System.err.println(p);
+		}
 	} catch (iError e) {
 		//  e.printStackTrace();  //#%#%#% TEMP: enable for debugging
 		//#%#%# check &error here and fail or:

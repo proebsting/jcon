@@ -106,12 +106,14 @@ class oSwap extends iRefClosure {			// x1 :=: x2
 }
 
 class oRevAssign extends iClosure {			// x1 <- x2
+	vValue old;
+
 	void nextval() {
-		if (this.o == null) {
-			this.o = arguments[0].deref();
+		if (old == null) {
+			old = arguments[0].deref();
 			retvalue = arguments[0].Assign(arguments[1].deref());
 		} else {
-			arguments[0].Assign((vValue)this.o);
+			arguments[0].Assign(old);
 			retvalue = null;
 		}
 	}
@@ -119,16 +121,18 @@ class oRevAssign extends iClosure {			// x1 <- x2
 }
 
 class oRevSwap extends iClosure {			// x1 <-> x2
+	vValue oldleft;
+	vValue oldright;
+
 	void nextval() {
-		if (this.o == null) {
-			vValue[] tmp = { arguments[0].deref(), arguments[1].deref() };
-			this.o = tmp;
-			arguments[1].Assign(tmp[0]);
-			retvalue = arguments[0].Assign(tmp[1]);
+		if (oldleft == null) {
+			oldleft = arguments[0].deref();
+			oldright = arguments[1].deref();
+			arguments[1].Assign(oldleft);
+			retvalue = arguments[0].Assign(oldright);
 		} else {
-			vValue[] tmp = (vValue[]) this.o;
-			arguments[0].Assign(tmp[0]);
-			arguments[1].Assign(tmp[1]);
+			arguments[0].Assign(oldleft);
+			arguments[1].Assign(oldright);
 			retvalue = null;
 		}
 	}

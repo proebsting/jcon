@@ -6,6 +6,7 @@ abstract class iRefClosure extends iClosure {
 	void nextval() {
 		if (PC == 1) {
 			retvalue = function(arguments);
+			returned = true;
 			PC = 0;
 		} else {
 			retvalue = null;
