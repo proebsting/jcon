@@ -11,7 +11,7 @@
 MAKE = make
 SHELL = /bin/sh
 
-BUILT = jtran rts.zip jcon.doc
+BUILT = jtran rts.zip jcon.txt
 INSTALL = jcont $(BUILT)
 DEST = /cs/jive/`/home/gmt/sh/arch`/bin
 

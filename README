@@ -1,8 +1,12 @@
-JCON v0.4 README
-July 7, 1997
+JCON v0.5 README
+July 14, 1997
+
 
 Gregg Townsend		gmt@cs.arizona.edu
 Todd Proebsting		todd@cs.arizona.edu
+
+http://www.cs.arizona.edu/jcon/
+
 
 This is an initial, limited release of Jcon.
 Please do not redistribute it further.
@@ -39,7 +43,7 @@ For software see:
 Executables of icont, javac, java, zip, and unzip must be in the
 search path to build or run Jcon or to execute generated binaries.
 
-Binaries of Zip and Unzip can simply be placed in Jcon's "bin"
+Binaries of Zip and UnZip can simply be placed in Jcon's "bin"
 directory, if that is most convenient, provided that it is added
 to the search path.  (That is not practical for Icon or Java,
 which are large and complex packages.)
@@ -63,7 +67,7 @@ DOCUMENTATION
 The file doc/Article contains an overview of Jcon written for the
 Icon Newsletter.
 
-The build process creates a "jcon.doc" file in the bin directory
+The build process creates a "jcon.txt" file in the bin directory
 containing usage information and a very brief summary of the current
 implementation state.
 
