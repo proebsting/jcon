@@ -1,3 +1,7 @@
+#SRC: JCON
+
+#  link2.icn -- part of special test of linking and argument handling
+
 procedure decorate(s)
    return "{{ " || s || " }}"
 end

@@ -1,4 +1,4 @@
-# tpp5.icn: test for unterminated $if
+#  tpp5.icn: test for unterminated $if
 
 $endif		# should not match includer's $if
 

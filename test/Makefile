@@ -6,27 +6,13 @@
 #
 #  to compile a file:		./jcont filename
 #  to execute:			./filename [args]
-#  to execute with profiling:	./jxprof filename [args]
-#  to summarize profile:	make filename.sum
-
-
-.SUFFIXES: .prof .sum
-
-.prof.sum:
-	$(MAKE) $(MFLAGS) profsum
-	./profsum <$*.prof >$@
 
 
 run:
 	./runtest
 
 
-profsum:  profsum.icn
-	icont -us profsum
-
-
-
-#  "make clean" removes most generated files, but not .prof files
+#  "make clean" removes most generated files
 
 clean:
 	rm -rf jtmp *.java *.class *.out *.err *.zip *.u[12] *.sum
