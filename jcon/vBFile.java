@@ -33,14 +33,14 @@ vString reads(long n) {
 	// suppress initial LF if previous call was to read()
 	// and it consumed CR but not yet LF
 	if (lastCharRead == '\r') {
-	    byte c = instream.readByte();
+	    char c = this.rchar();
 	    if (c != '\n') {
-		b.append((char) c);
+		b.append(c);
 	    }
 	}
 	// now read remaining bytes
 	while (b.length() < n) {
-	    b.append((char) instream.readByte());
+	    b.append(this.rchar());
 	}
     } catch (EOFException e) {
     	if (b.length() == 0)

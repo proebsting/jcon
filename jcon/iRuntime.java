@@ -139,13 +139,16 @@ public static void display(iClosure parent) {
 	}
 }
 
+
+
+//  exit()-- common termination routine for all exits except internal errors.
+
 public static void exit(int status, iClosure parent) {
-	k$output.file.flush();
 	if (k$dump.dump != 0) {
-		iRuntime.display(parent);
+		iRuntime.display(parent);	// honor &dump
 	}
-	k$errout.file.flush();
-	System.exit(status);
+	vFile.flushall();			// flush output files
+	System.exit(status);			// shut down
 }
 
 

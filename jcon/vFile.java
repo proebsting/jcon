@@ -21,7 +21,15 @@ public abstract class vFile extends vValue {
     DataOutput outstream;	// output stream, if writable
     RandomAccessFile randfile;	// random handle, if seekable
 
-    byte lastCharRead = '\0';	// last char seen by read()
+    byte[] ibuf;		// input buffer, if needed
+    int inext;			// offset to next buffered character
+    int icount;			// number of remaining buffered chars
+
+    char lastCharRead = '\0';	// last char seen by read()
+
+
+
+final static int BufferSize = 4096;	// input buffer size
 
 
 
@@ -46,6 +54,18 @@ vDescriptor Bang(iClosure c)	{ return this.read(); }
 // Synchronization is done by calling fileToSync.flush().
 
 static vFile fileToSync;	// file to sync, if non-null
+
+
+
+//  output flushing: this method must be called on exit!
+//
+//  If we start buffering other output files besides stdin/stderr,
+//  we'll need to remember them, and flush them here.
+
+public static void flushall() {
+    k$output.file.flush();
+    k$errout.file.flush();
+}
 
 
 
@@ -90,6 +110,11 @@ vFile(String name, String flags) throws IOException {
     } else {
 	instream = randfile;				// input side
     }
+
+    if (instream != null && outstream == null) {	// if only for input
+	ibuf = new byte[BufferSize];			// allocate input buffer
+	inext = icount = 0;
+    }
 }
 
 
@@ -126,6 +151,30 @@ static vFile argVal(vDescriptor[] args, int index, vFile dflt)	// optional arg
 	return null;
     }
 }
+
+
+
+// ------------- input buffering for random-access input files ------------
+
+char rchar() throws IOException, EOFException {
+    if (icount > 0) {			// if buffer is not empty
+	icount--;
+	return (char) (ibuf[inext++] & 0xFF);
+    }
+    if (randfile == null) {		// if not buffered by us
+	return (char) (instream.readByte() & 0xFF);
+    }
+
+    int n = randfile.read(ibuf);	// refill buffer
+    if (n <= 0) {
+	throw new EOFException();
+    }
+    inext = 1;				// point to second byte
+    icount = n - 1;
+    return (char) (ibuf[0] & 0xFF);	// return first byte
+}
+
+
 
 
 
@@ -167,9 +216,10 @@ vFile close() {						// close()
 
 
 vFile seek(long n) {					// seek(n)
-    if (randfile == null) {		// if seekable
+    if (randfile == null) {		// if not seekable
     	return null; /*FAIL*/
     }
+    icount = 0;				// clear input buffering
     try {
     	if (n > 0) {
 	    n--;			// remove Icon bias
@@ -193,7 +243,7 @@ vInteger where() {					// where()
     	return null; /*FAIL*/
     } 
     try {
-	return iNew.Integer(1 + randfile.getFilePointer());
+	return iNew.Integer(1 + randfile.getFilePointer() - icount);
     } catch (IOException e) {
     	return null; /*FAIL*/
     }
@@ -206,22 +256,22 @@ vString read() {					// read()
 	iRuntime.error(212, this);	// not open for reading
     }
 
-    if (instream instanceof InputStream) {		// if possibly tty
-	if (fileToSync != null) {
-	    fileToSync.flush();		// flush pending graphics output
+    if (fileToSync != null) {
+	if (instream instanceof InputStream) {		// if possibly tty
+	    fileToSync.flush();			// flush pending graphics output
 	}
     }
 
     vByteBuffer b = new vByteBuffer(100);
-    byte c = '\0';
+    char c = '\0';
     try {
 	if (lastCharRead == '\r') {
-	    if ((c = instream.readByte()) != '\n') {
-		b.append((char) c);
+	    if ((c = this.rchar()) != '\n') {
+		b.append(c);
 	    }
 	}
-	while ((c = instream.readByte()) != '\n' && c != '\r') {
-	    b.append((char) c);
+	while ((c = this.rchar()) != '\n' && c != '\r') {
+	    b.append(c);
 	}
     } catch (EOFException e) {
     	if (b.length() == 0)

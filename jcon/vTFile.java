@@ -38,20 +38,20 @@ vString reads(long n) {
 	iRuntime.error(212, this);	// not open for reading
     }
 
-    if (instream instanceof DataInputStream) {		// if possibly tty
-	if (fileToSync != null) {
+    if (fileToSync != null) {
+	if (instream instanceof DataInputStream) {	// if possibly tty
 	    fileToSync.flush();		// flush pending graphics output
 	}
     }
 
     try {
 	while (b.length() < n) {
-	    byte c = instream.readByte();
+	    char c = this.rchar();
 	    if (lastCharRead != '\r' || c != '\n') {	// if not LF after CR
 		if (c == '\r') {			// if new CR
 		    b.append('\n');
 		} else {			// other including LF
-		    b.append((char) c);
+		    b.append(c);
 		}
 	    }
 	    lastCharRead = c;
