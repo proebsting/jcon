@@ -71,9 +71,9 @@ procedure ir_a_Scan(p, st, inuse, target, bounded, rval)
         ])
     suspend ir_Chunk(p.expr.ir.success, [
         ir_Call(p.coord, tmp, ir_key("pos"), [], &null),
-	ir_Move(p.ir.x.oldpos, ir_Deref(tmp)),
+	ir_Deref(p.ir.x.oldpos, tmp),
         ir_Call(p.coord, tmp, ir_key("subject"), [], &null),
-	ir_Move(p.ir.x.oldsubject, ir_Deref(tmp)),
+	ir_Deref(p.ir.x.oldsubject, tmp),
         ir_opfn(p.coord, target, ir_Operator(":?", 2, rval), [ tmp, lv ],
                 p.expr.ir.resume),
         ir_Goto(p.body.ir.start)
@@ -391,7 +391,7 @@ procedure ir_a_Call(p, st, inuse, target, bounded, rval)
     }
     suspend ir_Chunk(L[ 1].ir.failure, [ ir_Goto(p.ir.failure) ])
     suspend ir_Chunk(L[-1].ir.success, [
-	ir_Move(fn, ir_Deref(fn)),
+	ir_Deref(fn, fn),
         ir_Call(p.coord, closure, fn, args, L[-1].ir.resume),
         ir_Move(target, closure),
         ir_Goto(p.ir.success)

@@ -10,7 +10,7 @@ record ir_Chunk(label, insnList)
  
 record ir_Free(v)
 record ir_Restore()
-record ir_Deref(value)
+record ir_Deref(lhs, value)
 record ir_Tmp(name)
 record ir_TmpLabel(name)
 record ir_Label(value)

@@ -131,13 +131,16 @@ procedure bc_gen_ir_Free(s, p)
     return s
 end
 
-# record ir_Deref( value )
+# record ir_Deref( lhs value )
 procedure bc_gen_ir_Deref(s, p)
     local deref
+
+    \p.lhs | return s
 
     bc_gen(s, p.value)
     deref := bc_Deref_methodref(bc_current_classptr)
     put(s, j_invokevirtual(deref))
+    bc_gen_assign_to(s, p.lhs)
     return s
 end
 

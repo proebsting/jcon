@@ -103,7 +103,6 @@ end
 procedure optim_def_use(p, this, uses, defs)
     case type(p) of {
     "ir_Free" :  { }
-    "ir_Deref" : { optim_def_use(p.value, uses, uses, defs) }
     "ir_Tmp" :   { this[p]+:=1 }
     "ir_TmpLabel" :  { this[p]+:=1 }
     "ir_Label" : { this[p]+:=1 }
@@ -111,6 +110,8 @@ procedure optim_def_use(p, this, uses, defs)
             optim_def_use(p.expr, uses, uses, defs) }
     "ir_Move" :  { optim_def_use(\p.lhs, defs, uses, defs);
             optim_def_use(p.rhs, uses, uses, defs) }
+    "ir_Deref" :  { optim_def_use(\p.lhs, defs, uses, defs);
+            optim_def_use(p.value, uses, uses, defs) }
     "ir_ScanSwap" :  { optim_def_use(p.subject, defs, uses, defs);
             optim_def_use(p.subject, uses, uses, defs);
             optim_def_use(p.pos, defs, uses, defs);
@@ -157,13 +158,14 @@ procedure optim_rewrite(p, rename)
         return optim_rewrite(rename[p], rename)
     }
     case type(p) of {
-    "ir_Deref" : { p.value := optim_rewrite(p.value, rename); }
     "ir_Free" :  { }
     "ir_Tmp" :   { }
     "ir_TmpLabel" :  { }
     "ir_Label" : { }
     "ir_Move" :  { p.lhs := optim_rewrite(\p.lhs, rename);
             p.rhs := optim_rewrite(p.rhs, rename) }
+    "ir_Deref" :  { p.lhs := optim_rewrite(\p.lhs, rename);
+            p.value := optim_rewrite(p.value, rename) }
     "ir_ScanSwap" :  { }
     "ir_Goto" :  { }
     "ir_Var" :   { }
