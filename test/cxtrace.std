@@ -1,0 +1,253 @@
+cxtrace.icn  :    6  | braid(co-expression_2(0),co-expression_3(0))
+cxtrace.icn  :   16  | | braid; co-expression_1 : &null @ co-expression_2
+cxtrace.icn  :    6  | | main; co-expression_2 returned 11 to co-expression_1
+cxtrace.icn  :   16  | braid suspended 11
+cxtrace.icn  :    6  | braid resumed
+cxtrace.icn  :   17  | | braid; co-expression_1 : &null @ co-expression_3
+cxtrace.icn  :    6  | | main; co-expression_3 returned 21 to co-expression_1
+cxtrace.icn  :   17  | braid suspended 21
+cxtrace.icn  :    6  | braid resumed
+cxtrace.icn  :   16  | | braid; co-expression_1 : &null @ co-expression_2
+cxtrace.icn  :    6  | | main; co-expression_2 returned 12 to co-expression_1
+cxtrace.icn  :   16  | braid suspended 12
+cxtrace.icn  :    6  | braid resumed
+cxtrace.icn  :   17  | | braid; co-expression_1 : &null @ co-expression_3
+cxtrace.icn  :    6  | | main; co-expression_3 returned 22 to co-expression_1
+cxtrace.icn  :   17  | braid suspended 22
+cxtrace.icn  :    6  | braid resumed
+cxtrace.icn  :   16  | | braid; co-expression_1 : &null @ co-expression_2
+cxtrace.icn  :    6  | | main; co-expression_2 returned 13 to co-expression_1
+cxtrace.icn  :   16  | braid suspended 13
+cxtrace.icn  :    6  | braid resumed
+cxtrace.icn  :   17  | | braid; co-expression_1 : &null @ co-expression_3
+cxtrace.icn  :    6  | | main; co-expression_3 failed to co-expression_1
+cxtrace.icn  :   19  | | braid; co-expression_1 : &null @ co-expression_2
+cxtrace.icn  :    6  | | main; co-expression_2 failed to co-expression_1
+cxtrace.icn  :   19  | | braid; co-expression_1 : &null @ co-expression_3
+cxtrace.icn  :    6  | | main; co-expression_3 failed to co-expression_1
+cxtrace.icn  :   21  | braid failed
+cxtrace.icn  :    7  | dbraid(co-expression_4(0),co-expression_5(0))
+cxtrace.icn  :   25  | | db2(co-expression_4(0),co-expression_5(0))
+cxtrace.icn  :   29  | | | db3(co-expression_4(0),co-expression_5(0))
+cxtrace.icn  :   33  | | | | braid(co-expression_4(0),co-expression_5(0))
+cxtrace.icn  :   16  | | | | | braid; co-expression_1 : &null @ co-expression_4
+cxtrace.icn  :    7  | | | | | main; co-expression_4 returned 31 to co-expression_1
+cxtrace.icn  :   16  | | | | braid suspended 31
+cxtrace.icn  :   33  | | | db3 suspended 31
+cxtrace.icn  :   29  | | db2 suspended 31
+cxtrace.icn  :   25  | dbraid suspended 31
+cxtrace.icn  :    7  | dbraid resumed
+cxtrace.icn  :   25  | | db2 resumed
+cxtrace.icn  :   29  | | | db3 resumed
+cxtrace.icn  :   33  | | | | braid resumed
+cxtrace.icn  :   17  | | | | | braid; co-expression_1 : &null @ co-expression_5
+cxtrace.icn  :    7  | | | | | main; co-expression_5 returned 41 to co-expression_1
+cxtrace.icn  :   17  | | | | braid suspended 41
+cxtrace.icn  :   33  | | | db3 suspended 41
+cxtrace.icn  :   29  | | db2 suspended 41
+cxtrace.icn  :   25  | dbraid suspended 41
+cxtrace.icn  :    7  | dbraid resumed
+cxtrace.icn  :   25  | | db2 resumed
+cxtrace.icn  :   29  | | | db3 resumed
+cxtrace.icn  :   33  | | | | braid resumed
+cxtrace.icn  :   16  | | | | | braid; co-expression_1 : &null @ co-expression_4
+cxtrace.icn  :    7  | | | | | main; co-expression_4 returned 32 to co-expression_1
+cxtrace.icn  :   16  | | | | braid suspended 32
+cxtrace.icn  :   33  | | | db3 suspended 32
+cxtrace.icn  :   29  | | db2 suspended 32
+cxtrace.icn  :   25  | dbraid suspended 32
+cxtrace.icn  :    7  | dbraid resumed
+cxtrace.icn  :   25  | | db2 resumed
+cxtrace.icn  :   29  | | | db3 resumed
+cxtrace.icn  :   33  | | | | braid resumed
+cxtrace.icn  :   17  | | | | | braid; co-expression_1 : &null @ co-expression_5
+cxtrace.icn  :    7  | | | | | main; co-expression_5 returned 42 to co-expression_1
+cxtrace.icn  :   17  | | | | braid suspended 42
+cxtrace.icn  :   33  | | | db3 suspended 42
+cxtrace.icn  :   29  | | db2 suspended 42
+cxtrace.icn  :   25  | dbraid suspended 42
+cxtrace.icn  :    7  | dbraid resumed
+cxtrace.icn  :   25  | | db2 resumed
+cxtrace.icn  :   29  | | | db3 resumed
+cxtrace.icn  :   33  | | | | braid resumed
+cxtrace.icn  :   16  | | | | | braid; co-expression_1 : &null @ co-expression_4
+cxtrace.icn  :    7  | | | | | main; co-expression_4 returned 33 to co-expression_1
+cxtrace.icn  :   16  | | | | braid suspended 33
+cxtrace.icn  :   33  | | | db3 suspended 33
+cxtrace.icn  :   29  | | db2 suspended 33
+cxtrace.icn  :   25  | dbraid suspended 33
+cxtrace.icn  :    7  | dbraid resumed
+cxtrace.icn  :   25  | | db2 resumed
+cxtrace.icn  :   29  | | | db3 resumed
+cxtrace.icn  :   33  | | | | braid resumed
+cxtrace.icn  :   17  | | | | | braid; co-expression_1 : &null @ co-expression_5
+cxtrace.icn  :    7  | | | | | main; co-expression_5 failed to co-expression_1
+cxtrace.icn  :   19  | | | | | braid; co-expression_1 : &null @ co-expression_4
+cxtrace.icn  :    7  | | | | | main; co-expression_4 failed to co-expression_1
+cxtrace.icn  :   19  | | | | | braid; co-expression_1 : &null @ co-expression_5
+cxtrace.icn  :    7  | | | | | main; co-expression_5 failed to co-expression_1
+cxtrace.icn  :   21  | | | | braid failed
+cxtrace.icn  :   34  | | | db3 failed
+cxtrace.icn  :   30  | | db2 failed
+cxtrace.icn  :   26  | dbraid failed
+cxtrace.icn  :    8  | dcreate(51)
+cxtrace.icn  :   38  | | dc2(51)
+cxtrace.icn  :   42  | | | dc3(51)
+cxtrace.icn  :   46  | | | dc3 returned co-expression_6(0)
+cxtrace.icn  :   42  | | dc2 returned co-expression_6(0)
+cxtrace.icn  :   38  | dcreate returned co-expression_6(0)
+cxtrace.icn  :    8  | dcreate(61)
+cxtrace.icn  :   38  | | dc2(61)
+cxtrace.icn  :   42  | | | dc3(61)
+cxtrace.icn  :   46  | | | dc3 returned co-expression_7(0)
+cxtrace.icn  :   42  | | dc2 returned co-expression_7(0)
+cxtrace.icn  :   38  | dcreate returned co-expression_7(0)
+cxtrace.icn  :    8  | braid(co-expression_6(0),co-expression_7(0))
+cxtrace.icn  :   16  | | braid; co-expression_1 : &null @ co-expression_6
+cxtrace.icn  :   46  | | dc3; co-expression_6 returned 51 to co-expression_1
+cxtrace.icn  :   16  | braid suspended 51
+cxtrace.icn  :    8  | braid resumed
+cxtrace.icn  :   17  | | braid; co-expression_1 : &null @ co-expression_7
+cxtrace.icn  :   46  | | dc3; co-expression_7 returned 61 to co-expression_1
+cxtrace.icn  :   17  | braid suspended 61
+cxtrace.icn  :    8  | braid resumed
+cxtrace.icn  :   16  | | braid; co-expression_1 : &null @ co-expression_6
+cxtrace.icn  :   46  | | dc3; co-expression_6 returned 52 to co-expression_1
+cxtrace.icn  :   16  | braid suspended 52
+cxtrace.icn  :    8  | braid resumed
+cxtrace.icn  :   17  | | braid; co-expression_1 : &null @ co-expression_7
+cxtrace.icn  :   46  | | dc3; co-expression_7 returned 62 to co-expression_1
+cxtrace.icn  :   17  | braid suspended 62
+cxtrace.icn  :    8  | braid resumed
+cxtrace.icn  :   16  | | braid; co-expression_1 : &null @ co-expression_6
+cxtrace.icn  :   46  | | dc3; co-expression_6 returned 53 to co-expression_1
+cxtrace.icn  :   16  | braid suspended 53
+cxtrace.icn  :    8  | braid resumed
+cxtrace.icn  :   17  | | braid; co-expression_1 : &null @ co-expression_7
+cxtrace.icn  :   46  | | dc3; co-expression_7 returned 63 to co-expression_1
+cxtrace.icn  :   17  | braid suspended 63
+cxtrace.icn  :    8  | braid resumed
+cxtrace.icn  :   16  | | braid; co-expression_1 : &null @ co-expression_6
+cxtrace.icn  :   46  | | dc3; co-expression_6 failed to co-expression_1
+cxtrace.icn  :   19  | | braid; co-expression_1 : &null @ co-expression_6
+cxtrace.icn  :   46  | | dc3; co-expression_6 failed to co-expression_1
+cxtrace.icn  :   19  | | braid; co-expression_1 : &null @ co-expression_7
+cxtrace.icn  :   46  | | dc3; co-expression_7 failed to co-expression_1
+cxtrace.icn  :   21  | braid failed
+cxtrace.icn  :    9  | braid(co-expression_8(0),co-expression_9(0))
+cxtrace.icn  :   16  | | braid; co-expression_1 : &null @ co-expression_8
+cxtrace.icn  :    9  | | dsusp(71)
+cxtrace.icn  :   51  | | | ds2(71)
+cxtrace.icn  :   55  | | | | ds3(71)
+cxtrace.icn  :   59  | | | | ds3 suspended 71
+cxtrace.icn  :   55  | | | ds2 suspended 71
+cxtrace.icn  :   51  | | dsusp suspended 71
+cxtrace.icn  :    9  | | main; co-expression_8 returned 71 to co-expression_1
+cxtrace.icn  :   16  | braid suspended 71
+cxtrace.icn  :    9  | braid resumed
+cxtrace.icn  :   17  | | braid; co-expression_1 : &null @ co-expression_9
+cxtrace.icn  :    9  | | dsusp(81)
+cxtrace.icn  :   51  | | | ds2(81)
+cxtrace.icn  :   55  | | | | ds3(81)
+cxtrace.icn  :   59  | | | | ds3 suspended 81
+cxtrace.icn  :   55  | | | ds2 suspended 81
+cxtrace.icn  :   51  | | dsusp suspended 81
+cxtrace.icn  :    9  | | main; co-expression_9 returned 81 to co-expression_1
+cxtrace.icn  :   17  | braid suspended 81
+cxtrace.icn  :    9  | braid resumed
+cxtrace.icn  :   16  | | braid; co-expression_1 : &null @ co-expression_8
+cxtrace.icn  :    9  | | dsusp resumed
+cxtrace.icn  :   51  | | | ds2 resumed
+cxtrace.icn  :   55  | | | | ds3 resumed
+cxtrace.icn  :   59  | | | | ds3 suspended 72
+cxtrace.icn  :   55  | | | ds2 suspended 72
+cxtrace.icn  :   51  | | dsusp suspended 72
+cxtrace.icn  :    9  | | main; co-expression_8 returned 72 to co-expression_1
+cxtrace.icn  :   16  | braid suspended 72
+cxtrace.icn  :    9  | braid resumed
+cxtrace.icn  :   17  | | braid; co-expression_1 : &null @ co-expression_9
+cxtrace.icn  :    9  | | dsusp resumed
+cxtrace.icn  :   51  | | | ds2 resumed
+cxtrace.icn  :   55  | | | | ds3 resumed
+cxtrace.icn  :   59  | | | | ds3 suspended 82
+cxtrace.icn  :   55  | | | ds2 suspended 82
+cxtrace.icn  :   51  | | dsusp suspended 82
+cxtrace.icn  :    9  | | main; co-expression_9 returned 82 to co-expression_1
+cxtrace.icn  :   17  | braid suspended 82
+cxtrace.icn  :    9  | braid resumed
+cxtrace.icn  :   16  | | braid; co-expression_1 : &null @ co-expression_8
+cxtrace.icn  :    9  | | dsusp resumed
+cxtrace.icn  :   51  | | | ds2 resumed
+cxtrace.icn  :   55  | | | | ds3 resumed
+cxtrace.icn  :   59  | | | | ds3 suspended 73
+cxtrace.icn  :   55  | | | ds2 suspended 73
+cxtrace.icn  :   51  | | dsusp suspended 73
+cxtrace.icn  :    9  | | main; co-expression_8 returned 73 to co-expression_1
+cxtrace.icn  :   16  | braid suspended 73
+cxtrace.icn  :    9  | braid resumed
+cxtrace.icn  :   17  | | braid; co-expression_1 : &null @ co-expression_9
+cxtrace.icn  :    9  | | dsusp resumed
+cxtrace.icn  :   51  | | | ds2 resumed
+cxtrace.icn  :   55  | | | | ds3 resumed
+cxtrace.icn  :   59  | | | | ds3 suspended 83
+cxtrace.icn  :   55  | | | ds2 suspended 83
+cxtrace.icn  :   51  | | dsusp suspended 83
+cxtrace.icn  :    9  | | main; co-expression_9 returned 83 to co-expression_1
+cxtrace.icn  :   17  | braid suspended 83
+cxtrace.icn  :    9  | braid resumed
+cxtrace.icn  :   16  | | braid; co-expression_1 : &null @ co-expression_8
+cxtrace.icn  :    9  | | dsusp resumed
+cxtrace.icn  :   51  | | | ds2 resumed
+cxtrace.icn  :   55  | | | | ds3 resumed
+cxtrace.icn  :   60  | | | | ds3 failed
+cxtrace.icn  :   56  | | | ds2 failed
+cxtrace.icn  :   52  | | dsusp failed
+cxtrace.icn  :    9  | | main; co-expression_8 failed to co-expression_1
+cxtrace.icn  :   19  | | braid; co-expression_1 : &null @ co-expression_8
+cxtrace.icn  :    9  | | main; co-expression_8 failed to co-expression_1
+cxtrace.icn  :   19  | | braid; co-expression_1 : &null @ co-expression_9
+cxtrace.icn  :    9  | | dsusp resumed
+cxtrace.icn  :   51  | | | ds2 resumed
+cxtrace.icn  :   55  | | | | ds3 resumed
+cxtrace.icn  :   60  | | | | ds3 failed
+cxtrace.icn  :   56  | | | ds2 failed
+cxtrace.icn  :   52  | | dsusp failed
+cxtrace.icn  :    9  | | main; co-expression_9 failed to co-expression_1
+cxtrace.icn  :   21  | braid failed
+cxtrace.icn  :   10  | dloop()
+cxtrace.icn  :   65  | | dl2()
+cxtrace.icn  :   69  | | | dl3()
+cxtrace.icn  :   73  | | | | braid(co-expression_10(0),co-expression_11(0))
+cxtrace.icn  :   16  | | | | | braid; co-expression_1 : &null @ co-expression_10
+cxtrace.icn  :   73  | | | | | dl3; co-expression_10 returned 91 to co-expression_1
+cxtrace.icn  :   16  | | | | braid suspended 91
+cxtrace.icn  :   73  | | | | braid resumed
+cxtrace.icn  :   17  | | | | | braid; co-expression_1 : &null @ co-expression_11
+cxtrace.icn  :   73  | | | | | dl3; co-expression_11 returned 97 to co-expression_1
+cxtrace.icn  :   17  | | | | braid suspended 97
+cxtrace.icn  :   73  | | | | braid resumed
+cxtrace.icn  :   16  | | | | | braid; co-expression_1 : &null @ co-expression_10
+cxtrace.icn  :   73  | | | | | dl3; co-expression_10 returned 92 to co-expression_1
+cxtrace.icn  :   16  | | | | braid suspended 92
+cxtrace.icn  :   73  | | | | braid resumed
+cxtrace.icn  :   17  | | | | | braid; co-expression_1 : &null @ co-expression_11
+cxtrace.icn  :   73  | | | | | dl3; co-expression_11 returned 98 to co-expression_1
+cxtrace.icn  :   17  | | | | braid suspended 98
+cxtrace.icn  :   73  | | | | braid resumed
+cxtrace.icn  :   16  | | | | | braid; co-expression_1 : &null @ co-expression_10
+cxtrace.icn  :   73  | | | | | dl3; co-expression_10 failed to co-expression_1
+cxtrace.icn  :   19  | | | | | braid; co-expression_1 : &null @ co-expression_10
+cxtrace.icn  :   73  | | | | | dl3; co-expression_10 failed to co-expression_1
+cxtrace.icn  :   19  | | | | | braid; co-expression_1 : &null @ co-expression_11
+cxtrace.icn  :   73  | | | | | dl3; co-expression_11 returned 99 to co-expression_1
+cxtrace.icn  :   20  | | | | braid suspended 99
+cxtrace.icn  :   73  | | | | braid resumed
+cxtrace.icn  :   19  | | | | | braid; co-expression_1 : &null @ co-expression_10
+cxtrace.icn  :   73  | | | | | dl3; co-expression_10 failed to co-expression_1
+cxtrace.icn  :   19  | | | | | braid; co-expression_1 : &null @ co-expression_11
+cxtrace.icn  :   73  | | | | | dl3; co-expression_11 failed to co-expression_1
+cxtrace.icn  :   21  | | | | braid failed
+cxtrace.icn  :   74  | | | dl3 failed
+cxtrace.icn  :   70  | | dl2 failed
+cxtrace.icn  :   65  | dloop failed
+cxtrace.icn  :   11  main failed

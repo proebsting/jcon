@@ -1,0 +1,74 @@
+#SRC: JCON
+#OPT: -fe
+
+procedure main()
+   &trace := -1
+   every braid(create 11 to 13, create 21 to 22)
+   every dbraid(create 31 to 33, create 41 to 42)
+   every braid(dcreate(51), dcreate(61))
+   every braid(create dsusp(71), create dsusp(81))
+   dloop()
+end
+
+procedure braid(a, b)
+   local v
+   repeat {
+      if v := @a then suspend v else break
+      if v := @b then suspend v else break
+      }
+   while v := @a | @b do
+      suspend v
+end
+
+
+procedure dbraid(a, b)	# deep braiding
+   suspend db2(a, b)
+end
+
+procedure db2(a, b)
+   suspend db3(a, b)
+end
+
+procedure db3(a, b)
+   suspend braid(a, b)
+end
+
+
+procedure dcreate(n)	# deep creation
+   return dc2(n)
+end
+
+procedure dc2(n)
+   return dc3(n)
+end
+
+procedure dc3(n)
+   return create n to n + 2
+end
+
+
+procedure dsusp(n)	# deep suspension
+   suspend ds2(n)
+end
+
+procedure ds2(n)
+   suspend ds3(n)
+end
+
+procedure ds3(n)
+   suspend n to n + 2
+end
+
+
+
+procedure dloop()	# deep loop
+   return dl2()
+end
+
+procedure dl2()
+   dl3()
+end
+
+procedure dl3()
+   every braid(create 91 to 92, create 97 to 99)
+end
