@@ -21,6 +21,7 @@ Add second versions of many(), push(), etc. that are optimized for
 the common cases that use default arguments.
 	-- DONE for: any, many, upto, push, put, write, writes
 	-- could also do: match, find, trim, log, atan
+	-- lots more possibilities among the graphics functions
 
 Use lazy creation for most keyword classes.
 	-- nontrivial and probably not worth it
