@@ -18,3 +18,35 @@
 "L[200]"
 "L[191]"
 "complex.r"
+
+co-expression_1(0)
+
+recurse local identifiers:
+   a = 5
+   b = 14
+   x = 19
+   y = -9
+recurse local identifiers:
+   a = 4
+   b = 10
+   x = 14
+   y = -6
+recurse local identifiers:
+   a = 3
+   b = 7
+   x = 10
+   y = -4
+
+global identifiers:
+   complex = record constructor complex
+   display = function display
+   image = function image
+   list = function list
+   main = procedure main
+   main2 = procedure main2
+   name = function name
+   push = function push
+   recurse = procedure recurse
+   table = function table
+   variable = function variable
+   write = function write

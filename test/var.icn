@@ -9,11 +9,14 @@ procedure main(a)
    variable("y") := 3
    if variable("z") then write("oops")
    main2()
+   write()
+   recurse(1, 4)
 end
 
 record complex(r,i)
 
 procedure main2(a)
+   local T, L, L1
    static s
    every write(image(name(main | T | L | s | a)))
    T := table()
@@ -28,4 +31,16 @@ procedure main2(a)
    every write(image(name(L[1 | 2 | 3 | -1 | -10])))
    every write(image(name(L1[1 | 2 | 3 | -1 | -10])))
    write(image(name(complex().r)))
+   return
+end
+
+procedure recurse(a,b)	# to build up some context for display() 
+   local x, y
+   x := a + b
+   y := a - b
+   if a = 5 then
+      display(3, &output)
+   else
+      recurse(a + 1, b + a)
+   return
 end
