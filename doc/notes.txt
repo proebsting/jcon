@@ -17,6 +17,7 @@ execution:
 -- out-of-memory errors say "block region"; there is no separate string region
 -- $PATH must include env and uname commands to use getenv() and &hostname
 -- tracing (set by $TRACE or &trace) includes operators and built-in functions
+-- executables are portable among dissimilar Unix platforms (just need ksh+Java)
 
 known bugs:
 -- local variables are not dereferenced prior to being returned
@@ -29,8 +30,7 @@ strings and csets:
 
 numerics:
 -- arithmetic overflow and underflow are not detected
--- conversion of reals to strings does not match results from v9
--- conversion of strings to reals and integers follows slightly different rules
+-- conversions to or from strings may differ slightly from v9
 
 structures:
 -- random selection from sets and tables differs from v9
@@ -43,15 +43,16 @@ files:
    -- stdin is empty, except with open(s,"wp") where it comes from the program
    -- stdout and stderr are copied from the process when it terminates
 
-error reporting:
+debugging:
+-- function() generates names in an unsorted order
 -- arg lists in traceback show actual instead of expected number of arguments
    (e.g.: a call to insert() traces as insert() not insert(&null,&null,&null))
 -- record fields are not shown in traceback images
 
-miscellaneous:
--- no OS symbols (e.g. _UNIX) are predefined; _JAVA is predefined
--- function() generates names in an unsorted order
+keywords:
+-- &features includes "Java"; _JAVA is predefined in the preprocessor
 -- &time produces elapsed wall-clock time, not CPU time, due to Java limitations
+-- &clock and &dateline may be off by an hour due to Java library bugs
 -- &allocated, &collections, &storage, and &regions produce only zero values
 
 ------------------------------------------------------------------------------
