@@ -446,7 +446,7 @@ private static Rectangle limitBounds (vWindow win, int x, int y, int w, int h) {
 	x = 0;
     }
     if (y < 0) {
-	w += y;
+	h += y;
 	y = 0;
     }
     if (w > win.getWidth() - x) {
