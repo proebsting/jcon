@@ -106,16 +106,20 @@ public iClosure instantiate(vDescriptor[] args, iClosure parent) {
     c.closure(args, parent);
     return c;
 }
-public iClosure instantiate(vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosure parent) {
+
+public iClosure instantiate(
+	vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosure parent) {
     iClosure c = getClosure();
     c.closure(arg0, arg1, arg2, parent);
     return c;
 }
-public iClosure instantiate(vDescriptor arg0, vDescriptor arg1, iClosure parent) {
+
+public iClosure instantiate(vDescriptor arg0,vDescriptor arg1,iClosure parent) {
     iClosure c = getClosure();
     c.closure(arg0, arg1, parent);
     return c;
 }
+
 public iClosure instantiate(vDescriptor arg0, iClosure parent) {
     iClosure c = getClosure();
     c.closure(arg0, parent);

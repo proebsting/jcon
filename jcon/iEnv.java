@@ -78,7 +78,7 @@ public static void declareProcedure(String name, String classname, int arity) {
 }
 
 public static void declareRecord(String name, String[] fields) {
-    declareGlobalInit(name, iNew.SimpleVar(name, iNew.RecordProc(name, fields)));
+    declareGlobalInit(name, iNew.SimpleVar(name, iNew.RecordProc(name,fields)));
 }
 
 public static vValue resolveBuiltin(String s) {

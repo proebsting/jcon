@@ -115,7 +115,8 @@ public void closure(vDescriptor[] a, iClosure parent) {
     this.parent = parent;
 }
 
-public void closure(vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosure parent) {
+public void closure(
+	vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosure parent) {
     init();
     vDescriptor[] args = { arg0, arg1, arg2 };
     closure(args, parent);
