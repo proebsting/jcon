@@ -557,7 +557,7 @@ procedure ir_a_Global(p, st, inuse, target, bounded, rval)
 
     globals := []
     every put(globals, (!p.idList).id)
-    return ir_Global(globals)
+    return ir_Global(globals, p.coord)
 end
 
 # record a_If( expr thenexpr elseexpr )
@@ -642,12 +642,12 @@ procedure ir_a_Invocable(p, st, inuse, target, bounded, rval)
             }
         }
     }
-    return ir_Invocable(inv, all)
+    return ir_Invocable(inv, all, p.coord)
 end
 
 # record a_Link( linkfileList )
 procedure ir_a_Link(p, st, inuse, target, bounded, rval)
-    return ir_Link(p.linkfileList)
+    return ir_Link(p.linkfileList, p.coord)
 end
 
 procedure ir_value0(p)

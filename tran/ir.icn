@@ -1,9 +1,9 @@
 #  ir.icn -- data structures for the Jcon intermediate representation.
 
-record ir_Invocable(nameList, all)
-record ir_Link(nameList)
-record ir_Record(name, fieldList)
-record ir_Global(nameList)
+record ir_Invocable(nameList, all, coord)
+record ir_Link(nameList, coord)
+record ir_Record(name, fieldList, coord)
+record ir_Global(nameList, coord)
 record ir_Function(name, paramList, accumulate, localList, staticList, codeList,
                   codeStart, lvalset, coord)
 record ir_Chunk(label, insnList)
