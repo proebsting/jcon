@@ -6,7 +6,7 @@
 #
 #	Author:   Gregg M. Townsend
 #
-#	Date:     August 4, 1998
+#	Date:     November 12, 1997
 #
 ############################################################################
 #
@@ -132,7 +132,6 @@ end
 procedure save()
    local g
 
-$ifndef _JAVA
    g := WAttrib("gamma")
    WAttrib("gamma=1.0")		# don't gamma-correct on write
    repeat case OpenDialog("Save confetti image:") of {
@@ -149,8 +148,6 @@ $ifndef _JAVA
          }
       }
    WAttrib("gamma=" || g)
-$endif  # _JAVA
-
    return
 end
 
@@ -187,9 +184,7 @@ return vsetup(win, cbk,
    ["quit:Button:regular::260,439,78,29:quit   @Q",quit],
    ["r:Button:regular::245,218,14,17:r",huebutton],
    ["render:Button:regular::269,318,62,35:RENDER",render],
-$ifndef _JAVA
    ["save:Button:regular::260,408,78,29:save   @S",save],
-$endif
    ["side:Text::3:213,59,73,19:Side: \\=9",],
    ["slab:Label:::314,126,21,13:Sat",],
    ["smax:Text::3:308,167,31,19:\\=70",],
