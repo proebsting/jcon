@@ -3,7 +3,6 @@ global primitives, reserveds, operators
 procedure init_lex_tables()
 
     #Primitive Tokens
-    #
     primitives := [
                ["identifier",      "IDENT",     "be"],
                ["integer-literal", "INTLIT",    "be"],
@@ -13,7 +12,6 @@ procedure init_lex_tables()
                ["end-of-file",     "EOFX",      "" ]]
 
     # Reserved Words
-    #
     reserveds  := [
                ["break",           "BREAK",     "be"],
                ["by",              "BY",        ""  ],
@@ -46,7 +44,6 @@ procedure init_lex_tables()
                ["while",           "WHILE",     "b" ]]
 
     # Operators
-    #
     operators  := [
                [":=",              "ASSIGN",    ""  ],
                ["@",               "AT",        "b" ],
@@ -141,68 +138,37 @@ procedure main(L)
 
     init_lex_tables()
     toks := table()
-    every prim := !primitives do {
-        actual := prim[1]
-        token := prim[2]
+
+    every elem := (!primitives | !reserveds | !operators) do {
+        actual := elem[1]
+        token := elem[2]
         if /toks[token] then {
         toks[token] := actual
         write("global ", token)
         }
     }
 
-    every res := !reserveds do {
-        actual := res[1]
-        token := res[2]
-        if /toks[token] then {
-        toks[token] := actual
-        write("global ", token)
-        }
-    }
-
-    every op := !operators do {
-        actual := op[1]
-        token := op[2]
-        if /toks[token] then {
-        toks[token] := actual
-        write("global ", token)
-        }
-    }
-
-    write();
     write("global beginner_set")
     write("global ender_set")
 
-    write();
     write("procedure initialize()")
-    every prim := !primitives do {
-        actual := prim[1]
-        token := prim[2]
+    every elem := (!primitives | !reserveds | !operators) do {
+        actual := elem[1]
+        token := elem[2]
         if toks[token] == actual then {
             write("\t", token, ":= TOK(", image(token), ",", image(actual), ")")
         }
     }
-    every res := !reserveds do {
-        actual := res[1]
-        token := res[2]
-        if toks[token] == actual then {
-            write("\t", token, ":= TOK(", image(token), ",", image(actual), ")")
-        }
-    }
-    every op := !operators do {
-        actual := op[1]
-        token := op[2]
-        if toks[token] == actual then {
-            write("\t", token, ":= TOK(", image(token), ",", image(actual), ")")
-        }
-    }
-    write()
+
     write("\tbeginner_set := set()")
     write("\tender_set := set()")
     every elem := !primitives | !reserveds | !operators do {
-        if find("b", elem[3]) then
+        if find("b", elem[3]) then {
             write("\tinsert(beginner_set, ", elem[2], ")")
-        if find("e", elem[3]) then
+        }
+        if find("e", elem[3]) then {
             write("\tinsert(ender_set, ", elem[2], ")")
+        }
     }
     write("end # end initialize")
 
@@ -217,20 +183,10 @@ procedure main(L)
     write("\tfail")
     write("end")
 
-    write();
     write("procedure do_ops()")
-
-    case L[1] of {
-    "simple" : lexgen_seq()
-    "tree" : lexgen_tree()
-    default : stop("usage: lexgen [ tree | simple ]")
-    }
+    lexgen_tree()
     write("\tfail")
     write("end")
-end
-
-procedure do_suspend(actual, token)
-    write("{ return ", token, " }")
 end
 
 procedure lexgen_reserveds()
@@ -244,23 +200,7 @@ procedure lexgen_reserveds()
         put(l[*actual], res)
     }
     every i := !l[10 to 1 by -1] do {
-            write("\t\treserved_sym_tbl[", image(i[1]), "] := ", i[2])
-    }
-end
-
-procedure lexgen_seq()
-    local l, op, actual, token, i
-
-    l := []
-    every 1 to 10 do put(l, [])
-    every op := !operators do {
-        actual := op[1]
-        token := op[2]
-        put(l[*actual], op)
-    }
-    every i := !l[10 to 1 by -1] do {
-        writes("\tif =", image(i[1]), " then ")
-        do_suspend(i[1], i[2])
+        write("\t\treserved_sym_tbl[", image(i[1]), "] := ", i[2])
     }
 end
 
@@ -314,7 +254,7 @@ procedure dotree(t, indent)
         if *t.t > 0 then {
             writes("else ")
         }
-        do_suspend(t.actual, t.token)
+        write("{ return ", t.token, " }")
     }
 end
 

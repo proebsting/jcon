@@ -49,7 +49,7 @@ oplexgen: oplexgen.icn
 	$(ICONT) -o oplexgen oplexgen.icn
 
 do_ops.icn: oplexgen
-	./oplexgen tree > do_ops.icn
+	./oplexgen > do_ops.icn
 
 clean:
 	rm -f do_ops.icn lexer parse oplexgen gen *.u[12]
