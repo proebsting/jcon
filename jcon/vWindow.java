@@ -20,6 +20,7 @@ public class vWindow extends vValue {
 
     private wColor bg;		// current background color
     private wColor fg;		// current foreground color
+    private wFont font;		// current text font
 
 
 
@@ -27,6 +28,10 @@ private static Toolkit toolkit = Toolkit.getDefaultToolkit();
 
 private static int wcount = 0;	// count of windows allocated
 private static int gcount = 0;	// count of graphics contexts allocated
+
+//#%#%#% temporary, for debugging:  list all known fonts
+// static { String s[] = toolkit.getFontList();
+// for (int i = 0; i < s.length; i++) System.out.println("font: " + s[i]); }
 
 
 
@@ -72,6 +77,8 @@ vWindow(String title, int w, int h) {		// new vWindow(s, w, h)
     bg = wColor.White;
     EraseArea(0, 0, w, h);
 
+    Font(iNew.String(wFont.DEFAULT_FONT));
+
     //#%#% before returning, should wait for window to appear
 }
 
@@ -85,10 +92,14 @@ vWindow(vWindow w) {				// new vWindow(w)  [a Clone()]
     gnum = ++gcount;
 
     this.fg = w.fg;
-    a.setColor(fg);
     b.setColor(fg);
+    a.setColor(fg);
 
     this.bg = w.bg;
+
+    this.font = w.font;
+    b.setFont(font);
+    a.setFont(font);
 }
 
 
@@ -199,6 +210,18 @@ vString Bg(vString s) {
     }
 }
 
+vString Font(vString s) {
+    wFont f = wFont.parse(s.value);
+    if (f == null) {
+    	return null;
+    } else {
+	font = f;
+	this.b.setFont(f);
+	this.a.setFont(f);
+	return s;
+    }
+}
+
 
 
 // drawing operations write backing store first in case of inopportune refresh
@@ -260,6 +283,13 @@ void DrawPolygon(wCoords c) {
 void FillPolygon(wCoords c) {
    b.fillPolygon(c.xPoints, c.yPoints, c.nPoints);
    a.fillPolygon(c.xPoints, c.yPoints, c.nPoints);
+}
+
+
+
+void DrawString(int x, int y, String s) {
+   b.drawString(s, x, y);
+   a.drawString(s, x, y);
 }
 
 

@@ -27,6 +27,7 @@ void announce() {
 	iBuiltins.declare("DrawPolygon", -1);
 	iBuiltins.declare("DrawRectangle", -1);
 	iBuiltins.declare("DrawSegment", -1);
+	iBuiltins.declare("DrawString", -1);
 	iBuiltins.declare("EraseArea", -1);
 	iBuiltins.declare("Event", 1);
 	iBuiltins.declare("Fg", 2);
@@ -34,6 +35,7 @@ void announce() {
 	iBuiltins.declare("FillCircle", -1);
 	iBuiltins.declare("FillRectangle", -1);
 	iBuiltins.declare("FillPolygon", -1);
+	iBuiltins.declare("Font", 2);
 	iBuiltins.declare("FreeColor", -1);
 	iBuiltins.declare("NewColor", 2);
 	iBuiltins.declare("Pending", 1);
@@ -42,31 +44,38 @@ void announce() {
 
 	// #%#%#%#%#%# NOT YET IMPLEMENTED:
 	//
-	// iBuiltins.declare("Active", 0);
+	// iBuiltins.declare("WAttrib", -1);
 	// iBuiltins.declare("Clip", 5);
-	// iBuiltins.declare("ColorValue", 2);
-	// iBuiltins.declare("CopyArea", 8);
-	// iBuiltins.declare("Couple", 2);
-	// iBuiltins.declare("DrawCurve", -1);
-	// iBuiltins.declare("DrawImage", 4);
-	// iBuiltins.declare("DrawString", -1);
-	// iBuiltins.declare("Font", 2);
+	// iBuiltins.declare("Pattern", 2);
+	//
+	// iBuiltins.declare("TextWidth", 2);
+	//
 	// iBuiltins.declare("GotoRC", 3);
 	// iBuiltins.declare("GotoXY", 3);
-	// iBuiltins.declare("Lower", 1);
+	// also read(W), write(W,s...), etc.
+	//
+	// iBuiltins.declare("CopyArea", 8);
+	// iBuiltins.declare("ReadImage", 5);
+	// iBuiltins.declare("WriteImage", 6);
+	// iBuiltins.declare("Pixel", 5);
+	//
+	// iBuiltins.declare("ColorValue", 2);
 	// iBuiltins.declare("PaletteChars", 2);
 	// iBuiltins.declare("PaletteColor", 3);
 	// iBuiltins.declare("PaletteKey", 3);
-	// iBuiltins.declare("Pattern", 2);
-	// iBuiltins.declare("Pixel", 5);
+	// iBuiltins.declare("DrawImage", 4);
+	//
+	// iBuiltins.declare("DrawCurve", -1);
+	//
+	// iBuiltins.declare("Active", 0);
+	//
+	// iBuiltins.declare("Lower", 1);
 	// iBuiltins.declare("Raise", 1);
-	// iBuiltins.declare("ReadImage", 5);
-	// iBuiltins.declare("TextWidth", 2);
+	//
+	// iBuiltins.declare("Couple", 2);
 	// iBuiltins.declare("Uncouple", 1);
-	// iBuiltins.declare("WAttrib", -1);
+	//
 	// iBuiltins.declare("WDefault", 3); (might check properties?)
-	// iBuiltins.declare("WriteImage", 6);
-	// also read(W), write(W,s...), etc.
 }
 
 
@@ -114,6 +123,14 @@ class f$Fg extends iValueClosure {		// Fg(W, s) #%#% todo: Fg(&null)
 		vWindow win = vWindow.winArg(args);
 	    	vString s = vString.argDescr(args, vWindow.argBase(args));
 		return win.Fg(s);
+	}
+}
+
+class f$Font extends iValueClosure {		// Font(W,s) #%#% do:Font(&null)
+	vDescriptor function(vDescriptor[] args) {
+		vWindow win = vWindow.winArg(args);
+	    	vString s = vString.argDescr(args, vWindow.argBase(args));
+		return win.Font(s);
 	}
 }
 
@@ -285,6 +302,26 @@ class f$FillCircle extends iValueClosure {	// FillCircle(W,x,y,r,t,a,...)
 			win.FillArc(ix, iy, w, w, t, a);
 		}
 		return win;
+	}
+}
+
+
+
+
+class f$DrawString extends iValueClosure {	// DrawString(W,x,y,s,...)
+	vDescriptor function(vDescriptor[] args) {
+		vWindow win = vWindow.winArg(args);	// validate args
+		int b = vWindow.argBase(args);
+		if ((args.length - b) % 3 != 0) {
+			iRuntime.error(146);
+		}
+		for (int i = b; i < args.length; i += 3) {
+			int x = (int) vInteger.argVal(args, i);
+			int y = (int) vInteger.argVal(args, i + 1);
+			String s = vString.argVal(args, i + 2);
+			win.DrawString(x, y, s);
+		}
+		return null;				// fail
 	}
 }
 
