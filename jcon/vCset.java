@@ -5,7 +5,7 @@ public final class vCset extends vValue {
     int size;			// cset size; -1 if unknown
     long w1, w2, w3, w4;	// four words of cset bits
 
-static final int MAX_VALUE = 255;		// maximum char value in Jcon
+public static final int MAX_VALUE = 255;	// maximum char value in Jcon
 private static final int UNKNOWN_SIZE = -1;	// indicates unknown cset size
 
 
@@ -114,7 +114,7 @@ private vCset(String s) {			// new Cset(String s)
 
 //  cset member function
 
-final boolean member(int c) {			// cs.member(c)
+public final boolean member(int c) {		// cs.member(c)
     c = c & 0xFF;
     long m = 1L << c;
     switch (c >> 6) {
@@ -194,7 +194,7 @@ private vString image(int maxlen) {
 
 
 
-static vString typestring = vString.New("cset");
+private static vString typestring = vString.New("cset");
 public vString Type()	{ return typestring;}
 
 

@@ -33,7 +33,7 @@ public abstract class vFile extends vValue {
 
 
 
-final static int BufferSize = 4096;		// input buffer size
+private final static int BufferSize = 4096;	// input buffer size
 
 static Hashtable openfiles = new Hashtable();	// set of open files
 
@@ -48,15 +48,15 @@ static vFile winToSync;		// window to sync, if non-null
 
 
 
-abstract vString reads(long n);		// read n bytes
-abstract void writes(vString s);	// write without appending newline
-abstract void newline();		// write newline
+public abstract vString reads(long n);	// read n bytes
+public abstract void writes(vString s);	// write without appending newline
+public abstract void newline();		// write newline
 
 
 
 //  vDescriptor methods
 
-static vString typestring = vString.New("file");
+private static vString typestring = vString.New("file");
 public vString Type()		{ return typestring; }
 
 public vString image()		{ return this.img; }
@@ -201,7 +201,7 @@ vFile(String name, String flags) throws IOException {
 // newpipe(name, flags) -- open a pipe
 // throws IOException for failure
 
-void newpipe(String name, String flags) throws IOException {
+private void newpipe(String name, String flags) throws IOException {
 
     String argv[] = { "sh", "-c", name.toString() };
     pipe = Runtime.getRuntime().exec(argv);
@@ -229,7 +229,7 @@ void newpipe(String name, String flags) throws IOException {
 
 //  static methods for argument processing and defaulting
 
-static vFile arg(vDescriptor v) {		// required arg
+public static vFile arg(vDescriptor v) {		// required arg
     vValue vv = v.Deref();
     if (vv instanceof vFile) {
 	return (vFile) vv; 
@@ -239,7 +239,7 @@ static vFile arg(vDescriptor v) {		// required arg
     }
 }
 
-static vFile arg(vDescriptor v, vFile dflt) {	// optional arg
+public static vFile arg(vDescriptor v, vFile dflt) {	// optional arg
     vValue vv = v.Deref();
     if (vv instanceof vFile) {
 	return (vFile) vv; 
@@ -255,7 +255,7 @@ static vFile arg(vDescriptor v, vFile dflt) {	// optional arg
 
 //  upto(c, s) -- is any char of c contained in s?  (like Icon's upto())
 
-static boolean upto(String c, String s) {
+public static boolean upto(String c, String s) {
     for (int i = 0; i < c.length(); i++) {
 	if (s.indexOf(c.charAt(i)) >= 0) {
 	    return true;
@@ -310,7 +310,7 @@ char rchar() throws IOException, EOFException {
 
 
 
-vFile flush() {							// flush()
+public vFile flush() {						// flush()
 
     if (outstream != null && outstream instanceof OutputStream) {
 	try {
@@ -325,7 +325,7 @@ vFile flush() {							// flush()
 
 
 
-vFile close() {							// close()
+public vFile close() {						// close()
 
     if (! openfiles.containsKey(this)) {
 	return this;				// already closed
@@ -358,7 +358,7 @@ vFile close() {							// close()
 
 
 
-void closepipe() throws IOException {
+private void closepipe() throws IOException {
 
     if (outstream != null) {			// if output pipe
 	((OutputStream)outstream).close();	// close output file
@@ -374,14 +374,14 @@ void closepipe() throws IOException {
 
     copy(pipe.getErrorStream(), iKeyword.errout.file());	// copy stderr
 
-    pipe.destroy();				// kill process
+    pipe.destroy();						// kill process
 }
 
 
 
 //  vFile.copy(instream, ofile) -- copy pipe output, and flush
 
-static void copy(InputStream ifile, vFile ofile) throws IOException {
+public static void copy(InputStream ifile, vFile ofile) throws IOException {
     byte b[] = new byte[BufferSize];
     int n;
 
@@ -393,7 +393,7 @@ static void copy(InputStream ifile, vFile ofile) throws IOException {
 
 
 
-vFile seek(long n) {						// seek(n)
+public vFile seek(long n) {					// seek(n)
     if (randfile == null) {			// if not seekable
 	return null; /*FAIL*/
     }
@@ -440,7 +440,7 @@ vFile seek(long n) {						// seek(n)
 
 
 
-vInteger where() {						// where()
+public vInteger where() {					// where()
     if (randfile == null) {
 	return null; /*FAIL*/
     }
@@ -456,7 +456,7 @@ vInteger where() {						// where()
 
 
 
-vString read() {						// read()
+public vString read() {						// read()
     if (instream == null) {
 	iRuntime.error(212, this);	// not open for reading
     }

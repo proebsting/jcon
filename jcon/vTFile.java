@@ -25,7 +25,7 @@ vTFile(String name, String mode) throws IOException {	// new vTFile(name,mode)
 
 //  translated reads() maps any line terminator sequence to "\n"
 
-vString reads(long n) {
+public vString reads(long n) {
     vByteBuffer b = new vByteBuffer((int) n);
 
     if (instream == null) {
@@ -58,7 +58,7 @@ vString reads(long n) {
 
 //  translated writes() maps newline chars to system line terminators
 
-void writes(vString s) {
+public void writes(vString s) {
     if (outstream == null) {
 	iRuntime.error(213, this);		// not open for writing
     }
@@ -91,7 +91,7 @@ void writes(vString s) {
 
 //  translated newline() writes the system line terminator
 
-void newline() {
+public void newline() {
     if (outstream == null) {
 	iRuntime.error(213, this);		// not open for writing
     }

@@ -6,7 +6,7 @@ public final class vInteger extends vNumeric {
 
 
 
-static vInteger intlist[] =			// cache for "common" integers
+private static vInteger intlist[] =		// cache for "common" integers
     new vInteger[iConfig.MaxCachedInt + 1 - iConfig.MinCachedInt];
 
 
@@ -97,7 +97,7 @@ public vString mkString() {
 public vString write()		{ return mkString(); }
 public vString image()		{ return mkString(); }
 
-static vString typestring = vString.New("integer");
+private static vString typestring = vString.New("integer");
 public vString Type()	{ return typestring; }
 
 int rank()		{ return 10; }	// integers sort right after &null
@@ -127,7 +127,7 @@ public vDescriptor ProcessArgs(vDescriptor x) {			// i ! X
 
 //  static methods for argument processing and defaulting
 
-static long argVal(vDescriptor[] args, int index) {		// required arg
+public static long argVal(vDescriptor[] args, int index) {	// required arg
     if (index >= args.length) {
 	iRuntime.error(101);
 	return 0;
@@ -136,7 +136,7 @@ static long argVal(vDescriptor[] args, int index) {		// required arg
     }
 }
 
-static long argVal(vDescriptor[] args, int index, int dflt) {	// optional arg
+public static long argVal(vDescriptor[] args, int index, int dflt) {  // opt arg
     if (index >= args.length || args[index].isnull()) {
 	return dflt;
     } else {

@@ -24,15 +24,15 @@ final class wHue {		// table entry for named colors
 
 
 
-final class wColor extends Color {
+public final class wColor extends Color {
 
-    vString spec;	// original spcification string
-    double gamma;	// gamma correction applied
-    double r, g, b;	// linear (uncorrected) r/g/b values, 0 - 1
+    public vString spec;	// original spcification string
+    public double gamma;	// gamma correction applied
+    public double r, g, b;	// linear (uncorrected) r/g/b values, 0 - 1
 
 
 
-static Hashtable hueTable = new Hashtable();
+private static Hashtable hueTable = new Hashtable();
 
 static {
     //		      color       ish-form     hue  sat  brt
@@ -59,16 +59,16 @@ private static void install(wHue h) {
 }
 
 //  these must follow hueTable initialization, with nohue first:
-static final wHue nohue = new wHue("", "", 0, 0, 0);
-static final wColor Black = New(vString.New("black"), iConfig.Gamma);
-static final wColor White = New(vString.New("white"), iConfig.Gamma);
+private static final wHue nohue = new wHue("", "", 0, 0, 0);
+public static final wColor Black = New(vString.New("black"), iConfig.Gamma);
+public static final wColor White = New(vString.New("white"), iConfig.Gamma);
 
 
 
 
 //  wColor.New(s, gamma) -- create new color, given an Icon color spec
 
-static wColor New(vString s, double gamma) {
+public static wColor New(vString s, double gamma) {
     wColor c;
     if (s.charAt(0) == '#') {
 	c = newHexColor(s, gamma);

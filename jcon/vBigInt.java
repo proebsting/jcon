@@ -71,7 +71,7 @@ double mkDouble() {
 
 //  parse radix-specified large integer
 
-static vNumeric radixParse(byte[] data, int i, int j) {
+public static vNumeric radixParse(byte[] data, int i, int j) {
     byte c;
     int b, n;
     boolean neg = false;
@@ -166,7 +166,7 @@ public vString image()	{
 
 
 
-static vString typestring = vString.New("integer");
+private static vString typestring = vString.New("integer");
 public vString Type()		{ return typestring; }
 
 // negatives sort just before integers (rank 10); positives sort after
@@ -184,7 +184,7 @@ public vDescriptor ProcessArgs(vDescriptor x) {			// i ! X
 
 //  create vBigInteger or vInteger result as appropriate.
 
-static vNumeric Result(BigInteger v) {
+public static vNumeric Result(BigInteger v) {
     if (v.compareTo(MaxInteger) > 0 || v.compareTo(MinInteger) < 0) {
 	return vBigInt.New(v);
     } else {

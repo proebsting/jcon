@@ -258,7 +258,7 @@ public vString mkString()	{ return this; } // no-op coversion to vString
 
 public vString write()		{ return this; }
 
-static vString typestring = vString.New("string");
+private static vString typestring = vString.New("string");
 public vString Type()	{ return typestring; }
 int rank()		{ return 30; }		// strings rank after reals
 
@@ -399,7 +399,7 @@ public vNumeric Numerate() {					// numeric(s)
     return null;
 }
 
-static vInteger intParse(byte[] data, int i, int j) {	// parse as integer
+private static vInteger intParse(byte[] data, int i, int j) {	// parse as int
     byte c;
     int n;
     long v;
@@ -530,7 +530,7 @@ public vDescriptor TabMatch() {
 
 //  static methods for argument processing and defaulting
 
-static vString argDescr(vDescriptor[] args, int index) {	// required arg
+public static vString argDescr(vDescriptor[] args, int index) {	// required arg
     if (index >= args.length) {
 	iRuntime.error(103);
 	return null;
@@ -539,7 +539,7 @@ static vString argDescr(vDescriptor[] args, int index) {	// required arg
     }
 }
 
-static vString argDescr(vDescriptor[] args, int index, vString dflt){ // opt arg
+public static vString argDescr(vDescriptor[] args, int index, vString dflt) {
     if (index >= args.length || args[index].isnull()) {
 	return dflt;
     } else {
@@ -555,7 +555,7 @@ private static char[] ecodes = { 'b', 't', 'n', 'v', 'f', 'r' };
 private static char[] xcodes =
     { '0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f' };
 
-static void appendEscaped(vByteBuffer b, char c) {
+public static void appendEscaped(vByteBuffer b, char c) {
     if (c >= ' ' && c <= '~') {		// printable range
 	if (c == '\\') {
 	    b.append('\\');

@@ -31,17 +31,17 @@ private vTable(vTable x) {
 
 
 
-vValue get(vValue i) {
+public vValue get(vValue i) {
     return (vValue) this.t.get(i);
 }
 
-void put(vValue key, vValue val) {
+public void put(vValue key, vValue val) {
     this.t.put(key, val);
 }
 
 
 
-static vString typestring = vString.New("table");
+private static vString typestring = vString.New("table");
 public vString Type()		{ return typestring; }
 
 int rank()		{ return 110; }		// tables rank after sets

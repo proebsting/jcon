@@ -20,7 +20,7 @@ public final class wCoords {
 
 //  new wCoords(arglist) -- construct wCoords from descriptor list
 
-wCoords(vDescriptor args[]) {
+public wCoords(vDescriptor args[]) {
 
     int i = vWindow.argBase(args);
     int n = args.length - i;
@@ -44,7 +44,7 @@ wCoords(vDescriptor args[]) {
 //
 //  step gives increment between arg sets (usually 4, but 6 for Draw/FillArc)
 
-static int[] rectArgs(vDescriptor args[], int step) {	// get x,y,w,h int sets
+public static int[] rectArgs(vDescriptor args[], int step) {	// get xywh ints
 
     vWindow win = vWindow.winArg(args);
     Dimension d = win.getCanvas().getSize();

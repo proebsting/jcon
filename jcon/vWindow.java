@@ -51,17 +51,22 @@ public boolean iswin() {
     return true;
 }
 
-wCanvas getCanvas() {
+public wCanvas getCanvas() {
     if (c == null) {
 	iRuntime.error(142, this);
     }
     return c;
 }
-wTTY getTTY()			{ return getCanvas().tty; }
+public wTTY getTTY()			{ return getCanvas().tty; }
 
-wColor getBg()			{ return bg; }
-wFont getFont()			{ return font; }
-FontMetrics getFontMetrics()	{ return c.getFontMetrics(font); }
+public int getWidth()			{ return c.width; }
+public int getHeight()			{ return c.height; }
+
+public wColor getFg()			{ return fg; }
+public wColor getBg()			{ return bg; }
+
+public wFont getFont()			{ return font; }
+public FontMetrics getFontMetrics()	{ return c.getFontMetrics(font); }
 
 
 
@@ -72,7 +77,7 @@ private static int gcount = 0;	// count of graphics contexts allocated
 
 
 
-static vString typestring = vString.New("window");
+private static vString typestring = vString.New("window");
 public vString Type()	{ return typestring; }
 
 public vString image()	{
@@ -151,7 +156,7 @@ vWindow(String title, String mode, vDescriptor args[]) throws IOException {
 
 //  new vWindow(w) -- for implementing WClone()
 
-vWindow(vWindow w) {
+private vWindow(vWindow w) {
     c = w.c;
     wnum = w.wnum;
     c.wlist.addElement(this);
@@ -214,12 +219,12 @@ void newgcb(Graphics g) {
 
 private static vWindow curwin;
 
-static void setCurrent(vWindow win) {
+public static void setCurrent(vWindow win) {
     curwin = win;
     vFile.winToSync = win;
 }
 
-static vWindow getCurrent() {
+public static vWindow getCurrent() {
     if (curwin != null && curwin.c != null) {	// if still open
     	return curwin;
     }
@@ -230,7 +235,7 @@ static vWindow getCurrent() {
 
 //  close() -- close window -- overrides vFile.close()
 
-vFile close() {
+public vFile close() {
     if (a == null) {
 	return this;		// already closed
     }
@@ -254,7 +259,7 @@ vFile close() {
 
 //  uncouple() -- close this graphics context only
 
-vFile uncouple() {
+public vFile uncouple() {
     if (a == null) {
 	return this;		// already closed
     }
@@ -274,7 +279,7 @@ vFile uncouple() {
 
 //  static function that references the toolkit
 
-static void beep() {		// send a beep
+public static void beep() {		// send a beep
     toolkit.beep();
 }
 
@@ -286,7 +291,7 @@ static void beep() {		// send a beep
 
 //  argBase(args) -- get index of first non-window argument, 0 or 1
 
-static int argBase(vDescriptor args[]) {
+public static int argBase(vDescriptor args[]) {
     if (args.length > 0 && args[0].iswin()) {
 	return 1;
     } else {
@@ -297,7 +302,7 @@ static int argBase(vDescriptor args[]) {
 
 //  winArg(args) -- get explicit window argument, or implicit value from &window
 
-static vWindow winArg(vDescriptor args[]) {
+public static vWindow winArg(vDescriptor args[]) {
     vWindow win;
 
     if (argBase(args) == 1) {
@@ -316,12 +321,12 @@ static vWindow winArg(vDescriptor args[]) {
 
 //  tty-mode I/O
 
-vString read()			{ return getTTY().read(this); }
-vString reads(long n)		{ return getTTY().reads(this, n); }
-void writes(vString s)		{ getTTY().writes(this, s); }
-void newline()			{ getTTY().newline(this); }
+public vString read()		{ return getTTY().read(this); }
+public vString reads(long n)	{ return getTTY().reads(this, n); }
+public void writes(vString s)	{ getTTY().writes(this, s); }
+public void newline()		{ getTTY().newline(this); }
 
-vFile flush() {			// flush() is all-purpose window synchronizer
+public vFile flush() {		// flush() is all-purpose window synchronizer
     getTTY();			// ensure window is still open
     toolkit.sync();		// flush graphics output, sync toolkit
     Thread.yield();		// let event handlers run
@@ -330,16 +335,16 @@ vFile flush() {			// flush() is all-purpose window synchronizer
 
 
 
-vWindow Clone() {
+public vWindow Clone() {
     return new vWindow(this);
 }
 
-vList Pending() {
+public vList Pending() {
     this.flush();
     return c.evq;
 }
 
-vValue Event() {
+public vValue Event() {
     setCurrent(this);
     vValue e = wEvent.dequeue(c, dx, dy);	// look for event
     if (e == null) {				// if none available
@@ -362,9 +367,9 @@ vValue Event() {
 
 
 
-static int offset;			// round-robin starting point
+private static int offset;		// round-robin starting point
 
-static vWindow Active() {		// Active() finds win w/ pending event
+public static vWindow Active() {	// Active() finds win w/ pending event
     Vector v = new Vector();
     for (Enumeration e = openfiles.elements(); e.hasMoreElements(); ) {
 	Object o = e.nextElement();
@@ -394,7 +399,7 @@ static vWindow Active() {		// Active() finds win w/ pending event
 
 
 
-void Origin(int newdx, int newdy) {		// set origin
+public void Origin(int newdx, int newdy) {	// set origin
     b.translate(newdx - dx, newdy - dy);
     a.translate(newdx - dx, newdy - dy);
     dx = newdx;
@@ -403,7 +408,7 @@ void Origin(int newdx, int newdy) {		// set origin
 
 
 
-Rectangle getClip() {				// inquire about clipping
+public Rectangle getClip() {			// inquire about clipping
     if (clipping) {
 	return b.getClipBounds();
     } else {
@@ -411,7 +416,7 @@ Rectangle getClip() {				// inquire about clipping
     }
 }
 
-vWindow Clip() {				// disable clipping
+public vWindow Clip() {				// disable clipping
     b.setClip(-Integer.MIN_VALUE, -Integer.MIN_VALUE,
 	Integer.MAX_VALUE, Integer.MAX_VALUE);
     a.setClip(-Integer.MIN_VALUE, -Integer.MIN_VALUE,
@@ -420,16 +425,16 @@ vWindow Clip() {				// disable clipping
     return this;
 }
 
-vWindow Clip(int x, int y, int w, int h) {	// enable clipping (int vals)
+public vWindow Clip(int x, int y, int w, int h) {  // enable clipping (int vals)
     b.setClip(x, y, w, h);
     a.setClip(x, y, w, h);
     clipping = true;
     return this;
 }
 
-static vValue clipArgs[] = new vValue[4];
+private static vValue clipArgs[] = new vValue[4];
 
-vWindow Clip(vString xs, vString ys, vString ws, vString hs) {	// set attribs
+public vWindow Clip(vString xs, vString ys, vString ws, vString hs){ // set atts
     try {
 	Rectangle r;
 	if (clipping) {
@@ -451,7 +456,7 @@ vWindow Clip(vString xs, vString ys, vString ws, vString hs) {	// set attribs
 
 
 
-vString Gamma(vString s) {
+public vString Gamma(vString s) {
     if (s == null) {
 	return vString.New(String.valueOf(gamma));
     }
@@ -465,7 +470,7 @@ vString Gamma(vString s) {
     return vString.New(String.valueOf(gamma));
 }
 
-vString Fg(vString s) {
+public vString Fg(vString s) {
     if (s == null) {
 	return this.fg.spec;
     }
@@ -480,7 +485,7 @@ vString Fg(vString s) {
     }
 }
 
-vString Bg(vString s) {
+public vString Bg(vString s) {
     if (s == null) {
 	return this.bg.spec;
     }
@@ -497,7 +502,7 @@ vString Bg(vString s) {
     }
 }
 
-vString Drawop(vString s) {
+public vString Drawop(vString s) {
     if (s != null) {
         if (s.identical(vScopy)) {
 	    if (xormode) {
@@ -518,7 +523,7 @@ vString Drawop(vString s) {
     return xormode ? vSreverse : vScopy; 
 }
 
-vString Reverse(vString s) {				// reverse= attribute
+public vString Reverse(vString s) {			// reverse= attribute
     if (s != null && ! (revatt.identical(s))) {		// if changing value
 	if (s.identical(vSoff) || s.identical(vSon)) {	// if legal new value
 	    vString fgspec = fg.spec;			// swap fg/bg
@@ -534,7 +539,7 @@ vString Reverse(vString s) {				// reverse= attribute
 
 
 
-vString Font(vString s) {
+public vString Font(vString s) {
     if (s == null) {
 	return this.font.spec;
     }
@@ -550,10 +555,10 @@ vString Font(vString s) {
     }
 }
 
-int Leading()		{ return leading; }
-int Leading(int n)	{ return leading = n; }
+public int Leading()		{ return leading; }
+public int Leading(int n)	{ return leading = n; }
 
-int Fwidth() {
+public int Fwidth() {
     FontMetrics m = c.getFontMetrics(font);
     int fw = m.getMaxAdvance();
     if (fw > 0) {
@@ -565,7 +570,7 @@ int Fwidth() {
 
 
 
-vInteger TextWidth(String s) {
+public vInteger TextWidth(String s) {
     return vInteger.New(c.getFontMetrics(font).stringWidth(s));
 }
 
@@ -575,17 +580,17 @@ vInteger TextWidth(String s) {
 
 
 
-void DrawRectangle(int x, int y, int w, int h) {
+public void DrawRectangle(int x, int y, int w, int h) {
     b.drawRect(x, y, w, h);
     a.drawRect(x, y, w, h);
 }
 
-void FillRectangle(int x, int y, int w, int h) {
+public void FillRectangle(int x, int y, int w, int h) {
     b.fillRect(x, y, w, h);
     a.fillRect(x, y, w, h);
 }
 
-void EraseArea(int x, int y, int w, int h) {
+public void EraseArea(int x, int y, int w, int h) {
     if (xormode) {
 	b.setPaintMode();
 	a.setPaintMode();
@@ -604,14 +609,14 @@ void EraseArea(int x, int y, int w, int h) {
 
 
 
-void DrawArc(int x, int y, int w, int h, double theta, double alpha) {
+public void DrawArc(int x, int y, int w, int h, double theta, double alpha) {
     int start = (int) Math.round(-180 * theta / Math.PI);
     int arc = ((int) Math.round(-180 * (theta + alpha) / Math.PI)) - start;
     b.drawArc(x, y, w, h, start, arc);
     a.drawArc(x, y, w, h, start, arc);
 }
 
-void FillArc(int x, int y, int w, int h, double theta, double alpha) {
+public void FillArc(int x, int y, int w, int h, double theta, double alpha) {
     int start = (int) Math.round(-180 * theta / Math.PI);
     int arc = ((int) Math.round(-180 * (theta + alpha) / Math.PI)) - start;
     b.fillArc(x, y, w, h, start, arc);
@@ -620,12 +625,12 @@ void FillArc(int x, int y, int w, int h, double theta, double alpha) {
 
 
 
-void DrawLine(int x1, int y1, int x2, int y2) {
+public void DrawLine(int x1, int y1, int x2, int y2) {
     b.drawLine(x1, y1, x2, y2);
     a.drawLine(x1, y1, x2, y2);
 }
 
-void DrawLine(wCoords c) {
+public void DrawLine(wCoords c) {
     b.drawPolyline(c.xPoints, c.yPoints, c.nPoints);
     a.drawPolyline(c.xPoints, c.yPoints, c.nPoints);
 }
@@ -642,7 +647,7 @@ void DrawLine(wCoords c) {
 //	A Recursive Evaluation Algorithm for a class of Catmull-Rom Splines.
 //	Computer Graphics 22(4), 199-204.
 
-void DrawCurve(int xpts[], int ypts[]) {
+public void DrawCurve(int xpts[], int ypts[]) {
     int i, j, nsteps;
     double ax, ay, bx, by, stepsize, stepsize2, stepsize3;
     double x, dx, d2x, d3x, y, dy, d2y, d3y;
@@ -705,33 +710,33 @@ void DrawCurve(int xpts[], int ypts[]) {
 
 
 
-void DrawPolygon(wCoords c) {
+public void DrawPolygon(wCoords c) {
     b.drawPolygon(c.xPoints, c.yPoints, c.nPoints);
     a.drawPolygon(c.xPoints, c.yPoints, c.nPoints);
 }
 
-void FillPolygon(wCoords c) {
+public void FillPolygon(wCoords c) {
     b.fillPolygon(c.xPoints, c.yPoints, c.nPoints);
     a.fillPolygon(c.xPoints, c.yPoints, c.nPoints);
 }
 
 
 
-void DrawString(int x, int y, String s) {
+public void DrawString(int x, int y, String s) {
     b.drawString(s, x, y);
     a.drawString(s, x, y);
 }
 
 
 
-void CopyImage(Image im, int x, int y) {
+public void CopyImage(Image im, int x, int y) {
     b.drawImage(im, x, y, null);
     a.drawImage(im, x, y, null);
 }
 
 
 
-void CopyArea(vWindow src, int x1, int y1, int w, int h, int x2, int y2) {
+public void CopyArea(vWindow src, int x1, int y1, int w, int h, int x2, int y2){
 
     // adjust negative width and height
     if (w < 0) {

@@ -7,7 +7,7 @@ import java.util.*;
 
 
 
-final class wCanvas extends Canvas {
+public final class wCanvas extends Canvas {
 
     Frame f;			// enclosing Frame object
     Image i;			// backing image for refreshing visable image
@@ -57,6 +57,7 @@ wCanvas(vWindow win, String label, int w, int h) {
     wEvent.register(this);			// register event handlers
 
     Pointer(win, "arrow");
+    Label(win, label);
 }
 
 
@@ -126,13 +127,14 @@ void defconfig(vWindow win) {
 
 //  resize(win, w, h) -- resize canvas
 
-void resize(vWindow win, int w, int h) {
+public void resize(vWindow win, int w, int h) {
 
     if (width != w || height != h) {
 	boolean b = f.isResizable();
 	f.setResizable(true);
 	this.setSize(width = w, height = h);	// alter size
 	f.pack();				// alter size of enclosing frame
+	win.flush();				// sync
 	f.setResizable(b);
     }
 
@@ -160,7 +162,7 @@ void resize(vWindow win, int w, int h) {
     // clear the new image, then copy in the old portion
     if (win == null) {
 	// we don't know which Icon graphics context to use, because the
-	// window was resized via the mouse;  so, just use the firstj
+	// window was resized via the mouse;  so, just use the first
 	win = (vWindow) wlist.elementAt(0);	
     }
     g.setColor(win.getBg());
@@ -197,7 +199,7 @@ public long interval() {
 
 //  enqueue(a, b, c) -- enqueue three event values (synchronized)
 
-synchronized void enqueue(vValue a, vValue b, vValue c) {
+public synchronized void enqueue(vValue a, vValue b, vValue c) {
     evq.Put(a);
     evq.Put(b);
     evq.Put(c);
@@ -209,7 +211,7 @@ synchronized void enqueue(vValue a, vValue b, vValue c) {
 //
 //  Accepts only "hidden" and "normal", rejects "maximal" and "iconic"
 
-vString Canvas(vWindow win, String s) {
+public vString Canvas(vWindow win, String s) {
     if (s != null) {
 	if (s.equals("hidden")) {
 	    f.setVisible(false);
@@ -231,7 +233,7 @@ vString Canvas(vWindow win, String s) {
 
 //  Resize(win, s) -- set "resize" attribute
 
-vString Resize(vWindow win, String s) {
+public vString Resize(vWindow win, String s) {
     if (s != null) {
 	if (s.equals("off")) {
 	    f.setResizable(false);
@@ -248,9 +250,13 @@ vString Resize(vWindow win, String s) {
 
 //  Label(win, s) -- set "label" attribute
 
-vString Label(vWindow win, String s) {
+public vString Label(vWindow win, String s) {
     if (s != null) {
-	f.setTitle(s);
+	if (s.equals("")) {
+	    f.setTitle(" ");
+	} else {
+	    f.setTitle(s);
+	}
     }
     return vString.New(f.getTitle());
 }
@@ -285,7 +291,7 @@ static {
     plist.put("top left corner",	vInteger.New(Cursor.NW_RESIZE_CURSOR));
 }
 
-vString Pointer(vWindow win, String s) {
+public vString Pointer(vWindow win, String s) {
     if (s != null) {
 	vInteger i = (vInteger) plist.get(s);
 	if (i == null) {

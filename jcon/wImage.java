@@ -7,13 +7,13 @@ import java.awt.image.*;
 
 
 
-final class wImage {
+public final class wImage {
 
 
 
 //  wImage.load(window, filename) -- load image and wait for completion
 
-static Image load(vWindow win, String fname) {
+public static Image load(vWindow win, String fname) {
     Image im = Toolkit.getDefaultToolkit().getImage(fname);
     MediaTracker t = new MediaTracker(win.getCanvas());
     t.addImage(im, 0);
@@ -33,7 +33,7 @@ static Image load(vWindow win, String fname) {
 
 //  wImage.decode(window, s) -- decode DrawImage string, returning Image
 
-static Image decode(vWindow win, vString s) {
+public static Image decode(vWindow win, vString s) {
     byte[] data = s.getBytes();
     int width = 0;
     int i = 0;
@@ -241,7 +241,42 @@ private static int hexdigit(int c)
 
 //  wImage.Pixels(window, x, y, w, h) -- generate pixels for Pixel()
 
-static vDescriptor Pixel(vWindow win, int x, int y, int w, int h) {
+public static vDescriptor Pixel(vWindow win, int x, int y, int w, int h) {
+    final double gamma = win.gamma;
+    final int[] data = Grab(win, x, y, w, h);
+    if (data == null) {
+    	return null; /*FAIL*/
+    }
+
+    return new vClosure() {
+	int i = 0;
+	int previous = 0x08000000; 	// a value we won't ever see
+
+	public vDescriptor Resume() {
+	    if (i >= data.length) {
+		return null; /*FAIL*/
+	    }
+	    int rgb = data[i++];
+	    if (rgb != previous) {
+		int r = (rgb >> 16) & 0xFF;
+		int g = (rgb >>  8) & 0xFF;
+		int b = rgb & 0xFF;
+		r = (int) (65535 * Math.pow(r / 255.0, gamma));
+		g = (int) (65535 * Math.pow(g / 255.0, gamma));
+		b = (int) (65535 * Math.pow(b / 255.0, gamma));
+		retval = vString.New(r + "," + g + "," + b);
+	    }
+	    return this;
+	}; 
+
+    }.Resume();
+}
+
+
+
+//  wImage.Grab(window, x, y, w, h) -- grab pixels as array of RGB ints
+
+public static int[] Grab(vWindow win, int x, int y, int w, int h) {
 
     Image im = win.getCanvas().i;
 
@@ -281,35 +316,10 @@ static vDescriptor Pixel(vWindow win, int x, int y, int w, int h) {
     PixelGrabber pg = new PixelGrabber(im, x, y, w, h, data, 0, w);
     try {
 	pg.grabPixels();
+	return data;
     } catch (InterruptedException e) {
 	return null; /*FAIL*/
     }
-
-    // generate values
-    final double gamma = win.gamma;
-
-    return new vClosure() {
-	int i = 0;
-	int previous = 0x08000000; 	// a value we won't ever see
-
-	public vDescriptor Resume() {
-	    if (i >= data.length) {
-		return null; /*FAIL*/
-	    }
-	    int rgb = data[i++];
-	    if (rgb != previous) {
-		int r = (rgb >> 16) & 0xFF;
-		int g = (rgb >>  8) & 0xFF;
-		int b = rgb & 0xFF;
-		r = (int) (65535 * Math.pow(r / 255.0, gamma));
-		g = (int) (65535 * Math.pow(g / 255.0, gamma));
-		b = (int) (65535 * Math.pow(b / 255.0, gamma));
-		retval = vString.New(r + "," + g + "," + b);
-	    }
-	    return this;
-	}; 
-
-    }.Resume();
 }
 
 

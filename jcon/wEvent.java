@@ -7,7 +7,7 @@ import java.awt.event.*;
 
 
 
-final class wEvent implements WindowListener, ComponentListener,
+public final class wEvent implements WindowListener, ComponentListener,
     KeyListener, MouseListener, MouseMotionListener
 {
     wCanvas c;		// associated canvas
@@ -16,25 +16,25 @@ final class wEvent implements WindowListener, ComponentListener,
 
 //  the following definitions are consistent with Icon v9
 
-static final int ShiftFlag   = 4 << 16;
-static final int MetaFlag    = 2 << 16;
-static final int ControlFlag = 1 << 16;
-static final int LeftmostFlag = 4 << 16;
+public static final int ShiftFlag   = 4 << 16;
+public static final int MetaFlag    = 2 << 16;
+public static final int ControlFlag = 1 << 16;
+public static final int LeftmostFlag = 4 << 16;
 
-static final int LPress = -1;
-static final int MPress = -2;
-static final int RPress = -3;
-static final int LRelease = -4;
-static final int MRelease = -5;
-static final int RRelease = -6;
-static final int LDrag = -7;
-static final int MDrag = -8;
-static final int RDrag = -9;
-static final int Resize = -10;
+public static final int LPress = -1;
+public static final int MPress = -2;
+public static final int RPress = -3;
+public static final int LRelease = -4;
+public static final int MRelease = -5;
+public static final int RRelease = -6;
+public static final int LDrag = -7;
+public static final int MDrag = -8;
+public static final int RDrag = -9;
+public static final int Resize = -10;
 
 
 
-wEvent(wCanvas cv) {				// new wEvent(w)
+public wEvent(wCanvas cv) {			// new wEvent(w)
     this.c = cv;
 }
 
@@ -54,7 +54,7 @@ static void register(wCanvas cv) {		// register event handlers
 
 //  enqueue(a, x, y, e) -- enqueue Icon event code a derived from Java event e
 
-void enqueue(vValue a, int x, int y, InputEvent e) {
+public void enqueue(vValue a, int x, int y, InputEvent e) {
 
     long msec = c.interval();
     int expo = 0;
@@ -85,7 +85,7 @@ void enqueue(vValue a, int x, int y, InputEvent e) {
 
 //  dequeue(canvas, dx, dy) -- get next event from a window
 
-static vValue dequeue(wCanvas c, int dx, int dy) {
+public static vValue dequeue(wCanvas c, int dx, int dy) {
     vValue a, xv, yv;
 
     // get first value; return null if queue is empty
@@ -206,7 +206,7 @@ public void mouseDragged(MouseEvent e) {
     enqueue(vInteger.New(LDrag + mouseMod(e)), c.xloc, c.yloc, e);
 }
 
-static int mouseMod(MouseEvent e) {	// adjust event code based on modifiers
+public static int mouseMod(MouseEvent e) {   // adjust event code for modifiers
     if (e.isMetaDown()) {
 	return RPress - LPress;
     } else if (e.isAltDown()) {

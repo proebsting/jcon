@@ -10,13 +10,13 @@ public final class vByteBuffer {
     byte[] data;		// byte array
     int len;			// length used;
 
-static final int GrowthSize = 16;	// size of chunk allocated when growing
+private static final int GrowthSize = 16;   // chunk size allocated when growing
 
 
 
 //  new vByteBuffer(n) -- make bytebuffer with room for n bytes
 
-vByteBuffer(int n) {
+public vByteBuffer(int n) {
     data = new byte[n];
 }
 
@@ -24,7 +24,7 @@ vByteBuffer(int n) {
 
 //  length() -- return current length
 
-final int length() {
+public final int length() {
     if (prefix == null) {
 	return len;
     } else {
@@ -36,7 +36,7 @@ final int length() {
 
 //  append(c) -- append character
 
-final vByteBuffer append(char c) {
+public final vByteBuffer append(char c) {
     if (len >= data.length) {
 	if (prefix == null) {
 	    prefix = vString.New(data);

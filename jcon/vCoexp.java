@@ -96,7 +96,7 @@ public void create() {
 
 public vInteger Size()	{ return vInteger.New(resultCount); }
 
-static vString typestring = vString.New("co-expression");
+private static vString typestring = vString.New("co-expression");
 public vString Type()	{ return typestring;}
 
 public vString image()

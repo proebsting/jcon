@@ -29,9 +29,9 @@ public vInteger Serial()	{ return vInteger.New(this.snum); }
 
 //  x.image() -- common method for lists, sets, and tables
 
-static vString uscore = vString.New('_');
-static vString lpar = vString.New('(');
-static vString rpar = vString.New(')');
+private static vString uscore = vString.New('_');
+private static vString lpar = vString.New('(');
+private static vString rpar = vString.New(')');
 
 public vString image() {		// type_snum(size)
     return this.Type().concat(uscore).concat(vInteger.New(snum).mkString())

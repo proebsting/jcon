@@ -22,7 +22,7 @@ public abstract class vProc extends vValue {
 public vString image()
 		{ return (img == null) ? vString.New(this.toString()) : img; }
 
-static vString typestring = vString.New("procedure");
+private static vString typestring = vString.New("procedure");
 public vString Type()		{ return typestring; }
 
 public vInteger Args()		{ return vInteger.New(args); }

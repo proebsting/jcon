@@ -6,21 +6,21 @@ import java.awt.*;
 
 
 
-final class wTTY {
+public final class wTTY {
 
-    int xloc, yloc;		// current text position
+    private int xcur, ycur;		// current text position
 
-    boolean echo = true;	// echo characters on input?
-    boolean cursor = false;	// show text cursor on input?
+    private boolean echo = true;	// echo characters on input?
+    private boolean cursor = false;	// show text cursor on input?
 
-    static final vString ON = vString.New("on");
-    static final vString OFF = vString.New("off");
+    private static final vString ON = vString.New("on");
+    private static final vString OFF = vString.New("off");
 
 
 
 //  read(win) -- read line from window
 
-vString read(vWindow win) {
+public vString read(vWindow win) {
     char c;
     StringBuffer b = new StringBuffer();
 
@@ -38,7 +38,7 @@ vString read(vWindow win) {
 
 //  reads(win, n) -- read n characters from window
 
-vString reads(vWindow win, long n) {
+public vString reads(vWindow win, long n) {
     StringBuffer b = new StringBuffer((int) n);
 
     iKeyword.output.file().flush();
@@ -65,7 +65,7 @@ private char rchar(vWindow win, StringBuffer b) {
     FontMetrics m = win.getFontMetrics();
 
     if (cursor) {				// display cursor
-	win.FillRectangle(xloc, yloc, m.charWidth('W'), m.getDescent());
+	win.FillRectangle(xcur, ycur, m.charWidth('W'), m.getDescent());
     }
 
     do {
@@ -73,7 +73,7 @@ private char rchar(vWindow win, StringBuffer b) {
     } while (! (e instanceof vString));		// wait for character event
 
     if (cursor) {				// hide cursor
-	win.EraseArea(xloc, yloc, m.charWidth('W'), m.getDescent());
+	win.EraseArea(xcur, ycur, m.charWidth('W'), m.getDescent());
     }
 
     char c = ((vString) e).charAt(0);
@@ -85,8 +85,8 @@ private char rchar(vWindow win, StringBuffer b) {
 	    b.setLength(b.length() - 1);	// remove from buffer
 	    if (echo) {
 		int w = m.charWidth(c);
-		xloc -= w;			// backspace text cursor
-		win.EraseArea(xloc, yloc - m.getMaxAscent(), w, m.getHeight());
+		xcur -= w;			// backspace text cursor
+		win.EraseArea(xcur, ycur - m.getMaxAscent(), w, m.getHeight());
 	    }
 	}
 
@@ -108,7 +108,7 @@ private char rchar(vWindow win, StringBuffer b) {
 
 //  writes(win, s) -- write string to window
 
-void writes(vWindow win, vString s) {
+public void writes(vWindow win, vString s) {
     FontMetrics m = win.getFontMetrics();
     byte[] b = s.getBytes();
     int i, j;
@@ -122,12 +122,12 @@ void writes(vWindow win, vString s) {
 		break;
 	    case '\r':
 		wchars(win, m, b, i, j);
-		xloc = 0;
+		xcur = 0;
 		break;
 	    case '\t':
 		wchars(win, m, b, i, j);
 		int tabw = 8 * win.Fwidth();
-		xloc = xloc - (xloc % tabw) + tabw;
+		xcur = xcur - (xcur % tabw) + tabw;
 		break;
 	    default:
 		continue;
@@ -146,16 +146,16 @@ private void wchars(vWindow win, FontMetrics m, byte[] b, int i, int j) {
     String s = new String(b, i, j - i);
     int w = m.stringWidth(s);
     int a = m.getMaxAscent();
-    win.EraseArea(xloc, yloc - a, w, win.Leading());
-    win.DrawString(xloc, yloc, s);
-    xloc += w;
+    win.EraseArea(xcur, ycur - a, w, win.Leading());
+    win.DrawString(xcur, ycur, s);
+    xcur += w;
 }
 
 
 
 //  newline(win) -- write newline to window
 
-void newline(vWindow win) {
+public void newline(vWindow win) {
     Dimension d = win.getCanvas().getSize();
     FontMetrics m = win.getFontMetrics();
 
@@ -163,19 +163,19 @@ void newline(vWindow win) {
     int limit = d.height - m.getMaxDescent() - m.getLeading();
 	// shouldn't need getLeading, but even MaxDescent() sometimes lies
 
-    xloc = 0;			// set new text position
-    yloc += leading;
+    xcur = 0;			// set new text position
+    ycur += leading;
 
-    if (yloc > limit) {
+    if (ycur > limit) {
 	// need to scroll upward
-	int shift = yloc - limit;
+	int shift = ycur - limit;
 	win.CopyArea(win, 0, shift, d.width, d.height, 0, 0);
-	yloc = limit;
+	ycur = limit;
     }
 }
 
 
-vValue Echo(String v) {
+public vValue Echo(String v) {
     if (v != null) {
 	if (v.equals("on")) {
 	    echo = true;
@@ -188,7 +188,7 @@ vValue Echo(String v) {
     return echo ? ON : OFF;
 }
 
-vValue Cursor(String v) {
+public vValue Cursor(String v) {
     if (v != null) {
 	if (v.equals("on")) {
 	    cursor = true;
@@ -201,55 +201,55 @@ vValue Cursor(String v) {
     return cursor ? ON : OFF;
 }
 
-vValue X(String v) {
+public vValue X(String v) {
     if (v != null) try {
-	xloc = wAttrib.parseInt(v);
+	xcur = wAttrib.parseInt(v);
     } catch (Exception e) {
 	return null; /*FAIL*/
     }
-    return vInteger.New(xloc);
+    return vInteger.New(xcur);
 }
 
-vValue Y(String v) {
+public vValue Y(String v) {
     if (v != null) try {
-	yloc = wAttrib.parseInt(v);
+	ycur = wAttrib.parseInt(v);
     } catch (Exception e) {
 	return null; /*FAIL*/
     }
-    return vInteger.New(yloc);
+    return vInteger.New(ycur);
 }
 
-vValue Row(vWindow win, String v) {
+public vValue Row(vWindow win, String v) {
     FontMetrics m = win.getFontMetrics();
     int leading = win.Leading();
     int a = m.getMaxAscent();
 
     if (v != null) try {
-	yloc = wAttrib.parseInt(v);
-	yloc = (yloc - 1) * leading + a;
+	ycur = wAttrib.parseInt(v);
+	ycur = (ycur - 1) * leading + a;
     } catch (Exception e) {
 	return null; /*FAIL*/
     }
     if (leading == 0) {
 	iRuntime.error(204);	// this is what v9 does: real division by 0
     }
-    return vInteger.New((yloc - a) / leading + 1);
+    return vInteger.New((ycur - a) / leading + 1);
 }
 
-vValue Col(vWindow win, String v) {
+public vValue Col(vWindow win, String v) {
     int a = win.Fwidth();
     if (v != null) try {
-	xloc = wAttrib.parseInt(v);
-	xloc = (xloc - 1) * a;
+	xcur = wAttrib.parseInt(v);
+	xcur = (xcur - 1) * a;
     } catch (Exception e) {
 	return null; /*FAIL*/
     }
-    return vInteger.New(xloc / a + 1);
+    return vInteger.New(xcur / a + 1);
 }
 
 
 
-vValue PointerRow(vWindow win) {	// return row number of mouse
+public vValue PointerRow(vWindow win) {	// return row number of mouse
     FontMetrics m = win.getFontMetrics();
     int leading = win.Leading();
     int a = m.getMaxAscent();
@@ -260,7 +260,7 @@ vValue PointerRow(vWindow win) {	// return row number of mouse
     return vInteger.New((win.getCanvas().yloc - a) / leading + 1);
 }
 
-vValue PointerCol(vWindow win) {	// return column number of mouse
+public vValue PointerCol(vWindow win) {	// return column number of mouse
     return vInteger.New(win.getCanvas().xloc / win.Fwidth() + 1);
 }
 

@@ -13,7 +13,7 @@ public final class vList extends vStructure {
 
     public Vector v;		// MS JVM cannot handle this being private
 
-static int nextsn = 1;				// next serial number
+private static int nextsn = 1;			// next serial number
 
 
 
@@ -54,7 +54,7 @@ private vList(Vector oldv, int newsize) {	// new Vlist(oldvector, newsize)
 
 
 
-static vString typestring = vString.New("list");
+private static vString typestring = vString.New("list");
 public vString Type()	{ return typestring; }
 
 int rank()		{ return 90; }		// lists sort after procedures
@@ -92,7 +92,7 @@ public vString reportShallow() {		// image for display() & tracebk
 //  L.posEq(n) -- return positive equivalent of position n in list L,
 //		  or zero if out of bounds
 
-int posEq(long n) {
+public int posEq(long n) {
     long len = v.size();
     if (n <= 0) {
 	n += len + 1;
@@ -109,7 +109,7 @@ int posEq(long n) {
 // elements() is used when creating vSets and for the binary "!" operator.
 // Elements must be generated in order.
 
-java.util.Enumeration elements() {
+public java.util.Enumeration elements() {
     return new vListEnumeration(this.v);
 }
 

@@ -41,8 +41,9 @@ private vSet(vValue x) {
 
 
 
-static vString typestring = vString.New("set");
+private static vString typestring = vString.New("set");
 public vString Type()		{ return typestring;}
+
 int rank()			{ return 100; }		// sets rank after lists
 
 public vInteger Size()		{ return vInteger.New(t.size()); }

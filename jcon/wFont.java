@@ -8,18 +8,18 @@ import java.util.*;
 
 
 
-final class wFont extends Font {
+public final class wFont extends Font {
 
-    vString spec;		// original spcification string
+    public vString spec;		// original spcification string
 
-static double szmul =		// pixel-to-pointsize multiplier
+private static double szmul =		// pixel-to-pointsize multiplier
     72.0 / Toolkit.getDefaultToolkit().getScreenResolution();
 
 
 
 //  new wFont(name, style, ptsize, spec) -- create new Icon font
 
-wFont(String name, int style, int ptsize, vString spec) {
+private wFont(String name, int style, int ptsize, vString spec) {
     super(name, style, ptsize);
     this.spec = spec;
 }
@@ -28,7 +28,7 @@ wFont(String name, int style, int ptsize, vString spec) {
 
 //  parse(s) -- interpret Icon font spec and return wFont value (or null)
 
-static wFont parse(vString spec) {
+public static wFont parse(vString spec) {
     int size = 0;
     int style = 0;
     String s = spec.toString();

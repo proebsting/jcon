@@ -18,7 +18,7 @@ vBFile(String name, String mode) throws IOException {	// new vBFile(nm, mode)
 
 //  untranslated reads() just passes bytes, never checking for newlines.
 
-vString reads(long n) {
+public vString reads(long n) {
     vByteBuffer b = new vByteBuffer((int) n);
 
     if (instream == null) {
@@ -55,7 +55,7 @@ vString reads(long n) {
 
 //  untranslated writes() does not translate "\n" characters to system newlines
 
-void writes(vString s) {
+public void writes(vString s) {
     if (outstream == null) {
 	iRuntime.error(213, this);	// not open for writing
     }
@@ -70,7 +70,7 @@ void writes(vString s) {
 
 //  untranslated newline() always writes a single '\n' character
 
-void newline() {
+public void newline() {
     if (outstream == null) {
 	iRuntime.error(213, this);	// not open for writing
     }

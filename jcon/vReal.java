@@ -57,7 +57,7 @@ public vString mkString() {
 
 
 
-static vString typestring = vString.New("real");
+private static vString typestring = vString.New("real");
 public vString Type()	{ return typestring; }
 
 int rank()		{ return 20; }		// reals sort after integers
@@ -77,7 +77,7 @@ int compareTo(vValue v) {
 
 //  static methods for argument processing and defaulting
 
-static double argVal(vDescriptor[] args, int index) {		// required arg
+public static double argVal(vDescriptor[] args, int index) {	// required arg
     if (index >= args.length) {
 	iRuntime.error(102);
 	return 0.0;
@@ -86,7 +86,7 @@ static double argVal(vDescriptor[] args, int index) {		// required arg
     }
 }
 
-static double argVal(vDescriptor[] args, int index, double dflt) { // opt arg
+public static double argVal(vDescriptor[] args, int index, double dflt) { // opt
     if (index >= args.length || args[index].isnull()) {
 	return dflt;
     } else {

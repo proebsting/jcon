@@ -17,15 +17,15 @@ public vDescriptor IsNull()     { return this; }
 public vDescriptor IsntNull()   { return null; /*FAIL*/ }
 
 
-static vString emptystring = vString.New();
+private static vString emptystring = vString.New();
 public vString write()		{ return emptystring; }
 
-static vString imagestring = vString.New("&null");
+private static vString imagestring = vString.New("&null");
 public vString image()		{ return imagestring; }
 
 public int hashCode()		{ return 0; }
 
-static vString typestring = vString.New("null");
+private static vString typestring = vString.New("null");
 public vString Type()		{ return typestring; }
 
 int rank()			{ return 0; }		// nulls sort first

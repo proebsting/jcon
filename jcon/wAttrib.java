@@ -7,7 +7,7 @@ import java.util.*;
 
 
 
-abstract class wAttrib implements Cloneable {
+public abstract class wAttrib implements Cloneable {
 
     String name;			// attribute name
     String val;				// value; null if none specified
@@ -113,7 +113,7 @@ private static void newatt(String name, wAttrib a) {
 //
 //  Errors are possible:  103 (string expected), 145 (bad name)
 
-static wAttrib[] parseAtts(vDescriptor[] args, int n) {
+public static wAttrib[] parseAtts(vDescriptor[] args, int n) {
 
     wAttrib list[] = new wAttrib[args.length - n];
 
@@ -162,7 +162,7 @@ static vValue unsettable(String name, String value) {
 
 //  parseInt(s) -- parse attribute as integer, allowing "1.5" etc.
 
-static int parseInt(String s) throws NumberFormatException {
+public static int parseInt(String s) throws NumberFormatException {
     try {
     	return Integer.parseInt(s);
     } catch (Exception e) {
