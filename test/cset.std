@@ -1,10 +1,31 @@
 x:    123abc
 *x:   6
-y:    abcxyz
-x++y: 123abcxyz
-x--y: 123
-y--x: xyz
-x**y: abc
-~~x:  123abc
 !x:   123abc
 ?z:   z
+
+   x         y          x++y         y++x     x--y   y--x   x**y   y**x   ~~x
+'123abc' 'abcxyz'    123abcxyz    123abcxyz    123    xyz    abc    abc 123abc
+'123abc' "xyzabc"    123abcxyz    123abcxyz    123    xyz    abc    abc 123abc
+'123abc'     3456    123456abc    123456abc  12abc    456      3      3 123abc
+'123abc'    34.56   .123456abc   .123456abc  12abc   .456      3      3 123abc
+'123abc'   "@ 90"    01239@abc    01239@abc 123abc    09@               123abc
+"a1b2c3" 'abcxyz'    123abcxyz    123abcxyz    123    xyz    abc    abc 123abc
+"a1b2c3" "xyzabc"    123abcxyz    123abcxyz    123    xyz    abc    abc 123abc
+"a1b2c3"     3456    123456abc    123456abc  12abc    456      3      3 123abc
+"a1b2c3"    34.56   .123456abc   .123456abc  12abc   .456      3      3 123abc
+"a1b2c3"   "@ 90"    01239@abc    01239@abc 123abc    09@               123abc
+    1234 'abcxyz'   1234abcxyz   1234abcxyz   1234 abcxyz                 1234
+    1234 "xyzabc"   1234abcxyz   1234abcxyz   1234 abcxyz                 1234
+    1234     3456       123456       123456     12     56     34     34   1234
+    1234    34.56      .123456      .123456     12    .56     34     34   1234
+    1234   "@ 90"      012349@      012349@   1234    09@                 1234
+   12.34 'abcxyz'  .1234abcxyz  .1234abcxyz  .1234 abcxyz                .1234
+   12.34 "xyzabc"  .1234abcxyz  .1234abcxyz  .1234 abcxyz                .1234
+   12.34     3456      .123456      .123456    .12     56     34     34  .1234
+   12.34    34.56      .123456      .123456     12     56    .34    .34  .1234
+   12.34   "@ 90"     .012349@     .012349@  .1234    09@                .1234
+      '' 'abcxyz'       abcxyz       abcxyz        abcxyz                     
+      '' "xyzabc"       abcxyz       abcxyz        abcxyz                     
+      ''     3456         3456         3456          3456                     
+      ''    34.56        .3456        .3456         .3456                     
+      ''   "@ 90"          09@          09@           09@                     

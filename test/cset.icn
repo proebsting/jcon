@@ -5,14 +5,23 @@ procedure main()
 
    x := 'a1b2c3'
    write("x:    ", x);
-   write("*x:   ", *x);
-   y := 'xyzabc'
-   write("y:    ", y);
-   write("x++y: ", x++y);
-   write("x--y: ", x--y);
-   write("y--x: ", y--x);
-   write("x**y: ", x**y);
-   write("~~x:  ", ~~x);
+   write("*x:   ", *x)
    every writes("!x:   " | !x | "\n");
    write("?z:   ", ?'z')
+   write("?empty: ", ?'', " (OOPS)")	# should fail
+
+   write()
+   write ("   x         y     ",
+      "     x++y         y++x     x--y   y--x   x**y   y**x   ~~x")
+
+   every x := ( 'a1b2c3' | "a1b2c3" | 1234 | 12.34 | '') &
+         y := ( 'xyzabc' | "xyzabc" | 3456 | 34.56 | "@ 90") do {
+	write(
+	   right(image(x),8), right(image(y),9),
+	   right(x++y, 13), right(y++x, 13),
+	   right(x--y, 7), right(y--x, 7),
+	   right(x**y, 7), right(y**x, 7),
+	   right(~~x, 7))
+   }
+
 end
