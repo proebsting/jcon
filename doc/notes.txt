@@ -70,7 +70,7 @@ keywords:
 
 graphics overview:
 -- the graphics implementation is nearly complete
--- biggest omissions are wide lines and textured drawing
+-- biggest omissions are wide lines, textured drawing, and mutable colors
 -- Couple() is not implemented
 -- Pattern(), Color(), NewColor(), and WDefault() always fail
 
@@ -122,8 +122,7 @@ infelicities:
 -- window repair may be delayed until the program pauses for input
 -- "drawop=reverse" may draw wrong color under rare conditions not understood
 -- DEC Java 1.1.6 exhibits problems with fonts and font metrics
--- SGI Irix is unable to link very large programs (e.g. VIB)
 
-deprecated features omitted from Jcon:
--- "very light" and "very dark" colors
--- bi-level images expressed in decimal
+deprecated Icon features omitted from Jcon:
+-- "very light" and "very dark" colors  (use "pale" and "deep")
+-- bi-level images expressed in decimal  (use hexadecimal)
