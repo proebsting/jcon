@@ -8,6 +8,7 @@ what's implemented:
 general:
 -- crude tracing can be enabled by setting &trace
 -- the TRACE environment variable is *not* honored
+-- if Java runs out of memory, setenv JXOPTS='-mx50m' (e.g.) to increase max
 
 building and running programs:
 -- jcont is a complex script that only runs on Unix
