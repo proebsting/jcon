@@ -375,7 +375,8 @@ procedure ir_a_Call(p, st, inuse, target, bounded, rval)
     suspend ir(p.fn, st, inuse, fn, &null, "rval")
     every i := 1 to *p.args.exprList do {
         suspend ir(p.args.exprList[i], st, inuse, args[i], &null,
-		   if \ir_noArgLvals then "rval" else &null)
+		   &null)
+		   # if \ir_noArgLvals then "rval" else &null)
     }
 
     L := [p.fn] ||| p.args.exprList
