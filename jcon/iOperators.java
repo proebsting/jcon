@@ -266,14 +266,14 @@ class oDeref extends iFunctionClosure {			//  .x
 	String tfmt() { return "{.$1}"; }
 }
 
-class oIsNull extends iFunctionClosure {		//  /x
+class oIsNull extends iRefClosure {			//  /x
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].isNull();
 	}
 	String tfmt() { return "{/$1}"; }
 }
 
-class oIsntNull extends iFunctionClosure {		//  \x
+class oIsntNull extends iRefClosure {			//  \x
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].isntNull();
 	}
@@ -524,7 +524,7 @@ class oVUnequal extends iFunctionClosure {		//  n1 ~=== n2
 
 class oConcat extends iFunctionClosure {		//  s1 || s2
 	vDescriptor function(vDescriptor[] args) {
-		return args[0].Concat(args[1]);
+		return args[0].mkString().Concat(args[1].mkString());
 	}
 	String tfmt() { return "{$1 || $2}"; }
 }
