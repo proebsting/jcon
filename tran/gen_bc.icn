@@ -100,9 +100,6 @@ procedure bc_gen_assign_to(s, p)
     "ir_Tmp": {
         bc_gen_ir_Tmp_assign(s, p)
     }
-    "ir_TmpLabel": {
-        bc_gen_ir_TmpLabel_assign(s, p)
-    }
     "ir_Key": {
         bc_gen(s, p)
         assign := bc_Assign_methodref(bc_current_classptr)
@@ -227,7 +224,7 @@ procedure bc_gen_ir_MoveLabel(s, p)
     \p.lhs | return s
 
     bc_gen_rval(s, p.rhs)
-    bc_gen_assign_to(s, p.lhs)
+    bc_gen_ir_TmpLabel_assign(s, p.lhs)
     return s
 end
 
