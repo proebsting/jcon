@@ -3,6 +3,7 @@ what's implemented:
 -- all keywords, although resource keywords produce zeroes
 -- preprocessing
 -- most functions; missing chdir(), loadfunc(), getch()/getche()/kbhit()
+-- almost no graphics, although a start has been made
 
 general caveats:
 -- little optimization has been done
@@ -34,17 +35,25 @@ files:
 -- no pipes
 -- random I/O (seek(), where()) fails for &input/&output/&errout
 
-graphics (general):
+graphics status:
 -- very few things are implemented at this time
--- all windows collate after all files when sorting
+-- notes below reflect problems only in things partly finished
+-- limitations other than "to be fixed" are likely to remain
 
-graphics events:
--- Jcon maps Java's "alt" key (as well as the meta key) to the &meta flag
--- &meta is never set with mouse events  (Java uses it to encode "which button")
--- X returns "\r" for the Enter key but Java (and therefore Jcon) returns "\n"
--- "outboard" keys differ from X, but are close to Windows; see keysyms.icn
+graphics -- to be fixed if possible:
 -- resize events are not reported
 -- &interval is always zero
+
+graphics (general):
+-- all windows collate after all files when sorting
+-- no mutable colors
+-- no sharing of graphics contexts among windows by Couple() or Clone()
+
+graphics events:
+-- Java distinguishes "alt" and "meta" keys; Jcon maps both to the &meta flag
+-- &meta is never set with mouse events (Java uses it to encode "which button")
+-- X returns "\r" for the Enter key but Java (and therefore Jcon) returns "\n"
+-- "outboard" keys differ from X, but are close to Windows; see keysyms.icn
 
 error reporting:
 -- arg lists in traceback show actual instead of expected number of arguments
