@@ -656,6 +656,7 @@ end
 procedure gen_bc_irEnterInit(s, p)
 	local target, initialized
 
+	create_field(bc_proc_classptr, 8, "initialized", "Z")
 	initialized := create_fieldref(bc_proc_classptr, "initialized", "Z", bc_proc_classname)
 	put(s, getstatic(initialized))
 	target := label()
@@ -816,7 +817,6 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	if *bc_tmplabel_table > 0 then {
 		create_field(bc_proc_classptr, 0, "tmpLabelArray", "[I")
 	}
-	create_field(c, 8, "initialized", "Z")
 	constructor := create_methodref(c, "<init>", "()V", "rts/iClosure")
 	put(initcode.code, aload_0() )
 	put(initcode.code, invokenonvirtual(constructor) )
