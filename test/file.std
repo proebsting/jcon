@@ -1,38 +1,60 @@
+file: &errout
+file: &input
+file: &output
+file: file(/dev/null)
+file: file(/etc/motd)
+
+flush /etc/motd: file(/etc/motd)
+close /etc/motd: file(/etc/motd)
+close /etc/motd: file(/etc/motd)
+flush /etc/motd: file(/etc/motd)
+
+flush /dev/null: file(/dev/null)
+close /dev/null: file(/dev/null)
+close /dev/null: file(/dev/null)
+flush /dev/null: file(/dev/null)
+
 read  /dev/null:	
    !f:		 
    read/!f:	
    reads():	
    nonseq:	 -----------------------------??------------------------------
+
 write tmp1,w:	 follow the yellow brick road : 30
 read  tmp1:	 follow the yellow brick road
    !f:		 follow the yellow brick road 
    read/!f:	 follow the yellow brick road
    reads():	 follo w.the .yell ow.br ick.r oad.
    nonseq:	 ?.daor.kcirb.wolley.eht.wollof?.daor.kcirb.wolley.eht.wollof-
+
 write tmp1,w:	 shorter file : 14
 read  tmp1:	 shorter file
    !f:		 shorter file 
    read/!f:	 shorter file
    reads():	 short er.fi le.
    nonseq:	 ----------------?.elif.retrohs?.elif.retrohs-----------------
+
 write tmp1,a:	 gets extended : 28
 read  tmp1:	 shorter file gets extended
    !f:		 shorter file gets extended 
    read/!f:	 shorter file gets extended
    reads():	 short er.fi le.ge ts.ex tende d.
    nonseq:	 --?.dednetxe.steg.elif.retrohs?.dednetxe.steg.elif.retrohs---
+
 write tmp1,rw:	 changed : 9
 read  tmp1:	 changed file gets extended
    !f:		 changed file gets extended 
    read/!f:	 changed file gets extended
    reads():	 chang ed.fi le.ge ts.ex tende d.
    nonseq:	 --?.dednetxe.steg.elif.degnahc?.dednetxe.steg.elif.degnahc---
+
 write tmp1,b:	 mode b  : 8
 read  tmp1:	 mode b  file gets extended
    !f:		 mode b  file gets extended 
    read/!f:	 mode b  file gets extended
    reads():	 mode. b..fi le.ge ts.ex tende d.
    nonseq:	 --?.dednetxe.steg.elif..b.edom?.dednetxe.steg.elif..b.edom---
+
 write tmp1,crw:	 cleared anew : 14
 read  tmp1:	 cleared anew
    !f:		 cleared anew 

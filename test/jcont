@@ -225,7 +225,7 @@ done
 WHENCE=\`whence \$0\`
 case \$WHENCE in
     /*)	THISFILE=\$WHENCE;;
-    *)	THISFILE=\$PWD/\$WHENCE;;
+    *)	THISFILE=\`pwd\`/\$WHENCE;;
 esac
 
 TZIP=/tmp/jcon\$\$.zip

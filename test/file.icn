@@ -1,8 +1,31 @@
 #  file test -- writes tmp1, tmp2
 
 procedure main()
+   local L, f, m, n
+
+   L := [&input, &output, &errout,
+   	m := open("/etc/motd"), n := open("/dev/null", "w")]
+   L := sort(L)
+   every f := !L do
+      write(type(f), ": ", image(f))
+
+   write()
+   write("flush /etc/motd: ", image(flush(m)) | "FAILED")
+   write("close /etc/motd: ", image(close(m)) | "FAILED")
+   write("close /etc/motd: ", image(close(m)) | "FAILED")
+   write("flush /etc/motd: ", image(flush(m)) | "FAILED")
+
+   write()
+   write("flush /dev/null: ", image(flush(n)) | "FAILED")
+   write("close /dev/null: ", image(close(n)) | "FAILED")
+   write("close /dev/null: ", image(close(n)) | "FAILED")
+   write("flush /dev/null: ", image(flush(n)) | "FAILED")
+
    every remove("tmp1" | "tmp2")
    every remove("tmp1" | "tmp2")
+   write(image(open("tmp1")))		# should fail
+
+   write()
    rfile("/dev/null")
    wfile("tmp1", "w", "follow the yellow brick road")
    rfile("tmp1")
@@ -28,6 +51,8 @@ end
 
 procedure wfile(name, mode, s)
    local f
+
+   write()
    writes("write ", name, ",", mode, ":\t ")
    if f := open(name, mode) then s ? {
       writes(s)
