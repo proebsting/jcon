@@ -12,10 +12,16 @@ static final String PREFIX = "rts.f$";	// classname prefix for built-in funcs
 
 void announce(iEnv env) {
 	declare(env, "abs");
+	declare(env, "acos");
+	declare(env, "asin");
+	declare(env, "atan");
+	declare(env, "cos");
 	declare(env, "cset");
 	declare(env, "delay");
 	declare(env, "delete");
+	declare(env, "dtor");
 	declare(env, "exit");
+	declare(env, "exp");
 	declare(env, "get");
 	declare(env, "iand");
 	declare(env, "icom");
@@ -27,6 +33,7 @@ void announce(iEnv env) {
 	declare(env, "ixor");
 	declare(env, "key");
 	declare(env, "list");
+	declare(env, "log");
 	declare(env, "member");
 	declare(env, "numeric");
 	declare(env, "pop");
@@ -37,11 +44,15 @@ void announce(iEnv env) {
 	declare(env, "real");
 	declare(env, "repl");
 	declare(env, "right");
+	declare(env, "rtod");
 	declare(env, "set");
+	declare(env, "sin");
 	declare(env, "sort");
+	declare(env, "sqrt");
 	declare(env, "stop");
 	declare(env, "string");
 	declare(env, "table");
+	declare(env, "tan");
 	declare(env, "type");
 	declare(env, "write");
 	declare(env, "writes");
