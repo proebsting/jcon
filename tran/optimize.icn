@@ -21,7 +21,7 @@ procedure optim_dead_assignment(t, start)
     every k := key(t) & chunk := t[k] do {
         c := []
         every i := !chunk do {
-            if (type(i) == "ir_Move") & /i.lhs then {
+            if (type(i) == ("ir_Move" | "ir_MoveLabel")) & /i.lhs then {
                 next
             }
             put(c, i)
@@ -89,6 +89,8 @@ procedure optim_def_use(p, this, uses, defs)
             optim_def_use(p.expr, uses, uses, defs) }
     "ir_Move" :  { optim_def_use(\p.lhs, defs, uses, defs);
             optim_def_use(p.rhs, uses, uses, defs) }
+    "ir_MoveLabel" :  { optim_def_use(\p.lhs, defs, uses, defs);
+            optim_def_use(p.rhs, uses, uses, defs) }
     "ir_Deref" :  { optim_def_use(\p.lhs, defs, uses, defs);
             optim_def_use(p.value, uses, uses, defs) }
     "ir_ScanSwap" :  { optim_def_use(p.subject, defs, uses, defs);
@@ -140,6 +142,8 @@ procedure optim_rewrite(p, rename)
     "ir_TmpLabel" :  { }
     "ir_Label" : { }
     "ir_Move" :  { p.lhs := optim_rewrite(\p.lhs, rename);
+            p.rhs := optim_rewrite(p.rhs, rename) }
+    "ir_MoveLabel" :  { p.lhs := optim_rewrite(\p.lhs, rename);
             p.rhs := optim_rewrite(p.rhs, rename) }
     "ir_Deref" :  { p.lhs := optim_rewrite(\p.lhs, rename);
             p.value := optim_rewrite(p.value, rename) }
@@ -283,12 +287,13 @@ procedure optim_goto_transitive(t, new, lab)
 	    "ir_ScanSwap" |
 	    "ir_Tmp" |
 	    "ir_TmpLabel" |
+	    "ir_Move" |
 	    "ir_Deref" : {
 		# nothing
 		}
 	    "ir_Label" : {  # ir_Label : ( value )
 		}
-	    "ir_Move" : {  # ir_Move : ( lhs rhs )
+	    "ir_MoveLabel" : {  # ir_MoveLabel : ( lhs rhs )
 		p.rhs := optim_goto_chain_defer(p.rhs, t)
 		optim_goto_transitive(t, new, p.rhs)
 		}
@@ -352,6 +357,9 @@ procedure optim_refcountX(refcount, p)
     "ir_Label" : {  # ir_Label : ( value )
         }
     "ir_Move" : {  # ir_Move : ( lhs rhs )
+	refcount[p.rhs] +:= 1
+        }
+    "ir_MoveLabel" : {  # ir_MoveLabel : ( lhs rhs )
 	refcount[p.rhs] +:= 1
         }
     "ir_Goto" : {  # ir_Goto : ( targetLabel )

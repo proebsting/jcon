@@ -205,6 +205,8 @@ procedure bc_gen_ir_Move(s, p)
 
     \p.lhs | return s
 
+    type(p.lhs) ~== "ir_TmpLabel" | runerr(500, p)
+
     bc_gen_rval(s, p.rhs)
     if type(p.rhs) == ("ir_Key") then {
         call := bc_CallN_methodref(bc_current_classptr, 0)
@@ -214,6 +216,17 @@ procedure bc_gen_ir_Move(s, p)
         deref := bc_Deref_methodref(bc_current_classptr)
         put(s, j_invokevirtual(deref))
     }
+    bc_gen_assign_to(s, p.lhs)
+    return s
+end
+
+# record ir_MoveLabel( lhs rhs )
+procedure bc_gen_ir_MoveLabel(s, p)
+    local deref, call
+
+    \p.lhs | return s
+
+    bc_gen_rval(s, p.rhs)
     bc_gen_assign_to(s, p.lhs)
     return s
 end
@@ -710,6 +723,7 @@ procedure bc_gen(s, p)
     "ir_Label" : return bc_gen_ir_Label_rval(s, p)
     "ir_Deref" : return bc_gen_ir_Deref(s, p)
     "ir_Move" : return bc_gen_ir_Move(s, p)
+    "ir_MoveLabel" : return bc_gen_ir_MoveLabel(s, p)
     "ir_ScanSwap" : return bc_gen_ir_ScanSwap(s, p)
     "ir_Goto" : return bc_gen_ir_Goto(s, p)
     "ir_IntLit" : return bc_gen_ir_IntLit(s, p)
@@ -763,7 +777,7 @@ procedure bc_target_bookkeeping()
         case type(a) of {
         "ir_CoRet":  t := a.resumeLabel
         "ir_Create": t := a.coexpLabel
-        "ir_Move":   t := a.rhs
+        "ir_MoveLabel":   t := a.rhs
         "ir_Succeed":    t := a.resumeLabel
         default: next
         }

@@ -20,6 +20,7 @@ record ir_CsetLit(val)
 record ir_Operator(name, arity, rval)
 
 record ir_Move(lhs, rhs)
+record ir_MoveLabel(lhs, rhs)
 record ir_Deref(lhs, value)
 record ir_MakeList(lhs, valueList)
 record ir_Field(lhs, expr, field, failLabel, coord)

@@ -29,7 +29,7 @@ procedure dot_output(t)
         every i := 1 to *code do {
             insn := code[i]
             case type(insn) of {
-            "ir_Move" : {
+            "ir_MoveLabel" : {
                 if type(\insn.lhs) == "ir_TmpLabel" then {
                     write(image(dot_dump(insn.lhs)),
                           "->",

@@ -174,7 +174,7 @@ procedure ir_a_Alt(p, st, inuse, target, bounded, rval)
     every i := 1 to *p.eList do {
         if /bounded then {
             suspend ir_Chunk(p.eList[i].ir.success, [
-                ir_Move(t, p.eList[i].ir.resume),
+                ir_MoveLabel(t, p.eList[i].ir.resume),
                 ir_Goto(p.ir.success)
                 ])
         } else {
@@ -198,11 +198,11 @@ procedure ir_a_RepAlt(p, st, inuse, target, bounded, rval)
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.expr.ir.resume) ])
     if /bounded then {
         suspend ir_Chunk(p.ir.start, [
-            ir_Move(t, p.ir.failure),
+            ir_MoveLabel(t, p.ir.failure),
             ir_Goto(p.expr.ir.start)
             ])
         suspend ir_Chunk(p.expr.ir.success, [
-            ir_Move(t, p.ir.start),
+            ir_MoveLabel(t, p.ir.start),
             ir_Goto(p.ir.success)
             ])
         suspend ir_Chunk(p.expr.ir.failure, [ ir_Goto(t) ])
@@ -272,7 +272,7 @@ procedure ir_a_Case(p, st, inuse, target, bounded, rval)
                              [ ir_Goto(L[i+1].expr.ir.start) ])
             if /bounded then {
                 suspend ir_Chunk(L[i].body.ir.success, [
-                    ir_Move(t, L[i].body.ir.resume),
+                    ir_MoveLabel(t, L[i].body.ir.resume),
                     ir_Goto(p.ir.success)
                     ])
             } else {
@@ -287,7 +287,7 @@ procedure ir_a_Case(p, st, inuse, target, bounded, rval)
 
     if /bounded then {
         suspend ir_Chunk(p.dflt.ir.success, [
-            ir_Move(t, p.dflt.ir.resume),
+            ir_MoveLabel(t, p.dflt.ir.resume),
             ir_Goto(p.ir.success)
             ])
     } else {
@@ -587,11 +587,11 @@ procedure ir_a_If(p, st, inuse, target, bounded, rval)
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Goto(t) ])
     if /bounded then {
         suspend ir_Chunk(p.expr.ir.success, [
-            ir_Move(t, p.thenexpr.ir.resume),
+            ir_MoveLabel(t, p.thenexpr.ir.resume),
             ir_Goto(p.thenexpr.ir.start)
             ])
         suspend ir_Chunk(p.expr.ir.failure, [
-            ir_Move(t, p.elseexpr.ir.resume),
+            ir_MoveLabel(t, p.elseexpr.ir.resume),
             ir_Goto(p.elseexpr.ir.start)
             ])
     } else {
@@ -1122,7 +1122,7 @@ procedure ir_a_Break(p, st, inuse, target, bounded, rval)
                 ir_Move(ir_Key("subject"),
                         ir_scan_stack[clx.scanlevel+1].ir.x.oldsubject),
                 ir_Move(ir_Key("pos"), ir_scan_stack[clx.scanlevel+1].ir.x.oldpos),
-                ir_Move(clx.continue, p.ir.resume),
+                ir_MoveLabel(clx.continue, p.ir.resume),
                 ir_Goto(p.expr.ir.start)
                 ])
         } else {
@@ -1136,7 +1136,7 @@ procedure ir_a_Break(p, st, inuse, target, bounded, rval)
     } else {
         if /clx.bounded then {
             suspend ir_Chunk(p.ir.start, [
-                ir_Move(clx.continue, p.ir.resume),
+                ir_MoveLabel(clx.continue, p.ir.resume),
                 ir_Goto(p.expr.ir.start)
                 ])
         } else {
