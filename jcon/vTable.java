@@ -4,7 +4,7 @@ import java.util.*;
 
 public class vTable extends vStructure {
 
-    private java.util.Hashtable t;
+    public java.util.Hashtable t;	// #%#% MS JVM chokes on "private"
     vValue dflt;
 
 

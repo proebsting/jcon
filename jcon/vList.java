@@ -11,7 +11,7 @@ import java.util.*;
 
 public class vList extends vStructure {
 
-    private Vector v;
+    public Vector v;	// #%#% MS JVM cannot handle this being private.
 
 static int nextsn = 1;				// next serial number
 

@@ -151,8 +151,8 @@ class k$interval extends kReadOnly {				// &interval
 //  k$kwname.self.check() succeeds, and decrements, if the counter is nonzero.
 
 abstract class kCounter extends vProc0 {
-    private long count = 0;
-    private vSimpleVar kwvar;
+    public long count = 0;	// #%#% MS JVM cannot handle this being private.
+    public vSimpleVar kwvar;	// #%#% MS JVM cannot handle this being private.
 
     kCounter(String name) {	// constructor
 
