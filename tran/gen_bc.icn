@@ -914,25 +914,63 @@ procedure bc_create_vClosure_copy_constructor(c, params, locals, undeclared, acc
                                   "[Lrts/vDescriptor;", bc_current_classname)
     refresharray := j_create_fieldref(bc_current_classptr, "RefreshArray",
                                   "[Lrts/vDescriptor;", bc_current_classname)
-    every k := (!params|!locals|!undeclared) do {
-        newsimplevar := bc_New_vSimpleVar_methodref(c)
-	put(s, j_dup() )
+    newsimplevar := bc_New_vSimpleVar_Assign_methodref(c)
+    class_index := j_cp_Class(bc_current_classptr,
+                              j_cp_Utf8(bc_current_classptr, "rts/vDescriptor"))
+
+    put(s, j_aload_0() )
+    put(s, j_ipush(*bc_var_table) )
+    put(s, j_anewarray(class_index) )
+    put(s, j_putfield(vararray) )
+
+    put(s, j_aload_0() )
+    put(s, j_ipush(*bc_var_table) )
+    put(s, j_anewarray(class_index) )
+    put(s, j_putfield(refresharray) )
+
+    every k := (!params|!locals) & \bc_var_table[k] do {
+	put(s, j_aload_0() )
+	put(s, j_getfield(vararray) )
 	put(s, j_ipush(bc_var_table[k]) )
-    
+        v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
+        put(s, j_ldc_w(v) )
+	put(s, j_aload_1() )
+	put(s, j_ipush(bc_var_table[k]) )
+	put(s, j_aaload() )
+	put(s, j_invokevirtual(deref) )
+        put(s, j_invokestatic(newsimplevar) )
+	put(s, j_aastore() )
+    }
+    every k := !undeclared do {
+	put(s, j_aload_0() )
+	put(s, j_getfield(vararray) )
+	put(s, j_ipush(bc_var_table[k]) )
         linkvalue := j_create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
                                      bc_java_classname)
         lab1 := j_label()
-        v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(s, j_getstatic(linkvalue) )
         put(s, j_dup() )
         put(s, j_ifnonnull(lab1) )
         put(s, j_pop() )
+        v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(s, j_ldc_w(v) )
+	put(s, j_aload_1() )
+	put(s, j_ipush(bc_var_table[k]) )
+	put(s, j_aaload() )
+	put(s, j_invokevirtual(deref) )
         put(s, j_invokestatic(newsimplevar) )
         put(s, lab1 )
 	put(s, j_aastore() )
-#     store as appropriate in new SimpleVar
-#     store in refresh array
+    }
+    every k := (!params|!locals|!undeclared) & \bc_var_table[k] do {
+	put(s, j_aload_0() )
+	put(s, j_getfield(refresharray) )
+	put(s, j_ipush(bc_var_table[k]) )
+	put(s, j_aload_1() )
+	put(s, j_ipush(bc_var_table[k]) )
+	put(s, j_aaload() )
+	put(s, j_invokevirtual(deref) )
+	put(s, j_aastore() )
     }
     put(s, j_aload_0() )
     put(s, j_aload_1() )
