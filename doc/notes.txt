@@ -41,6 +41,7 @@ strings and csets:
 
 structures:
 -- random selection from sets and tables differs from v9
+-- a[i:j,k:m] is accepted as shorthand for a[i:j][k:m]
 
 files:
 -- &errout is always unbuffered
@@ -61,12 +62,6 @@ keywords:
 -- &time produces elapsed wall-clock time, not CPU time, due to Java limitations
 -- &clock and &dateline may be off by an hour due to Java library bugs
 -- &allocated, &collections, &storage, and &regions produce only zero values
-
-------------------------------------------------------------------------------
-
-extensions:
--- proc(i) produces a procedure that returns its ith argument
--- a[i:j,k:m] is accepted as shorthand for a[i:j][k:m]
 
 ------------------------------------------------------------------------------
 

@@ -64,7 +64,7 @@ public vDescriptor Key()	{ iRuntime.error(124, this); return null; }
 
 public vString Name()		{ iRuntime.error(111, this); return null; }
 public vInteger Args()		{ iRuntime.error(106, this); return null; }
-public vProc Proc(long i)	{ iRuntime.error(106, this); return null; }
+public vProc Proc(long i)	{ return null; /*FAIL*/ }
 
 public vVariable Field(String s){ iRuntime.error(107, this); return null;}
 public vDescriptor Index(vDescriptor i)

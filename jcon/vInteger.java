@@ -14,7 +14,10 @@ static vInteger intlist[] =			// cache for "common" integers
 //  constructors
 
 public static vInteger New(double x) {		// int from real
-    return New((long) x);			//#%#% ignoring overflow
+    if (x > (double)Long.MAX_VALUE || x < (double)Long.MIN_VALUE) {
+	iRuntime.error(203);
+    }
+    return New((long) x);
 }
 
 public static vInteger New(String x) {		// int from string
@@ -54,12 +57,6 @@ vString mkString() {
        cachedString = vString.New(Long.toString(value));
     }
     return cachedString;
-}
-
-vProc mkProc() {
-    // return new vIntegerProc(this); 
-    iRuntime.bomb("vInteger.mkProc() NYI");	//#%#%#%
-    return null;
 }
 
 vString write()		{ return mkString(); }

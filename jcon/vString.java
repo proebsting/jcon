@@ -429,11 +429,6 @@ public vProc Proc(long i) {
     if (v != null) {
 	return (vProc) v;
     }
-    try {
-	return this.mkInteger().mkProc();
-    } catch (iError e) {
-	// ignore
-    }
     return iEnv.getOpr(this, i);
 }
 
