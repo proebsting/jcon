@@ -149,13 +149,14 @@ esac
 
 #  set paths for translator and for runtime files
 JTRAN="$ICONX $IDIR${FILESEP}jtran $JCOPT -target:$TARGET"
+JLINK="$ICONX $IDIR${FILESEP}jlink"
 JRTS="$IDIR${FILESEP}rts.zip"
 
 
 # estimate the needed header size
 HBASE=600		# approximate size of fixed text, plus breathing room
-(( HDRSIZE = $HBASE + ${#CMDLINE} + ${#ROOTS} ))	# estimate total
-(( HDRSIZE = (HDRSIZE + 15) & ~15 ))			# round to mult of 16
+(( HDRSIZE = $HBASE + ${#CMDLINE} ))	# estimate total size in bytes
+(( HDRSIZE = (HDRSIZE + 15) & ~15 ))	# round to multiple of 16
 
 # conditionalize "Translating:" announcement
 if [ "$IFILES" != "" ]; then
@@ -194,7 +195,7 @@ for FNAME in $IFILES; do
 	    (cd $TDIR; $JAVAC $FNAME.java)
 	fi
 	# bundle .class files (and linkage info) into .zip file
-	(cd $TDIR; $JAR cf ../$FNAME.zip links *.class)
+	(cd $TDIR; $JAR cfM ../$FNAME.zip links *.class)
     else
 	ERREXIT="exit"
     fi
@@ -216,10 +217,10 @@ for FNAME in `<$TDIR/zip.list`; do
 done
 
 # create XFILE.main
-(cd $TDIR; jlink $XFILE $ROOTS)
+(cd $TDIR; $JLINK $XFILE $ROOTS)
 
 # combine the Icon files from there
-(cd $TDIR; $JAR cf combined.zip [lp]*.class $XFILE.class)
+(cd $TDIR; $JAR cfM combined.zip $XFILE.class [lp]*.class)
 
 # combine a header (padded via dd) with that zip file to make a script
 # (if making significant changes here, also adjust HBASE above)
