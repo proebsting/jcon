@@ -352,6 +352,9 @@ public vNumeric Numerate() {					// numeric(s)
     while (i < j && data[j-1] == ' ') {
 	j--;					// trim trailing spaces
     }
+    if (i + 2 <= j && data[i] == '+' && data[i+1] != '-') {
+	i++;					// skip leading '+'
+    }
 
     // try parsing as integer
     vInteger v = intParse(data, i, j);
@@ -359,20 +362,19 @@ public vNumeric Numerate() {					// numeric(s)
 	return cachedNumeric = v;
     }
 
-    // convert to string; must skip leading "+" for Java converters
-    if (i + 2 <= j && data[i] == '+' && data[i+1] != '-') {
-	i++;					// skip leading '+'
-    }
+    // convert to string; reject leading "--" that Java allows
     if (i + 2 <= j && data[i+1] == '-' && data[i] == '-') {
-	iRuntime.error(102, this);		// reject "--2" that Java allows
+	iRuntime.error(102, this);
 	return null;
     }
     String s = new String(data, i, j - i);
 
-    // try parsing as large integer
-    try {
-	return cachedNumeric = vBigInt.Result(new BigInteger(s));
-    } catch (NumberFormatException e) {
+    // try parsing as large integer, if large enough to have overflowed intParse
+    if (j - i > 18) {
+	try {
+	    return cachedNumeric = vBigInt.Result(new BigInteger(s));
+	} catch (NumberFormatException e) {
+	}
     }
 
     // try parsing as real
@@ -382,6 +384,15 @@ public vNumeric Numerate() {					// numeric(s)
 	    return cachedNumeric = vReal.New(d.doubleValue());
 	}
     } catch (NumberFormatException e) {
+    }
+
+    // last chance: try parsing as large integer with radix
+    // (large int needs at least 16 characters, even in base 36)
+    if (j - i > 15) {
+	vNumeric b = vBigInt.radixParse(data, i, j);
+	if (b != null) {
+	    return b;
+	}
     }
 
     iRuntime.error(102, this);
@@ -401,8 +412,6 @@ static vInteger intParse(byte[] data, int i, int j) {	// parse as integer
     c = data[i];
     if (c == '-') {
 	neg = true;
-	i++;
-    } else if (c == '+') {
 	i++;
     }
 

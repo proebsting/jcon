@@ -488,6 +488,10 @@ final class k$random extends vProc0 {				// &random
 	}
     };
 
+    public static long get() {			// get current seed value
+	return randval;
+    }
+
     public static double nextVal() {		// gen val in [0.0, 1.0)
 	randval = (RandA * randval + RandC) & 0x7fffffff;
 	return RanScale * randval;
@@ -497,7 +501,7 @@ final class k$random extends vProc0 {				// &random
 	return (long) (limit * nextVal());
     }
 
-    public vDescriptor Call() {
+    public vDescriptor Call() {			// return &random as variable
 	return vrandom;
     }
 }

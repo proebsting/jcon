@@ -8,6 +8,7 @@
 package rts;
 
 import java.math.BigInteger;
+import java.util.*;
 
 public final class vBigInt extends vNumeric {
 
@@ -64,6 +65,70 @@ double mkDouble() {
 	iRuntime.error(204);
     }
     return d;
+}
+
+
+
+//  parse radix-specified large integer
+
+static vNumeric radixParse(byte[] data, int i, int j) {
+    byte c;
+    int b, n;
+    boolean neg = false;
+
+    if (i >= j) {
+	return null;		// empty
+    }
+
+    c = data[i];
+    if (c == '-') {
+	neg = true;
+	i++;
+    }
+
+    if ((i < j) && ((b = data[i] - '0') >= 0) && (b < 10)) {
+	i++;
+    } else {
+	return null;		// failed; no digit
+    }
+
+    while ((i < j) && ((n = data[i] - '0') >= 0) && (n < 10)) {
+	b = 10 * b + n;
+	if (b > 36) {
+	    return null;	// radix too big
+	}
+	i++;
+    }
+
+    if (i + 1 >= j) {
+	return null;		// out of data
+    }
+    c = data[i++];
+    if ((b < 2) || (c != 'r' && c != 'R')) {
+	return null;		// bad radix spec
+    }
+
+    // parse remainder of string using specified radix
+    BigInteger base = BigInteger.valueOf(b);
+    BigInteger v = BigInteger.valueOf(0);
+    while (i < j) {
+	c = data[i++];
+	if (c >= '0' && c <= '9') {
+	    n = c - '0';
+	} else if (c >= 'A' && c <= 'Z') {
+	    n = c - 'A' + 10;
+	} else if (c >= 'a' && c <= 'z') {
+	    n = c - 'a' + 10;
+	} else {
+	    return null;	// illegal digit
+	}
+	if (n >= b) {
+	    return null;	// digit exceeds radix
+	}
+	v = v.multiply(base).add(BigInteger.valueOf(n));
+    }
+
+    return Result(neg ? v.negate() : v);
 }
 
 
@@ -132,22 +197,26 @@ static vNumeric Result(BigInteger v) {
 
 //  unary operations
 
-public vNumeric Negate() {
+public vNumeric Negate() {					// -I
     return Result(value.negate());
 }
 
-public vDescriptor Select() {
-    iRuntime.bomb("?BigInt NYI");	//#%#%#%#%
-    return null;
-}
-
-public vNumeric Abs() {
+public vNumeric Abs() {						// abs(I)
     return Result(value.abs());
 }
 
-public vInteger Limit() {
+public vInteger Limit() {					// e \ I
     iRuntime.error(101);
     return null;
+}
+
+public vDescriptor Select() {					// ?I
+    // get top bits from Icon RNG
+    // get bottom bits from Java RNG using &random as seed
+    Random r = new Random(k$random.get());
+    double d = value.doubleValue() * k$random.nextVal();
+    BigInteger b = new BigInteger(value.bitLength() - 24, r);
+    return Result(new vBigInt(d).value.xor(b));
 }
 
 
