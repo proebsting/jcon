@@ -124,7 +124,7 @@ class k$features extends iClosure {				// &features
     //  (And it's not completely clear what we should report.)
 
     static String[] flist = {
-	"Java", "ASCII", "co-expressions",
+	"UNIX", "Java", "ASCII", "co-expressions",
 	"environment variables", "pipes", "system function" };
 
     int posn = 0;
