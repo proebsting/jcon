@@ -1142,44 +1142,51 @@ procedure bc_create_locals(c, undeclared, statics, sortedvars)
 end
 
 procedure bc_emit_prologue(s, c, params, accumulate)
-	local createvars, arguments, marshall
+	local createvars, arguments, marshal
 	local deref, assign, i, k, field
+	local elselab, endlab
 
 	createvars := create_methodref(c, "createVars", "()V", bc_proc_classname)
 	put(s, aload_0() )
 	put(s, invokevirtual(createvars) )
-	arguments := create_fieldref(c, "arguments", "[Lrts/vDescriptor;", "rts/iClosure")
-	if *params > 0 then {
-		marshall := create_methodref(c, "marshall", "([Lrts/vDescriptor;IZ)[Lrts/vDescriptor;", "rts/iInterface")
-		put(s, aload_0() )
 
-		put(s, aload_0() )
-		put(s, getfield(arguments) )
-		put(s, ipush(*params) )
-		if \accumulate then {
-			put(s, iconst_1() )
-		} else {
-			put(s, iconst_0() )
-		}
-		put(s, invokestatic(marshall) )
-		put(s, putfield(arguments) )
-	}
+	arguments := create_fieldref(c, "arguments", "[Lrts/vDescriptor;", "rts/iClosure")
 	deref := deref_methodref(c)
 	assign := assign_methodref(c)
+
 	every i := 1 to *params do {
 		k := params[i]
 		field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
+
 		put(s, aload_0() )
 		put(s, getfield(field) )
-		put(s, aload_0() )
-		put(s, getfield(arguments) )
-		put(s, ipush(i-1) )
-		put(s, aaload() )
-		put(s, invokevirtual(deref) )
+		if i = *params & \accumulate then {
+			marshal := create_methodref(c, "marshal", "([Lrts/vDescriptor;I)Lrts/vDescriptor;", "rts/iInterface")
+			put(s, aload_0() )
+			put(s, getfield(arguments))
+			put(s, ipush(*params))
+			put(s, invokestatic(marshal))
+		} else {
+			elselab := label()
+			endlab := label()
+			put(s, aload_0() )
+			put(s, getfield(arguments))
+			put(s, dup())
+			put(s, arraylength())
+			put(s, ipush(i))
+			put(s, if_icmpge(elselab))
+				put(s, Pop())
+				gen_bc_irKey_rval(s, irKey("null"))
+				put(s, goto(endlab))
+			put(s, elselab)
+				put(s, ipush(i-1))
+				put(s, aaload())
+				put(s, invokevirtual(deref) )
+			put(s, endlab)
+		}
 		put(s, invokevirtual(assign) )
 		put(s, Pop())
 	}
-	# put(s, vreturn() )
 end
 
 procedure bc_create_createvars(c, params, locals, undeclared)

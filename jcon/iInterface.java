@@ -9,31 +9,18 @@ public class iInterface {
 		(new iOperators()).announce();
 	}
 
-	public static vDescriptor[] marshall(
-	    vDescriptor[] args, int len, boolean varargs) {
-
+	public static vDescriptor marshal( vDescriptor[] args, int len) {
 		vDescriptor[] a = new vDescriptor[len];
 
-		int max = varargs ? len-1 : len;
-		for (int i = 0; i < max; i++) {
-			if (i < args.length) {
-				a[i] = args[i].deref();
-			} else {
-				a[i] = iNew.Null();
-			}
+		int varlen = args.length - len + 1;
+		if (varlen < 0) {
+			varlen = 0;
 		}
-		if (varargs) {
-			int varlen = args.length - len + 1;
-			if (varlen < 0) {
-				varlen = 0;
-			}
-			vDescriptor[] varray = new vDescriptor[varlen];
-			for (int i = 0; i < varlen; i++) {
-				varray[i] = args[len+i-1];
-			}
-			a[len-1] = iNew.List(varray);
+		vDescriptor[] varray = new vDescriptor[varlen];
+		for (int i = 0; i < varlen; i++) {
+			varray[i] = args[len+i-1];
 		}
-		return a;
+		return iNew.List(varray);
 	}
 
 	static java.util.Hashtable fileTable = new java.util.Hashtable();
