@@ -139,8 +139,7 @@ procedure methodrefs()
             ["resolveKey", "(Ljava/lang/String;)Lrts/vDescriptor;", "rts/iEnv"],
             ["resolveProc", "(Ljava/lang/String;I)Lrts/vDescriptor;",
              "rts/iEnv"],
-            ["resume", "()Lrts/vDescriptor;", "rts/iClosure"],
-            ["resume", "()Lrts/vDescriptor;", "rts/vDescriptor", "resumeValue"],
+            ["Resume", "()Lrts/vDescriptor;", "rts/vDescriptor"],
             ["nextval", "()Lrts/vDescriptor;", "rts/iClosure"],
             ["undeclared", "(Ljava/lang/String;)V", "rts/iEnv"]
         ]

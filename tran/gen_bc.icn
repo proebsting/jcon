@@ -461,7 +461,7 @@ end
 procedure bc_gen_ir_ResumeValue(s, p)
     local c, PC, target, resume, free
 
-    resume := bc_resumeValue_methodref(bc_proc_classptr)
+    resume := bc_Resume_methodref(bc_proc_classptr)
     bc_gen(s, p.value)
     put(s, j_invokevirtual(resume))
     if \p.retValue then {
