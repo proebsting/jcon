@@ -7,6 +7,7 @@ procedure optimize(t, start)
     new := t
     if \optimize_flag then {
         new := free_elimination(new, start)
+        new := dead_assignment(new, start)
         new := goto_elimination(new, start)
         new := copy_propagation(new, start)
         new := coord_optimize(new, start)
@@ -16,6 +17,23 @@ procedure optimize(t, start)
        type(i[2]) == "irGoto" &
        i[1].startlabel === i[2].location then {
         new[start] := [ i[2] ]
+    }
+    return new
+end
+
+procedure dead_assignment(t, start)
+    local k, chunk, new, c, i
+
+    new := table()
+    every k := key(t) & chunk := t[k] do {
+        c := []
+        every i := !chunk do {
+            if (type(i) == "irMove") & /i.lhs then {
+                next
+            }
+            put(c, i)
+        }
+        new[k] := c
     }
     return new
 end
@@ -87,13 +105,7 @@ procedure copy_propagation(t, start)
         every k := key(t) & chunk := t[k] do {
             newchunk := []
             every insn := !chunk do {
-                if type(insn) == "irMove" & /insn.lhs then {
-                    changes := 1
-                } else if type(insn) == "irMove" &
-                   type(insn.lhs) == ("irTmp"|"irTmpLabel") &
-                   uses[insn.lhs] = 0 then {
-                    changes := 1
-                } else if type(insn) == "irMove" &
+                if type(insn) == "irMove" &
                    defs[insn.lhs] = 1 &
                    type(insn.lhs) == "irTmp" &
                    (
@@ -266,9 +278,9 @@ procedure goto_elimination(t, start)
               type(insn) == "irGoto" &
               type(insn.location) == "irLabel" &
               ref_count[insn.location] = 1 do {
-	    if /new[insn.location] then {
-		runerr(1000, insn.location)
-	    }
+            if /new[insn.location] then {
+                runerr(1000, insn.location)
+            }
             new[lab] := chunk[1:-1] ||| new[insn.location]
             delete(new, insn.location)
         }
@@ -285,10 +297,14 @@ procedure add_label(lab, wl, seen)
 end
 
 procedure goto_chain(lab, t)
-    local chunk
+    local chunk, seen
 
-    while chunk := \t[lab] & type(chunk[1]) == "irGoto" do {
+    seen := set([])
+    while chunk := \t[lab] &
+          type(chunk[1]) == "irGoto" &
+          not member(seen, lab) do {
         lab := chunk[1].location
+        insert(seen, lab)
     }
     return lab
 end

@@ -40,7 +40,11 @@ procedure ir_Scan(p, st, inuse, target, bounded)
 
     init4ir(p)
     lv := ir_tmp(st, inuse)
-    rv := (\target | ir_tmp(st, inuse))
+    if p.op == "?" then {
+	rv := target
+    } else {
+        rv := (\target | ir_tmp(st, inuse))
+    }
 
     p.ir.x := ir_scaninfo()
     p.ir.x.oldpos := ir_tmp(st, inuse)
@@ -48,7 +52,7 @@ procedure ir_Scan(p, st, inuse, target, bounded)
 
     suspend ir(p.expr, st, inuse, lv, &null)
     put(scans, p)
-    suspend ir(p.body, st, inuse, rv, &null)
+    suspend ir(p.body, st, inuse, rv, if p.op == "?" then bounded else &null)
     pull(scans)
 
     suspend irChunk(p.ir.start, [ irGoto(p.expr.ir.start) ])
@@ -74,7 +78,6 @@ procedure ir_Scan(p, st, inuse, target, bounded)
     if p.op == "?" then {
         suspend irChunk(p.body.ir.success, [
             irScanSwap( p.ir.x.oldsubject, p.ir.x.oldpos ),
-            irMove(target, rv),
             irGoto(p.ir.success)
             ])
     } else {
@@ -155,7 +158,7 @@ procedure ir_Alt(p, st, inuse, target, bounded)
         suspend ir(p.eList[i], tmpst, tiu[i], target, bounded)
         max_st(st, tmpst)
     }
-    union_inuse(inuse, tiu)
+    inter_inuse(inuse, tiu)
 
     suspend irChunk(p.ir.start, [ irGoto(p.eList[1].ir.start) ])
     /bounded & suspend irChunk(p.ir.resume, [ irGoto(t) ])
