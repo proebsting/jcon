@@ -35,7 +35,7 @@ files:
 error reporting:
 -- arg lists in traceback show actual instead of expected number of arguments
    (e.g.: a call to insert() traces as insert() not insert(&null,&null,&null))
--- long strings are not elided, list contents are omitted, etc.
+-- in traceback images, list contents and record fields are omitted
 
 miscellaneous:
 -- commands run by system(s) do not inherit stdin/stdout/error 
