@@ -105,7 +105,7 @@ public static void start(String[] filenames, String[] args, String name) {
 	p.Call(v);
 	iRuntime.exit(0);
     } catch (iError err) {
-	err.printStackTrace();
+	// err.printStackTrace();
 	err.report();
 	iRuntime.bomb("iError.report() returned");
     } catch (Throwable t) {
