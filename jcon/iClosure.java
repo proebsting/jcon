@@ -11,7 +11,9 @@ vDescriptor[] arguments;
 
 Object o;			// arbitrary storage for RTS methods
 
-
+int line;
+int column;
+String file;
 
 iClosure() {			// constructor
 	PC = 1;
@@ -95,6 +97,9 @@ String trace() {
 	} else {
 	    b.append(c);			// not $; use as is
 	}
+    }
+    if (parent != null && parent.file != null) {
+	b.append(" from line " + parent.line + " in " + parent.file);
     }
     return b.toString();
 }
