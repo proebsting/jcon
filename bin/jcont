@@ -53,7 +53,7 @@
 
 # command names
 JAVAC="javac -nowarn"
-JAVA="java"
+JAVA="java -verify"
 JAR="jar"
 TRAN="jtran"
 LINK="jlink"
