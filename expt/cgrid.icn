@@ -23,7 +23,7 @@ procedure main(args)
 	 next
       if hue == "exit" then
 	 break
-      EraseArea(0, 0, WIDTH, HEIGHT)
+      EraseArea()
       if not Fg(hue) then {
          write("[FAILED]")
 	 next
