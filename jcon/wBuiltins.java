@@ -23,6 +23,7 @@ static void announce() {
     iEnv.declareBuiltin("CopyArea", 8);
     iEnv.declareBuiltin("DrawArc", -1);
     iEnv.declareBuiltin("DrawCircle", -1);
+    iEnv.declareBuiltin("DrawCurve", -1);	// not really: calls DrawLine
     iEnv.declareBuiltin("DrawLine", -1);
     iEnv.declareBuiltin("DrawPoint", -1);
     iEnv.declareBuiltin("DrawPolygon", -1);
@@ -41,6 +42,10 @@ static void announce() {
     iEnv.declareBuiltin("GotoRC", 3);
     iEnv.declareBuiltin("GotoXY", 3);
     iEnv.declareBuiltin("NewColor", 2);		// always fails
+    iEnv.declareBuiltin("PaletteChars", 2);
+    iEnv.declareBuiltin("PaletteColor", 3);
+    iEnv.declareBuiltin("PaletteKey", 3);
+    iEnv.declareBuiltin("Pattern", 2);		// always fails
     iEnv.declareBuiltin("Pending", 1);
     iEnv.declareBuiltin("TextWidth", 2);
     iEnv.declareBuiltin("Uncouple", 1);
@@ -51,25 +56,17 @@ static void announce() {
 
     // #%#% NOT YET IMPLEMENTED:
     //
-    // iEnv.declareBuiltin("Pattern", 2);
+    // iEnv.declareBuiltin("DrawImage", 4);
     //
     // iEnv.declareBuiltin("ReadImage", 5);
     // iEnv.declareBuiltin("WriteImage", 6);
     // iEnv.declareBuiltin("Pixel", 5);
     //
-    // iEnv.declareBuiltin("PaletteChars", 2);
-    // iEnv.declareBuiltin("PaletteColor", 3);
-    // iEnv.declareBuiltin("PaletteKey", 3);
-    // iEnv.declareBuiltin("DrawImage", 4);
-    //
-    // iEnv.declareBuiltin("DrawCurve", -1);
-    //
     // iEnv.declareBuiltin("Active", 0);
-    //
     // iEnv.declareBuiltin("Lower", 1);
     // iEnv.declareBuiltin("Raise", 1);
     //
-    // iEnv.declareBuiltin("Couple", 2);
+    // iEnv.declareBuiltin("Couple", 2);	// may not be possible
 }
 
 
@@ -201,6 +198,15 @@ final class f$Fg extends vProc2 {		// Fg(W, s)
     }
 }
 
+final class f$Pattern extends vProc2 {		// Pattern(W, s) always fails
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	if (!a.iswin()) {
+	    return Call(iKeyword.window.getWindow(), a);
+	}
+	return null; /*FAIL*/
+    }
+}
+
 final class f$ColorValue extends vProc2 {	// ColorValue(W, s)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	if (!a.iswin()) {
@@ -214,6 +220,57 @@ final class f$ColorValue extends vProc2 {	// ColorValue(W, s)
 	    return vString.New((int)(65535 * k.r + 0.5) + "," + 
 		(int)(65535 * k.g + 0.5) + "," + (int)(65535 * k.b + 0.5));
 	}
+    }
+}
+
+
+
+final class f$PaletteChars extends vProc2 {	// PaletteChars(W, s)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	if (!a.iswin()) {
+	    b = a;			// W is not needed or used
+	}
+	cPalette p = cPalette.New(b.mkString());
+	if (p == null) {
+	    return null; /*FAIL*/
+	} else {
+	    return p.chars;
+	}
+    }
+}
+
+final class f$PaletteColor extends vProc3 {	// PaletteColor(W, s, c)
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
+	if (!a.iswin()) {
+	    c = b;			// W is not needed or used
+	    b = a;
+	}
+	cPalette p = cPalette.New(b.mkString());
+	if (p == null) {
+	    return null; /*FAIL*/
+	}
+	vString cstr = c.mkString();
+	if (cstr.length() != 1) {
+	    iRuntime.error(205, c);
+	}
+	cEntry e = p.entry[cstr.charAt(0)];
+	return vString.New(e.r + "," + e.g + "," + e.b);
+    }
+}
+
+final class f$PaletteKey extends vProc3 {	// PaletteKey(W, s, k)
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
+	if (!a.iswin()) {
+	    c = b;			// W is not needed or used
+	    b = a;
+	}
+	cPalette p = cPalette.New(b.mkString());
+	if (p == null) {
+	    return null; /*FAIL*/
+	}
+	vString s = c.mkString();
+	wColor k = wColor.New(s, 1.0);	// parse string (gamma has no effect)
+	return p.Key(k);
     }
 }
 
@@ -286,6 +343,14 @@ final class f$DrawLine extends vProcV {		// DrawLine(W,x,y,...)
     public vDescriptor Call(vDescriptor[] args) {
 	vWindow win = vWindow.winArg(args);
 	win.DrawLine(new wCoords(args));
+	return win;
+    }
+}
+
+final class f$DrawCurve extends vProcV {	// DrawCurve(W,x,y,...)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	win.DrawLine(new wCoords(args));	//#%#% poor substitute for curve
 	return win;
     }
 }

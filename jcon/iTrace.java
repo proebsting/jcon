@@ -12,7 +12,7 @@ public final class iTrace {
 //  (set by generated code when compiled in trace mode)
 
 public static String file;	// file name
-public static int line;		// line number
+public static int line;		// line number (negative for suspend)
 
 
 
@@ -45,7 +45,12 @@ public static vDescriptor Call(String fname, int lineno,
 
     if (iKeyword.trace.check()) {
 	if (result instanceof vClosure) {
-	    trace(file, line, p, " suspended", result);
+	    if (line < 0) {	// if true suspend
+		trace(file, -line, p, " suspended", result);
+	    } else {
+		trace(file, line, p, " returned", result);
+		result = ((vClosure)result).retval;
+	    }
 	} else {
 	    trace(file, line, p, " returned", result);
 	}
@@ -83,6 +88,9 @@ public static vDescriptor Resume(String fname, int lineno, vDescriptor object) {
     }
 
     if (iKeyword.trace.check()) {
+	if (line < 0) {
+	    line = -line;	// just ensure positive; can't really return 
+	}
 	trace(file, line, object, " suspended", result);
     }
 
