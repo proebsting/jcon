@@ -543,16 +543,16 @@ class oActivate extends iFunctionClosure {		//  x @ C
 }
 
 class oProcessArgs extends iClosure {			//  x ! y
-	iClosure func;
-	void nextval() {
-		if (func == null) {
-			arguments[0] = arguments[0].deref();
-			vDescriptor[] a = arguments[1].mkArgs();
-			func = arguments[0].instantiate(a, parent);
-		}
-		func.resume();
-		this.retvalue = func.retvalue;
-		this.returned = func.returned;
-	}
-	String tfmt() { return "{$1 ! $2}"; }
+    iClosure func;
+    void nextval() {
+        if (func == null) {
+            arguments[0] = arguments[0].deref();
+            vDescriptor[] a = arguments[1].mkArgs();
+            func = iInterface.Instantiate(arguments[0], a, parent);
+        }
+        func.resume();
+        this.retvalue = func.retvalue;
+        this.returned = func.returned;
+    }
+    String tfmt() { return "{$1 ! $2}"; }
 }

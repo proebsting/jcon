@@ -61,4 +61,13 @@ public class iInterface {
 		iEnv.main.run();
 		System.exit(0);
 	}
+
+	public static iClosure Instantiate(vDescriptor f, vDescriptor[] args, iClosure parent) {
+		long len = args.length > 0 ? (long) args.length : 1;  // due to proc(x,0)'s defn.
+		vValue fn = f.Proc(len);
+		if (fn == null) {
+			return new iErrorClosure(f.deref(), args, parent);
+		}
+		return fn.instantiate(args, parent);
+	}
 }

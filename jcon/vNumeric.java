@@ -23,18 +23,7 @@ vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }
 abstract vValue Abs();
 
 
-
-//  instantiate:  try to convert to integer
-//  if that fails, call super.instantiate() for proper error processing
-
-public iClosure instantiate (vDescriptor[] args, iClosure parent) {
-    try {
-    	return this.mkInteger().instantiate(args, parent);
-    } catch (iError e) {
-    	return super.instantiate(args, parent);
-    }
-}
-
+vValue getproc()	{ return this.mkInteger().getproc(); }
 
 
 //  Coerce(args) -- coerce array of two args to be both integer or both real

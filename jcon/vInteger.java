@@ -44,8 +44,8 @@ int compareTo(vValue v) {
 		
 }
 
-public iClosure instantiate (vDescriptor[] args, iClosure parent) {
-	return new iIntegerClosure(this, args, parent);
+vValue getproc() {
+	return new vIntegerProc(this);
 }
 
 
@@ -177,6 +177,35 @@ vValue NGreater(vDescriptor v) {
 } // class vInteger
 
 
+class vIntegerProc extends vValue {
+	vInteger value;
+	
+	vIntegerProc(vInteger value) {
+		this.value = value;
+	}
+
+	public iClosure instantiate (vDescriptor[] args, iClosure parent) {
+		return new iIntegerClosure(this.value, args, parent);
+	}
+
+	vValue getproc()	{ return this; }
+
+	String image()	{ return "function " + this.value.value; }
+
+	String type()	{ return "procedure"; }
+
+	int rank()	{ return 80; }	// integer "procedure"
+
+	vInteger Args()	{ return iNew.Integer(-1); }
+
+	int compareTo(vValue v) {
+                String s1 = this.image();
+                String s2 = v.image();
+                s1 = s1.substring(s1.lastIndexOf(' ') + 1);
+                s2 = s2.substring(s2.lastIndexOf(' ') + 1);
+                return s1.compareTo(s2);
+	}
+}
 
 
 class iIntegerClosure extends iRefClosure {

@@ -171,7 +171,10 @@ class f$proc extends iFunctionClosure {				// proc(s, i)
 		} else {
 			i = args[1].mkInteger();
 		}
-		return v.Proc(i);
+		if (i.value < 0 || i.value > 3) {
+			iRuntime.error(205, i);
+		}
+		return v.Proc(i.value);
 	}
 }
 

@@ -16,6 +16,8 @@ public class vRecordProc extends vValue {
 	    return new iRecordClosure(this, args, parent);
 	}
 
+	vValue getproc()	{ return this; }
+
 	String image()	{ return "record constructor " + name; }
 
 	String type()	{ return "procedure"; }

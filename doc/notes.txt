@@ -23,7 +23,6 @@ strings and csets:
 -- image(c) doesn't recognize &digits, &lcase, etc.
 -- csets may be up to 2^16 characters; big ones run slowly; &cset is missing
 -- char() and ord() work in the range 0 - 65535
--- string invocation of operators (e.g., "+") is not implemented
 
 numerics:
 -- overflow or underflow is not detected
@@ -42,7 +41,6 @@ miscellaneous:
 -- read() and write() don't accept file arguments
 -- display() ignores its arguments (and displays everything)
 -- display() prints globals in an unsorted order
--- proc() does not work for operators yet.
 -- proc(x,0) does not find builtins that have been over-ridden.
 -- jcon always allocates a list even if main() declares no arguments
 -- compiler silently ignores illegal multiply-defined names
