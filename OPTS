@@ -23,11 +23,12 @@ the common cases that use default arguments.
 	-- could also do: match, find, trim, log, atan
 
 Use lazy creation for most keyword classes.
-	-- nontrivial
+	-- nontrivial; not clear how many can actually do this
 
-Make some functions final to allow inlining, e.g. vCset.member().
+Make some methods final to allow inlining, e.g. vCset.member().
 	-- DONE by making almost all classes final
-	-- (some individual functions still are marked, too)
+	-- (some individual methods still are marked, too)
 
 Cache a vNull locally instead of calling factory, e.g. in vSimpleVar.
-(Similarly cache vIntegers like 0 and 1 where used.)
+Similarly cache vIntegers like 0 and 1 where used, and empty strings.
+	-- DONE, where useful, mostly by ensuring inlining of methods
