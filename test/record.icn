@@ -28,4 +28,7 @@ procedure main()
    ?b := 15
    write(!b)
 
+   b := rec(3, 7)
+   every write(b[1 to 3])
+   every write(b["f" || (1 to 3)])
 end

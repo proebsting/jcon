@@ -36,6 +36,13 @@ public class vRecordProc extends vValue {
 
 	int find(String s) {
 		for (int i = 0; i < fieldnames.length; i++) {
+			if (s == fieldnames[i]) {
+				return i;
+			}
+		}
+		// The following exists for indexing records with constructed
+		// names.  It is the rare case.
+		for (int i = 0; i < fieldnames.length; i++) {
 			if (s.equals(fieldnames[i])) {
 				return i;
 			}
