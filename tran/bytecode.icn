@@ -265,7 +265,7 @@ procedure writer_ClassFile(writer, p)
 end
 
 procedure writer_cp_info(writer, p)
-	local i
+	local i, s
 
 	case (type(p)) of {
 	default: {
@@ -318,10 +318,11 @@ procedure writer_cp_info(writer, p)
 		writer_u2(writer, p.signature_index)
 	}
 	"CONSTANT_Utf8": {
+		s := utf8_repr(p.value)
 		writer_u1(writer, 1)
-		writer_u2(writer, *p.value)
-		writes(writer, p.value)
-		# every i := !p.value do {
+		writer_u2(writer, *s)
+		writes(writer, s)
+		# every i := !s do {
 		# 	writer_u1(writer, ord(i))
 		# }
 	}
@@ -333,6 +334,31 @@ procedure writer_cp_info(writer, p)
 		}
 	}
 	}
+end
+
+procedure utf8_repr(s)
+	local t, c
+	static hard
+	initial hard := '\x00' ++ &cset[129:0]
+
+	s ? {
+		t := tab(upto(hard)) | return s
+		while not pos(0) do {
+			if c := ord(tab(any(hard))) then {
+				if (c < 16r0800) then {
+					t ||:= char(16rC0 + ishift(c, -6))
+					t ||:= char(16r80 + iand(c, 16r3F))
+				} else {
+					t ||:= char(16rE0 + ishift(c, -12))
+					t ||:= char(16r80 +
+						iand(ishift(c, -6), 16r3F))
+					t ||:= char(16r80 + iand(c, 16r3F))
+				}
+			}
+			t ||:= tab(upto(hard) | 0)
+		}
+	}
+	return t
 end
 
 procedure writer_field_info(writer, p)
