@@ -1,0 +1,17 @@
+#!/bin/ksh
+#
+#  measure progname stdin [arg]... -- execute test and report timings
+
+PROG=${1:?"missing progname"}
+shift
+STDIN=${1:?"missing stdin"}
+shift
+
+(time $PROG.ixe "$@" <$STDIN >/dev/null; time $PROG.jxe <$STDIN "$@" >/dev/null) 2>&1 |
+sed '
+   s/m/ /
+   s/s$//
+' | awk '
+   /^user/  { t1 = t2; t2 = 60 * $2 + $3; }
+   END      { printf("%-8s %6.2f %6.2f %8.2f\n", "'$PROG'", t1, t2, t2 / t1); }
+'
