@@ -6,9 +6,24 @@ class iUtil {
 
 //  sort(x) -- sort java array x of vValues, using x[i].compare().
 
-static void sort(vValue x[])
+static vValue[] sort(vValue x[])
 {
     qsort(x, 0, x.length - 1);
+    return x;
+}
+
+
+
+//  compare(x, y) -- compare two vValue objects for sorting
+
+static int compare(vValue x, vValue y)
+{
+    int d = x.rank() - y.rank();
+    if (d == 0) {
+	return x.compareTo(y);
+    } else {
+    	return d;
+    }
 }
 
 
@@ -19,7 +34,7 @@ static void sort(vValue x[])
 
 private static void qsort(vValue x[], int l, int u)
 {
-    int d, i, r, tr, llow;
+    int d, i, r, llow;
     vValue t, v;
 
     if (l >= u) {
@@ -29,15 +44,11 @@ private static void qsort(vValue x[], int l, int u)
     r = l + (int) ((u - l) * Math.random());	// don't perturb &random
     swap(x, l, r);
     t = x[l];
-    tr = t.rank();
 
     llow = l;
     for (i = l + 1; i <= u; i++) {
 	v = x[i];
-	d = v.rank() - tr;
-	if (d == 0) {
-	    d = v.compareTo(t);
-	}
+	d = compare(v, t);
     	if (d < 0) {
 	    llow++;
 	    swap(x, llow, i);

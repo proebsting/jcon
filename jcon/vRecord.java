@@ -62,7 +62,7 @@ vVariable field(String s) {
 vDescriptor Index(vValue i) {
     long m = i.mkInteger().value;
     if (m <= 0) {
-	m += constr.fieldnames.length;
+	m += constr.fieldnames.length + 1;
     }
     if (m < 1 || m > constr.fieldnames.length) {
 	return null; /* FAIL */
@@ -95,21 +95,20 @@ vDescriptor Bang(iClosure c) {
 }
 
 
-vValue Sort(vDescriptor n) {
-    vValue a[] = new vValue[values.length];
-    for (int i = 0; i < values.length; i++) {
-	a[i] = values[i].deref();
-    }
-    iUtil.sort(a);
-    return iNew.List(a);
+vValue Sort(vDescriptor n) {				// sort(L)
+    return iNew.List(iUtil.sort(this.mkArray()));
 }
 
-vDescriptor[] mkArgs() {
+vValue[] mkArray() {
     vValue a[] = new vValue[values.length];
     for (int i = 0; i < values.length; i++) {
 	a[i] = values[i].deref();
     }
     return a;
+}
+
+vDescriptor[] mkArgs() {
+    return this.mkArray();
 }
 
 } // class vRecord

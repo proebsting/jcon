@@ -83,6 +83,7 @@ void announce() {
 	declare("set", 1);
 	declare("sin", 1);
 	declare("sort", 2);
+	declare("sortf", 2);
 	declare("sqrt", 1);
 	declare("stop", -1);
 	declare("string", 1);

@@ -66,7 +66,7 @@ class f$put extends iFunctionClosure {				// put(L, x...)
 
 
 
-//  sort() process several datatypes but always produces a list
+//  sort() and sortf() process several datatypes but always produce a list
 
 class f$sort extends iFunctionClosure {				// sort(X,i)
 	vDescriptor function(vDescriptor[] args) {
@@ -83,3 +83,74 @@ class f$sort extends iFunctionClosure {				// sort(X,i)
 		return x.Sort(i);
 	}
 }
+
+class f$sortf extends iFunctionClosure {			// sortf(X,i)
+	vDescriptor function(vDescriptor[] args) {
+		vValue[] a = iRuntime.argVal(args, 0, 125).mkArray();
+		vInteger i;
+		if (args.length > 1) {
+			i = iRuntime.argVal(args, 1).mkInteger();
+			if (i.value == 0) {
+				iRuntime.error(205, i);
+			}
+		} else {
+			i = iNew.Integer(1);
+		}
+		for (int j = 0; j < a.length; j++) {
+			a[j] = new vSortElem(a[j], i);
+		}
+		iUtil.sort(a);
+		for (int j = 0; j < a.length; j++) {
+			a[j] = ((vSortElem)a[j]).value;
+		}
+		return iNew.List(a);
+	}
+}
+
+class vSortElem extends vValue {		// key/value pair for sortf()
+
+    vValue key;		// value x[i] used for sorting, if any
+    vValue value;	// value x used if x[i] did not exist
+
+    vSortElem(vValue x, vInteger i) {		// constructor
+    	value = x;
+	if (x instanceof vList || x instanceof vRecord) {
+	    vDescriptor d = value.Index(i);	// null on failure
+	    if (d == null) {
+	    	key = null;
+	    } else {
+		key = d.deref();
+	    }
+	}
+    }
+
+    int compareTo(vValue v)	{
+	vSortElem e = (vSortElem) v;
+	int d = this.value.rank() - e.value.rank();
+	if (d != 0)
+	    return d;
+	if (this.key == null) {
+	    if (e.key == null) {
+		return iUtil.compare(this.value, e.value);
+	    } else {
+	    	return -1;
+	    }
+	} else /* this.key != null */ {
+	    if (e.key == null) {
+		return 1;
+	    } else {
+		d = iUtil.compare(this.key, e.key);
+		if (d != 0) {
+		    return d;
+		} else {
+		    return iUtil.compare(this.value, e.value);
+		}
+	    }
+	}
+    }
+
+    String image()  { return "<" + value.image() + ">"; }
+    String type()   { return "sortf"; }
+    int rank()      { return -1; }		// never compared to other types
+
+} // class vSortElem

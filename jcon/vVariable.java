@@ -37,6 +37,7 @@ public abstract class vVariable extends vDescriptor {
     vNumeric mkNumeric()		{ return this.deref().mkNumeric(); }
     vCset mkCset()			{ return this.deref().mkCset(); }
     vDescriptor[] mkArgs()		{ return this.deref().mkArgs(); }
+    vValue[] mkArray()			{ return this.deref().mkArray(); }
 
     String write()			{ return this.deref().write(); }
     String image()			{ return this.deref().image(); }

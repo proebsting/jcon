@@ -195,14 +195,16 @@ vValue ListConcat(vDescriptor v) {			// L1 ||| L2
     return result;
 }
 
-
 vValue Sort(vDescriptor n) {				// sort(L)
+    return iNew.List(iUtil.sort(this.mkArray()));
+}
+
+vValue[] mkArray() {
     vValue a[] = new vValue[v.size()];
     for (int i = 0; i < a.length; i++) {
     	a[i] = ((vDescriptor)v.elementAt(i)).deref();
     }
-    iUtil.sort(a);
-    return iNew.List(a);
+    return a;
 }
 
 vDescriptor[] mkArgs() {

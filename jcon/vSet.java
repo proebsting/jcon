@@ -67,14 +67,17 @@ vDescriptor Bang(iClosure c) {
     return e.hasMoreElements() ? (vDescriptor) e.nextElement() : null;
 }
 
-vValue Sort(vDescriptor n) {
+vValue Sort(vDescriptor n) {				// sort(L)
+    return iNew.List(iUtil.sort(this.mkArray()));
+}
+
+vValue[] mkArray() {
     vValue a[] = new vValue[t.size()];
     int i = 0;
     for (Enumeration e = t.keys(); e.hasMoreElements(); ) {
     	a[i++] = (vValue)e.nextElement();
     }
-    iUtil.sort(a);
-    return iNew.List(a);
+    return a;
 }
 
 vValue Member(vDescriptor i) {
