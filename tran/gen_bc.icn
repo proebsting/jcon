@@ -646,9 +646,6 @@ procedure bc_links(L)
 end
 
 procedure bc_records(name, fields, coord)
-    if member(bc_declare_set, name) then {
-        semantic_error(image(name) || ": inconsistent redeclaration", coord)
-    }
     insert(bc_declare_set, name)
     bc_record_table[name] := fields
 end
@@ -689,14 +686,14 @@ procedure bc_target_bookkeeping()
     }
 end
 
-procedure bc_find_save_restore()
+procedure bc_find_save_restore(code)
     local a
 
     bc_save_restore_flag := &null
-    if a := !!bc_emit_table & type(a)=="ir_Succeed" & \a.continuation then {
+    if a := !(!code).insnList & type(a)=="ir_Succeed" & \a.continuation then {
         bc_save_restore_flag := 1
     }
-    if a := !!!bc_emit_table & type(a)=="ir_Create" then {
+    if a := !!(!code).insnList & type(a)=="ir_Create" then {
         bc_save_restore_flag := 1
     }
 end
@@ -744,10 +741,9 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     local f, n, a, class_index, t, superclass
 
     bc_statics_set := set(statics)
-    if member(bc_declare_set, name) then {
-        semantic_error(image(name) || ": inconsistent redeclaration", coord)
-    }
     insert(bc_declare_set, name)
+
+    bc_find_save_restore(code)
 
     bc_current_classname := "p_" || bc_java_classname || "$" || name
     c := bc_current_classptr := j_ClassFile(3, 45, [&null], table(), 1, &null,
@@ -778,7 +774,6 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     bc_emit_table := optim_optimize(bc_emit_table, codestart)
 
     bc_target_bookkeeping()
-    bc_find_save_restore()
     bc_class_constructor(c, statics)
     bc_register(bc_emit_table)
 

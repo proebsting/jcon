@@ -3,6 +3,8 @@
 global ir_noerror2failure
 global ir_createflag
 
+global ir_declare_set
+
 record ir_info(start, resume, failure, success, x)
 record ir_loopinfo(scanlevel, nextlabel, continue, in_st, out_st, value,
                    bounded, inuse)
@@ -754,6 +756,11 @@ procedure ir_a_ProcDecl(p, st, inuse, target, bounded)
         }
         insert(v, i.id)
     }
+    if member(ir_declare_set, p.ident.id) then {
+	semantic_error(image(name) || ": inconsistent redeclaration",
+		       p.ident.coord)
+    }
+    insert(ir_declare_set, p.ident.id)
 
     locals := []
     statics := []
@@ -834,6 +841,11 @@ end
 procedure ir_a_Record(p, st, inuse, target, bounded)
     local fields, v, i
 
+    if member(ir_declare_set, p.ident.id) then {
+	semantic_error(image(name) || ": inconsistent redeclaration",
+		       p.ident.coord)
+    }
+    insert(ir_declare_set, p.ident.id)
     v := set([])
     every i := !p.idlist do {
         if member(v, i.id) then {
@@ -1502,7 +1514,7 @@ procedure ir_make_sentinel(L)
 end
 
 procedure semantic_error(msg, coord)
-    write(&errout, "File ", (\coord).file, "; Line ", coord.line)
+    writes(&errout, "File ", (\coord).file, "; Line ", coord.line)
     stop(" # ", msg)
 end
 
@@ -1542,6 +1554,8 @@ end
 
 procedure ast2ir(parse, flags)
     local p
+
+    ir_declare_set := set([])
     while p := @parse do {
         suspend ir(p)
     }
