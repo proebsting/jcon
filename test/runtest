@@ -27,6 +27,10 @@ FAILED=""
 for FNAME; do
     BASE=${FNAME%.*}
     echo ${BASE}:
+    if [ -r $BASE.sh ]; then
+	sh $BASE.sh || FAILED="$FAILED $BASE"
+	continue
+    fi
     if [ ! -r $BASE.icn -o ! -r $BASE.std ]; then
 	echo "   invalid test: missing $BASE.icn or $BASE.std"
 	FAILED="$FAILED $BASE"

@@ -1,0 +1,432 @@
+#line 0 "tpp.icn"
+#SRC: IPROJ
+
+# tpp.icn -- test file for Icon preprocessor
+#
+# generates lots of deliberate errors
+# includes tpp1.icn, tpp2.icn, tpp3.icn
+
+# following should be legal  (ignored by new preprocessor)
+
+abc 11
+
+defgh 22
+
+ijklm 33
+
+same 44
+
+xyzzy 55
+
+
+# following should be illegal but ignored
+
+
+
+
+
+# line 95 "passed through unrecognized"
+
+
+
+
+# following should be legal
+#line 11 "a.b.c"
+abc 11
+#line 22 "defgh"
+defgh 22
+#line 33 "ijklm"
+ijklm 33
+
+
+
+
+
+
+
+
+
+
+<same> 44
+#line 55 "xyzzy"
+xyzzy 55
+$( digraphs for EBCDIC $)
+(that was EBCDIC)
+
+#line 0 "bad.ppdirs"
+# following should be illegal and diagnosed
+
+
+
+
+
+
+
+
+
+
+#line 0 "include.tests"
+=a=
+
+=b=
+
+=c=
+
+=d=
+
+=e=
+
+=f=
+
+=g=
+
+=h=
+
+=i=
+
+=j=
+
+=k=
+#line 0 "tpp1.icn"
+#  tpp1.icn: part 1 of circular include test
+   =1=
+#line 0 "tpp2.icn"
+#  tpp2.icn: part 1 of circular include test
+      =2=
+#line 0 "tpp3.icn"
+#  tpp3.icn: part 1 of circular include test
+         =3=
+
+         =3=
+#line 3 "tpp2.icn"
+      =2=
+#line 3 "tpp1.icn"
+   =1=
+#line 22 "include.tests"
+=l=
+#line 0 "tpp3.icn"
+#  tpp3.icn: part 1 of circular include test
+         =3=
+#line 0 "tpp1.icn"
+#  tpp1.icn: part 1 of circular include test
+   =1=
+#line 0 "tpp2.icn"
+#  tpp2.icn: part 1 of circular include test
+      =2=
+
+      =2=
+#line 3 "tpp1.icn"
+   =1=
+#line 3 "tpp3.icn"
+         =3=
+#line 24 "include.tests"
+=m=
+
+#line 0 "predef.tst"
+#== predef test ==
+should be defined as 1:  1
+should not be defined:  _EBCDIC
+
+
+
+
+redefined:  ascii:ascii ebcdic:ebcdic
+
+#line 0 "define.tst"
+#== define test ==
+
+#= illegal =
+
+
+
+
+
+
+
+#= null =
+
+
+a==b==c
+
+#= simple =
+
+
+
+
+
+
+
+
+
+1 3.14159 + "string" 'aeiou' ((sqrt(5) + 1) / 2) "fffrtb"
+1+3.14159,+/"string",'aeiou'\((sqrt(5) + 1) / 2)?"fffrtb"!	# one pi plus etc
+1"pi"+"twine"'aeiou'"expr""fffrtb"
+'one'3.14159'plus'"string"'vowels'((sqrt(5) + 1) / 2)'xy_47_Hike'
+
+#= redefinition =
+
+3.14159
+
+
+2.7183
+
+#= deferred interpretation =
+
+
+42 42
+
+
+
+47 47
+
+#= dubious pasting=
+
+
+123e3  456e+3
+
+#= recursion =
+
+r
+
+rr rr
+
+
+
+a a a a a a a a a a a a a a a a a a a a a a a a a a a
+b b b b b b b b b b b b b b b b b b b b b b b b b b b
+c c c c c c c c c c c c c c c c c c c c c c c c c c c
+
+= context =
+
+123_abc+<%>+123<%>+abc_+<%>"_"<%>+36rX_+123e10_+12.e+5<%>+e7_+<%>#_
+
+#line 0 "error.tst"
+#= $error =
+
+
+
+
+
+#line 0 "if.tst"
+#= conditional compilation =
+
+
+
+# $ifdef & $ifndef both true and false, with and without $else
+
+
+   "isdef is defined"
+
+
+
+
+
+
+
+
+
+
+
+   "notdef is not defined"
+
+
+
+   "isdef is defined"
+
+
+
+
+
+
+
+   "notdef is not defined"
+
+
+# nesting without $else
+
+
+   (true...)
+
+
+
+
+
+
+
+   (...true)
+
+
+# full nesting, with some nonstandard spacing
+
+
+   (begin true branch)
+
+      "isdef is defined"
+
+
+
+   (end true branch)
+
+
+
+
+
+
+
+
+
+
+# test all paths through four nested ifs
+#line 0 "tpp4.icn"
+#  tpp4.icn: nested $if test
+#line 57 "tpp4.icn"
+	    - - - - : id1 id2 id3 id4
+#  tpp4.icn: nested $if test
+#line 55 "tpp4.icn"
+	    - - - + : id1 id2 id3 *4*
+#  tpp4.icn: nested $if test
+#line 49 "tpp4.icn"
+	    - - + + : id1 id2 *3* *4*
+#  tpp4.icn: nested $if test
+#line 51 "tpp4.icn"
+	    - - + - : id1 id2 *3* id4
+#  tpp4.icn: nested $if test
+#line 37 "tpp4.icn"
+	    - + + - : id1 *2* *3* id4
+#  tpp4.icn: nested $if test
+#line 35 "tpp4.icn"
+	    - + + + : id1 *2* *3* *4*
+#  tpp4.icn: nested $if test
+#line 41 "tpp4.icn"
+	    - + - + : id1 *2* id3 *4*
+#  tpp4.icn: nested $if test
+#line 43 "tpp4.icn"
+	    - + - - : id1 *2* id3 id4
+#  tpp4.icn: nested $if test
+
+
+
+
+
+
+
+
+
+
+
+
+	    + + - - : *1* *2* id3 id4
+#  tpp4.icn: nested $if test
+
+
+
+
+
+
+
+
+
+
+	    + + - + : *1* *2* id3 *4*
+#  tpp4.icn: nested $if test
+
+
+
+
+	    + + + + : *1* *2* *3* *4*
+#  tpp4.icn: nested $if test
+
+
+
+
+
+
+	    + + + - : *1* *2* *3* id4
+#  tpp4.icn: nested $if test
+#line 21 "tpp4.icn"
+	    + - + - : *1* id2 *3* id4
+#  tpp4.icn: nested $if test
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	    + - + + : *1* id2 *3* *4*
+#  tpp4.icn: nested $if test
+#line 25 "tpp4.icn"
+	    + - - + : *1* id2 id3 *4*
+#  tpp4.icn: nested $if test
+#line 27 "tpp4.icn"
+	    + - - - : *1* id2 id3 id4
+#line 101 "if.tst"
+
+# make sure it accepts anything resembling an $if when skipping
+
+
+
+
+
+
+
+
+
+
+<should pass this line>
+
+# test diagnostics for missing args
+
+
+
+
+
+# test diagnostics for extraneous args
+
+
+
+
+
+
+
+# test else/endif out of place
+#line 0 "tpp5.icn"
+# tpp5.icn: test for unterminated $if
+
+
+
+
+
+#line 135 "if.tst"
+# now try again when unterminated $if succeeds
+#line 0 "tpp5.icn"
+# tpp5.icn: test for unterminated $if
+
+
+
+
+
+
+
+
+
+
+#outer unterminated $ifdef should get error
+#line 140 "if.tst"
+
+# test line directives encountered while skipping
+
+#line 113 "invented"
+
+#line 224 "invented"

@@ -1,0 +1,50 @@
+File bad.ppdirs; Line 2 # $line: syntax error
+File bad.ppdirs; Line 3 # $line: syntax error
+File bad.ppdirs; Line 4 # $line: syntax error
+File bad.ppdirs; Line 5 # $line: syntax error
+File bad.ppdirs; Line 6 # $line: syntax error
+File bad.ppdirs; Line 7 # $line: syntax error
+File bad.ppdirs; Line 8 # $line: syntax error
+File bad.ppdirs; Line 9 # $line: syntax error
+File bad.ppdirs; Line 10 # $unknown: unknown preprocessor directive
+File include.tests; Line 6 # $include: cannot open "abc\def\"ghi#jkl#mno\\pqr stu"
+File include.tests; Line 8 # $include: syntax error
+File include.tests; Line 10 # $include: syntax error
+File include.tests; Line 12 # $include: syntax error
+File include.tests; Line 14 # $include: syntax error
+File include.tests; Line 16 # $include: cannot open "nonexistent"
+File include.tests; Line 18 # $include: syntax error
+File include.tests; Line 20 # $include: syntax error
+File tpp3.icn; Line 3 # $include: circular reference to "tpp1.icn"
+File tpp2.icn; Line 3 # $include: circular reference to "tpp3.icn"
+File define.tst; Line 4 # $define: syntax error
+File define.tst; Line 5 # $define: syntax error
+File define.tst; Line 6 # $define: syntax error
+File define.tst; Line 7 # $define: syntax error
+File define.tst; Line 8 # $define: syntax error
+File define.tst; Line 32 # $define: redefinition of pi = 3.14159
+File error.tst; Line 2 # $error: 
+File error.tst; Line 3 # $error: 
+File error.tst; Line 4 # $error: 
+File error.tst; Line 5 # $error: this program does not work
+File if.tst; Line 117 # $ifdef: syntax error
+File if.tst; Line 119 # $ifndef: syntax error
+File if.tst; Line 124 # $else: syntax error
+File if.tst; Line 125 # $endif: syntax error
+File if.tst; Line 127 # $else: syntax error
+File if.tst; Line 128 # $endif: syntax error
+File if.tst; Line 131 # $endif: no corresponding $if...
+File if.tst; Line 132 # $else: no corresponding $if...
+File tpp5.icn; Line 3 # $endif: no corresponding $if...
+File tpp5.icn; Line 5 # $else: no corresponding $if...
+File tpp5.icn; Line 12 # $if(s) without $endif(s): 1
+File if.tst; Line 134 # $else: no corresponding $if...
+File if.tst; Line 135 # $endif: no corresponding $if...
+File tpp5.icn; Line 3 # $endif: no corresponding $if...
+File tpp5.icn; Line 5 # $else: no corresponding $if...
+File tpp5.icn; Line 12 # $if(s) without $endif(s): 1
+File if.tst; Line 139 # $else: no corresponding $if...
+File if.tst; Line 140 # $endif: no corresponding $if...
+File invented; Line 113 # $endif: syntax error
+File invented; Line 224 # $endif: syntax error
+
