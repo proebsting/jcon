@@ -8,6 +8,7 @@ class iOperators extends iFile {
 void announce(iEnv env) {
 
     declare(env, ":=,2", "oAssign");
+    declare(env, "<-,2", "oRevAssign");
     declare(env, ":?,2", "oSubjAssign");	// assign for `s ? e'
 
     declare(env, "...,3", "oToBy");
@@ -83,13 +84,24 @@ static void declare(iEnv env, String opr, String name)
 
 
 class oAssign extends iRefClosure {			// x1 := x2
-
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].Assign(args[1].deref());
 	}
 	String tfmt() { return "{$1 := $2}"; }
 }
 
+class oRevAssign extends iClosure {			// x1 <- x2
+	void nextval() {
+		if (this.o == null) {
+			this.o = arguments[0].deref();
+			retvalue = arguments[0].Assign(arguments[1].deref());
+		} else {
+			arguments[0].Assign((vValue)this.o);
+			retvalue = null;
+		}
+	}
+	String tfmt() { return "{$1 <- $2}"; }
+}
 
 
 //  special assignment operator used to assign &subject for string scanning
