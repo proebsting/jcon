@@ -2,22 +2,25 @@
 #
 #  jcont -- compile Icon program
 #
-#  usage:  jcont [-cdsvP] [-o exe] file[.icn]... [file.zip...] [-x [arguments]]
+#  usage:  jcont [-cdsvJP] [-o exe] file[.icn]... [file.zip...] [-x [arguments]]
 #
 #     -c	compile only: don't produce an executable
 #     -s	silent: suppress commentary
 #     -o exe	specify output file for executable
 #
+#     -x	execute after compilation
+#
+#  The following are mainly for debugging jcont:
+#
 #     -d	debug jcont: use ./jtmp for temp files, and don't delete
 #     -v	verbose: echo shell commands, trace linking steps
 #		(this option is not for the squeamish)
+#     -J	use Java target (instead of writing class files directly)
 #     -P	pessimize: don't optimize the generated Java code
-#
-#     -x	execute after compilation
 #
 #  Jcont translates Icon source files into .zip files, and links .zip
 #  files to make an excutable program.  Jcont is similar to icont in
-#  concept and behavior.  Think of a .zip file as analagous to a .u1/.u2
+#  concept and behavior; think of a .zip file as analagous to a .u1/.u2
 #  pair from icont.
 
 PROJHOME=/cs/jive
@@ -30,13 +33,13 @@ UIPATH="$IPATH"
 #  clear Icon and other environments
 unset ICONX ICONCORE TRACE IPATH LPATH NOERRBUF
 #unset BLKSIZE HEAPSIZE STRSIZE COEXPSIZE MSTKSIZE QLSIZE
-unset UNZIP UNZIPOPT
 
 #  set tracing modes
 ANNOUNCE=echo
 CMDTRACE=
 LINKTRACE=
 JCOPT=-O
+TARGET=bc
 
 # set temporary directory name, and assume its deletion
 TDIR=./jcon$$
@@ -53,12 +56,13 @@ NOEXECUTE=exit
 
 USAGE="usage: $0 [-cdsvP] [-o exe] file[.icn]... [file.zip...] [-x [arguments]]"
 
-while getopts "cdsvPo:" c 2>/dev/null; do
+while getopts "cdsvJPo:" c 2>/dev/null; do
     case $c in
 	c)	NOLINK="exit";;
 	d)	TDIR=./jtmp; NODELETE=":";;
 	s)	ANNOUNCE=":";;
 	v)	CMDTRACE="set -x"; LINKTRACE="-t";;
+	J)	TARGET="java";;
 	P)	JCOPT="";;
 	o)	XFILE="$OPTARG";;
     	\?)	echo 1>&2 $USAGE; exit 1;;
@@ -126,7 +130,7 @@ case `uname -sr | sed 's/ //'` in
     *)          echo 1>&2 "unrecognized system: $*"; exit 1;;
 esac
 
-#  set names for Jcon files
+#  set paths for Jcon and other files
 if [ -d $IDIR/bin ]; then
     JCON=$IDIR/lib/jcon
     JRTS=$IDIR/lib/rts.zip
@@ -134,7 +138,7 @@ else
     JCON=$IDIR/src/jcon
     JRTS=$IDIR/rts/rts.zip
 fi
-JCON="$JCON $JCOPT -target=bc"
+JCON="$JCON $JCOPT -target=$TARGET"
 ZIP="$PROJHOME/$ARCH/bin/zip"
 UNZIP="$PROJHOME/$ARCH/bin/unzip"
 
@@ -143,8 +147,8 @@ PREPROC="icont -s -E"
 
 #  set Java names and paths
 JDK="$SUMATRA/$ARCH/jdk.1.0.2"
-#%#% would like to use toba, but need a no-warnings option
-#%#% JAVAC="$SUMATRA/$ARCH/toba/bin/toba -K"
+#%#% would like to use toba, but need a DEC Alpha version
+#%#% JAVAC="$SUMATRA/$ARCH/toba/bin/toba -K -w"
 JAVAC="$JDK/bin/javac -nowarn"
 JAVA="$JDK/bin/java -verify"
 CLASSPATH="$JRTS:$JDK/lib/classes.zip"
@@ -184,8 +188,14 @@ for FNAME in $IFILES; do
     rm -f $TDIR/*.class
     # Icon to Java
     $ANNOUNCE 1>&2 $FNAME.icn:
-    if $PREPROC $FNAME.icn | $JCON -class=l\$$FNAME -dir=$TDIR/ ; then
-	# .class files (and linkage info) to .zip
+    if $PREPROC $FNAME.icn | 
+		$JCON -class=l\$$FNAME -dir=$TDIR/ >$TDIR/$FNAME.java; then
+	# if using java target, make "links" file and compile the code
+	if [ $TARGET = java ]; then
+	    sed -n 's=^//JCON//links:==p' $TDIR/$FNAME.java >$TDIR/links
+	    (cd $TDIR; $JAVAC $FNAME.java)
+	fi
+	# bundle .class files (and linkage info) into .zip file
 	$ZIP -0 -j -q $FNAME.zip $TDIR/links $TDIR/*.class
     else
 	ERREXIT="exit"
@@ -247,7 +257,6 @@ dd bs=$HDRSIZE count=1 <$XFILE 2>/dev/null | grep '%%%%' >/dev/null ||
 # mark the script as executable and delete built .zip files
 chmod +x $XFILE
 $NODELETE rm -f $ZBUILT
-
 
 # execute, or don't
 $NOEXECUTE
