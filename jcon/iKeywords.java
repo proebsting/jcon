@@ -214,7 +214,7 @@ class k$host extends k$Value {			// &host
 
 	static void inithost() {
 	    try {
-		Process p = Runtime.getRuntime().exec("/bin/uname -n");
+		Process p = Runtime.getRuntime().exec("uname -n");
 		hostname = iNew.String(
 		    new BufferedReader(
 		    new InputStreamReader(p.getInputStream()))

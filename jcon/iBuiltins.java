@@ -406,8 +406,7 @@ class f$getenv extends iValueClosure {			// getenv(s)
 	static {				// initialization on first call
 		try {
 			//#%#% warning: ugly unixisms follow
-			Process p =
-				Runtime.getRuntime().exec("/usr/bin/env");
+			Process p = Runtime.getRuntime().exec("env");
 			BufferedReader d = new BufferedReader(
 				new InputStreamReader(p.getInputStream()));
 			String s;
