@@ -11,7 +11,7 @@
 MAKE=make
 SHELL=/bin/sh
 
-DEST=/no/path/specified/for/install
+DEST=/cs/jive/`rts/arch.sh`
 
 
 build:
