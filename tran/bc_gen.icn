@@ -81,6 +81,25 @@ procedure transfer_to(s, p)
 	return s
 end
 
+procedure conditional_transfer_to(s, p, cond, notcond)
+	local tmp
+
+	case type(p) of {
+	default: runerr(1000, p)
+	"irLabel" : {
+		put(s, cond(\bc_ir2bc_labels[p]) ) | runerr(1000, p)
+	}
+	"irTmpLabel": {
+		tmp := label()
+		put(s, notcond(tmp))
+		gen_bc_rval(s, p)
+		put(s, goto_w(bc_switch_label) )
+		put(s, tmp)
+	}
+	}
+	return s
+end
+
 # assign top-of-stack to p
 procedure gen_bc_assign_to(s, p)
 	local assign
@@ -443,7 +462,7 @@ procedure gen_bc_irResume(s, p)
 		put(s, target)
 		gen_bc_assign_to(s, p.retValue)
 	} else {
-		put(s, ifnull(\bc_ir2bc_labels[p.failLabel])) | runerr(1000)
+		conditional_transfer_to(s, p.failLabel, ifnull, ifnonnull)
 	}
 	return s
 end
@@ -452,7 +471,7 @@ end
 procedure gen_bc_irMakeList(s, p)
 	local r, v, i, atype, method
 
-	\p.lhs | return ""
+	\p.lhs | return s
 
 	put(s, ipush(*p.valueList))
 	atype := cp_Class(bc_proc_classptr, cp_Utf8(bc_proc_classptr, "rts/vDescriptor"))
@@ -578,7 +597,7 @@ procedure gen_bc_irOpFunction(s, p)
 			put(s, target)
 			gen_bc_assign_to(s, p.lhs)
 		} else {
-			put(s, ifnull(\bc_ir2bc_labels[p.failLabel])) | runerr(1000)
+			conditional_transfer_to(s, p.failLabel, ifnull, ifnonnull)
 		}
 	} else {
 		if \p.lhs then {

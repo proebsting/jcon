@@ -66,7 +66,9 @@ procedure copy_propagation(t, start)
 		every k := key(t) & chunk := t[k] do {
 			newchunk := []
 			every insn := !chunk do {
-				if type(insn) == "irMove" &
+				if type(insn) == "irMove" & /insn.lhs then {
+					changes := 1
+				} else if type(insn) == "irMove" &
 				   type(insn.lhs) == ("irTmp"|"irTmpLabel") &
 				   uses[insn.lhs] = 0 then {
 					changes := 1
@@ -109,7 +111,7 @@ procedure def_use(p, this, uses, defs)
 	"irTmpLabel" :	{ this[p]+:=1 }
 	"irTmpClosure":	{ this[p]+:=1 }
 	"irLabel" :	{ this[p]+:=1 }
-	"irMove" :	{ def_use(p.lhs, defs, uses, defs);
+	"irMove" :	{ def_use(\p.lhs, defs, uses, defs);
 			def_use(p.rhs, uses, uses, defs) }
 	"irScanSwap" :	{ def_use(p.subject, defs, uses, defs);
 			def_use(p.subject, uses, uses, defs);
@@ -127,8 +129,8 @@ procedure def_use(p, this, uses, defs)
 	"irFail" :	{ }
 	"irResume" :	{ def_use(p.closure, uses, uses, defs);
 			def_use(p.failLabel, uses, uses, defs);
-			def_use(p.retValue, defs, uses, defs); }
-	"irMakeList" :	{ def_use(p.lhs, defs, uses, defs);
+			def_use(\p.retValue, defs, uses, defs); }
+	"irMakeList" :	{ def_use(\p.lhs, defs, uses, defs);
 			every def_use(!p.valueList, uses, uses, defs); }
 	"irOpFunction":{def_use(\p.lhs, defs, uses, defs);
 			def_use(p.fn, uses, uses, defs);
@@ -163,7 +165,7 @@ procedure opt_rewrite(p, rename)
 	"irTmpLabel" :	{ }
 	"irTmpClosure":	{ }
 	"irLabel" :	{ }
-	"irMove" :	{ p.lhs := opt_rewrite(p.lhs, rename);
+	"irMove" :	{ p.lhs := opt_rewrite(\p.lhs, rename);
 			p.rhs := opt_rewrite(p.rhs, rename) }
 	"irScanSwap" :	{ }
 	"irGoto" :	{ }
@@ -179,8 +181,8 @@ procedure opt_rewrite(p, rename)
 	"irFail" :	{ }
 	"irResume" :	{ p.closure := opt_rewrite(p.closure, rename);
 			p.failLabel := opt_rewrite(p.failLabel, rename);
-			p.retValue := opt_rewrite(p.retValue, rename); }
-	"irMakeList" :	{ p.lhs := opt_rewrite(p.lhs, rename);
+			p.retValue := opt_rewrite(\p.retValue, rename); }
+	"irMakeList" :	{ p.lhs := opt_rewrite(\p.lhs, rename);
 			every i := 1 to *p.valueList do {
 				p.valueList[i] := opt_rewrite(p.valueList[i],
 							      rename); }
