@@ -7,7 +7,8 @@
 
 global x, y
 
-$define XAdvance 200
+$define XAdvance 300
+$define Sample "AFGNRafgnr"
 
 procedure main()
    local line
@@ -48,14 +49,14 @@ procedure show(s)
 
    if y >= WAttrib("height") then {
       y := WAttrib("leading")
-      x +:= 200
+      x +:= XAdvance
       if x > WAttrib("width") then {
 	 EraseArea()
 	 x := 10
 	 }
       }
 
-   DrawString(x, y, s)
+   DrawString(x, y, Sample || " " || s)
    write("w=", WAttrib("fwidth"), " h=", WAttrib("fheight"),
       "=", WAttrib("ascent"), "+", WAttrib("descent"),
       " l=", WAttrib("leading"), " \t", s)
