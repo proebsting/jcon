@@ -149,7 +149,7 @@ static void announce() {
     iEnv.declareBuiltin("WAttrib", -1, fGraphics.self);
     iEnv.declareBuiltin("WDefault", 3, fGraphics.self);		// always fails
     iEnv.declareBuiltin("WFlush", 1, fGraphics.self);
-    iEnv.declareBuiltin("WriteImage", 6, fGraphics.self);
+    iEnv.declareBuiltin("WriteImage", 7, fGraphics.self);
     iEnv.declareBuiltin("WSync", 1, fGraphics.self);
 }
 

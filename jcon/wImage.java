@@ -243,13 +243,16 @@ private static int hexdigit(int c)
 //  wImage.Write(window, fname, x, y, w, h) -- write image to file
 
 public static vDescriptor Write(vWindow win, vString s,
-				int x, int y, int w, int h) {
+				int x, int y, int w, int h, int n) {
 
     final int[] data = Grab(win, x, y, w, h);
     if (data == null) {
     	return null; /*FAIL*/
     }
-    Quantize.toNcolors(data, 256);	// reduce to max 256 colors for GIF
+    if (n < 1 || n > 256) {
+    	n = 256;
+    }
+    Quantize.toNcolors(data, n);	// reduce to max of n colors for GIF
 
     // AFTER grabbing, convert w & h to positive
     if (w < 0) { w = -w; }

@@ -346,11 +346,11 @@ final class f$ReadImage extends vProc4 {	// ReadImage(W,s,x,y)  [no ,s2]
 
 
 
-final class f$WriteImage extends vProc6 {	// WriteImage(W,s,x,y,w,h)
+final class f$WriteImage extends vProc7 {	// WriteImage(W,s,x,y,w,h,n)
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
-				vDescriptor d, vDescriptor e, vDescriptor f) {
+		vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g) {
 	if (!a.iswin()) {
-	    return Call(iKeyword.window.getWindow(), a, b, c, d, e);
+	    return Call(iKeyword.window.getWindow(), a, b, c, d, e, f);
 	}
 	vWindow win = (vWindow)(a.Deref());
 	Dimension wd = win.getCanvas().getSize();
@@ -359,7 +359,11 @@ final class f$WriteImage extends vProc6 {	// WriteImage(W,s,x,y,w,h)
 	int y = d.isnull() ? -win.dy : ((int) d.mkInteger().value);
 	int w = e.isnull() ? (wd.width-x+win.dx) : ((int) e.mkInteger().value);
 	int h = f.isnull() ? (wd.height-y+win.dy) : ((int) f.mkInteger().value);
-	return wImage.Write(win, fname, x, y, w, h);
+	int n = g.isnull() ? 256 : ((int) g.mkInteger().value);
+	if (n < 0 || n > 256) {
+	    iRuntime.error(205, f);
+	}
+	return wImage.Write(win, fname, x, y, w, h, n);
     }
 }
 
