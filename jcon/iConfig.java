@@ -8,10 +8,11 @@ class iConfig {
 
 // the following constants are peculiar to the Jcon implementation
 
-static final String Version = "Jcon Version 2.b, May 28, 1998";
+static final String Version = "Jcon Version 2.c, June 3, 1998";
 
-static final String KeywordPrefix = "rts.k$";	// class prefix for keywords
-static final String FuncPrefix = "rts.f$";	// cls prefix for built-in funcs
+static final String PackageName = "rts";	// class prefix
+static final String KeywordPrefix = "k$";	// name prefix for keywords
+static final String FunctionPrefix = "f$";	// name prefix for builtin funcs
 
 static final int MinCachedInt = -10000;		// range of ints to cache
 static final int MaxCachedInt = +10000;

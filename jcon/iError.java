@@ -24,6 +24,10 @@ void report() {				// print message and abort
 	k$errornumber.self.set(vInteger.New(this.num));
 	k$errortext.self.set(vString.New(iRunerr.text(num)));
 	k$errorvalue.self.set((this.desc == null) ? null : this.desc.Deref());
+//#%#%#% error conversion is not functional right now
+	System.err.println("\t\terror conversion not implemented");
+	iRuntime.exit(1);
+//#%#%#%
 	return;
     }
 
@@ -37,6 +41,7 @@ void report() {				// print message and abort
 	f.println("offending value: " + desc.report());
     }
     //#%#% here is where we would do traceback
+    this.printStackTrace(); 	//#%#% temporary
 
     iRuntime.exit(1);
 }

@@ -16,7 +16,7 @@ import java.util.*;
 
 public class iKeywords extends iFile {
 
-void announce() {
+static void announce() {
     vCset lcase = vCset.New('a', 'z');
     vCset ucase = vCset.New('A', 'Z');
 

@@ -37,8 +37,8 @@ public abstract vVariable SubjAssign(vDescriptor x);	// &subject := x
 
 // control-structure-like operations
 public abstract vInteger Limit();			// ... \ n
-public abstract vDescriptor Conjunction(vDescriptor x);	// v & x
-public abstract vDescriptor ProcessArgs(vDescriptor x);	// v ! x
+public abstract vDescriptor Conjunction(vDescriptor x);	// e1 & e2
+public abstract vDescriptor ProcessArgs(vDescriptor x);	// p ! L
 public abstract vDescriptor Activate(vDescriptor x);	// v @ C
 public abstract vDescriptor ToBy(vDescriptor j, vDescriptor k);	// i to j by k
 
@@ -47,7 +47,7 @@ public abstract vNumeric Numerate();			//  +n
 public abstract vNumeric Negate();			//  -n
 public abstract vInteger Size();			//  *x
 public abstract vValue Complement();			//  ~x
-public abstract vCoexp Refresh();			//  ^x
+public abstract vCoexp Refresh();			//  ^C
 public abstract vDescriptor TabMatch();			//  =s
 public abstract vNumeric Abs();				//  abs(x)
 public abstract vValue Copy();				//  copy(x)
@@ -66,7 +66,7 @@ public abstract vInteger Args();			//  args(p)
 public abstract vProc Proc(long i);			//  proc(s, i)
 
 // element access
-public abstract vVariable Field(String s);		//  R . s
+public abstract vVariable Field(String s);		//  R . f
 public abstract vDescriptor Index(vDescriptor v);	//  x[v]
 public abstract vDescriptor Section(vDescriptor i, vDescriptor j);   //  x[i:j]
 

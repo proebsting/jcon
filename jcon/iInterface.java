@@ -4,13 +4,6 @@ public class iInterface {
 
 
 
-public static void init() {    // general runtime initialization
-    (new iOperators()).announce();	// install operators
-    (new iBuiltins()).announce();	// install built-in functions
-    (new wBuiltins()).announce();	// install built-in graphics functions
-    (new iKeywords()).announce();	// install keywords
-}
-
 public static vList marshal( vDescriptor[] args, int len) {
     vDescriptor[] a = new vDescriptor[len];
 
@@ -24,6 +17,8 @@ public static vList marshal( vDescriptor[] args, int len) {
     }
     return vList.New(varray);
 }
+
+
 
 static java.util.Hashtable fileTable = new java.util.Hashtable();
 public static void link(String name) {
@@ -51,6 +46,10 @@ public static void link(String name) {
     }
 }
 
+
+
+// program startup
+
 public static void start(String[] filenames, String[] args, String name) {
     java.util.Enumeration e;
 
@@ -64,7 +63,11 @@ public static void start(String[] filenames, String[] args, String name) {
     }
     iEnv.declareInvoke("main");
 
-    iInterface.init();
+    iOperators.announce();		// install operators
+    iBuiltins.announce();		// install built-in functions
+    wBuiltins.announce();		// install built-in graphics functions
+    iKeywords.announce();		// install keywords
+
     e = fileTable.elements();
     while (e.hasMoreElements()) {
 	iFile file = (iFile) e.nextElement();
@@ -113,17 +116,15 @@ public static void start(String[] filenames, String[] args, String name) {
 	k$trace.self.Call().Assign(vInteger.New(0));
     }
 
-    k$time.reset();				// zero &time
-
     iEnv.main = vCoexp.New(new vProcClosure(p, argArray));
     iEnv.cur_coexp = iEnv.main;
     iEnv.main.lock.V();
 
     try {
+	k$time.reset();				// zero &time
         iEnv.main.run();
 	iRuntime.exit(0);
     } catch (iError err) {
-	err.printStackTrace(); //#%#% temporary
 	err.report();
 	iRuntime.bomb("iError.report() returned");
     } catch (Throwable t) {

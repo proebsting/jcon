@@ -38,7 +38,7 @@ class f$variable extends vProc1 {				// variable(x)
 	}
 	if (s.length() > 1 && s.charAt(0) == '&') {
 	    String k = s.substring(1);
-	    Object o = iEnv.keytab.get(k);
+	    Object o = iEnv.getKey(k);
 	    if (o != null && o instanceof vVariable) {
 		return (vVariable) o;
 	    }
@@ -51,7 +51,7 @@ class f$variable extends vProc1 {				// variable(x)
 
 class f$function extends vProc0 {				// function()
     public vDescriptor Call() {
-	final java.util.Enumeration e = iEnv.builtintab.keys();
+	final java.util.Enumeration e = iEnv.enumBuiltins();
 	return new vClosure() {
 	    public vDescriptor Resume() {
 		if (e.hasMoreElements()) {

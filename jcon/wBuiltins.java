@@ -10,7 +10,7 @@ public class wBuiltins extends iFile {
 
 
 
-void announce() {
+static void announce() {
 
 //#%#%	    // graphics functions that are at least partially implemented:
 //#%#%	

@@ -1,6 +1,6 @@
 package rts;
 
-import java.util.Hashtable;
+import java.util.*;
 
 public class iEnv {
 
@@ -10,18 +10,21 @@ static boolean invokeAll = false;
 static boolean error_conversion = true;
 static Hashtable invoke = new Hashtable();
 static Hashtable symtab = new Hashtable();
-static Hashtable keytab = new Hashtable();
-static Hashtable builtintab = new Hashtable();
-static Hashtable[] proctab = new Hashtable[3];
-
-static {
-    proctab[0] = new Hashtable();
-    proctab[1] = new Hashtable();
-    proctab[2] = new Hashtable();
-}
 
 public static vCoexp main;
 public static vCoexp cur_coexp;
+
+
+
+static Object instantiate(String classname) {
+    try {
+	String s = iConfig.PackageName + "." + classname;
+	return Class.forName(s).newInstance();
+    } catch (Throwable t) {
+	iRuntime.bomb("can't instantiate " + classname, t);
+	return null;
+    }
+}
 
 
 
@@ -59,52 +62,24 @@ public static void declareGlobal(String s) {
 }
 
 public static void declareGlobalInit(String s, vVariable x) {
-    if (symtab.containsKey(s)) {
-	vValue val = ((vVariable)symtab.get(s)).Deref();
-	if (!val.isnull()) {
-	    vDescriptor bval = (vDescriptor) builtintab.get(s);
-	    if (bval == null || bval.Deref() != val) {
-		System.err.println("\"" + s + "\": inconsistent redeclaration");
-		System.exit(1);
-	    }
-	}
+    if (! symtab.containsKey(s)) {
+	global(s, x);			// first definition
+	return;
     }
-    global(s,x);
-}
-
-public static void declareKey(String name, vProc p) {
-    p.img = vString.New("&" + name);
-    p.args = 0;
-    keytab.put(name, p);
-}
-
-public static void declareBuiltin(String name, vProc p, int arity) {
-    boolean b;
-
-    p.img = vString.New("function " + name);
-    p.args = arity;
-
-    switch (arity) {	// sanity check on arity
-	case 0:  b = p instanceof vProc0;  break;
-	case 1:  b = p instanceof vProc1;  break;
-	case 2:  b = p instanceof vProc2;  break;
-	case 3:  b = p instanceof vProc3;  break;
-	case 4:  b = p instanceof vProc4;  break;
-	case 5:  b = p instanceof vProc5;  break;
-	case 6:  b = p instanceof vProc6;  break;
-	case 7:  b = p instanceof vProc7;  break;
-	case 8:  b = p instanceof vProc8;  break;
-	case 9:  b = p instanceof vProc9;  break;
-	default: b = p instanceof vProcV;  break;
+    if (x.isnull()) {
+	return;				// innocuous redeclaration
     }
-    if (!b) {
-	System.err.println("unexpected arity: function " + name);
+    vVariable var = (vVariable) symtab.get(s);
+    if (var instanceof vFuncVar) {	// if built-in function
+	global(s, x);			// okay to replace
+	return;
     }
-
-    builtintab.put(name, p);
-    if (!symtab.containsKey(name)) {
-	declareGlobalInit(name, vSimpleVar.New(name, p));
+    if (var.isnull()) {			// if not initialized before
+	global(s, x);			// okay to replace
+	return;
     }
+    System.err.println("\"" + s + "\": inconsistent redeclaration");
+    System.exit(1);
 }
 
 public static void declareProcedure(String name, String classname, int arity) {
@@ -116,38 +91,101 @@ public static void declareRecord(String name, String[] fields) {
     declareGlobalInit(name, vSimpleVar.New(name, vRecordProc.New(name,fields)));
 }
 
-public static vValue resolveBuiltin(String s) {
-    vValue v = (vValue) builtintab.get(s);
-    return v;
+
+
+
+//  built-in functions
+
+private static Hashtable builtintab = new Hashtable();
+
+static void declareBuiltin(String name, int arity) {
+    vFuncVar f = new vFuncVar(
+	name, "function " + name, iConfig.FunctionPrefix + name, arity);
+    builtintab.put(name, f);
+    if (!symtab.containsKey(name)) {
+	declareGlobalInit(name, f);
+    }
 }
 
-public static vDescriptor resolveKey(String s) {
-    vDescriptor v = (vDescriptor) keytab.get(s);
+static Enumeration enumBuiltins() {
+    return builtintab.keys();
+}
+
+static vProc getBuiltin(String s) {
+    vVariable v = (vVariable) builtintab.get(s);
     if (v == null) {
+	return null;
+    } else {
+	return (vProc) v.Deref();
+    }
+}
+
+
+
+//  keywords
+
+private static Hashtable keytab = new Hashtable();
+
+static void declareKey(String name, vProc p) {
+    p.img = vString.New("&" + name);
+    p.args = 0;
+    keytab.put(name, p);
+}
+
+static vProc getKey(String s) {
+    return (vProc) keytab.get(s);
+}
+
+public static vDescriptor resolveKey(String s) {	//#%#% s/b vProc
+    vProc p = (vProc) keytab.get(s);
+    if (p == null) {
 	iRuntime.bomb("keyword not found: &" + s);
     }
-    return v;
+    return p;
 }
 
+
+
+//  operators (registered for use via string invocation)
+
+private static Hashtable[] oname = 
+    { new Hashtable(), new Hashtable(), new Hashtable() };
+private static Hashtable[] oproc = 
+    { new Hashtable(), new Hashtable(), new Hashtable() };
+
+static void declareOpr(String repr, int arity, String classname) {
+    oname[arity-1].put(vString.New(repr), classname);
+}
+
+static vProc getOpr(vString repr, long arity) {
+    if (arity < 1 || arity > 3) {
+        return null;
+    }
+    int i = (int) arity - 1;
+    vProc v = (vProc) oproc[i].get(repr);	// check if already created
+    if (v != null) {
+	return v;				// found it
+    }
+    String classname = (String) oname[i].get(repr);
+    if (classname == null) {
+	return null;				// unknown operation
+    }
+    oproc[i].put(repr, v = (vProc) instantiate(classname));
+    v.img = repr.surround("function ", "");
+    return v;					// return new instance
+}
+
+//#%#% is this still used?
 public static vDescriptor resolveProc(String s, int args) {
     if (args < 1 || args > 3) {
 	iRuntime.error(902);
     }
-    vDescriptor v = (vDescriptor) proctab[args-1].get(s);
+System.err.println("resolveProc(" + s + "," + args + ")"); //#%#%
+    vDescriptor v = (vDescriptor) getOpr(vString.New(s), args);
     if (v == null) {
 	v = vNull.New();
-	// diagnose missing operators (implementation bug):
-	char c = s.charAt(0);
-	if (c != '_' && ! Character.isLetter(c)) {
-	    iRuntime.bomb("operation not found: " + s);
-	}
     }
     return v;
-}
-
-public static void declareProc(String s, int args, vProc p) {
-    p.img = vString.New("function " + s);
-    proctab[args-1].put(s, p);
 }
 
 
