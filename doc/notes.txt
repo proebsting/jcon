@@ -1,7 +1,7 @@
 additions in v2:
 -- large integers are implemented
 -- loadfunc() is implemented
--- for graphics, clipping is implemented
+-- several more graphics attributes and functions are implemented
 -- section wraparound (e.g. "abcd"[-2+:3]) yields failure  (this is a bugfix)
 
 losses in v2:
@@ -14,9 +14,9 @@ what's implemented:
 -- all datatypes including large integers
 -- all keywords, although resource keywords produce zeroes
 -- preprocessing
--- most functions; missing chdir(), getch()/getche()/kbhit()
--- loadfunc(zipfile,funcname) links in Java code; supports generators, too
 -- only part of the graphics repertoire (see below)
+-- most functions; missing chdir(), getch()/getche()/kbhit()
+-- loadfunc(zipfile,funcname) loads Java or Icon code, and supports generators
 -- based on Icon as defined by LB3/GB; undocumented behavior may differ
 
 compilation and linking:
@@ -34,9 +34,6 @@ execution:
 -- executables are portable among dissimilar Unix platforms (just need ksh+Java)
 -- very large .icn files (e.g. 9000 lines) may produce bogus ClassFormatErrors
    -- #%#% is this still a problem with JDK1.1?
-
-known bugs:
--- local variables are not dereferenced prior to being returned
 
 ------------------------------------------------------------------------------
 
@@ -83,6 +80,8 @@ graphics bugs:
 
 graphics (general):
 -- there is no sharing of graphics contexts among windows by Couple() or Clone()
+-- linewidth is always 1
+-- textures are not implemented
 
 events:
 -- Java distinguishes "alt" and "meta" keys; Jcon maps both to the &meta flag
@@ -106,7 +105,7 @@ fonts:
 -- generic names {serif, sans, typewriter} work well; bold/italic variants work
 -- generic "mono" appearance varies by platform; bold/italic don't always work
 -- Font(s) always succeeds for non-empty s (Java never rejects any name)
--- the special X font name "fixed" is modeled imperfectly by "mono,10"
+-- the default font name "fixed" is mapped to "mono,bold,12"
 
 text:
 -- read(), write(), etc. work with windows
