@@ -57,10 +57,10 @@ class iRecordClosure extends iFunctionClosure {
 	String[] fieldnames;
 
 	iRecordClosure(String name, String[] fieldnames, vDescriptor[] args) {
+		super();
 		this.name = name;
 		this.fieldnames = fieldnames;
 		arguments = args;
-		PC = 1;
 	}
 
 	vDescriptor function(vDescriptor[] args) {
