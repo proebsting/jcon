@@ -2,3 +2,7 @@ jcon/html -- Jcon documentation directory
 
 This directory constructs the HTML files that document jcon.
 Type "make" to build.
+
+index.htm is the starting point.
+
+jcon.htm collects all the documentation together in a single page.

@@ -50,3 +50,8 @@ These are drawn from the standard Icon test suite,
 other existing Icon programs, and 3000 lines of new tests.
 Jcon also includes additional manually-run graphics tests and
 a small collection of graphics demos.
+
+<P> Jcon was designed and implemented by the authors
+with contributions from Denise Todd and Bob Alexander.
+The GIF encoder is from Jef Poskanzer
+(<A HREF="http://www.acme.com/">www.acme.com</A>).

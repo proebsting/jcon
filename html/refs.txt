@@ -39,11 +39,7 @@
 http://www.cs.arizona.edu/icon/jcon/</A>.
 Go there for the lastest versions of the implementation and documentation.
 
-<P> Jcon was designed and implemented by
-<A HREF="http://www.research.microsoft.com/~toddpro/">Todd Proebsting</A> and
-<A HREF="http://www.cs.arizona.edu/people/gmt/">Gregg Townsend</A>
-with contributions from Denise Todd and Bob Alexander.
-Please send all Jcon-related mail to 
+<P> Please send all Jcon-related mail to 
 <A HREF="mailto:jcon@cs.arizona.edu">jcon@cs.arizona.edu</A>.
 Using this alias helps us log the mail and respond more promptly.
 
