@@ -11,6 +11,8 @@ abstract public class vStructure extends vValue {
 
     int snum;		// serial number
 
+abstract vValue Copy();		// must be implemented by subclass
+
 
 
 vStructure(int snum) {			// constructor

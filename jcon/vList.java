@@ -9,6 +9,8 @@ package rts;
 
 import java.util.*;
 
+
+
 public class vList extends vStructure {
 
     Vector v;
@@ -19,7 +21,7 @@ static int nextsn = 1;				// next serial number
 
 
 
-vList(int n, vValue x)  {			// new Vlist(n, x)
+vList(int n, vValue x) {			// new Vlist(n, x)
     super(nextsn++);
     v = new Vector(n);
     for (int i = 0; i < n; i++) {
@@ -33,6 +35,11 @@ vList(vDescriptor[] elements) {			// new Vlist(elements[])
     for (int i = elements.length - 1; i >= 0; i--) {	// add back-to-front
     	v.addElement(iNew.SimpleVar(elements[i]));
     }
+}
+
+vList(Vector v) {				// new Vlist(Vector v)
+    super(nextsn++);
+    this.v = (Vector) v.clone();
 }
 
 
@@ -80,6 +87,10 @@ int intsize() {
 
 vInteger Size()	{					//  *L
     return iNew.Integer(v.size());
+}
+
+vValue Copy() {						// copy(L)
+    return iNew.List(this.v);
 }
 
 

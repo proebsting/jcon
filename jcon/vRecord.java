@@ -2,34 +2,34 @@ package rts;
 
 public class vRecord extends vStructure {
 
-    String name;
-    String[] fieldnames;
-    vSimpleVar[] values;
+    vRecordProc constr;		// constructor
+    vSimpleVar[] values;	// values
 
 
 
-vRecord(String name, int snum, String[] fieldnames, vDescriptor[] inits) {
-    super(snum);
-    this.name = name;
-    this.fieldnames = fieldnames;
-    values = new vSimpleVar[fieldnames.length];
-    for (int i = 0; i < fieldnames.length; i++) {
+vRecord(vRecordProc constr, vDescriptor[] inits) {
+    super(constr.nextsn++);
+    this.constr = constr;
+    values = new vSimpleVar[constr.fieldnames.length];
+    for (int i = 0; i < values.length; i++) {
 	values[i] = iNew.SimpleVar();
     }
-    int max = fieldnames.length;
+    int max = values.length;
     if (max > inits.length) {
 	max = inits.length;
     }
     for (int i = 0; i < max; i++) {
-	values[i].Assign((vValue)inits[i]);
+	values[i].Assign(inits[i].deref());
     }
 }
 
 
 
-String type()	{ return name; }
+String type()	{ return constr.name; }
 
-String image()	{ return "record " +name +"_" +snum +"(" +values.length +")"; }
+String image() {
+    return "record " + constr.name + "_" + snum + "(" + values.length + ")";
+}
 
 vInteger Size()	{ return iNew.Integer(values.length); }
 
@@ -37,22 +37,26 @@ int rank()	{ return 120; }			// records sort last
 
 int compareTo(vValue v) {
     vRecord r = (vRecord)v;
-    int d = this.name.compareTo(r.name);
-    if (d == 0) {
-    	d = this.snum - r.snum;
+    if (this.constr != r.constr) {
+	return this.constr.name.compareTo(r.constr.name);
+    } else {
+    	return this.snum - r.snum;
     }
-    return d;
+}
+
+vValue Copy() {						// copy(R)
+    return new vRecord(constr, values);
 }
 
 
 vVariable field(String s) {
-    for (int i = 0; i < fieldnames.length; i++) {
-	if (s.equals(fieldnames[i])) {
-	    return values[i];
-	}
+    int i = constr.find(s);
+    if (i >= 0) {
+	return values[i];
+    } else {
+	iRuntime.error(207);
+	return null;
     }
-    iRuntime.error(207);
-    return null;
 }
 
 
@@ -91,27 +95,3 @@ vValue Sort(vDescriptor n) {
 
 
 } // class vRecord
-
-
-
-class iRecordClosure extends iFunctionClosure {
-
-    String name;
-    int snum;
-    String[] fieldnames;
-
-iRecordClosure(String name, int snum, String[] fieldnames,
-		vDescriptor[] args, iClosure parent) {
-    super();
-    this.name = name;
-    this.snum = snum;
-    this.parent = parent;
-    this.fieldnames = fieldnames;
-    arguments = args;
-}
-
-vDescriptor function(vDescriptor[] args) {
-    return new vRecord(name, snum, fieldnames, args);
-}
-
-} // class iRecordClosure

@@ -17,6 +17,7 @@ void announce(iEnv env) {
 	declare(env, "atan");
 	declare(env, "char");
 	declare(env, "cos");
+	declare(env, "copy");
 	declare(env, "cset");
 	declare(env, "delay");
 	declare(env, "delete");
@@ -102,6 +103,14 @@ class f$type extends iFunctionClosure {				// type(x)
 class f$serial extends iFunctionClosure {			// serial(x)
 	vDescriptor function(vDescriptor[] args) {
 		return iRuntime.argVal(args, 0).Serial();
+	}
+}
+
+
+
+class f$copy extends iFunctionClosure {				// copy(x)
+	vDescriptor function(vDescriptor[] args) {
+		return iRuntime.argVal(args, 0).Copy();
 	}
 }
 

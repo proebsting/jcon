@@ -54,7 +54,7 @@ miscellaneous:
 -- x ! R doesn't work for records (only for lists)
 -- resuming a "break" is handled improperly (program crashes with Java error)
 -- for coexpressions, image(), *C, and serial() don't work
--- jcon always allocates a list for main() even if it doesn't declare an arg
+-- jcon always allocates a list even if main() declares no arguments
 
 arguably correct differences:
 -- tables sort after sets, as per LB but contrary to v9

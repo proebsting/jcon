@@ -41,6 +41,7 @@ public abstract class vDescriptor {
     abstract vNumeric Negate();			//  -n
     abstract vInteger Size();			//  *x
     abstract vInteger Serial();			//  serial(x)
+    abstract vValue Copy();			//  copy(x)
 
     // simple unary operators that may return variables
     abstract vDescriptor isNull();		//  /x

@@ -3,6 +3,9 @@
 
 package rts;
 
+import java.util.*;
+
+
 
 public class iNew {
 
@@ -27,8 +30,8 @@ public static vString String(String x) 		{ return new vString(x); }
 public static vString String(char c) 		{ return new vString(c); }
 
 public static vList List(int n, vValue x)	{ return new vList(n, x); }
-public static vList List(vDescriptor[] elements)
-						{ return new vList(elements); }
+public static vList List(vDescriptor[] elements){ return new vList(elements); }
+public static vList List(Vector v)		{ return new vList(v); }
 
 public static vTable Table(vValue x)		{ return new vTable(x); }
 

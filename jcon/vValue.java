@@ -39,6 +39,7 @@ public abstract class vValue extends vDescriptor {
     vNumeric Negate()		{ return this.mkNumeric().Negate(); }
     vInteger Size()		{ iRuntime.error(112, this); return null; }
     vInteger Serial()		{ return null; /*FAIL*/ }
+    vValue Copy()		{ return this; }
 
     // simple unary operators that may return variables
     vDescriptor isNull()	{ return null; /*FAIL*/ }

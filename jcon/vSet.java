@@ -2,12 +2,15 @@ package rts;
 
 import java.util.*;
 
+
+
 public class vSet extends vStructure {
 
     java.util.Hashtable t;
 
 
 static int nextsn = 1;		// next serial number
+
 
 
 vSet(java.util.Hashtable x) {
@@ -32,13 +35,17 @@ vSet(vValue x) {
     }
 }
 
+
+
 String type()		{ return "set";}
 
 int rank()		{ return 100; }		// sets rank after lists
 
-vInteger Size() {
-    return iNew.Integer(t.size());
-}
+vInteger Size()		{ return iNew.Integer(t.size()); }
+
+vValue Copy()		{ return new vSet(this.t); }
+
+
 
 vDescriptor Select() {
     if (t.size() == 0) {

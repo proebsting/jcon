@@ -16,12 +16,24 @@ vTable(vValue dflt) {
     t = new java.util.Hashtable();
 }
 
+vTable(vTable x) {
+    super(nextsn++);
+    this.dflt = x.dflt;
+    this.t = (java.util.Hashtable) x.t.clone();
+}
+
+
+
 String type()		{ return "table";}
 
 int rank()		{ return 110; }		// tables rank after sets
 
 vInteger Size() {
     return iNew.Integer(t.size());
+}
+
+vValue Copy() {						// copy(T)
+    return new vTable(this);
 }
 
 vDescriptor Index(vValue i) {
