@@ -1,4 +1,4 @@
-//  vWindow.java -- Icon graphics window type
+//  vWindow.java -- graphics window type
 
 package rts;
 
@@ -9,18 +9,17 @@ import java.awt.*;
 
 public class vWindow extends vValue {
 
+    private wCanvas c;		// underlying Icon canvas
+    private Graphics a, b;	// graphics context for canvas and backing image
+
+    private int wnum;		// window serial number
+    private int gnum;		// graphics context serial number
 
 
-private wCanvas c;		// underlying Icon canvas
-private Graphics a, b;		// graphics context for canvas and backing image
+    // graphics context attributes
 
-private int wnum;		// window serial number
-private int gnum;		// graphics context serial number
-
-
-// graphics context attributes
-
-private wColor fg;		// current foreground color
+    private wColor bg;		// current background color
+    private wColor fg;		// current foreground color
 
 
 
@@ -63,18 +62,25 @@ vWindow(String title, int w, int h) {		// new vWindow(s, w, h)
     b = c.i.getGraphics();
     gnum = ++gcount;
 
-    Fg(wColor.White);
-    FillRectangle(0, 0, w, h);
-    Fg(wColor.Black);
+    fg = wColor.Black;
+    bg = wColor.White;
+    EraseArea(0, 0, w, h);
 }
 
 vWindow(vWindow w) {				// new vWindow(w)  [a Clone()]
+			//#%#%#% really clone, to ensure it gets all attribs??
     c = w.c;
     wnum = w.wnum;
 
     a = w.a.create();
     b = w.b.create();
     gnum = ++gcount;
+
+    this.fg = w.fg;
+    a.setColor(fg);
+    b.setColor(fg);
+
+    this.bg = w.bg;
 }
 
 
@@ -102,7 +108,7 @@ static vWindow getCurrent() {
 //  static methods for argument processing and defaulting
 
 
-//  argBase(args) -- get index of first real (non-window) argument, 0 or 1
+//  argBase(args) -- get index of first non-window argument, 0 or 1
 
 static int argBase(vDescriptor args[]) {
     if (args.length > 0 && args[0] instanceof vWindow) {
@@ -121,42 +127,6 @@ static vWindow winArg(vDescriptor args[]) {
     } else {
 	return k$window.getWindow();
     }
-}
-
-
-
-
-//#%#%#% rectArgs doesn't handle defaulted values yet
-
-static int[] rectArgs(vDescriptor args[]) {	// get x,y,w,h sets as ints
-    int i, j, n;
-    int a[];
-
-    if (args.length == 0) {
-	iRuntime.error(146);
-    }
-    if (args[0] instanceof vWindow) {
-	i = 1;
-    } else {
-	i = 0;
-    }
-    n = args.length - i;
-    if ((n % 4) != 0) {
-	iRuntime.error(146);
-    }
-    a = new int[n];
-    for (j = 0; j < n; j++) {
-	a[j] = (int) vInteger.argVal(args, i++);
-    }
-    for (j = 0; j < n; j+=4) {
-	if (a[j+2] < 0) {
-	    a[j] -= (a[j+2] = -a[j+2]);
-	}
-	if (a[j+3] < 0) {
-	    a[j+1] -= (a[j+3] = -a[j+3]);
-	}
-    }
-    return a;
 }
 
 
@@ -197,21 +167,21 @@ vString Fg(vString s) {
     return Fg(wColor.parse(s));
 }
 
-
-
-// write backing store first in case of inopportune refresh
-
-void DrawCircle(int x, int y, int r) {
-    x -= r;
-    y -= r;
-    b.drawOval(x, y, r, r);
-    a.drawOval(x, y, r, r);
+vString Bg(vString s) {
+    wColor k = wColor.parse(s);
+    if (s == null) {
+	return null;
+    } else {
+	bg = k;
+	return k.spec;
+    }
 }
 
-void DrawLine(int x1, int y1, int x2, int y2) {
-    b.drawLine(x1, y1, x2, y2);
-    a.drawLine(x1, y1, x2, y2);
-}
+
+
+// drawing operations write backing store first in case of inopportune refresh
+
+
 
 void DrawRectangle(int x, int y, int w, int h) {
     b.drawRect(x, y, w, h);
@@ -222,6 +192,38 @@ void FillRectangle(int x, int y, int w, int h) {
     b.fillRect(x, y, w, h);
     a.fillRect(x, y, w, h);
 }
+
+void EraseArea(int x, int y, int w, int h) {
+    b.setColor(bg);
+    a.setColor(bg);
+    b.fillRect(x, y, w, h);
+    a.fillRect(x, y, w, h);
+    b.setColor(fg);
+    a.setColor(fg);
+}
+
+
+
+void DrawLine(int x1, int y1, int x2, int y2) {
+    b.drawLine(x1, y1, x2, y2);
+    a.drawLine(x1, y1, x2, y2);
+}
+
+void DrawLine(wCoords c) {
+   b.drawPolyline(c.xPoints, c.yPoints, c.nPoints);
+   a.drawPolyline(c.xPoints, c.yPoints, c.nPoints);
+}
+
+void DrawPolygon(wCoords c) {
+   b.drawPolygon(c.xPoints, c.yPoints, c.nPoints);
+   a.drawPolygon(c.xPoints, c.yPoints, c.nPoints);
+}
+
+void FillPolygon(wCoords c) {
+   b.fillPolygon(c.xPoints, c.yPoints, c.nPoints);
+   a.fillPolygon(c.xPoints, c.yPoints, c.nPoints);
+}
+
 
 
 

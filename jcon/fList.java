@@ -56,6 +56,7 @@ class f$get extends iValueClosure {				// get(L)
 class f$put extends iValueClosure {				// put(L, x...)
 	vDescriptor function(vDescriptor[] args) {
 		vValue L = iRuntime.argVal(args, 0, 108);
+//#%#% put(L,a,b,c) needs to be an atomic action when used w/ Window event queue
 		L.Put(iRuntime.argVal(args, 1));		// at least one
 		for (int i = 2; i < args.length; i++) {
 			L.Put(args[i]);

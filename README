@@ -1,5 +1,5 @@
 JCON 0.6.0 README
-September 11, 1997
+September 12, 1997
 
 Gregg Townsend
 Todd Proebsting
@@ -114,8 +114,7 @@ The subdirectories within the Jcon tree are as follows:
 ACKNOWLEDGEMENTS
 
 Denise Todd contributed to the translator used by Jcon.
-Bob Alexander wrote the preprocessor and contributed other
-code and suggestions.
+Bob Alexander wrote the preprocessor and ported Jcon to NT+MKS.
 Ralph Griswold offered useful advice and helped test early versions.
 Some small portions of the runtime system are derived from Version 9
 of Icon.
