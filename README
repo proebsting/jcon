@@ -1,5 +1,5 @@
-JCON 1.0 README
-May 19, 1998
+JCON 2.0 README
+August, 1998
 
 Gregg Townsend, The University of Arizona
 Todd Proebsting, Microsoft Research
@@ -8,138 +8,27 @@ http://www.cs.arizona.edu/icon/jcon/
 jcon@cs.arizona.edu
 
 
+For detailed documentation, visit the web page listed above. 
+The Jcon build process constructs a local copy of the documentation.
 
-OVERVIEW
-
-This is Jcon (pronounced "JAY-konn"), a new Java-based implementation
-of the Icon programming language.  The Jcon translator, written in
-Icon, generates Java class files that execute in conjunction
-with a run-time system written in Java.
-
-Jcon is an essentially complete implementation of the core Icon language,
-lacking only a few things such as chdir() that cannot be done in Java.
-Large integers are not implemented, and only rudimentary graphics are
-present.
-
-Jcon is an experimental research project and should be viewed in that
-light.  We are distributing Jcon because it is interesting.  Its
-performance does not currently match that of the standard Icon
-interpreter, which is still preferred for production and everyday use.
-
-For more information, please visit the Jcon page at the Icon web site:
-	http://www.cs.arizona.edu/icon/jcon/
+Jcon can be freely redistributed; see the COPYRIGHT file.
 
 
 
-REQUIREMENTS
+QUICK INSTALLATION SUMMARY
 
-1.  A UNIX-LIKE ENVIRONMENT WITH THE KORN SHELL
+(If this isn't sufficient, please visit the web site above)
 
-Building and running Jcon requires various Unix utilities including
-the Korn Shell.  Unix systems with /bin/ksh qualify, of course.  The
-imitation Korn Shell on Linux also works.
+Jcon requires:
+    A Unix system with the Korn Shell (/bin/ksh)
+    A recent version of Icon  (http://www.cs.arizona.edu/icon/v93u.html)
+    Version 1.1 of Java  (http://www.javasoft.com/products/jdk/1.1/)
 
-An early prototype of Jcon ran under Windows NT using the MKS Toolkit.
-We have not maintained this code and have not tested it recently.
-
-2.  INSTALLED SOFTWARE
-
-Jcon requires version 9 of Icon and version 1.1 of Java.  Prebuilt
-binaries of these are available for many platforms.  Installation of
-Java may require system privileges, and proper functioning of some
-Java systems may require installation of OS patches.
-
-For software see:
-    Icon 9.3	http://www.cs.arizona.edu/icon/v93u.html
-    Java 1.1	http://www.javasoft.com/products/jdk/1.1/
-
-3. SEARCH PATH
-
-Executables of icont, javac, java, and jar must be in the search path
-to build programs with Jcon.  Only java is needed for execution.
-
-
-
-BUILDING JCON
-
-Ensure that your search path is correct, as described above.
-Make the top level of the Jcon distribution be your current
-directory, and type "make".  There are no configuration options.
+The icont, javac, java, and jar programs must be in the search path.
+Go to the top level of the Jcon distribution and type "make".
+There are no configuration options.
 
 When the build completes, the "bin" directory contains everything
 needed to run Jcon.  It can be used in place or copied elsewhere.
-The rest of the Jcon distribution can be deleted if no longer wanted.
-
-After building Jcon using icont, it is possible to rebuild Jcon using
-Jcon.  This optional step is accomplished by typing "make jj"; it
-enables the use of "jcont -J".  
-
-
-
-TESTING JCON
-
-The Jcon test suite includes new tests written for Jcon, old tests
-from the Icon v9.3 distribution, and a few Icon applications.  The
-tests are run by typing "make test".  A successful run produces the
-names of the tests, one at a time, as they run.
-
-Jcon has been tested by us on:
-    SGI Indigo2 / Irix 6.2 / SGI Java 3.1 (JDK 1.1.5)
-    Sun Sparc / Solaris 2.5.1 (SunOS 5.5.1) / Sun Java 1.1.6
-    DEC Alpha 4/233 / Digital Unix 4.0B / Digital Java 1.1.3
-    Intel / Linux v2 (Red Hat 5.0) / Blackdown Java 1.1.5v7
-We would be interested to learn of either successes or failures
-on other platforms.
-
-
-
-DOCUMENTATION
-
-The file doc/Article contains an overview of Jcon written for the
-Icon Newsletter.
-
-The build process creates a "jcon.txt" file in the bin directory
-containing usage information and a very brief summary of the current
-implementation state.
-
-A description of the code generator techniques appears in:
-    Todd Proebsting, "Simple Translation of Goal-Directed Evaluation",
-    Proceedings of the ACM SIGPLAN 1997 Conference on Programming
-    Language Design and Implementation (PLDI).  Las Vegas, 1997.
-    http://www.cs.arizona.edu/~todd/papers/pldi97.goal.ps
-
-Also see our web site, as noted above.
-
-
-
-DIRECTORY STRUCTURE
-
-The subdirectories within the Jcon tree are as follows:
-	bin	target for all build products; also includes jcont script
-	tran	source code for the translator
-	rts	source code for the runtime system
-	doc	such documentation as exists; builds bin/notes.txt
-	test	automated test collection for validating Jcon
-	expt	other tests, demos, and experiments to be run manually
-
-
-
-REDISTRIBUTION
-
-Jcon may be freely used and redistributed; see the COPYRIGHT file.
-
-
-
-PROBLEMS AND BUG REPORTS
-
-Please send all comments to:  jcon@cs.arizona.edu
-
-
-
-ACKNOWLEDGEMENTS
-
-Denise Todd contributed to the translator used by Jcon.
-Bob Alexander wrote the preprocessor and ported Jcon to NT+MKS.
-Ralph Griswold offered useful advice and helped test early versions.
-Some small portions of the runtime system are derived from Version 9
-of Icon.
+The rest of the Jcon distribution can be deleted if no longer wanted,
+although you may wish to save the html (documentation) directory.
