@@ -25,10 +25,10 @@
     <br><A href="http://www.cs.arizona.edu/icon/jcon/gde97.pdf">
 	<cite>Simple Translation of Goal-Directed Evaluation</cite></a>
     <br>Proceedings of the 1997 ACM SIGPLAN conference on 
-	Programming Language Design and Implementation (PLDI 1997) 
-    <br>
-	<a href="http://www.cs.arizona.edu/icon/jcon/gde97.zip">PostScript</a>,
-	 <a href="http://www.cs.arizona.edu/icon/jcon/gde97.pdf">PDF</a>
+	Programming Language Design and Implementation (PLDI).
+    <br>Las Vegas, 1997
+	(<a href="http://www.cs.arizona.edu/icon/jcon/gde97.zip">PostScript</a>,
+	<a href="http://www.cs.arizona.edu/icon/jcon/gde97.pdf">PDF</a>)
 </td></tr>
 </table>
 

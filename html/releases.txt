@@ -26,10 +26,10 @@ that provide a typical performance improvement of 40%.
 <H3>Known graphics problems</H3>
 
 <UL>
-    <LI>Some Java implementations produce an extra resize event when
-	a window is first opened
     <LI>Window repair may be delayed until the program pauses
 	to await an event
+    <LI>Some Java implementations create a window that is one pixel wider
+	than requested
     <LI>DEC Java 1.1.6 sometimes writes different fonts to the window
 	and its backup image, leading to bizarre effects from
 	<CODE>CopyArea()</CODE> and window repair

@@ -1,4 +1,5 @@
-<P> Jcon is a new Java-based implementation of the Icon programming language.
+<P> Jcon (pronounced <EM>JAY-konn</EM>)is a new Java-based implementation
+of the Icon programming language.
 The Jcon translator, written in Icon, generates Java class files that
 execute in conjunction with a run-time system written in Java.
 
@@ -51,7 +52,12 @@ other existing Icon programs, and 3000 lines of new tests.
 Jcon also includes additional manually-run graphics tests and
 a small collection of graphics demos.
 
-<P> Jcon was designed and implemented by the authors
-with contributions from Denise Todd and Bob Alexander.
+<H3>Acknowledgements</H3>
+
+<P>
+Denise Todd contributed to the Jcon translator.
+Bob Alexander wrote the preprocessor.
+Ralph Griswold offered useful advice and helped test early versions.
+Some small portions of the runtime system are derived from Version 9 of Icon.
 The GIF encoder is from Jef Poskanzer
 (<A HREF="http://www.acme.com/">www.acme.com</A>).
