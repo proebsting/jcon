@@ -13,7 +13,7 @@ private static final int UNKNOWN_SIZE = -1;	// indicates unknown cset size
 // preallocated empty cset and one-character csets
 
 private static vCset zcset = new vCset();
-private static vCset cslist[] = new vCset[vCset.MAX_VALUE];
+private static vCset cslist[] = new vCset[vCset.MAX_VALUE + 1];
 
 static {
     for (int i = 0; i < cslist.length; i++) {
@@ -112,7 +112,10 @@ private vCset(String s) {			// new Cset(String s)
 
 
 
+//  cset member function
+
 final boolean member(int c) {			// cs.member(c)
+    c = c & 0xFF;
     long m = 1L << c;
     switch (c >> 6) {
 	case 0: return (w1 & m) != 0;

@@ -50,7 +50,7 @@ vDescriptor function(vDescriptor[] args) {
     int col = 1;
 
     for (int i = 0; i < s.length; i++) {
-	char c = (char)s[i];
+	char c = (char) (s[i] & 0xFF);
 	switch (c) {
 	    case '\b':				// backspace
 		b.append(c);
@@ -96,7 +96,7 @@ vDescriptor function(vDescriptor[] args) {
     int col = 1;
 
     for (int i = 0; i < s.length; i++) {
-	char c = (char)s[i];
+	char c = (char) (s[i] & 0xFF);
 	switch (c) {
 	    case '\b':				// backspace
 		b.append(c);

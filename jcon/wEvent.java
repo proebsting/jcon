@@ -166,7 +166,7 @@ public void keyPressed(KeyEvent e) {}
 public void keyReleased(KeyEvent e)	{
     char c = e.getKeyChar();
     if (c != KeyEvent.CHAR_UNDEFINED) {
-	enqueue(vString.New((char)(c & vCset.MAX_VALUE)), e);
+	enqueue(vString.New((char)c), e);
     } else if (e.isActionKey()) {
 	enqueue(vInteger.New(e.getKeyCode()), e);
     }

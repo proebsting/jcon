@@ -203,7 +203,7 @@ class f$trim extends iValueClosure {				// trim(s,c)
 	byte[] b = s.getBytes();
 	int i;
 	for (i = b.length - 1; i >= 0; i--) {
-	    if (!c.member((char)b[i])) {
+	    if (!c.member(b[i])) {
 		break;
 	    }
 	}

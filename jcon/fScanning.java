@@ -65,7 +65,7 @@ class f$many extends iValueClosure {			// many(c,s,i1,i2)
 	byte b[] = s.getBytes();
 	int i;
 	for (i = i1; i < i2; i++) {
-	    if (!c.member((char) b[i-1])) {
+	    if (!c.member(b[i-1])) {
 		break;
 	    }
 	}
@@ -187,7 +187,7 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
 	}
 
 	for (; i1 < i2; i1++) {
-	    if (c.member((char) b[i1-1])) {
+	    if (c.member(b[i1-1])) {
 		i1 = i1+1;
 		return vInteger.New(i1-1);
 	    }
@@ -238,13 +238,13 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 
 	int balance = 0;
 	for (; i1 < i2; i1++) {
-	    if (balance == 0 && c1.member((char) b[i1-1])) {
+	    if (balance == 0 && c1.member(b[i1-1])) {
 		i1 = i1+1;
 		return vInteger.New(i1-1);
 	    }
 	    if (c2.member(s.charAt(i1-1))) {
 		balance++;
-	    } else if (c3.member((char) b[i1-1])) {
+	    } else if (c3.member(b[i1-1])) {
 		balance--;
 		if (balance < 0) {
 		    return null;

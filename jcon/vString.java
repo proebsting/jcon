@@ -37,14 +37,14 @@ static {
 
 public static vString New()		{ return nullstring; }
 
-public static vString New(char c)	{ return strlist[c]; }
+public static vString New(char c)	{ return strlist[c & 0xFF]; }
 
 public static vString New(String s) {
     int len = s.length();
     if (len < 1) {
 	return nullstring;
     } else if (len == 1) {
-	return strlist[s.charAt(0)];
+	return strlist[s.charAt(0) & 0xFF];
     } else {
 	byte[] b = new byte[len];
 	for (int i = 0; i < len; i++)
@@ -58,7 +58,7 @@ public static vString New(byte[] b) {
     if (len < 1) {
 	return nullstring;
     } else if (len == 1) {
-	return strlist[b[0]];
+	return strlist[b[0] & 0xFF];
     } else {
 	return new vString(b);
     }
@@ -71,7 +71,7 @@ public static vString New(vString s, int i, int j) {     // s[i:j], both > 0
     } else if (len == 0) {
 	return nullstring;
     } else if (len == 1) {
-	return strlist[s.charAt(i - 1)];
+	return strlist[s.charAt(i - 1) & 0xFF];
     } else {
 	return new vString(s, i, j);
     }
@@ -139,7 +139,7 @@ final int length() {			// s.length()
 
 final char charAt(int i) {		// s.charAt(i)   [zero-based]
     this.flatten();
-    return (char)((short)data[i] & 0xFF);
+    return (char)(data[i] & 0xFF);
 }
 
 final boolean matches(vString s, int i){ // match(s, this, i)  [zero-based]

@@ -43,6 +43,10 @@ public static void link(String name) {
 	if (s != null) {
 	    System.err.println("   " + s);
 	}
+	if (e instanceof ExceptionInInitializerError) {
+	    e = ((ExceptionInInitializerError) e).getException();
+	}
+	e.printStackTrace();
 	iRuntime.exit(1, null);
     }
 }
