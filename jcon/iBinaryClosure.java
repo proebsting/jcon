@@ -1,0 +1,27 @@
+package rts;
+
+public abstract class iBinaryClosure extends iClosure {
+
+	vDescriptor argument0, argument1;
+
+	abstract vDescriptor function(vDescriptor arg0, vDescriptor arg1);
+
+	void closure(vDescriptor[] args, iClosure parent) {
+		argument0 = args[0];
+		argument1 = args[1];
+		this.parent = parent;
+	}
+	void closure(vDescriptor arg0, vDescriptor arg1, iClosure parent) {
+		argument0 = arg0;
+		argument1 = arg1;
+		this.parent = parent;
+	}
+
+	String getarg(int n) {
+		switch (n) {
+		default: return "???";
+		case 0 : return argument0.report();
+		case 1 : return argument1.report();
+		}
+	}
+}
