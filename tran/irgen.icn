@@ -1,6 +1,5 @@
 #  irgen.icn -- translate abstract syntax trees to intermediate representation.
 
-global ir_noArgLvals
 global ir_noerror2failure
 global ir_createflag
 
@@ -375,9 +374,7 @@ procedure ir_a_Call(p, st, inuse, target, bounded, rval)
     suspend ir(p.fn, st, inuse, fn, &null, "rval")
     every i := 1 to *p.args.exprList do {
         suspend ir(p.args.exprList[i], st, inuse, args[i], &null,
-		   # &null)
-		   # if \ir_noArgLvals then "rval" else &null)
-		   if \ir_noArgLvals & type(p.args.exprList[i]) == "a_Ident"
+		   if type(p.args.exprList[i]) == "a_Ident"
 		   then "rval" else &null)
     }
 
@@ -1553,15 +1550,11 @@ procedure ast2ir(parse, flagList)
     local p, k
 
     ir_noerror2failure := 1
-    ir_noArgLvals := 1
     every k := !flagList do {
         k ? {
             if ="-f" then {
 		if upto('aden') then {
                     ir_noerror2failure := &null
-                }
-                if find("o") | find("a") then {
-                    ir_noArgLvals := &null
                 }
             }
         }
