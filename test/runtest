@@ -5,8 +5,8 @@
 #	-J	use Java compiler target  (icont -J)
 #	-P	disable optimizer  (icont -P)
 
-JCONT="../bin/jcont"
-JCOPT="-s"
+export JCONT="../bin/jcont"
+export JCOPT="-s"
 
 USAGE="$0 [-JP] [file...]"
 while getopts :JP c; do

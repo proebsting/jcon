@@ -1,0 +1,7 @@
+#  link1.icn -- part of special test of linking and argument handling
+
+link link2
+
+procedure main(args)
+   every write(decorate(!args))
+end

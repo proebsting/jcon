@@ -1,0 +1,3 @@
+procedure decorate(s)
+   return "{{ " || s || " }}"
+end
