@@ -125,7 +125,12 @@ java myprog
 <P> If the <CODE>-r</CODE> flag is also used, a copy of the run-time
 library is included in the the generated <CODE>jar</CODE> file.
 This provides a self-contained package that can be executed on any
-Java implementation, possibly even one of different architecture.
+Java implementation, possibly even one of different architecture:
+<BLOCKQUOTE><PRE>
+jcont -jr myprog.icn
+java -jar myprog.jar
+</PRE></BLOCKQUOTE>
+
 
 <H3>Caveats</H3>
 

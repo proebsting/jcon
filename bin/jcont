@@ -279,6 +279,14 @@ $ANNOUNCE 1>&2 "Linking:"
 rm -f $TDIR/*.class
 (cd $TDIR; $JLINK $MAIN $ROOTS)
 
+# create Manifest for Jar file
+mkdir $TDIR/META-INF
+cat <<==EOF== >>$TDIR/META-INF/MANIFEST.MF
+Manifest-Version: 1.0
+Main-Class: $MAIN
+Created-By: Jcon v2 (University of Arizona)
+==EOF==
+
 # generate list of files needed for linking
 $JAVA jcon.FindFiles $LINKTRACE "$UIPATH" $ZFILES >$TDIR/zip.list
 
@@ -287,7 +295,7 @@ if [ "$CFILES" != "" ]; then
     cp -p $CFILES $TDIR
 fi
 (cd $TDIR; $JAVA jcon.ZipMerge combined.zip \
-    $MAIN.class `cat zip.list` $CFILES $LINKRTS)
+    META-INF/MANIFEST.MF $MAIN.class `cat zip.list` $CFILES $LINKRTS)
 
 # disassemble $MAIN class, if requested
 if [ "$JVMDUMP" != "" ]; then (
