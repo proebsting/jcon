@@ -245,6 +245,7 @@ class k$input extends k$Value {			// &input
 
 	k$input()		{ file = iNew.File("&input", System.in); }
 	public vValue deref()	{ return file; }
+	public vDescriptor Bang(iClosure c) { return this.file.Bang(c); }
 }
 
 class k$output extends k$Value {		// &output
