@@ -1,3 +1,4 @@
+record irRestore()
 record irDeref(value)
 record irTmp(name)
 record irTmpLabel(name)

@@ -126,6 +126,7 @@ procedure def_use(p, this, uses, defs)
 	"irCreate" :	{ this[p]+:=1; def_use(p.location, uses, uses, defs); }
 	"irCoRet" :	{ def_use(p.value, uses, uses, defs);
 			def_use(p.continuation, uses, uses, defs); }
+	"irRestore" :	{ }
 	"irCoFail" :	{ }
 	"irRunTimeError":{ }
 	"irEnterInit" :	{ def_use(p.startlabel, uses, uses, defs) }
@@ -157,6 +158,7 @@ procedure opt_rewrite(p, rename)
 	"irRealLit" :	{ }
 	"irStrLit" :	{ }
 	"irCsetLit" :	{ }
+	"irRestore" :	{ }
 	"irSucceed" :	{ p.expr := opt_rewrite(p.expr, rename);
 			p.continuation := opt_rewrite(\p.continuation, rename); }
 	"irFail" :	{ }
@@ -255,6 +257,7 @@ end
 
 procedure gotos(p, wl, seen, t)
 	case type(p) of {
+	"irRestore" |
 	"irCoFail" |
 	"irRunTimeError" |
 	"irMakeList" |

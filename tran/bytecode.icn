@@ -99,7 +99,7 @@ record astore_1()
 record astore_2()
 record astore_3()
 record iinc(index, const)
-record wide(index)
+record wide()
 record newarray(atype)
 record anewarray(index)
 record multinewarray(index, dimensions)
@@ -845,6 +845,19 @@ insert(opcode_leaf, "label")
 
 	t := type(p)
 
+	#%#% kludge for >256 locals
+	case (t) of {
+	"istore" |
+	"astore" |
+	"aload" |
+	"iload": {
+		writer_u1(writer, opcode_table["wide"])
+		writer_u1(writer, opcode_table[t])
+		writer_u2(writer, p.index)
+		return
+	}
+	}
+
 	writer_u1(writer, \opcode_table[t])
 
 	if member(opcode_leaf, t) then return
@@ -905,9 +918,6 @@ insert(opcode_leaf, "label")
 			writer_s4(writer, i)
 		}
 	}
-	"iload": {
-		writer_u1(writer, p.index)
-	}
 	"lload": {
 		writer_u1(writer, p.index)
 	}
@@ -915,12 +925,6 @@ insert(opcode_leaf, "label")
 		writer_u1(writer, p.index)
 	}
 	"dload": {
-		writer_u1(writer, p.index)
-	}
-	"aload": {
-		writer_u1(writer, p.index)
-	}
-	"istore": {
 		writer_u1(writer, p.index)
 	}
 	"lstore": {
@@ -932,15 +936,9 @@ insert(opcode_leaf, "label")
 	"dstore": {
 		writer_u1(writer, p.index)
 	}
-	"astore": {
-		writer_u1(writer, p.index)
-	}
 	"iinc": {
 		writer_u1(writer, p.index)
 		writer_s1(writer, p.const)
-	}
-	"wide": {
-		writer_u1(writer, p.index)
 	}
 	"newarray": {
 		writer_u1(writer, p.atype)
@@ -1071,7 +1069,7 @@ procedure offset_opcodes(p, offset, locations)
 		offset_table["fconst_2"] := 0
 		offset_table["dconst_0"] := 0
 		offset_table["dconst_1"] := 0
-		offset_table["iload"] := 1
+		offset_table["iload"] := 3	#%#% kludge!
 		offset_table["iload_0"] := 0
 		offset_table["iload_1"] := 0
 		offset_table["iload_2"] := 0
@@ -1091,12 +1089,12 @@ procedure offset_opcodes(p, offset, locations)
 		offset_table["dload_1"] := 0
 		offset_table["dload_2"] := 0
 		offset_table["dload_3"] := 0
-		offset_table["aload"] := 1
+		offset_table["aload"] := 3	#%#% kludge!
 		offset_table["aload_0"] := 0
 		offset_table["aload_1"] := 0
 		offset_table["aload_2"] := 0
 		offset_table["aload_3"] := 0
-		offset_table["istore"] := 1
+		offset_table["istore"] := 3	#%#% kludge!
 		offset_table["istore_0"] := 0
 		offset_table["istore_1"] := 0
 		offset_table["istore_2"] := 0
@@ -1116,7 +1114,7 @@ procedure offset_opcodes(p, offset, locations)
 		offset_table["dstore_1"] := 0
 		offset_table["dstore_2"] := 0
 		offset_table["dstore_3"] := 0
-		offset_table["astore"] := 1
+		offset_table["astore"] := 3	#%#% kludge!
 		offset_table["astore_0"] := 0
 		offset_table["astore_1"] := 0
 		offset_table["astore_2"] := 0
@@ -1255,9 +1253,6 @@ procedure offset_opcodes(p, offset, locations)
 	case (type(p)) of {
 	default: {
 		stop("ERROR, ", image(&file), " ", &line, ": unknown ", image(p))
-	}
-	"wide": {
-		offset +:= 1
 	}
 	"tableswitch": {
 		p.pad := offset

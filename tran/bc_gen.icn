@@ -9,12 +9,13 @@ global bc_link_classname
 global bc_switch_label
 
 global bc_tmplabel_table
+global bc_tmplabel_offset
 
 global bc_function_name
 global bc_file_name
 
 global bc_create_exists
-global bc_suspend_flag
+global bc_suspend_flag		#%#% This flag may cause verification errors.
 global bc_declare_set
 global bc_undeclared_set
 global bc_function_name
@@ -30,7 +31,9 @@ global bc_record_table
 global bc_proc_table
 global bc_op_table
 global bc_tmp_table
+global bc_tmp_offset
 global bc_tmpclosure_table
+global bc_tmpclosure_offset
 global bc_var_set
 global bc_var_table
 global bc_key_table
@@ -150,33 +153,11 @@ procedure gen_bc_irTmp_register(p)
 	/bc_tmp_table[p.name] := *bc_tmp_table;
 end
 procedure gen_bc_irTmp_rval(s, p)
-	local a
-
-	gen_bc_irTmp_register(p)
-	a := create_fieldref(bc_proc_classptr,
-				"tmpArray",
-				"[Lrts/vDescriptor;",
-				bc_proc_classname)
-	put(s, aload_0())
-	put(s, getfield(a))
-	put(s, ipush(bc_tmp_table[p.name]))
-	put(s, aaload())
+	put(s, aload(bc_tmp_table[p.name] + bc_tmp_offset))
 	return s
 end
 procedure gen_bc_irTmp_assign(s, p)
-	local a
-
-	gen_bc_irTmp_register(p)
-	a := create_fieldref(bc_proc_classptr,
-				"tmpArray",
-				"[Lrts/vDescriptor;",
-				bc_proc_classname)
-	put(s, aload_0())
-	put(s, getfield(a))
-	put(s, swap())
-	put(s, ipush(bc_tmp_table[p.name]))
-	put(s, swap())
-	put(s, aastore())
+	put(s, astore(bc_tmp_table[p.name] + bc_tmp_offset))
 	return s
 end
 
@@ -185,33 +166,11 @@ procedure gen_bc_irTmpLabel_register(p)
 	/bc_tmplabel_table[p.name] := *bc_tmplabel_table
 end
 procedure gen_bc_irTmpLabel_rval(s, p)
-	local a
-
-	gen_bc_irTmpLabel_register(p)
-	a := create_fieldref(bc_proc_classptr,
-				"tmpLabelArray",
-				"[I",
-				bc_proc_classname)
-	put(s, aload_0())
-	put(s, getfield(a))
-	put(s, ipush(bc_tmplabel_table[p.name]))
-	put(s, iaload())
+	put(s, iload(bc_tmplabel_table[p.name] + bc_tmplabel_offset))
 	return s
 end
 procedure gen_bc_irTmpLabel_assign(s, p)
-	local a
-
-	gen_bc_irTmpLabel_register(p)
-	a := create_fieldref(bc_proc_classptr,
-				"tmpLabelArray",
-				"[I",
-				bc_proc_classname)
-	put(s, aload_0())
-	put(s, getfield(a))
-	put(s, swap())
-	put(s, ipush(bc_tmplabel_table[p.name]))
-	put(s, swap())
-	put(s, iastore())
+	put(s, istore(bc_tmplabel_table[p.name] + bc_tmplabel_offset))
 	return s
 end
 
@@ -221,33 +180,11 @@ procedure gen_bc_irTmpClosure_register(p)
 end
 
 procedure gen_bc_irTmpClosure_rval(s, p)
-	local a
-
-	gen_bc_irTmpClosure_register(p)
-	a := create_fieldref(bc_proc_classptr,
-				"tmpClosureArray",
-				"[Lrts/iClosure;",
-				bc_proc_classname)
-	put(s, aload_0())
-	put(s, getfield(a))
-	put(s, ipush(bc_tmpclosure_table[p.name]))
-	put(s, aaload())
+	put(s, aload(bc_tmpclosure_table[p.name] + bc_tmpclosure_offset))
 	return s
 end
 procedure gen_bc_irTmpClosure_assign(s, p)
-	local a
-
-	gen_bc_irTmpClosure_register(p)
-	a := create_fieldref(bc_proc_classptr,
-				"tmpClosureArray",
-				"[Lrts/iClosure;",
-				bc_proc_classname)
-	put(s, aload_0())
-	put(s, getfield(a))
-	put(s, swap())
-	put(s, ipush(bc_tmpclosure_table[p.name]))
-	put(s, swap())
-	put(s, aastore())
+	put(s, astore(bc_tmpclosure_table[p.name] + bc_tmpclosure_offset))
 	return s
 end
 
@@ -307,8 +244,9 @@ end
 
 # record irGoto( location )
 procedure gen_bc_irGoto(s, p)
-	gen_bc_rval(s, p.location)
-	put(s, goto_w(bc_switch_label))
+	# gen_bc_rval(s, p.location)
+	# put(s, goto_w(bc_switch_label))
+	transfer_to(s, p.location)
 	return s
 end
 
@@ -398,16 +336,64 @@ procedure gen_bc_irCsetLit(s, p)
 	return s
 end
 
+# record irRestore( )
+procedure gen_bc_irRestore(s, p)
+	return s
+end
+
 # record irSucceed( expr continuation )
 procedure gen_bc_irSucceed(s, p)
-	local r, e, PC, returned, retvalue
+	local r, e, PC, returned, retvalue, k, a
 
 	PC := PC_fieldref(bc_proc_classptr)
 	put(s, aload_0())
 	put(s, aload_0())
 	if gen_bc(s, \p.continuation) then {
+		\bc_suspend_flag | runerr(1000)
+
 		put(s, putfield(PC))
-		bc_suspend_flag := 1
+
+		a := create_fieldref(bc_proc_classptr,
+					"tmpArray",
+					"[Lrts/vDescriptor;",
+					bc_proc_classname)
+		put(s, aload_0())
+		put(s, getfield(a))
+		every k := key(bc_tmp_table) do {
+			put(s, dup())
+			put(s, ipush(bc_tmp_table[k]))
+			put(s, aload(bc_tmp_table[k] + bc_tmp_offset))
+			put(s, aastore())
+		}
+		put(s, Pop())
+
+		a := create_fieldref(bc_proc_classptr,
+					"tmpLabelArray",
+					"[I",
+					bc_proc_classname)
+		put(s, aload_0())
+		put(s, getfield(a))
+		every k := key(bc_tmplabel_table) do {
+			put(s, dup())
+			put(s, ipush(bc_tmplabel_table[k]))
+			put(s, iload(bc_tmplabel_table[k] + bc_tmplabel_offset))
+			put(s, iastore())
+		}
+		put(s, Pop())
+
+		a := create_fieldref(bc_proc_classptr,
+					"tmpClosureArray",
+					"[Lrts/iClosure;",
+					bc_proc_classname)
+		put(s, aload_0())
+		put(s, getfield(a))
+		every k := key(bc_tmpclosure_table) do {
+			put(s, dup())
+			put(s, ipush(bc_tmpclosure_table[k]))
+			put(s, aload(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
+			put(s, aastore())
+		}
+		put(s, Pop())
 	} else {
 		returned := returned_fieldref(bc_proc_classptr)
 		put(s, iconst_1())
@@ -708,6 +694,7 @@ procedure gen_bc(s, p)
 	"irRealLit" : return gen_bc_irRealLit(s, p)
 	"irStrLit" : return gen_bc_irStrLit(s, p)
 	"irCsetLit" : return gen_bc_irCsetLit(s, p)
+	"irRestore" : return gen_bc_irRestore(s, p)
 	"irSucceed" : return gen_bc_irSucceed(s, p)
 	"irFail" : return gen_bc_irFail(s, p)
 	"irResume" : return gen_bc_irResume(s, p)
@@ -790,7 +777,6 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	bc_var_table := table()
 	bc_emit_table := table()
 	bc_create_exists := &null
-	bc_suspend_flag := &null
 	bc_key_table := table()
 
 	ir(code)
@@ -823,43 +809,45 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	init := create_method(c, 1, "<init>", "()V")
 	initcode := create_code(c, 10, 10)
 	put(init.attributes, initcode)
-	create_field(c, 8, "initialized", "Z")
 	create_field(bc_proc_classptr, 0, "tmpArray", "[Lrts/vDescriptor;")
 	create_field(bc_proc_classptr, 0, "tmpClosureArray", "[Lrts/iClosure;")
 	create_field(bc_proc_classptr, 0, "tmpLabelArray", "[I")
+	create_field(c, 8, "initialized", "Z")
 	constructor := create_methodref(c, "<init>", "()V", "rts/iClosure")
 	put(initcode.code, aload_0() )
 	put(initcode.code, invokenonvirtual(constructor) )
 
-	put(initcode.code, aload_0() )
-	put(initcode.code, ipush(*bc_tmp_table) )
-	class_index := cp_Class(c, cp_Utf8(c, "rts/vDescriptor"))
-	put(initcode.code, anewarray(class_index) )
-	a := create_fieldref(bc_proc_classptr,
-				"tmpArray",
-				"[Lrts/vDescriptor;",
-				bc_proc_classname)
-	put(initcode.code, putfield(a) )
+	if \bc_suspend_flag then {
 
-	put(initcode.code, aload_0() )
-	put(initcode.code, ipush(*bc_tmplabel_table) )
-	put(initcode.code, newarray(10) )
-	a := create_fieldref(bc_proc_classptr,
-				"tmpLabelArray",
-				"[I",
-				bc_proc_classname)
-	put(initcode.code, putfield(a) )
+		put(initcode.code, aload_0() )
+		put(initcode.code, ipush(*bc_tmp_table) )
+		class_index := cp_Class(c, cp_Utf8(c, "rts/vDescriptor"))
+		put(initcode.code, anewarray(class_index) )
+		a := create_fieldref(bc_proc_classptr,
+					"tmpArray",
+					"[Lrts/vDescriptor;",
+					bc_proc_classname)
+		put(initcode.code, putfield(a) )
 
-	put(initcode.code, aload_0() )
-	put(initcode.code, ipush(*bc_tmpclosure_table) )
-	class_index := cp_Class(c, cp_Utf8(c, "rts/iClosure"))
-	put(initcode.code, anewarray(class_index) )
-	a := create_fieldref(bc_proc_classptr,
-				"tmpClosureArray",
-				"[Lrts/iClosure;",
-				bc_proc_classname)
-	put(initcode.code, putfield(a) )
+		put(initcode.code, aload_0() )
+		put(initcode.code, ipush(*bc_tmplabel_table) )
+		put(initcode.code, newarray(10) )
+		a := create_fieldref(bc_proc_classptr,
+					"tmpLabelArray",
+					"[I",
+					bc_proc_classname)
+		put(initcode.code, putfield(a) )
 
+		put(initcode.code, aload_0() )
+		put(initcode.code, ipush(*bc_tmpclosure_table) )
+		class_index := cp_Class(c, cp_Utf8(c, "rts/iClosure"))
+		put(initcode.code, anewarray(class_index) )
+		a := create_fieldref(bc_proc_classptr,
+					"tmpClosureArray",
+					"[Lrts/iClosure;",
+					bc_proc_classname)
+		put(initcode.code, putfield(a) )
+	}
 	put(initcode.code, vreturn() )
 
 	undeclared := bc_var_set -- set(params) -- set(locals) -- set(statics)
@@ -884,21 +872,124 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	close(f)
 end
 
+procedure bc_register(t)
+	local op
+
+	every op := !!!t do {
+		case type(op) of {
+		"irTmp" : {
+			gen_bc_irTmp_register(op)
+		}
+		"irTmpLabel" : {
+			gen_bc_irTmpLabel_register(op)
+		}
+		"irTmpClosure" : {
+			gen_bc_irTmpClosure_register(op)
+		}
+		}
+	}
+end
+
 procedure bc_create_nextval(c)
 	local PC, nextval, nextvalcode, k, lab, switch, insns, deflab
 	local runtimeerror, r
+	local a, s, tmplab
 
 	nextval := create_method(c, 0, "nextval", "()V")
 	nextvalcode := create_code(c, 10, 10)
 	put(nextval.attributes, nextvalcode)
+
+	bc_register(bc_emit_table)
+	bc_tmp_offset := 10
+	bc_tmplabel_offset := bc_tmp_offset + *bc_tmp_table
+	bc_tmpclosure_offset := bc_tmplabel_offset + *bc_tmplabel_table
+	nextvalcode.max_locals := bc_tmpclosure_offset + *bc_tmpclosure_table
+	s := nextvalcode.code
+
+	bc_suspend_flag := &null
+	if a := !!bc_emit_table & type(a)=="irSucceed" & \a.continuation then {
+		bc_suspend_flag := 1
+	}
+
+	bc_switch_label := label()
+	tmplab := label()
+
 	PC := PC_fieldref(c)
 	put(nextvalcode.code, aload_0() )
 	put(nextvalcode.code, getfield(PC))
 
-	bc_switch_label := label()
+	#%#% this use of flag causes spurious verification errors.
+	if \bc_suspend_flag then {
+		put(nextvalcode.code, dup())
+		put(nextvalcode.code, iconst_1())
+		put(nextvalcode.code, if_icmpne(tmplab))
+	}
+
+	every k := key(bc_tmp_table) do {
+		put(s, aconst_null())
+		put(s, astore(bc_tmp_table[k] + bc_tmp_offset))
+	}
+	every k := key(bc_tmpclosure_table) do {
+		put(s, aconst_null())
+		put(s, astore(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
+	}
+	every k := key(bc_tmplabel_table) do {
+		put(s, iconst_0())
+		put(s, istore(bc_tmplabel_table[k] + bc_tmplabel_offset))
+	}
+
+	#%#% this use of flag causes spurious verification errors.
+	if \bc_suspend_flag then {
+		put(s, goto_w(bc_switch_label))
+		put(nextvalcode.code, tmplab)
+		a := create_fieldref(bc_proc_classptr,
+					"tmpArray",
+					"[Lrts/vDescriptor;",
+					bc_proc_classname)
+		put(s, aload_0())
+		put(s, getfield(a))
+		every k := key(bc_tmp_table) do {
+			put(s, dup())
+			put(s, ipush(bc_tmp_table[k]))
+			put(s, aaload())
+			put(s, astore(bc_tmp_table[k] + bc_tmp_offset))
+		}
+		put(s, Pop())
+
+		a := create_fieldref(bc_proc_classptr,
+					"tmpClosureArray",
+					"[Lrts/iClosure;",
+					bc_proc_classname)
+		put(s, aload_0())
+		put(s, getfield(a))
+		every k := key(bc_tmpclosure_table) do {
+			put(s, dup())
+			put(s, ipush(bc_tmpclosure_table[k]))
+			put(s, aaload())
+			put(s, astore(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
+		}
+		put(s, Pop())
+
+		a := create_fieldref(bc_proc_classptr,
+					"tmpLabelArray",
+					"[I",
+					bc_proc_classname)
+		put(s, aload_0())
+		put(s, getfield(a))
+		every k := key(bc_tmplabel_table) do {
+			put(s, dup())
+			put(s, ipush(bc_tmplabel_table[k]))
+			put(s, iaload())
+			put(s, istore(bc_tmplabel_table[k] + bc_tmplabel_offset))
+		}
+		put(s, Pop())
+	}
+
 	deflab := label()
 	put(nextvalcode.code, bc_switch_label)
 	put(nextvalcode.code, switch := tableswitch(0, deflab, 1, *bc_emit_table, list(*bc_emit_table)) )
+
+
 	every k := key(bc_emit_table) do {
 		lab := switch.offsets[bc_labels[k]] := bc_ir2bc_labels[k]
 		put(nextvalcode.code, lab)

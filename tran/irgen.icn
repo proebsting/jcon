@@ -813,6 +813,7 @@ procedure ir_Suspend(p)
 		irSucceed(p.expr.ir.value, t)
 		])
 	CG.emit(t,
+		[ irRestore() ] |||
 		([ irScanSwap( scans[1].ir.x.oldsubject, scans[1].ir.x.oldpos ) ] | []) |||
 		[
 		irGoto(p.body.ir.start)
