@@ -161,7 +161,7 @@ class f$trim extends iValueClosure {				// trim(s,c)
 
 		int i;
 		for (i = s.length(); i > 0; i--) {
-			if (!c.t.get(s.charAt(i-1))) {
+			if (!c.member(s.charAt(i-1))) {
 				return iNew.String(s.substring(0,i));
 			}
 		}

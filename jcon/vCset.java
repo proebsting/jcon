@@ -4,7 +4,7 @@ public class vCset extends vValue {
 
 static final int MAX_VALUE = 255;		// maximum char value in Jcon
 
-    java.util.BitSet t;
+    private java.util.BitSet t;
 
 
 vCset(java.util.BitSet x) {			// new Cset(Bitset b)
