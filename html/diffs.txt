@@ -8,8 +8,8 @@ Differences related to graphics are described in
 
 <H3>Characters and Strings</H3>
 
-<P> Like Version 9 of Icon, and unlike Java (which uses Unicode),
-Jcon uses an 8-bit superset of ASCII.
+<P> Like Version 9 of Icon, Jcon uses an 8-bit superset of ASCII.
+Jcon does not use Java's Unicode character set.
 
 <P> Conversion of real numbers to strings produces more digits
 that Version 9.
@@ -41,7 +41,7 @@ are copied from the process after it terminates.
 <H3>Keywords</H3>
 
 <P> <CODE>&amp;features</CODE> includes <CODE>"Java"</CODE>.
-A corresponding preprocessor symbol <CODE>_JAVA</CODE> is also defined.
+A corresponding preprocessor symbol <CODE>_JAVA</CODE> is predefined.
 
 <P> <CODE>&amp;time</CODE> produces elapsed wall-clock time, not CPU time,
 due to Java limitations.

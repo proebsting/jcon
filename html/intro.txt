@@ -50,9 +50,6 @@ what's implemented:
 -- all datatypes including large integers
 -- all keywords, although resource keywords produce zeroes
 -- preprocessing
--- most of the graphics repertoire (see below)
--- most other functions; missing chdir(), getch()/getche()/kbhit()
--- loadfunc(zipfile,funcname) loads Java or Icon code, and supports generators
-
--- jcont is a complex script that only runs on Unix
+-- graphics
+-- most functions; missing chdir(), getch()/getche()/kbhit()
 </PRE>

@@ -1,11 +1,9 @@
 <H3>Performance</H3>
 
-<P><B>#%#%#%#% This is all old and needs to be rewritten.</B>
-
-<P> A program built by Jcon runs several times slower than the same program
-built by <CODE>icont</CODE> and run by the Icon interpreter. 
+<P> Programs built by Jcon typically run somewhat slower than when
+built and run by Version 9 of Icon.
 We use the ratio of execution times as our basic benchmark measurement.
-The result depends on many things, but a factor of five is typical
+The result depends on many things, but a factor of three is typical
 with a good Java system.
 
 <P> We have measured execution times for the standard Icon benchmarks
@@ -24,12 +22,13 @@ Silicon Graphics Indigo2 running SGI Java 3.1 (JDK 1.1.5).
 This is a good Java implementation running on a fast machine.
 It uses just-in-time (JIT) compilation to convert JVM code to machine code
 as needed.
-There is a minimum 1.5-second startup cost for every execution,
+There is a minimum one-second startup cost for every execution,
 which we attribute to initialization and JIT compilation;
 this cost is included in the measurements below but is
 not the dominating factor.
 
 <P> Here are execution time ratios measured on several platforms:
+<P><B>(#%#%#%#% NEED UPDATED FIGURES #%#%#%#%)</B>
 <P> <TABLE BORDER=1 ALIGN=CENTER>
 <TR><TH COLSPAN=2>platform</TH>
 	<TH WIDTH=32>concord</TH>

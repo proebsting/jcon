@@ -22,7 +22,9 @@ and arguments can be passed as usual.
 <TR><TD WIDTH=50 VALIGN=TOP><VAR>file</VAR><CODE>.icn</CODE></TD><TD>
 	Icon source file to compile and link</TD></TR>
 <TR><TD WIDTH=50 VALIGN=TOP><VAR>file</VAR><CODE>.zip</CODE></TD><TD>
-	Previously compiled file to link</TD></TR>
+	Previously compiled file to link
+	<BR>(Must be local: jcont does not search $IPATH here)
+	</TD></TR>
 </TABLE></BLOCKQUOTE>
 
 <H3>Options</H3>
@@ -74,7 +76,7 @@ and arguments can be passed as usual.
 
 <H3>Environment Variables</H3>
 
-<P> The following environment variables affect compilation:
+<P> The following environment variables affect compilation and linking:
 <BLOCKQUOTE><TABLE>
 <TR><TD WIDTH=100 VALIGN=TOP><CODE>LPATH</CODE></TD><TD>
 	Search path for <CODE>$include</CODE> directives
@@ -95,6 +97,10 @@ and arguments can be passed as usual.
 	Initial value of the Icon keyword <CODE>&AMP;trace</CODE>.
 	If set, it overrides compilation with <CODE>-t</CODE>. 
 </TABLE></BLOCKQUOTE>
+
+If a Jcon program runs out of memory, Java's limits can be increased
+by setting JXOPTS.  For example, <CODE>setenv JXOPTS '-mx50m'</CODE>
+increases the maximum space to 50 megabytes.
 
 <H3>Jar file output</H3>
 
@@ -121,15 +127,6 @@ but will be similar in concept to the Unix example give above.
 <P> <I>java</I> and <I>jar</I> must be in the search path,
 and <I>javap</I> if <CODE>-S</CODE> is used.
 
-<PRE>
-
-compilation and linking:
--- "jcont foo.zip" doesn't search IPATH (only link'd files are searched for)
--- compiled .zip files cannot be renamed: name must match original .icn name
-   (however, executables can be renamed)
-
-execution:
--- if Java runs out of memory, setenv JXOPTS='-mx50m' (e.g.) to increase max
--- out-of-memory errors say "block region"; there is no separate string region
--- executables are portable among dissimilar Unix platforms (just need ksh+Java)
-</PRE>
+<P> A compiled <CODE>.zip</CODE> file cannot be renamed:
+The file name must match the original <CODE>.icn</CODE> name.
+(However, executables can be renamed.)

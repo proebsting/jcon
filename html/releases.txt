@@ -1,24 +1,40 @@
-<PRE>
-additions in v2:
--- programs run about 40% faster
--- large integers are implemented
--- loadfunc() is implemented
--- most of the graphics repertoire is implemented
--- section wraparound (e.g. "abcd"[-2+:3]) yields failure  (this is a bugfix)
--- function() generates names in sorted order
--- record fields are shown in traceback images
+<P> Version 1.0 of Jcon implemented the classic core of the
+Icon programming language and some basic graphics facilites.
+Version 2.0 adds large integers, dynamic loading, and graphics.
 
-losses in v2:
--- compilation with "-fn" is needed for tracing, detailed traceback, or &amp;error
--- variable(), display(), and &amp;dump can access only global variables
+<P> Version 2.0 also incorporates radical changes in the implementation
+that provide a typical performance improvement of 40%.
 
-graphics infelicities:
--- window repair may be delayed until the program pauses for input
--- "drawop=reverse" may draw wrong color under rare conditions not understood
--- DEC Java 1.1.6 exhibits problems with fonts and font metrics
--- WOpen("image=file.gif") does not init window contents if animated GIF
--- some Java implementations produce an extra resize event when win first opened
-</PRE>
+<H3>Notable changes from Version 1</H3>
+<UL>
+    <LI>Compilation with <CODE>-f d</CODE> is now needed for tracing,
+	detailed traceback, or error conversion (&amp;error)
+    <LI><CODE>variable()</CODE>, <CODE>display()</CODE>,
+	and <CODE>&amp;dump</CODE> can access only global variables
+    <LI>Command options for <CODE>jcont</CODE> are closer to those
+	of <CODE>icont</CODE>
+    <LI>Section wraparound (e.g. <CODE>"abcd"[-2+:3]</CODE>)
+	now yields failure, fixing a venerable bug
+</UL>
 
-<CODE>&amp;clock</CODE> and <CODE>&amp;dateline</CODE>
-may be off by an hour due to Java library bugs
+<H3>Known problems (nongraphical)</H3>
+<UL>
+    <LI><CODE>&amp;clock</CODE> and <CODE>&amp;dateline</CODE>
+	may be off by an hour due to Java library bugs
+</UL>
+
+<H3>Known graphics problems</H3>
+
+<UL>
+    <LI>Some Java implementations produce an extra resize event when
+	a window is first opened
+    <LI>Window repair may be delayed until the program pauses
+	to await an event
+    <LI>DEC Java 1.1.6 sometimes writes different fonts to the window
+	and its backup image, leading to bizarre effects from
+	<CODE>CopyArea()</CODE> and window repair
+    <LI><CODE>WOpen("image=file.gif")</CODE> does not initialize the
+   	window contents if presented with a multi-part (animated) GIF image
+    <LI><CODE>drawop=reverse</CODE> draws the wrong color under rare
+	conditions that are not understood
+</UL>
