@@ -263,7 +263,7 @@ procedure j_goto_elimination(t, start)
     j_new := table()
     wl := []
     seen := set()
-    add_j_label(start, wl, seen)
+    add_label(start, wl, seen)
 
     while lab := pop(wl) do {
         j_new[lab] := \t[lab]
@@ -288,7 +288,7 @@ procedure j_goto_elimination(t, start)
     return j_new
 end
 
-procedure add_j_label(lab, wl, seen)
+procedure add_label(lab, wl, seen)
     ref_count[lab] +:= 1
     if not member(seen, lab) then {
         insert(seen, lab)
@@ -344,7 +344,7 @@ procedure j_gotos(p, wl, seen, t)
         # nothing
         }
     "ir_Label" : {  # ir_Label : ( value )
-        add_j_label(p, wl, seen)
+        add_label(p, wl, seen)
         }
     "ir_Move" : {  # ir_Move : ( lhs rhs )
         p.rhs := j_goto_chain_defer(p.rhs, t)

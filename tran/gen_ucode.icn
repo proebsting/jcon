@@ -14,7 +14,7 @@ record u_create(n)
 record u_cset(a)
 record u_diff()
 record u_div()
-record u_j_dup()
+record u_dup()
 record u_efail()
 record u_eqv()
 record u_eret()
@@ -23,7 +23,7 @@ record u_esusp()
 record u_field(n)
 record u_filen(n)
 record u_global(n)
-record u_j_goto(n)
+record u_goto(n)
 record u_init(n)
 record u_int(n)
 record u_inter()
@@ -72,14 +72,14 @@ record u_random()
 record u_rasgn()
 record u_real(a)
 record u_refresh()
-record u_rj_swap()
+record u_rswap()
 record u_sj_dup()
 record u_sect()
 record u_size()
 record u_static(n)
 record u_str(n,a)
 record u_subsc()
-record u_j_swap()
+record u_swap()
 record u_tabmat()
 record u_toby()
 record u_unions()
@@ -177,7 +177,7 @@ procedure ucode_a_Case(s, p)
         put(s, u_unmark())
         put(s, u_pop())
         ucode(s, i.body)
-        put(s, u_j_goto(endlab))
+        put(s, u_goto(endlab))
         put(s, u_lab(nextlab))
     }
     if \p.dflt then {
@@ -244,7 +244,7 @@ procedure ucode_a_Alt0(s, L)
         ucode(s, L[1])
         u_loops[1].ir.markcount -:= 1
         put(s, u_esusp())
-        put(s, u_j_goto(endlab))
+        put(s, u_goto(endlab))
         put(s, u_lab(nextlab))
         ucode_a_Alt0(s, L[2:0])
         put(s, u_lab(endlab))
@@ -327,7 +327,7 @@ procedure ucode_a_Sectioj_nop(s, p)
         put(s, u_pnull())
         ucode(s, p.val)
         ucode(s, p.left)
-        put(s, u_j_dup())
+        put(s, u_dup())
         ucode(s, p.right)
         u_coord(s, p)
         put(s, (\fn[p.op])()) | runerr(500, p)
@@ -343,8 +343,8 @@ procedure ucode_a_Sectioj_nop(s, p)
     }
 end
 
-# record a_Bij_nop( op left right )
-procedure ucode_a_Bij_nop(s, p)
+# record a_Binop( op left right )
+procedure ucode_a_Binop(s, p)
     local op
     static fn
     initial {
@@ -377,9 +377,9 @@ procedure ucode_a_Bij_nop(s, p)
         fn["+"] := u_plus
         fn["^"] := u_power
         fn["<-"] := u_rasgn
-        fn["<->"] := u_rj_swap
+        fn["<->"] := u_rswap
         fn["[]"] := u_subsc
-        fn[":=:"] := u_j_swap
+        fn[":=:"] := u_swap
         fn["++"] := u_unions
     }
 
@@ -408,7 +408,7 @@ procedure ucode_a_Bij_nop(s, p)
     } else if op := (p.op ? tab(find(":="))) & op ~== "" & op ~== "&" then {
         put(s, u_pnull())
         ucode(s, p.left)
-        put(s, u_j_dup())
+        put(s, u_dup())
         ucode(s, p.right)
         put(s, (\fn[op])()) | runerr(500, p)
         u_coord(s, p)
@@ -472,7 +472,7 @@ procedure ucode_a_If(s, p)
         u_loops[1].ir.markcount -:= 1
         put(s, u_unmark())
         ucode(s, p.thenexpr)
-        put(s, u_j_goto(endlab))
+        put(s, u_goto(endlab))
         put(s, u_lab(elselab))
         ucode(s, p.elseexpr)
         put(s, u_lab(endlab))
@@ -676,7 +676,7 @@ procedure ucode_a_Repeat(s, p)
     ucode(s, p.expr)
     put(s, u_lab(p.ir.nextlab))
     put(s, u_unmark())
-    put(s, u_j_goto(lab))
+    put(s, u_goto(lab))
     put(s, u_lab(p.ir.breaklab))
     pop(u_loops)
 end
@@ -750,7 +750,7 @@ procedure ucode_a_Until(s, p)
     ucode(s, p.body)
     put(s, u_lab(p.ir.nextlab))
     put(s, u_unmark())
-    put(s, u_j_goto(exprlab))
+    put(s, u_goto(exprlab))
     put(s, u_lab(p.ir.breaklab))
     pop(u_loops)
 end
@@ -772,7 +772,7 @@ procedure ucode_a_While(s, p)
     }
     put(s, u_lab(p.ir.nextlab))
     put(s, u_unmark())
-    put(s, u_j_goto(lab))
+    put(s, u_goto(lab))
     put(s, u_lab(p.ir.breaklab))
     pop(u_loops)
 end
@@ -784,7 +784,7 @@ procedure ucode_a_Create(s, p)
     exprlab := @u_nextlab
     faillab := @u_nextlab
     createlab := @u_nextlab
-    put(s, u_j_goto(createlab))
+    put(s, u_goto(createlab))
     put(s, u_lab(exprlab))
     put(s, u_pop())
     put(s, u_mark(faillab))
@@ -798,7 +798,7 @@ procedure ucode_a_Create(s, p)
     put(s, u_efail())
     put(s, u_lab(faillab))
     put(s, u_cofail())
-    put(s, u_j_goto(faillab))
+    put(s, u_goto(faillab))
     put(s, u_lab(createlab))
     put(s, u_create(exprlab))
 end
@@ -816,7 +816,7 @@ procedure ucode_a_Next(s, p)
             put(s, u_unmark())
         }
     }
-    put(s, u_j_goto(u_loops[1].ir.nextlab))
+    put(s, u_goto(u_loops[1].ir.nextlab))
 end
 
 # record a_Break( expr )
@@ -830,7 +830,7 @@ procedure ucode_a_Break(s, p)
     tmp := pop(u_loops)
     ucode(s, p.expr)
     push(u_loops, tmp)
-    put(s, u_j_goto(tmp.ir.breaklab))
+    put(s, u_goto(tmp.ir.breaklab))
 end
 
 # record a_ToBy( fromexpr toexpr byexpr )
@@ -920,7 +920,7 @@ procedure ucode(s, p)
     "a_Scan" : return ucode_a_Scan(s, p)
     "a_Limitation" : return ucode_a_Limitation(s, p)
     "a_Sectioj_nop" : return ucode_a_Sectioj_nop(s, p)
-    "a_Bij_nop" : return ucode_a_Bij_nop(s, p)
+    "a_Binop" : return ucode_a_Binop(s, p)
     "a_Uj_nop" : return ucode_a_Uj_nop(s, p)
     "a_Global" : return ucode_a_Global(s, p)
     "a_If" : return ucode_a_If(s, p)

@@ -74,7 +74,7 @@ procedure gen_procedure(i, def, suffix)
     if /i[2] then writes(", ", def[2])
     if /i[3] then writes(", ", def[3])
     write(")")
-    write("    return create_", suffix, "(c, ",
+    write("    return j_create_", suffix, "(c, ",
                           image(\i[1]) | def[1], ", ",
                           image(\i[2]) | def[2], ", ",
                           image(\i[3]) | def[3], ")")

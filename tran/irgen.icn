@@ -409,8 +409,8 @@ procedure ir_binary(p, target, bounded, lv, rv, closure, funcs)
     }
 end
 
-# record a_Bij_nop( op left right )
-procedure ir_a_Bij_nop(p, st, inuse, target, bounded)
+# record a_Binop( op left right )
+procedure ir_a_Binop(p, st, inuse, target, bounded)
     local closure, tmp, op, lv, rv
     static funcs    # functions for which resumption fails immediately.
     initial {
@@ -454,7 +454,7 @@ end
 procedure ir_unary_coexp(p, st, inuse, target, bounded)
     local t
 
-    t := a_Bij_nop("@", a_Key("null"), p.operand, p.coord)
+    t := a_Binop("@", a_Key("null"), p.operand, p.coord)
     suspend ir(t, st, inuse, target, bounded)
     p.ir := t.ir
 end
@@ -877,7 +877,7 @@ procedure ir_a_Suspend(p, st, inuse, target, bounded)
     /p.body := a_Key("fail") & /p.expr := a_Key("null")
 
     init4ir_loop(p, st, inuse, target, bounded)
-    t := ir_j_label(p, "suspend")
+    t := ir_label(p, "suspend")
     susp := ir_tmp(st, inuse)
 
     put(loops, p)
@@ -1285,7 +1285,7 @@ procedure ir(p, st, inuse, target, bounded)
     "a_Case" : suspend ir_a_Case(p, st, inuse, target, bounded)
     "a_Every" : suspend ir_a_Every(p, st, inuse, target, bounded)
     "a_Sectioj_nop" : suspend ir_a_Sectioj_nop(p, st, inuse, target, bounded)
-    "a_Bij_nop" : suspend ir_a_Bij_nop(p, st, inuse, target, bounded)
+    "a_Binop" : suspend ir_a_Binop(p, st, inuse, target, bounded)
     "a_Uj_nop" : suspend ir_a_Uj_nop(p, st, inuse, target, bounded)
     "a_Global" : suspend ir_a_Global(p, st, inuse, target, bounded)
     "a_If" : suspend ir_a_If(p, st, inuse, target, bounded)
@@ -1343,10 +1343,10 @@ end
 
 procedure init4ir(p)
     p.ir := ir_info()
-    p.ir.start := ir_j_label(p, "start")
-    p.ir.resume := ir_j_label(p, "resume")
-    p.ir.success := ir_j_label(p, "success")
-    p.ir.failure := ir_j_label(p, "failure")
+    p.ir.start := ir_label(p, "start")
+    p.ir.resume := ir_label(p, "resume")
+    p.ir.success := ir_label(p, "success")
+    p.ir.failure := ir_label(p, "failure")
     return p
 end
 
@@ -1354,7 +1354,7 @@ procedure init4ir_loop(p, st, inuse, target, bounded)
     init4ir(p)
     p.ir.x := ir_loopinfo()
     /bounded & (p.ir.x.continue := ir_tmploc(st, inuse))
-    p.ir.x.nextj_label := ir_j_label(p, "next")
+    p.ir.x.nextj_label := ir_label(p, "next")
     p.ir.x.scanlevel := *scans
     p.ir.x.in_st := copy(st)
     p.ir.x.out_st := st
@@ -1364,7 +1364,7 @@ procedure init4ir_loop(p, st, inuse, target, bounded)
     return p
 end
 
-procedure ir_j_label(p, suffix)
+procedure ir_label(p, suffix)
     return ir_Label(ir_naming(p, suffix))
 end
 

@@ -33,8 +33,8 @@ record j_local_variable_table_info(start_pc, length, name_index, signature_index
                  slot)
 
 record j_label(name)
-record j_bipush(byte)
-record j_sipush(byte)
+record j_bj_ipush(byte)
+record j_sj_ipush(byte)
 record j_ldc(index)
 record j_ldc_w(index)
 record j_ldc2_w(index)
@@ -246,38 +246,38 @@ record j_monitorenter()
 record j_monitorexit()
 record j_match_offset_pairs(Match, offset)
 
-procedure writer_j_ClassFile(writer, p)
+procedure j_writer_j_ClassFile(writer, p)
     local i
 
-    writer_u4(writer, 16rCAFEBABE)
-    writer_u2(writer, p.minor_version)
-    writer_u2(writer, p.major_version)
-    writer_u2(writer, *p.constant_pool)
+    j_writer_u4(writer, 16rCAFEBABE)
+    j_writer_u2(writer, p.minor_version)
+    j_writer_u2(writer, p.major_version)
+    j_writer_u2(writer, *p.constant_pool)
     every i := \!p.constant_pool do {
-        writer_cp_info(writer, i)
+        j_writer_cp_info(writer, i)
     }
-    writer_u2(writer, p.access_flags)
-    writer_u2(writer, p.this_class)
-    writer_u2(writer, p.super_class)
-    writer_u2(writer, *p.interfaces)
+    j_writer_u2(writer, p.access_flags)
+    j_writer_u2(writer, p.this_class)
+    j_writer_u2(writer, p.super_class)
+    j_writer_u2(writer, *p.interfaces)
     every i := !p.interfaces do {
-        writer_u2(writer, i)
+        j_writer_u2(writer, i)
     }
-    writer_u2(writer, *p.fields)
+    j_writer_u2(writer, *p.fields)
     every i := !p.fields do {
-        writer_j_field_info(writer, i)
+        j_writer_j_field_info(writer, i)
     }
-    writer_u2(writer, *p.methods)
+    j_writer_u2(writer, *p.methods)
     every i := !p.methods do {
-        writer_j_method_info(writer, i)
+        j_writer_j_method_info(writer, i)
     }
-    writer_u2(writer, *p.attributes)
+    j_writer_u2(writer, *p.attributes)
     every i := !p.attributes do {
-        writer_attribute_info(writer, i)
+        j_writer_attribute_info(writer, i)
     }
 end
 
-procedure writer_cp_info(writer, p)
+procedure j_writer_cp_info(writer, p)
     local i, s
 
     case (type(p)) of {
@@ -285,68 +285,68 @@ procedure writer_cp_info(writer, p)
         runerr(500, p)
     }
     "j_CONSTANT_Class": {
-        writer_u1(writer, 7)
-        writer_u2(writer, p.name_index)
+        j_writer_u1(writer, 7)
+        j_writer_u2(writer, p.name_index)
     }
     "j_CONSTANT_a_Fieldref": {
-        writer_u1(writer, 9)
-        writer_u2(writer, p.class_index)
-        writer_u2(writer, p.name_and_type_index)
+        j_writer_u1(writer, 9)
+        j_writer_u2(writer, p.class_index)
+        j_writer_u2(writer, p.name_and_type_index)
     }
     "j_CONSTANT_Methodref": {
-        writer_u1(writer, 10)
-        writer_u2(writer, p.class_index)
-        writer_u2(writer, p.name_and_type_index)
+        j_writer_u1(writer, 10)
+        j_writer_u2(writer, p.class_index)
+        j_writer_u2(writer, p.name_and_type_index)
     }
     "j_CONSTANT_InterfaceMethodref": {
-        writer_u1(writer, 11)
-        writer_u2(writer, p.class_index)
-        writer_u2(writer, p.name_and_type_index)
+        j_writer_u1(writer, 11)
+        j_writer_u2(writer, p.class_index)
+        j_writer_u2(writer, p.name_and_type_index)
     }
     "j_CONSTANT_String": {
-        writer_u1(writer, 8)
-        writer_u2(writer, p.string_index)
+        j_writer_u1(writer, 8)
+        j_writer_u2(writer, p.string_index)
     }
     "j_CONSTANT_Integer": {
-        writer_u1(writer, 3)
-        writer_u4(writer, p.value)
+        j_writer_u1(writer, 3)
+        j_writer_u4(writer, p.value)
     }
     "j_CONSTANT_Float": {
-        writer_u1(writer, 4)
-        writer_u4(writer, p.value)
+        j_writer_u1(writer, 4)
+        j_writer_u4(writer, p.value)
     }
     "j_CONSTANT_Long": {
-        writer_u1(writer, 5)
-        writer_u4(writer, iand(ishift(p.value, -32), 16rFFFFFFFF))
-        writer_u4(writer, iand(ishift(p.value,   0), 16rFFFFFFFF))
+        j_writer_u1(writer, 5)
+        j_writer_u4(writer, iand(ishift(p.value, -32), 16rFFFFFFFF))
+        j_writer_u4(writer, iand(ishift(p.value,   0), 16rFFFFFFFF))
     }
     "j_CONSTANT_Double": {
-        writer_u1(writer, 6)
-        writer_u4(writer, p.high_bytes)
-        writer_u4(writer, p.low_bytes)
+        j_writer_u1(writer, 6)
+        j_writer_u4(writer, p.high_bytes)
+        j_writer_u4(writer, p.low_bytes)
     }
     "j_CONSTANT_NameAndType": {
-        writer_u1(writer, 12)
-        writer_u2(writer, p.name_index)
-        writer_u2(writer, p.signature_index)
+        j_writer_u1(writer, 12)
+        j_writer_u2(writer, p.name_index)
+        j_writer_u2(writer, p.signature_index)
     }
     "j_CONSTANT_Utf8": {
-        s := utf8_repr(p.value)
-        writer_u1(writer, 1)
-        writer_u2(writer, *s)
+        s := j_utf8_repr(p.value)
+        j_writer_u1(writer, 1)
+        j_writer_u2(writer, *s)
         writes(writer, s)
     }
     "j_CONSTANT_Unicode": {
-        writer_u1(writer, 2)
-        writer_u2(writer, *p.value)
+        j_writer_u1(writer, 2)
+        j_writer_u2(writer, *p.value)
         every i := !p.value do {
-            writer_u1(writer, i)
+            j_writer_u1(writer, i)
         }
     }
     }
 end
 
-procedure utf8_repr(s)
+procedure j_utf8_repr(s)
     local t, c
     static hard
     initial hard := '\x00' ++ &cset[129:0]
@@ -371,19 +371,19 @@ procedure utf8_repr(s)
     return t
 end
 
-procedure writer_j_field_info(writer, p)
+procedure j_writer_j_field_info(writer, p)
     local i
 
-    writer_u2(writer, p.access_flags)
-    writer_u2(writer, p.name_index)
-    writer_u2(writer, p.signature_index)
-    writer_u2(writer, *p.attributes)
+    j_writer_u2(writer, p.access_flags)
+    j_writer_u2(writer, p.name_index)
+    j_writer_u2(writer, p.signature_index)
+    j_writer_u2(writer, *p.attributes)
     every i := !p.attributes do {
-        writer_attribute_info(writer, i)
+        j_writer_attribute_info(writer, i)
     }
 end
 
-procedure writer_attribute_info(writer, p)
+procedure j_writer_attribute_info(writer, p)
     local i, locations, code_length, attribute_length
 
     case (type(p)) of {
@@ -391,120 +391,120 @@ procedure writer_attribute_info(writer, p)
         runerr(500, p)
     }
     "j_SourceFile_attribute": {
-        writer_u2(writer, p.attribute_name_index)
-        writer_u4(writer, 2)
-        writer_u2(writer, p.sourcefile_index)
+        j_writer_u2(writer, p.attribute_name_index)
+        j_writer_u4(writer, 2)
+        j_writer_u2(writer, p.sourcefile_index)
     }
     "j_ConstantValue_attribute": {
-        writer_u2(writer, p.attribute_name_index)
-        writer_u4(writer, 2)
-        writer_u2(writer, p.constantvalue_index)
+        j_writer_u2(writer, p.attribute_name_index)
+        j_writer_u4(writer, 2)
+        j_writer_u2(writer, p.constantvalue_index)
     }
     "j_Code_attribute": {
-        writer_u2(writer, p.attribute_name_index)
+        j_writer_u2(writer, p.attribute_name_index)
 
         locations := table()
         code_length := 0
-        every code_length := offset_opcodes(!p.code, code_length, locations)
-        every relocate(!p.code, locations)
+        every code_length := j_offset_opcodes(!p.code, code_length, locations)
+        every j_relocate(!p.code, locations)
 
         attribute_length := 0
-        every attribute_length := offset_attribute_info(!p.attributes,
+        every attribute_length := j_offset_attribute_info(!p.attributes,
                             attribute_length)
 
-        writer_u4(writer,
+        j_writer_u4(writer,
           2+2+4+code_length+2+8* *p.exception_table+2+attribute_length)
-        writer_u2(writer, p.max_stack)
-        writer_u2(writer, p.max_locals)
+        j_writer_u2(writer, p.max_stack)
+        j_writer_u2(writer, p.max_locals)
 	if code_length >= 65536 then {
 	    runerr(500)
 	}
-        writer_u4(writer, code_length)
+        j_writer_u4(writer, code_length)
         every i := !p.code do {
-            writer_opcodes(writer, i)
+            j_writer_opcodes(writer, i)
         }
-        writer_u2(writer, *p.exception_table)
+        j_writer_u2(writer, *p.exception_table)
         every i := !p.exception_table do {
-            writer_j_exception_table_info(writer, i)
+            j_writer_j_exception_table_info(writer, i)
         }
-        writer_u2(writer, *p.attributes)
+        j_writer_u2(writer, *p.attributes)
         every i := !p.attributes do {
-            writer_attribute_info(writer, i)
+            j_writer_attribute_info(writer, i)
         }
     }
     "j_Exceptions_attribute": {
-        writer_u2(writer, p.attribute_name_index)
-        writer_u4(writer, 2+2* *p.exception_index_table)
-        writer_u2(writer, *p.exception_index_table)
+        j_writer_u2(writer, p.attribute_name_index)
+        j_writer_u4(writer, 2+2* *p.exception_index_table)
+        j_writer_u2(writer, *p.exception_index_table)
         every i := !p.exception_index_table do {
-            writer_u2(writer, i)
+            j_writer_u2(writer, i)
         }
     }
     "j_LineNumberTable_attribute": {
-        writer_u2(writer, p.attribute_name_index)
-        writer_u4(writer, 2+4* *p.line_number_table)
-        writer_u2(writer, *p.line_number_table)
+        j_writer_u2(writer, p.attribute_name_index)
+        j_writer_u4(writer, 2+4* *p.line_number_table)
+        j_writer_u2(writer, *p.line_number_table)
         every i := !p.line_number_table do {
-            writer_j_line_number_table_info(writer, i)
+            j_writer_j_line_number_table_info(writer, i)
         }
     }
     "j_LocalVariableTable_attribute": {
-        writer_u2(writer, p.attribute_name_index)
-        writer_u4(writer, 2+10* *p.local_variable_table)
-        writer_u2(writer, *p.local_variable_table)
+        j_writer_u2(writer, p.attribute_name_index)
+        j_writer_u4(writer, 2+10* *p.local_variable_table)
+        j_writer_u2(writer, *p.local_variable_table)
         every i := !p.local_variable_table do {
-            writer_j_local_variable_table_info(writer, i)
+            j_writer_j_local_variable_table_info(writer, i)
         }
     }
     "j_GenericAttribute_info": {
-        writer_u2(writer, p.attribute_name_index)
-        writer_u4(writer, *p.info)
+        j_writer_u2(writer, p.attribute_name_index)
+        j_writer_u4(writer, *p.info)
         every i := !p.info do {
-            writer_u1(writer, i)
+            j_writer_u1(writer, i)
         }
     }
     }
 end
 
-procedure writer_j_method_info(writer, p)
+procedure j_writer_j_method_info(writer, p)
     local i
 
-    writer_u2(writer, p.access_flags)
-    writer_u2(writer, p.name_index)
-    writer_u2(writer, p.signature_index)
-    writer_u2(writer, *p.attributes)
+    j_writer_u2(writer, p.access_flags)
+    j_writer_u2(writer, p.name_index)
+    j_writer_u2(writer, p.signature_index)
+    j_writer_u2(writer, *p.attributes)
     every i := !p.attributes do {
-        writer_attribute_info(writer, i)
+        j_writer_attribute_info(writer, i)
     }
 end
 
-procedure writer_j_exception_table_info(writer, p)
-    writer_u2(writer, p.start_pc)
-    writer_u2(writer, p.end_pc)
-    writer_u2(writer, p.handler_pc)
-    writer_u2(writer, p.catch_type)
+procedure j_writer_j_exception_table_info(writer, p)
+    j_writer_u2(writer, p.start_pc)
+    j_writer_u2(writer, p.end_pc)
+    j_writer_u2(writer, p.handler_pc)
+    j_writer_u2(writer, p.catch_type)
 end
 
-procedure writer_j_line_number_table_info(writer, p)
-    writer_u2(writer, p.start_pc)
-    writer_u2(writer, p.line_number)
+procedure j_writer_j_line_number_table_info(writer, p)
+    j_writer_u2(writer, p.start_pc)
+    j_writer_u2(writer, p.line_number)
 end
 
-procedure writer_j_local_variable_table_info(writer, p)
-    writer_u2(writer, p.start_pc)
-    writer_u2(writer, p.length)
-    writer_u2(writer, p.name_index)
-    writer_u2(writer, p.signature_index)
-    writer_u2(writer, p.slot)
+procedure j_writer_j_local_variable_table_info(writer, p)
+    j_writer_u2(writer, p.start_pc)
+    j_writer_u2(writer, p.length)
+    j_writer_u2(writer, p.name_index)
+    j_writer_u2(writer, p.signature_index)
+    j_writer_u2(writer, p.slot)
 end
 
-procedure writer_opcodes(writer, p)
+procedure j_writer_opcodes(writer, p)
     local i, high, low, npairs, t
     static opcode_table, opcode_leaf
     initial {
         opcode_table := table()
-        opcode_table["j_bipush"] := 16
-        opcode_table["j_sipush"] := 17
+        opcode_table["j_bj_ipush"] := 16
+        opcode_table["j_sj_ipush"] := 17
         opcode_table["j_ldc"] := 18
         opcode_table["j_ldc_w"] := 19
         opcode_table["j_ldc2_w"] := 20
@@ -773,256 +773,256 @@ procedure writer_opcodes(writer, p)
 
     t := type(p)
 
-    writer_u1(writer, \opcode_table[t])
+    j_writer_u1(writer, \opcode_table[t])
 
     if member(opcode_leaf, t) then return
 
     case (t) of {
     "j_iload": {
-        writer_u1(writer, p.index)
+        j_writer_u1(writer, p.index)
         return
     }
     "j_iload_w": {
-        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
-        writer_u2(writer, p.index)
+        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        j_writer_u2(writer, p.index)
         return
     }
     "j_aload": {
-        writer_u1(writer, p.index)
+        j_writer_u1(writer, p.index)
         return
     }
     "j_aload_w": {
-        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
-        writer_u2(writer, p.index)
+        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        j_writer_u2(writer, p.index)
         return
     }
     "j_istore": {
-        writer_u1(writer, p.index)
+        j_writer_u1(writer, p.index)
         return
     }
     "j_istore_w": {
-        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
-        writer_u2(writer, p.index)
+        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        j_writer_u2(writer, p.index)
         return
     }
     "j_astore": {
-        writer_u1(writer, p.index)
+        j_writer_u1(writer, p.index)
         return
     }
     "j_astore_w": {
-        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
-        writer_u2(writer, p.index)
+        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        j_writer_u2(writer, p.index)
         return
     }
     "j_putfield": {
-        writer_u2(writer, p.index)
+        j_writer_u2(writer, p.index)
     }
     "j_getfield": {
-        writer_u2(writer, p.index)
+        j_writer_u2(writer, p.index)
     }
     "j_putstatic": {
-        writer_u2(writer, p.index)
+        j_writer_u2(writer, p.index)
     }
     "j_getstatic": {
-        writer_u2(writer, p.index)
+        j_writer_u2(writer, p.index)
     }
     "j_goto": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_goto_w": {
-        writer_s4(writer, p.branch)
+        j_writer_s4(writer, p.branch)
     }
     "j_invokevirtual": {
-        writer_u2(writer, p.index)
+        j_writer_u2(writer, p.index)
     }
     "j_invokenonvirtual": {
-        writer_u2(writer, p.index)
+        j_writer_u2(writer, p.index)
     }
     "j_invokestatic": {
-        writer_u2(writer, p.index)
+        j_writer_u2(writer, p.index)
     }
     "j_invokeinterface": {
-        writer_u2(writer, p.index)
+        j_writer_u2(writer, p.index)
     }
-    "j_bipush": {
-        writer_s1(writer, p.byte)
+    "j_bj_ipush": {
+        j_writer_s1(writer, p.byte)
     }
-    "j_sipush": {
-        writer_s2(writer, p.byte)
+    "j_sj_ipush": {
+        j_writer_s2(writer, p.byte)
     }
     "j_ldc": {
-        writer_u1(writer, p.index)
+        j_writer_u1(writer, p.index)
     }
     "j_ldc_w": {
-        writer_u2(writer, p.index)
+        j_writer_u2(writer, p.index)
     }
     "j_ldc2_w": {
-        writer_u2(writer, p.index)
+        j_writer_u2(writer, p.index)
     }
     "j_tableswitch": {
-        writer_align4(writer, p.pad)
-        writer_s4(writer, p.default_offset)
-        writer_s4(writer, p.low)
-        writer_s4(writer, p.high)
+        j_writer_align4(writer, p.pad)
+        j_writer_s4(writer, p.default_offset)
+        j_writer_s4(writer, p.low)
+        j_writer_s4(writer, p.high)
         p.high - p.low +1 = *p.offsets | runerr(500, p)
         every i := !p.offsets do {
-            writer_s4(writer, i)
+            j_writer_s4(writer, i)
         }
     }
     "j_lload": {
-        writer_u1(writer, p.index)
+        j_writer_u1(writer, p.index)
     }
     "j_lload_w": {
-        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
-        writer_u2(writer, p.index)
+        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        j_writer_u2(writer, p.index)
         return
     }
     "j_fload": {
-        writer_u1(writer, p.index)
+        j_writer_u1(writer, p.index)
     }
     "j_fload_w": {
-        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
-        writer_u2(writer, p.index)
+        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        j_writer_u2(writer, p.index)
         return
     }
     "j_dload": {
-        writer_u1(writer, p.index)
+        j_writer_u1(writer, p.index)
     }
     "j_dload_w": {
-        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
-        writer_u2(writer, p.index)
+        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        j_writer_u2(writer, p.index)
         return
     }
     "j_lstore": {
-        writer_u1(writer, p.index)
+        j_writer_u1(writer, p.index)
     }
     "j_lstore_w": {
-        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
-        writer_u2(writer, p.index)
+        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        j_writer_u2(writer, p.index)
         return
     }
     "j_fstore": {
-        writer_u1(writer, p.index)
+        j_writer_u1(writer, p.index)
     }
     "j_fstore_w": {
-        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
-        writer_u2(writer, p.index)
+        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        j_writer_u2(writer, p.index)
         return
     }
     "j_dstore": {
-        writer_u1(writer, p.index)
+        j_writer_u1(writer, p.index)
     }
     "j_dstore_w": {
-        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
-        writer_u2(writer, p.index)
+        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        j_writer_u2(writer, p.index)
         return
     }
     "j_iinc": {
-        writer_u1(writer, p.index)
-        writer_s1(writer, p.const)
+        j_writer_u1(writer, p.index)
+        j_writer_s1(writer, p.const)
     }
     "j_iinc_w": {
-        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
-        writer_u2(writer, p.index)
-        writer_s2(writer, p.const)
+        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        j_writer_u2(writer, p.index)
+        j_writer_s2(writer, p.const)
     }
     "j_newarray": {
-        writer_u1(writer, p.atype)
+        j_writer_u1(writer, p.atype)
     }
     "j_anewarray": {
-        writer_s2(writer, p.index)
+        j_writer_s2(writer, p.index)
     }
     "j_multinewarray": {
-        writer_s2(writer, p.index)
+        j_writer_s2(writer, p.index)
     }
     "j_ifeq": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_ifnull": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_iflt": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_ifle": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_ifne": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_ifnonnull": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_ifgt": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_ifge": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_if_icmpeq": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_if_icmpne": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_if_icmplt": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_if_icmpgt": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_if_icmple": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_if_icmpge": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_if_acmpeq": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_if_acmpne": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_jsr": {
-        writer_s2(writer, p.branch)
+        j_writer_s2(writer, p.branch)
     }
     "j_jsr_w": {
-        writer_s4(writer, p.branch)
+        j_writer_s4(writer, p.branch)
     }
     "j_ret": {
-        writer_u1(writer, p.index)
+        j_writer_u1(writer, p.index)
     }
     "j_ret_w": {
-        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
-        writer_u2(writer, p.index)
+        j_writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        j_writer_u2(writer, p.index)
     }
     "j_lookupswitch": {
-        writer_align4(writer, p.pad)
-        writer_s4(writer, p.default_offset)
-        writer_s4(writer, p.npairs)
+        j_writer_align4(writer, p.pad)
+        j_writer_s4(writer, p.default_offset)
+        j_writer_s4(writer, p.npairs)
         every i := !p.offsets do {
-            writer_j_match_offset_pairs(writer, i)
+            j_writer_j_match_offset_pairs(writer, i)
         }
     }
     "j_new": {
-        writer_u2(writer, p.index)
+        j_writer_u2(writer, p.index)
     }
     "j_checkcast": {
-        writer_u2(writer, p.index)
+        j_writer_u2(writer, p.index)
     }
     "j_instanceof": {
-        writer_u2(writer, p.index)
+        j_writer_u2(writer, p.index)
     }
     }
 end
 
-procedure writer_j_match_offset_pairs(writer, p)
-    writer_s4(writer, p.Match)
-    writer_s4(writer, p.offset)
+procedure j_writer_j_match_offset_pairs(writer, p)
+    j_writer_s4(writer, p.Match)
+    j_writer_s4(writer, p.offset)
 end
 
 
-procedure offset_opcodes(p, offset, locations)
+procedure j_offset_opcodes(p, offset, locations)
     local i, high, low, npairs
     static offset_table
     initial {
@@ -1036,8 +1036,8 @@ procedure offset_opcodes(p, offset, locations)
         offset_table["j_invokenonvirtual"] := 2
         offset_table["j_invokestatic"] := 2
         offset_table["j_invokeinterface"] := 2
-        offset_table["j_sipush"] := 2
-        offset_table["j_bipush"] := 1
+        offset_table["j_sj_ipush"] := 2
+        offset_table["j_bj_ipush"] := 1
         offset_table["j_ldc"] := 1
         offset_table["j_ldc_w"] := 2
         offset_table["j_ldc2_w"] := 2
@@ -1254,7 +1254,7 @@ procedure offset_opcodes(p, offset, locations)
     }
     "j_tableswitch": {
         p.pad := offset
-        offset := offset_align4(offset, p.pad)
+        offset := j_offset_align4(offset, p.pad)
         p.pad := offset - p.pad
         offset +:= 4
         offset +:= 4
@@ -1263,24 +1263,24 @@ procedure offset_opcodes(p, offset, locations)
     }
     "j_lookupswitch": {
         p.pad := offset
-        offset := offset_align4(offset, p.pad)
+        offset := j_offset_align4(offset, p.pad)
         p.pad := offset - p.pad
         offset +:= 4
         offset +:= 4
         every i := !p.offsets do {
-            offset := offset_j_match_offset_pairs(offset, i)
+            offset := j_offset_j_match_offset_pairs(offset, i)
         }
     }
     }
     return offset
 end
 
-procedure offset_j_match_offset_pairs(offset, p)
+procedure j_offset_j_match_offset_pairs(offset, p)
     offset +:= 8
     return offset
 end
 
-procedure cp_Class(c, name_index)
+procedure j_cp_Class(c, name_index)
     local s
 
     s := "j_CONSTANT_Class" || "," || name_index
@@ -1291,7 +1291,7 @@ procedure cp_Class(c, name_index)
     return c.constant_table[s].pool_index
 end
 
-procedure cp_a_Fieldref(c, class_index, name_and_type_index)
+procedure j_cp_a_Fieldref(c, class_index, name_and_type_index)
     local s
 
     s:= "j_CONSTANT_a_Fieldref" || "," || class_index || "," || name_and_type_index
@@ -1302,7 +1302,7 @@ procedure cp_a_Fieldref(c, class_index, name_and_type_index)
     return c.constant_table[s].pool_index
 end
 
-procedure cp_Methodref(c, class_index, name_and_type_index)
+procedure j_cp_Methodref(c, class_index, name_and_type_index)
     local s
 
     s:= "j_CONSTANT_Methodref" || "," || class_index || "," || name_and_type_index
@@ -1313,7 +1313,7 @@ procedure cp_Methodref(c, class_index, name_and_type_index)
     return c.constant_table[s].pool_index
 end
 
-procedure cp_InterfaceMethodref(c, class_index, name_and_type_index)
+procedure j_cp_InterfaceMethodref(c, class_index, name_and_type_index)
     local s
 
     s := "j_CONSTANT_InterfaceMethodref" ||
@@ -1326,7 +1326,7 @@ procedure cp_InterfaceMethodref(c, class_index, name_and_type_index)
     return c.constant_table[s].pool_index
 end
 
-procedure cp_String(c, string_index)
+procedure j_cp_String(c, string_index)
     local s
 
     s := "j_CONSTANT_String" || "," || string_index
@@ -1337,7 +1337,7 @@ procedure cp_String(c, string_index)
     return c.constant_table[s].pool_index
 end
 
-procedure cp_Integer(c, value)
+procedure j_cp_Integer(c, value)
     local s
 
     s := "j_CONSTANT_Integer" || "," || value
@@ -1348,7 +1348,7 @@ procedure cp_Integer(c, value)
     return c.constant_table[s].pool_index
 end
 
-procedure cp_Float(c, value)
+procedure j_cp_Float(c, value)
     local s
 
     s := "j_CONSTANT_Float" || "," || value
@@ -1359,7 +1359,7 @@ procedure cp_Float(c, value)
     return c.constant_table[s].pool_index
 end
 
-procedure cp_Long(c, value)
+procedure j_cp_Long(c, value)
     local s
 
     s := "j_CONSTANT_Long" || "," || value
@@ -1371,7 +1371,7 @@ procedure cp_Long(c, value)
     return c.constant_table[s].pool_index
 end
 
-procedure cp_Double(c, value)
+procedure j_cp_Double(c, value)
     local s
 
     s := "j_CONSTANT_Double" || "," || value
@@ -1383,7 +1383,7 @@ procedure cp_Double(c, value)
     return c.constant_table[s].pool_index
 end
 
-procedure cp_NameAndType(c, name_index, signature_index)
+procedure j_cp_NameAndType(c, name_index, signature_index)
     local s
 
     s := "j_CONSTANT_NameAndType" || "," || name_index || "," || signature_index
@@ -1394,7 +1394,7 @@ procedure cp_NameAndType(c, name_index, signature_index)
     return c.constant_table[s].pool_index
 end
 
-procedure cp_Utf8(c, value)
+procedure j_cp_Utf8(c, value)
     local s, t
 
     s := "j_CONSTANT_Utf8" || "," || value
@@ -1405,7 +1405,7 @@ procedure cp_Utf8(c, value)
     return t.pool_index
 end
 
-procedure cp_Unicode(c, value)
+procedure j_cp_Unicode(c, value)
     local s
 
     s := "j_CONSTANT_Unicode" || "," || value
@@ -1417,7 +1417,7 @@ procedure cp_Unicode(c, value)
 end
 
 
-procedure offset_attribute_info(offset)
+procedure j_offset_attribute_info(offset)
     local code_length, i, p
 
     offset +:= 6
@@ -1435,7 +1435,7 @@ procedure offset_attribute_info(offset)
         offset +:= 4
 
         code_length := 0
-        every code_length := offset_opcodes(!p.code, code_length)
+        every code_length := j_offset_opcodes(!p.code, code_length)
 
         offset +:= 4
 
@@ -1443,11 +1443,11 @@ procedure offset_attribute_info(offset)
 
         offset +:= 2
         every i := !p.exception_table do {
-            offset := offset_j_exception_table_info(offset, i)
+            offset := j_offset_j_exception_table_info(offset, i)
         }
         offset +:= 2
         every i := !p.attributes do {
-            offset := offset_attribute_info(offset, i)
+            offset := j_offset_attribute_info(offset, i)
         }
     }
     "j_Exceptions_attribute": {
@@ -1459,13 +1459,13 @@ procedure offset_attribute_info(offset)
     "j_LineNumberTable_attribute": {
         offset +:= 2
         every i := !p.line_number_table do {
-            offset := offset_j_line_number_table_info(offset, i)
+            offset := j_offset_j_line_number_table_info(offset, i)
         }
     }
     "j_LocalVariableTable_attribute": {
         offset +:= 2
         every i := !p.local_variable_table do {
-            offset := offset_j_local_variable_table_info(offset, i)
+            offset := j_offset_j_local_variable_table_info(offset, i)
         }
     }
     "j_GenericAttribute_info": {
@@ -1477,20 +1477,20 @@ procedure offset_attribute_info(offset)
     return offset
 end
 
-procedure offset_j_exception_table_info(offset, p)
+procedure j_offset_j_exception_table_info(offset, p)
     offset +:= 8
     return offset
 end
-procedure offset_j_line_number_table_info(offset, p)
+procedure j_offset_j_line_number_table_info(offset, p)
     offset +:= 4
     return offset
 end
-procedure offset_j_local_variable_table_info(offset, p)
+procedure j_offset_j_local_variable_table_info(offset, p)
     offset +:= 10
     return offset
 end
 
-procedure relocate(insn, locations)
+procedure j_relocate(insn, locations)
     local i
     static branching
     initial {
@@ -1533,7 +1533,7 @@ procedure relocate(insn, locations)
     }
 end
 
-procedure create_fieldref(classfile, name, Type, class)
+procedure j_create_fieldref(classfile, name, Type, class)
     local name_index, type_index, class_index, nat_index, field_index
 
     type(classfile) == "j_ClassFile" | runerr(500, classfile)
@@ -1541,15 +1541,15 @@ procedure create_fieldref(classfile, name, Type, class)
     type(Type) == "string" | runerr(500, Type)
     type(class) == "string" | runerr(500, class)
 
-    name_index := cp_Utf8(classfile, name)
-    type_index := cp_Utf8(classfile, Type)
-    class_index := cp_Class(classfile, cp_Utf8(classfile, class))
-    nat_index := cp_NameAndType(classfile, name_index, type_index)
-    field_index := cp_a_Fieldref(classfile, class_index, nat_index)
+    name_index := j_cp_Utf8(classfile, name)
+    type_index := j_cp_Utf8(classfile, Type)
+    class_index := j_cp_Class(classfile, j_cp_Utf8(classfile, class))
+    nat_index := j_cp_NameAndType(classfile, name_index, type_index)
+    field_index := j_cp_a_Fieldref(classfile, class_index, nat_index)
     return field_index
 end
 
-procedure create_field(classfile, access, name, Type)
+procedure j_create_field(classfile, access, name, Type)
     local name_index, type_index, field
 
     type(classfile) == "j_ClassFile" | runerr(500, classfile)
@@ -1557,14 +1557,14 @@ procedure create_field(classfile, access, name, Type)
     type(Type) == "string" | runerr(500, Type)
     type(access) == "integer" | runerr(500, access)
 
-    name_index := cp_Utf8(classfile, name)
-    type_index := cp_Utf8(classfile, Type)
+    name_index := j_cp_Utf8(classfile, name)
+    type_index := j_cp_Utf8(classfile, Type)
     field := j_field_info(access, name_index, type_index, [])
     put(classfile.fields, field)
     return field
 end
 
-procedure create_methodref(classfile, name, Type, class)
+procedure j_create_methodref(classfile, name, Type, class)
     local name_index, type_index, class_index, nat_index, method_index
 
     type(classfile) == "j_ClassFile" | runerr(500, classfile)
@@ -1572,15 +1572,15 @@ procedure create_methodref(classfile, name, Type, class)
     type(Type) == "string" | runerr(500, Type)
     type(class) == "string" | runerr(500, class)
 
-    name_index := cp_Utf8(classfile, name)
-    type_index := cp_Utf8(classfile, Type)
-    class_index := cp_Class(classfile, cp_Utf8(classfile, class))
-    nat_index := cp_NameAndType(classfile, name_index, type_index)
-    method_index := cp_Methodref(classfile, class_index, nat_index)
+    name_index := j_cp_Utf8(classfile, name)
+    type_index := j_cp_Utf8(classfile, Type)
+    class_index := j_cp_Class(classfile, j_cp_Utf8(classfile, class))
+    nat_index := j_cp_NameAndType(classfile, name_index, type_index)
+    method_index := j_cp_Methodref(classfile, class_index, nat_index)
     return method_index
 end
 
-procedure create_method(classfile, access, name, Type)
+procedure j_create_method(classfile, access, name, Type)
     local name_index, type_index, method
 
     type(classfile) == "j_ClassFile" | runerr(500, classfile)
@@ -1588,43 +1588,43 @@ procedure create_method(classfile, access, name, Type)
     type(Type) == "string" | runerr(500, Type)
     type(access) == "integer" | runerr(500, access)
 
-    name_index := cp_Utf8(classfile, name)
-    type_index := cp_Utf8(classfile, Type)
+    name_index := j_cp_Utf8(classfile, name)
+    type_index := j_cp_Utf8(classfile, Type)
     method := j_method_info(access, name_index, type_index, [])
     put(classfile.methods, method)
     return method
 end
 
-procedure create_code(classfile, stacksize, localsize)
+procedure j_create_code(classfile, stacksize, localsize)
     local code, cp_index
 
     type(classfile) == "j_ClassFile" | runerr(500, classfile)
     type(stacksize) == "integer" | runerr(500, stacksize)
     type(localsize) == "integer" | runerr(500, localsize)
 
-    cp_index := cp_Utf8(classfile, "Code")
+    cp_index := j_cp_Utf8(classfile, "Code")
     code := j_Code_attribute(cp_index, stacksize, localsize, [], [], [])
     return code
 end
 
-procedure writer_align4(writer, pad)
+procedure j_writer_align4(writer, pad)
     every 1 to pad do {
         writes(writer, char(0))
     }
 end
 
-procedure writer_u1(writer, u1)
+procedure j_writer_u1(writer, u1)
     (0 <= u1 < 256) | runerr(500, u1)
     writes(writer, char(iand(u1, 255)))
 end
 
-procedure writer_u2(writer, u2)
+procedure j_writer_u2(writer, u2)
     (0 <= u2 < 65536) | runerr(500, u2)
     writes(writer, char(iand(ishift(u2, - 8), 255)),
                    char(iand(u2, 255)))
 end
 
-procedure writer_u4(writer, u4)
+procedure j_writer_u4(writer, u4)
     (0 <= u4 < 4294967296) | runerr(500, u4)
     writes(writer, char(iand(ishift(u4, -24), 255)),
                    char(iand(ishift(u4, -16), 255)),
@@ -1632,18 +1632,18 @@ procedure writer_u4(writer, u4)
                    char(iand(u4, 255)))
 end
 
-procedure writer_s1(writer, s1)
+procedure j_writer_s1(writer, s1)
     (-128 <= s1 <= 127) | runerr(500, s1)
     writes(writer, char(iand(s1, 255)))
 end
 
-procedure writer_s2(writer, s2)
+procedure j_writer_s2(writer, s2)
     (-32768 <= s2 <= 32767) | runerr(500, s2)
     writes(writer, char(iand(ishift(s2, - 8), 255)),
                    char(iand(s2, 255)))
 end
 
-procedure writer_s4(writer, s4)
+procedure j_writer_s4(writer, s4)
     (-2147483648 <= s4 < 2147483648) | runerr(500, s4)
     writes(writer, char(iand(ishift(s4, -24), 255)),
                    char(iand(ishift(s4, -16), 255)),
@@ -1651,14 +1651,14 @@ procedure writer_s4(writer, s4)
                    char(iand(s4, 255)))
 end
 
-procedure offset_align4(offset, x)
+procedure j_offset_align4(offset, x)
     local k
 
     k := (4 - offset % 4) % 4
     return offset + k
 end
 
-procedure ipush(x, classptr)
+procedure j_ipush(x, classptr)
     case x of {
     -1 :    return j_iconst_m1()
     0 : return j_iconst_0()
@@ -1668,15 +1668,15 @@ procedure ipush(x, classptr)
     4 : return j_iconst_4()
     5 : return j_iconst_5()
     }
-    if -128 <= x <= 127 then return j_bipush(x)
-    if -32768 <= x <= 32767 then return j_sipush(x)
+    if -128 <= x <= 127 then return j_bj_ipush(x)
+    if -32768 <= x <= 32767 then return j_sj_ipush(x)
     if -2147483648 <= x <= 2147483647 then {
-        return j_ldc_w(cp_Integer(classptr, x))
+        return j_ldc_w(j_cp_Integer(classptr, x))
     }
     runerr(500, x)
 end
 
-procedure Iload(x)
+procedure j_Iload(x)
     case x of {
     0 : return j_iload_0()
     1 : return j_iload_1()
@@ -1691,7 +1691,7 @@ procedure Iload(x)
     }
     runerr(500, x)
 end
-procedure Istore(x)
+procedure j_Istore(x)
     case x of {
     0 : return j_istore_0()
     1 : return j_istore_1()
@@ -1706,7 +1706,7 @@ procedure Istore(x)
     }
     runerr(500, x)
 end
-procedure Aload(x)
+procedure j_Aload(x)
     case x of {
     0 : return j_aload_0()
     1 : return j_aload_1()
@@ -1721,7 +1721,7 @@ procedure Aload(x)
     }
     runerr(500, x)
 end
-procedure Astore(x)
+procedure j_Astore(x)
     case x of {
     0 : return j_astore_0()
     1 : return j_astore_1()
