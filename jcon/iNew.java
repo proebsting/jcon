@@ -23,6 +23,7 @@ public static vInteger Integer(double x)	{ return new vInteger(x); }
 public static vInteger Integer(String x)	{ return new vInteger(x); }
 
 public static vReal Real(double x) 		{ return new vReal(x); }
+public static vReal Real(String x) 		{ return new vReal(x); }
 
 public static vCset Cset(String x) 		{ return new vCset(x); }
 public static vCset Cset(int low, int high)	{ return new vCset(low, high); }

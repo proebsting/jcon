@@ -548,6 +548,9 @@ class oRefresh extends iUnaryFunctionClosure {		//  ^x
 
 class oActivate extends iBinaryFunctionClosure {		//  x @ C
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
+		if (!(arg1 instanceof vCoexp)) {
+			iRuntime.error(118, arg1);
+		}
 		return iEnv.cur_coexp.activate(arg0, arg1);
 	}
 	String tfmt() { return "{$1 @ $2}"; }

@@ -40,28 +40,32 @@ public class iInterface {
 		if (fileTable.containsKey(name)) {
 			return;
 		}
+		Class c = null;
 		try {
-			Class c = Class.forName(name);
-			Object o = c.newInstance();
-			iFile file = (iFile) o;
-			file.link();
-			fileTable.put(name, file);
+			c = Class.forName(name);
 		} catch (ClassNotFoundException e) {
 			System.err.println();
-			System.err.println("linking error in startup code");
+			System.err.println("linking error in startup code: " + e.toString());
 			System.err.println("error linking file " + name);
 			iRuntime.exit(1, null);
+		}
+		Object o = null;
+		try {
+			o = c.newInstance();
 		} catch (InstantiationException e) {
 			System.err.println();
-			System.err.println("linking error in startup code");
+			System.err.println("linking error in startup code: " + e.toString());
 			System.err.println("error linking file " + name);
 			iRuntime.exit(1, null);
 		} catch (IllegalAccessException e) {
 			System.err.println();
-			System.err.println("linking error in startup code");
+			System.err.println("linking error in startup code: " + e.toString());
 			System.err.println("error linking file " + name);
 			iRuntime.exit(1, null);
 		}
+		iFile file = (iFile) o;
+		file.link();
+		fileTable.put(name, file);
 	}
 
 	public static void start(String[] filenames, String[] args, String name) {
