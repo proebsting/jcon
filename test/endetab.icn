@@ -1,4 +1,5 @@
 #SRC: V9GEN
+#OPT: -fe
 
 # test type conversion and error handling in entab/detab
 

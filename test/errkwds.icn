@@ -1,4 +1,5 @@
 #SRC: JCON
+#OPT: -fe
 
 procedure main()
 	write(&error)

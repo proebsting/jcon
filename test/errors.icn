@@ -1,4 +1,6 @@
 #SRC: V9GEN
+#OPT: -fe
+
 record array(a,b,c,d,e,f,g)
 procedure p1()
    write("seq(\"a\") | monitor(&line) ----> ",

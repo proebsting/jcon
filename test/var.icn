@@ -1,4 +1,5 @@
 #SRC: V9GEN
+#OPT: -fd
 
 procedure main(a)
    local x

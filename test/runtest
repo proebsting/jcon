@@ -36,7 +36,8 @@ for FNAME; do
 	FAILED="$FAILED $BASE"
 	continue
     fi
-    if $JCONT $JCOPT $BASE; then
+    XOPTS=`sed -n 's/^#OPT:  *//p' $BASE.icn`
+    if $JCONT $JCOPT $XOPTS $BASE; then
        :
     else
 	FAILED="$FAILED $BASE"
