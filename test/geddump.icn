@@ -1,0 +1,314 @@
+#SRC: JCON
+
+
+
+#  geddump.icn -- print info from GEDCOM file
+
+record person(n, k, r)	# number, sort key, gedrec node
+
+
+global ptab		# person number table, indexed by gedrec node
+
+
+procedure main(args)
+   local f, g, i, n, p, r, plist, fam, husb, sp
+
+   if *args > 0 then
+      f := open(args[1]) | stop("can't open ", args[1])
+   else
+      f := &input
+
+   g := gedload(f)
+   close(f)
+
+   plist := []
+   ptab := table()
+   every r := !g.ind do
+      put(plist, ptab[r] := person(0, sortkey(r), r))
+
+   plist := sortf(plist, 2)
+
+   n := 0
+   every (!plist).n := (n +:= 1)
+
+   every p := !plist do {
+      write()
+      write("[", p.n, "] ", gedlnf(p.r))
+
+      if fam := gedref(p.r, "FAMC") then {
+	 refto("father", gedref(fam, "HUSB"))
+	 refto("mother", gedref(fam, "WIFE"))
+         }
+
+      event("b.", gedsub(p.r, "BIRT"))
+
+      r := &null
+      every fam := gedref(p.r, "FAMS") do {		# for every family
+         r := event("m.", gedsub(fam, "MARR"))
+         r := refto("  husb", p.r ~=== gedref(fam, "HUSB"))
+         r := refto("  wife", p.r ~=== gedref(fam, "WIFE"))
+	 # if had earlier kids and did not indicate remarriage, do so now
+	 if \r then
+	    write("   m.")
+	 # print children under husband, or under wife if no husband
+	 if (p.r === gedref(fam, "HUSB")) | (not gedref(fam, "HUSB")) then {
+            every r := gedref(fam, "CHIL") do {
+               case (gedval(r, "SEX") | "") of {
+                  "M":		refto("   son", r)
+                  "F":		refto("   dau", r)
+                  default:	refto(" child", r)
+                  }
+	       }
+	    }
+	 }
+
+      event("d.", gedsub(p.r, "DEAT"))
+      }
+end
+
+procedure event(label, r)
+   local date, place
+
+   date  := ("" ~== geddate(r))
+   place := ("" ~== gedval(r, "PLAC"))
+   if /place then
+      write("   ", label, " ", \date)
+   else
+      write("   ", label, " ", \date | "            ", "  ", place)
+   return
+end
+
+procedure refto(label, r)
+   write("   ", label, " [", ptab[r].n, "] ", gedfnf(r))
+   return
+end
+
+procedure sortkey(r)
+   return map(gedlnf(r))
+end
+
+
+
+
+############################################################################
+#
+#	File:     gedcom.icn
+#
+#	Subject:  Procedures for reading GEDCOM files
+#
+#	Author:   Gregg M. Townsend
+#
+#	Date:     January 1, 1998
+#
+############################################################################
+#
+#   This file is in the public domain.
+#
+############################################################################
+#
+#	GEDCOM files are a standard format for exchanging genealogy
+#	information.  These procedures handle "PAF 2.1" format GEDCOM
+#	files (those using FAM instead of FAMI for family records).
+#	Date formatting assumes the English language.
+#
+#	gedload(f) loads GEDCOM data from file f and returns a gedcom
+#	record containing the following fields:
+#	    tree	root of tree of gednode records
+#	    id		table of labeled nodes, indexed by @ID@
+#	    fam		list of FAM nodes
+#	    ind		list of INDI nodes
+#
+############################################################################
+
+record gedcom(
+   tree, 	# tree of data records
+   id,		# table of labeled nodes, indexed by @ID@
+   fam,		# list of FAMI nodes
+   ind		# list of INDI nodes
+)
+
+record gednode(
+   level,	# level
+   id,		# ID (label), including @...@ delimiters
+   tag,		# tag
+   data,	# data
+   lnum,	# line number
+   parent,	# parent node in tree
+   ref,		# referenced node, if any
+   sub		# sub-entry list
+)
+
+$define WHITESPACE ' \t\n\r'
+
+
+
+#  gedload(f) -- load GEDCOM data from file f, returning gedcom record.
+
+procedure gedload(f)		#: load GEDCOM data from file f
+   local line, lnum, r, curr
+   local root, id, fam, ind
+
+   lnum := 0
+   root := curr := gednode(-1, , "ROOT", "", lnum, , , [])
+   id := table()
+   fam := []
+   ind := []
+
+   while line := trim(read(f), WHITESPACE) do {
+      lnum +:= 1
+      if *line = 0 then
+	 next
+
+      if not (r := gedscan(line)) then {
+         write(&errout, "ERR, line ", lnum, ": ", line)
+         next
+      }
+      r.lnum := lnum
+      r.sub := []
+
+      while curr.level >= r.level do
+	 curr := curr.parent
+      put(curr.sub, r)
+      r.parent := curr
+      curr := r
+
+      id[\r.id] := r
+      case r.tag of {
+	 "FAM":  put(fam, r)
+	 "INDI":  put(ind, r)
+      }
+   }
+
+   every r := gedwalk(root) do
+      r.ref := id[r.data]
+
+   return gedcom(root, id, fam, ind)
+end
+
+
+
+#  gedscan(f) -- scan one line of a GEDCOM record, returning gednode record
+
+procedure gedscan(s)		#: scan GEDCOM line and return record
+   local level, id, tag, data
+   static alnum
+   initial alnum := &letters ++ &digits ++ '_'
+
+   s ? {
+      tab(many(WHITESPACE))
+      level := tab(many(&digits)) | fail
+      tab(many(WHITESPACE))
+      if id := (="@" || tab(upto('@') + 1)) then
+         tab(many(WHITESPACE))
+      tag := tab(many(alnum)) | fail
+      tab(many(WHITESPACE))
+      data := tab(0)
+      return gednode(level, id, tag, data)
+      }
+end
+
+
+
+#  gedwalk(r) -- walk GEDCOM tree, generating nodes in preorder
+
+procedure gedwalk(r)		#: generate GEDCOM tree nodes in preorder
+   suspend r | gedwalk(!r.sub)
+   fail
+end
+
+
+
+#  gedsub(r, field...) -- generate subrecords with given tags
+#  gedval(r, field...) -- generate values of subrecords with given tags
+#  gedref(r, field...) -- generate nodes referenced by given tags
+
+procedure gedsub(r, f[])	#: find subrecords
+   local tag, x
+
+   tag := get(f) | fail
+   every x := !r.sub do {
+      if x.tag == tag then
+	 if *f > 0 then
+	    suspend gedsub ! push(f, x)
+	 else
+	    suspend x
+   }
+end
+
+procedure gedval(a[])		#: find subrecord values
+   suspend (gedsub ! a).data
+end
+
+procedure gedref(a[])		#: find referenced nodes
+   suspend \(gedsub ! a).ref
+end
+
+
+
+#  gedfnf(r) -- get name from individual record, first name first
+
+procedure gedfnf(r)		#: get last name first
+   local first, last, s
+
+   s := gedval(r, "NAME") | fail
+   s ? {
+      first := trim(tab(upto('/'))) | return tab(0)
+      ="/"
+      last := tab(upto('/') | 0)
+   }
+   if *first > 0 then
+      s := first || " " || last
+   else
+      s := last
+   s ||:= " " || gedval(r, "TITL")	# may fail
+   return s
+end
+
+
+
+#  gedlnf(r) -- get name from individual record, last name first
+
+procedure gedlnf(r)		#: get last name first
+   local first, last, s
+
+   s := gedval(r, "NAME") | fail
+   s ? {
+      first := trim(tab(upto('/'))) | return tab(0)
+      ="/"
+      last := tab(upto('/') | 0)
+   }
+   s := last || ", " || first
+   s ||:= " " || gedval(r, "TITL")	# may fail
+   return s
+end
+
+
+#  geddate(r) -- get date from record in standard form
+
+procedure geddate(r)		#: get canonical date
+   local s, t, w
+   static ftab
+   initial {
+      ftab := table()
+      ftab["JAN"] := "Jan";  ftab["FEB"] := "Feb"; ftab["MAR"] := "Mar"
+      ftab["APR"] := "Apr";  ftab["MAY"] := "May"; ftab["JUN"] := "Jun"
+      ftab["JUL"] := "Jul";  ftab["AUG"] := "Aug"; ftab["SEP"] := "Sep"
+      ftab["OCT"] := "Oct";  ftab["NOV"] := "Nov"; ftab["DEC"] := "Dec"
+      ftab["ABT"] := "abt";  ftab["BEF"] := "bef"; ftab["AFT"] := "aft"
+      ftab["CAL"] := "cal";  ftab["EST"] := "est"
+      }
+
+   s := trim(gedval(r, "DATE"), WHITESPACE) | fail
+   t := ""
+
+   s ? while not pos(0) do {
+      tab(many(WHITESPACE))
+      w := tab(upto(WHITESPACE) | 0)
+      t ||:= " " || (\ftab[w] | w)
+   }
+
+   if *t > 13 then
+      return t[2:0]
+   else
+      return right(t, 12)
+end

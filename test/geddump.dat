@@ -1,0 +1,508 @@
+0 HEAD
+1 SOUR PAF 2.31
+2 NAME Personal Ancestral File(R)
+1 DEST PAF
+1 DATE 23 MAR 1998
+1 SUBM @S1@
+1 FILE ANCESTRS.GED
+1 CHAR ANSEL
+0 @S1@ SUBM
+1 NAME Gregg M. Townsend
+1 ADDR gmt@cs.arizona.edu
+2 CONT 2431 W. Placita Mateo
+2 CONT Tucson, AZ  85745
+1 PHON +1 520 622 4180
+0 @I10@ INDI
+1 NAME George Marshall /Townsend/
+1 SEX M
+1 BIRT
+2 DATE 26 FEB 1884
+2 PLAC Ashton,Osceola,IA
+1 DEAT
+2 DATE    MAR 1937
+2 PLAC Sioux City,Woodbury,IA
+1 BURI
+2 PLAC Ashton,Osceola,IA
+1 FAMC @F7@
+0 @I16@ INDI
+1 NAME James Edwin /Townsend/
+1 SEX M
+1 BIRT
+2 DATE 18 FEB 1843
+2 PLAC Lakeville,Oakland,MI
+1 DEAT
+2 DATE  9 APR 1920
+2 PLAC Ashton,Osceola,IA
+1 FAMS @F7@
+1 FAMC @F8@
+0 @I17@ INDI
+1 NAME Emma Caroline /Jones/
+1 SEX F
+1 BIRT
+2 DATE 15 JUL 1848
+2 PLAC Holly,Oakland,MI
+1 DEAT
+2 DATE 29 OCT 1928
+2 PLAC Ashton,Osceola,IA
+1 FAMS @F7@
+0 @I18@ INDI
+1 NAME Elethan  /Townsend/
+1 SEX M
+1 BIRT
+2 DATE  4 MAR 1812
+2 PLAC ,Greene,NY
+1 DEAT
+2 DATE 14 JUL 1883
+2 PLAC Lakeville,Oakland,MI
+1 FAMS @F8@
+1 FAMC @F10@
+0 @I19@ INDI
+1 NAME Laura Eliza /Tedman/
+1 SEX F
+1 BIRT
+2 DATE 17 JAN 1815
+2 PLAC ,,CT
+1 DEAT
+2 DATE 24 MAY 1883
+2 PLAC Lakeville,Oakland,MI
+1 FAMS @F8@
+1 FAMC @F12@
+0 @I22@ INDI
+1 NAME Elihu  /Townsend/
+1 SEX M
+1 BIRT
+2 DATE ABT    1765
+2 PLAC Oyster Bay,Long Island,NY
+1 DEAT
+2 DATE 15 MAY 1834
+2 PLAC Mt. Vernon,Oakland,MI
+1 REFN 14VP-D15
+1 FAMS @F10@
+1 FAMC @F11@
+0 @I23@ INDI
+1 NAME Hester  /Brewer/
+1 SEX F
+1 BIRT
+2 DATE        1771
+2 PLAC <Westchester,New York>
+1 DEAT
+2 DATE 25 JUL 1835
+2 PLAC Mt. Vernon,Oakland,MI
+1 REFN 14VP-D0X
+1 FAMS @F10@
+1 FAMC @F64@
+0 @I24@ INDI
+1 NAME John  /Townsend/
+1 SEX M
+1 FAMS @F11@
+0 @I25@ INDI
+1 NAME James  /Tedman/
+1 SEX M
+1 BIRT
+2 DATE ABT    1785
+2 PLAC ,,of CT
+1 FAMS @F12@
+0 @I47@ INDI
+1 NAME Elizabeth  /Stone/
+1 SEX F
+1 BIRT
+2 DATE 22 JUN 1749
+2 PLAC <Holland>
+1 DEAT
+2 DATE 30 JAN 1828
+2 PLAC Greene,New York
+1 REFN 14VP-7XV
+1 FAMS @F64@
+0 @I58@ INDI
+1 NAME Peter  /Brewer/
+1 SEX M
+1 BIRT
+2 DATE  1 APR 1740
+2 PLAC Holland
+1 DEAT
+2 DATE 22 MAR 1804
+2 PLAC Hunter,Greene,New York
+1 BURI
+2 PLAC Oliver Haines's,Farm,Haines Falls,New York
+1 REFN 14VP-7WN
+1 FAMS @F64@
+0 @I78@ INDI
+1 NAME Clara L /Townsend/
+1 SEX F
+1 BIRT
+2 DATE 28 OCT 1872
+2 PLAC ,,IA
+1 FAMC @F7@
+0 @I79@ INDI
+1 NAME Elethan Burr /Townsend/
+1 SEX M
+1 BIRT
+2 DATE    OCT 1874
+2 PLAC ,Osceola,IA
+1 DEAT
+2 DATE 28 FEB 1950
+1 FAMC @F7@
+0 @I80@ INDI
+1 NAME Francis E /Townsend/
+1 SEX M
+1 BIRT
+2 DATE    AUG 1876
+2 PLAC ,,IA
+1 DEAT
+2 DATE 30 NOV 1948
+1 FAMC @F7@
+0 @I81@ INDI
+1 NAME James Edwin /Townsend/
+1 TITL Jr.
+1 SEX M
+1 BIRT
+2 DATE 26 FEB 1884
+2 PLAC Ashton,Osceola,IA
+1 FAMC @F7@
+0 @I82@ INDI
+1 NAME Robert Ellis /Townsend/
+1 SEX M
+1 BIRT
+2 DATE    APR 1886
+2 PLAC ,,IA
+1 DEAT
+2 DATE 10 JAN 1960
+1 FAMC @F7@
+0 @I108@ INDI
+1 NAME Esther  /Townsend/
+1 SEX F
+1 FAMC @F10@
+0 @I109@ INDI
+1 NAME Peter  /Townsend/
+1 SEX M
+1 FAMC @F10@
+0 @I110@ INDI
+1 NAME Susan  /Townsend/
+1 SEX F
+1 FAMC @F10@
+0 @I111@ INDI
+1 NAME Timothy  /Townsend/
+1 SEX M
+1 FAMC @F10@
+0 @I112@ INDI
+1 NAME Harriet E /Townsend/
+1 SEX F
+1 FAMC @F8@
+0 @I113@ INDI
+1 NAME Lucy A /Townsend/
+1 SEX F
+1 FAMC @F8@
+0 @I114@ INDI
+1 NAME Sherman Sexton /Townsend/
+1 SEX M
+1 FAMC @F8@
+0 @I115@ INDI
+1 NAME Freeling H /Townsend/
+1 SEX M
+1 FAMC @F8@
+0 @I116@ INDI
+1 NAME Rufus H /Townsend/
+1 SEX M
+1 FAMS @F47@
+1 FAMC @F8@
+0 @I117@ INDI
+1 NAME George Lewis /Townsend/
+1 SEX M
+1 FAMC @F8@
+0 @I118@ INDI
+1 NAME Judson  /Townsend/
+1 SEX M
+1 FAMC @F8@
+0 @I119@ INDI
+1 NAME Rosamond Eliza /Townsend/
+1 SEX F
+1 FAMC @F8@
+0 @I132@ INDI
+1 NAME Mrs. James //
+1 SEX F
+1 BIRT
+2 DATE ABT    1785
+1 FAMS @F12@
+0 @I147@ INDI
+1 NAME Emma B /Proper/
+1 SEX F
+1 FAMS @F47@
+0 @I148@ INDI
+1 NAME infant  /Townsend/
+1 FAMC @F47@
+0 @I149@ INDI
+1 NAME Myrle Albert /Townsend/
+1 SEX M
+1 FAMC @F47@
+0 @I178@ INDI
+1 NAME Susannah  /Brewer/
+1 SEX F
+1 BIRT
+2 DATE        1768
+2 PLAC <Westchester,New York>
+1 REFN 14VP-CZR
+1 FAMS @F65@
+1 FAMC @F64@
+0 @I179@ INDI
+1 NAME John  /Brewer/
+1 SEX M
+1 BIRT
+2 DATE        1769
+2 PLAC <Westchester,New York>
+1 REFN 14VP-808
+1 FAMC @F64@
+0 @I181@ INDI
+1 NAME Hannah  /Brewer/
+1 SEX F
+1 BIRT
+2 DATE        1772
+2 PLAC <Westchester,New York>
+1 REFN 14VP-D3K
+1 FAMS @F67@
+1 FAMC @F64@
+0 @I182@ INDI
+1 NAME William  /Brewer/
+1 SEX M
+1 BIRT
+2 DATE        1774
+2 PLAC <Westchester,New York>
+1 REFN 14VP-83V
+1 FAMC @F64@
+0 @I183@ INDI
+1 NAME Mariam  /Brewer/
+1 SEX F
+1 BIRT
+2 DATE  8 AUG 1776
+2 PLAC Westchester,New York
+1 DEAT
+2 DATE 16 AUG 1857
+2 PLAC Hunter,Greene,New York
+1 REFN 14VP-843
+1 FAMS @F68@
+1 FAMC @F64@
+0 @I184@ INDI
+1 NAME Samuel  /Brewer/
+1 SEX M
+1 BIRT
+2 DATE        1778
+2 PLAC Putnam,New York
+1 REFN 14VP-D4R
+1 FAMS @F69@
+1 FAMC @F64@
+0 @I185@ INDI
+1 NAME James  /Brewer/
+1 SEX M
+1 BIRT
+2 DATE        1780
+2 PLAC <Putnam,New York>
+1 REFN 14VP-86H
+1 FAMC @F64@
+0 @I186@ INDI
+1 NAME Anna  /Brewer/
+1 SEX F
+1 BIRT
+2 DATE        1782
+2 PLAC <Putnam,New York>
+1 REFN 14VP-D7D
+1 FAMS @F70@
+1 FAMC @F64@
+0 @I187@ INDI
+1 NAME Betsey  /Brewer/
+1 SEX F
+1 BIRT
+2 DATE        1784
+2 PLAC <Putnam,New York>
+1 REFN 14VP-D9S
+1 FAMS @F71@
+1 FAMC @F64@
+0 @I188@ INDI
+1 NAME Daniel  /Brewer/
+1 SEX M
+1 BIRT
+2 DATE        1786
+2 PLAC <Putnam,New York>
+1 REFN 14VP-894
+1 FAMC @F64@
+0 @I189@ INDI
+1 NAME Jacob  /Brewer/
+1 SEX M
+1 BIRT
+2 DATE        1787
+2 PLAC <Putnam,New York>
+1 DEAT
+2 DATE        1788
+1 REFN 14VP-8CJ
+1 FAMC @F64@
+0 @I190@ INDI
+1 NAME Lad  /Brewer/
+1 SEX M
+1 BIRT
+2 DATE        1787
+2 PLAC <Putnam,New York>
+1 DEAT
+2 DATE        1788
+1 REFN 14VP-8BB
+1 FAMC @F64@
+0 @I191@ INDI
+1 NAME Aron  /Brewer/
+1 SEX M
+1 BIRT
+2 DATE        1788
+2 PLAC <Putnam,New York>
+1 REFN 14VP-8DQ
+1 FAMC @F64@
+0 @I192@ INDI
+1 NAME Peter  /Brewer/
+1 TITL Jr.
+1 SEX M
+1 BIRT
+2 DATE        1791
+2 PLAC <Putnam,New York>
+1 REFN 14VP-DB1
+1 FAMS @F72@
+1 FAMC @F64@
+0 @I193@ INDI
+1 NAME Abraham  /Brewer/
+1 SEX M
+1 BIRT
+2 DATE        1793
+2 PLAC <Putnam,New York>
+1 REFN 14VP-DDF
+1 FAMS @F73@
+1 FAMC @F64@
+0 @I194@ INDI
+1 NAME Samuel  /Cypher/
+1 SEX M
+1 REFN 14VP-CXK
+1 FAMS @F65@
+0 @I196@ INDI
+1 NAME Caleb  /Gregory/
+1 SEX M
+1 REFN 14VP-D2C
+1 FAMS @F67@
+0 @I197@ INDI
+1 NAME Edward  /Haines/
+1 SEX M
+1 REFN 14VP-8KR
+1 FAMS @F68@
+0 @I198@ INDI
+1 NAME Charlotte  /Whitney/
+1 SEX F
+1 REFN 14VP-D50
+1 FAMS @F69@
+0 @I199@ INDI
+1 NAME John  /Haines/
+1 TITL Jr.
+1 SEX M
+1 REFN 14VP-D66
+1 FAMS @F70@
+0 @I200@ INDI
+1 NAME Nathaniel  /English/
+1 SEX M
+1 REFN 14VP-D8L
+1 FAMS @F71@
+0 @I201@ INDI
+1 NAME Mary  /Terns/
+1 SEX F
+1 REFN 14VP-DC7
+1 FAMS @F72@
+0 @I202@ INDI
+1 NAME Annie  /Eggleston/
+1 SEX F
+1 REFN 14VP-DFM
+1 FAMS @F73@
+0 @F7@ FAM
+1 HUSB @I16@
+1 WIFE @I17@
+1 CHIL @I78@
+1 CHIL @I79@
+1 CHIL @I80@
+1 CHIL @I10@
+1 CHIL @I81@
+1 CHIL @I82@
+1 MARR
+2 DATE    OCT 1871
+0 @F8@ FAM
+1 HUSB @I18@
+1 WIFE @I19@
+1 CHIL @I112@
+1 CHIL @I113@
+1 CHIL @I114@
+1 CHIL @I16@
+1 CHIL @I115@
+1 CHIL @I116@
+1 CHIL @I117@
+1 CHIL @I118@
+1 CHIL @I119@
+1 MARR
+2 DATE 30 DEC 1835
+0 @F10@ FAM
+1 HUSB @I22@
+1 WIFE @I23@
+1 CHIL @I108@
+1 CHIL @I109@
+1 CHIL @I110@
+1 CHIL @I111@
+1 CHIL @I18@
+0 @F11@ FAM
+1 HUSB @I24@
+1 CHIL @I22@
+0 @F12@ FAM
+1 HUSB @I25@
+1 WIFE @I132@
+1 CHIL @I19@
+0 @F47@ FAM
+1 HUSB @I116@
+1 WIFE @I147@
+1 CHIL @I148@
+1 CHIL @I149@
+1 MARR
+2 DATE    SEP 1880
+0 @F64@ FAM
+1 HUSB @I58@
+1 WIFE @I47@
+1 CHIL @I178@
+1 CHIL @I179@
+1 CHIL @I23@
+1 CHIL @I181@
+1 CHIL @I182@
+1 CHIL @I183@
+1 CHIL @I184@
+1 CHIL @I185@
+1 CHIL @I186@
+1 CHIL @I187@
+1 CHIL @I188@
+1 CHIL @I189@
+1 CHIL @I190@
+1 CHIL @I191@
+1 CHIL @I192@
+1 CHIL @I193@
+1 MARR
+2 DATE  9 AUG 1767
+0 @F65@ FAM
+1 HUSB @I194@
+1 WIFE @I178@
+0 @F67@ FAM
+1 HUSB @I196@
+1 WIFE @I181@
+0 @F68@ FAM
+1 HUSB @I197@
+1 WIFE @I183@
+1 MARR
+2 DATE        1796
+0 @F69@ FAM
+1 HUSB @I184@
+1 WIFE @I198@
+0 @F70@ FAM
+1 HUSB @I199@
+1 WIFE @I186@
+0 @F71@ FAM
+1 HUSB @I200@
+1 WIFE @I187@
+0 @F72@ FAM
+1 HUSB @I192@
+1 WIFE @I201@
+0 @F73@ FAM
+1 HUSB @I193@
+1 WIFE @I202@
+0 TRLR
