@@ -173,7 +173,7 @@ procedure u_gen_a_Case(s, p)
         u_loops[1].ir.markcount +:= 1
         put(s, u_ccase())
         u_gen(s, i.expr)
-        u_coord(s, p)
+        u_coord(s, i)
         put(s, u_eqv())
         u_loops[1].ir.markcount -:= 1
         put(s, u_unmark())
@@ -395,8 +395,8 @@ procedure u_gen_a_Binop(s, p)
         u_gen(s, p.left)
         put(s, u_sdup())
         u_gen(s, p.right)
-        put(s, u_coact())
         u_coord(s, p)
+        put(s, u_coact())
         put(s, u_asgn())
     } else if p.op == "&" then {
         u_gen(s, p.left)
@@ -412,8 +412,8 @@ procedure u_gen_a_Binop(s, p)
         u_gen(s, p.left)
         put(s, u_dup())
         u_gen(s, p.right)
-        put(s, (\fn[op])()) | runerr(500, p)
         u_coord(s, p)
+        put(s, (\fn[op])()) | runerr(500, p)
         put(s, u_asgn())
     } else {
         put(s, u_pnull())
@@ -572,7 +572,7 @@ procedure u_gen_a_ProcDecl(s, p)
     u_loops := []
     code := []
     u_reset_coord()
-    u_coord(code, p)
+    u_coord(code, p.ident)
     u_gen(code, p.code)
 
     write(u_u1, "proc ", p.ident.id)
@@ -859,6 +859,7 @@ procedure u_gen_a_Mutual(s, p)
     } else {
         put(s, u_pushn1())
         every u_gen(s, !p.exprList)
+	u_coord(s, p)
         put(s, u_invoke(*p.exprList))
     }
 end
@@ -898,6 +899,7 @@ end
 procedure u_gen_a_ListConstructor(s, p)
     put(s, u_pnull())
     every u_gen(s, !p.exprList)
+    u_coord(s, p)
     put(s, u_llist(*p.exprList))
 end
 

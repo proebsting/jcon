@@ -48,26 +48,27 @@ procedure parse_cclause()
     static cclause_set
     initial {
     cclause_set := set([lex_CONJUNC, lex_AT, lex_BACKSLASH, lex_BANG,
-        		      lex_BAR, lex_BREAK, lex_CARET, lex_CASE,
-        		      lex_CONCAT, lex_CREATE, lex_CSETLIT, lex_DIFF,
-        		      lex_DOT, lex_EQUIV, lex_EVERY, lex_FAIL,
-        		      lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
-        		      lex_LBRACE, lex_LBRACK, lex_LCONCAT, lex_LPAREN,
-        		      lex_MINUS, lex_NOTEQUIV, lex_NEXT, lex_NUMEQ,
-        		      lex_NUMNE, lex_NOT, lex_PLUS, lex_QMARK,
-        		      lex_REALLIT, lex_REPEAT, lex_RETURN, lex_LEXEQ,
-        		      lex_SLASH, lex_LEXNE, lex_STAR, lex_STRINGLIT,
-        		      lex_SUSPEND, lex_TILDE, lex_UNION, lex_UNTIL,
-        		      lex_WHILE])
+                              lex_BAR, lex_BREAK, lex_CARET, lex_CASE,
+                              lex_CONCAT, lex_CREATE, lex_CSETLIT, lex_DIFF,
+                              lex_DOT, lex_EQUIV, lex_EVERY, lex_FAIL,
+                              lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
+                              lex_LBRACE, lex_LBRACK, lex_LCONCAT, lex_LPAREN,
+                              lex_MINUS, lex_NOTEQUIV, lex_NEXT, lex_NUMEQ,
+                              lex_NUMNE, lex_NOT, lex_PLUS, lex_QMARK,
+                              lex_REALLIT, lex_REPEAT, lex_RETURN, lex_LEXEQ,
+                              lex_SLASH, lex_LEXNE, lex_STAR, lex_STRINGLIT,
+                              lex_SUSPEND, lex_TILDE, lex_UNION, lex_UNTIL,
+                              lex_WHILE])
     }
-    coord := parse_tok_rec.coord
     if parse_tok_rec === lex_DEFAULT then {
         e := lex_DEFAULT
         parse_eat_token()
+        coord := parse_tok_rec.coord
         parse_match_token(lex_COLON)
         body := parse_expr()
     } else if member(cclause_set, parse_tok_rec) then {
         e := parse_expr()
+        coord := parse_tok_rec.coord
         parse_match_token(lex_COLON)
         body := parse_expr()
     } else {
@@ -129,29 +130,30 @@ procedure parse_expr()
 end
 
 procedure parse_expr1()
-    local ret, op, right
+    local ret, op, right, coord
     static expr1_set
 
     initial {
     expr1_set := set([lex_ASSIGN, lex_AUGAND, lex_AUGAT, lex_CARETASGN,
-        		    lex_CONCATASGN, lex_DIFFASGN, lex_AUGEQV,
-        		    lex_INTERASGN, lex_LCONCATASGN, lex_MINUSASGN,
-        		    lex_MODASGN, lex_AUGNEQV, lex_AUGEQ, lex_AUGGE,
-        		    lex_AUGGT, lex_AUGLE, lex_AUGLT, lex_AUGNE,
-        		    lex_PLUSASGN, lex_SCANASGN, lex_AUGSEQ, lex_AUGSGE,
-        		    lex_AUGSGT, lex_SLASHASGN, lex_AUGSLE, lex_AUGSLT,
-        		    lex_AUGSNE, lex_STARASGN, lex_UNIONASGN,
-        		    lex_REVASSIGN, lex_REVSWAP, lex_SWAP])
+                            lex_CONCATASGN, lex_DIFFASGN, lex_AUGEQV,
+                            lex_INTERASGN, lex_LCONCATASGN, lex_MINUSASGN,
+                            lex_MODASGN, lex_AUGNEQV, lex_AUGEQ, lex_AUGGE,
+                            lex_AUGGT, lex_AUGLE, lex_AUGLT, lex_AUGNE,
+                            lex_PLUSASGN, lex_SCANASGN, lex_AUGSEQ, lex_AUGSGE,
+                            lex_AUGSGT, lex_SLASHASGN, lex_AUGSLE, lex_AUGSLT,
+                            lex_AUGSNE, lex_STARASGN, lex_UNIONASGN,
+                            lex_REVASSIGN, lex_REVSWAP, lex_SWAP])
     }
     #  expr2 {  expr1op  expr1 } (Right Associative)
     ret := parse_expr2()
     while member(expr1_set, parse_tok_rec) do {
+	coord := parse_tok_rec.coord
         op := parse_eat_token()
         right := parse_expr1()
         if op == "?:=" then {
-            ret := a_Scan(op, ret, right, ret.coord)
+            ret := a_Scan(op, ret, right, coord)
         } else {
-            ret := a_Binop(op, ret, right, ret.coord)
+            ret := a_Binop(op, ret, right, coord)
         }
     }
     return ret
@@ -163,18 +165,18 @@ procedure parse_expr10()
 
     initial {
     expr10_set1 := set([lex_CONJUNC, lex_BREAK, lex_CASE, lex_CREATE,
-        		      lex_CSETLIT, lex_EVERY, lex_FAIL, lex_IDENT,
-        		      lex_IF, lex_INTLIT, lex_LBRACE, lex_LBRACK,
-        		      lex_LPAREN, lex_NEXT, lex_REALLIT, lex_REPEAT,
-        		      lex_RETURN, lex_STRINGLIT, lex_SUSPEND, lex_UNTIL,
-        		      lex_WHILE])
+                              lex_CSETLIT, lex_EVERY, lex_FAIL, lex_IDENT,
+                              lex_IF, lex_INTLIT, lex_LBRACE, lex_LBRACK,
+                              lex_LPAREN, lex_NEXT, lex_REALLIT, lex_REPEAT,
+                              lex_RETURN, lex_STRINGLIT, lex_SUSPEND, lex_UNTIL,
+                              lex_WHILE])
     expr10_set2 := set([lex_AT, lex_NOT, lex_BAR, lex_DOT, lex_BANG,
-        		      lex_PLUS, lex_STAR, lex_SLASH, lex_CARET,
-        		      lex_TILDE, lex_MINUS, lex_NUMEQ, lex_NUMNE,
-        		      lex_LEXEQ, lex_LEXNE, lex_EQUIV, lex_QMARK,
-        		      lex_NOTEQUIV, lex_BACKSLASH])
+                              lex_PLUS, lex_STAR, lex_SLASH, lex_CARET,
+                              lex_TILDE, lex_MINUS, lex_NUMEQ, lex_NUMNE,
+                              lex_LEXEQ, lex_LEXNE, lex_EQUIV, lex_QMARK,
+                              lex_NOTEQUIV, lex_BACKSLASH])
     expr10_set3 := set([lex_CONCAT, lex_LCONCAT, lex_UNION, lex_INTER,
-        		      lex_DIFF])
+                              lex_DIFF])
     }
 
     if member(expr10_set1, parse_tok_rec) then {
@@ -293,7 +295,7 @@ procedure parse_expr11()
         }
         default : {
             parse_error("\"" || parse_tok_rec.str ||
-        		"\": invalid keyword construction")
+                        "\": invalid keyword construction")
         }
         }
         }
@@ -319,61 +321,66 @@ procedure parse_expr11a()
 end
 
 procedure parse_expr11suffix(lhs)
-    local left, right, l, op, id, coord, x
+    local left, right, l, op, id, coord, x, idcoord
     static expr11suffix_set1, expr11suffix_set2
 
     initial {
         expr11suffix_set1 := set([lex_CONJUNC, lex_AT, lex_BACKSLASH, lex_BANG,
-        			  lex_BAR, lex_BREAK, lex_CARET, lex_CASE,
-        			  lex_COMMA, lex_CONCAT, lex_CREATE,
-        			  lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV,
-        			  lex_EVERY, lex_FAIL, lex_IDENT, lex_IF,
-        			  lex_INTER, lex_INTLIT, lex_LBRACE, lex_LBRACK,
-        			  lex_LCONCAT, lex_LPAREN, lex_MINUS,
-        			  lex_NOTEQUIV, lex_NEXT, lex_NUMEQ, lex_NUMNE,
+                                  lex_BAR, lex_BREAK, lex_CARET, lex_CASE,
+                                  lex_COMMA, lex_CONCAT, lex_CREATE,
+                                  lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV,
+                                  lex_EVERY, lex_FAIL, lex_IDENT, lex_IF,
+                                  lex_INTER, lex_INTLIT, lex_LBRACE, lex_LBRACK,
+                                  lex_LCONCAT, lex_LPAREN, lex_MINUS,
+                                  lex_NOTEQUIV, lex_NEXT, lex_NUMEQ, lex_NUMNE,
                                   lex_NOT, lex_PLUS, lex_QMARK, lex_REALLIT,
-        			  lex_REPEAT, lex_RETURN, lex_LEXEQ, lex_SLASH,
-        			  lex_LEXNE, lex_STAR, lex_STRINGLIT,
-        			  lex_SUSPEND, lex_TILDE, lex_UNION, lex_UNTIL,
-        			  lex_WHILE])
+                                  lex_REPEAT, lex_RETURN, lex_LEXEQ, lex_SLASH,
+                                  lex_LEXNE, lex_STAR, lex_STRINGLIT,
+                                  lex_SUSPEND, lex_TILDE, lex_UNION, lex_UNTIL,
+                                  lex_WHILE])
         expr11suffix_set2 := set([lex_COLON, lex_MCOLON, lex_PCOLON])
     }
 
     case parse_tok_rec of {
     lex_LBRACE  :   # LBRACE [  pdcolist ]  RBRACE 
         {
+        coord := parse_tok_rec.coord
         parse_eat_token()
         if member(expr11suffix_set1, parse_tok_rec) then {
             l := parse_pdcolist()
         }
         parse_match_token(lex_RBRACE)
-        return a_Call(lhs, a_CoexpList(l),lhs.coord)
+        return a_Call(lhs, a_CoexpList(l), coord)
         }
     lex_LPAREN  :   # LPAREN  exprlist  RPAREN 
         {
+        coord := parse_tok_rec.coord
         parse_eat_token()
         l := parse_exprlist()
         parse_match_token(lex_RPAREN)
-        return a_Call(lhs, a_Arglist(l), lhs.coord)
+        return a_Call(lhs, a_Arglist(l), coord)
         }
     lex_DOT :   # DOT  IDENT 
         {
         coord := parse_tok_rec.coord
         x := parse_eat_token()
+	idcoord := parse_tok_rec.coord
         id := parse_match_token(lex_IDENT)
-        return a_Field(lhs, a_Ident(id, coord), lhs.coord)
+        return a_Field(lhs, a_Ident(id, idcoord), coord)
         }
     lex_LBRACK  :   # LBRACK  expr [  sectop  expr ]  RBRACK
         {
+	coord := parse_tok_rec.coord
         parse_eat_token()
         repeat {
             left := parse_nexpr()
             if member(expr11suffix_set2, parse_tok_rec) then {
+		coord := parse_tok_rec.coord
                 op := "[" || parse_eat_token() || "]"
                 right := parse_expr()
-                lhs := a_Sectionop(op, lhs, left, right, lhs.coord)
+                lhs := a_Sectionop(op, lhs, left, right, coord)
             } else {
-                lhs := a_Binop("[]", lhs, left, lhs.coord)
+                lhs := a_Binop("[]", lhs, left, coord)
             }
             if parse_tok_rec ~=== lex_COMMA then break
             parse_match_token(lex_COMMA)
@@ -389,33 +396,35 @@ end
 
 procedure parse_expr1a()
 #  expr1 {  QMARK  expr1a } 
-    local left, right
+    local left, right, coord
 
     left := parse_expr1()
     while parse_tok_rec === lex_QMARK do {
+	coord := parse_tok_rec.coord
         parse_eat_token()
         right := parse_expr1()
-        left := a_Scan("?", left, right, left.coord)
+        left := a_Scan("?", left, right, coord)
     }
     return left
 end
 
 procedure parse_expr2()
 #  expr3 {  TO  expr2 [  BY  expr3 ] } 
-    local e1, e2, e3, ret
+    local e1, e2, e3, ret, coord
 
     e1 := parse_expr3()
     e2 := &null
     e3 := &null
     ret := e1
     while parse_tok_rec === lex_TO do {
+	coord := parse_tok_rec.coord
         parse_eat_token()
         e2 := parse_expr3()
         if parse_tok_rec === lex_BY then {
             parse_match_token(lex_BY)
             e3 := parse_expr3()
         }
-        ret := a_ToBy(e1, e2, e3, e1.coord)
+        ret := a_ToBy(e1, e2, e3, coord)
         e1 := ret
     }
     return ret
@@ -436,35 +445,37 @@ procedure parse_expr3()
 end
 
 procedure parse_expr4()
-    local ret, op, right
+    local ret, op, right, coord
     static expr4_set
 
     initial {
         expr4_set := set([lex_EQUIV, lex_NOTEQUIV, lex_NUMEQ, lex_NUMGE,
-        		  lex_NUMGT, lex_NUMLE, lex_NUMLT, lex_NUMNE, lex_LEXEQ,
-        		  lex_LEXGE, lex_LEXGT, lex_LEXLE, lex_LEXLT,
-        		  lex_LEXNE])
+                          lex_NUMGT, lex_NUMLE, lex_NUMLT, lex_NUMNE, lex_LEXEQ,
+                          lex_LEXGE, lex_LEXGT, lex_LEXLE, lex_LEXLT,
+                          lex_LEXNE])
     }
     #  expr5 {  expr4op  expr4 } 
     ret := parse_expr5()
 
     while member(expr4_set, parse_tok_rec) do {
+	coord := parse_tok_rec.coord
         op := parse_eat_token()
         right := parse_expr5()
-        ret := a_Binop(op, ret, right, ret.coord)
+        ret := a_Binop(op, ret, right, coord)
     }
     return ret
 end
 
 procedure parse_expr5()
 #  expr6 {  expr5op  expr5 } 
-    local ret, right, op
+    local ret, right, op, coord
 
     ret := parse_expr6()
     while parse_tok_rec === lex_CONCAT | parse_tok_rec === lex_LCONCAT do {
+	coord := parse_tok_rec.coord
         op := parse_eat_token()
         right := parse_expr6()
-        ret := a_Binop(op, ret, right, ret.coord)
+        ret := a_Binop(op, ret, right, coord)
     }
     return ret
 end
@@ -472,7 +483,7 @@ end
 
 procedure parse_expr6()
 #  expr7 {  expr6op  expr6 } 
-    local ret, op, right
+    local ret, op, right, coord
     static expr6_set
 
     initial {
@@ -481,16 +492,17 @@ procedure parse_expr6()
 
     ret := parse_expr7()
     while member(expr6_set, parse_tok_rec) do {
+	coord := parse_tok_rec.coord
         op := parse_eat_token()
         right := parse_expr7()
-        ret := a_Binop(op, ret, right, ret.coord)
+        ret := a_Binop(op, ret, right, coord)
     }
     return ret
 end
 
 procedure parse_expr7()
 #  expr8 {  expr7op  expr7 } 
-    local ret, op, right
+    local ret, op, right, coord
     static expr7_set
 
     initial {
@@ -500,38 +512,41 @@ procedure parse_expr7()
     ret := parse_expr8()
 
     while member(expr7_set, parse_tok_rec) do {
+	coord := parse_tok_rec.coord
         op := parse_eat_token()
         right := parse_expr8()
-        ret := a_Binop(op, ret, right, ret.coord)
+        ret := a_Binop(op, ret, right, coord)
     }
     return ret
 end
 
 procedure parse_expr8()
 #  expr9 {  CARET  expr8 }  (Right Associative)
-    local ret, op, right
+    local ret, op, right, coord
 
     ret := parse_expr9()
     while parse_tok_rec === lex_CARET do {
+	coord := parse_tok_rec.coord
         op := parse_eat_token()
         right := parse_expr8()
-        ret := a_Binop(op, ret, right, ret.coord)
+        ret := a_Binop(op, ret, right, coord)
     }
     return ret
 end
 
 procedure parse_expr9()
 #  expr10 {  expr9op  expr9 } 
-    local ret, op, right
+    local ret, op, right, coord
 
     ret := parse_expr10()
     while parse_tok_rec === ( lex_AT | lex_BACKSLASH | lex_BANG ) do {
+	coord := parse_tok_rec.coord
         op := parse_eat_token()
         right := parse_expr10()
         if op == "\\" then {
-            ret := a_Limitation(ret, right, ret.coord)
+            ret := a_Limitation(ret, right, coord)
         } else {
-            ret := a_Binop(op, ret, right, ret.coord)
+            ret := a_Binop(op, ret, right, coord)
         }
     }
     return ret
@@ -711,15 +726,15 @@ procedure parse_nexpr()
 
     initial {
     nexpr_set := set([lex_CONJUNC, lex_AT, lex_BACKSLASH, lex_BANG, lex_BAR,
-        	      lex_BREAK, lex_CARET, lex_CASE, lex_CONCAT, lex_CREATE,
-        	      lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
-        	      lex_FAIL, lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
-        	      lex_LBRACE, lex_LBRACK, lex_LCONCAT, lex_LPAREN,
-        	      lex_MINUS, lex_NOTEQUIV, lex_NEXT, lex_NUMEQ, lex_NUMNE,
-        	      lex_NOT, lex_PLUS, lex_QMARK, lex_REALLIT, lex_REPEAT,
-        	      lex_RETURN, lex_LEXEQ, lex_SLASH, lex_LEXNE, lex_STAR,
-        	      lex_STRINGLIT, lex_SUSPEND, lex_TILDE, lex_UNION,
-        	      lex_UNTIL, lex_WHILE])
+                      lex_BREAK, lex_CARET, lex_CASE, lex_CONCAT, lex_CREATE,
+                      lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
+                      lex_FAIL, lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
+                      lex_LBRACE, lex_LBRACK, lex_LCONCAT, lex_LPAREN,
+                      lex_MINUS, lex_NOTEQUIV, lex_NEXT, lex_NUMEQ, lex_NUMNE,
+                      lex_NOT, lex_PLUS, lex_QMARK, lex_REALLIT, lex_REPEAT,
+                      lex_RETURN, lex_LEXEQ, lex_SLASH, lex_LEXNE, lex_STAR,
+                      lex_STRINGLIT, lex_SUSPEND, lex_TILDE, lex_UNION,
+                      lex_UNTIL, lex_WHILE])
     }
     if member(nexpr_set, parse_tok_rec) then {
         return parse_expr()
@@ -742,19 +757,20 @@ end
 
 procedure parse_do_proc()
     local ident, paramList, accumulate, loc, init, nexprList, e, coord, idcoord
+    local endcoord
     static do_proc_set
 
     initial {
     do_proc_set := set([lex_CONJUNC, lex_AT, lex_BACKSLASH, lex_BANG, lex_BAR,
-        		lex_BREAK, lex_CARET, lex_CASE, lex_CONCAT, lex_CREATE,
-        		lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
-        		lex_FAIL, lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
-        		lex_LBRACE, lex_LBRACK, lex_LCONCAT, lex_LPAREN,
-        		lex_MINUS, lex_NOTEQUIV, lex_NEXT, lex_NUMEQ, lex_NUMNE,
-        		lex_NOT, lex_PLUS, lex_QMARK, lex_REALLIT, lex_REPEAT,
-        		lex_RETURN, lex_SEMICOL, lex_LEXEQ, lex_SLASH,
+                        lex_BREAK, lex_CARET, lex_CASE, lex_CONCAT, lex_CREATE,
+                        lex_CSETLIT, lex_DIFF, lex_DOT, lex_EQUIV, lex_EVERY,
+                        lex_FAIL, lex_IDENT, lex_IF, lex_INTER, lex_INTLIT,
+                        lex_LBRACE, lex_LBRACK, lex_LCONCAT, lex_LPAREN,
+                        lex_MINUS, lex_NOTEQUIV, lex_NEXT, lex_NUMEQ, lex_NUMNE,
+                        lex_NOT, lex_PLUS, lex_QMARK, lex_REALLIT, lex_REPEAT,
+                        lex_RETURN, lex_SEMICOL, lex_LEXEQ, lex_SLASH,
                         lex_LEXNE, lex_STAR, lex_STRINGLIT, lex_SUSPEND,
-        		lex_TILDE, lex_UNION, lex_UNTIL, lex_WHILE])
+                        lex_TILDE, lex_UNION, lex_UNTIL, lex_WHILE])
     }
     #  prochead  SEMICOL  locals  initial  procbody  END 
     coord := parse_tok_rec.coord
@@ -781,9 +797,11 @@ procedure parse_do_proc()
         put(nexprList, e)
         parse_match_token(lex_SEMICOL)
     }
+    endcoord := parse_tok_rec.coord
     parse_match_token(lex_END)
     return a_ProcDecl(ident, paramList, accumulate, loc,
-                    a_ProcCode(init, a_ProcBody(nexprList)), coord)
+                      a_ProcCode(init, a_ProcBody(nexprList, endcoord)), coord,
+                      endcoord)
 end
 
 procedure parse_program()
@@ -793,7 +811,7 @@ procedure parse_program()
 
     initial {
         program_set := set([lex_GLOBAL, lex_INVOCABLE, lex_LINK, lex_PROCEDURE,
-        		    lex_RECORD])
+                            lex_RECORD])
     }
 
     while member(program_set, parse_tok_rec) do {

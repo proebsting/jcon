@@ -22,8 +22,9 @@ procedure yylex(getline)
                 lex_newline := &null
                 if member(lex_ender_set,\last_token) &
                    member(lex_beginner_set,\t) then {
-                    lex_SEMICOL.coord := lex_coordinate(lex_filename, lex_lineno-1,
-        						last_pos)
+                    lex_SEMICOL.coord := lex_coordinate(lex_filename,
+                                                        lex_lineno-1,
+                                                        last_pos)
                     suspend lex_SEMICOL
                     last_token := lex_SEMICOL
                 }
@@ -53,7 +54,7 @@ procedure lex_yylex0(getline)
     }
 
     repeat {
-            if pos(1) then {
+        if pos(1) then {
             lex_newline := 1
             if ="#line " then {
                 tab(upto(&digits)) &
