@@ -1,0 +1,11 @@
+procedure main()
+	write(&level);
+	foo(3);
+	write(&level);
+end
+
+procedure foo(n)
+	write(&level);
+	if n ~= 0 then foo(n-1)
+	write(&level);
+end
