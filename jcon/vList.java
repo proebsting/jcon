@@ -266,7 +266,7 @@ final class vListEnumeration implements java.util.Enumeration {
     public Object nextElement() {
 	return v.elementAt(i++);
     }
-}
+} // class vListEnumeration
 
 
 
@@ -289,4 +289,4 @@ final class vListVar extends vSimpleVar {
 	}
 	return null;
     }
-}
+} // class vListVar

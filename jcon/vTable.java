@@ -57,7 +57,7 @@ public vValue Copy() {					// copy(T)
 
 
 public vDescriptor Index(vDescriptor i) {		// T[x]
-    return new vTrappedTable(this, i.Deref());
+    return new vTableRef(this, i.Deref());
 }
 
 public vValue IndexVal(vDescriptor i) {			// .T[x]
@@ -77,17 +77,17 @@ public vDescriptor Select() {				// ?T
     for (int k = 0; k < index; k++) {
 	e.nextElement();
     }
-    return new vTrappedTable(this, (vValue)e.nextElement());
+    return new vTableRef(this, (vValue)e.nextElement());
 }
 
 
 
 public vDescriptor Bang() {				// !T
-    final vTrappedTable a[] = new vTrappedTable[t.size()];
+    final vTableRef a[] = new vTableRef[t.size()];
     java.util.Enumeration e = (java.util.Enumeration) t.keys();
     int i = 0;
     while (e.hasMoreElements()) {
-	a[i++] = new vTrappedTable(this, (vValue) e.nextElement());
+	a[i++] = new vTableRef(this, (vValue) e.nextElement());
     }
     if (i == 0) { 
 	return null; /*FAIL*/
@@ -100,7 +100,7 @@ public vDescriptor Bang() {				// !T
 	int j = 1;
 	public vDescriptor Resume() {
 	    while (j < a.length) {
-		vTrappedTable v = a[j++];
+		vTableRef v = a[j++];
 		if (t.containsKey(v.key)) {	// if not stale
 		    return v;			// suspend
 		}
@@ -211,7 +211,7 @@ public vList Sort(int n) {
 
 
 
-final class vTrappedTable extends vVariable {
+final class vTableRef extends vVariable {
 
     vTable table;
     vValue key;
@@ -221,7 +221,7 @@ final class vTrappedTable extends vVariable {
 	    "[" + this.key.report() + "])");
     }
 
-    vTrappedTable(vTable table, vValue key) {
+    vTableRef(vTable table, vValue key) {
 	this.table = table;
 	this.key = key;
     }
@@ -244,7 +244,7 @@ final class vTrappedTable extends vVariable {
 	return key.image().surround("T[", "]");
     }
 
-} // class vTrappedTable
+} // class vTableRef
 
 
 

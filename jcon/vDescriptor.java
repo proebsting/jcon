@@ -274,7 +274,7 @@ public vDescriptor RevAssign(vDescriptor v) {
 //  There are two kinds of position values in Icon
 //	from start:  1,  2,  3, ...
 //	from end:    0, -1, -2, ...
-//  Wraparound occurs when (i) and (i +/- j) are of opposite type.  It is
+//  Wraparound occurs when (i) and (i +/- j) are of opposite kind.  This is
 //  checked by negating the two values, which makes the sign bit serve as
 //  a classifier, and then checking for sign bit differences.
 

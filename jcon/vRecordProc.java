@@ -36,7 +36,7 @@ public vProc mkProc(int i) {
 }
 
 public vDescriptor Call(vDescriptor[] v) {
-    return new vRecord(this ,v);
+    return new vRecord(this, v);
 }
 
 int find(String s) {
