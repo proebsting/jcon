@@ -83,7 +83,6 @@ graphics bugs:
 unimplemented functions:
 -- WriteImage() is not implemented
 -- Couple() is not implemented
--- DrawCurve() just calls DrawLine() to draw straight segments
 -- Pattern(), Color(), NewColor(), and WDefault() always fail
 
 graphics attributes:
