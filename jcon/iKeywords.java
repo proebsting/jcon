@@ -77,6 +77,7 @@ public class iKeywords extends iFile {
 
 		// special behavior
 		iEnv.declareKey("trace", new k$trace());
+		iEnv.declareKey("random", new k$random());
 	}
 }
 
@@ -249,6 +250,23 @@ class k$trace extends vSimpleVar {		// &trace
 
 	public vValue deref() {
 		return value = iNew.Integer(trace);
+	}
+}
+
+class k$random extends vSimpleVar {		// &random
+
+	public static long random;	// #%#%#% referenced externally
+
+	k$random() { super("&random"); }
+
+	public vVariable Assign(vValue i) {
+		value = i.mkInteger();
+		random = ((vInteger)value).value;
+		return this;
+	}
+
+	public vValue deref() {
+		return value = iNew.Integer(random);
 	}
 }
 
