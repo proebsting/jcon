@@ -6,6 +6,8 @@
 #  reformat into one line on stderr giving 
 #	verb  real  user  sys  user+sys
 #  with the times in floating-point format.
+#
+#  does not work under Linux; needs a real ksh 
 
 #  default no verification of JVM code
 export JXOPTS="-noverify $JXOPTS"
