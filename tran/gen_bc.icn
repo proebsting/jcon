@@ -73,19 +73,21 @@ end
 procedure bc_conditional_transfer_to(s, p, cond, notcond)
     local tmp
 
+    tmp := j_label()
+    put(s, notcond(tmp))
+
     case type(p) of {
     default: runerr(500, p)
     "ir_Label" : {
-        put(s, cond(\bc_ir2bc_labels[p]) ) | runerr(500, p)
+        put(s, j_goto_w(\bc_ir2bc_labels[p]) ) | runerr(500, p)
     }
     "ir_TmpLabel": {
-        tmp := j_label()
-        put(s, notcond(tmp))
         bc_gen_rval(s, p)
         put(s, j_goto_w(bc_switch_label) )
-        put(s, tmp)
     }
     }
+
+    put(s, tmp)
     return s
 end
 
