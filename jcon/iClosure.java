@@ -90,9 +90,8 @@ public vDescriptor resume() {
 	e.report(this);  // returns only on error->failure conversion.
 	ret = null;
     }
-    if (PC == 0) {
-	iNew.FreeArgs(arguments);
-	arguments = null;
+    if (ret == null) {
+	Free();
     }
     return ret;
 }
