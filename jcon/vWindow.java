@@ -195,7 +195,7 @@ static vWindow winArg(vDescriptor args[]) {
     if (argBase(args) == 1) {
 	return (vWindow) args[0].Deref();
     } else {
-	return k$window.getWindow();
+	return iKeyword.window.getWindow();
     }
 }
 
@@ -225,7 +225,7 @@ vList Pending() {
 
 vValue Event() {
     if (c.evq.Size().value == 0) {	// if we're going to block
-	k$output.file.flush();		// flush stdout first
+	iKeyword.output.file().flush();	// flush stdout first
     }
     vValue e = wEvent.dequeue(c.evq);
     setCurrent(this);

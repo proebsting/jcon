@@ -110,20 +110,20 @@ static vValue dequeue(vList evq) {
 	iRuntime.error(143);		// malformed queue
     }
 
-    k$control.self.set(((x & ControlFlag) != 0) ? vNull.New() : null);
-    k$meta   .self.set(((x & MetaFlag) != 0)    ? vNull.New() : null);
-    k$shift  .self.set(((x & ShiftFlag) != 0)   ? vNull.New() : null);
+    iKeyword.control.set(((x & ControlFlag) != 0) ? vNull.New() : null);
+    iKeyword.meta   .set(((x & MetaFlag) != 0)    ? vNull.New() : null);
+    iKeyword.shift  .set(((x & ShiftFlag) != 0)   ? vNull.New() : null);
 
     long msec = (y >> 16) & 0xFFF;	// set &interval
     long expo = y >> 28;
-    k$interval.self.set(vInteger.New(msec << (4 * expo)));
+    iKeyword.interval.set(vInteger.New(msec << (4 * expo)));
 
     x = (int)(short)x;			// extract signed coordinate values
     y = (int)(short)y;
     //#%#% need to translate x/y to this window's coordinate system
 
-    k$x.self.newValue(x);		// also sets k$col
-    k$y.self.newValue(y);		// also sets k$row
+    iKeyword.x.newValue(x);		// also sets k$col
+    iKeyword.y.newValue(y);		// also sets k$row
 
     return a;				// return event code
 }

@@ -62,7 +62,7 @@ public vDescriptor Select() {
     if (t.size() == 0) {
 	return null;
     }
-    int index = (int) k$random.choose(t.size());
+    int index = (int) iKeyword.random.choose(t.size());
     java.util.Enumeration e = t.keys();
     for (int k = 0; k < index; k++) {
 	e.nextElement();

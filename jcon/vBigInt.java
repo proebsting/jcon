@@ -213,8 +213,8 @@ public vInteger Limit() {					// e \ I
 public vDescriptor Select() {					// ?I
     // get top bits from Icon RNG
     // get bottom bits from Java RNG using &random as seed
-    Random r = new Random(k$random.get());
-    double d = value.doubleValue() * k$random.nextVal();
+    Random r = new Random(iKeyword.random.get());
+    double d = value.doubleValue() * iKeyword.random.nextVal();
     BigInteger b = new BigInteger(value.bitLength() - 24, r);
     return Result(new vBigInt(d).value.xor(b));
 }

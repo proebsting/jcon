@@ -33,7 +33,7 @@ vString read(vWindow win) {
     char c;
     StringBuffer b = new StringBuffer();
 
-    k$output.file.flush();
+    iKeyword.output.file().flush();
     win.flush();
     do {
 	c = rchar(win, b);			// read character into b
@@ -50,7 +50,7 @@ vString read(vWindow win) {
 vString reads(vWindow win, long n) {
     StringBuffer b = new StringBuffer((int) n);
 
-    k$output.file.flush();
+    iKeyword.output.file().flush();
     win.flush();
     while (b.length() < n) {			// until buffer is full
 	rchar(win, b);				// read character into b

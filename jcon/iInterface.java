@@ -66,7 +66,7 @@ public static void start(String[] filenames, String[] args, String name) {
     iOperators.announce();		// install operators
     iBuiltins.announce();		// install built-in functions
     wBuiltins.announce();		// install built-in graphics functions
-    iKeywords.announce();		// install keywords
+    iKeyword.announce();		// install keywords
 
     e = fileTable.elements();
     while (e.hasMoreElements()) {
@@ -79,7 +79,7 @@ public static void start(String[] filenames, String[] args, String name) {
 	file.resolve();
     }
 
-    k$progname.self.set(vString.New(name));
+    iKeyword.progname.set(vString.New(name));
 
     // find main()
     vDescriptor m = iEnv.resolve("main");
@@ -111,9 +111,9 @@ public static void start(String[] filenames, String[] args, String name) {
     try {
 	String s = System.getProperty("TRACE", "0");
 	long t = Long.parseLong(s);
-	k$trace.self.Call().Assign(vInteger.New(t));
+	iKeyword.trace.set(t);
     } catch (Throwable t) {
-	k$trace.self.Call().Assign(vInteger.New(0));
+	iKeyword.trace.set(0);
     }
 
     iEnv.main = vCoexp.New(new vProcClosure(p, argArray));
@@ -121,7 +121,7 @@ public static void start(String[] filenames, String[] args, String name) {
     iEnv.main.lock.V();
 
     try {
-	k$time.reset();				// zero &time
+	iKeyword.time.reset();				// zero &time
         iEnv.main.run();
 	iRuntime.exit(0);
     } catch (iError err) {

@@ -156,7 +156,7 @@ final class f$Clone extends vProcV {		// Clone(W,attribs...)
 final class f$Pending extends vProc1 {		// Pending(W)
     public vDescriptor Call(vDescriptor a) {
 	if (!a.iswin()) {
-	    return Call(k$window.getWindow());
+	    return Call(iKeyword.window.getWindow());
 	}
 	return ((vWindow)a.Deref()).Pending();
     }
@@ -165,7 +165,7 @@ final class f$Pending extends vProc1 {		// Pending(W)
 final class f$Event extends vProc1 {		// Event(W)
     public vDescriptor Call(vDescriptor a) {
 	if (!a.iswin()) {
-	    return Call(k$window.getWindow());
+	    return Call(iKeyword.window.getWindow());
 	}
 	return ((vWindow)a.Deref()).Event();
     }
@@ -176,7 +176,7 @@ final class f$Event extends vProc1 {		// Event(W)
 final class f$Bg extends vProc2 {		// Bg(W, s)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	if (!a.iswin()) {
-	    return Call(k$window.getWindow(), a);
+	    return Call(iKeyword.window.getWindow(), a);
 	}
 	return ((vWindow)a.Deref()).Bg(b.isnull() ? null : b.mkString());
     }
@@ -185,7 +185,7 @@ final class f$Bg extends vProc2 {		// Bg(W, s)
 final class f$Fg extends vProc2 {		// Fg(W, s)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	if (!a.iswin()) {
-	    return Call(k$window.getWindow(), a);
+	    return Call(iKeyword.window.getWindow(), a);
 	}
 	return ((vWindow)a.Deref()).Fg(b.isnull() ? null : b.mkString());
     }
@@ -213,7 +213,7 @@ final class f$ColorValue extends vProc2 {	// ColorValue(W, s)
 final class f$Font extends vProc2 {		// Font(W,s)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	if (!a.iswin()) {
-	    return Call(k$window.getWindow(), a);
+	    return Call(iKeyword.window.getWindow(), a);
 	}
 	return ((vWindow)a.Deref()).Font(b.isnull() ? null : b.mkString());
     }
@@ -222,7 +222,7 @@ final class f$Font extends vProc2 {		// Font(W,s)
 final class f$TextWidth extends vProc2 {	// TextWidth(W,s)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	if (!a.iswin()) {
-	    return Call(k$window.getWindow(), a);
+	    return Call(iKeyword.window.getWindow(), a);
 	}
 	return ((vWindow)a.Deref()).TextWidth(b.mkString().toString());
     }
@@ -231,7 +231,7 @@ final class f$TextWidth extends vProc2 {	// TextWidth(W,s)
 final class f$GotoXY extends vProc3 {		// GotoXY(W,x,y)
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
 	if (!a.iswin()) {
-	    return Call(k$window.getWindow(), a, b);
+	    return Call(iKeyword.window.getWindow(), a, b);
 	}
 	vWindow win = (vWindow)a.Deref();
 	long x = b.mkInteger().value;
@@ -245,7 +245,7 @@ final class f$GotoXY extends vProc3 {		// GotoXY(W,x,y)
 final class f$GotoRC extends vProc3 {		// GotoXY(W,r,c)
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
 	if (!a.iswin()) {
-	    return Call(k$window.getWindow(), a, b);
+	    return Call(iKeyword.window.getWindow(), a, b);
 	}
 	vWindow win = (vWindow)a.Deref();
 	long row = b.mkInteger().value;
@@ -470,7 +470,7 @@ final class f$DrawString extends vProcV {	// DrawString(W,x,y,s,...)
 final class f$NewColor extends vProc2 {		// NewColor(W,k) always fails
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	if (!a.iswin()) {
-	    return Call(k$window.getWindow(), a);
+	    return Call(iKeyword.window.getWindow(), a);
 	}
 	return null; /*FAIL*/
     }
@@ -508,7 +508,7 @@ final class f$FreeColor extends vProcV {	// FreeColor(W,k,...) is a no-op
 final class f$Alert extends vProc1 {		// Alert(W) sends a beep
     public vDescriptor Call(vDescriptor a) {
 	if (!a.iswin()) {
-	    return Call(k$window.getWindow());
+	    return Call(iKeyword.window.getWindow());
 	}
 	((vWindow)a.Deref()).beep();
 	return a;
@@ -518,7 +518,7 @@ final class f$Alert extends vProc1 {		// Alert(W) sends a beep
 final class f$Uncouple extends vProc1 {		// Uncouple(W) calls close(W)
     public vDescriptor Call(vDescriptor a) {
 	if (!a.iswin()) {
-	    return Call(k$window.getWindow());
+	    return Call(iKeyword.window.getWindow());
 	}
 	((vWindow)a.Deref()).close();
 	return a;
@@ -528,7 +528,7 @@ final class f$Uncouple extends vProc1 {		// Uncouple(W) calls close(W)
 final class f$WDefault extends vProc3 {		// WDefault(W,s1,s2) just fails
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
 	if (!a.iswin()) {
-	    return Call(k$window.getWindow(), a, b);
+	    return Call(iKeyword.window.getWindow(), a, b);
 	}
 	return null; /*FAIL*/
     }
@@ -537,7 +537,7 @@ final class f$WDefault extends vProc3 {		// WDefault(W,s1,s2) just fails
 final class f$WFlush extends vProc1 {		// WFlush(W) syncs w/ toolkit
     public vDescriptor Call(vDescriptor a) {
 	if (!a.iswin()) {
-	    return Call(k$window.getWindow());
+	    return Call(iKeyword.window.getWindow());
 	}
 	((vWindow)a.Deref()).flush();
 	return a;
@@ -547,7 +547,7 @@ final class f$WFlush extends vProc1 {		// WFlush(W) syncs w/ toolkit
 final class f$WSync extends vProc1 {		// WSync(W) syncs w/ toolkit
     public vDescriptor Call(vDescriptor a) {
 	if (!a.iswin()) {
-	    return Call(k$window.getWindow());
+	    return Call(iKeyword.window.getWindow());
 	}
 	((vWindow)a.Deref()).flush();
 	return a;

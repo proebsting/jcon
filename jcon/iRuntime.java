@@ -11,8 +11,8 @@ public final class iRuntime {
 //  exit()-- common termination routine for all exits except internal errors.
 
 public static void exit(int status) {
-    if (k$dump.self.check()) {			// honor &dump
-	display(k$errout.file);
+    if (iKeyword.dump.check()) {		// honor &dump
+	display(iKeyword.errout.file());
     }
     vFile.shutdown();				// flush output files etc.
     System.exit(status);			// shut down
@@ -35,8 +35,8 @@ public static void error(int n, vDescriptor d)	{ throw new iError(n,d); }
 //  these methods take a very quick exit and avoid the usual shutdown code.
 
 public static void bomb(String s) {
-    k$output.file.flush();
-    k$errout.file.flush();
+    iKeyword.output.file().flush();
+    iKeyword.errout.file().flush();
     System.err.println();
     System.err.println("Runtime malfunction: " + s);
     (new Exception()).printStackTrace();
@@ -44,8 +44,8 @@ public static void bomb(String s) {
 }
 
 public static void bomb(Throwable t) {
-    k$output.file.flush();
-    k$errout.file.flush();
+    iKeyword.output.file().flush();
+    iKeyword.errout.file().flush();
     System.err.println();
     System.err.println("Runtime malfunction: Java exception");
     t.printStackTrace();
@@ -53,8 +53,8 @@ public static void bomb(Throwable t) {
 }
 
 public static void bomb(String s, Throwable t) {
-    k$output.file.flush();
-    k$errout.file.flush();
+    iKeyword.output.file().flush();
+    iKeyword.errout.file().flush();
     System.err.println();
     System.err.println("Runtime malfunction: " + s);
     t.printStackTrace();

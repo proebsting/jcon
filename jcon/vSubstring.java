@@ -119,7 +119,7 @@ public vDescriptor Select() {				// ?s
     if (start == end) {
 	return null; /*FAIL*/
     }
-    int offset = (int) k$random.choose(end - start) + 1;
+    int offset = (int) iKeyword.random.choose(end - start) + 1;
     return vSubstring.New(this, offset, offset + 1);
 }
 

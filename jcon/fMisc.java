@@ -22,7 +22,7 @@ final class f$display extends vProc2 {				// display(i,f)
 	if (!a.isnull()) {
 	    a.mkInteger();		// validate and ignore level count
 	}
-	iRuntime.display(vFile.arg(b, k$errout.file));
+	iRuntime.display(vFile.arg(b, iKeyword.errout.file()));
 	return vNull.New();
     }
 }
@@ -190,8 +190,8 @@ final class f$system extends vProc1 {				// system(s)
 	    Process p = Runtime.getRuntime().exec(argv); // start process
 	    p.getOutputStream().close();		 // close its stdin
 	    status = p.waitFor();			 // wait for completion
-	    vFile.copy(p.getInputStream(),k$output.file);// copy stdout
-	    vFile.copy(p.getErrorStream(),k$errout.file);// copy stderr
+	    vFile.copy(p.getInputStream(),iKeyword.output.file()); //copy stdout
+	    vFile.copy(p.getErrorStream(),iKeyword.errout.file()); //copy stderr
 	} catch (Throwable e) {
 	    status = -1;
 	}
@@ -203,9 +203,9 @@ final class f$system extends vProc1 {				// system(s)
 
 final class f$errorclear extends vProc0 {			// errorclear()
     public vDescriptor Call() {
-	k$errornumber.self.set(null);
-	k$errortext.self.set(null);
-	k$errorvalue.self.set(null);
+	iKeyword.errornumber.set(null);
+	iKeyword.errortext.set(null);
+	iKeyword.errorvalue.set(null);
 	return vNull.New();
     }
 }

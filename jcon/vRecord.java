@@ -84,7 +84,7 @@ public vDescriptor Select() {
     if (values.length == 0) {
 	return null; /*FAIL*/
     }
-    int i = (int) k$random.choose(values.length);
+    int i = (int) iKeyword.random.choose(values.length);
     return values[i];
 }
 

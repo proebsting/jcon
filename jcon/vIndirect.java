@@ -1,6 +1,6 @@
 //  vIndirect -- vDescriptor subclass for indirect pointers.
 //
-//  Subclassed by k$Value (special keywords) and vVariable (variables).
+//  Subclassed by vVariable (variables).
 
 package rts;
 

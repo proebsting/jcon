@@ -131,10 +131,11 @@ static vProc getBuiltin(String s) {
 
 private static Hashtable keytab = new Hashtable();
 
-static void declareKey(String name, vProc p) {
+static vProc declareKey(String name, vProc p) {
     p.img = vString.New("&" + name);
     p.args = 0;
     keytab.put(name, p);
+    return p;
 }
 
 static vVariable getKeyVar(String s) {

@@ -71,7 +71,7 @@ final class f$close extends vProc1 {				// close(f)
 
 final class f$read extends vProc1 {				// read(f)
     public vDescriptor Call(vDescriptor a) {
-	return(vFile.arg(a, k$input.file).read());
+	return(vFile.arg(a, iKeyword.input.file()).read());
     }
 }
 
@@ -79,7 +79,7 @@ final class f$read extends vProc1 {				// read(f)
 
 final class f$reads extends vProc2 {				// reads(f,n)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
-	vFile f = vFile.arg(a, k$input.file);
+	vFile f = vFile.arg(a, iKeyword.input.file());
 	long n = b.isnull() ? 1 : b.mkInteger().value;
 	if (n <= 0) {
 	    iRuntime.error(205, b);
@@ -105,29 +105,29 @@ final class f$write extends vProcV {				// write(...)
     static vDescriptor a9[] = new vDescriptor[9];
 
     public vDescriptor Call(vDescriptor[] v) {
-	return fIO.print(k$output.file, v, true);
+	return fIO.print(iKeyword.output.file(), v, true);
     }
 
     public vDescriptor Call() {
-	return fIO.print(k$output.file, a0, true);
+	return fIO.print(iKeyword.output.file(), a0, true);
     }
 
     public vDescriptor Call(vDescriptor a) {
 	a1[0] = a;
-	return fIO.print(k$output.file, a1, true);
+	return fIO.print(iKeyword.output.file(), a1, true);
     }
 
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	a2[0] = a;
 	a2[1] = b;
-	return fIO.print(k$output.file, a2, true);
+	return fIO.print(iKeyword.output.file(), a2, true);
     }
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
 	a3[0] = a;
 	a3[1] = b;
 	a3[2] = c;
-	return fIO.print(k$output.file, a3, true);
+	return fIO.print(iKeyword.output.file(), a3, true);
     }
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
@@ -136,7 +136,7 @@ final class f$write extends vProcV {				// write(...)
 	a4[1] = b;
 	a4[2] = c;
 	a4[3] = d;
-	return fIO.print(k$output.file, a4, true);
+	return fIO.print(iKeyword.output.file(), a4, true);
     }
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
@@ -146,7 +146,7 @@ final class f$write extends vProcV {				// write(...)
 	a5[2] = c;
 	a5[3] = d;
 	a5[4] = e;
-	return fIO.print(k$output.file, a5, true);
+	return fIO.print(iKeyword.output.file(), a5, true);
     }
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
@@ -157,7 +157,7 @@ final class f$write extends vProcV {				// write(...)
 	a6[3] = d;
 	a6[4] = e;
 	a6[5] = f;
-	return fIO.print(k$output.file, a6, true);
+	return fIO.print(iKeyword.output.file(), a6, true);
     }
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
@@ -169,7 +169,7 @@ final class f$write extends vProcV {				// write(...)
 	a7[4] = e;
 	a7[5] = f;
 	a7[6] = g;
-	return fIO.print(k$output.file, a7, true);
+	return fIO.print(iKeyword.output.file(), a7, true);
     }
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
@@ -182,7 +182,7 @@ final class f$write extends vProcV {				// write(...)
 	a8[5] = f;
 	a8[6] = g;
 	a8[7] = h;
-	return fIO.print(k$output.file, a8, true);
+	return fIO.print(iKeyword.output.file(), a8, true);
     }
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
@@ -197,7 +197,7 @@ final class f$write extends vProcV {				// write(...)
 	a9[6] = g;
 	a9[7] = h;
 	a9[8] = i;
-	return fIO.print(k$output.file, a9, true);
+	return fIO.print(iKeyword.output.file(), a9, true);
     }
 
 }
@@ -218,29 +218,29 @@ final class f$writes extends vProcV {				// writes(...)
     static vDescriptor a9[] = new vDescriptor[9];
 
     public vDescriptor Call(vDescriptor[] v) {
-	return fIO.print(k$output.file, v, false);
+	return fIO.print(iKeyword.output.file(), v, false);
     }
 
     public vDescriptor Call() {
-	return fIO.print(k$output.file, a0, false);
+	return fIO.print(iKeyword.output.file(), a0, false);
     }
 
     public vDescriptor Call(vDescriptor a) {
 	a1[0] = a;
-	return fIO.print(k$output.file, a1, false);
+	return fIO.print(iKeyword.output.file(), a1, false);
     }
 
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	a2[0] = a;
 	a2[1] = b;
-	return fIO.print(k$output.file, a2, false);
+	return fIO.print(iKeyword.output.file(), a2, false);
     }
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
 	a3[0] = a;
 	a3[1] = b;
 	a3[2] = c;
-	return fIO.print(k$output.file, a3, false);
+	return fIO.print(iKeyword.output.file(), a3, false);
     }
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
@@ -249,7 +249,7 @@ final class f$writes extends vProcV {				// writes(...)
 	a4[1] = b;
 	a4[2] = c;
 	a4[3] = d;
-	return fIO.print(k$output.file, a4, false);
+	return fIO.print(iKeyword.output.file(), a4, false);
     }
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
@@ -259,7 +259,7 @@ final class f$writes extends vProcV {				// writes(...)
 	a5[2] = c;
 	a5[3] = d;
 	a5[4] = e;
-	return fIO.print(k$output.file, a5, false);
+	return fIO.print(iKeyword.output.file(), a5, false);
     }
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
@@ -270,7 +270,7 @@ final class f$writes extends vProcV {				// writes(...)
 	a6[3] = d;
 	a6[4] = e;
 	a6[5] = f;
-	return fIO.print(k$output.file, a6, false);
+	return fIO.print(iKeyword.output.file(), a6, false);
     }
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
@@ -282,7 +282,7 @@ final class f$writes extends vProcV {				// writes(...)
 	a7[4] = e;
 	a7[5] = f;
 	a7[6] = g;
-	return fIO.print(k$output.file, a7, false);
+	return fIO.print(iKeyword.output.file(), a7, false);
     }
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
@@ -295,7 +295,7 @@ final class f$writes extends vProcV {				// writes(...)
 	a8[5] = f;
 	a8[6] = g;
 	a8[7] = h;
-	return fIO.print(k$output.file, a8, false);
+	return fIO.print(iKeyword.output.file(), a8, false);
     }
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
@@ -310,7 +310,7 @@ final class f$writes extends vProcV {				// writes(...)
 	a9[6] = g;
 	a9[7] = h;
 	a9[8] = i;
-	return fIO.print(k$output.file, a9, false);
+	return fIO.print(iKeyword.output.file(), a9, false);
     }
 }
 
@@ -318,9 +318,9 @@ final class f$writes extends vProcV {				// writes(...)
 
 final class f$stop extends vProcV {				// stop(...)
     public vDescriptor Call(vDescriptor[] v) {
-	k$output.file.flush();			// flush stdout
-	fIO.print(k$errout.file, v, true);	// write msg
-	iRuntime.exit(1);			// exit
+	iKeyword.output.file().flush();			// flush stdout
+	fIO.print(iKeyword.errout.file(), v, true);	// write msg
+	iRuntime.exit(1);				// exit
 	return null;	// not reached
     }
 }

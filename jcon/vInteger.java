@@ -129,9 +129,9 @@ public vNumeric Negate() {
 
 public vDescriptor Select() {
     if (value > 0) {
-	return New(1 + k$random.choose(value));
+	return New(1 + iKeyword.random.choose(value));
     } else if (value == 0) {
-	return vReal.New(k$random.nextVal());
+	return vReal.New(iKeyword.random.nextVal());
     } else {
 	iRuntime.error(205, this);
 	return null;

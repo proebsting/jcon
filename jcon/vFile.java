@@ -280,11 +280,11 @@ char rchar() throws IOException, EOFException {
 	return (char) (instream.readByte() & 0xFF);
     }
 
-    if (this == k$input.file) {		// flush output before reading &input
+    if (this == iKeyword.input.file()){ // flush output before reading &input
 	if (winToSync != null) {
 	    winToSync.flush();		// flush pending graphics output
 	}
-	k$output.file.flush();		// flush &output
+	iKeyword.output.file().flush();	// flush &output
     }
 
     int nbytes;
@@ -365,12 +365,12 @@ void closepipe() throws IOException {
 	} catch (InterruptedException e) {
 	    // nothing
 	};
-	copy(pipe.getInputStream(), k$output.file);  // copy stdout from process
+	copy(pipe.getInputStream(), iKeyword.output.file());	// copy stdout
     } else {
-	k$output.file.flush();			// only need to flush stdout
+	iKeyword.output.file().flush();		// only need to flush stdout
     }
 
-    copy(pipe.getErrorStream(), k$errout.file);	// copy stderr from process
+    copy(pipe.getErrorStream(), iKeyword.errout.file());	// copy stderr
 
     pipe.destroy();				// kill process
 }

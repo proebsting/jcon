@@ -194,7 +194,7 @@ public vDescriptor Select() {				//  ?L
     if (v.size() == 0) {
 	return null; /*FAIL*/
     }
-    return (vDescriptor) v.elementAt((int)k$random.choose(v.size()));
+    return (vDescriptor) v.elementAt((int)iKeyword.random.choose(v.size()));
 							// return as variable
 }
 

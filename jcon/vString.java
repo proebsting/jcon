@@ -509,18 +509,18 @@ public vDescriptor ProcessArgs(vDescriptor v) {
 //  =s : tab(match(s))
 
 public vDescriptor TabMatch() {
-    vString subj = k$subject.get();
-    final vInteger oldpos = k$pos.get();
+    vString subj = iKeyword.subject.get();
+    final vInteger oldpos = iKeyword.pos.get();
     int pos = (int) oldpos.value;
     if (! matches(subj, pos - 1)) {
 	return null;
     }
-    k$pos.set(pos + tlength);
+    iKeyword.pos.set(pos + tlength);
     final vString newstr = vString.New(subj, pos, pos + tlength);
     return new vClosure () {
 	{ retval = newstr; }
         public vDescriptor Resume() {
-	    k$pos.set(oldpos.value);
+	    iKeyword.pos.set(oldpos.value);
 	    return null;
         }
     };
@@ -662,7 +662,7 @@ public vDescriptor Select() {
     if (tlength == 0) {
 	return null; /*FAIL*/
     }
-    int i = (int) k$random.choose(tlength);
+    int i = (int) iKeyword.random.choose(tlength);
     return vString.New(charAt(i));
 }
 
@@ -670,7 +670,7 @@ public vDescriptor SelectVar(vVariable v) {
     if (tlength == 0) {
 	return null; /*FAIL*/
     }
-    int i = (int) k$random.choose(tlength);
+    int i = (int) iKeyword.random.choose(tlength);
     return vSubstring.New(v, i+1, i+2);
 }
 

@@ -366,7 +366,7 @@ public vDescriptor Select() {		// ?c
     if (size == 0) {
 	return null; /*FAIL*/
     }
-    int n = (int) k$random.choose(size) + 1;
+    int n = (int) iKeyword.random.choose(size) + 1;
     int c = -1;
     for (int i = 0; i < n; i++) {
 	while (! this.member(++c)) {

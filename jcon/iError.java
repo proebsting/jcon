@@ -20,8 +20,8 @@ iError(int num, vDescriptor desc) {	// constructor
 
 
 void report() {				// print message and abort
-    k$output.file.flush();
-    vFile f = k$errout.file;
+    iKeyword.output.file().flush();
+    vFile f = iKeyword.errout.file();
     f.newline();
     f.println("Run-time error " + num);
     if (filename != null) {
@@ -123,10 +123,10 @@ public void propagate(String procname, vDescriptor[] args) {
 void propagate(String fname, int lineno, String call) {
     // if &error is zero, issue message and abort
     // if &error is not zero, decrement it and set other error keywords
-    if (k$error.self.check()) {
-	k$errornumber.self.set(vInteger.New(this.num));
-	k$errortext.self.set(vString.New(iRunerr.text(num)));
-	k$errorvalue.self.set((this.desc == null) ? null : this.desc.Deref());
+    if (iKeyword.error.check()) {
+	iKeyword.errornumber.set(vInteger.New(this.num));
+	iKeyword.errortext.set(vString.New(iRunerr.text(num)));
+	iKeyword.errorvalue.set((this.desc == null) ? null : this.desc.Deref());
 	return;
     } else {
 	if (filename == null) {
