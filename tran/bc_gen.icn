@@ -35,7 +35,9 @@ global bc_tmp_offset
 global bc_tmpclosure_table
 global bc_tmpclosure_offset
 global bc_var_set
+global bc_var_field
 global bc_var_table
+global bc_var_offset
 global bc_key_table
 global bc_args_set
 
@@ -43,6 +45,10 @@ global bc_cset_table
 global bc_real_table
 global bc_string_table
 global bc_integer_table
+
+global bc_locals_set
+global bc_params_set
+global bc_statics_set
 
 procedure assign_methodref(c)
 	return create_methodref(c, "Assign", "(Lrts/vValue;)Lrts/vVariable;", "rts/vDescriptor")
@@ -149,9 +155,6 @@ procedure gen_bc_irDeref(s, p)
 end
 
 # record irTmp( name )
-procedure gen_bc_irTmp_register(p)
-	/bc_tmp_table[p.name] := *bc_tmp_table;
-end
 procedure gen_bc_irTmp_rval(s, p)
 	put(s, Aload(bc_tmp_table[p.name] + bc_tmp_offset))
 	return s
@@ -162,9 +165,6 @@ procedure gen_bc_irTmp_assign(s, p)
 end
 
 # record irTmpLabel( name )
-procedure gen_bc_irTmpLabel_register(p)
-	/bc_tmplabel_table[p.name] := *bc_tmplabel_table
-end
 procedure gen_bc_irTmpLabel_rval(s, p)
 	put(s, Iload(bc_tmplabel_table[p.name] + bc_tmplabel_offset))
 	return s
@@ -175,10 +175,6 @@ procedure gen_bc_irTmpLabel_assign(s, p)
 end
 
 # record irTmpClosure( name )
-procedure gen_bc_irTmpClosure_register(p)
-	/bc_tmpclosure_table[p.name] := *bc_tmpclosure_table
-end
-
 procedure gen_bc_irTmpClosure_rval(s, p)
 	put(s, Aload(bc_tmpclosure_table[p.name] + bc_tmpclosure_offset))
 	return s
@@ -252,18 +248,18 @@ end
 
 # record irVar( name )
 procedure gen_bc_irVar_rval(s, p)
-	if /bc_var_table[p.name] then {
-		insert(bc_var_set, p.name)
-		bc_var_table[p.name] := create_fieldref(bc_proc_classptr,
+	put(s, Aload(bc_var_table[p.name] + bc_var_offset))
+	return s
+
+	/bc_var_field[p.name] := create_fieldref(bc_proc_classptr,
 						"v$" || p.name,
 						"Lrts/vVariable;",
 						bc_proc_classname)
-	}
 	if member(bc_statics, p.name) then {
-		put(s, getstatic(bc_var_table[p.name]))
+		put(s, getstatic(bc_var_field[p.name]))
 	} else {
 		put(s, aload_0() )
-		put(s, getfield(bc_var_table[p.name]))
+		put(s, getfield(bc_var_field[p.name]))
 	}
 	return s
 end
@@ -670,10 +666,7 @@ end
 procedure gen_bc_irEnterInit(s, p)
 	local r, l, target, prologue, initialized
 
-	prologue := create_methodref(bc_proc_classptr, "prologue", "()V", bc_proc_classname)
 	initialized := create_fieldref(bc_proc_classptr, "initialized", "Z", bc_proc_classname)
-	put(s, aload_0())
-	put(s, invokevirtual(prologue))
 	put(s, getstatic(initialized))
 	target := label()
 	put(s, ifeq(target))
@@ -784,6 +777,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	bc_tmplabel_table := table()
 	bc_tmpclosure_table := table()
 	bc_var_set := set([])
+	bc_var_field := table()
 	bc_var_table := table()
 	bc_emit_table := table()
 	bc_create_exists := &null
@@ -813,6 +807,10 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 		put(clinitcode.code, invokestatic(newsimplevar))
 		put(clinitcode.code, putstatic(f))
 	}
+
+	bc_locals_set := set(locals)
+	bc_params_set := set(params)
+	bc_statics_set := set(statics)
 
 	bc_create_nextval(c, code.ir.start)
 
@@ -860,7 +858,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	}
 	put(initcode.code, vreturn() )
 
-	undeclared := bc_var_set -- set(params) -- set(locals) -- set(statics)
+	undeclared := bc_var_set -- bc_params_set -- bc_locals_set -- bc_statics_set
 	every insert(bc_undeclared_set, !undeclared)
 
 	every k := !params | !locals | !undeclared do {
@@ -886,24 +884,33 @@ procedure bc_register(t)
 	local op
 
 	every op := !!!t do {
-		case type(op) of {
-		"irTmp" : {
-			gen_bc_irTmp_register(op)
-		}
-		"irTmpLabel" : {
-			gen_bc_irTmpLabel_register(op)
-		}
-		"irTmpClosure" : {
-			gen_bc_irTmpClosure_register(op)
-		}
-		}
+		bc_register0(op)
+	}
+end
+
+procedure bc_register0(op)
+	case type(op) of {
+	"list" : every bc_register0(!op)
+	"irTmp" : {
+		/bc_tmp_table[op.name] := *bc_tmp_table;
+	}
+	"irTmpLabel" : {
+		/bc_tmplabel_table[op.name] := *bc_tmplabel_table
+	}
+	"irTmpClosure" : {
+		/bc_tmpclosure_table[op.name] := *bc_tmpclosure_table
+	}
+	"irVar" : {
+		insert(bc_var_set, op.name)
+		/bc_var_table[op.name] := *bc_var_table
+	}
 	}
 end
 
 procedure bc_create_nextval(c, start)
 	local PC, nextval, nextvalcode, k, lab, switch, insns, deflab
 	local runtimeerror, r
-	local a, s, tmplab
+	local a, s, tmplab, prologue, var_load_label
 
 	nextval := create_method(c, 0, "nextval", "()V")
 	nextvalcode := create_code(c, 10, 10)
@@ -913,7 +920,8 @@ procedure bc_create_nextval(c, start)
 	bc_tmp_offset := 10
 	bc_tmplabel_offset := bc_tmp_offset + *bc_tmp_table
 	bc_tmpclosure_offset := bc_tmplabel_offset + *bc_tmplabel_table
-	nextvalcode.max_locals := bc_tmpclosure_offset + *bc_tmpclosure_table
+	bc_var_offset := bc_tmpclosure_offset + *bc_tmpclosure_table
+	nextvalcode.max_locals := bc_var_offset + *bc_var_table
 	s := nextvalcode.code
 
 	bc_suspend_flag := &null
@@ -922,6 +930,7 @@ procedure bc_create_nextval(c, start)
 	}
 
 	bc_switch_label := label()
+	var_load_label := label()
 	tmplab := label()
 
 	PC := PC_fieldref(c)
@@ -934,6 +943,10 @@ procedure bc_create_nextval(c, start)
 		put(nextvalcode.code, iconst_1())
 		put(nextvalcode.code, if_icmpne(tmplab))
 	}
+
+	prologue := create_methodref(bc_proc_classptr, "prologue", "()V", bc_proc_classname)
+	put(s, aload_0())
+	put(s, invokevirtual(prologue))
 
 	every k := key(bc_tmp_table) do {
 		put(s, aconst_null())
@@ -950,7 +963,7 @@ procedure bc_create_nextval(c, start)
 
 	#%#% this use of flag causes spurious verification errors.
 	if 1 | \bc_suspend_flag then {
-		put(s, goto_w(bc_switch_label))
+		put(s, goto_w(var_load_label))
 		put(nextvalcode.code, tmplab)
 		a := create_fieldref(bc_proc_classptr,
 					"tmpArray",
@@ -995,6 +1008,21 @@ procedure bc_create_nextval(c, start)
 		put(s, Pop())
 	}
 
+	put(nextvalcode.code, var_load_label)
+
+	every k := key(bc_var_table) do {
+		/bc_var_field[k] := create_fieldref(bc_proc_classptr,
+							"v$" || k,
+							"Lrts/vVariable;",
+							bc_proc_classname)
+		if member(bc_statics, k) then {
+			put(s, getstatic(bc_var_field[k]))
+		} else {
+			put(s, aload_0() )
+			put(s, getfield(bc_var_field[k]))
+		}
+		put(s, Astore(bc_var_table[k] + bc_var_offset))
+	}
 	deflab := label()
 	put(nextvalcode.code, bc_switch_label)
 	put(nextvalcode.code, switch := tableswitch(0, deflab, 1, *bc_emit_table, list(*bc_emit_table)) )
