@@ -1,0 +1,15 @@
+jcon/bin -- Jcon "binaries"
+
+This directory holds everything needed to compile programs using Jcon.
+After building, all other directories (which contain source and test files)
+can be discarded.
+
+
+jcont		script for building programs with Jcon
+
+jtran		actual translator and code generator program
+jlink		helper program used in linking phase
+
+rts.zip		run-time library (contains Java class files)
+
+keysyms.icn	revised $include file containing keycode definitions

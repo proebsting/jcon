@@ -160,6 +160,7 @@ fi
 # get name of main class from first file argument
 MAIN="${1%.icn}"
 MAIN="${MAIN%.zip}"
+MAIN="${MAIN##*/}"
 
 # set output file name, if not specified
 if [ "$XFILE" = "" ]; then
@@ -239,7 +240,7 @@ for FNAME in $IFILES; do
 	    ;;
 	bytecode)
 	    if $JTRAN preproc $FNAME.icn : yylex : parse : ast2ir : \
-		bc_File $OFLAG $TFLAGS -class:l\$$FNAME -dir:$TDIR/; then
+		bc_File $OFLAG $TFLAGS -class:l\$${FNAME##*/} -dir:$TDIR/; then
 		# bundle .class files (and linkage info) into .zip file
 		(cd $TDIR; $JAR cfM ../$FNAME.zip links *.class)
 		# disassemble if requested
