@@ -67,7 +67,7 @@ procedure copy_propagation(t, start)
 			newchunk := []
 			every insn := !chunk do {
 				if type(insn) == "irMove" &
-				   type(insn.lhs) == "irTmp" &
+				   type(insn.lhs) == ("irTmp"|"irTmpLabel") &
 				   uses[insn.lhs] = 0 then {
 					changes := 1
 				} else if type(insn) == "irMove" &
