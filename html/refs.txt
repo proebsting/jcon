@@ -31,18 +31,3 @@
 	<A HREF="http://www.cs.arizona.edu/icon/jcon/gde97.pdf">PDF</A>)
 </TD></TR>
 </TABLE>
-
-<H3>Contact Information</H3>
-
-<P> The Jcon home page is located at
-<A HREF="http://www.cs.arizona.edu/icon/jcon/">
-http://www.cs.arizona.edu/icon/jcon/</A>.
-Go there for the lastest versions of the implementation and documentation.
-
-<P> Please send all Jcon-related mail to 
-<A HREF="mailto:jcon@cs.arizona.edu">jcon@cs.arizona.edu</A>.
-Using this alias helps us log the mail and respond more promptly.
-
-<P> The home page for the Icon language is located at
-<A HREF="http://www.cs.arizona.edu/icon/">
-http://www.cs.arizona.edu/icon/</A>.

@@ -19,9 +19,6 @@ than Version 9.
 <P> Random selection from sets and tables differs from Version 9,
 even with the same random seed.
 
-<P> The notation <CODE>a[i:j,k:m]</CODE> is accepted as shorthand for
-<CODE>a[i:j][k:m]</CODE>.
-
 <H3>Files</H3>
 
 <P> Standard error output (<CODE>&amp;errout</CODE>) is always unbuffered.
@@ -68,8 +65,10 @@ in the <A HREF=dynload.htm>Dynamic Loading</A> section.
 
 <P> <CODE>link</CODE> directives must give a simple name, not a path.
 
-<P> Under Jcon, more user procedures may be "invocable" by default
-than under Version 9 of Icon.
+<P> Under Jcon, any reference to a procedure renders it <EM>invocable</EM>
+(callable by string invocation).
+In version 9, only procedures reachable from <CODE>main()</CODE>
+are made invocable by default.
 
 
 <H3>Debugging</H3>

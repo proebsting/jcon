@@ -1,6 +1,7 @@
 <P> Version 1.0 of Jcon implemented the classic core of the
 Icon programming language and some basic graphics facilities.
-Version 2.0 adds large integers, dynamic loading, and graphics.
+Version 2.0 completes the graphics facilities
+and adds large integers and dynamic loading.
 
 <P> Version 2.0 also incorporates radical changes in the implementation
 that provide a typical performance improvement of 40%.
@@ -13,8 +14,6 @@ that provide a typical performance improvement of 40%.
 	and <CODE>&amp;dump</CODE> can access only global variables
     <LI>Command options for <CODE>jcont</CODE> are closer to those
 	of <CODE>icont</CODE>
-    <LI>Section wraparound (e.g. <CODE>"abcd"[-2+:3]</CODE>)
-	now yields failure, fixing a venerable bug
 </UL>
 
 <H3>Tested Platforms</H3>
@@ -44,8 +43,9 @@ on other platforms.
 <H3>Known graphics problems</H3>
 
 <UL>
-    <LI>Window repair may be delayed until the program pauses
-	to await an event
+    <LI>When an obscured part of a window is exposed,
+	it may not be repaired (redrawn) until the program
+	pauses to await an event
     <LI>Some Java implementations create a window that is one pixel wider
 	than requested
     <LI>DEC Java 1.1.6 sometimes writes different fonts to the window
@@ -53,8 +53,8 @@ on other platforms.
 	<CODE>CopyArea()</CODE> and window repair
     <LI>The <CODE>mono</CODE> font is unpredictable for Solaris Java
 	displaying on a non-Solaris X server
-    <LI><CODE>WOpen("image=file.gif")</CODE> does not initialize the
-   	window contents if presented with a multi-part (animated) GIF image
+    <LI><CODE>WOpen("image=file.gif")</CODE> does not load an image
+   	if presented with a multi-part (animated) GIF image
     <LI><CODE>drawop=reverse</CODE> draws the wrong color under rare
 	conditions that are not understood
 </UL>

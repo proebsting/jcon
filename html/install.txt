@@ -51,11 +51,11 @@ There are no configuration options.
 everything needed to run Jcon.
 It can be used in place or copied elsewhere.
 The <CODE>html</CODE> directory, which contains documentation,
-can also be retained.
+is also worth keeping.
 The rest of the Jcon distribution can be deleted if no longer wanted.
 
 <P> After building Jcon using <CODE>icont</CODE>,
-it is possible to rebuild Jcon using Jcon.
+it is possible use Jcon to rebuild itself.
 This optional step is accomplished by typing <CODE>make jj</CODE>;
 it enables the use of <CODE>jcont -J</CODE>.  
 
@@ -80,20 +80,39 @@ nongraphical tests and experiments.
 <H3>Directory Structure</H3>
 
 <P> The subdirectories within the Jcon tree are as follows:
-<BLOCKQUOTE><PRE>
-bin      target for all build products; also includes jcont script
-tran     source code for the translator
-rts      source code for the run-time system
-html     files for building documentation pages
-test     automated test collection for validating Jcon
-gtest    manually run test collection for graphics
-demo     demonstration programs utilizing graphics
-expt     other tests and experiments to be run manually
-bmark    benchmark collection
-</PRE></BLOCKQUOTE>
-Each directory contains a README file with further information.
+<BLOCKQUOTE><TABLE>
+<TR><TD><CODE>bin</CODE></TD>
+	<TD>target for all build products; also includes jcont script</TD></TR>
+<TR><TD><CODE>tran</CODE></TD>
+	<TD>source code for the translator</TD></TR>
+<TR><TD><CODE>rts</CODE></TD>
+	<TD>source code for the run-time system</TD></TR>
+<TR><TD><CODE>html</CODE></TD>
+	<TD>files for building documentation pages</TD></TR>
+<TR><TD><CODE>test</CODE></TD>
+	<TD>automated test collection for validating Jcon</TD></TR>
+<TR><TD><CODE>gtest</CODE></TD>
+	<TD>manually run test collection for graphics</TD></TR>
+<TR><TD><CODE>demo</CODE></TD>
+	<TD>demonstration programs utilizing graphics</TD></TR>
+<TR><TD><CODE>expt</CODE></TD>
+	<TD>other tests and experiments to be run manually</TD></TR>
+<TR><TD><CODE>bmark</CODE></TD>
+	<TD>benchmark collection</TD></TR>
+</TABLE></BLOCKQUOTE>
+Each directory contains a <CODE>README</CODE> file with further information.
 
-<H3>Problems and Bug Reports</H3>
+<H3>Contact Information</H3>
 
-<P> Please send all comments to
-<A HREF="mailto:jcon@cs.arizona.edu">jcon@cs.arizona.edu</A>
+<P> The Jcon home page is located at
+<A HREF="http://www.cs.arizona.edu/icon/jcon/">
+http://www.cs.arizona.edu/icon/jcon/</A>.
+Go there for the lastest versions of the implementation and documentation.
+
+<P> Please send all Jcon-related mail to 
+<A HREF="mailto:jcon@cs.arizona.edu">jcon@cs.arizona.edu</A>.
+Using this alias helps us log the mail and respond more promptly.
+
+<P> The home page for the Icon language is located at
+<A HREF="http://www.cs.arizona.edu/icon/">
+http://www.cs.arizona.edu/icon/</A>.

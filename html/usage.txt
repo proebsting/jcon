@@ -52,7 +52,7 @@ and arguments can be passed as usual.
 	compile with <CODE>-f d</CODE> (to allow tracing)
 	and initialize <CODE>&AMP;trace</CODE> to -1</TD></TR>
 <TR><TD WIDTH=50 VALIGN=TOP><CODE>-u</CODE></TD><TD>
-	diagnose undeclared variables</TD></TR>
+	list undeclared variables</TD></TR>
 <TR><TD WIDTH=50 VALIGN=TOP><CODE>-x</CODE></TD><TD>
 	execute after compilation
 	(appears <EM>after</EM> file arguments)
@@ -107,9 +107,9 @@ See the Java documentation for other Java options.
 
 <H3>Jar file output</H3>
 
-<P> If <CODE>-j</CODE> is passed to jcont, the final output file is given a
-<CODE>.jar</CODE> extension and the header is omitted to facilitate
-manipulation of the file as an archive.
+<P> If <CODE>-j</CODE> is passed to <CODE>jcont</CODE>,
+the final output file is given a <CODE>.jar</CODE> extension
+and the header is omitted to facilitate manipulation of the file as an archive.
 Execution is accomplished by naming the file in the CLASSPATH,
 along with the run-time library, and then running java:
 <BLOCKQUOTE><CODE>

@@ -1,5 +1,6 @@
 <P> Jcon (pronounced <EM>JAY-konn</EM>) is a new Java-based implementation
-of the Icon programming language.
+of the Icon programming language
+(<A HREF=refs.htm>Griswold and Griswold, 1996</A>).
 The Jcon translator, written in Icon, generates Java class files that
 execute in conjunction with a run-time system written in Java.
 Jcon runs on Unix systems.
@@ -17,6 +18,7 @@ There are a few minor deficiencies due to Java limitations.
 Wide lines and textured drawing are lacking; these should be easier to
 implement after version 1.2 of Java becomes universally available.
 A few other features, notably mutable colors, are also unavailable.
+Details are provided in the <A HREF=graphics.htm>Graphics</A> section.
 
 <P> The <CODE>jcont</CODE> script functions similarly to <CODE>icont</CODE>.
 The end result of compilation is an executable file, which is produced
@@ -33,7 +35,7 @@ This is somewhat smaller than the 13,000 lines of C code that
 form the translator in Version 9 of Icon, but the two totals are not
 directly comparable because the two programs have different capabilities.
 The common function of generating ucode files from Icon source code
-accounts for about 3500 lines in Jcon and about 9000 lines in Version 9.
+accounts for about 3,500 lines in Jcon and about 9,000 lines in Version 9.
 
 <P> The Jcon runtime system comprises 18,000 lines of Java code.
 The corresponding portion of Version 9, counting only the Unix code,
@@ -46,10 +48,10 @@ to a non-Unix port.
 We believe that writing a replacement program would be the easiest route
 to a Windows or Macintosh port.
 
-<P> Jcon includes an automated test suite containing 8000 lines of
+<P> Jcon includes an automated test suite containing 8,000 lines of
 Icon programs.
 These are drawn from the standard Icon test suite,
-other existing Icon programs, and 3000 lines of new tests.
+other existing Icon programs, and 3,000 lines of new tests.
 Jcon also includes additional manually-run graphics tests and
 a small collection of graphics demonstration programs.
 

@@ -26,7 +26,7 @@ Changes to the following attributes are ignored:
 <CODE>Pattern()</CODE> procedure always fails.
 
 <P> Each graphics context is associated with a particular canvas.
-Thus <CODE>Couple()</CODE> is not implemented and
+Thus <CODE>Couple()</CODE> always fails and
 <CODE>Clone()</CODE> accepts only a single window argument.
 
 <H3>Fonts</H3>
@@ -56,6 +56,7 @@ The first image below (from Plate 8.2 of the graphics book)
 shows the surface of color space as rendered on a full-color display.
 The second image is an example of how Java renders it on an 8-bit display.
 <BR>
+<P>
 <CENTER>
 	<IMG WIDTH=202 HEIGHT=122 SRC=merc24.jpg ALT="full color image">
 	<IMG WIDTH=202 HEIGHT=122 SRC=merc8.gif  ALT="quantized image">
@@ -120,7 +121,7 @@ and <CODE>pointercol</CODE>), but it cannot be set by the program.
 Attempts to alter these attribute values are ignored.
 
 <P> Acceptable values for the <CODE>pointer</CODE> attribute
-are illustrated in this figure.
+are illustrated in the following figure.
 For compatibility with other systems, some pointers have multiple names.
 <BR><CENTER>
 	<IMG WIDTH=442 HEIGHT=302 SRC=pointers.gif ALT="pointer shapes">

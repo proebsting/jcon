@@ -16,7 +16,7 @@
 	<P>  Icon Project Document 286  (IPD286)
 	<BR> Department of Computer Science
 	<BR> The University of Arizona
-	<BR> August 33, 1998
+	<BR> August 25, 1998
 	<BR> http://www.cs.arizona.edu/icon/docs/ipd286.htm 
     </TD></TR></TABLE>
 </CENTER>
