@@ -1,8 +1,12 @@
 #!/bin/ksh -p
 #
-#  runtest [-P] [file...] -- run test
+#  runtest [-JP] [file...] -- run test
 #
-#	-P	disable optimizer  (icont -P)
+#	-J	use jcon-built jcon  (jcont -J)
+#	-P	disable optimizer  (jcont -P)
+#
+#  This script attempts to reuse existing binaries if they exist.
+#  To rerun with different options, run "make clean" first.
 
 # export variables for use by spawned shells
 export JTRAN="../bin/jtran"
@@ -11,9 +15,10 @@ export JCOPT="-s"
 export JXOPTS="-verify"
 
 # process options
-USAGE="$0 [-P] [file...]"
-while getopts P c; do
+USAGE="$0 [-JP] [file...]"
+while getopts JP c; do
     case $c in
+	J)	JCOPT="$JCOPT -J"; JXOPTS="$JXOPTS -ss1m";;
 	P)	JCOPT="$JCOPT -P";;
 	*)	echo "usage: $USAGE" 1>&2; exit 1;;
     esac
