@@ -166,9 +166,9 @@ synchronized void enqueue(vValue a, vValue b, vValue c) {
 vString Canvas(vWindow win, String s) {
     if (s != null) {
 	if (s.equals("hidden")) {
-	    f.hide();
+	    f.setVisible(false);
 	} else if (s.equals("normal")) {
-	    f.show();
+	    f.setVisible(true);
 	} else {
 	    return null; /*FAIL*/
 	    //#%#% still need to handle "maximal" and "iconic"
