@@ -29,6 +29,24 @@ global preproc_sym_table,preproc_if_stack,preproc_file_stack,preproc_if_state,
         preproc_include_set,preproc_print_filename,preproc_command,
         preproc_err_count
 
+procedure predefs()
+    local t
+
+    t := table()
+    t["_UNIX"] := "1"
+    t["_JAVA"] := "1"
+    t["_ASCII"] := "1"
+    t["_CO_EXPRESSIONS"] := "1"
+    t["_PIPES"] := "1"
+    t["_SYSTEM_FUNCTION"] := "1"
+    # there is no predefn for "environment variables" feature
+    return t
+end
+
+procedure preproc(dummy, args)
+    suspend preprocessor(args[1], predefs())
+end
+
 #
 # Preprocesses a file, generating output lines.
 #

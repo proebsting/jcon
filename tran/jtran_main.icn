@@ -1,23 +1,5 @@
 invocable all
 
-procedure predefs()
-    local t
-
-    t := table()
-    t["_UNIX"] := "1"
-    t["_JAVA"] := "1"
-    t["_ASCII"] := "1"
-    t["_CO_EXPRESSIONS"] := "1"
-    t["_PIPES"] := "1"
-    t["_SYSTEM_FUNCTION"] := "1"
-    # there is no predefn for "environment variables" feature
-    return t
-end
-
-procedure preproc(dummy, args)
-    suspend preprocessor(args[1], predefs())
-end
-
 procedure cat(getline, args)
     local f, p
 
@@ -42,17 +24,6 @@ procedure stdout(c)
     }
 end
 
-procedure echo(c, flags)
-    local p
-    while p := @\c do {
-	if "-verbose" == !\flags then {
-            write(verbose(p, "", ""))
-	} else {
-            write(dump(p))
-	}
-    }
-end
-
 procedure devnull(c)
     while @\c
 end
@@ -69,6 +40,5 @@ procedure main(L)
         fn := proc(fn) | stop("ERROR: unknown command-line procedure, ", fn)
         c := create fn(c, args)
     }
-    c := create echo(c)
     while @c
 end

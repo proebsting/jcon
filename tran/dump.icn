@@ -1,3 +1,14 @@
+procedure echo(c, flags)
+    local p
+    while p := @\c do {
+	if "-verbose" == !\flags then {
+            write(verbose(p, "", ""))
+	} else {
+            write(dump(p))
+	}
+    }
+end
+
 procedure get_names(x)
     local L
 
