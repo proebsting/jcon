@@ -6,7 +6,6 @@ what's implemented:
 -- all datatypes except "file" (but there are no large integers)
 -- many keywords (see list)
 -- many built-in functions (see list)
--- no "link" declaration support
 -- no "invocable" declaration support
 -- no graphics
 -- no preprocessor
