@@ -211,11 +211,10 @@ case \$WHENCE in
 esac
 
 TZIP=/tmp/jcon\$\$.zip
+trap "rm -rf \$TZIP" 0 1 2 15
 dd bs=$HDRSIZE skip=1 <\$THISFILE >\$TZIP 2>/dev/null
 
 export CLASSPATH="\$TZIP:$JRTS"
-
-trap "rm -rf \$TZIP" 0 1 2 15
 $JAVA rts.Main $ROOTS -- "\$0" "\$@"
 exit
 
