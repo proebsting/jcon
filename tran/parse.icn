@@ -443,7 +443,7 @@ procedure expr1a()
 	left := expr1()
 	while tok_rec === QMARK do {
 		eat_token()
-		right := expr1a()
+		right := expr1()
 		left := Scan("?", left, right, left.coord)
 	}
     return left
@@ -459,7 +459,7 @@ procedure expr2()
         ret := e1
 	while tok_rec === TO do {
 	    eat_token()
-	    e2 := expr2()
+	    e2 := expr3()
 	    if tok_rec === BY then {
 		match_token(BY)
 		e3 := expr3()
@@ -498,7 +498,7 @@ procedure expr4()
 
 	while member(expr4_set, tok_rec) do {
 	    op := eat_token()
-	    right := expr4()
+	    right := expr5()
 	    ret := Binop(op, ret, right, ret.coord)
 	}
     return ret
@@ -509,10 +509,9 @@ procedure expr5()
     local ret, right, op
 
 	ret := expr6()
-
 	while tok_rec === CONCAT | tok_rec === LCONCAT do {
 	    op := eat_token()
-	    right := expr5()
+	    right := expr6()
 	    ret := Binop(op, ret, right, ret.coord)
 	}
     return ret
@@ -550,7 +549,7 @@ procedure expr7()
 
     while member(expr7_set, tok_rec) do {
 	op := eat_token()
-	right := expr7()
+	right := expr8()
 	ret := Binop(op, ret, right, ret.coord)
     }
     return ret
@@ -576,7 +575,7 @@ procedure expr9()
 	ret := expr10()
 	while tok_rec === AT | tok_rec === BACKSLASH | tok_rec === BANG do {
 	    op := eat_token()
-	    right := expr9()
+	    right := expr10()
 	    if op == "\\" then {
 		ret := Limitation(ret, right, ret.coord)
 	    } else {

@@ -10,7 +10,7 @@ record u_cofail()
 record u_colm()
 record u_compl()
 record u_coret()
-record u_create()
+record u_create(n)
 record u_cset(a)
 record u_diff()
 record u_div()
@@ -109,8 +109,9 @@ procedure u_emit(i)
 	}
 end
 
-record u_loopinfo(nextlab, breaklab)
+record u_loopinfo(nextlab, breaklab, markcount)
 global u_loops, u_nextlab
+global u_createflag
 global u_constants, u_constList
 global u_variables
 global u_u1, u_u2
@@ -145,15 +146,19 @@ procedure ucode_Case(s, p)
 
 	endlab := @u_nextlab
 	put(s, u_mark0())
+	u_loops[1].ir.markcount +:= 1
 	ucode(s, p.expr)
+	u_loops[1].ir.markcount -:= 1
 	put(s, u_eret())
 	every i := !p.clauseList do {
 		nextlab := @u_nextlab
 		put(s, u_mark(nextlab))
+		u_loops[1].ir.markcount +:= 1
 		put(s, u_ccase())
 		ucode(s, i.expr)
 		u_coord(s, p)
 		put(s, u_eqv())
+		u_loops[1].ir.markcount -:= 1
 		put(s, u_unmark())
 		put(s, u_pop())
 		ucode(s, i.body)
@@ -180,7 +185,9 @@ procedure ucode_Not(s, p)
 
 	lab := @u_nextlab
 	put(s, u_mark(lab))
+	u_loops[1].ir.markcount +:= 1
 	ucode(s, p.expr)
+	u_loops[1].ir.markcount -:= 1
 	put(s, u_unmark())
 	put(s, u_efail())
 	put(s, u_lab(lab))
@@ -194,7 +201,9 @@ procedure ucode_RepAlt(s, p)
 	lab := @u_nextlab
 	put(s, u_lab(lab))
 	put(s, u_mark0())
+	u_loops[1].ir.markcount +:= 1
 	ucode(s, p.expr)
+	u_loops[1].ir.markcount -:= 1
 	put(s, u_chfail(lab))
 	put(s, u_esusp())
 end
@@ -229,6 +238,9 @@ end
 # 	ucode(s, p.eList[-1])
 # 	put(s, u_lab(endlab))
 # end
+
+# The following is used rather than the more natural solution above to get
+# .u1 files that match icont.
 # record Alt( eList )
 procedure ucode_Alt0(s, L)
 	local i, endlab, nextlab
@@ -237,7 +249,9 @@ procedure ucode_Alt0(s, L)
 		nextlab := @u_nextlab
 		endlab := @u_nextlab
 		put(s, u_mark(nextlab))
+		u_loops[1].ir.markcount +:= 1
 		ucode(s, L[1])
+		u_loops[1].ir.markcount -:= 1
 		put(s, u_esusp())
 		put(s, u_goto(endlab))
 		put(s, u_lab(nextlab))
@@ -254,8 +268,11 @@ end
 # record Limitation( expr limit )
 procedure ucode_Limitation(s, p)
 	ucode(s, p.limit)
+	u_coord(s, p)
 	put(s, u_limit())
+	u_loops[1].ir.markcount +:= 1
 	ucode(s, p.expr)
+	u_loops[1].ir.markcount -:= 1
 	put(s, u_lsusp())
 end
 
@@ -264,18 +281,21 @@ procedure ucode_Scan(s, p)
 	case p.op of {
 	"?": {
 		ucode(s, p.expr)
+		u_coord(s, p)
 		put(s, u_bscan())
 		ucode(s, p.body)
+		u_coord(s, p)
 		put(s, u_escan())
 	}
 	"?:=": {
 		put(s, u_pnull())
 		ucode(s, p.expr)
 		put(s, u_sdup())
+		u_coord(s, p)
 		put(s, u_bscan())
 		ucode(s, p.body)
-		put(s, u_escan())
 		u_coord(s, p)
+		put(s, u_escan())
 		put(s, u_asgn())
 	}
 	default: runerr(1000, p)
@@ -284,20 +304,22 @@ end
 
 # record Every( expr body )
 procedure ucode_Every(s, p)
+	p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1)
+	push(u_loops, p)
 	put(s, u_mark0())
 	ucode(s, p.expr)
 	put(s, u_pop())
-	p.ir := u_loopinfo(@u_nextlab, @u_nextlab)
 	if \p.body then {
 		put(s, u_mark0())
-		push(u_loops, p)
+		u_loops[1].ir.markcount +:= 1
 		ucode(s, p.body)
-		pop(u_loops)
+		u_loops[1].ir.markcount -:= 1
 		put(s, u_unmark())
 	}
 	put(s, u_lab(p.ir.nextlab))
 	put(s, u_efail())
 	put(s, u_lab(p.ir.breaklab))
+	pop(u_loops)
 end
 
 # record Sectionop( op val left right )
@@ -317,6 +339,7 @@ procedure ucode_Sectionop(s, p)
 		ucode(s, p.right)
 		u_coord(s, p)
 		put(s, (\fn[p.op])()) | runerr(1000, p)
+		u_coord(s, p)
 		put(s, u_sect())
 	} else {
 		put(s, u_pnull())
@@ -444,7 +467,9 @@ procedure ucode_If(s, p)
 		elselab := @u_nextlab
 		endlab := @u_nextlab
 		put(s, u_mark(elselab))
+		u_loops[1].ir.markcount +:= 1
 		ucode(s, p.expr)
+		u_loops[1].ir.markcount -:= 1
 		put(s, u_unmark())
 		ucode(s, p.thenexpr)
 		put(s, u_goto(endlab))
@@ -453,7 +478,9 @@ procedure ucode_If(s, p)
 		put(s, u_lab(endlab))
 	} else {
 		put(s, u_mark0())
+		u_loops[1].ir.markcount +:= 1
 		ucode(s, p.expr)
+		u_loops[1].ir.markcount -:= 1
 		put(s, u_unmark())
 		ucode(s, p.thenexpr)
 	}
@@ -542,6 +569,7 @@ procedure ucode_ProcDecl(s, p)
 	u_nextlab := create ("L" || seq())
 	u_loops := []
 	code := []
+	u_coord(code, p)
 	ucode(code, p.code)
 
 	write(u_u1, "proc ", p.ident.id)
@@ -598,13 +626,21 @@ end
 procedure ucode_ProcBody(s, p)
 	local lab, i
 
-	every i := \!p.nexprList do {
+	every i := !p.nexprList do {
 		lab := @u_nextlab
 		put(s, u_mark(lab))
-		ucode(s, i)
+		if \i then {
+			ucode(s, i)
+		} else {
+			put(s, u_pnull())
+		}
 		put(s, u_unmark())
 		put(s, u_lab(lab))
 	}
+	if *p.nexprList > 0 then {
+		put(s, u_pnull())
+	}
+	u_coord(s, p)
 	put(s, u_pfail())
 end
 
@@ -618,25 +654,32 @@ procedure ucode_Repeat(s, p)
 	local lab
 
 	lab := @u_nextlab
+	p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1)
+	push(u_loops, p)
 	put(s, u_lab(lab))
 	put(s, u_mark(lab))
-	p.ir := u_loopinfo(lab, @u_nextlab)
-	push(u_loops, p)
 	ucode(s, p.expr)
-	pop(u_loops)
+	put(s, u_lab(p.ir.nextlab))
 	put(s, u_unmark())
 	put(s, u_goto(lab))
 	put(s, u_lab(p.ir.breaklab))
+	pop(u_loops)
 end
 
 # record Return( expr )
 procedure ucode_Return(s, p)
 	local lab
 
-	/p.expr := Key("null")
+	/u_createflag | semantic_error("invalid context for return", p.coord)
 	lab := @u_nextlab
 	put(s, u_mark(lab))
-	ucode(s, p.expr)
+	if \p.expr then {
+		u_loops[1].ir.markcount +:= 1
+		ucode(s, p.expr)
+		u_loops[1].ir.markcount -:= 1
+	} else {
+		put(s, u_pnull())
+	}
 	u_coord(s, p)
 	put(s, u_pret())
 	put(s, u_lab(lab))
@@ -652,28 +695,25 @@ end
 
 # record Suspend( expr body )
 procedure ucode_Suspend(s, p)
-	/p.body := Key("fail") & /p.expr := Key("null")
+	/u_createflag | semantic_error("invalid context for suspend", p.coord)
+	p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1)
+	push(u_loops, p)
+	put(s, u_mark0())
+	ucode(s, p.expr)
+	u_coord(s, p)
+	put(s, u_psusp())
+	put(s, u_pop())
 	if \p.body then {
 		put(s, u_mark0())
-		ucode(s, p.expr)
-		put(s, u_psusp())
-		put(s, u_pop())
-		put(s, u_mark0())
-		p.ir := u_loopinfo(@u_nextlab, @u_nextlab)
-		push(u_loops, p)
+		u_loops[1].ir.markcount +:= 1
 		ucode(s, p.body)
-		pop(u_loops)
+		u_loops[1].ir.markcount -:= 1
 		put(s, u_unmark())
-		put(s, u_lab(p.ir.breaklab))
-		put(s, u_efail())
-		put(s, u_lab(p.ir.breaklab))
-	} else {
-		put(s, u_mark0())
-		ucode(s, p.expr)
-		put(s, u_psusp())
-		put(s, u_pop())
-		put(s, u_efail())
 	}
+	put(s, u_lab(p.ir.nextlab))
+	put(s, u_efail())
+	put(s, u_lab(p.ir.breaklab))
+	pop(u_loops)
 end
 
 # record Until( expr body )
@@ -683,6 +723,8 @@ procedure ucode_Until(s, p)
 	/p.body := Key("null")
 	exprlab := @u_nextlab
 	bodylab := @u_nextlab
+	p.ir := u_loopinfo(exprlab, @u_nextlab, 1)
+	push(u_loops, p)
 	put(s, u_lab(exprlab))
 	put(s, u_mark(bodylab))
 	ucode(s, p.expr)
@@ -690,13 +732,12 @@ procedure ucode_Until(s, p)
 	put(s, u_efail())
 	put(s, u_lab(bodylab))
 	put(s, u_mark(exprlab))
-	p.ir := u_loopinfo(exprlab, @u_nextlab)
-	push(u_loops, p)
 	ucode(s, p.body)
-	pop(u_loops)
+	put(s, u_lab(p.ir.nextlab))
 	put(s, u_unmark())
 	put(s, u_goto(exprlab))
 	put(s, u_lab(p.ir.breaklab))
+	pop(u_loops)
 end
 
 # record While( expr body )
@@ -704,24 +745,20 @@ procedure ucode_While(s, p)
 	local lab
 
 	lab := @u_nextlab
-	p.ir := u_loopinfo(lab, @u_nextlab)
+	p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1)
 	push(u_loops, p)
 	put(s, u_lab(lab))
+	put(s, u_mark0())
+	ucode(s, p.expr)
 	if \p.body then {
-		put(s, u_mark0())
-		ucode(s, p.expr)
 		put(s, u_unmark())
 		put(s, u_mark(lab))
 		ucode(s, p.body)
-		put(s, u_unmark())
-		put(s, u_goto(lab))
-		put(s, u_lab(p.ir.breaklab))
-	} else {
-		put(s, u_mark0())
-		ucode(s, p.expr)
-		put(s, u_unmark())
-		put(s, u_goto(lab))
 	}
+	put(s, u_lab(p.ir.nextlab))
+	put(s, u_unmark())
+	put(s, u_goto(lab))
+	put(s, u_lab(p.ir.breaklab))
 	pop(u_loops)
 end
 
@@ -736,7 +773,11 @@ procedure ucode_Create(s, p)
 	put(s, u_lab(exprlab))
 	put(s, u_pop())
 	put(s, u_mark(faillab))
+	u_loops[1].ir.markcount +:= 1
+	u_createflag := p.expr
 	ucode(s, p.expr)
+	u_createflag := &null
+	u_loops[1].ir.markcount -:= 1
 	u_coord(s, p)
 	put(s, u_coret())
 	put(s, u_efail())
@@ -754,7 +795,13 @@ end
 
 # record Next( )
 procedure ucode_Next(s, p)
-	put(s, u_goto(u_loops[-1].ir.nextlab))
+	*u_loops > 0 | semantic_error("invalid context for next", p.coord)
+	if type(u_loops[1]) == ("Suspend" | "Return") then {
+		every 1 to u_loops[1].ir.markcount-1 do {
+			put(s, u_unmark())
+		}
+	}
+	put(s, u_goto(u_loops[1].ir.nextlab))
 end
 
 # record Break( expr )
@@ -762,7 +809,10 @@ procedure ucode_Break(s, p)
 	local tmp
 
 	/p.expr := Key("null")
-	put(s, u_unmark())
+	*u_loops > 0 | semantic_error("invalid context for break", p.coord)
+	every 1 to u_loops[1].ir.markcount do {
+		put(s, u_unmark())
+	}
 	tmp := pop(u_loops)
 	ucode(s, p.expr)
 	push(u_loops, tmp)
@@ -771,32 +821,30 @@ end
 
 # record ToBy( fromexpr toexpr byexpr )
 procedure ucode_ToBy(s, p)
+	put(s, u_pnull())
+	ucode(s, p.fromexpr)
+	ucode(s, p.toexpr)
 	if \p.byexpr then {
-		put(s, u_pnull())
-		ucode(s, p.fromexpr)
-		ucode(s, p.toexpr)
 		ucode(s, p.byexpr)
-		u_coord(s, p)
-		put(s, u_toby())
 	} else {
-		put(s, u_pnull())
-		ucode(s, p.fromexpr)
-		ucode(s, p.toexpr)
 		put(s, u_push1())
-		u_coord(s, p)
-		put(s, u_toby())
 	}
+	u_coord(s, p)
+	put(s, u_toby())
 end
 
 # record Mutual( exprList )
 procedure ucode_Mutual(s, p)
-	if *p.exprList = 0 then {
-		p.exprList := [ Key("null") ]
-	}
 	every /(!p.exprList) := Key("null")
-	put(s, u_pushn1())
-	every ucode(s, !p.exprList)
-	put(s, u_invoke(*p.exprList))
+	if *p.exprList = 0 then {
+		put(s, u_pnull())
+	} else if *p.exprList = 1 then {
+		ucode(s, p.exprList[1])
+	} else {
+		put(s, u_pushn1())
+		every ucode(s, !p.exprList)
+		put(s, u_invoke(*p.exprList))
+	}
 end
 
 # record CoexpList( exprList )
@@ -824,7 +872,9 @@ procedure ucode_Compound(s, p)
 	every i := 1 to *p.exprList-1 do {
 		lab := @u_nextlab
 		put(s, u_mark(lab))
+		u_loops[1].ir.markcount +:= 1
 		ucode(s, p.exprList[i])
+		u_loops[1].ir.markcount -:= 1
 		put(s, u_unmark())
 		put(s, u_lab(lab))
 	}
@@ -844,7 +894,6 @@ procedure ucode_Key(s, p)
 	u_coord(s, p)
 	case p.id of {
 	"null":		put(s, u_pnull())
-	"fail":		put(s, u_efail())
 	default:	put(s, u_keywd(p.id))
 	}
 end
