@@ -19,9 +19,9 @@ DEST = /must/specify/DEST/to/install
 
 
 build:
+	cd html; $(MAKE)
 	cd tran; $(MAKE)
 	cd rts; $(MAKE)
-	cd doc; $(MAKE)
 
 jj:
 	cd tran; $(MAKE) jj
@@ -38,9 +38,9 @@ install:
 
 clean:
 	rm -f */.#*
+	cd html;   $(MAKE) clean
 	cd tran;  $(MAKE) clean
 	cd rts;   $(MAKE) clean
-	cd doc;   $(MAKE) clean
 	cd test;  $(MAKE) clean
 	cd gtest; $(MAKE) clean
 	cd expt;  $(MAKE) clean

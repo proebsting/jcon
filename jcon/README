@@ -1,7 +1,6 @@
 jcon/rts -- Jcon run-time system
 
 This directory contains source code for the Jcon run-time system.
-Grep for '#%#%' in the code to find places that need revisiting.
 
 Java names are assigned as follows:
     a.....	graphics attribute classes

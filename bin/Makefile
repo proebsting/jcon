@@ -6,4 +6,4 @@
 default:
 
 clean:
-	rm -f jtran jlink jjtran jjlink rts.zip jcon.txt
+	rm -f jtran jlink jjtran jjlink rts.zip
