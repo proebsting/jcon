@@ -1,6 +1,7 @@
 ICONT = icont -s -u
 
 JTRAN = ../bin/jtran
+JLINK = ../bin/jlink
 
 
 BASESRC = \
@@ -35,7 +36,10 @@ CODEGENSRC = \
 TRANSRC = $(BASESRC) $(LEXSRC) $(PARSESRC) $(IRGENSRC) $(CODEGENSRC)
 
 
-all:	$(JTRAN)
+all:	$(JTRAN) $(JLINK)
+
+$(JLINK):  linker.icn bytecode.icn
+	$(ICONT) -o $(JLINK) linker.icn bytecode.icn
 
 gen:	gen.icn
 	$(ICONT) gen.icn
