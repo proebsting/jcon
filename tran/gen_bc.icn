@@ -873,7 +873,6 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
             bc_create_vClosure_copy_constructor(c, params, locals, undeclared)
             bc_create_refresher(c)
         }
-        # bc_create_copy(c, params, locals, undeclared)
 
         f := open(bc_directory || bc_current_classname || ".class","wu") |
              runerr(500)
@@ -1018,7 +1017,7 @@ procedure bc_create_vClosure_copy_constructor(c, params, locals, undeclared)
         put(s, j_aload_1() )
         put(s, j_ipush(bc_var_table[k]) )
         put(s, j_aaload() )
-        put(s, j_invokevirtual(deref) )
+        # put(s, j_invokevirtual(deref) )
         put(s, j_invokestatic(newsimplevar) )
         put(s, j_aastore() )
     }
@@ -1203,8 +1202,7 @@ procedure bc_nextval_code(nextvalcode, c, start, params, locals, undeclared, acc
         put(s, j_aload_0() )
         put(s, j_getfield(PC))
     } else {
-        bc_createvars(s, c, params, locals, undeclared)
-        bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
+        bc_createvars(s, c, params, locals, undeclared, accumulate)
         bc_load_statics(s)
         bc_initialize_tmps(s)
     }
@@ -1389,66 +1387,6 @@ procedure bc_emit_param_val(s, c, params, accumulate, i)
     }
 end
 
-procedure bc_emit_prologue_params(s, c, params, accumulate)
-    local marshal, i, k, field, elselab, endlab, newsimplevar
-    local null, deref, assign
-
-    assign := bc_Assign_methodref(c)
-    every i := 1 to *params do {
-        k := params[i]
-        if \bc_var_table[k] then {
-            put(s, j_Aload(bc_var_table[k] + bc_var_offset))
-            bc_emit_param_val(s, c, params, accumulate, i)
-            put(s, j_invokevirtual(assign) )
-            put(s, j_pop())
-        }
-    }
-end
-
-procedure bc_emit_prologue_locals(s, c, locals)
-    local k, field
-    local null, assign
-
-    null := bc_New_vNull_methodref(bc_current_classptr)
-    assign := bc_Assign_methodref(c)
-
-    every k := !locals do {
-        if \bc_var_table[k] then {
-            put(s, j_Aload(bc_var_table[k] + bc_var_offset))
-            put(s, j_invokestatic(null))
-            put(s, j_invokevirtual(assign) )
-            put(s, j_pop())
-        }
-    }
-end
-
-procedure bc_emit_prologue_undeclared(s, c, undeclared)
-    local k, field, lab1, linkvalue
-    local null, assign
-
-    null := bc_New_vNull_methodref(bc_current_classptr)
-    assign := bc_Assign_methodref(c)
-
-    every k := !undeclared do {
-        linkvalue := j_create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
-                                     bc_java_classname)
-        lab1 := j_label()
-        put(s, j_getstatic(linkvalue) )
-        put(s, j_ifnonnull(lab1) )
-        put(s, j_Aload(bc_var_table[k] + bc_var_offset))
-        put(s, j_invokestatic(null))
-        put(s, j_invokevirtual(assign) )
-        put(s, j_pop())
-        put(s, lab1 )
-    }
-end
-
-procedure bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
-    bc_emit_prologue_params(s, c, params, accumulate)
-    #bc_emit_prologue_locals(s, c, locals)
-    #bc_emit_prologue_undeclared(s, c, undeclared)
-end
-
 procedure bc_createvars_into_array(s, c, params, locals, undeclared, accumulate)
     local newsimplevar, k, field, v, i
     local linkvalue, lab1, class_index
@@ -1503,12 +1441,24 @@ procedure bc_createvars_into_array(s, c, params, locals, undeclared, accumulate)
     }
 end
 
-procedure bc_createvars(s, c, params, locals, undeclared)
-    local newsimplevar, k, field, v
+procedure bc_createvars(s, c, params, locals, undeclared, accumulate)
+    local newsimplevar, k, field, v, i
     local linkvalue, lab1
 
+    newsimplevar := bc_New_vSimpleVar_Assign_methodref(c)
+    every i := 1 to *params do {
+        k := params[i]
+        if \bc_var_table[k] then {
+            v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
+            put(s, j_ldc_w(v) )
+            bc_emit_param_val(s, c, params, accumulate, i)
+            put(s, j_invokestatic(newsimplevar) )
+            put(s, j_Astore(bc_var_table[k] + bc_var_offset))
+        }
+    }
+
     newsimplevar := bc_New_vSimpleVar_methodref(c)
-    every k := !params | !locals do {
+    every k := !locals do {
         if \bc_var_table[k] then {
             v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
             put(s, j_ldc_w(v) )
@@ -1533,18 +1483,6 @@ procedure bc_createvars(s, c, params, locals, undeclared)
     }
 end
 
-procedure bc_create_createvars(c, params, locals, undeclared)
-    local createvars, createvarscode
-
-    createvars := j_create_method(c, 0, "createVars", "()V")
-    createvarscode := j_create_code(c, 15, 15)
-    put(createvars.attributes, createvarscode)
-
-    bc_createvars(createvarscode.code, c, params, locals, undeclared)
-
-    put(createvarscode.code, j_return() )
-end
-
 procedure bc_copy_variable(s, c, k)
     local deref, assign, field
 
@@ -1559,51 +1497,6 @@ procedure bc_copy_variable(s, c, k)
     put(s, j_invokevirtual(deref) )
     put(s, j_invokevirtual(assign) )
     put(s, j_pop())
-end
-
-procedure bc_create_copy(c, params, locals, undeclared)
-    local Copy, copycode, createvars, deref, assign
-    local k, field, linkvalue, lab1, PC, init, class, s
-
-    if \bc_create_exists then {
-        Copy := j_create_method(c, 0, "copy", "(I)Lrts/vClosure;")
-        copycode := j_create_code(c, 15, 15)
-        put(Copy.attributes, copycode)
-        s := copycode.code
-
-        # local1 is PC
-        # local2 is New
-        class := j_cp_Class(c, j_cp_Utf8(c, bc_current_classname))
-        init := bc_init_methodref(c, bc_current_classname)
-        put(s, j_new(class) )
-        put(s, j_dup() )
-        put(s, j_invokespecial(init) )
-        put(s, j_astore_2() )
-
-        createvars := bc_createVars_methodref(c, bc_current_classname)
-        put(s, j_aload_2() )
-        put(s, j_invokevirtual(createvars) )
-        deref := bc_Deref_methodref(c)
-        assign := bc_Assign_methodref(bc_current_classptr)
-        every k := !params | !locals do {
-            bc_copy_variable(s, c, k)
-        }
-        every k := !undeclared do {
-            linkvalue := j_create_fieldref(c, "v$" || k ||"$",
-                                           "Lrts/vVariable;", bc_java_classname)
-            lab1 := j_label()
-            put(s, j_getstatic(linkvalue) )
-            put(s, j_ifnonnull(lab1) )
-            bc_copy_variable(s, c, k)
-            put(s, lab1 )
-        }
-        PC := bc_PC_fieldref(c, bc_vClosure_classname)
-        put(s, j_aload_2() )
-        put(s, j_iload_1() )
-        put(s, j_putfield(PC) )
-        put(s, j_aload_2() )
-        put(s, j_areturn() )
-    }
 end
 
 procedure bc_process_flags(flagList)
