@@ -527,7 +527,7 @@ abstract class kPaired extends vProc0 {		// super for paired integer kwds
     private vSimpleVar kwvar;			// trapped variable
 
     kPaired(String name) {			// constructor 
-	kwvar = new vSimpleVar(name, vInteger.New(0)) {
+	kwvar = new vSimpleVar(name, vNull.New()) {
 	    public vVariable Assign(vDescriptor v) {
 		vInteger i = v.mkInteger();	// must be integer
 		assign(i.value);		// call subclass (may give err)
@@ -544,7 +544,7 @@ abstract class kPaired extends vProc0 {		// super for paired integer kwds
     }
 
     public vDescriptor Call() {
-	return kwvar;
+	return kwvar.IsntNull();
     }
 }
 
