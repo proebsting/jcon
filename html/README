@@ -1,0 +1,4 @@
+jcon/html -- Jcon documentation directory
+
+This directory constructs the HTML files that document jcon.
+Type "make" to build.

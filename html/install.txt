@@ -1,0 +1,100 @@
+#%#%#% THIS NEEDS UPDATING
+
+<H3>Requirements</H3>
+
+<H4>Unix with the Korn shell</H4>
+
+<P>
+Building and running Jcon requires various Unix utilities including
+the Korn Shell.
+Unix systems with /bin/ksh qualify, of course.
+The ksh clone on Linux also works.
+
+<H4>Installed Software</H4>
+
+<P>
+Jcon requires a recent version of Icon and version 1.1 of Java.
+Prebuilt binaries of these are available for many platforms.
+Installation of Java may require system privileges,
+and proper functioning of some Java systems may require installation
+of OS patches.
+
+<P>
+For software see:
+<TABLE>
+<TR><TD>Icon 9.3</TD><TD>
+	<A HREF="http://www.cs.arizona.edu/icon/v93u.html">
+	http://www.cs.arizona.edu/icon/v93u.html</A></TD></TR>
+<TR><TD>Java 1.1</TD><TD>
+	<A HREF="http://www.javasoft.com/products/jdk/1.1/">
+	http://www.javasoft.com/products/jdk/1.1/</A></TD></TR>
+</TABLE>
+
+<H4>Search Path</H4>
+
+<P>
+Executables of <CODE>icont</CODE>, <CODE>javac</CODE>, <CODE>java</CODE>,
+and <CODE>jar</CODE> must be in the search path
+to build programs with Jcon.
+Only <CODE>java</CODE> is needed for execution.
+
+<H3>Building Jcon</H3>
+
+<P>
+Ensure that your search path is correct, as described above.
+Make the top level of the Jcon distribution be your current directory,
+and type <CODE>make</CODE>.
+There are no configuration options.
+
+<P>
+When the build completes, the <CODE>bin</CODE> directory contains everything
+needed to run Jcon.  It can be used in place or copied elsewhere.
+The rest of the Jcon distribution can be deleted if no longer wanted.
+
+<P>
+After building Jcon using icont, it is possible to rebuild Jcon using Jcon.
+This optional step is accomplished by typing <CODE>make jj</CODE>;
+it enables the use of <CODE>jcont -J</CODE>.  
+
+
+
+<H3>Testing Jcon</H3>
+
+<P>
+The Jcon test suite includes new tests written for Jcon, old tests
+from the Icon v9.3 distribution, and a few Icon applications.
+The tests are run by typing <CODE>make test</CODE>.
+A successful run produces the names of the tests, one at a time, as they run.
+
+<P>
+Jcon has been tested by us on:
+<BLOCKQUOTE><PRE>
+SGI Indigo2 / Irix 6.2 / SGI Java 3.1 (JDK 1.1.5)
+Sun Sparc / Solaris 2.5.1 (SunOS 5.5.1) / Sun Java 1.1.6
+DEC Alpha 4/233 / Digital Unix 4.0B / Digital Java 1.1.3
+Intel / Linux v2 (Red Hat 5.0) / Blackdown Java 1.1.5v7
+</PRE></BLOCKQUOTE>
+We would be interested to learn of either successes or failures
+on other platforms.
+
+
+<H3>Directory Structure</H3>
+
+<P>
+The subdirectories within the Jcon tree are as follows:
+<PRE>
+<BLOCKQUOTE><PRE>
+bin      target for all build products; also includes jcont script
+tran     source code for the translator
+rts      source code for the runtime system
+doc      such documentation as exists; builds bin/notes.txt
+test     automated test collection for validating Jcon
+expt     other tests, demos, and experiments to be run manually
+</PRE></BLOCKQUOTE>
+
+
+<H3>Problems and Bug Reports</H3>
+
+<P>
+Please send all comments to: 
+<A HREF="mailto:jcon@cs.arizona.edu">jcon@cs.arizona.edu</A>

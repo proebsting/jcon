@@ -1,0 +1,63 @@
+<H3>Performance</H3>
+
+<P><B>#%#%#%#% This is all old and needs to be rewritten.</B>
+
+<P> A program built by Jcon runs several times slower than the same program
+built by <CODE>icont</CODE> and run by the Icon interpreter. 
+We use the ratio of execution times as our basic benchmark measurement.
+The result depends on many things, but a factor of five is typical
+with a good Java system.
+
+<P> We have measured execution times for the standard Icon benchmarks
+and for three long-running additional applications. 
+The standard benchmark programs were taken from Icon v9.3.1 and run unmodified,
+but some data files and command options were changed to make them run longer.
+The <CODE>tgrlink</CODE> application optimizes data files for
+<A HREF="/icon/oddsends/tiger/tiger.htm">drawing maps</A>.
+The <CODE>geddump</CODE> application prints the contents of a
+genealogy database.
+The <CODE>jtran</CODE> application is the translator portion of Jcon,
+compiling one of its own constituent files.
+
+<P> We did most of our performance tuning on a 
+Silicon Graphics Indigo2 running SGI Java 3.1 (JDK 1.1.5).
+This is a good Java implementation running on a fast machine.
+It uses just-in-time (JIT) compilation to convert JVM code to machine code
+as needed.
+There is a minimum 1.5-second startup cost for every execution,
+which we attribute to initialization and JIT compilation;
+this cost is included in the measurements below but is
+not the dominating factor.
+
+<P> Here are execution time ratios measured on several platforms:
+<P> <TABLE BORDER=1 ALIGN=CENTER>
+<TR><TH COLSPAN=2>platform</TH>
+	<TH WIDTH=32>concord</TH>
+	<TH WIDTH=32>deal</TH>
+	<TH WIDTH=32>ipxref</TH>
+	<TH WIDTH=32>queens</TH>
+	<TH WIDTH=32>rsg</TH>
+	<TH WIDTH=32>tgrlink</TH>
+	<TH WIDTH=32>geddump</TH>
+	<TH WIDTH=32>jtran</TH></TR>
+<TR ALIGN=RIGHT>
+	<TD ALIGN=LEFT>SGI Irix 6.2</TD>
+	<TD ALIGN=LEFT>JDK 1.1.5</TD>
+	<TD>5</TD><TD>11</TD><TD>5</TD><TD>3</TD><TD>5</TD>
+	<TD>4</TD><TD>3</TD><TD>7</TD></TR>
+<TR ALIGN=RIGHT>
+	<TD ALIGN=LEFT>Sun Solaris 5.5.1</TD>
+	<TD ALIGN=LEFT>JDK 1.1.6</TD>
+	<TD>7</TD><TD>7</TD><TD>8</TD><TD>6</TD><TD>7</TD>
+	<TD>5</TD><TD>6</TD><TD>7</TD></TR>
+<TR ALIGN=RIGHT>
+	<TD ALIGN=LEFT>Red Hat Linux 5.0</TD>
+	<TD ALIGN=LEFT>JDK 1.1.5v7</TD>
+	<TD>16</TD><TD>22</TD><TD>13</TD><TD>10</TD><TD>13</TD>
+	<TD>-</TD><TD>-</TD><TD>-</TD></TR>
+<TR ALIGN=RIGHT>	
+	<TD ALIGN=LEFT>Digital Unix 4.0B</TD>
+	<TD ALIGN=LEFT>JDK 1.1.3</TD>
+	<TD>18</TD><TD>24</TD><TD>21</TD><TD>13</TD><TD>23</TD>
+	<TD>-</TD><TD>-</TD><TD>-</TD></TR>
+</TABLE>

@@ -1,0 +1,72 @@
+<P> Jcon is a new Java-based implementation of the Icon programming language.
+The Jcon translator, written in Icon, generates Java class files that
+execute in conjunction with a run-time system written in Java.
+
+<P>
+Jcon is an essentially complete implementation of classic Icon,
+omitting only a few things such as <CODE>chdir()</CODE>
+that cannot be done in Java.
+Co-expressions, large integers, and pipes are provided,
+and a preprocessor is included.  String invocation is supported.
+Tracing, error recovery, and debugging functions are all included,
+although for performance reasons they are disabled by default.
+There are a few minor deficiencies due to Java limitations.
+
+<P>
+The graphics implementation is nearly complete, but wide lines
+and textured drawing are omitted.
+These two features will be easier to implement after version 1.2 of Java
+becomes universally available.
+A few other features, notably mutable colors, are also unavailable.
+
+<P> The <CODE>jcont</CODE> script functions similarly to <CODE>icont</CODE>.
+The end result of compilation is an executable file, which is produced
+by embedding a Zip archive of Java classes (a "Jar file")
+inside a shell script.
+Separate compilation is also supported, with <CODE>.zip</CODE> files
+substituting for <CODE>.u1/.u2</CODE> file pairs.
+
+<H3>Implementation</H3>
+
+<P> The Jcon translator is a 9500-line Icon program that produces Java
+class files.
+(It can also produce <CODE>.u1/.u2</CODE> files,
+but it provides no way to link them.)
+The Icon translator, written in C, is comparable in size.
+
+<P> The Jcon runtime system is written in 17000 lines of Java code.
+$$$$$$$$$ CONTRAST v9, need to re-measure with graphics included $$$$$$$$$$$$
+
+<P> The <CODE>jcont</CODE> script that directs compilation and linking
+is a 400-line Korn shell script.
+While this has worked well for Unix, it is the single largest impediment
+to a non-Unix port.
+
+<P> Jcon includes an automated test suite containing 8000 lines of
+Icon programs.
+These are drawn from the standard Icon test suite,
+other existing Icon programs, and 2300 (????--CHECK--????) lines of new tests.
+
+<PRE>
+what's implemented:
+-- all datatypes including large integers
+-- all keywords, although resource keywords produce zeroes
+-- preprocessing
+-- most of the graphics repertoire (see below)
+-- most other functions; missing chdir(), getch()/getche()/kbhit()
+-- loadfunc(zipfile,funcname) loads Java or Icon code, and supports generators
+
+compilation and linking:
+-- jcont is a complex script that only runs on Unix
+-- "jcont foo.zip" doesn't search IPATH (only link'd files are searched for)
+-- link directives must give a simple name (not a path)
+-- compiled .zip files cannot be renamed: name must match original .icn name
+   (however, executables can be renamed)
+-- more procedures may be "invocable" by default than in v9
+
+execution:
+-- if Java runs out of memory, setenv JXOPTS='-mx50m' (e.g.) to increase max
+-- out-of-memory errors say "block region"; there is no separate string region
+-- $PATH must include env and uname commands to use getenv() and &amp;hostname
+-- executables are portable among dissimilar Unix platforms (just need ksh+Java)
+</PRE>

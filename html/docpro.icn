@@ -1,0 +1,104 @@
+#  docpro.icn -- documentation processor for Jcon
+#
+#  usage:  docpro section-list header-1 header-2
+#
+#  The section-list file lists individual sections to be copied
+#  both into the combined document and into individual pages.
+#
+#  The header files are boilerplate for the combined document,
+#  which is written to standard output.
+#
+#%#% TO DO: edit internal HTML refs
+
+
+
+record section(
+    fbase,	# file basename
+    ftag,	# footer tag
+    stitle,	# section title
+    wtitle	# webpage title
+)
+
+global sectlist		# list of section records
+
+
+
+procedure main(args)
+   local sfile, h1file, h2file, line, fbase, ftag, stitle, wtitle, s
+
+   if *args ~= 3 then stop("usage: ", &progname, " sectlist head1 head2");
+   sfile := open(args[1]) | stop("cannot open ", args[1])
+   h1file := open(args[2]) | stop("cannot open ", args[2])
+   h2file := open(args[3]) | stop("cannot open ", args[3])
+
+   sectlist := []
+   while line := read(sfile) do line ? {
+      tab(many(' \t'))
+      if pos(0) | ="#" then next
+      fbase := trim(tab(upto('/') + 1), ' \t/') | stop("bad input: ", line)
+      tab(many(' \t'))
+      ftag := trim(tab(upto('/') + 1), ' \t/') | stop("bad input: ", line)
+      tab(many(' \t'))
+      stitle := trim(tab(upto('/') + 1), ' \t/') | stop("bad input: ", line)
+      tab(many(' \t'))
+      wtitle := trim(tab(0),' \t')
+      put(sectlist, section(fbase, ftag, stitle, wtitle))
+      }
+
+   write("<!-- DON'T EDIT THIS FILE -- it is created automatically -->\n")
+   while write(read(h1file))
+   every s := !sectlist do {
+      write("<A HREF=\"#", s.fbase, "\">", s.stitle, "</A><BR>")
+      }
+   while write(read(h2file))
+
+   every s := !sectlist do {
+      wrsect(s.fbase, s.stitle)
+      wrpage(s.fbase, s.wtitle)
+      }
+   write("\n</BODY></HTML>")
+
+end
+
+
+
+#  wrsect(fbase, title) -- copy section into combined document
+
+procedure wrsect(fbase, title)
+   local f
+
+   f := open(fbase || ".txt") | stop("cannot open ", fbase, ".txt")
+   write("\n\n<P><HR><HR>\n\n<H2><A NAME=", fbase, ">", title, "</A></H2>\n")
+   while write(read(f))
+   close(f)
+   return
+end
+
+
+
+#  wrpage(fbase, title) -- copy section into separate web page
+
+procedure wrpage(fbase, title)
+   local f1, f2, s
+
+   f1 := open(fbase || ".txt") | stop("cannot open ", fbase, ".txt")
+   f2 := open(fbase || ".htm", "w") | stop("cannot create ", fbase, ".htm")
+   write(f2, "<!-- DON'T EDIT THIS FILE -- it is created automatically -->\n")
+   write(f2, "<HTML><HEAD><TITLE>", title, "</TITLE>")
+   write(f2, "<LINK REL=STYLESHEET TYPE=\"text/css\" HREF=jstyle.css>")
+   write(f2, "</HEAD>")
+   write(f2, "<BODY><H2>", title, "</H2>")
+
+   while write(f2, read(f1))
+
+   write(f2, "\n<P><HR><SMALL>")
+   writes(f2, "<A HREF=index.htm>index</A>\n|")
+   every s := !sectlist do {
+      write(f2, "| <A HREF=", s.fbase, ".htm>", s.ftag, "</A>")
+      }
+   write(f2, "|| <A HREF=\"http://www.cs.arizona.edu/jcon/\">home</A>\n")
+   write(f2, "</SMALL>")
+   write(f2, "</BODY></HTML>")
+   close(f2)
+   return
+end

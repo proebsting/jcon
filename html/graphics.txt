@@ -1,0 +1,122 @@
+<P>
+Icon's graphics facilities are defined by
+<A HREF=refs.htm><CITE>Graphics Programming in Icon</CITE></A>
+(Griswold, Jeffery, and Townsend, 1998).
+This section documents differences from that specification,
+supplementing Appendix N ("Platform Dependencies") of the book.
+<P>
+Jcon's implementation of graphics is nearly complete.
+The biggest omissions are wide lines, textured drawing, and mutable colors.
+When Java 1.2 becomes available, the first two will become feasible.
+Mutable remain out of reach due to lack of Java support.
+<P>
+Each graphics context is associated with a particular canvas.
+Thus <CODE>Couple()</CODE> is not implemented and
+<CODE>Clone()</CODE> accepts only a single window argument.
+
+<H3>Graphics Attributes</H3>
+<P>
+All attributes listed in the graphics book are implemented, 
+but some cannot be changed successfully.
+The <CODE>canvas</CODE> attribute can be set to <CODE>normal</CODE>
+or <CODE>hidden</CODE> but not <CODE>maximal</CODE> or <CODE>iconic</CODE>.
+Changes to the following attributes are ignored:
+<CODE>linewidth</CODE>, <CODE>linestyle</CODE>, 
+<CODE>fillstyle</CODE>, <CODE>pattern</CODE>,
+<CODE>display</CODE>, <CODE>iconpos</CODE>,
+<CODE>iconlabel</CODE>, <CODE>iconimage</CODE>.
+<P>
+The <CODE>Pattern()</CODE> procedure always fails.
+
+<H3>Fonts</H3>
+<P>
+Icon generic family names, and all font characteristics, are case-insensitive;
+depending on the Java implementation, other font family names may be 
+case-sensitive.
+Because Java never rejects any non-empty font name, 
+<CODE>Font(s)</CODE> always succeeds for any well-formed specification.
+<P>
+The generic family names <CODE>serif</CODE>, <CODE>sans</CODE>, and
+<CODE>typewriter</CODE> work well, including bold and italic variants.
+The appearance of the generic family <CODE>mono</CODE> varies by platform,
+and bold and italic characteristics are not always effective.
+<P>
+The default font name <CODE>fixed</CODE> is mapped to
+<CODE>mono,bold,14</CODE>.
+
+<H3>Colors</H3>
+<P>
+There is no inherent limit to the number of different colors that can
+be in use simultaneously.
+On 8-bit displays, Java approximates colors by selection from a limited
+palette that can vary from one run to another.
+<P>
+For named colors, variants (such as <CODE>light</CODE>
+and <CODE>dark</CODE>) of the unsaturated hues (<CODE>brown</CODE>,
+<CODE>pink</CODE>, and <CODE>violet</CODE>)
+appear less saturated than in Version 9 of Icon.
+Unlike Version 9, variants of <CODE>black</CODE> remain black
+rather than producing shades of gray.
+<P>
+The default value of the <CODE>gamma</CODE> attribute is 1.5.
+<P>
+Mutable colors are not available;
+<CODE>NewColor()</CODE> and <CODE>Color()</CODE> always fail.
+(As a practical matter, mutable colors only work on
+8-bit displays running X under Unix.)
+
+<H3>Images</H3>
+<P>
+<CODE>ReadImage()</CODE> loads images encoded in GIF or JPEG format.
+The final palette image is ignored; Java dithers the image if necessary.
+<CODE>ReadImage()</CODE> and <CODE>DrawImage()</CODE> never return
+an integer indicating a color shortage.
+<P>
+The <CODE>image</CODE> attribute can be set at any time, not just initially,
+to load a GIF or JPEG image.
+The value of the <CODE>image</CODE> attribute is readable.
+<P>
+<CODE>WriteImage()</CODE> always writes a GIF file,
+quantizing the image to 256 colors if necessary.
+<P>
+Image reading and writing ignores the <CODE>gamma</CODE> attribute.
+
+<H3>Events</H3>
+<P>
+Java distinguishes between <CODE>alt</CODE> and <CODE>meta</CODE> keys;
+either of these sets <CODE>&amp;meta</CODE> keyword.
+<P>
+The <CODE>&amp;meta</CODE> keyword is never set in conjunction
+with mouse events; for these events,
+Java uses the <CODE>alt</CODE> and <CODE>meta</CODE> flags
+to encode "which button".
+<P>
+Numeric codes for the "outboard" keys such as F1 and HOME differ
+from those of X and are similar to those of Windows; see the copy
+of <CODE>keysyms.icn</CODE> distributed with Jcon.
+<P>
+When a window is closed by the user, a <CODE>&amp;resize</CODE> event
+is produced with associated <CODE>&ampx</CODE> and <CODE>&ampy</CODE>
+values of (-1, -1).
+
+<H3>Cursors and Pointers</H3>
+<P>
+The visible text cursor, when enabled, is a solid, nonblinking underbar.
+<P>
+The mouse position can be read using the <CODE>pointerx</CODE>
+and <CODE>pointery</CODE> attributes (or <CODE>pointerrow</CODE>
+and <CODE>pointercol</CODE>), but it cannot be set by the program.
+Attempts to alter these attribute values are ignored.
+<P>
+Acceptable values for the <CODE>pointer</CODE> attribute
+are illustrated in this figure.
+For compatibility with other systems, some pointers have multiple names.
+<BR><IMG WIDTH=442 HEIGHT=302 SRC=pointers.gif>
+<H3>Deprecated Features</H3>
+<P>
+Version 9 of Icon retains compatibility support for some old features
+that are no longer documented.
+In general, Jcon omits such support.
+Two that are known are support for <CODE>very light</CODE> and
+<CODE>very dark</CODE> colors and the acceptance of bi-level images
+expressed in decimal notation.

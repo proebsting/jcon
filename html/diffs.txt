@@ -1,0 +1,72 @@
+The core Icon language is defined by
+<A HREF=refs.htm><CITE>The Icon Programming Language, Third Edition</CITE></A>
+(Griswold and Griswold, 1996).
+This section documents differences with respect to that book
+and to the reference implmentation, Version 9 of Icon.
+Differences related to graphics are described in
+<A HREF=graphics.htm>another section</A>.
+
+<H3>Characters and Strings</H3>
+<P>
+Like Version 9 of Icon, and unlike Java (which uses Unicode),
+Jcon uses an 8-bit superset of ASCII.
+<P>
+Conversion of real numbers to strings produces more digits
+that Version 9.
+
+<H3>Structures</H3>
+<P>
+Random selection from sets and tables differs from Version 9,
+even with the same random seed.
+<P>
+The notation <CODE>a[i:j,k:m]</CODE> is accepted as shorthand for
+<CODE>a[i:j][k:m]</CODE>.
+
+<H3>Files</H3>
+<P>
+Standard error output (<CODE>&amp;errout</CODE>) is always unbuffered.
+<P>
+The standard files <CODE>&amp;input</CODE>, <CODE>&amp;output</CODE>,
+and <CODE>&amp;errout</CODE> cannot be accessed randomly using
+<CODE>seek()</CODE> and <CODE>where()</CODE>.
+<P>
+Processes run by <CODE>system(s)</CODE> or <CODE>open(s,"p")</CODE>
+do not inherit <CODE>&amp;input</CODE>, <CODE>&amp;output</CODE>,
+and <CODE>&amp;errout</CODE>.
+Except for the case of <CODE>open(s,"wp")</CODE>, where it is provided
+by the program, <CODE>&amp;input</CODE> is always empty.
+The two output files, <CODE>&amp;output</CODE> and <CODE>&amp;errout</CODE>,
+are copied from the process after it terminates.
+
+<H3>Built-in Functions</H3>
+<P>
+The functions <CODE>chdir()</CODE>, <CODE>getch</CODE>, 
+<CODE>getche()</CODE>, and <CODE>kbhit</CODE> are not implemented.
+<P>
+The functions <CODE>getenv()</CODE> requires the presence of the utility
+<CODE>env</CODE> in the shell search path.
+<P>
+The implementation of <CODE>loadfunc()</CODE> is described
+in a <A HREF=loadfunc.htm>separate section</A>.
+
+<H3>Keywords</H3>
+<P>
+<CODE>&amp;features</CODE> includes <CODE>"Java"</CODE>; 
+<CODE>_JAVA</CODE> is predefined in the preprocessor.
+<P>
+<CODE>&amp;time</CODE> produces elapsed wall-clock time, not CPU time,
+due to Java limitations.
+<P>
+<CODE>&amp;allocated</CODE>, <CODE>&amp;collections</CODE>,
+<CODE>&amp;storage</CODE>, and <CODE>&amp;regions</CODE>
+produce only zero values.
+
+<H3>Debugging</H3>
+<P>
+Most debugging features require compilation with the <CODE>-f d</CODE> switch.
+Programs compiled with default options cannot be traced, cannot use error
+conversion (<CODE>&amp;error</CODE>), and produce an abridged traceback
+if an error occurs.
+<P>
+Only global variables are available to
+<CODE>variable()</CODE>, <CODE>display()</CODE>, and <CODE>&amp;dump</CODE>.

@@ -1,0 +1,22 @@
+<PRE>
+additions in v2:
+-- programs run about 40% faster
+-- large integers are implemented
+-- loadfunc() is implemented
+-- most of the graphics repertoire is implemented
+-- section wraparound (e.g. "abcd"[-2+:3]) yields failure  (this is a bugfix)
+-- function() generates names in sorted order
+-- record fields are shown in traceback images
+
+losses in v2:
+-- compilation with "-fn" is needed for tracing, detailed traceback, or &amp;error
+-- variable(), display(), and &amp;dump can access only global variables
+
+graphics infelicities:
+-- window repair may be delayed until the program pauses for input
+-- "drawop=reverse" may draw wrong color under rare conditions not understood
+-- DEC Java 1.1.6 exhibits problems with fonts and font metrics
+</PRE>
+
+<CODE>&amp;clock</CODE> and <CODE>&amp;dateline</CODE>
+may be off by an hour due to Java library bugs
