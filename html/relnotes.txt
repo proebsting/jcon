@@ -10,7 +10,8 @@ Changes include the following:
     <LI> The run-time system can be bundled with a Jcon program
     	to make it completely self-contained.
     <LI> Large integers now work with <CODE>to</CODE>-<CODE>by</CODE>,
-	 <CODE>seq()</CODE>, and limitation (<CODE>e1 \ e2</CODE>)
+	 <CODE>seq()</CODE>, limitation (<CODE>e1 \ e2</CODE>),
+	 and exponentiation (<CODE>e1 ^ e2</CODE>)
     <LI> A zero increment value is diagnosed by <CODE>seq()</CODE>
     <LI> <CODE>&host</CODE> no longer spawns a shell invocation
 	of <CODE>uname</CODE> (but see <CITE>Problems</CITE>, below)

@@ -147,7 +147,7 @@ public vReal mkReal()		{ return vReal.New(mkDouble()); }
 
 public vString mkString() {
     if (cachedString == null) {
-       cachedString = vString.New(value.toString());
+	cachedString = vString.New(value.toString());
     }
     return cachedString;
 }
@@ -194,7 +194,6 @@ public static vNumeric Result(BigInteger v) {
 
 
 
-
 //  unary operations
 
 public vNumeric Negate() {					// -I
@@ -207,9 +206,9 @@ public vNumeric Abs() {						// abs(I)
 
 public vNumeric Limit() {					// e \ I
     if (this.NGreater(vZero) != null) {
-        return this;
+	return this;
     } else {
-        return null;
+	return null;
     }
 }
 
@@ -269,8 +268,62 @@ vNumeric ModInto(vBigInt a)  {
 
 
 
-vNumeric PowerOf(vReal r)	{ iRuntime.error(101, this); return null; } 
-vNumeric PowerOf(vInteger i)	{ iRuntime.error(101, this); return null; }
+vNumeric PowerOf(vInteger i) {			// i ^ I
+    long v = i.value;
+    if (v == 1) {
+	return vInteger.New(1);
+    } else if (v == 0) {
+	if (this.value.signum() > 0) {
+	    return vInteger.New(0);
+	} else {
+	    iRuntime.error(201);
+	    return null;
+	}
+    } else if (v == -1) { 
+	return vInteger.New(this.value.testBit(0) ? -1 : 1);
+    } else if (this.value.signum() < 0) {
+    	return vInteger.New(0);
+    } else {
+	iRuntime.error(203, this);
+	return null;
+    }
+}
+
+vNumeric PowerOf(vReal r) {			// r ^ I
+    double v = r.value;
+    if (v == 1.0) {
+	return vReal.New(1.0);
+    } else if (v == -1.0) { 
+	return vReal.New(this.value.testBit(0) ? -1 : 1);
+    }
+    if (this.value.signum() > 0) {
+	if (v < -1.0 || v > 1.0) {
+	    iRuntime.error(204);
+	    return null;
+	} else {
+	    return vReal.New(0.0);
+	}
+    } else {
+	// I is negative:  r ^ -huge
+	if (v < -1.0 || v > 1.0) {
+	    return vReal.New(0.0);
+	} else {
+	    iRuntime.error(204);
+	    return null;
+	}
+    }
+} 
+
+vNumeric PowerOf(vBigInt i) {			// I ^ I
+    if (this.value.signum() < 0) {
+	return vInteger.New(0);
+    } else {
+	iRuntime.error(203);
+	return null;
+    }
+}
+
+
 
 //  v.toPower(i) -- called from vInteger, which doesn't do large arithmetic
 
@@ -288,7 +341,7 @@ vNumeric ToPower(vInteger i) {
     } else if (y < Integer.MAX_VALUE) {
 	return Result(x.pow(y));
     } else {
-	iRuntime.error(101, i);
+	iRuntime.error(203, i);
 	return null;
     }
 }
@@ -458,8 +511,8 @@ public static vDescriptor ToBy(vNumeric v1, vDescriptor v2, vDescriptor v3) {
 	};
 
     } else {				// increment is zero
-        iRuntime.error(211, v3);
-        return null;
+	iRuntime.error(211, v3);
+	return null;
     }
 }
 

@@ -41,3 +41,6 @@ You can now say
 to bundle a Java classfile with a program, and use
     p := loadfunc(,name)
 to load it.
+
+From gmt Wed Sep  1 17:58:21 MST 1999
+Added code for exponentiation to a BigInt power.
