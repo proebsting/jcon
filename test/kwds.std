@@ -4,7 +4,7 @@
   &allocated: 0
       &ascii: &ascii  [size 128]
       &clock: nn:nn:nn
-        &col: [failed]
+        &col: 0
 &collections: 0
 &collections: 0
 &collections: 0
@@ -58,7 +58,7 @@
     &regions: 0
     &regions: 0
      &resize: -10
-        &row: [failed]
+        &row: 0
      &rpress: -3
    &rrelease: -6
       &shift: [failed]
@@ -72,5 +72,5 @@
       &ucase: &ucase  [size 26]
     &version: Jcon Version 2.1
      &window: &null
-          &x: [failed]
-          &y: [failed]
+          &x: 0
+          &y: 0
