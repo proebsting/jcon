@@ -59,7 +59,7 @@ abstract void newline();		// write newline
 static vString typestring = vString.New("file");
 public vString Type()		{ return typestring; }
 
-vString image()			{ return this.img; }
+public vString image()		{ return this.img; }
 int rank()			{ return 60; }	// files sort after windows
 int compareTo(vValue v)		{ return this.img.compareTo(((vFile) v).img); }
 

@@ -27,7 +27,7 @@ public final class vWindow extends vFile {
     private int leading;	// current leading value
 
 
-boolean iswin()			{ return true; }
+public boolean iswin()		{ return true; }
 
 wCanvas getCanvas()		{ return c; }
 wTTY getTTY()			{ return c.tty; }
@@ -46,7 +46,7 @@ private static int gcount = 0;	// count of graphics contexts allocated
 
 static vString typestring = vString.New("window");
 public vString Type()		{ return typestring; }
-vString image()			{ return vString.New("window_" + wnum + ":" +
+public vString image()		{ return vString.New("window_" + wnum + ":" +
 				    gnum + "(" + c.f.getTitle() + ")"); }
 
 int rank()			{ return 50; }	// windows sort after csets

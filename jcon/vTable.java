@@ -206,7 +206,7 @@ final class vTrappedTable extends vVariable {
     vTable table;
     vValue key;
 
-    vString report()	{
+    public vString report()	{
 	return vString.New("(variable = " + this.table.report() +
 	    "[" + this.key.report() + "])");
     }
@@ -254,7 +254,7 @@ final class vTableElem extends vValue {	// key/value pair for sorting
 	}
     }
 
-    vString image()  {			// not normally used
+    public vString image()  {			// not normally used
 	return vString.New("(" + sortkey.image().mkString() + "," +
 	    other.image().mkString() + ")");
     }

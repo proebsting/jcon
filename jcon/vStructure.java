@@ -33,7 +33,7 @@ static vString uscore = vString.New('_');
 static vString lpar = vString.New('(');
 static vString rpar = vString.New(')');
 
-vString image() {			// type_snum(size)
+public vString image() {		// type_snum(size)
     return this.Type().concat(uscore).concat(vInteger.New(snum).mkString())
 	.concat(lpar).concat(this.Size().mkString()).concat(rpar);
 }

@@ -21,7 +21,7 @@ private vSubstring(vVariable v, int i1, int i2) {	// construct from String
 
 
 
-boolean isnull()			{ return false; }
+public boolean isnull()			{ return false; }
 
 public vString Name() {
     String vname = var.Name().toString();
@@ -72,7 +72,7 @@ public vValue Deref() {
     return vString.New(this.strval(), start, end);
 }
 
-vString report() {
+public vString report() {
     if (start + 1 == end) {
 	return vString.New(var.Deref().report() + "[" + start + "]");
     } else {

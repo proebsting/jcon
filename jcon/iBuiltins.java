@@ -48,6 +48,7 @@ static void announce() {
     iEnv.declareBuiltin("key", 1);
     iEnv.declareBuiltin("left", 3);
     iEnv.declareBuiltin("list", 2);
+    iEnv.declareBuiltin("loadfunc", 2);
     iEnv.declareBuiltin("log", 2);
     iEnv.declareBuiltin("many", 4);
     iEnv.declareBuiltin("map", 3);

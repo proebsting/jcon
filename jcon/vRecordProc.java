@@ -31,7 +31,7 @@ private vRecordProc(String name, String[] fieldnames) {
 
 // methods
 
-vProc mkProc(int i) {
+public vProc mkProc(int i) {
     return this;
 }
 

@@ -19,19 +19,19 @@ abstract int compareTo(vValue v);	// compare to value of same rank
 // vDescriptor methods (see it for a commented version of this list).
 // Many of these are default methods, often overridden by individual types.
 
-boolean isnull()		{ return false; }
-boolean iswin()			{ return false; }
-vString mkString()		{ iRuntime.error(103, this); return null; }
-vInteger mkInteger()		{ iRuntime.error(101, this); return null; }
-vNumeric mkFixed()		{ iRuntime.error(101, this); return null; }
-vReal mkReal()			{ iRuntime.error(102, this); return null; }
-vCset mkCset()			{ iRuntime.error(104, this); return null; }
-vProc mkProc(int i)		{ iRuntime.error(106, this); return null; }
-vValue[] mkArray(int errno)	{ iRuntime.error(errno, this); return null; }
+public boolean isnull()		{ return false; }
+public boolean iswin()		{ return false; }
+public vString mkString()	{ iRuntime.error(103, this); return null; }
+public vInteger mkInteger()	{ iRuntime.error(101, this); return null; }
+public vNumeric mkFixed()	{ iRuntime.error(101, this); return null; }
+public vReal mkReal()		{ iRuntime.error(102, this); return null; }
+public vCset mkCset()		{ iRuntime.error(104, this); return null; }
+public vProc mkProc(int i)	{ iRuntime.error(106, this); return null; }
+public vValue[] mkArray(int errno) { iRuntime.error(errno, this); return null; }
 
-vString write()			{ return this.mkString(); }
-vString report()		{ return this.image(); }
-abstract vString image();		// required of all subclasses
+public vString write()		{ return this.mkString(); }
+public vString report()		{ return this.image(); }
+public abstract vString image();	// required of all subclasses
 
 public vValue Deref()		{ return this; }
 public vVariable Assign(vDescriptor x) { iRuntime.error(111,this); return null;}

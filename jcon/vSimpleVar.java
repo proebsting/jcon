@@ -28,7 +28,7 @@ public vVariable Assign(vDescriptor x)	{ value = x.Deref(); return this; }
 
 public vString Name()			{ return vString.New(name); }
 
-vString report() {
+public vString report() {
     return vString.New("(variable = " + this.value.report() + ")");
 }
 

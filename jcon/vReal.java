@@ -2,7 +2,7 @@ package rts;
 
 public final class vReal extends vNumeric {
 
-    double value;
+    public double value;
 
 
 
@@ -25,26 +25,26 @@ public boolean equals(Object o)	{
     return (o instanceof vReal) && (((vReal)o).value == value);
 }
 
-vReal mkReal()		{ return this; }
+public vReal mkReal()		{ return this; }
 
-vInteger mkInteger()	{
+public vInteger mkInteger()	{
     if (value < Long.MIN_VALUE || value > Long.MAX_VALUE) {
 	iRuntime.error(101, this);
     }
     return vInteger.New(this.value);
 }
 
-vNumeric mkFixed() {
+public vNumeric mkFixed() {
     if (value < Long.MIN_VALUE || value > Long.MAX_VALUE) {
 	return vBigInt.New(this.value);
     }
     return vInteger.New(this.value);
 }
 
-vString write()		{ return this.mkString(); }
-vString image()		{ return this.mkString(); }
+public vString write()		{ return this.mkString(); }
+public vString image()		{ return this.mkString(); }
 
-vString mkString() {
+public vString mkString() {
     if (cachedString != null) {
 	return cachedString;
     }

@@ -136,16 +136,16 @@ private vString(vString s, int i, int j, vString t) {	// new := (s[i:j] := t)
 
 //  special vString methods
 
-final int length() {			// s.length()
+public final int length() {			// s.length()
     return tlength;
 }
 
-final char charAt(int i) {		// s.charAt(i)   [zero-based]
+public final char charAt(int i) {		// s.charAt(i)   [zero-based]
     this.flatten();
     return (char)(data[i] & 0xFF);
 }
 
-final boolean matches(vString s, int i){ // match(s, this, i)  [zero-based]
+public final boolean matches(vString s, int i){ // match(s,this,i) [zero-based]
     if (this.tlength > s.tlength - i) {
 	return false;
     }
@@ -160,11 +160,11 @@ final boolean matches(vString s, int i){ // match(s, this, i)  [zero-based]
     return true;
 }
 
-final boolean identical(vString s) {	// like equals, but assumes vString
+public final boolean identical(vString s) {  // like equals, but assumes vString
     return this.tlength == s.tlength && this.matches(s, 0);
 }
 
-final vString concat(vString s) {	// s.concat(s)
+public final vString concat(vString s) {	// s.concat(s)
     if (tlength == 0) {
 	return s;
     }
@@ -256,14 +256,14 @@ public boolean equals(Object o)	{
 
 public vString mkString()	{ return this; } // no-op coversion to vString
 
-vString write()		{ return this; }
+public vString write()		{ return this; }
 
 static vString typestring = vString.New("string");
 public vString Type()	{ return typestring; }
 int rank()		{ return 30; }		// strings rank after reals
 
-vString image()		{ return image(tlength); }
-vString report()	{ return image(16); }	// limit to max of 16 chars
+public vString image()	{ return image(tlength); }
+public vString report()	{ return image(16); }	// limit to max of 16 chars
 
 
 private vString image(int maxlen) {	// make image, up to maxlen chars
@@ -306,7 +306,7 @@ int compareTo(vValue v) {		// compare strings lexicographically
 
 
 
-vInteger mkInteger()	{					// make vInteger
+public vInteger mkInteger()	{				// make vInteger
     try {
 	return this.Numerate().mkInteger();	// allows integer("3e6")
     } catch (iError e) {
@@ -315,7 +315,7 @@ vInteger mkInteger()	{					// make vInteger
     }
 }
 
-vNumeric mkFixed()	{					// integer(s)
+public vNumeric mkFixed() {					// integer(s)
     try {
 	return this.Numerate().mkFixed();
     } catch (iError e) {
@@ -324,11 +324,11 @@ vNumeric mkFixed()	{					// integer(s)
     }
 }
 
-vReal mkReal()		{					// real(s)
+public vReal mkReal()		{				// real(s)
     return this.Numerate().mkReal();
 }
 
-vCset mkCset() {						// cset(s)
+public vCset mkCset() {						// cset(s)
     return vCset.New(this);
 }
 
@@ -470,7 +470,7 @@ static vInteger intParse(byte[] data, int i, int j) {	// parse as integer
 
 //  convert string to procedure (implicitly or for proc(s,i))
 
-vProc mkProc(int i) {
+public vProc mkProc(int i) {
     vProc p;
     String s = this.toString();
 

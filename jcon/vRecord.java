@@ -24,7 +24,7 @@ vRecord(vRecordProc constr, vDescriptor[] inits) {
 
 public vString Type()	{ return constr.name; }
 
-vString image() {
+public vString image() {
     return vString.New(
 	"record " + constr.name + "_" + snum + "(" + values.length + ")");
 }
@@ -108,7 +108,7 @@ public vDescriptor Bang() {
 
 
 
-vValue[] mkArray(int errno) {			// for sort(R) or p ! R
+public vValue[] mkArray(int errno) {			// for sort(R) or p ! R
     vValue a[] = new vValue[values.length];
     for (int i = 0; i < values.length; i++) {
 	a[i] = values[i].Deref();

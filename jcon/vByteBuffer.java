@@ -54,7 +54,7 @@ final vByteBuffer append(char c) {
 
 //  mkString() -- convert to vString
 
-vString mkString() {
+public vString mkString() {
     if (len < data.length) {
 	byte[] b = new byte[len];
 	System.arraycopy(data, 0, b, 0, len);

@@ -22,7 +22,7 @@ public abstract class vVariable extends vDescriptor {
 public abstract vValue Deref();				// dereference
 public abstract vVariable Assign(vDescriptor x);	// assign
 public abstract vString Name();				// return name
-abstract vString report();				// report for traceback
+public abstract vString report();			// report for traceback
 
 
 
@@ -48,18 +48,18 @@ public int hashCode()			{ return Deref().hashCode(); }
 // For many operations on variables, default action is to dereference and retry.
 // (See vDescriptor.java for a commented version of this method list.)
 
-boolean isnull()			{ return Deref().isnull(); }
-boolean iswin()				{ return Deref().iswin(); }
-vString mkString()			{ return Deref().mkString(); }
-vInteger mkInteger()			{ return Deref().mkInteger(); }
-vNumeric mkFixed()			{ return Deref().mkFixed(); }
-vReal mkReal()				{ return Deref().mkReal(); }
-vCset mkCset()				{ return Deref().mkCset(); }
-vProc mkProc(int i)			{ return Deref().mkProc(i); }
-vValue[] mkArray(int errno)		{ return Deref().mkArray(errno); }
+public boolean isnull()			{ return Deref().isnull(); }
+public boolean iswin()			{ return Deref().iswin(); }
+public vString mkString()		{ return Deref().mkString(); }
+public vInteger mkInteger()		{ return Deref().mkInteger(); }
+public vNumeric mkFixed()		{ return Deref().mkFixed(); }
+public vReal mkReal()			{ return Deref().mkReal(); }
+public vCset mkCset()			{ return Deref().mkCset(); }
+public vProc mkProc(int i)		{ return Deref().mkProc(i); }
+public vValue[] mkArray(int errno)	{ return Deref().mkArray(errno); }
 
-vString write()				{ return Deref().write(); }
-vString image()				{ return Deref().image(); }
+public vString write()			{ return Deref().write(); }
+public vString image()			{ return Deref().image(); }
 
 public vVariable SubjAssign(vDescriptor x)	{ return this.Assign(x); }
 public vDescriptor Resume()			{ return null; /*FAIL*/ }

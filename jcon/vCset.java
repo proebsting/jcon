@@ -135,8 +135,8 @@ private static final vString csucase = vString.New("&ucase");
 private static final vString csascii = vString.New("&ascii");
 private static final vString cscset = vString.New("&cset");
 
-vString image()		{ return image(MAX_VALUE + 1); }
-vString report()	{ return image(16); }	// limit to max of 16 chars
+public vString image()	{ return image(MAX_VALUE + 1); }
+public vString report()	{ return image(16); }	// limit to max of 16 chars
 
 private vString image(int maxlen) {
 
@@ -247,7 +247,7 @@ public int hashCode() {
     return (int) (x - (x >> 32));
 }
 
-vCset mkCset()		{ return this; }
+public vCset mkCset()		{ return this; }
 
 
 
@@ -263,7 +263,7 @@ public vNumeric Numerate()	{
     }
 }
 
-vInteger mkInteger() {
+public vInteger mkInteger() {
     try {
 	return this.mkString().mkInteger();
     } catch (iError e) {
@@ -272,7 +272,7 @@ vInteger mkInteger() {
     }
 }
 
-vNumeric mkFixed() {
+public vNumeric mkFixed() {
     try {
 	return this.mkString().mkFixed();
     } catch (iError e) {
@@ -281,7 +281,7 @@ vNumeric mkFixed() {
     }
 }
 
-vReal mkReal() {
+public vReal mkReal() {
     try {
 	return this.mkString().mkReal();
     } catch (iError e) {
@@ -299,7 +299,7 @@ public vDescriptor Section(vDescriptor i, vDescriptor j)
 
 
 
-vString mkString() {			// string(c)
+public vString mkString() {			// string(c)
     vByteBuffer b;
     long w;
 

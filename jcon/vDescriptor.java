@@ -17,20 +17,20 @@ public abstract class vDescriptor {
 // methods declared here must be implemented for all descriptor classes
 
 // Type checking and conversion
-abstract boolean isnull();			// runtime check for null
-abstract boolean iswin();			// runtime check for window
-abstract vString mkString();			// convert to vString
-abstract vInteger mkInteger();			// convert to vInteger
-abstract vNumeric mkFixed();			// convert to vInteger/vBigInt
-abstract vReal mkReal();			// convert to vReal
-abstract vCset mkCset();			// convert to vCset
-abstract vProc mkProc(int i);			// convert to vProc
-abstract vValue[] mkArray(int errno);		// convert to array of vValues
+public abstract boolean isnull();		// runtime check for null
+public abstract boolean iswin();		// runtime check for window
+public abstract vString mkString();		// convert to vString
+public abstract vInteger mkInteger();		// convert to vInteger
+public abstract vNumeric mkFixed();		// convert to vInteger/vBigInt
+public abstract vReal mkReal();			// convert to vReal
+public abstract vCset mkCset();			// convert to vCset
+public abstract vProc mkProc(int i);		// convert to vProc
+public abstract vValue[] mkArray(int errno);	// convert to array of vValues
 
 // special-purpose string conversions
-abstract vString write();			// convert for use in write()
-abstract vString image();			// convert for use in image()
-abstract vString report();			// convert for error, traceback
+public abstract vString write();		// convert for use in write()
+public abstract vString image();		// convert for use in image()
+public abstract vString report();		// convert for error, traceback
 
 // dereferencing and assignment
 public abstract vValue Deref();				// . x

@@ -18,14 +18,15 @@ public abstract class vProc extends vValue {
 
 
 
-vString image()   { return (img == null) ? vString.New(this.toString()) : img; }
+public vString image()
+		{ return (img == null) ? vString.New(this.toString()) : img; }
 
 static vString typestring = vString.New("procedure");
 public vString Type()		{ return typestring; }
 
 public vInteger Args()		{ return vInteger.New(args); }
 
-vProc mkProc(int i)		{ return this; }
+public vProc mkProc(int i)	{ return this; }
 
 
 

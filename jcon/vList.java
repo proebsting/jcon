@@ -57,7 +57,7 @@ int rank()		{ return 90; }		// lists sort after procedures
 
 
 
-vString report() {				// image for display() & tracebk
+public vString report() {			// image for display() & tracebk
     StringBuffer b = new StringBuffer(64);
     vString s;
     int n = v.size();
@@ -229,7 +229,7 @@ public vList ListConcat(vDescriptor v) {		// L1 ||| L2
     return result;
 }
 
-vValue[] mkArray(int errno) {		// make array for sort(L) or p ! L
+public vValue[] mkArray(int errno) {	// make array for sort(L) or p ! L
     vValue a[] = new vValue[v.size()];
     for (int i = 0; i < a.length; i++) {
 	a[i] = ((vDescriptor)v.elementAt(i)).Deref();

@@ -94,7 +94,7 @@ public vInteger Size()	{ return vInteger.New(resultCount); }
 static vString typestring = vString.New("co-expression");
 public vString Type()	{ return typestring;}
 
-vString image()
+public vString image()
   { return vString.New("co-expression_" + snum + "(" + resultCount + ")"); }
 
 public vInteger Serial(){ return vInteger.New(snum); }

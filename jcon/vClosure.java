@@ -22,19 +22,19 @@ public abstract vDescriptor Resume();
 public boolean equals(Object o)		{ return retval.equals(o); }
 public int hashCode()			{ return retval.hashCode(); }
 
-boolean isnull()			{ return retval.isnull(); }
-boolean iswin()				{ return retval.iswin(); }
-vString mkString()			{ return retval.mkString(); }
-vInteger mkInteger()			{ return retval.mkInteger(); }
-vNumeric mkFixed()			{ return retval.mkFixed(); }
-vReal mkReal()				{ return retval.mkReal(); }
-vCset mkCset()				{ return retval.mkCset(); }
-vProc mkProc(int i)			{ return retval.mkProc(i); }
-vValue[] mkArray(int errno)		{ return retval.mkArray(errno); }
+public boolean isnull()			{ return retval.isnull(); }
+public boolean iswin()			{ return retval.iswin(); }
+public vString mkString()		{ return retval.mkString(); }
+public vInteger mkInteger()		{ return retval.mkInteger(); }
+public vNumeric mkFixed()		{ return retval.mkFixed(); }
+public vReal mkReal()			{ return retval.mkReal(); }
+public vCset mkCset()			{ return retval.mkCset(); }
+public vProc mkProc(int i)		{ return retval.mkProc(i); }
+public vValue[] mkArray(int errno)	{ return retval.mkArray(errno); }
 
-vString write()				{ return retval.write(); }
-vString image()				{ return retval.image(); }
-vString report()			{ return retval.report(); }
+public vString write()			{ return retval.write(); }
+public vString image()			{ return retval.image(); }
+public vString report()			{ return retval.report(); }
 
 public vValue Deref()			{ return retval.Deref(); }
 public vVariable Assign(vDescriptor x)	{ return retval.Assign(x); }

@@ -2,7 +2,7 @@ package rts;
 
 public final class vInteger extends vNumeric {
 
-    long value;
+    public long value;
 
 
 
@@ -54,19 +54,19 @@ public boolean equals(Object o)	{
     return (o instanceof vInteger) && (((vInteger)o).value == value);
 }
 
-vInteger mkInteger()	{ return this; }
-vNumeric mkFixed()	{ return this; }
-vReal mkReal()		{ return vReal.New(this.value); }
+public vInteger mkInteger()	{ return this; }
+public vNumeric mkFixed()	{ return this; }
+public vReal mkReal()		{ return vReal.New(this.value); }
 
-vString mkString() {
+public vString mkString() {
     if (cachedString == null) {
        cachedString = vString.New(Long.toString(value));
     }
     return cachedString;
 }
 
-vString write()		{ return mkString(); }
-vString image()		{ return mkString(); }
+public vString write()		{ return mkString(); }
+public vString image()		{ return mkString(); }
 
 static vString typestring = vString.New("integer");
 public vString Type()	{ return typestring; }

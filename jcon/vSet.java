@@ -91,7 +91,7 @@ public vDescriptor Bang() {
     };
 }
 
-vValue[] mkArray(int errno) {	// for sort(S)
+public vValue[] mkArray(int errno) {		// for sort(S)
     if (errno == 126) {		// if not allowed to participate
 	iRuntime.error(errno, this);
     }

@@ -141,20 +141,20 @@ public boolean equals(Object o) {
     return (o instanceof vBigInt) && (((vBigInt)o).value.equals(value));
 }
 
-vInteger mkInteger()	{ iRuntime.error(101, this); return null; }
-vNumeric mkFixed()	{ return this; }
-vReal mkReal()		{ return vReal.New(mkDouble()); }
+public vInteger mkInteger()	{ iRuntime.error(101, this); return null; }
+public vNumeric mkFixed()	{ return this; }
+public vReal mkReal()		{ return vReal.New(mkDouble()); }
 
-vString mkString() {
+public vString mkString() {
     if (cachedString == null) {
        cachedString = vString.New(value.toString());
     }
     return cachedString;
 }
 
-vString write()		{ return mkString(); }
+public vString write()		{ return mkString(); }
 
-vString image()	{
+public vString image()	{
     int ndigits = (int) (value.bitLength() * 0.3010299956639812);
 					//     1 / log2(10)
     if (ndigits < iConfig.MaxIntDigits) {
