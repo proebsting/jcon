@@ -125,13 +125,6 @@ procedure bc_gen_ir_Free(s, p)
     return s
 end
 
-# record ir_Coord( coord )
-procedure bc_gen_ir_Coord(s, p)
-    local f, line, column, field, lab
-
-    return s
-end
-
 # record ir_Deref( value )
 procedure bc_gen_ir_Deref(s, p)
     local deref
@@ -667,7 +660,6 @@ procedure bc_gen(s, p)
     "ir_Var" : return bc_gen_ir_Var_rval(s, p)
     "ir_Key" : return bc_gen_ir_Key_rval(s, p)
     "ir_Label" : return bc_gen_ir_Label_rval(s, p)
-    "ir_Coord" : return bc_gen_ir_Coord(s, p)
     "ir_Deref" : return bc_gen_ir_Deref(s, p)
     "ir_Move" : return bc_gen_ir_Move(s, p)
     "ir_ScanSwap" : return bc_gen_ir_ScanSwap(s, p)

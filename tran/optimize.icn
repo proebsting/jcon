@@ -12,7 +12,6 @@ procedure optim_optimize(t, start)
         new := optim_dead_assignment(new, start)
         new := optim_goto_elimination(new, start)
         new := optim_copy_propagation(new, start)
-        # new := optim_coord_elimination(new, start)
     }
     if i := new[start] &
        type(i[1]) == "ir_EnterInit" &
@@ -57,36 +56,6 @@ procedure optim_free_elimination(t, start)
         }
     }
     return new
-end
-
-procedure optim_coord_elimination(t, start)
-    local file, line, column, insn, coord, chunk
-
-    every chunk := !t do {
-        file := "";
-        line := 0;
-        column := 0;
-        every insn := !chunk &
-              type(insn) == "ir_Coord" &
-              coord := copy(\insn.coord) do {
-            if file == coord.file then {
-                coord.file := &null
-            } else {
-                file := coord.file
-            }
-            if line = coord.line then {
-                coord.line := &null
-            } else {
-                line := coord.line
-            }
-            if column = coord.column then {
-                coord.column := &null
-            } else {
-                column := coord.column
-            }
-            insn.coord := coord
-        }
-    }
 end
 
 procedure optim_copy_propagation(t, start)
@@ -181,7 +150,6 @@ procedure optim_def_use(p, this, uses, defs)
     "ir_CoFail" :    { }
     "ir_RunTimeError":{ }
     "ir_EnterInit" : { optim_def_use(p.startlabel, uses, uses, defs) }
-    "ir_Coord" : { }
 
     default :   { runerr(500, p); }
     }
@@ -240,7 +208,6 @@ procedure optim_rewrite(p, rename)
     "ir_CoFail" :    { }
     "ir_RunTimeError":{ }
     "ir_EnterInit" : { p.startlabel := optim_rewrite(p.startlabel, rename) }
-    "ir_Coord" : { }
 
     default :   { runerr(500,p); }
     }
@@ -330,9 +297,8 @@ procedure optim_gotos(p, wl, seen, t)
     "ir_ScanSwap" |
     "ir_Tmp" |
     "ir_TmpLabel" |
-    "ir_Deref" |
-    "ir_Coord" : {
-        # nothing
+    "ir_Deref" : {
+	# nothing
         }
     "ir_Label" : {  # ir_Label : ( value )
         optim_add_label(p, wl, seen)
