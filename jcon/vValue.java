@@ -19,8 +19,8 @@ public vValue deref()		{ return this; }
 public vVariable Assign(vValue x){ iRuntime.error(111,this); return null; }
 
 // sorting
-abstract int rank();		// required of all subclasses (all different)
-int compareTo(vValue v)		{ return 0; }//#%#% for procs & others undefined
+abstract int rank();		// required of all subclasses
+abstract int compareTo(vValue v);
 
 // accessing functions
 vVariable field(String s)	{ iRuntime.error(107, this); return null;}

@@ -14,7 +14,7 @@ private static vInteger intlist[] =		// cache for "common" integers
 //  constructors
 
 public static vInteger New(double x) {		// int from real
-    return New((long) x);			//#%#% what about overflow?
+    return New((long) x);			//#%#% ignoring overflow
 }
 
 public static vInteger New(String x) {		// int from string
@@ -153,7 +153,7 @@ static vInteger radixParse(String s) {
     long v = 0;
     long lim = Long.MAX_VALUE / base;
     for (i = i + 1; i < s.length(); i++) {
-	if (v > lim) {		// #%#% this check is slightly too simple
+	if (v > lim) {		// this overflow check is slightly too simple
 	    return null;
 	}
 	char c = s.charAt(i);

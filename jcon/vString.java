@@ -229,7 +229,7 @@ final vInteger toInteger() {		// s.toInteger -- no radix or exponent
     }
 
     while (i < tlength && Character.isDigit((char)(c = data[i]))) {
-	v = 10 * v + c - '0';		//#%#% ignores overflow
+	v = 10 * v + c - '0';		//#%#% ignoring overflow
 	i++;
 	if (v > Long.MAX_VALUE / 10) {
 	    break;
@@ -607,19 +607,19 @@ vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }
 
 
 vValue Proc(long i) {
-//#%#%#%# look at this again.  too many conversions.
+    String s = this.toString();
     if (i == 0) {
-	vValue b = (vValue) iEnv.builtintab.get(this.toString());
+	vValue b = (vValue) iEnv.builtintab.get(s);
 	if (b == null) {
 	    return null;
 	}
 	return b;
     }
-    vDescriptor v = (vDescriptor) iEnv.symtab.get(this.toString());
+    vDescriptor v = (vDescriptor) iEnv.symtab.get(s);
     if (v != null) {
 	return v.deref().getproc();
     }
-    v = (vDescriptor) iEnv.builtintab.get(this.toString());
+    v = (vDescriptor) iEnv.builtintab.get(s);
     if (v != null) {
 	return v.deref();
     }
@@ -631,7 +631,7 @@ vValue Proc(long i) {
     if (i < 1 || i > 3) {
 	return null;
     }
-    v = (vDescriptor) iEnv.proctab[(int)i-1].get(this.toString());
+    v = (vDescriptor) iEnv.proctab[(int)i-1].get(s);
     if (v != null) {
 	return (vValue) v;
     }

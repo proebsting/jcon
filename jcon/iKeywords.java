@@ -9,8 +9,6 @@
 //  Also note that "functional" keywords (those that extend iValueClosure,
 //  usually because they can fail) must be registered in ../tran/key.icn.
 
-//  #%#%#% To do: unify methods for global references to keyword values
-
 
 
 package rts;
@@ -122,8 +120,8 @@ public class iKeywords extends iFile {
 
 class k$features extends iClosure {				// &features
 
-    //#%#%  The features list is hard-wired for now.
-    //#%#%  It's not completely clear what we should report.
+    //  The features list is hard-wired.
+    //  (And it's not completely clear what we should report.)
 
     static String[] flist = {
 	"Java", "ASCII", "co-expressions",
