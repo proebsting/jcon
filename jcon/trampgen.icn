@@ -1,4 +1,4 @@
-#  trampolingen.icn -- utility to create debugging trampoline routines
+#  trampgen.icn -- utility to create debugging trampoline routines
 
 procedure main()
     write("//  AUTOMATICALLY GENERATED FILE -- DO NOT EDIT!")
@@ -47,19 +47,14 @@ procedure operators()
 
 	[ 1,     "/", "IsNull",       "vDescriptor" ],
 	[ 1,    "\\", "IsntNull",     "vDescriptor" ],
-	[ 1,     "?", "Select",       "vDescriptor" ],
-	[ 1,     "?", "SelectVal",    "vDescriptor" ],
-	[ 1,     "!", "BangVal",      "vDescriptor" ],
-	[ 1,     "!", "Bang",         "vDescriptor" ],
 
-	[ 2,    "[]", "Index",        "vDescriptor" ],
-	[ 2,    "[]", "IndexVal",     "vDescriptor" ],
-	[ 3,   "[:]", "Section",      "vDescriptor" ],
-	[ 3,   "[:]", "SectionVal",   "vDescriptor" ],
-	[ 3,  "[+:]", "SectPlus",     "vDescriptor" ],
-	[ 3,  "[+:]", "SectPlusVal",  "vDescriptor" ],
-	[ 3,  "[-:]", "SectMinus",    "vDescriptor" ],
-	[ 3,  "[-:]", "SectMinusVal", "vDescriptor" ],
+	[ 1,     "?", "Select",       "vDescriptor", ["Val", "vValue"] ],
+	[ 1,     "!", "Bang",         "vDescriptor", ["Val", "vDescriptor"] ],
+
+	[ 2,    "[]", "Index",        "vDescriptor", ["Val", "vValue"] ],
+	[ 3,   "[:]", "Section",      "vDescriptor", ["Val", "vValue"] ],
+	[ 3,  "[+:]", "SectPlus",     "vDescriptor", ["Val", "vValue"] ],
+	[ 3,  "[-:]", "SectMinus",    "vDescriptor", ["Val", "vValue"] ],
 
 	[ 2,     "+", "Add",          "vNumeric"    ],
 	[ 2,     "-", "Sub",          "vNumeric"    ],
@@ -95,58 +90,8 @@ procedure operators()
 
     write("public final class iTrampoline {")
     every o := !ops do {
-        writes("public static ", o[4], " ", o[3], "(String fname, int lineno")
-	every i := 1 to o[1] do {
-            writes(", vDescriptor a", i)
-	}
-	write(") {")
-	write("\ttry {")
-	writes("\t\t", o[4], " retval = a1.", o[3], "(")
-	every i := 2 to o[1] do {
-	    if i > 2 then {
-		writes(", ")
-	    }
-	    writes("a", i)
-	}
-	write(");")
-	if \o[2] then {
-	    write("\t\treturn retval;")
-	} else {
-	    write("\t\tif (retval == null) {")
-	    write("\t\t\treturn null;")
-	    write("\t\t} else {")
-	    writes("\t\t\tvDescriptor[] args = { ")
-	    every i := 2 to o[1] do {
-		if i > 2 then {
-                    writes(", ")
-		}
-                writes("a", i)
-	    }
-	    write(" };")
-	    write("\t\t\treturn vTracedClosure.New(a1, args, retval);")
-	    write("\t\t}")
-	}
-	write("\t} catch (iError e) {")
-	if \o[2] then {
-	    writes("\t\te.propagate(fname, lineno, ", image(o[2]))
-	    every i := 1 to o[1] do {
-                writes(", a", i)
-	    }
-	    write(");")
-	} else {
-	    writes("\t\tvDescriptor[] args = { ")
-	    every i := 2 to o[1] do {
-		if i > 2 then {
-                    writes(", ")
-		}
-                writes("a", i)
-	    }
-	    write(" };")
-	    write("\t\te.propagate(fname, lineno, a1, args);")
-	}
-        write("\t\treturn null;")
-        write("\t}")
-        write("}")
+	op_trampoline(o[1], o[2], o[3], o[4])
+	op_trampoline(o[1], o[2], o[3] || (\o[5])[1], o[5][2])
     }
 
     write("public static vVariable Field(String fname, int lineno, vDescriptor record, String field) {")
@@ -182,4 +127,61 @@ procedure operators()
     write("}")
 
     write("} // iTrampoline")
+end
+
+procedure op_trampoline(arity, op, name, type)
+    local i
+
+    writes("public static ", type, " ", name, "(String fname, int lineno")
+    every i := 1 to arity do {
+        writes(", vDescriptor a", i)
+    }
+    write(") {")
+    write("\ttry {")
+    writes("\t\t", type, " retval = a1.", name, "(")
+    every i := 2 to arity do {
+        if i > 2 then {
+    	writes(", ")
+        }
+        writes("a", i)
+    }
+    write(");")
+    if \op then {
+        write("\t\treturn retval;")
+    } else {
+        write("\t\tif (retval == null) {")
+        write("\t\t\treturn null;")
+        write("\t\t} else {")
+        writes("\t\t\tvDescriptor[] args = { ")
+        every i := 2 to arity do {
+            if i > 2 then {
+                writes(", ")
+	    }
+            writes("a", i)
+	}
+	write(" };")
+	write("\t\t\treturn vTracedClosure.New(a1, args, retval);")
+	write("\t\t}")
+    }
+    write("\t} catch (iError e) {")
+    if \op then {
+        writes("\t\te.propagate(fname, lineno, ", image(op))
+        every i := 1 to arity do {
+            writes(", a", i)
+        }
+        write(");")
+    } else {
+        writes("\t\tvDescriptor[] args = { ")
+        every i := 2 to arity do {
+            if i > 2 then {
+                writes(", ")
+	    }
+            writes("a", i)
+	}
+	write(" };")
+	write("\t\te.propagate(fname, lineno, a1, args);")
+    }
+    write("\t\treturn null;")
+    write("\t}")
+    write("}")
 end

@@ -193,11 +193,24 @@ public vDescriptor Resume()			{ return null; /*FAIL*/ }
 
 // special methods called when result is known to be used only as a value
 
-public vValue SelectVal()		{ return Select().Deref(); }	// .?x
-public vValue BangVal()			{ return Bang().Deref(); }	// .!x
-public vValue IndexVal(vDescriptor v)	{ return Index(v).Deref(); }	// .x[i]
-public vValue SectionVal(vDescriptor i, vDescriptor j)		      // .x[i:j]
-					{ return Section(i, j).Deref(); }
+public vValue SelectVal() {					// .?x
+    vDescriptor x = this.Select();
+    return (x != null) ? x.Deref() : null;
+}
+
+public vDescriptor BangVal() {					// .!x
+    return Bang();
+}
+
+public vValue IndexVal(vDescriptor v) {				// .x[i]
+    vDescriptor x = this.Index(v);
+    return (x != null) ? x.Deref() : null;
+}
+
+public vValue SectionVal(vDescriptor i, vDescriptor j) {	// .x[i:j]
+    vDescriptor x = this.Section(i, j);
+    return (x != null) ? x.Deref() : null;
+}
 
 
 

@@ -40,7 +40,7 @@ public vDescriptor Section(vDescriptor i, vDescriptor j)
 // optimizations of those cases for when the result is only used as a value
 
 public vValue SelectVal()		{ return this.Deref().SelectVal(); }
-public vValue BangVal()			{ return this.Deref().BangVal();}
+public vDescriptor BangVal()		{ return this.Deref().BangVal();}
 public vValue IndexVal(vDescriptor i)	{ return this.Deref().IndexVal(i); }
 public vValue SectionVal(vDescriptor i, vDescriptor j)
 					{ return this.Deref().SectionVal(i,j); }
