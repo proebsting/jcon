@@ -18,12 +18,8 @@ building programs:
 -- compiled files cannot be renamed: the .zip name must match original .icn name
 
 strings and csets:
--- characters are 16-bit Unicode, but all I/O is to/from 8-bit ASCII files
+-- Jcon uses 8-bit characters, not Unicode
 -- image(c) doesn't recognize &digits, &lcase, etc.
--- csets may be up to 2^16 characters; big ones run slowly
--- &cset is size 256, as in v9; it's not clear that this is correct
--- char() and ord() work in the range 0 - 65535
--- characters above 255 cannot be specified in string/cset constants
 
 numerics:
 -- overflow or underflow is not detected
