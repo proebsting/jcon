@@ -1,5 +1,7 @@
 #  gen_bc.icn -- filter to create class files from intermediate representation
 
+global bc_function_name
+
 global bc_coordinate_table
 global bc_coordinate_list
 
@@ -764,6 +766,8 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     local undeclared, op, i, classname, k, insns, nextval, c
     local f, n, a, t, superclass
 
+    bc_function_name := name
+
     bc_statics_set := set(statics)
     insert(bc_declare_set, name)
 
@@ -1156,7 +1160,7 @@ procedure bc_nextval_code(nextvalcode, c, start, params, locals, undeclared, acc
     local k, lab, switch, insns, deflab
     local runtimeerror, r, s, PC
     local a, tmplab, prologue, var_load_label, t, tmpset
-    local last_label, i, endlab
+    local last_label, i, endlab, propagate, jsrlab, class_index, f
 
     nextvalcode.max_locals := bc_var_offset + *bc_var_table
     s := nextvalcode.code
@@ -1207,18 +1211,46 @@ procedure bc_nextval_code(nextvalcode, c, start, params, locals, undeclared, acc
     endlab := j_label()
     put(s, endlab)
 
+    if *bc_coordinate_list > 0 then {
+	jsrlab := j_label()
+	put(s, jsrlab)
+	put(s, j_astore(11) )
+        f := j_cp_String(bc_current_classptr,
+                       j_cp_Utf8(bc_current_classptr, bc_function_name))
+        put(s, j_ldc_w(f) )
+        put(s, j_ipush(*params))
+        class_index := j_cp_Class(bc_current_classptr,
+                              j_cp_Utf8(bc_current_classptr, "rts/vDescriptor"))
+        put(s, j_anewarray(class_index) )
+        every i := 1 to *params do {
+            k := params[i]
+            put(s, j_dup() )
+	    put(s, j_ipush(i-1) )
+            if \bc_var_table[k] then {
+                put(s, j_aload(bc_var_table[k]+bc_var_offset) )
+	    } else {
+		put(s, j_aconst_null() )
+	    }
+            put(s, j_aastore() )
+        }
+        propagate := bc_propagate_methodref(c)
+        put(s, j_invokevirtual(propagate) )
+	put(s, j_ret(11) )	#%#%# hard-wired register number!
+    }
+
     last_label := &null
     every i := !bc_coordinate_list do {
 	if \last_label then {
-	    bc_emit_exception(c, s, nextvalcode.exception_table, last_label, i)
+	    bc_emit_exception(c, s, nextvalcode.exception_table, last_label, i, jsrlab)
 	}
 	last_label := i
     }
-    bc_emit_exception(c, s, nextvalcode.exception_table, \last_label, endlab)
+    bc_emit_exception(c, s, nextvalcode.exception_table, \last_label, endlab, jsrlab)
+
 end
 
-procedure bc_emit_exception(c, s, etab, last_label, i)
-    local catch_type, lab, e, f, coord, propagate
+procedure bc_emit_exception(c, s, etab, last_label, i, jsrlab)
+    local catch_type, lab, e, f, coord
 
     catch_type := j_cp_Class(bc_current_classptr,
                              j_cp_Utf8(bc_current_classptr, "rts/iError"))
@@ -1231,8 +1263,7 @@ procedure bc_emit_exception(c, s, etab, last_label, i)
                    j_cp_Utf8(bc_current_classptr, coord.file))
     put(s, j_ldc_w(f) )
     put(s, j_ipush(coord.line) )
-    propagate := bc_propagate_methodref(c)
-    put(s, j_invokevirtual(propagate) )
+    put(s, j_jsr_w(jsrlab) )
     put(s, j_areturn() )
 end
 

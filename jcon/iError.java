@@ -7,6 +7,7 @@ public class iError extends Error {
     int num;				// error number
     vDescriptor desc;			// offending value
     String message = "";		// propagated message
+    String call = "<runtime system>";
     String filename;
     int lineno;
 
@@ -34,6 +35,7 @@ void report() {				// print message and abort
 	f.println("offending value: " + desc.report());
     }
     f.println("Traceback:");
+    f.println("   " + call);
     f.println(message);
 
     this.printStackTrace(); 	//#%#% temporary
@@ -41,7 +43,7 @@ void report() {				// print message and abort
     iRuntime.exit(1);
 }
 
-public vDescriptor propagate(String fname, int lineno) {
+public vDescriptor propagate(String fname, int lineno, String procname, vDescriptor[] args) {
     // if &error is zero, issue message and abort
     // if &error is not zero, decrement it and set other error keywords
     if (k$error.self.check()) {
@@ -54,7 +56,23 @@ public vDescriptor propagate(String fname, int lineno) {
 	    this.lineno = lineno;
 	    this.filename = fname;
 	}
-	message = "   line " + lineno + " in " + fname + "\n" + message;
+	message = "   " + call + " from line " + lineno + " in " + fname + "\n" + message;
+	call = procname + "(";
+	if (args.length > 0) {
+	    if (args[0] == null) {
+	        call += "~";
+	    } else {
+	        call += args[0].report();
+	    }
+	    for (int i = 1; i < args.length; i++) {
+	        if (args[i] == null) {
+	            call += ",~";
+	        } else {
+	            call += "," + args[i].report();
+	        }
+	    }
+	}
+	call += ")";
         throw this;
     }
 }
