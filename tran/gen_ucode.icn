@@ -500,7 +500,7 @@ procedure ucode_Initial(s, p)
     }
 end
 
-# record Invocable( ivocopList )
+# record Invocable( invocList )
 procedure ucode_Invocable(s, p)
     put(s, p)
 end
@@ -1007,7 +1007,7 @@ procedure u_invocable_declarations(g)
     local p, i, t
 
     every p := !g & type(p) == "Invocable" do {
-        every i := !p.ivocopList do {
+        every i := !p.invocList do {
             case type(i) of {
             "Ident": {
                 t := i.id

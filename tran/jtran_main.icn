@@ -13,14 +13,6 @@ procedure predefs()
     return t
 end
 
-procedure getline(f)
-    if \f then {
-        return create preprocessor(f, predefs())
-    } else {
-        return create !&input
-    }
-end
-
 procedure preproc(dummy, args)
     suspend preprocessor(args[1], predefs())
 end
@@ -64,7 +56,7 @@ procedure main(L)
         while k := pop(L) & k ~== ":" do {
             put(args, k)
         }
-        fn := pop(args) | stop("ERROR: malformed command-line arguments")
+        fn := pop(args)
         fn := proc(fn) | stop("ERROR: unknown command-line procedure, ", fn)
         c := create fn(c, args)
     }

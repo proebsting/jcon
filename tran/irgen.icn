@@ -336,7 +336,7 @@ procedure ir_Call(p, st, inuse, target, bounded)
         ir(p.args.exprList[i], st, inuse, args[i], &null)
     }
 
-    L := make_sentinel(p.args.exprList)
+    L := [p.fn] ||| p.args.exprList
 
     CG.emit(p.ir.start, [ irGoto(p.fn.ir.start) ])
     CG.emit(p.ir.resume, [
@@ -344,22 +344,65 @@ procedure ir_Call(p, st, inuse, target, bounded)
         irResume(closure, L[-1].ir.resume, target),
         irGoto(p.ir.success)
         ])
-    CG.emit(p.fn.ir.success, [ irGoto(L[1].ir.start) ])
-    CG.emit(p.fn.ir.failure, [ irGoto(p.ir.failure) ])
-
-    CG.emit(L[1].ir.start, [ irGoto(L[2].ir.start) ])
-    CG.emit(L[1].ir.resume, [ irGoto(p.fn.ir.resume) ])
-    every i := 2 to *L-1 do {
+    every i := 1 to *L do {
         CG.emit(L[i].ir.success, [ irGoto(L[i+1].ir.start) ])
         CG.emit(L[i].ir.failure, [ irGoto(L[i-1].ir.resume) ])
     }
-    CG.emit(L[-1].ir.start, [
+    CG.emit(L[ 1].ir.failure, [ irGoto(p.ir.failure) ])
+    CG.emit(L[-1].ir.success, [
         irCoord(p.coord),
         irMakeClosure(closure, fn, args),
         irGoto(p.ir.resume)
         ])
-    CG.emit(L[-1].ir.resume, [ irGoto(L[-2].ir.resume) ])
+end
 
+procedure ir_conjunction(p, st, inuse, target, bounded)
+    init4ir(p)
+    ir(p.left, st, inuse, &null, &null)
+    ir(p.right, st, inuse, target, bounded)
+    CG.emit(p.ir.start, [ irGoto(p.left.ir.start) ])
+    /bounded & CG.emit(p.ir.resume, [ irGoto(p.right.ir.resume) ])
+    CG.emit(p.left.ir.success, [ irGoto(p.right.ir.start) ])
+    CG.emit(p.left.ir.failure, [ irGoto(p.ir.failure) ])
+    CG.emit(p.right.ir.success, [ irGoto(p.ir.success) ])
+    CG.emit(p.right.ir.failure, [ irGoto(p.left.ir.resume) ])
+end
+
+procedure ir_augmented_assignment(p, target, bounded, lv, rv, tmp)
+    local op
+
+    op := (p.op ? tab(find(":=")))
+    /bounded & CG.emit(p.ir.resume, [ irGoto(p.right.ir.resume) ])
+    CG.emit(p.right.ir.success, [
+        irCoord(p.coord),
+        ir_opfn(tmp, irOperator(op, 2), [ lv, rv ], p.right.ir.resume),
+        ir_opfn(target, irOperator(":=", 2), [ lv, tmp ],
+                p.right.ir.resume),
+        irGoto(p.ir.success)
+        ])
+end
+
+procedure ir_binary(p, target, bounded, lv, rv, closure, funcs)
+    if member(funcs, p.op) then {
+        /bounded & CG.emit(p.ir.resume, [ irGoto(p.right.ir.resume) ])
+        CG.emit(p.right.ir.success, [
+            irCoord(p.coord),
+            ir_opfn(target, irOperator(p.op, 2), [ lv, rv ],
+                    p.right.ir.resume),
+            irGoto(p.ir.success)
+            ])
+    } else {
+        CG.emit(p.ir.resume, [
+            irCoord(p.coord),
+            irResume(closure, p.right.ir.resume, target),
+            irGoto(p.ir.success)
+            ])
+        CG.emit(p.right.ir.success, [
+            irCoord(p.coord),
+            irMakeClosure(closure, irOperator(p.op, 2), [ lv, rv ]),
+            irGoto(p.ir.resume)
+            ])
+    }
 end
 
 # record Binop( op left right )
@@ -375,18 +418,12 @@ procedure ir_Binop(p, st, inuse, target, bounded)
 
     /p.right := Key("null")
 
-    init4ir(p)
     if p.op == "&" then {
-        ir(p.left, st, inuse, &null, &null)
-        ir(p.right, st, inuse, target, bounded)
-        CG.emit(p.ir.start, [ irGoto(p.left.ir.start) ])
-        /bounded & CG.emit(p.ir.resume, [ irGoto(p.right.ir.resume) ])
-        CG.emit(p.left.ir.success, [ irGoto(p.right.ir.start) ])
-        CG.emit(p.left.ir.failure, [ irGoto(p.ir.failure) ])
-        CG.emit(p.right.ir.success, [ irGoto(p.ir.success) ])
-        CG.emit(p.right.ir.failure, [ irGoto(p.left.ir.resume) ])
+	ir_conjunction(p, st, inuse, target, bounded)
         return
     }
+
+    init4ir(p)
     if not member(funcs, p.op) &
        not member(funcs, p.op[1:find(":=", p.op)]) then {
         closure := ir_tmp_closure(st, inuse)
@@ -404,65 +441,21 @@ procedure ir_Binop(p, st, inuse, target, bounded)
     CG.emit(p.right.ir.failure, [ irGoto(p.left.ir.resume) ])
 
     if find(":=", p.op) > 1 then {
-        # augmented assignment
-        op := (p.op ? tab(find(":=")))
-
-        /bounded & CG.emit(p.ir.resume, [ irGoto(p.right.ir.resume) ])
-        CG.emit(p.right.ir.success, [
-            irCoord(p.coord),
-            ir_opfn(tmp, irOperator(op, 2), [ lv, rv ], p.right.ir.resume),
-            ir_opfn(target, irOperator(":=", 2), [ lv, tmp ],
-		    p.right.ir.resume),
-            irGoto(p.ir.success)
-            ])
+	ir_augmented_assignment(p, target, bounded, lv, rv, tmp)
     } else {
-        if member(funcs, p.op) then {
-            /bounded & CG.emit(p.ir.resume, [ irGoto(p.right.ir.resume) ])
-            CG.emit(p.right.ir.success, [
-                irCoord(p.coord),
-                ir_opfn(target, irOperator(p.op, 2), [ lv, rv ],
-			p.right.ir.resume),
-                irGoto(p.ir.success)
-                ])
-        } else {
-            CG.emit(p.ir.resume, [
-                irCoord(p.coord),
-                irResume(closure, p.right.ir.resume, target),
-                irGoto(p.ir.success)
-                ])
-            CG.emit(p.right.ir.success, [
-                irCoord(p.coord),
-                irMakeClosure(closure, irOperator(p.op, 2), [ lv, rv ]),
-                irGoto(p.ir.resume)
-                ])
-        }
+	ir_binary(p, target, bounded, lv, rv, closure, funcs)
     }
 end
 
-# record Unop( op operand )
-procedure ir_Unop(p, st, inuse, target, bounded)
-    local closure, v, t
-    static funcs    # functions for which resumption fails immediately.
-    initial {
-        funcs := set([ ".", "/", "\\", "*", "?", "+", "-", "~", "^" ])
-    }
+procedure ir_unary_coexp(p, st, inuse, target, bounded)
+    local t
 
-    if p.op == "@" then {
-        t := Binop("@", Key("null"), p.operand, p.coord)
-        ir(t, st, inuse, target, bounded)
-        p.ir := t.ir
-        fail
-    }
+    t := Binop("@", Key("null"), p.operand, p.coord)
+    ir(t, st, inuse, target, bounded)
+    p.ir := t.ir
+end
 
-    init4ir(p)
-    if not member(funcs, p.op) then {
-        closure := ir_tmp_closure(st, inuse)
-    }
-    v := ir_value(p.operand, st, inuse, target)
-
-    ir(p.operand, st, inuse, v, &null)
-
-    CG.emit(p.ir.start, [ irGoto(p.operand.ir.start) ])
+procedure ir_unary(p, target, bounded, v, closure, funcs)
     if member(funcs, p.op) then {
         /bounded & CG.emit(p.ir.resume, [ irGoto(p.operand.ir.resume) ])
         CG.emit(p.operand.ir.success, [
@@ -482,6 +475,31 @@ procedure ir_Unop(p, st, inuse, target, bounded)
             irGoto(p.ir.resume)
             ])
     }
+end
+
+# record Unop( op operand )
+procedure ir_Unop(p, st, inuse, target, bounded)
+    local closure, v, t
+    static funcs    # functions for which resumption fails immediately.
+    initial {
+        funcs := set([ ".", "/", "\\", "*", "?", "+", "-", "~", "^" ])
+    }
+
+    if p.op == "@" then {
+        ir_unary_coexp(p, st, inuse, target, bounded)
+        fail
+    }
+
+    init4ir(p)
+    if not member(funcs, p.op) then {
+        closure := ir_tmp_closure(st, inuse)
+    }
+    v := ir_value(p.operand, st, inuse, target)
+
+    ir(p.operand, st, inuse, v, &null)
+
+    CG.emit(p.ir.start, [ irGoto(p.operand.ir.start) ])
+    ir_unary(p, target, bounded, v, closure, funcs)
     CG.emit(p.operand.ir.failure, [ irGoto(p.ir.failure) ])
 end
 
@@ -552,12 +570,12 @@ procedure ir_Initial(p, st, inuse, target, bounded)
     CG.emit(p.expr.ir.failure, [ irGoto(p.ir.success) ])
 end
 
-# record Invocable( ivocopList )
+# record Invocable( invocList )
 procedure ir_Invocable(p, st, inuse, target, bounded)
     local all, inv, i
 
     inv := []
-    every i := !p.ivocopList do {
+    every i := !p.invocList do {
         case type(i) of {
         "Ident" : {
             if i.id == "all" then {
@@ -592,10 +610,10 @@ procedure ir_value0(p)
     "Csetlit" : return irCsetLit(p.str)
     "Key" : {
         if not member(functions, p.id) then {
-            x := ir_key0(p) & return x
+            return ir_key0(p)
         }
     }
-    "KeyX" : x := ir_key0(p) & return x
+    "KeyX" : return ir_key0(p)
     "Ident" : return ir_ident(p.id)
     }
 end
@@ -1057,20 +1075,17 @@ procedure ir_Mutual(p, st, inuse, target, bounded)
 
     every i := 1 to *p.exprList-1 do ir(p.exprList[i], st, inuse, &null, &null)
     ir(p.exprList[-1], st, inuse, target, bounded)
+    L := p.exprList
 
-    L := make_sentinel(p.exprList)
     CG.emit(p.ir.start, [ irGoto(L[1].ir.start) ])
     /bounded & CG.emit(p.ir.resume, [ irGoto(L[-1].ir.resume) ])
 
-    CG.emit(L[1].ir.start, [ irGoto(L[2].ir.start) ])
-    CG.emit(L[1].ir.resume, [ irGoto(p.ir.failure) ])
-    every i := 2 to *p.exprList-1 do {
+    every i := 1 to *L do {
         CG.emit(L[i].ir.success, [ irGoto(L[i+1].ir.start) ])
         CG.emit(L[i].ir.failure, [ irGoto(L[i-1].ir.resume) ])
     }
-    CG.emit(L[-1].ir.start, [ irGoto(p.ir.success) ])
-    CG.emit(L[-1].ir.resume, [ irGoto(L[-2].ir.resume) ])
-
+    CG.emit(L[-1].ir.success, [ irGoto(p.ir.success) ])
+    CG.emit(L[ 1].ir.failure, [ irGoto(p.ir.failure) ])
 end
 
 # record Compound( exprList )
