@@ -29,11 +29,9 @@ vReal mkReal()		{ return this; }
 
 vInteger mkInteger()	{
     if (value < Long.MIN_VALUE || value > Long.MAX_VALUE) {
-	iRuntime.error(101, this);
-	return null;
-    } else {
-	return vInteger.New(this.value);
+	iRuntime.error(101, this);	//#%#% ?? is this right?
     }
+    return vInteger.New(this.value);
 }
 
 vString write()		{ return this.mkString(); }
@@ -110,27 +108,40 @@ public vNumeric Power(vDescriptor v)	{ return v.PowerOf(this); }
 
 vNumeric AddInto(vReal a)	{ return New(a.value + this.value); }
 vNumeric AddInto(vInteger a)	{ return New(a.value + this.value); }
+vNumeric AddInto(vBigInt a)	{ return New(a.mkReal().value + this.value); }
 
 vNumeric SubFrom(vReal a)	{ return New(a.value - this.value); }
 vNumeric SubFrom(vInteger a)	{ return New(a.value - this.value); }
+vNumeric SubFrom(vBigInt a)	{ return New(a.mkReal().value - this.value); }
 
 vNumeric MulInto(vReal a)	{ return New(a.value * this.value); }
 vNumeric MulInto(vInteger a)	{ return New(a.value * this.value); }
+vNumeric MulInto(vBigInt a)	{ return New(a.mkReal().value * this.value); }
 
 
 
 vNumeric DivInto(vReal a) {
-    if (this.value == 0.0) {
+    double d = a.value / this.value;
+    if (Double.isInfinite(d)) {
 	iRuntime.error(204);
     }
-    return New(a.value / this.value);
+    return New(d);
 }
 
 vNumeric DivInto(vInteger a) {
-    if (this.value == 0.0) {
+    double d = a.value / this.value;
+    if (Double.isInfinite(d)) {
 	iRuntime.error(204);
     }
-    return New(a.value / this.value);
+    return New(d);
+}
+
+vNumeric DivInto(vBigInt a) {
+    double d = a.mkDouble() / this.value;
+    if (Double.isInfinite(d)) {
+	iRuntime.error(204);
+    }
+    return New(d);
 }
 
 
@@ -147,6 +158,13 @@ vNumeric ModInto(vInteger a) {
 	iRuntime.error(204);
     }
     return New(a.value % this.value);
+}
+
+vNumeric ModInto(vBigInt a) {
+    if (this.value == 0.0) {
+	iRuntime.error(204);
+    }
+    return New(a.mkDouble() % this.value);
 }
 
 
@@ -166,6 +184,17 @@ vNumeric PowerOf(vInteger a) {
     double x = a.value;
     double y = this.value;
     if (x == 0.0 && y <= 0.0) {
+	iRuntime.error(204);
+    }
+    return New(Math.pow(x, y));
+}
+
+vNumeric PowerOf(vBigInt a) {
+    double x = a.mkDouble();
+    double y = this.value;
+    if (x < 0.0) {
+	iRuntime.error(206);	// no offending value (v9 compatible)
+    } else if (x == 0.0 && y <= 0.0) {
 	iRuntime.error(204);
     }
     return New(Math.pow(x, y));
@@ -205,6 +234,13 @@ vNumeric BkwEqual(vReal a)	{ return (a.value == this.value) ? this : null;}
 vNumeric BkwUnequal(vReal a)	{ return (a.value != this.value) ? this : null;}
 vNumeric BkwGreater(vReal a)	{ return (a.value >  this.value) ? this : null;}
 vNumeric BkwGreaterEq(vReal a)	{ return (a.value >= this.value) ? this : null;}
+
+vNumeric BkwLess(vBigInt a)	{ return (a.mkDouble() <  value) ? this : null;}
+vNumeric BkwLessEq(vBigInt a)	{ return (a.mkDouble() <= value) ? this : null;}
+vNumeric BkwEqual(vBigInt a)	{ return (a.mkDouble() == value) ? this : null;}
+vNumeric BkwUnequal(vBigInt a)	{ return (a.mkDouble() != value) ? this : null;}
+vNumeric BkwGreater(vBigInt a)	{ return (a.mkDouble() >  value) ? this : null;}
+vNumeric BkwGreaterEq(vBigInt a){ return (a.mkDouble() >= value) ? this : null;}
 
 
 

@@ -129,6 +129,20 @@ vNumeric BkwUnequal(vInteger a)		{ return Deref().BkwUnequal(a); }
 vNumeric BkwGreaterEq(vInteger a)	{ return Deref().BkwGreaterEq(a); }
 vNumeric BkwGreater(vInteger a)		{ return Deref().BkwGreater(a); }
 
+vNumeric AddInto(vBigInt a)		{ return Deref().AddInto(a); }
+vNumeric SubFrom(vBigInt a)		{ return Deref().SubFrom(a); }
+vNumeric MulInto(vBigInt a)		{ return Deref().MulInto(a); }
+vNumeric DivInto(vBigInt a)		{ return Deref().DivInto(a); }
+vNumeric ModInto(vBigInt a)		{ return Deref().ModInto(a); }
+vNumeric PowerOf(vBigInt a)		{ return Deref().PowerOf(a); }
+
+vNumeric BkwLess(vBigInt a)		{ return Deref().BkwLess(a); }
+vNumeric BkwLessEq(vBigInt a)		{ return Deref().BkwLessEq(a); }
+vNumeric BkwEqual(vBigInt a)		{ return Deref().BkwEqual(a); }
+vNumeric BkwUnequal(vBigInt a)		{ return Deref().BkwUnequal(a);}
+vNumeric BkwGreaterEq(vBigInt a)	{ return Deref().BkwGreaterEq(a) ;}
+vNumeric BkwGreater(vBigInt a)		{ return Deref().BkwGreater(a); }
+
 vNumeric AddInto(vReal a)		{ return Deref().AddInto(a); }
 vNumeric SubFrom(vReal a)		{ return Deref().SubFrom(a); }
 vNumeric MulInto(vReal a)		{ return Deref().MulInto(a); }

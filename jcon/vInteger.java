@@ -40,6 +40,12 @@ private vInteger(long n) { value = n; }
 
 
 
+//  convert to BigInt for subsequent processing
+
+private static vBigInt Big(vInteger i)	{ return vBigInt.New(i.value); }
+
+
+
 //  runtime primitives
 
 public int hashCode()	{ return (int) ((13255 * value) >> 10); } // same as v9
@@ -115,9 +121,10 @@ static long argVal(vDescriptor[] args, int index, int dflt) {	// optional arg
 
 public vNumeric Negate() {
     if (value == Long.MIN_VALUE) {
-	iRuntime.error(203);
+	return Big(this).Negate();
+    } else {
+	return New(-value);
     }
-    return New(-value);
 }
 
 public vDescriptor Select() {
@@ -135,8 +142,7 @@ public vNumeric Abs() {
     if (this.value >= 0 ) {
 	return this;
     } else if (this.value == Long.MIN_VALUE) {
-	iRuntime.error(203);
-	return null;
+	return Big(this).Abs();
     } else {
 	return New(-this.value);
     }
@@ -163,32 +169,35 @@ public vNumeric Power(vDescriptor v)	{ return v.PowerOf(this); }
 
 
 vNumeric AddInto(vReal a)	{ return vReal.New(a.value + this.value); }
+vNumeric AddInto(vBigInt a)	{ return Big(this).AddInto(a); }
 
 vNumeric AddInto(vInteger i) {
     long a = i.value;
     long b = this.value;
     long t = a + b;
     if ((~(a ^ b) & (t ^ a)) < 0) {
-	iRuntime.error(203);
+	return Big(this).AddInto(i);
     }
     return New(t);
 }
 
 
 vNumeric SubFrom(vReal a)	{ return vReal.New(a.value - this.value); }
+vNumeric SubFrom(vBigInt a)	{ return Big(this).SubFrom(a); }
 
 vNumeric SubFrom(vInteger i) {
     long a = i.value;
     long b = this.value;
     long d = a - b;
     if (((a ^ b) & (d ^ a)) < 0) {
-	iRuntime.error(203);
+	return Big(this).SubFrom(i);
     }
     return New(d);
 }
 
 
 vNumeric MulInto(vReal a)	{ return vReal.New(a.value * this.value); }
+vNumeric MulInto(vBigInt a)	{ return Big(this).MulInto(a); }
 
 vNumeric MulInto(vInteger i) {
     long a = i.value;
@@ -203,11 +212,11 @@ vNumeric MulInto(vInteger i) {
     }
     if ((a ^ b) >= 0) {
 	if ((a >= 0) ? (a > Long.MAX_VALUE / b) : (a < Long.MAX_VALUE / b)) {
-	    iRuntime.error(203);
+	    return Big(this).MulInto(i);
 	}
     } else if (b != -1) {
 	if ((a >= 0) ? (a > Long.MIN_VALUE / b) : (a < Long.MIN_VALUE / b)) {
-	    iRuntime.error(203);
+	    return Big(this).MulInto(i);
 	}
     }
     return New(p);
@@ -215,6 +224,7 @@ vNumeric MulInto(vInteger i) {
 
 
 vNumeric DivInto(vReal a)	{ return this.mkReal().DivInto(a); }
+vNumeric DivInto(vBigInt a)	{ return Big(this).DivInto(a); }
 
 vNumeric DivInto(vInteger i) {
     long a = i.value;
@@ -222,14 +232,17 @@ vNumeric DivInto(vInteger i) {
 
     if (b == 0) {
 	iRuntime.error(201);
-    } else if (b == -1 && a == Long.MIN_VALUE) {
-	iRuntime.error(203);
     }
-    return New(a / b);
+    if (b == -1 && a == Long.MIN_VALUE) {
+	return Big(i).Negate();
+    } else {
+	return New(a / b);
+    }
 }
 
 
 vNumeric ModInto(vReal a)	{ return this.mkReal().ModInto(a); }
+vNumeric ModInto(vBigInt a)	{ return Big(this).ModInto(a); }
 
 vNumeric ModInto(vInteger i) {
     long a = i.value;
@@ -237,8 +250,6 @@ vNumeric ModInto(vInteger i) {
 
     if (b == 0) {
 	iRuntime.error(202);
-    } else if (b == -1 && a == Long.MIN_VALUE) {
-	iRuntime.error(203);
     }
     return New(a % b);
 }
@@ -290,11 +301,15 @@ vNumeric PowerOf(vInteger i) {			// i ^ i
 	}
 	y >>= 1;
 	if (x > Integer.MAX_VALUE && y > 0) {
-	    iRuntime.error(203);
+	    return Big(i).ToPower(this);
 	}
 	x *= x;
     }
     return New(v);
+}
+
+vNumeric PowerOf(vBigInt i) {			// i ^ I
+    return i.ToPower(this);
 }
 
 
@@ -327,6 +342,13 @@ vNumeric BkwGreater(vReal a)
     { return (a.value >  this.value) ? vReal.New(this.value) : null;}
 vNumeric BkwGreaterEq(vReal a)
     { return (a.value >= this.value) ? vReal.New(this.value) : null;}
+
+vNumeric BkwLess(vBigInt a)		{ return Big(this).BkwLess(a); }
+vNumeric BkwLessEq(vBigInt a)		{ return Big(this).BkwLessEq(a); }
+vNumeric BkwEqual(vBigInt a)		{ return Big(this).BkwEqual(a); }
+vNumeric BkwUnequal(vBigInt a)		{ return Big(this).BkwUnequal(a); }
+vNumeric BkwGreater(vBigInt a)		{ return Big(this).BkwGreater(a); }
+vNumeric BkwGreaterEq(vBigInt a)	{ return Big(this).BkwGreaterEq(a); }
 
 
 

@@ -132,6 +132,20 @@ vNumeric BkwUnequal(vInteger a)		{ return retval.BkwUnequal(a); }
 vNumeric BkwGreaterEq(vInteger a)	{ return retval.BkwGreaterEq(a); }
 vNumeric BkwGreater(vInteger a)		{ return retval.BkwGreater(a); }
 
+vNumeric AddInto(vBigInt a)		{ return retval.AddInto(a); }
+vNumeric SubFrom(vBigInt a)		{ return retval.SubFrom(a); }
+vNumeric MulInto(vBigInt a)		{ return retval.MulInto(a); }
+vNumeric DivInto(vBigInt a)		{ return retval.DivInto(a); }
+vNumeric ModInto(vBigInt a)		{ return retval.ModInto(a); }
+vNumeric PowerOf(vBigInt a)		{ return retval.PowerOf(a); }
+
+vNumeric BkwLess(vBigInt a)		{ return retval.BkwLess(a); }
+vNumeric BkwLessEq(vBigInt a)		{ return retval.BkwLessEq(a); }
+vNumeric BkwEqual(vBigInt a)		{ return retval.BkwEqual(a); }
+vNumeric BkwUnequal(vBigInt a)		{ return retval.BkwUnequal(a); }
+vNumeric BkwGreaterEq(vBigInt a)	{ return retval.BkwGreaterEq(a); }
+vNumeric BkwGreater(vBigInt a)		{ return retval.BkwGreater(a); }
+
 vNumeric AddInto(vReal a)		{ return retval.AddInto(a); }
 vNumeric SubFrom(vReal a)		{ return retval.SubFrom(a); }
 vNumeric MulInto(vReal a)		{ return retval.MulInto(a); }
