@@ -56,6 +56,12 @@ int posEq(long n)
     }
 }
 
+// elements() is used when creating vSets.  Elements may be generated
+// in any order, and with a guarantee that the underlying list will
+// not change.
+java.util.Enumeration elements() {
+    return v.elements();
+}
 
 
 //  operations

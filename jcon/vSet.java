@@ -8,13 +8,13 @@ vSet(java.util.Hashtable x) {
 
 vSet(vValue x) {
     t = new java.util.Hashtable();
-    java.util.Enumeration i;
     if (x != null) {
         if (!(x instanceof vList)) {
 	    iRuntime.error(108, x);
 	}
 	vList list = (vList) x;
-        for (i = list.v.elements(); i.hasMoreElements(); ) {
+	java.util.Enumeration i = list.elements();
+        while ( i.hasMoreElements() ) {
 	    vDescriptor v = (vDescriptor) i.nextElement();
 	    v = v.deref();
 	    t.put(v, v);
@@ -77,7 +77,6 @@ vDescriptor Intersect(vDescriptor x) {
     i = this.t.keys();
     while (i.hasMoreElements()) {
         Object o = i.nextElement();
-System.out.println("debug: " + o.toString());
         if (y.containsKey(o)) {
 	    result.t.put(o, o);
 	}
