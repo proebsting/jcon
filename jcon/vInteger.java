@@ -96,6 +96,16 @@ vValue Power(vDescriptor v) {
     if (x == 0 && y <= 0) {
 	iRuntime.error(204);
     }
+    if (y < 0) {
+	if (x == 1) {
+	    return iNew.Integer(1);
+	} else if (x == -1) {
+	    y = -y;
+	} else {
+	    return iNew.Integer(0);
+	}
+    }
+    //#%#%# slow computation; should use powers of 2
     long p = 1L;
     for (long i = 0; i < y; i++) {
 	p *= x;		//#%#%# totally ignoring overflow.
