@@ -1,6 +1,7 @@
 #SRC: JCON
 
 record message(who,gap,what)
+record recordAsVariable()
 
 procedure main()
    local i, x
@@ -63,6 +64,10 @@ procedure main()
    evaluation("1234567890", "abcdefghi")
 
    every write(image(nullsuspend()))
+
+   write(image(recordAsVariable))
+   recordAsVariable := 3
+   write(image(recordAsVariable))
 
    write("done")
    exit()
