@@ -62,6 +62,7 @@ arguably correct differences:
 
 extensions:
 -- proc(i) produces a procedure that returns its ith argument
+-- allow a[i:j,k:m] as shorthand for a[i:j][k:m]
 
 compatible, although the book is unclear or wrong:
 -- procedures, functions, and record constructors all sort together, by name
