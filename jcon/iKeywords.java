@@ -13,6 +13,15 @@ class iKeywords extends iFile {
 		env.declareKey("pos", p);
 
 		env.declareKey("null", iNew.Null());
+
+		env.declareKey("fail", iNew.Null()); //#%#% BOGUS, avoids msgs
+
+		env.declareKey("e", iNew.Real(Math.E));
+		env.declareKey("phi", iNew.Real((1.0 + Math.sqrt(5.0)) / 2.0));
+		env.declareKey("pi", iNew.Real(Math.PI));
+
+		env.declareKey("version", 
+			    iNew.String("Jcon Version 0.0, Spring, 1997"));
 	}
 }
 

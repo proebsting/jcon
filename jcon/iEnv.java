@@ -26,6 +26,8 @@ class iEnv {
 		vDescriptor v = (vDescriptor) keytab.get(s);
 		if (v == null) {
 			v = iNew.Null();
+			System.err.println(
+				"warning: keyword not found: &" + s);
 		}
 		return v;
 	}
