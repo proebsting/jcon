@@ -27,6 +27,7 @@ PARSESRC = \
 
 IRGENSRC = \
 	ir.icn \
+	keyword.icn \
 	irgen.icn
 
 CODEGENSRC = \
