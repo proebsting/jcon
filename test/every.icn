@@ -1,4 +1,6 @@
 procedure main()
+   local s
+
    every write("a. ")
    every write("b. ", -3)
    every write("c. ", 1 to 10)
@@ -16,4 +18,7 @@ procedure main()
    every write("o. ", !"abcde")
    every write("p. ", !-514)
    every write("q. ", !12.5)
+
+   s := "abcde"
+   every !s := "." do write("r. ", s)
 end
