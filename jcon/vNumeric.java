@@ -4,7 +4,7 @@ public abstract class vNumeric extends vValue {
 
 
 // all subclasses must implement:
-//  Add, Sub, Mul, Div, Mod
+//  Add, Sub, Mul, Div, Mod, Abs
 //  NLess, NLessEq, NEqual, NUnequal, NGreaterEq, NGreater
 
 
@@ -14,6 +14,13 @@ vCset mkCset()			{ return this.mkString().mkCset(); }
 vDescriptor Bang(iClosure c)	{ return this.mkString().Bang(c); }
 vInteger Size()			{ return this.mkString().Size(); }
 vValue Concat(vDescriptor v)	{ return this.mkString().Concat(v); }
+
+vValue Complement()		{ return this.mkCset().Complement(); }
+vValue Intersect(vDescriptor x)	{ return this.mkCset().Intersect(x); }
+vValue Union(vDescriptor x)	{ return this.mkCset().Union(x); }
+vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }
+
+abstract vValue Abs();
 
 
 
@@ -42,9 +49,6 @@ static void Coerce(vDescriptor d[]) {
     }
 }
 
-vValue Complement()		{ return this.mkCset().Complement(); }
-vValue Intersect(vDescriptor x)	{ return this.mkCset().Intersect(x); }
-vValue Union(vDescriptor x)	{ return this.mkCset().Union(x); }
-vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }
+
 
 } // class vNumeric

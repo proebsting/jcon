@@ -11,14 +11,20 @@ static final String PREFIX = "rts.f$";	// classname prefix for built-in funcs
 
 
 void announce(iEnv env) {
+	declare(env, "abs");
 	declare(env, "cset");
 	declare(env, "delay");
 	declare(env, "delete");
 	declare(env, "exit");
 	declare(env, "get");
+	declare(env, "iand");
+	declare(env, "icom");
 	declare(env, "image");
 	declare(env, "insert");
 	declare(env, "integer");
+	declare(env, "ior");
+	declare(env, "ishift");
+	declare(env, "ixor");
 	declare(env, "key");
 	declare(env, "list");
 	declare(env, "member");

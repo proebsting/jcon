@@ -116,6 +116,14 @@ vValue Mod(vDescriptor v) {
 	//#%#% is that the correct definition of % for Icon?
 } 
 
+vValue Abs() {
+    if (this.value >= 0 ) {
+    	return this;
+    } else {
+    	return iNew.Real(-this.value);
+    }
+}
+
 
 
 //  numeric comparisons
