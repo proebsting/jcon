@@ -1,0 +1,18 @@
+# cset test
+
+procedure main()
+   local x, y
+
+   x := 'a1b2c3'
+   write("x:    ", x);
+   write("*x:   ", *x);
+   y := 'xyzabc'
+   write("y:    ", y);
+   write("x++y: ", x++y);
+   write("x--y: ", x--y);
+   write("y--x: ", y--x);
+   write("x**y: ", x**y);
+   write("~~x:  ", ~~x);
+   every writes("!x:   " | !x | "\n");
+   write("?z:   ", ?'z')
+end

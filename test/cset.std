@@ -1,0 +1,10 @@
+x:    123abc
+*x:   6
+y:    abcxyz
+x++y: 123abcxyz
+x--y: 123
+y--x: xyz
+x**y: abc
+~~x:  123abc
+!x:   123abc
+?z:   z
