@@ -75,9 +75,25 @@ class k$date extends k$Value {			// &date
 
 class k$dateline extends k$Value {			// &dateline
 
+	static String[] wkdays = { "Sunday, ", "Monday, ", "Tuesday, ",
+		"Wednesday, ", "Thursday, ", "Friday, ", "Saturday, " };
+	static String[] months = { "January ", "February ", "March ",
+		"April ", "May ", "June ", "July ", "August ",
+		"September ", "October ", "November ", "December " };
+
 	vValue deref() {
-		//#%#% this isn't right: need to format according to Icon rules
-		return iNew.String(new Date().toString());
+		Date d = new Date();
+		StringBuffer b = new StringBuffer(10);
+		b.append(wkdays[d.getDay()]);
+		b.append(months[d.getMonth()]);
+		b.append(d.getDate());
+		b.append(", ");
+		b.append(d.getYear() + 1900);
+		b.append("  ");
+		b.append(((d.getHours() + 11) % 12) + 1);  // 12, 1, 2, .. 11
+		b.append(d.toString().substring(16, 19));  // :mm
+		b.append((d.getHours() >= 12) ? " pm" : " am");
+		return iNew.String(b.toString());
 	}
 }
 
