@@ -15,8 +15,10 @@
 #     -d	debug jcont: use ./jtmp for temp files, and don't delete
 #     -v	verbose: echo shell commands, trace linking steps
 #		    (this option is not for the squeamish)
-#     -J	generate slower code in Java source form instead of writing
-#		    class files directly; requires javac in search path
+#     -J	generate slower code in Java source form
+#		    instead of writing class files directly
+#		    -- requires javac in search path
+#		    -- may expose bugs in the Java compiler
 #     -P	pessimize: don't optimize the generated Java code
 #
 #  Jcont translates Icon source files into .zip files, and links .zip
@@ -218,7 +220,7 @@ TZIP=/tmp/jcon\$\$.zip
 trap "rm -rf \$TZIP" 0 1 2 15
 dd bs=$HDRSIZE skip=1 <\$THISFILE >\$TZIP 2>/dev/null
 
-export CLASSPATH="\$TZIP:$JRTS"
+export CLASSPATH="\$TZIP:$JRTS:\$CLASSPATH"
 $JAVA rts.Main $ROOTS -- "\$0" "\$@"
 exit
 
