@@ -69,6 +69,7 @@ compatible, although the book is unclear or wrong:
 -- sortf() signals error 125, not 126, for wrong type
 -- args() uses same rules for builtin and declared varargs procedures
 -- flush(f) returns f, not null
+-- any() and match() return position beyond matched string even if i2<i1
 
 known bugs:
 -- e[e+:e] and e[e-:e] function identically to v9, which is wrong in some cases
