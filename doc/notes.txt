@@ -94,12 +94,12 @@ events:
 -- resize events are not reported yet
 
 colors:
+-- there is no inherent limit to the number of colors in use
+-- the default gamma value is 2.0
+-- on 8-bit displays, depending on the Java system, colors may be approximated
 -- variants (dark, weak, ..) of unsaturated colors (brown, pink, violet) differ
 -- "light black" and "pale black" produce black, not shades of gray
--- there is no inherent limit to the number of colors in use
--- on 8-bit displays, depending on the Java system, colors may be approximated
 -- mutable colors are not available
--- gamma correction is not yet implemented; acts as if gamma=1.0
 
 fonts:
 -- Java family names are case sensitive
