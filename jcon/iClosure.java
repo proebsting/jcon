@@ -18,13 +18,15 @@ public String file;		// location in source file
 public int line;
 public int column;
 
+public String[] names;		// arrays created by locals() for returning
+public vVariable[] variables;	//	contents of active closure.
 
 
 public iClosure() {		// constructor
     PC = 1;
 }
 
-
+public void locals()	{}	// initializes name/variable arrays.
 
 public final void resume() {
     try {

@@ -21,6 +21,7 @@ void announce() {
 	declare("cset");
 	declare("delay");
 	declare("delete");
+	declare("display");
 	declare("dtor");
 	declare("exit");
 	declare("exp");
@@ -69,7 +70,7 @@ static void declare(String name)
 {
     try {
 	iEnv.declareGlobal(name,
-	    iNew.Proc(Class.forName(PREFIX + name)));
+	    iNew.SimpleVar(name, iNew.Proc(Class.forName(PREFIX + name))));
     } catch (ClassNotFoundException e) {
 	iRuntime.bomb("cannot declare builtin function " + name + "()");
     }
@@ -90,6 +91,41 @@ class f$name extends iRefClosure {				// name(v)
 			iRuntime.error(111);
 		}
 		return args[0].Name();
+	}
+}
+
+class f$display extends iFunctionClosure {			// display(x)
+	vDescriptor function(vDescriptor[] args) {
+		// #%#%#% currently ignores arguments
+
+		// do the call chain.
+		for (iClosure p = parent; p != null; p = p.parent) {
+			String s = p.getClass().getName();
+			int j = s.indexOf('$');
+			if (j >= 0) {                   // xxx$yyyyy format
+			    s = s.substring(j+1);
+			}
+			System.out.println(s + " local identifiers:");
+			p.locals();
+			if (p.names == null) {
+				continue;
+			}
+			for (int i = 0; p.names[i] != null; i++) {
+				System.out.println("   " + p.names[i] + " = " + p.variables[i].image());
+			}
+		}
+
+		// do the globals
+		// #%#%# not sorted....
+		System.out.println();
+		System.out.println("global identifiers:");
+		java.util.Enumeration e = iEnv.symtab.keys();
+		while (e.hasMoreElements()) {
+			String s = (String) e.nextElement();
+			vVariable v = (vVariable) iEnv.symtab.get(s);
+			System.out.println("   " + s + " = " + v.image());
+		}
+		return iNew.Null();
 	}
 }
 

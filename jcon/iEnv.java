@@ -10,12 +10,12 @@ public class iEnv {
 	public static vCoexp main;
 	public static vCoexp cur_coexp;
 
-	public static vDescriptor resolve(String s) {
-		vDescriptor v = (vDescriptor) symtab.get(s);
+	public static vVariable resolve(String s) {
+		vVariable v = (vVariable) symtab.get(s);
 		return v;
 	}
 
-	public static void declareGlobal(String s, vDescriptor x) {
+	public static void declareGlobal(String s, vVariable x) {
 		symtab.put(s, x);
 	}
 
