@@ -47,7 +47,7 @@ procedure dump()		# test using WAttrib
    static atts
    initial atts := [
       # canvas attributes:
-      "canvas", "label",
+      "canvas", "depth", "label",
       "size", "height", "width", "rows", "columns",
       "echo", "cursor", "x", "y", "row", "col",
       # graphics context attributes:
