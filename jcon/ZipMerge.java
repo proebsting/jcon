@@ -40,8 +40,7 @@ public static void main(String[] args) {
     while (i < args.length) {
 	v.addElement(args[i++]);
     }
-    Enumeration enum = v.elements();
-    compose(dst, enum);
+    compose(dst, v.elements());
 }
 
 
