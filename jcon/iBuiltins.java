@@ -61,6 +61,7 @@ void announce() {
 	declare("table");
 	declare("tan");
 	declare("type");
+	declare("variable");
 	declare("write");
 	declare("writes");
 }
@@ -126,6 +127,30 @@ class f$display extends iFunctionClosure {			// display(x)
 			System.out.println("   " + s + " = " + v.image());
 		}
 		return iNew.Null();
+	}
+}
+
+class f$variable extends iFunctionClosure {			// variable(x)
+	vDescriptor function(vDescriptor[] args) {
+		vString s = (vString) iRuntime.argVal(args, 0, 103);
+		parent.locals();
+		for (int i = 0; parent.names[i] != null; i++) {
+			if (s.value.equals(parent.names[i])) {
+				return parent.variables[i];
+			}
+		}
+		vVariable v = (vVariable) iEnv.symtab.get(s.value);
+		if (v != null) {
+			return v;
+		}
+		if (s.value.length() > 1 && s.value.charAt(0) == '&') {
+			String k = s.value.substring(1);
+			Object o = iEnv.keytab.get(k);
+			if (o != null && o instanceof vVariable) {
+				return (vVariable) o;
+			}
+		}
+		return null;
 	}
 }
 
