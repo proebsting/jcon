@@ -12,6 +12,10 @@ final class wFont extends Font {
 
     vString spec;		// original spcification string
 
+static double szmul =		// pixel-to-pointsize multiplier
+    72.0 / Toolkit.getDefaultToolkit().getScreenResolution();
+//#%#%#%  static { System.err.println("szmul = " + szmul); }
+
 
 
 //  new wFont(name, style, ptsize, spec) -- create new Icon font
@@ -72,6 +76,9 @@ static wFont parse(vString spec) {
     if (size == 0) {
 	size = iConfig.FontSize;
     }
+
+    // convert size in pixels to point size
+    size = (int) (size * szmul + 0.5);
 
     return new wFont(family, style, size, spec);
 }

@@ -69,7 +69,12 @@ static final wColor White = New(vString.New("white"), iConfig.Gamma);
 //  wColor.New(s, gamma) -- create new color, given an Icon color spec
 
 static wColor New(vString s, double gamma) {
-    wColor c = newIntColor(s, gamma);
+    wColor c;
+    if (s.charAt(0) == '#') {
+	c = newHexColor(s, gamma);
+    } else {
+	c = newIntColor(s, gamma);
+    }
     if (c == null) {
        c = newNamedColor(s, gamma);
     }
@@ -115,6 +120,48 @@ private static wColor newIntColor(vString s, double gamma) {
     } catch (Exception e) {
 	return null; /*FAIL*/
     }
+}
+
+
+
+//  newHexColor(s, gamma) -- parse #rgb forms of color spec
+
+private static wColor newHexColor(vString s, double gamma) {
+    byte spec[] = s.getBytes();
+    int n;
+    double d;
+    switch (spec.length) {
+    	case 4:		n = 1;  d = 15.0;  break;
+	case 7:		n = 2;  d = 255.0;  break;
+	case 10:	n = 3;  d = 4095.0;  break;
+	case 13:	n = 4;  d = 65535.0;  break;
+	default:	return null; /*FAIL*/
+    }
+    int r = hex(spec, 1, n);
+    int g = hex(spec, n + 1, n);
+    int b = hex(spec, 2 * n + 1, n);
+    if (r < 0 || g < 0 || b < 0) {
+    	return null; /*FAIL*/
+    }
+    return new wColor(s, gamma, r / d, g / d, b / d);
+}
+
+private static int hex(byte[] b, int i, int n) {
+    int r = 0;
+    for (int j = 0; j < n; j++) {
+	r = 16 * r;
+    	char c = (char) b[i++];
+	if ('0' <= c && c <= '9') {
+	    r += c - '0';
+	} else if ('a' <= c && c <= 'z') {
+	    r += c - 'a' + 10;
+	} else if ('A' <= c && c <= 'Z') {
+	    r += c - 'A' + 10;
+	} else {
+	    return -1;
+	}
+    }
+    return r;
 }
 
 

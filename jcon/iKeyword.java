@@ -505,14 +505,15 @@ final class k$window extends vProc0 {				// &window
 
 	public vVariable Assign(vDescriptor v) {	// assign
 	    vValue w = v.Deref();
-	    if (w.iswin() || w.isnull()) {
-		value = w;
-		vWindow.setCurrent((vWindow) value);
-		return this;
+	    if (w.iswin()) {
+		vWindow.setCurrent((vWindow) w);
+	    } else if (w.isnull()) {
+		vWindow.setCurrent(null);
 	    } else {
 		iRuntime.error(140, w);
-		return null;
 	    }
+	    value = w;
+	    return this;
 	}
 
     };

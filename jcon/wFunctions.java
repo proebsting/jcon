@@ -42,6 +42,7 @@ public final class wFunctions extends iInstantiate {
         if (name.equals("f$Pattern")) return new f$Pattern();
         if (name.equals("f$Pending")) return new f$Pending();
         if (name.equals("f$Raise")) return new f$Raise();
+        if (name.equals("f$ReadImage")) return new f$ReadImage();
         if (name.equals("f$TextWidth")) return new f$TextWidth();
         if (name.equals("f$Uncouple")) return new f$Uncouple();
         if (name.equals("f$WAttrib")) return new f$WAttrib();
@@ -516,6 +517,29 @@ final class f$DrawString extends vProcV {	// DrawString(W,x,y,s,...)
 	    win.DrawString(x, y, s);
 	}
 	return null;				// fail
+    }
+}
+
+
+
+final class f$ReadImage extends vProc4 {	// ReadImage(W,s,x,y)  [no ,s2]
+    public vDescriptor Call(
+	    vDescriptor a, vDescriptor b, vDescriptor c, vDescriptor d) {
+	if (!a.iswin()) {
+	    return Call(iKeyword.window.getWindow(), a, b, c);
+	}
+	vWindow win = (vWindow)(a.Deref());
+	vString fname = b.mkString();
+	int x = c.isnull() ? -win.dx : ((int) c.mkInteger().value);
+	int y = d.isnull() ? -win.dy : ((int) d.mkInteger().value);
+	Image im = wImage.load(win, fname.toString());
+	if (im == null) {
+	    return null; /*FAIL*/
+	}
+	win.CopyImage(im, x, y);
+	im.flush();
+	win.getCanvas().image = fname;
+	return win;
     }
 }
 

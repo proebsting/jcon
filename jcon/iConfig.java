@@ -24,13 +24,13 @@ static final int MaxTraceback = 100;		// maximum traceback depth
 
 static final int PollDelay = 10;		// msec sleep in event polling
 
-static final double Gamma = 2.0;		// default gamma attribute
+static final double Gamma = 1.5;		// default gamma attribute
 
 static final String MonoFont = "DialogInput";		// "mono" font
 static final String TypewriterFont = "Monospaced";	// "typewriter" font
 static final String SansFont = "SansSerif";		// "sans" font
 static final String SerifFont = "Serif";		// "serif" font
-static final String FixedFont = "mono,bold,12";		// "fixed" font
+static final String FixedFont = "mono,bold,14";		// "fixed" font
 
 
 

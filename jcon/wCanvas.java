@@ -22,6 +22,7 @@ final class wCanvas extends Canvas {
 
     String visibility;		// value of "canvas" (visibility) attribute
     String pointer;		// value of "pointer" (mouse cursor) attribute
+    vString image;		// value of "image" attribut, if set
 
     boolean have_set_width;	// was width set explicitly?
     boolean have_set_height;	// was height set explicitly?
@@ -69,8 +70,6 @@ void dispose() {
 
 //  config(win, multiplier, x, y, w, h) -- reconfigure geometry
 //
-//  #%#% for now, x and y are ignored; only size counts
-//
 //  arguments are *String* values a la WAttrib()
 //  any particular argument can be null
 //
@@ -80,15 +79,18 @@ boolean config(vWindow win, int m, String x, String y, String w, String h) {
     Rectangle r = this.getBounds();
 
     try {
-	if (x != null) { r.x = m * Integer.parseInt(x); }
-	if (y != null) { r.y = m * Integer.parseInt(y); }
-	if (w != null) { r.width = m * Integer.parseInt(w); }
-	if (h != null) { r.height = m * Integer.parseInt(h); }
+	if (x != null) { r.x = m * wAttrib.parseInt(x); }
+	if (y != null) { r.y = m * wAttrib.parseInt(y); }
+	if (w != null) { r.width = m * wAttrib.parseInt(w); }
+	if (h != null) { r.height = m * wAttrib.parseInt(h); }
 	// do the following only after we know both values parsed okay
 	if (w != null) { have_set_width = true; }
 	if (h != null) { have_set_height = true; }
     } catch (Exception e) {
 	return false;
+    }
+    if (x != null || y != null) {
+    	f.setLocation(r.x, r.y);
     }
     resize(win, r.width, r.height);
     return true;

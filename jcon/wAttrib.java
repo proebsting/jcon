@@ -36,6 +36,7 @@ static {
     newatt("width", new aWidth());
     newatt("rows", new aRows());
     newatt("columns", new aColumns());
+    newatt("image", new aImage());
 
     newatt("canvas", new aCanvas());		// only "normal" and "hidden"
 
@@ -82,7 +83,6 @@ static {
     // They are recognized as legal, but changes are ignored.
 
     newatt("display",	new aDummy(vString.New(":0.0")));
-    newatt("image",	new aDummy(vString.New("")));
     newatt("iconpos",	new aDummy(vString.New("0,0")));
     newatt("iconlabel",	new aDummy(vString.New("")));
     newatt("iconimage",	new aDummy(vString.New("")));
@@ -160,6 +160,25 @@ static vValue unsettable(String name, String value) {
 
 
 
+//  parseInt(s) -- parse attribute as integer, allowing "1.5" etc.
+
+static int parseInt(String s) throws NumberFormatException {
+    try {
+    	return Integer.parseInt(s);
+    } catch (Exception e) {
+    }
+    try {
+    	long n = vString.New(s).mkInteger().value;
+	if (n >= Integer.MIN_VALUE && n <= Integer.MAX_VALUE) {
+	    return (int) n;
+        }
+    } catch (iError e) {
+    }
+    throw new NumberFormatException(s);
+}
+
+
+
 } // class wAttrib
 
 
@@ -225,7 +244,7 @@ final class aDx extends wAttrib {
     vValue get(vWindow win)	{ return vInteger.New(win.dx); }
     vValue set(vWindow win)	{
 	try {
-	    int dx = Integer.parseInt(val);
+	    int dx = wAttrib.parseInt(val);
 	    win.Origin(dx, win.dy);
 	    return vInteger.New(dx);
 	} catch (Exception e) {
@@ -238,7 +257,7 @@ final class aDy extends wAttrib {
     vValue get(vWindow win)	{ return vInteger.New(win.dy); }
     vValue set(vWindow win)	{
 	try {
-	    int dy = Integer.parseInt(val);
+	    int dy = wAttrib.parseInt(val);
 	    win.Origin(win.dx, dy);
 	    return vInteger.New(dy);
 	} catch (Exception e) {
@@ -332,7 +351,7 @@ final class aLeading extends wAttrib {
     vValue get(vWindow win)	 { return vInteger.New(win.Leading()); }
     vValue set(vWindow win)	 {
 	try {
-	    return vInteger.New(win.Leading(Integer.parseInt(val)));
+	    return vInteger.New(win.Leading(wAttrib.parseInt(val)));
 	} catch (Exception e) {
 	    return null; /*FAIL*/
 	}
@@ -538,8 +557,8 @@ final class aPos extends wAttrib {
 	    return null;
 	}
 	try {
-	    x = Integer.parseInt(val.substring(0, j));
-	    y = Integer.parseInt(val.substring(j + 1));
+	    x = wAttrib.parseInt(val.substring(0, j));
+	    y = wAttrib.parseInt(val.substring(j + 1));
 	} catch (Exception e) {
 	    return null; /*FAIL*/
 	}
@@ -559,7 +578,7 @@ final class aPosX extends wAttrib {
 	Frame f = win.getCanvas().f;
 	Point p = f.getLocation();
 	try {
-	    p.x = Integer.parseInt(val);
+	    p.x = wAttrib.parseInt(val);
 	} catch (Exception e) {
 	    return null; /*FAIL*/
 	}
@@ -579,7 +598,7 @@ final class aPosY extends wAttrib {
 	Frame f = win.getCanvas().f;
 	Point p = f.getLocation();
 	try {
-	    p.y = Integer.parseInt(val);
+	    p.y = wAttrib.parseInt(val);
 	} catch (Exception e) {
 	    return null; /*FAIL*/
 	}
@@ -587,4 +606,29 @@ final class aPosY extends wAttrib {
 	return vInteger.New(p.y);
     }
 
+}
+
+
+
+final class aImage extends wAttrib {
+
+    vValue get(vWindow win) {
+	wCanvas c = win.getCanvas();
+	return (c.image == null) ? (vValue)vNull.New() : (vValue)c.image;
+    }
+
+    vValue set(vWindow win) {
+    	Image im = wImage.load(win, val);
+	if (im == null) {
+	    return null; /*FAIL*/
+	}
+	wCanvas c = win.getCanvas();
+	if (!c.have_set_width && !c.have_set_height) {
+	    c.resize(win, im.getWidth(null), im.getHeight(null));
+	    c.have_set_width = c.have_set_height = true;
+	}
+	win.CopyImage(im, -win.dx, -win.dy);
+	im.flush();
+	return c.image = vString.New(val);
+    }
 }

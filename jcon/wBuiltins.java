@@ -48,6 +48,7 @@ static void announce() {
     iEnv.declareBuiltin("Pattern", 2, wFunctions.self);		// always fails
     iEnv.declareBuiltin("Pending", 1, wFunctions.self);
     iEnv.declareBuiltin("Raise", 1, wFunctions.self);
+    iEnv.declareBuiltin("ReadImage", 4, wFunctions.self);	// no quantizatn
     iEnv.declareBuiltin("TextWidth", 2, wFunctions.self);
     iEnv.declareBuiltin("Uncouple", 1, wFunctions.self);
     iEnv.declareBuiltin("WAttrib", -1, wFunctions.self);
@@ -59,7 +60,6 @@ static void announce() {
     //
     // iEnv.declareBuiltin("DrawImage", 4);
     //
-    // iEnv.declareBuiltin("ReadImage", 5);
     // iEnv.declareBuiltin("WriteImage", 6);
     // iEnv.declareBuiltin("Pixel", 5);
     //

@@ -200,7 +200,7 @@ vValue Cursor(String v) {
 
 vValue X(String v) {
     if (v != null) try {
-	xloc = Integer.parseInt(v);
+	xloc = wAttrib.parseInt(v);
     } catch (Exception e) {
 	return null; /*FAIL*/
     }
@@ -209,7 +209,7 @@ vValue X(String v) {
 
 vValue Y(String v) {
     if (v != null) try {
-	yloc = Integer.parseInt(v);
+	yloc = wAttrib.parseInt(v);
     } catch (Exception e) {
 	return null; /*FAIL*/
     }
@@ -222,7 +222,7 @@ vValue Row(vWindow win, String v) {
     int a = m.getMaxAscent();
 
     if (v != null) try {
-	yloc = Integer.parseInt(v);
+	yloc = wAttrib.parseInt(v);
 	yloc = (yloc - 1) * leading + a;
     } catch (Exception e) {
 	return null; /*FAIL*/
@@ -236,7 +236,7 @@ vValue Row(vWindow win, String v) {
 vValue Col(vWindow win, String v) {
     int a = win.Fwidth();
     if (v != null) try {
-	xloc = Integer.parseInt(v);
+	xloc = wAttrib.parseInt(v);
 	xloc = (xloc - 1) * a;
     } catch (Exception e) {
 	return null; /*FAIL*/

@@ -132,7 +132,9 @@ vWindow(String title, String mode, vDescriptor args[]) throws IOException {
     }
 
     // clear window and backing store, including out-of-bounds area, with new bg
-    EraseArea(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
+    if (c.image == null) {
+	EraseArea(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
+    }
     this.flush();
 
     setCurrent(this);		// remember as "current" window
@@ -567,6 +569,58 @@ void EraseArea(int x, int y, int w, int h) {
 
 
 
+void DrawArc(int x, int y, int w, int h, double theta, double alpha) {
+    int start = (int) Math.round(-180 * theta / Math.PI);
+    int arc = ((int) Math.round(-180 * (theta + alpha) / Math.PI)) - start;
+    b.drawArc(x, y, w, h, start, arc);
+    a.drawArc(x, y, w, h, start, arc);
+}
+
+void FillArc(int x, int y, int w, int h, double theta, double alpha) {
+    int start = (int) Math.round(-180 * theta / Math.PI);
+    int arc = ((int) Math.round(-180 * (theta + alpha) / Math.PI)) - start;
+    b.fillArc(x, y, w, h, start, arc);
+    a.fillArc(x, y, w, h, start, arc);
+}
+
+
+
+void DrawLine(int x1, int y1, int x2, int y2) {
+    b.drawLine(x1, y1, x2, y2);
+    a.drawLine(x1, y1, x2, y2);
+}
+
+void DrawLine(wCoords c) {
+    b.drawPolyline(c.xPoints, c.yPoints, c.nPoints);
+    a.drawPolyline(c.xPoints, c.yPoints, c.nPoints);
+}
+
+void DrawPolygon(wCoords c) {
+    b.drawPolygon(c.xPoints, c.yPoints, c.nPoints);
+    a.drawPolygon(c.xPoints, c.yPoints, c.nPoints);
+}
+
+void FillPolygon(wCoords c) {
+    b.fillPolygon(c.xPoints, c.yPoints, c.nPoints);
+    a.fillPolygon(c.xPoints, c.yPoints, c.nPoints);
+}
+
+
+
+void DrawString(int x, int y, String s) {
+    b.drawString(s, x, y);
+    a.drawString(s, x, y);
+}
+
+
+
+void CopyImage(Image im, int x, int y) {
+    b.drawImage(im, x, y, null);
+    a.drawImage(im, x, y, null);
+}
+
+
+
 void CopyArea(vWindow src, int x1, int y1, int w, int h, int x2, int y2) {
 
     // check for source portions outside window bounds
@@ -642,51 +696,6 @@ void CopyArea(vWindow src, int x1, int y1, int w, int h, int x2, int y2) {
 	b.setXORMode(bg);
 	a.setXORMode(bg);
     }
-}
-
-
-
-void DrawArc(int x, int y, int w, int h, double theta, double alpha) {
-    int start = (int) Math.round(-180 * theta / Math.PI);
-    int arc = ((int) Math.round(-180 * (theta + alpha) / Math.PI)) - start;
-    b.drawArc(x, y, w, h, start, arc);
-    a.drawArc(x, y, w, h, start, arc);
-}
-
-void FillArc(int x, int y, int w, int h, double theta, double alpha) {
-    int start = (int) Math.round(-180 * theta / Math.PI);
-    int arc = ((int) Math.round(-180 * (theta + alpha) / Math.PI)) - start;
-    b.fillArc(x, y, w, h, start, arc);
-    a.fillArc(x, y, w, h, start, arc);
-}
-
-
-
-void DrawLine(int x1, int y1, int x2, int y2) {
-    b.drawLine(x1, y1, x2, y2);
-    a.drawLine(x1, y1, x2, y2);
-}
-
-void DrawLine(wCoords c) {
-    b.drawPolyline(c.xPoints, c.yPoints, c.nPoints);
-    a.drawPolyline(c.xPoints, c.yPoints, c.nPoints);
-}
-
-void DrawPolygon(wCoords c) {
-    b.drawPolygon(c.xPoints, c.yPoints, c.nPoints);
-    a.drawPolygon(c.xPoints, c.yPoints, c.nPoints);
-}
-
-void FillPolygon(wCoords c) {
-    b.fillPolygon(c.xPoints, c.yPoints, c.nPoints);
-    a.fillPolygon(c.xPoints, c.yPoints, c.nPoints);
-}
-
-
-
-void DrawString(int x, int y, String s) {
-    b.drawString(s, x, y);
-    a.drawString(s, x, y);
 }
 
 
