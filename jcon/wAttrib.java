@@ -2,71 +2,174 @@
 
 package rts;
 
+import java.awt.*;
+import java.util.*;
 
 
-class wAttrib {
 
-    boolean rd;
-    boolean wt;
-    short code;	
-    String s;
+abstract class wAttrib implements Cloneable {
+    
+    String name;			// attribute name
+    String val;				// value; null if none specified
+
+abstract vValue set(vWindow win);	// set window according to s
+abstract vValue get(vWindow win);	// get current value, set s, return val
 
 
-// canvas attributes have positive codes
 
-static final int LABEL = 1;
-static final int POS = 2;
-static final int POSX = 3;
-static final int POSY = 4;
-static final int RESIZE = 5;
-static final int SIZE = 6;
-static final int HEIGHT = 7;
-static final int WIDTH = 8;
-static final int ROWS = 9;
-static final int COLS = 10;
-static final int IMAGE = 11;
-static final int CANVAS = 12;
-static final int ICONPOS = 13;
-static final int ICONLABEL = 14;
-static final int ICONIMAGE = 15;
-static final int ECHO = 16;
-static final int CURSOR = 17;
-static final int X = 18;
-static final int Y = 19;
-static final int ROW = 20;
-static final int COL = 21;
-static final int POINTER = 22;
-static final int POINTERX = 23;
-static final int POINTERY = 24;
-static final int POINTERROW = 25;
-static final int POINTERCOL = 26;
-static final int DISPLAY = 27;
-static final int DEPTH = 28;
-static final int DISPLAYHEIGHT = 29;
-static final int DISPLAYWIDTH = 30;
+//  initialize known attributes
 
-// graphics context attributes have negative codes
+private static Hashtable attlist = new Hashtable();
 
-static final int FG = -1;
-static final int BG = -2;
-static final int REVERSE = -3;
-static final int DRAWOP = -4;
-static final int GAMMA = -5;
-static final int FONT = -6;
-static final int FHEIGHT = -7;
-static final int FWIDTH = -8;
-static final int ASCENT = -9;
-static final int DESCENT = -10;
-static final int LEADING = -11;
-static final int LINEWIDTH = -12;
-static final int LINESTYLE = -13;
-static final int FILLSTYLE = -14;
-static final int PATTERN = -15;
-static final int CLIPX = -16;
-static final int CLIPY = -17;
-static final int CLIPW = -18;
-static final int CLIPH = -19;
-static final int DX = -20;
-static final int DY = -21;
+static {
+    newatt("bg", new aBg());
+    newatt("fg", new aFg());
+    newatt("font", new aFont());
+    newatt("width", new aWidth());
+    newatt("height", new aHeight());
+    newatt("size", new aSize());
+}
+
+private static void newatt(String name, wAttrib a) {
+    a.name = name;
+    attlist.put(name, a);
+}
+
+
+
+//  parseAtts(args, n) -- parse attribute arglist beginning at position n
+//
+//  Returns a list of wAttrib objects, each of proper type and with
+//  the "name" field set.  The "val" field is set, always to a vString,
+//  if "=value" is found in an argument.  (Note that val==null is
+//  different from val=="").
+//
+//  Errors are possible:  103 (string expected), 145 (bad name)
+
+static wAttrib[] parseAtts(vDescriptor[] args, int n) {
+
+    wAttrib list[] = new wAttrib[args.length - n];
+
+    for (int i = n; i < args.length; i++) {
+
+	String s = vString.argVal(args, i);
+	String name, val;
+
+	int j = s.indexOf('=');
+	if (j < 0) {
+	    name = s;
+	    val = null;
+	    // no value specified
+	} else {
+	    // value was specified
+	    name = s.substring(0, j);
+	    val = s.substring(j + 1);
+	}
+
+	wAttrib a = (wAttrib) attlist.get(name);
+	if (a == null) {
+	    iRuntime.error(145, args[i]);
+	}
+	try {
+	    a = (wAttrib) a.clone();	// make new copy and alter that
+	} catch (CloneNotSupportedException e)  {
+	    iRuntime.bomb(e);
+	}
+	a.val = val;
+	list[i - n] = a;
+    }
+
+    return list;
+}
+
+
 
 } // class wAttrib
+
+
+
+class aFg extends wAttrib {
+
+vValue get(vWindow win)	{ return win.Fg(null); }
+vValue set(vWindow win)	{ return win.Fg(iNew.String(val)); }
+
+}
+
+
+
+class aBg extends wAttrib {
+
+vValue get(vWindow win)	{ return win.Bg(null); }
+vValue set(vWindow win)	{ return win.Bg(iNew.String(val)); }
+
+}
+
+
+
+class aFont extends wAttrib {
+
+vValue get(vWindow win)	 { return win.Font(null); }
+vValue set(vWindow win)	 { return win.Font(iNew.String(val)); }
+
+}
+
+
+
+class aWidth extends wAttrib {
+
+vValue get(vWindow win) {
+    return iNew.Integer(win.getCanvas().getSize().width);
+}
+
+vValue set(vWindow win) {
+    if (win.getCanvas().config(win, null, null, val, null)) {
+	return get(win);
+    } else {
+	return null; /*FAIL*/
+    }
+}
+
+}
+
+
+
+class aHeight extends wAttrib {
+
+vValue get(vWindow win) {
+    return iNew.Integer(win.getCanvas().getSize().height);
+}
+
+vValue set(vWindow win) {
+    if (win.getCanvas().config(win, null, null, null, val)) {
+	return get(win);
+    } else {
+	return null; /*FAIL*/
+    }
+}
+
+}
+
+
+
+class aSize extends wAttrib {
+
+vValue get(vWindow win) { 
+    Dimension d = win.getCanvas().getSize();
+    return iNew.String(d.width + "," + d.height);
+}
+
+vValue set(vWindow win) {
+    int j = val.indexOf(',');
+    if (j < 0) {
+	return null;
+    }
+    String w = val.substring(0, j);
+    String h = val.substring(j + 1);
+    if (win.getCanvas().config(win, null, null, w, h)) {
+	return get(win);
+    } else {
+	return null; /*FAIL*/
+    }
+}
+
+}

@@ -126,6 +126,15 @@ static String argVal(vDescriptor[] args, int index)		// required arg
     }
 }
 
+static vString argDescr(vDescriptor[] args, int index, vString dflt)	// opt
+{
+    if (index >= args.length) {
+	return dflt;
+    } else {
+	return args[index].mkString();
+    }
+}
+
 static String argVal(vDescriptor[] args, int index, String dflt) // optional arg
 {
     if (index >= args.length || args[index] instanceof vNull) {

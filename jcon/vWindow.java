@@ -9,12 +9,13 @@ import java.awt.*;
 
 public class vWindow extends vValue {
 
+    // NOTE: when adding instance variables, update cloning initializion below
+
     private wCanvas c;		// underlying Icon canvas
     private Graphics a, b;	// graphics context for canvas and backing image
 
     private int wnum;		// window serial number
     private int gnum;		// graphics context serial number
-
 
     // graphics context attributes
 
@@ -24,19 +25,21 @@ public class vWindow extends vValue {
 
 
 
+wCanvas getCanvas()		{ return c; }
+wColor getBg()			{ return bg; }
+
+
+
+
 private static Toolkit toolkit = Toolkit.getDefaultToolkit();
 
 private static int wcount = 0;	// count of windows allocated
 private static int gcount = 0;	// count of graphics contexts allocated
 
-//#%#%#% temporary, for debugging:  list all known fonts
-// static { String s[] = toolkit.getFontList();
-// for (int i = 0; i < s.length; i++) System.out.println("font: " + s[i]); }
-
 
 
 String type()			{ return "window"; }
-String image()			{ return "window_" + wnum + "," + gnum 
+String image()			{ return "window_" + wnum + ":" + gnum 
 				    + "(" + c.f.getTitle() + ")"; } 
 
 int rank()			{ return 62; }	// windows sort after files
@@ -47,39 +50,47 @@ int compareTo(vValue v)
 
 
 
-wCanvas getCanvas()		{ return c; }
-
-
-
-
 //  window creation
 
 static vWindow open(String name, String mode, vDescriptor args[]) {
 
-	//#%#%#%##% need to process arg list etc.
+    wAttrib alist[] = wAttrib.parseAtts(args, 2);  // verify parsing first
 
-    vWindow win;
-    win = new vWindow(name, 500, 300);	//#%#%#% 
+    vWindow win = new vWindow(name);		// open a default window
+
+    for (int i = 0; i < alist.length; i++) {	// apply attributes
+	wAttrib a = alist[i];
+	if (a.val != null) {
+	    if (a.set(win) == null) {		// if couldn't set attribute
+		//#%#%#%#% win.close();
+		return null;			// open failed
+	    }
+	}
+    }
+
+    // clear window and backing store, including out-of-bounds area, with new bg
+    win.EraseArea(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
+
     setCurrent(win);
     return win;
 }
 
-vWindow(String title, int w, int h) {		// new vWindow(s, w, h)
+vWindow(String title) {				// new vWindow(s)
+    
+    int w = 480;	// default width	// #%#%#%#???
+    int h = 156;	// default height	// #%#%#%#???
 
-    c = new wCanvas(title, w, h);
+    c = new wCanvas(this, title, w, h);
     wnum = ++wcount;
 
     a = c.getGraphics();
     b = c.i.getGraphics();
     gnum = ++gcount;
 
+    // set the usual defaults
     fg = wColor.Black;
     bg = wColor.White;
-    EraseArea(0, 0, w, h);
-
     Font(iNew.String(wFont.DEFAULT_FONT));
-
-    //#%#% before returning, should wait for window to appear
 }
 
 vWindow(vWindow w) {				// new vWindow(w)  [a Clone()]
@@ -100,6 +111,18 @@ vWindow(vWindow w) {				// new vWindow(w)  [a Clone()]
     this.font = w.font;
     b.setFont(font);
     a.setFont(font);
+}
+
+
+
+//  newgcb(g) -- install new graphics context for backing store
+//
+//  (called by the Canvas code if the underlying image has changed)
+
+void newgcb(Graphics g) {
+   b = g.create();
+   b.setColor(fg);
+   b.setFont(font);
 }
 
 
@@ -186,23 +209,30 @@ vValue Event() {
     return e;
 }
 
-vString Fg(wColor k) {
-    if (k == null) {
-    	return null;
-    }
-    this.b.setColor(k);
-    this.a.setColor(k);
-    fg = k;
-    return k.spec;
-}
+
 
 vString Fg(vString s) {
-    return Fg(wColor.parse(s));
+    if (s == null) {
+	return this.fg.spec;
+    }
+    wColor k = wColor.parse(s);
+    if (k == null) {
+	return null;
+    } else {
+	a.setColor(k);
+	b.setColor(k);
+	fg = k;
+	return k.spec;
+    }
 }
 
+
 vString Bg(vString s) {
-    wColor k = wColor.parse(s);
     if (s == null) {
+	return this.bg.spec;
+    }
+    wColor k = wColor.parse(s);
+    if (k == null) {
 	return null;
     } else {
 	bg = k;
@@ -210,8 +240,12 @@ vString Bg(vString s) {
     }
 }
 
+
 vString Font(vString s) {
-    wFont f = wFont.parse(s.value);
+    if (s == null) {
+	return this.font.spec;
+    }
+    wFont f = wFont.parse(s);
     if (f == null) {
     	return null;
     } else {
@@ -250,15 +284,15 @@ void EraseArea(int x, int y, int w, int h) {
 
 
 void DrawArc(int x, int y, int w, int h, double theta, double alpha) {
-    int start = (int) (-180 * theta / Math.PI + 0.5);
-    int arc = ((int) (-180 * (theta + alpha) / Math.PI + 0.5)) - start;
+    int start = (int) Math.round(-180 * theta / Math.PI);
+    int arc = ((int) Math.round(-180 * (theta + alpha) / Math.PI)) - start;
     b.drawArc(x, y, w, h, start, arc);
     a.drawArc(x, y, w, h, start, arc);
 }
 
 void FillArc(int x, int y, int w, int h, double theta, double alpha) {
-    int start = (int) (-180 * theta / Math.PI + 0.5);
-    int arc = ((int) (-180 * (theta + alpha) / Math.PI + 0.5)) - start;
+    int start = (int) Math.round(-180 * theta / Math.PI);
+    int arc = ((int) Math.round(-180 * (theta + alpha) / Math.PI)) - start;
     b.fillArc(x, y, w, h, start, arc);
     a.fillArc(x, y, w, h, start, arc);
 }

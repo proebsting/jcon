@@ -22,18 +22,8 @@ public class wCoords {
 
 wCoords(vDescriptor args[]) {
 
-    int i, j, n;
-    int a[];
-
-    if (args.length == 0) {
-	iRuntime.error(146);
-    }
-    if (args[0] instanceof vWindow) {
-	i = 1;
-    } else {
-	i = 0;
-    }
-    n = args.length - i;
+    int i = vWindow.argBase(args);
+    int n = args.length - i;
     if ((n % 2) != 0) {
 	iRuntime.error(146);
     }
@@ -42,7 +32,7 @@ wCoords(vDescriptor args[]) {
     xPoints = new int[n];
     yPoints = new int[n];
 
-    for (j = 0; j < nPoints; j++) {
+    for (int j = 0; j < nPoints; j++) {
 	xPoints[j] = (int) vInteger.argVal(args, i++);
 	yPoints[j] = (int) vInteger.argVal(args, i++);
     }

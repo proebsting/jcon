@@ -39,12 +39,12 @@ void announce() {
 	iBuiltins.declare("FreeColor", -1);
 	iBuiltins.declare("NewColor", 2);
 	iBuiltins.declare("Pending", 1);
+	iBuiltins.declare("WAttrib", -1);
 	iBuiltins.declare("WFlush", 1);
 	iBuiltins.declare("WSync", 1);
 
 	// #%#%#%#%#%# NOT YET IMPLEMENTED:
 	//
-	// iBuiltins.declare("WAttrib", -1);
 	// iBuiltins.declare("Clip", 5);
 	// iBuiltins.declare("Pattern", 2);
 	//
@@ -52,7 +52,7 @@ void announce() {
 	//
 	// iBuiltins.declare("GotoRC", 3);
 	// iBuiltins.declare("GotoXY", 3);
-	// also read(W), write(W,s...), etc.
+	// also need read(W), write(W,s...), etc.
 	//
 	// iBuiltins.declare("CopyArea", 8);
 	// iBuiltins.declare("ReadImage", 5);
@@ -87,10 +87,64 @@ void announce() {
 //------------------------------------------  miscellaneous functions follow
 
 
+
+
+class f$WAttrib extends iClosure {		// WAttrib(W,attribs,...)
+	vWindow win;
+	wAttrib alist[];
+	int next;
+
+	public void nextval() {
+		if (win == null) {
+			for (int i = 0; i < arguments.length; i++) {
+				arguments[i] = arguments[i].deref();
+			}
+			win = vWindow.winArg(arguments);
+			int b = vWindow.argBase(arguments);
+			alist = wAttrib.parseAtts(arguments, b);
+			for (int i = 0; i < alist.length; i++) {
+				wAttrib a = alist[i];
+				if (a.val != null) {		// if nm=val arg
+					if (a.set(win) == null) {
+						alist[i] = null;  // set failed
+					}
+				}
+			}
+			next = 0;
+		}
+		retvalue = null;
+		while (next < alist.length) {
+			wAttrib a = alist[next++];
+			if (a != null) {
+				retvalue = a.get(win);
+				if (retvalue != null) {
+					break;	// generate value
+				}
+			}
+		}
+	}
+}
+
+
+
 class f$Clone extends iValueClosure {		// Clone(W,attribs...) 
-						// #%#%#% no attribs yet
 	vDescriptor function(vDescriptor[] args) {
-		return vWindow.winArg(args).Clone();
+		vWindow win = vWindow.winArg(arguments);
+		int b = vWindow.argBase(arguments);
+		wAttrib alist[] = wAttrib.parseAtts(args, b);
+
+		win = win.Clone();				// clone window
+		for (int i = 0; i < alist.length; i++) {	// apply attribs
+			wAttrib a = alist[i];
+			if (a.val != null) {			// if val given
+				if (a.set(win) == null) {	// if set fails
+					//#%#%#%#% win.close();
+					return null;		// clone failed
+				}
+			}
+		}
+
+		return win;
 	}
 }
 
@@ -110,26 +164,26 @@ class f$Event extends iValueClosure {		// Event(W)
 
 
 
-class f$Bg extends iValueClosure {		// Bg(W, s) #%#% todo: Bg(&null)
+class f$Bg extends iValueClosure {		// Bg(W, s)
 	vDescriptor function(vDescriptor[] args) {
 		vWindow win = vWindow.winArg(args);
-	    	vString s = vString.argDescr(args, vWindow.argBase(args));
+	    	vString s = vString.argDescr(args, vWindow.argBase(args), null);
 		return win.Bg(s);
 	}
 }
 
-class f$Fg extends iValueClosure {		// Fg(W, s) #%#% todo: Fg(&null)
+class f$Fg extends iValueClosure {		// Fg(W, s)
 	vDescriptor function(vDescriptor[] args) {
 		vWindow win = vWindow.winArg(args);
-	    	vString s = vString.argDescr(args, vWindow.argBase(args));
+	    	vString s = vString.argDescr(args, vWindow.argBase(args), null);
 		return win.Fg(s);
 	}
 }
 
-class f$Font extends iValueClosure {		// Font(W,s) #%#% do:Font(&null)
+class f$Font extends iValueClosure {		// Font(W,s)
 	vDescriptor function(vDescriptor[] args) {
 		vWindow win = vWindow.winArg(args);
-	    	vString s = vString.argDescr(args, vWindow.argBase(args));
+	    	vString s = vString.argDescr(args, vWindow.argBase(args), null);
 		return win.Font(s);
 	}
 }

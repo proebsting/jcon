@@ -10,7 +10,7 @@ import java.util.*;
 
 class wFont extends Font {
 
-    String spec;	// original spcification string
+    vString spec;	// original spcification string
 
 static final String DEFAULT_FONT = "mono";	// initial font specification
 static final int DEFAULT_SIZE = 14;		// default font size
@@ -20,7 +20,7 @@ static final int DEFAULT_SIZE = 14;		// default font size
 
 //  new wFont(name, style, ptsize, spec) -- create new Icon font
 
-wFont(String name, int style, int ptsize, String spec) {
+wFont(String name, int style, int ptsize, vString spec) {
     super(name, style, ptsize);
     this.spec = spec;
 }
@@ -29,9 +29,10 @@ wFont(String name, int style, int ptsize, String spec) {
 
 //  parse(s) -- interpret Icon font spec and return wFont value (or null)
 
-static wFont parse(String s) {
+static wFont parse(vString spec) {
     int size = 0;
     int style = 0;
+    String s = spec.value;
 
     // check for special-cased X name, and model (imperfectly)
     if (s.equals("fixed")) {
@@ -79,7 +80,7 @@ static wFont parse(String s) {
     //#%#%#% convert pixels to points here
     //#%#%#% (doesn't seem to be needed?)
 
-    return new wFont(family, style, size, s);
+    return new wFont(family, style, size, spec);
 }
 
 

@@ -8,6 +8,7 @@ Grep for '#%#%' in the code to find places that need revisiting.
 
 Java names are assigned as follows.
 
+    a.....	graphics attribute classes
     i.....	infrastructure classes
     f$.....	runtime function classes
     k$.....	keyword classes
