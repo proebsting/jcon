@@ -1,0 +1,26 @@
+
+Run-time error 201
+division by zero
+Traceback:
+   main()
+   foo(5)
+   foo(4)
+   foo(3)
+   foo(2)
+   foo(1)
+   foo(0)
+   {1 / 0}
+-------------------------
+
+Run-time error 201
+File traceback.icn; Line 11
+division by zero
+Traceback:
+   main()
+   foo(5) from line 7 in traceback.icn
+   foo(4) from line 12 in traceback.icn
+   foo(3) from line 12 in traceback.icn
+   foo(2) from line 12 in traceback.icn
+   foo(1) from line 12 in traceback.icn
+   foo(0) from line 12 in traceback.icn
+   {1 / 0} from line 11 in traceback.icn

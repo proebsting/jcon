@@ -1,0 +1,13 @@
+#SRC: JCON
+#OPT: -fn
+#
+#  recurse and bomb, to test traceback
+
+procedure main()
+   foo(5)
+end
+
+procedure foo(n)
+   1/n
+   foo(n-1)
+end
