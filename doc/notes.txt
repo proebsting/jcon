@@ -108,7 +108,7 @@ events:
 -- Java distinguishes "alt" and "meta" keys; Jcon maps both to the &meta flag
 -- &meta is never set with mouse events (Java uses it to encode "which button")
 -- X returns "\r" for the Enter key but Java (and therefore Jcon) returns "\n"
--- "outboard" keys differ from X, but are close to Windows; see keysyms.icn
+-- "outboard" keys differ from X, but are similar to Windows; see keysyms.icn
 
 colors:
 -- variants (dark, weak, etc.) of unsaturated colors (brown, pink, violet)
@@ -118,6 +118,15 @@ colors:
 -- there is no inherent limit to the number of colors in use (v9 stops at 256)
 -- mutable colors are not available
 -- gamma correction is not yet implemented; acts as if gamma=1.0
+
+fonts:
+-- Java family names are case sensitive
+-- Icon generic family names, and all characteristics, are case-insensitive
+-- generic names {serif, sans, typewriter} work well; bold/italic variants work
+-- generic "mono" appearance varies by platform; bold/italic don't always work
+-- Font(s) always succeeds for non-empty s
+   (Java always returns a valid font, even for unrecognized family names)
+-- the special X font name "fixed" is modeled imperfectly by "mono,10"
 
 ------------------------------------------------------------------------------
 
