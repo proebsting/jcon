@@ -656,8 +656,8 @@ procedure ir_value0(p)
     case type(p) of {
     "a_Intlit" : return ir_IntLit(p.int)
     "a_Reallit" : return ir_RealLit(p.real)
-    "a_Stringlit": return ir_StrLit(p.str)
-    "a_Csetlit" : return ir_CsetLit(p.str)
+    "a_Stringlit": return ir_StrLit(*p.str, p.str)
+    "a_Csetlit" : return ir_CsetLit(*p.str, p.str)
     "a_Ident" : return ir_ident(p.id)
     }
 end
@@ -708,7 +708,7 @@ procedure ir_a_Stringlit(p, st, inuse, target, bounded, rval)
     ir_init(p)
 
     suspend ir_chunk(p.ir.start, [
-        ir_Move(target, ir_StrLit(p.str)),
+        ir_Move(target, ir_StrLit(*p.str, p.str)),
         ir_Goto(p.ir.success)
         ])
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(p.ir.failure) ])
@@ -722,7 +722,7 @@ procedure ir_a_Csetlit(p, st, inuse, target, bounded, rval)
     ir_init(p)
 
     suspend ir_chunk(p.ir.start, [
-        ir_Move(target, ir_CsetLit(p.str)),
+        ir_Move(target, ir_CsetLit(*p.str, p.str)),
         ir_Goto(p.ir.success)
         ])
     /bounded & suspend ir_chunk(p.ir.resume, [ ir_Goto(p.ir.failure) ])
@@ -1264,7 +1264,7 @@ procedure ir_a_Key(p, st, inuse, target, bounded, rval)
     }
     "file" : {
 	suspend ir_chunk(p.ir.start, [
-	    ir_Move(target, ir_StrLit(p.coord.file) ),
+	    ir_Move(target, ir_StrLit(*p.coord.file, p.coord.file) ),
 	    ir_Goto(p.ir.success)
 	    ])
 	suspend ir_chunk(p.ir.resume, [ ir_Goto(p.ir.failure) ])
