@@ -95,7 +95,7 @@ procedure optim_def_use(p, this, uses, defs)
             optim_def_use(p.subject, uses, uses, defs);
             optim_def_use(p.pos, defs, uses, defs);
             optim_def_use(p.pos, uses, uses, defs); }
-    "ir_Goto" :  { optim_def_use(p.location, uses, uses, defs); }
+    "ir_Goto" :  { optim_def_use(p.targetLabel, uses, uses, defs); }
     "ir_Var" :   { this[p]+:=1 }
     "ir_Key" :   { this[p]+:=1 }
     "ir_IntLit" :    { this[p]+:=1 }
@@ -103,11 +103,11 @@ procedure optim_def_use(p, this, uses, defs)
     "ir_StrLit" :    { this[p]+:=1 }
     "ir_CsetLit" :   { this[p]+:=1 }
     "ir_Succeed" :   { optim_def_use(p.expr, uses, uses, defs);
-            optim_def_use(\p.continuation, uses, uses, defs); }
+            optim_def_use(\p.resumeLabel, uses, uses, defs); }
     "ir_Fail" :  { }
     "ir_ResumeValue" :    { optim_def_use(p.value, uses, uses, defs);
             optim_def_use(p.failLabel, uses, uses, defs);
-            optim_def_use(\p.retValue, defs, uses, defs); }
+            optim_def_use(\p.lhs, defs, uses, defs); }
     "ir_MakeList" :  { optim_def_use(\p.lhs, defs, uses, defs);
             every optim_def_use(!p.valueList, uses, uses, defs); }
     "ir_Call" |
@@ -118,12 +118,12 @@ procedure optim_def_use(p, this, uses, defs)
     "ir_Operator" :  { this[p]+:=1 }
     "ir_Create" :    {
 	    optim_def_use(\p.lhs, defs, uses, defs);
-            optim_def_use(p.location, uses,uses, defs);}
+            optim_def_use(p.coexpLabel, uses,uses, defs);}
     "ir_CoRet" : { optim_def_use(p.value, uses, uses, defs);
-            optim_def_use(p.continuation, uses, uses, defs); }
+            optim_def_use(p.resumeLabel, uses, uses, defs); }
     "ir_CoFail" :    { }
     "ir_RunTimeError":{ }
-    "ir_EnterInit" : { optim_def_use(p.startlabel, uses, uses, defs) }
+    "ir_EnterInit" : { optim_def_use(p.startLabel, uses, uses, defs) }
 
     default :   { runerr(500, p); }
     }
@@ -152,11 +152,11 @@ procedure optim_rewrite(p, rename)
     "ir_StrLit" :    { }
     "ir_CsetLit" :   { }
     "ir_Succeed" :   { p.expr := optim_rewrite(p.expr, rename);
-            p.continuation := optim_rewrite(\p.continuation, rename); }
+            p.resumeLabel := optim_rewrite(\p.resumeLabel, rename); }
     "ir_Fail" :  { }
     "ir_ResumeValue" :    { p.value := optim_rewrite(p.value, rename);
             p.failLabel := optim_rewrite(p.failLabel, rename);
-            p.retValue := optim_rewrite(\p.retValue, rename); }
+            p.lhs := optim_rewrite(\p.lhs, rename); }
     "ir_MakeList" :  { p.lhs := optim_rewrite(\p.lhs, rename);
             every i := 1 to *p.valueList do {
                 p.valueList[i] := optim_rewrite(p.valueList[i],
@@ -177,12 +177,12 @@ procedure optim_rewrite(p, rename)
     "ir_Operator" :  { }
     "ir_Create" :    {
             p.lhs := optim_rewrite(\p.lhs, rename);
-	    p.location := optim_rewrite(p.location, rename); }
+	    p.coexpLabel := optim_rewrite(p.coexpLabel, rename); }
     "ir_CoRet" : { p.value := optim_rewrite(p.value, rename);
-            p.continuation := optim_rewrite(p.continuation, rename);}
+            p.resumeLabel := optim_rewrite(p.resumeLabel, rename);}
     "ir_CoFail" :    { }
     "ir_RunTimeError":{ }
-    "ir_EnterInit" : { p.startlabel := optim_rewrite(p.startlabel, rename) }
+    "ir_EnterInit" : { p.startLabel := optim_rewrite(p.startLabel, rename) }
 
     default :   { runerr(500,p); }
     }
@@ -198,7 +198,7 @@ procedure optim_goto_elimination(t, start)
     if i := new[start] &
        type(i[1]) == "ir_EnterInit" &
        type(i[2]) == "ir_Goto" &
-       i[1].startlabel === i[2].location then {
+       i[1].startLabel === i[2].targetLabel then {
         new[start] := [ i[2] ]
     }
     optim_fallthrough(new)
@@ -214,11 +214,11 @@ procedure optim_fallthrough(new)
         while chunk := \new[lab] &
               insn := chunk[-1] &
               type(insn) == "ir_Goto" &
-              type(insn.location) == "ir_Label" &
-              refcount[insn.location] = 1 do {
-            \new[insn.location] | runerr(500, insn.location)
-            new[lab] := chunk[1:-1] ||| new[insn.location]
-            delete(new, insn.location)
+              type(insn.targetLabel) == "ir_Label" &
+              refcount[insn.targetLabel] = 1 do {
+            \new[insn.targetLabel] | runerr(500, insn.targetLabel)
+            new[lab] := chunk[1:-1] ||| new[insn.targetLabel]
+            delete(new, insn.targetLabel)
         }
     }
 end
@@ -238,8 +238,8 @@ procedure optim_goto_chain(lab, t)
     seen := set([])
     while chunk := \t[lab] &
 	  type(chunk[1]) == "ir_Goto" &
-	  not member(seen, chunk[1].location) do {
-        lab := chunk[1].location
+	  not member(seen, chunk[1].targetLabel) do {
+        lab := chunk[1].targetLabel
         insert(seen, lab)
     }
     return lab
@@ -251,9 +251,9 @@ procedure optim_goto_chain_defer(lab, t)
     seen := set([])
     while chunk := \t[lab] &
           type(chunk[1]) == "ir_Goto" &
-	  not member(seen, chunk[1].location) &
-          type(chunk[1].location) ~== "ir_TmpLabel" do {
-        lab := chunk[1].location
+	  not member(seen, chunk[1].targetLabel) &
+          type(chunk[1].targetLabel) ~== "ir_TmpLabel" do {
+        lab := chunk[1].targetLabel
         insert(seen, lab)
     }
     return lab
@@ -292,13 +292,13 @@ procedure optim_goto_transitive(t, new, lab)
 		p.rhs := optim_goto_chain_defer(p.rhs, t)
 		optim_goto_transitive(t, new, p.rhs)
 		}
-	    "ir_Goto" : {  # ir_Goto : ( location )
-		p.location := optim_goto_chain(p.location, t)
-		optim_goto_transitive(t, new, p.location)
+	    "ir_Goto" : {  # ir_Goto : ( targetLabel )
+		p.targetLabel := optim_goto_chain(p.targetLabel, t)
+		optim_goto_transitive(t, new, p.targetLabel)
 		}
-	    "ir_Succeed" : {  # ir_Succeed : ( expr continuation )
-		p.continuation := optim_goto_chain(\p.continuation, t)
-		optim_goto_transitive(t, new, \p.continuation)
+	    "ir_Succeed" : {  # ir_Succeed : ( expr resumeLabel )
+		p.resumeLabel := optim_goto_chain(\p.resumeLabel, t)
+		optim_goto_transitive(t, new, \p.resumeLabel)
 		}
 	    "ir_Field" : {  # ir_Field : ( lhs expr field failLabel )
 		p.failLabel := optim_goto_chain(\p.failLabel, t)
@@ -309,21 +309,21 @@ procedure optim_goto_transitive(t, new, lab)
 		p.failLabel := optim_goto_chain(\p.failLabel, t)
 		optim_goto_transitive(t, new, \p.failLabel)
 		}
-	    "ir_ResumeValue" : {  # ir_ResumeValue : ( value failLabel retValue )
+	    "ir_ResumeValue" : {  # ir_ResumeValue : ( lhs value failLabel )
 		p.failLabel := optim_goto_chain(p.failLabel, t)
 		optim_goto_transitive(t, new, p.failLabel)
 		}
 	    "ir_Create" : {  # ir_Create : ( lhs location )
-		p.location := optim_goto_chain_defer(p.location, t)
-		optim_goto_transitive(t, new, p.location)
+		p.coexpLabel := optim_goto_chain_defer(p.coexpLabel, t)
+		optim_goto_transitive(t, new, p.coexpLabel)
 		}
-	    "ir_CoRet" : {  # ir_CoRet : ( value continuation )
-		p.continuation := optim_goto_chain(p.continuation, t)
-		optim_goto_transitive(t, new, p.continuation)
+	    "ir_CoRet" : {  # ir_CoRet : ( value resumeLabel )
+		p.resumeLabel := optim_goto_chain(p.resumeLabel, t)
+		optim_goto_transitive(t, new, p.resumeLabel)
 		}
-	    "ir_EnterInit" : {  # ir_EnterInit : ( startlabel )
-		p.startlabel := optim_goto_chain(p.startlabel, t)
-		optim_goto_transitive(t, new, p.startlabel)
+	    "ir_EnterInit" : {  # ir_EnterInit : ( startLabel )
+		p.startLabel := optim_goto_chain(p.startLabel, t)
+		optim_goto_transitive(t, new, p.startLabel)
 		}
 	    default : runerr(500, p)
 	    }
@@ -354,11 +354,11 @@ procedure optim_refcountX(refcount, p)
     "ir_Move" : {  # ir_Move : ( lhs rhs )
 	refcount[p.rhs] +:= 1
         }
-    "ir_Goto" : {  # ir_Goto : ( location )
-	refcount[p.location] +:= 1
+    "ir_Goto" : {  # ir_Goto : ( targetLabel )
+	refcount[p.targetLabel] +:= 1
         }
-    "ir_Succeed" : {  # ir_Succeed : ( expr continuation )
-	refcount[p.continuation] +:= 1
+    "ir_Succeed" : {  # ir_Succeed : ( expr resumeLabel )
+	refcount[p.resumeLabel] +:= 1
         }
     "ir_Field" : {  # ir_Field : ( lhs expr field failLabel )
 	refcount[p.failLabel] +:= 1
@@ -367,17 +367,17 @@ procedure optim_refcountX(refcount, p)
     "ir_OpFunction" : {  # ir_OpFunction : ( lhs fn argList failLabel )
 	refcount[p.failLabel] +:= 1
         }
-    "ir_ResumeValue" : {  # ir_ResumeValue : ( value failLabel retValue )
+    "ir_ResumeValue" : {  # ir_ResumeValue : ( lhs value failLabel )
 	refcount[p.failLabel] +:= 1
         }
-    "ir_Create" : {  # ir_Create : ( lhs location )
-	refcount[p.location] +:= 1
+    "ir_Create" : {  # ir_Create : ( lhs coexpLabel )
+	refcount[p.coexpLabel] +:= 1
         }
-    "ir_CoRet" : {  # ir_CoRet : ( value continuation )
-	refcount[p.continuation] +:= 1
+    "ir_CoRet" : {  # ir_CoRet : ( value resumeLabel )
+	refcount[p.resumeLabel] +:= 1
         }
-    "ir_EnterInit" : {  # ir_EnterInit : ( startlabel )
-	refcount[p.startlabel] +:= 1
+    "ir_EnterInit" : {  # ir_EnterInit : ( startLabel )
+	refcount[p.startLabel] +:= 1
         }
     default : runerr(500, p)
     }
@@ -389,7 +389,7 @@ procedure optim_test_elimination(t, start)
 	every chunk := !t &
 	      type(chunk[-1]) == "ir_Goto" &
 	      type(chunk[-2]) == ("ir_Call" | "ir_OpFunction") &
-	      chunk[-1].location === \chunk[-2].failLabel do {
+	      chunk[-1].targetLabel === \chunk[-2].failLabel do {
 	    chunk[-2].failLabel := &null
 	}
 end

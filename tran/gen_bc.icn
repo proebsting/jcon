@@ -255,9 +255,9 @@ procedure bc_gen_ir_ScanSwap(s, p)
     return s
 end
 
-# record ir_Goto( location )
+# record ir_Goto( targetLabel )
 procedure bc_gen_ir_Goto(s, p)
-    bc_transfer_to(s, p.location)
+    bc_transfer_to(s, p.targetLabel)
     return s
 end
 
@@ -377,18 +377,18 @@ procedure bc_save_tmplabels(s)
     }
 end
 
-# record ir_Succeed( expr continuation coord )
+# record ir_Succeed( expr resumeLabel coord )
 procedure bc_gen_ir_Succeed(s, p)
     local r, e, PC, k, a
     local free, class_index
     local dereflocal
 
     PC := bc_PC_fieldref(bc_current_classptr, bc_vClosure_classname)
-    if \p.continuation then {
+    if \p.resumeLabel then {
         \bc_save_restore_flag | runerr(500)
 
         put(s, j_aload_0())
-        bc_gen(s, p.continuation)
+        bc_gen(s, p.resumeLabel)
         put(s, j_putfield(PC))
 
         bc_save_tmps(s)
@@ -401,7 +401,7 @@ procedure bc_gen_ir_Succeed(s, p)
     bc_gen(s, p.expr)
     dereflocal := bc_DerefLocal_methodref(bc_current_classptr)
     put(s, j_invokevirtual(dereflocal) )
-    if /p.continuation & \bc_stackptr then {
+    if /p.resumeLabel & \bc_stackptr then {
         free := bc_Free_methodref(bc_current_classptr)
         put(s, j_Aload(bc_stackptr + bc_var_offset))
 	if \bc_save_restore_flag then {
@@ -412,7 +412,7 @@ procedure bc_gen_ir_Succeed(s, p)
 	put(s, j_invokestatic(free))
     }
     if /bc_nodebuginfo then {
-	bc_emitlineinfo(s, p.coord, if /p.continuation then 1 else -1)
+	bc_emitlineinfo(s, p.coord, if /p.resumeLabel then 1 else -1)
     }
     put(s, j_areturn())
     return s
@@ -477,7 +477,7 @@ procedure bc_push_coordinate(s, coord, factor)
     }
 end
 
-# record ir_ResumeValue( coord value failLabel retValue )
+# record ir_ResumeValue( coord lhs value failLabel )
 procedure bc_gen_ir_ResumeValue(s, p)
     local c, PC, target, resume, free
 
@@ -491,14 +491,14 @@ procedure bc_gen_ir_ResumeValue(s, p)
         bc_gen(s, p.value)
         put(s, j_invokestatic(resume))
     }
-    if \p.retValue then {
+    if \p.lhs then {
         put(s, j_dup())
         target := j_label()
         put(s, j_ifnonnull(target))
         put(s, j_pop())
         bc_transfer_to(s, p.failLabel)
         put(s, target)
-        bc_gen_assign_to(s, p.retValue)
+        bc_gen_assign_to(s, p.lhs)
     } else {
         bc_conditional_transfer_to(s, p.failLabel, j_ifnull, j_ifnonnull)
     }
@@ -620,7 +620,7 @@ procedure bc_gen_ir_Operator(s, p)
     return s
 end
 
-# record ir_Create( lhs location )
+# record ir_Create( lhs coexpLabel )
 procedure bc_gen_ir_Create(s, p)
     local class, init, newmethod, createmethod, vararray
 
@@ -644,7 +644,7 @@ procedure bc_gen_ir_Create(s, p)
     put(s, j_dup())
     put(s, j_aload_0() )
     put(s, j_getfield(vararray) )
-    bc_gen(s, p.location)
+    bc_gen(s, p.coexpLabel)
     put(s, j_invokespecial(init))
     put(s, j_invokestatic(newmethod))
     put(s, j_dup() )
@@ -653,7 +653,7 @@ procedure bc_gen_ir_Create(s, p)
     return s
 end
 
-# record ir_CoRet( value continuation )
+# record ir_CoRet( value resumeLabel )
 procedure bc_gen_ir_CoRet(s, p)
     local r, coretmethod, current
 
@@ -662,7 +662,7 @@ procedure bc_gen_ir_CoRet(s, p)
     put(s, j_getstatic(current))
     bc_gen(s, p.value)
     put(s, j_invokevirtual(coretmethod))
-    bc_transfer_to(s, p.continuation)
+    bc_transfer_to(s, p.resumeLabel)
     return s
 end
 
@@ -680,7 +680,7 @@ procedure bc_gen_ir_CoFail(s, p)
     return s
 end
 
-# record ir_EnterInit( startlabel )
+# record ir_EnterInit( startLabel )
 procedure bc_gen_ir_EnterInit(s, p)
     local target, initialized
 
@@ -690,7 +690,7 @@ procedure bc_gen_ir_EnterInit(s, p)
     put(s, j_getstatic(initialized))
     target := j_label()
     put(s, j_ifeq(target))
-    bc_transfer_to(s, p.startlabel )
+    bc_transfer_to(s, p.startLabel )
     put(s, target)
     put(s, j_iconst_1())
     put(s, j_putstatic(initialized))
@@ -761,10 +761,10 @@ procedure bc_target_bookkeeping()
     bc_indirect_targets := set([])
     every a := !!bc_emit_table do {
         case type(a) of {
-        "ir_CoRet":  t := a.continuation
-        "ir_Create": t := a.location
+        "ir_CoRet":  t := a.resumeLabel
+        "ir_Create": t := a.coexpLabel
         "ir_Move":   t := a.rhs
-        "ir_Succeed":    t := a.continuation
+        "ir_Succeed":    t := a.resumeLabel
         default: next
         }
         if type(t) == "ir_Label" then {
@@ -772,7 +772,7 @@ procedure bc_target_bookkeeping()
         }
     }
     every a := !!bc_emit_table & type(a) == "ir_Create" do {
-        t := a.location
+        t := a.coexpLabel
         if type(t) == "ir_Label" then {
             insert(bc_indirect_targets, t)
         }
@@ -791,7 +791,7 @@ procedure bc_find_save_restore(code)
     local a
 
     bc_save_restore_flag := &null
-    if a := !!code & type(a)=="ir_Succeed" & \a.continuation then {
+    if a := !!code & type(a)=="ir_Succeed" & \a.resumeLabel then {
         bc_save_restore_flag := 1
     }
     if a := !!code & type(a)=="ir_Create" then {
@@ -1390,9 +1390,9 @@ procedure bc_emit_code0(s, switch, k)
         bc_gen(s, i)
     }
     if type(insns[-1]) == "ir_Goto" &
-       type(insns[-1].location) == "ir_Label" &
-       not member(bc_emitted, insns[-1].location) then {
-        bc_emit_code0(s, switch, insns[-1].location)
+       type(insns[-1].targetLabel) == "ir_Label" &
+       not member(bc_emitted, insns[-1].targetLabel) then {
+        bc_emit_code0(s, switch, insns[-1].targetLabel)
     } else {
         bc_gen(s, insns[-1])
     }

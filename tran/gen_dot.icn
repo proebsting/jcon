@@ -49,19 +49,19 @@ procedure dot_output(t)
             "ir_Succeed" : {
                 write(lab, ":f", i,
                       " ->",
-                      image(dot_dump(\insn.continuation)),
-                      " [label=continuation]")
+                      image(dot_dump(\insn.resumeLabel)),
+                      " [label=resumeLabel]")
                 }
             "ir_CoRet" : {
                 write(lab, ":f", i,
                       " ->",
-                      image(dot_dump(insn.continuation)),
-                      " [label=continuation]")
+                      image(dot_dump(insn.resumeLabel)),
+                      " [label=resumeLabel]")
                 }
             "ir_EnterInit" : {
                 write(lab, ":f", i,
                       " ->",
-                      image(dot_dump(insn.startlabel)),
+                      image(dot_dump(insn.startLabel)),
                       " [label=start]")
                 }
             }

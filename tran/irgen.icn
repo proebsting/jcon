@@ -36,7 +36,7 @@ procedure ir_a_Field(p, st, inuse, target, bounded, rval)
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.expr.ir.start) ])
     suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.expr.ir.resume) ])
     suspend ir_Chunk(p.expr.ir.success, [
-        ir_Field(p.coord, target, t, p.field.id, p.expr.ir.resume),
+        ir_Field(target, t, p.field.id, p.expr.ir.resume, p.coord),
         ir_Goto(p.ir.success)
         ])
     suspend ir_Chunk(p.expr.ir.failure, [ ir_Goto(p.ir.failure) ])
@@ -70,9 +70,9 @@ procedure ir_a_Scan(p, st, inuse, target, bounded, rval)
         ir_Goto(p.body.ir.resume)
         ])
     suspend ir_Chunk(p.expr.ir.success, [
-        ir_Call(p.coord, tmp, ir_key("pos"), [], &null),
+        ir_Call(tmp, ir_key("pos"), [], &null, p.coord),
 	ir_Deref(p.ir.x.oldpos, tmp),
-        ir_Call(p.coord, tmp, ir_key("subject"), [], &null),
+        ir_Call(tmp, ir_key("subject"), [], &null, p.coord),
 	ir_Deref(p.ir.x.oldsubject, tmp),
         ir_opfn(p.coord, target, ir_Operator(":?", 2, rval), [ tmp, lv ],
                 p.expr.ir.resume),
@@ -377,7 +377,7 @@ procedure ir_a_Call(p, st, inuse, target, bounded, rval)
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.fn.ir.start) ])
     suspend ir_Chunk(p.ir.resume, [
-        ir_ResumeValue(p.coord, closure, L[-1].ir.resume, target),
+        ir_ResumeValue(target, closure, L[-1].ir.resume, p.coord),
         ir_Goto(p.ir.success)
         ])
     every i := 1 to *L do {
@@ -387,7 +387,7 @@ procedure ir_a_Call(p, st, inuse, target, bounded, rval)
     suspend ir_Chunk(L[ 1].ir.failure, [ ir_Goto(p.ir.failure) ])
     suspend ir_Chunk(L[-1].ir.success, [
 	ir_Deref(fn, fn),
-        ir_Call(p.coord, closure, fn, args, L[-1].ir.resume),
+        ir_Call(closure, fn, args, L[-1].ir.resume, p.coord),
         ir_Move(target, closure),
         ir_Goto(p.ir.success)
         ])
@@ -435,7 +435,7 @@ procedure ir_binary(p, target, bounded, rval, lv, rv, closure, funcs)
             ])
     } else {
         suspend ir_Chunk(p.ir.resume, [
-            ir_ResumeValue(p.coord, closure, p.right.ir.resume, target),
+            ir_ResumeValue(target, closure, p.right.ir.resume, p.coord),
             ir_Goto(p.ir.success)
             ])
         suspend ir_Chunk(p.right.ir.success, [
@@ -518,7 +518,7 @@ procedure ir_unary(p, target, bounded, rval, v, closure, funcs)
             ])
     } else {
         suspend ir_Chunk(p.ir.resume, [
-            ir_ResumeValue(p.coord, closure, p.operand.ir.resume, target),
+            ir_ResumeValue(target, closure, p.operand.ir.resume, p.coord),
             ir_Goto(p.ir.success)
             ])
         suspend ir_Chunk(p.operand.ir.success, [
@@ -1168,7 +1168,7 @@ procedure ir_a_ToBy(p, st, inuse, target, bounded, rval)
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.fromexpr.ir.start) ])
     suspend ir_Chunk(p.ir.resume, [
-        ir_ResumeValue(p.coord, closure, p.byexpr.ir.resume, target),
+        ir_ResumeValue(target, closure, p.byexpr.ir.resume, p.coord),
         ir_Goto(p.ir.success)
         ])
     suspend ir_Chunk(p.fromexpr.ir.success, [ ir_Goto(p.toexpr.ir.start) ])
@@ -1278,13 +1278,13 @@ procedure ir_a_Key(p, st, inuse, target, bounded, rval)
     default : {
         closure := ir_tmp(st, inuse)
         suspend ir_Chunk(p.ir.start, [
-            ir_Call(p.coord, closure, ir_key(p.id), [], p.ir.failure),
+            ir_Call(closure, ir_key(p.id), [], p.ir.failure, p.coord),
             ir_Move(target, closure),
             ir_Goto(p.ir.success)
 	    ])
 	if key_generator(p.id) then {
             suspend ir_Chunk(p.ir.resume, [
-                ir_ResumeValue(p.coord, closure, p.ir.failure, target),
+                ir_ResumeValue(target, closure, p.ir.failure, p.coord),
                 ir_Goto(p.ir.success)
                 ])
 	} else {
@@ -1410,7 +1410,7 @@ procedure ir_opfn(coord, lhs, op, args, failLabel)
         failLabel := &null
     }
     type(coord) == "lex_coordinate" | runerr(500, coord)
-    return ir_OpFunction(coord, lhs, op, args, failLabel)
+    return ir_OpFunction(lhs, op, args, failLabel, coord)
 end
 
 procedure ir_init(p)
