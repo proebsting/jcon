@@ -22,11 +22,12 @@ public class ZipMerge {
 	    System.exit(1);
 	}
 	String dst = args[0];
-	String[] files = new String[args.length - 1];
+	Vector v = new Vector();
 	for (int i = 1; i < args.length; i++) {
-	    files[i-1] = args[i];
+	    v.addElement(args[i]);
 	}
-        compose(dst, files);
+	Enumeration enum = v.elements();
+        compose(dst, enum);
     }
 
     static byte[] buffer = new byte[10000];
@@ -59,19 +60,20 @@ public class ZipMerge {
 	zos.close();
     }
 
-    public static void compose(String dst, String[] files) {
+    public static void compose(String dst, Enumeration files) {
         try {
             ZipOutputStream zos = newZipFile(dst);
 
-            for (int k = 0; k < files.length; k++) {
+            while (files.hasMoreElements()) {
+		String fname = (String) files.nextElement();
                 ZipFile zsrc;
 		try {
-                    zsrc = new ZipFile(files[k]);
+                    zsrc = new ZipFile(fname);
 		} catch (ZipException ze) {
 		    // handle regular file, not zip.
-	            FileInputStream fis = new FileInputStream(files[k]);
+	            FileInputStream fis = new FileInputStream(fname);
 		    BufferedInputStream bis = new BufferedInputStream(fis);
-	            ZipEntry zf = new ZipEntry(files[k]);
+	            ZipEntry zf = new ZipEntry(fname);
 	            addZipEntry(zf, zos, bis);
 		    continue;
 		}
