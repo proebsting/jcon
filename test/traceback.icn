@@ -1,5 +1,5 @@
 #SRC: JCON
-#OPT: -fn
+#OPT: -fd
 #
 #  recurse and bomb, to test traceback
 
