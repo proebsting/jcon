@@ -16,7 +16,7 @@ public final class vString extends vValue {
     private vString prefix;		// first part of string (optional)
     private byte[] data;		// character array
 
-    private vNumeric cachedNumeric;	// cached numeric equivalent.
+    private vNumeric cachedNumeric;	// cached numeric equivalent
 
 
 
@@ -199,56 +199,6 @@ public final String toString() {	// s.toString()
     return new String(data);
 }
 
-final vInteger toInteger() {		// s.toInteger -- no radix or exponent
-
-    this.flatten();
-
-    int i = 0;
-    long v;
-    boolean neg = false;
-    byte c;
-
-    while (i < tlength && Character.isWhitespace((char)data[i])) {
-	i++;
-    }
-
-    if (i < tlength) {
-	c = data[i];
-	if (c == '-') {
-	    neg = true;
-	    i++;
-	} else if (c == '+') {
-	    i++;
-	}
-    }
-
-    if (i < tlength && Character.isDigit((char)(c = data[i]))) {
-	v = c - '0';
-	i++;
-    } else {
-	return null;	// failed (here; should try general converter)
-    }
-
-    while (i < tlength && Character.isDigit((char)(c = data[i]))) {
-	v = 10 * v + c - '0';		//#%#% ignoring overflow
-	i++;
-	if (v > Long.MAX_VALUE / 10) {
-	    break;
-	}
-    }
-
-    while (i < tlength && Character.isWhitespace((char)data[i])) {
-	i++;
-    }
-    if (i < tlength) {
-	return null;
-    } else if (neg) {
-	return vInteger.New(-v);
-    } else {
-	return vInteger.New(v);
-    }
-}
-
 
 
 //  internal method to collapse a tree of lazy concatenations
@@ -354,48 +304,6 @@ int compareTo(vValue v) {		// compare strings lexicographically
 
 
 
-public vNumeric Numerate() {					// numeric(s)
-
-    if (cachedNumeric != null) {
-	return cachedNumeric;
-    }
-
-    // first try straightforward conversion to integer
-    vInteger v = this.toInteger();
-    if (v != null) {
-	return cachedNumeric = v;
-    }
-
-    // nope, go the long way.  #%#% this could be improved.
-
-    String s = this.toString().trim(); //#%#% too liberal: trims not just spaces
-
-    if (s.length() > 0 && s.charAt(0) == '+') {	// allow leading +, by trimming
-	s = s.substring(1);
-    }
-
-    try {
-	return cachedNumeric = vInteger.New(Long.parseLong(s));
-    } catch (NumberFormatException e) {
-    }
-
-    try {
-	Double d = Double.valueOf(s);
-	if (!d.isInfinite()) {
-	    return cachedNumeric = vReal.New(d.doubleValue());
-	}
-    } catch (NumberFormatException e) {
-    }
-
-    v = vInteger.radixParse(s);			// try to parse as radix value
-    if (v != null) {
-	return cachedNumeric = v;
-    }
-
-    iRuntime.error(102, this);
-    return null;
-}
-
 vInteger mkInteger()	{					// integer(s)
     try {
 	return this.Numerate().mkInteger();	// allows integer("3e6")
@@ -411,6 +319,119 @@ vReal mkReal()		{					// real(s)
 
 vCset mkCset() {						// cset(s)
     return vCset.New(this);
+}
+
+
+
+// conversion of string to numeric
+
+public vNumeric Numerate() {					// numeric(s)
+
+    if (cachedNumeric != null) {
+	return cachedNumeric;
+    }
+
+    flatten();
+
+    int i = 0;
+    int j = tlength;
+    while (i < j && data[i] == ' ') {
+	i++;					// trim leading spaces
+    }
+    while (i < j && data[j-1] == ' ') {
+	j--;					// trim trailing spaces
+    }
+
+    // try parsing as integer
+    vInteger v = intParse(data, i, j);
+    if (v != null) {
+	return cachedNumeric = v;
+    }
+
+    // unsuccessful; try parsing as real value
+    if (i + 2 <= j && data[i] == '+' && data[i+1] != '-') {
+	i++;					// skip leading '+'
+    }
+    String s = new String(data, i, j - i);
+    try {
+	Double d = Double.valueOf(s);
+	if (!d.isInfinite()) {
+	    return cachedNumeric = vReal.New(d.doubleValue());
+	}
+    } catch (NumberFormatException e) {
+    }
+
+    iRuntime.error(102, this);
+    return null;
+}
+
+static vInteger intParse(byte[] data, int i, int j) {	// parse as integer
+    byte c;
+    int n;
+    long v;
+    boolean neg = false;
+
+    if (i >= j) {
+	return null;		// empty
+    }
+
+    c = data[i];
+    if (c == '-') {
+	neg = true;
+	i++;
+    } else if (c == '+') {
+	i++;
+    }
+
+    if ((i < j) && ((v = data[i] - '0') >= 0) && (v < 10)) {
+	i++;
+    } else {
+	return null;	// failed; no digit
+    }
+
+    while ((i < j) && ((n = data[i] - '0') >= 0) && (n < 10)) {
+	if (v > Long.MAX_VALUE / 10) {
+	    break;
+	}
+	v = 10 * v + n;
+	i++;
+    }
+
+    if (i >= j) {		// if successful parse
+	return vInteger.New(neg ? -v : v);
+    }
+
+    c = data[i++];
+    if ((i >= j) || (v < 2) || (v > 36) || (c != 'r' && c != 'R')) {
+	return null;		// unsuccessful
+    }
+
+    // parse remainder of string using specified radix
+    int base = (int) v;		// radix
+    v = 0;			// value
+    long lim = Long.MAX_VALUE / base;
+
+    while (i < j) {
+	if (v > lim) {		// this overflow check is slightly too simple
+	    return null;
+	}
+	c = data[i++];
+	if (c >= '0' && c <= '9') {
+	    n = c - '0';
+	} else if (c >= 'A' && c <= 'Z') {
+	    n = c - 'A' + 10;
+	} else if (c >= 'a' && c <= 'z') {
+	    n = c - 'a' + 10;
+	} else {
+	    return null;	// illegal digit
+	}
+	if (n >= base) {
+	    return null;
+	}
+	v = base * v + n;
+    }
+
+    return vInteger.New(neg ? -v : v);
 }
 
 

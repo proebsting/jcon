@@ -12,8 +12,9 @@ public static vReal New(double x)	{ return new vReal(x); }
 public static vReal New(String x)	{ return new vReal(x); }
 
 private vReal(double x)		{ value = x; }
+
 private vReal(String s)		{ value = Double.valueOf(s).doubleValue(); }
-				//#%#% handles all cases? what about errs?
+
 
 
 // runtime primitives

@@ -111,65 +111,6 @@ static long argVal(vDescriptor[] args, int index, int dflt) {	// optional arg
 
 
 
-//  radixParse(s) -- parse radix-specified integer literal
-//
-//  assumes s has been trimmed
-//  returns vInteger, or null
-
-static vInteger radixParse(String s) {
-    boolean negate = false;
-
-    int i = s.indexOf('r');
-    if (i == -1) {
-	i = s.indexOf('R');
-    }
-    if (i < 1 || i > s.length() - 2) {
-	return null;
-    }
-
-    long base = 0;
-    try {
-	base = Long.parseLong(s.substring(0,i));
-    } catch (NumberFormatException e) {
-    }
-    if (base < 0) {
-	negate = true;
-	base = -base;
-    }
-    if (base < 2 || base > 36) {
-	return null;
-    }
-
-    long v = 0;
-    long lim = Long.MAX_VALUE / base;
-    for (i = i + 1; i < s.length(); i++) {
-	if (v > lim) {		// this overflow check is slightly too simple
-	    return null;
-	}
-	char c = s.charAt(i);
-	int n;
-	if (c >= '0' && c <= '9') {
-	    n = c - '0';
-	} else if (c >= 'A' && c <= 'Z') {
-	    n = c - 'A' + 10;
-	} else if (c >= 'a' && c <= 'z') {
-	    n = c - 'a' + 10;
-	} else {
-	    return null;
-	}
-	if (n >= base) {
-	    return null;
-	}
-	v = base * v + n;
-    }
-    if (negate) {
-	v = -v;
-    }
-    return New(v);
-}
-
-
-
 //  unary operations
 
 public vNumeric Negate() {
