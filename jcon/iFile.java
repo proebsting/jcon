@@ -1,5 +1,5 @@
 package rts;
 
 public abstract class iFile {
-	abstract void announce(iEnv env);  // announce global declarations
+	abstract void announce();  // announce global declarations
 }

@@ -7,29 +7,29 @@ import java.util.*;
 
 public class iKeywords extends iFile {
 
-	void announce(iEnv env) {
+	void announce() {
 		
 		// constants
-		env.declareKey("null", iNew.Null());
-		env.declareKey("e", iNew.Real(Math.E));
-		env.declareKey("phi", iNew.Real((1.0 + Math.sqrt(5.0)) / 2.0));
-		env.declareKey("pi", iNew.Real(Math.PI));
-		env.declareKey("version", 
+		iEnv.declareKey("null", iNew.Null());
+		iEnv.declareKey("e", iNew.Real(Math.E));
+		iEnv.declareKey("phi", iNew.Real((1.0 + Math.sqrt(5.0)) / 2.0));
+		iEnv.declareKey("pi", iNew.Real(Math.PI));
+		iEnv.declareKey("version", 
 			    iNew.String("Jcon Version 0.0, Spring, 1997"));
 
 	    	// cset constants
 		vCset lcase, ucase;
-		env.declareKey("digits", iNew.Cset('0', '9'));
-		env.declareKey("lcase", lcase = iNew.Cset('a','z'));
-		env.declareKey("ucase", ucase = iNew.Cset('A','Z'));
-		env.declareKey("letters", lcase.Union(ucase));
-		env.declareKey("ascii", iNew.Cset(0, 127));
-//#%#% slow	env.declareKey("cset", iNew.Cset(0, Character.MAX_VALUE));
+		iEnv.declareKey("digits", iNew.Cset('0', '9'));
+		iEnv.declareKey("lcase", lcase = iNew.Cset('a','z'));
+		iEnv.declareKey("ucase", ucase = iNew.Cset('A','Z'));
+		iEnv.declareKey("letters", lcase.Union(ucase));
+		iEnv.declareKey("ascii", iNew.Cset(0, 127));
+//#%#% slow	iEnv.declareKey("cset", iNew.Cset(0, Character.MAX_VALUE));
 
 		// read-only, but variable
-		env.declareKey("clock", new k$clock());
-		env.declareKey("date", new k$date());
-		env.declareKey("dateline", new k$dateline());
+		iEnv.declareKey("clock", new k$clock());
+		iEnv.declareKey("date", new k$date());
+		iEnv.declareKey("dateline", new k$dateline());
 
 		//incestuous
 		k$subject s = new k$subject();		// &subject
@@ -37,15 +37,15 @@ public class iKeywords extends iFile {
 		s.pos = p;
 		p.subject = s;
 		s.Assign(iNew.String(""));
-		env.declareKey("subject", s);
-		env.declareKey("pos", p);
+		iEnv.declareKey("subject", s);
+		iEnv.declareKey("pos", p);
 
 		// generators
-		env.declareKey("features", 
-			iNew.Proc((new k$features()).getClass(), env));
+		iEnv.declareKey("features", 
+			iNew.Proc((new k$features()).getClass()));
 
 		// special behavior
-		env.declareKey("trace", new k$trace());
+		iEnv.declareKey("trace", new k$trace());
 	}
 }
 

@@ -3,10 +3,8 @@ package rts;
 public class vProc extends vValue {
 	
 	Class proc;
-	iEnv env;
 
-	vProc(Class c, iEnv e) {
-		env = e;
+	vProc(Class c) {
 		proc = c;
 	}
 
@@ -53,7 +51,7 @@ public class vProc extends vValue {
 		} catch (IllegalAccessException e) {
 			iRuntime.bomb(e);
 		}
-		c.closure(env, args, parent);
+		c.closure(args, parent);
 		return c;
 	}
 

@@ -2,10 +2,10 @@ package rts;
 
 public class iInterface {
 
-	public static void init(iEnv env) {    // general runtime initialization
-		(new iBuiltins()).announce(env);
-		(new iKeywords()).announce(env);
-		(new iOperators()).announce(env);
+	public static void init() {    // general runtime initialization
+		(new iBuiltins()).announce();
+		(new iKeywords()).announce();
+		(new iOperators()).announce();
 	}
 
 	public static vDescriptor[] marshall(
@@ -36,12 +36,11 @@ public class iInterface {
 	}
 
 	public static void start(iFile[] files, String[] args) {
-		iEnv env = iNew.Env();
 		for (int i = 0; i < files.length; i++) {
-			files[i].announce(env);
+			files[i].announce();
 		}
-		iInterface.init(env);
-		vDescriptor m = env.resolve("main");
+		iInterface.init();
+		vDescriptor m = iEnv.resolve("main");
 		if (m == null) {
 		    System.err.println();
 		    System.err.println("Run-time error 117 in startup code");
@@ -57,7 +56,7 @@ public class iInterface {
 		vDescriptor[] v = { list };
 		iClosure closure = p.instantiate(v, null);
 		vCoexp coexp = new vCoexp(closure);
-		env.cur_coexp = coexp;
+		iEnv.cur_coexp = coexp;
 		coexp.lock.V();
 		coexp.run();
 		System.exit(0);

@@ -7,76 +7,76 @@ package rts;
 public class iOperators extends iFile {
 
 
-void announce(iEnv env) {
+void announce() {
 
-    declare(env, ":=,2", "oAssign");
-    declare(env, "<-,2", "oRevAssign");
-    declare(env, "<->,2", "oRevSwap");
-    declare(env, ":=:,2", "oSwap");
-    declare(env, ":?,2", "oSubjAssign");	// assign for `s ? e'
+    declare(":=,2", "oAssign");
+    declare("<-,2", "oRevAssign");
+    declare("<->,2", "oRevSwap");
+    declare(":=:,2", "oSwap");
+    declare(":?,2", "oSubjAssign");	// assign for `s ? e'
 
-    declare(env, "...,3", "oToBy");
+    declare("...,3", "oToBy");
 
-    declare(env, ".,2", "oField");
-    declare(env, "[],2", "oIndex");
-    declare(env, "[:],3", "oSection");
-    declare(env, "[+:],3", "oSectPlus");
-    declare(env, "[-:],3", "oSectMinus");
+    declare(".,2", "oField");
+    declare("[],2", "oIndex");
+    declare("[:],3", "oSection");
+    declare("[+:],3", "oSectPlus");
+    declare("[-:],3", "oSectMinus");
 
-    declare(env, ".,1", "oDeref");
-    declare(env, "/,1", "oIsNull");
-    declare(env, "\\,1", "oIsntNull");
-    declare(env, "*,1", "oSize");
-    declare(env, "?,1", "oSelect");
-    declare(env, "!,1", "oBang");
+    declare(".,1", "oDeref");
+    declare("/,1", "oIsNull");
+    declare("\\,1", "oIsntNull");
+    declare("*,1", "oSize");
+    declare("?,1", "oSelect");
+    declare("!,1", "oBang");
 
-    declare(env, "+,1", "oNumerate");
-    declare(env, "-,1", "oNegate");
+    declare("+,1", "oNumerate");
+    declare("-,1", "oNegate");
 
-    declare(env, "&,2", "oConjunction");
+    declare("&,2", "oConjunction");
 
-    declare(env, "^,2", "oPower");
-    declare(env, "+,2", "oAdd");
-    declare(env, "-,2", "oSub");
-    declare(env, "*,2", "oMul");
-    declare(env, "/,2", "oDiv");
-    declare(env, "%,2", "oMod");
+    declare("^,2", "oPower");
+    declare("+,2", "oAdd");
+    declare("-,2", "oSub");
+    declare("*,2", "oMul");
+    declare("/,2", "oDiv");
+    declare("%,2", "oMod");
 
-    declare(env, "~,1",  "oComplement");
-    declare(env, "**,2", "oIntersect");
-    declare(env, "++,2", "oUnion");
-    declare(env, "--,2", "oDiff");
+    declare("~,1",  "oComplement");
+    declare("**,2", "oIntersect");
+    declare("++,2", "oUnion");
+    declare("--,2", "oDiff");
 
-    declare(env, "<,2", "oNLess");
-    declare(env, "<=,2", "oNLessEq");
-    declare(env, "=,2", "oNEqual");
-    declare(env, "~=,2", "oNUnequal");
-    declare(env, ">=,2", "oNGreaterEq");
-    declare(env, ">,2", "oNGreater");
+    declare("<,2", "oNLess");
+    declare("<=,2", "oNLessEq");
+    declare("=,2", "oNEqual");
+    declare("~=,2", "oNUnequal");
+    declare(">=,2", "oNGreaterEq");
+    declare(">,2", "oNGreater");
 
-    declare(env, "<<,2", "oLLess");
-    declare(env, "<<=,2", "oLLessEq");
-    declare(env, "==,2", "oLEqual");
-    declare(env, "~==,2", "oLUnequal");
-    declare(env, ">>=,2", "oLGreaterEq");
-    declare(env, ">>,2", "oLGreater");
+    declare("<<,2", "oLLess");
+    declare("<<=,2", "oLLessEq");
+    declare("==,2", "oLEqual");
+    declare("~==,2", "oLUnequal");
+    declare(">>=,2", "oLGreaterEq");
+    declare(">>,2", "oLGreater");
 
-    declare(env, "===,2", "oVEqual");
-    declare(env, "~===,2", "oVUnequal");
+    declare("===,2", "oVEqual");
+    declare("~===,2", "oVUnequal");
 
-    declare(env, "||,2", "oConcat");
+    declare("||,2", "oConcat");
 
-    declare(env, "@,2", "oActivate");
-    declare(env, "^,1", "oRefresh");
+    declare("@,2", "oActivate");
+    declare("^,1", "oRefresh");
 
-    declare(env, "!,2", "oProcessArgs");
+    declare("!,2", "oProcessArgs");
 }
 
 
-static void declare(iEnv env, String opr, String name)
+static void declare(String opr, String name)
 {
     try {
-	env.declareProc(opr, iNew.Proc(Class.forName("rts." + name), env));
+	iEnv.declareProc(opr, iNew.Proc(Class.forName("rts." + name)));
     } catch (ClassNotFoundException e) {
 	iRuntime.bomb("cannot declare opr " + opr + " using class " + name);
     }
@@ -537,7 +537,7 @@ class oRefresh extends iFunctionClosure {		//  ^x
 
 class oActivate extends iFunctionClosure {		//  x @ C
 	vDescriptor function(vDescriptor[] args) {
-		return env.cur_coexp.activate(args[0], args[1]);
+		return iEnv.cur_coexp.activate(args[0], args[1]);
 	}
 	String tfmt() { return "{$1 @ $2}"; }
 }

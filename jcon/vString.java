@@ -217,7 +217,7 @@ vDescriptor BangVar(iClosure c, vVariable v) {
 public iClosure instantiate(vDescriptor[] args, iClosure parent) {
     vDescriptor v;
 
-    v = parent.env.resolve(this.value);
+    v = iEnv.resolve(this.value);
     if (v != null) {
         v = v.deref();
 	if (v instanceof vString || v instanceof vNumeric) {

@@ -10,66 +10,66 @@ static final String PREFIX = "rts.f$";	// classname prefix for built-in funcs
 
 
 
-void announce(iEnv env) {
-	declare(env, "abs");
-	declare(env, "acos");
-	declare(env, "asin");
-	declare(env, "atan");
-	declare(env, "char");
-	declare(env, "cos");
-	declare(env, "copy");
-	declare(env, "cset");
-	declare(env, "delay");
-	declare(env, "delete");
-	declare(env, "dtor");
-	declare(env, "exit");
-	declare(env, "exp");
-	declare(env, "get");
-	declare(env, "iand");
-	declare(env, "icom");
-	declare(env, "image");
-	declare(env, "insert");
-	declare(env, "integer");
-	declare(env, "ior");
-	declare(env, "ishift");
-	declare(env, "ixor");
-	declare(env, "key");
-	declare(env, "list");
-	declare(env, "log");
-	declare(env, "member");
-	declare(env, "name");
-	declare(env, "numeric");
-	declare(env, "ord");
-	declare(env, "pop");
-	declare(env, "pull");
-	declare(env, "push");
-	declare(env, "put");
-	declare(env, "read");
-	declare(env, "real");
-	declare(env, "repl");
-	declare(env, "reverse");
-	declare(env, "right");
-	declare(env, "rtod");
-	declare(env, "serial");
-	declare(env, "set");
-	declare(env, "sin");
-	declare(env, "sort");
-	declare(env, "sqrt");
-	declare(env, "stop");
-	declare(env, "string");
-	declare(env, "table");
-	declare(env, "tan");
-	declare(env, "type");
-	declare(env, "write");
-	declare(env, "writes");
+void announce() {
+	declare("abs");
+	declare("acos");
+	declare("asin");
+	declare("atan");
+	declare("char");
+	declare("cos");
+	declare("copy");
+	declare("cset");
+	declare("delay");
+	declare("delete");
+	declare("dtor");
+	declare("exit");
+	declare("exp");
+	declare("get");
+	declare("iand");
+	declare("icom");
+	declare("image");
+	declare("insert");
+	declare("integer");
+	declare("ior");
+	declare("ishift");
+	declare("ixor");
+	declare("key");
+	declare("list");
+	declare("log");
+	declare("member");
+	declare("name");
+	declare("numeric");
+	declare("ord");
+	declare("pop");
+	declare("pull");
+	declare("push");
+	declare("put");
+	declare("read");
+	declare("real");
+	declare("repl");
+	declare("reverse");
+	declare("right");
+	declare("rtod");
+	declare("serial");
+	declare("set");
+	declare("sin");
+	declare("sort");
+	declare("sqrt");
+	declare("stop");
+	declare("string");
+	declare("table");
+	declare("tan");
+	declare("type");
+	declare("write");
+	declare("writes");
 }
 
 
-static void declare(iEnv env, String name)
+static void declare(String name)
 {
     try {
-	env.declareGlobal(name,
-	    iNew.Proc(Class.forName(PREFIX + name), env));
+	iEnv.declareGlobal(name,
+	    iNew.Proc(Class.forName(PREFIX + name)));
     } catch (ClassNotFoundException e) {
 	iRuntime.bomb("cannot declare builtin function " + name + "()");
     }

@@ -3,28 +3,22 @@ package rts;
 import java.util.Hashtable;
 
 public class iEnv {
-	Hashtable symtab;
-	Hashtable keytab;
-	Hashtable proctab;
+	static Hashtable symtab = new Hashtable();
+	static Hashtable keytab = new Hashtable();
+	static Hashtable proctab = new Hashtable();
 
-	public vCoexp cur_coexp;
+	public static vCoexp cur_coexp;
 
-	public iEnv() {
-		symtab = new Hashtable();
-		keytab = new Hashtable();
-		proctab = new Hashtable();
-	}
-
-	public vDescriptor resolve(String s) {
+	public static vDescriptor resolve(String s) {
 		vDescriptor v = (vDescriptor) symtab.get(s);
 		return v;
 	}
 
-	public void declareGlobal(String s, vDescriptor x) {
+	public static void declareGlobal(String s, vDescriptor x) {
 		symtab.put(s, x);
 	}
 
-	public vDescriptor resolveKey(String s) {
+	public static vDescriptor resolveKey(String s) {
 		vDescriptor v = (vDescriptor) keytab.get(s);
 		if (v == null) {
 			v = iNew.Null();
@@ -34,11 +28,11 @@ public class iEnv {
 		return v;
 	}
 
-	public void declareKey(String s, vDescriptor k) {
+	public static void declareKey(String s, vDescriptor k) {
 		keytab.put(s, k);
 	}
 
-	public vDescriptor resolveProc(String s) {
+	public static vDescriptor resolveProc(String s) {
 		vDescriptor v = (vDescriptor) proctab.get(s);
 		if (v == null) {
 			v = iNew.Null();
@@ -52,7 +46,7 @@ public class iEnv {
 		return v;
 	}
 
-	public void declareProc(String s, vDescriptor k) {
+	public static void declareProc(String s, vDescriptor k) {
 		proctab.put(s, k);
 	}
 }

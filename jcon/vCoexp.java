@@ -64,7 +64,7 @@ public class vCoexp extends vValue implements Runnable {
 
 	void transfer(vDescriptor value, vCoexp target) {
 		target.incomingValue = value;
-		target.closure.env.cur_coexp = target;
+		iEnv.cur_coexp = target;
 		target.lock.V();
 		try {
 			lock.P();

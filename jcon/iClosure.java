@@ -3,7 +3,6 @@ package rts;
 public abstract class iClosure {
 
 
-public iEnv env;		// enclosing environment
 public iClosure parent;		// enclosing closure
 public vDescriptor[] arguments;	// argument list
 
@@ -69,8 +68,7 @@ abstract void nextval();
 // copy() is used to return a "refreshed" copy of the closure.
 iClosure copy(int PC) { iRuntime.error(901); return null; }
 
-void closure(iEnv e, vDescriptor[] a, iClosure parent) {
-    env = e;
+void closure(vDescriptor[] a, iClosure parent) {
     arguments = a;
     this.parent = parent;
 }
