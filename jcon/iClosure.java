@@ -27,29 +27,53 @@ public iClosure() {		// constructor
 
 public void locals()	{}	// initializes name/variable arrays.
 
+String trace_coordinate() {
+    String file = "";
+    String line = "";
+    if (parent != null && parent.file != null) {
+	file = parent.file;
+	line = parent.line +"";
+    }
+    while (file.length() < 12) {
+        file += " ";
+    }
+    if (file.length() > 12) {
+        file = file.substring(file.length()-12);
+    }
+    while (line.length() < 4) {
+        line = " " + line;
+    }
+    if (line.length() > 4) {
+        line = line.substring(line.length()-4);
+    }
+    return file + " : " + line + " ";
+}
+
 public final void resume() {
     try {
         try {
             if (k$trace.trace != 0) {
                 k$trace.trace--;
+		System.err.print(trace_coordinate());
                 for (iClosure p=this.parent; p != null; p=p.parent) {
                     System.err.print("| ");
                 }
-                System.err.println("Entering  : " + this.trace());
+                System.err.println(this.trace_prototype());
             }
             nextval();
             if (k$trace.trace != 0) {
+		System.err.print(trace_coordinate());
                 for (iClosure p=this.parent; p != null; p=p.parent) {
                     System.err.print("| ");
                 }
-                String p;
+                String p = this.trace_prototype().toString();
                 k$trace.trace--;
                 if (retvalue == null) {
-                    p = "Failed";
+                    p += " failed";
                 } else if (returned) {
-                    p = "Returned " + retvalue.report();
+                    p += " returned " + retvalue.report();
                 } else {
-                    p = "Suspended " + retvalue.report();
+                    p += " suspended " + retvalue.report();
                 }
                 System.err.println(p);
             }
@@ -87,14 +111,14 @@ String tfmt() {
    
 
 
-// trace -- format this call for traceback purposes
+// trace_prototype -- format this call for traceback purposes
 //
 // calls this.tfmt() to get the trace format string
 // substitutes procedure/function name, derived from class name, for "$0"
 // substitutes argument n-1 (in Java terms) for "$n" (1 <= n <= 9)
 // substitutes entire argument list for "$*"
 
-String trace() {
+StringBuffer trace_prototype() {
 
     String f = this.tfmt();			// trace format
     StringBuffer b = new StringBuffer();	// output buffer
@@ -132,6 +156,12 @@ String trace() {
             b.append(c);			// not $; use as is
         }
     }
+    return b;
+}
+
+// trace() adds line and file information to trace_prototype();
+String trace() {
+    StringBuffer b = this.trace_prototype();
     if (parent != null && parent.file != null) {
         b.append(" from line " + parent.line + " in " + parent.file);
     }
