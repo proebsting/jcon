@@ -50,7 +50,7 @@ procedure main(args)
       every writes(right(!tlist, 8), " ")
       writes("  ", left(label, 14))
       d := real(tlist[1])
-      every writes(decipos(tlist[2 to *args] / d, 8, 9))
+      every writes(decipos(tlist[2 to *args] / d, 7, 9))
       write()
    }
 end
