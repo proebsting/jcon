@@ -179,6 +179,14 @@ public static int parseInt(String s) throws NumberFormatException {
 
 
 
+//  toString() -- returns printable image of this object.
+
+public String toString() {
+    return getClass().getName() + "(" + name + "=" + val + ")";
+}
+
+
+
 } // class wAttrib
 
 
