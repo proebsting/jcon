@@ -1,0 +1,85 @@
+#SRC: JCON
+
+#  test of various ways of setting clipping
+#  must be inspected visually (but also check the output)
+
+$define WIDTH 500
+$define HEIGHT 300
+
+procedure main(args)
+   local lgts, sats, cw, ch, i, j, hue, colr
+
+   &window := open(&progname, "g", "width=" || WIDTH, "height=" || HEIGHT)
+   WAttrib("gamma=1.0")
+   write()
+
+   report("pale orange", "initial default")
+
+   Clip(120, 80, 90, 90)
+   report("black", "clipping set")
+
+   Clip()
+   report("pale blue-cyan", "clipping unset")
+
+   WAttrib("clipx=450")
+   report("dark green", "set clipx")
+
+   WAttrib("clipy=150")
+   report("dark purple", "set clipy")
+
+   Clip()
+   WAttrib("clipy=250")
+   report("red", "set clipy only") 
+
+   Clip()
+   WAttrib("clipw=78")
+   report("blue-cyan", "set clipw only") 
+
+   Clip()
+   WAttrib("cliph=30")
+   report("gray", "set cliph only") 
+
+   Clip(300)
+   report("yellow", "defaulted args")
+
+   Clip(249, 99, 92, 92)
+   report("white", "background...")
+
+   Clip(250, 100, 90, 90)
+   report("brown", "finale")
+   report("orange", "finale")
+   report("yellow", "finale")
+   report("green", "finale")
+   report("magenta", "finale")
+   report("blue", "finale")
+
+   until Event() === !"qQ\n\r"
+
+end
+
+
+
+procedure report(color, label)
+   local x, y, w, h
+
+   Fg(color) | write("can't set fg to ", color)
+
+   #  fill window with small circles, not quite evenly
+   every y := ?10 - 5 to 300 by 12 do
+      every x := ?10 - 5 to 500 by 12 do
+	 DrawCircle(x + ?5, y + ?5, 5)
+
+   #  print values of clipping attributes
+   (x := WAttrib("clipx")) | write("clipx FAILED!")
+   (y := WAttrib("clipy")) | write("clipy FAILED!")
+   (w := WAttrib("clipw")) | write("clipw FAILED!")
+   (h := WAttrib("cliph")) | write("cliph FAILED!")
+   write(left(color, 20), left(label, 20), x, " ", y, " ", w, " ", h)
+
+   #  outline the clip area -- should show border width 1
+   if /x then				# if no clipping
+      return
+   DrawRectangle(x, y, w-1, h-1)	# should show
+   DrawRectangle(x-1, y-1, w+1, h+1)	# should not show
+   return
+end
