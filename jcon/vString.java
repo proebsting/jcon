@@ -80,7 +80,7 @@ public static vString New(vString s, int i, int j) {     // s[i:j], both > 0
     }
 }
 
-public static vString New(vString s, int i, int j, vString t) {
+public static vString New(vString s, int i, int j, vString t) {	// s[i:j] := t
     return new vString(s, i, j, t);
 }
 

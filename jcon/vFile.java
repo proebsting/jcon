@@ -113,6 +113,9 @@ public static vFile New(String filename, String mode, vDescriptor args[]) {
     try {
 	if (upto("gGxX", mode)) {
 	    return new vWindow(filename, mode, args);
+	} else if (!upto("aAbBcCpPwW", mode)
+	    && (new File(filename)).isDirectory()) {
+		return new vDFile(filename, mode);	// directory file
 	} else if (upto("uU", mode)) {
 	    return new vBFile(filename, mode);	// binary (untranslated) file
 	} else {
@@ -125,7 +128,7 @@ public static vFile New(String filename, String mode, vDescriptor args[]) {
 
 
 
-// new vFile() -- degenerate constructor for vWindow subclass
+// new vFile() -- degenerate constructor for vWindow and vDFile subclasses
 
 vFile() {
     openfiles.put(this, this);				// remember open file

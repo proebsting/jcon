@@ -249,7 +249,7 @@ public vFile close() {
 	win.a = null;		// mark each as closed
 	win.b = null;
 	win.c = null;
-	vWindow.openfiles.remove(win);
+	openfiles.remove(win);
     }
     v.removeAllElements();
     return this;
