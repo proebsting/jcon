@@ -970,6 +970,5 @@ end
 
 
 procedure parse_error(msg)
-runerr(1000)
     stop("File ", tok_rec.coord.file, "; Line ", tok_rec.coord.line, " # ", msg)
 end
