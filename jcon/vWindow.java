@@ -54,7 +54,7 @@ int compareTo(vValue v)
 
 
 
-//  constructors
+//  new vWindow(title, mode, args) -- normal constructor
 
 vWindow(String title, String mode, vDescriptor args[]) throws IOException {
 
@@ -85,7 +85,7 @@ vWindow(String title, String mode, vDescriptor args[]) throws IOException {
 	}
     }
 
-    c.defconfig(this);	// set window size, if not set by attributes
+    c.defconfig(this);		// set window size, if not set by attributes
     c.tty.Row(this, "1");	// set text cursor position
     c.tty.Col(this, "1");
 
@@ -98,9 +98,16 @@ vWindow(String title, String mode, vDescriptor args[]) throws IOException {
     EraseArea(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
 
     setCurrent(this);		// remember as "current" window
+
+    //#%#% might want to consider spawning a background thread
+    //#%#% that would sync the canvas (handle exposure events) periodically
 }
 
-vWindow(vWindow w) {				// new vWindow(w)  [a Clone()]
+
+
+//  new vWindow(w) -- for implementing WClone()
+
+vWindow(vWindow w) {
     //#%#% really clone it, to ensure it gets all attribs??
     c = w.c;
     wnum = w.wnum;
@@ -215,6 +222,8 @@ vList Pending() {
 }
 
 vValue Event() {
+    if (c.evq.Size().value == 0)	// if we're going to block
+	k$output.file.flush();		// flush stdout first
     vValue e = wEvent.dequeue(c.evq);
     setCurrent(this);
     return e;
