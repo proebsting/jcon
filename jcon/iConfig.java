@@ -8,7 +8,7 @@ final class iConfig {
 
 // the following constants are peculiar to the Jcon implementation
 
-static final String Version = "Jcon Version 2.k, August 19, 1998";
+static final String Version = "Jcon Version 2.l, August 21, 1998";
 
 static final String PackageName = "rts";	// class prefix
 static final String KeywordPrefix = "k$";	// name prefix for keywords
@@ -30,7 +30,7 @@ static final String MonoFont = "DialogInput";		// "mono" font
 static final String TypewriterFont = "Monospaced";	// "typewriter" font
 static final String SansFont = "SansSerif";		// "sans" font
 static final String SerifFont = "Serif";		// "serif" font
-static final String FixedFont = "mono,bold,14";		// "fixed" font
+static final String FixedFont = "mono,bold,12";		// "fixed" font
 
 
 

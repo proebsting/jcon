@@ -77,7 +77,8 @@ public static wFont parse(vString spec) {
     }
 
     // convert size in pixels to point size
-    size = (int) (size * szmul + 0.5);
+    // #%#% disabled: more compatible with v9 if we don't do this
+    // size = (int) (size * szmul + 0.5);
 
     return new wFont(family, style, size, spec);
 }
