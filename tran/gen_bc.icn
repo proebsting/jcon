@@ -1342,12 +1342,11 @@ procedure bc_emit_code(s, switch, start)
     every bc_emit_code0(s, switch, key(bc_emit_table))
 end
 
-procedure bc_emit_param_rval(s, c, params, accumulate, i)
+procedure bc_emit_param_val(s, c, params, accumulate, i)
     local marshal, k, field, elselab, endlab, newsimplevar
-    local null, deref, assign
+    local null, assign
 
     null := bc_New_vNull_methodref(bc_current_classptr)
-    deref := bc_Deref_methodref(c)
 
     if \accumulate | (*params > 9) then {	#%#%#% hard-wired constant!!!!
         if i = *params & \accumulate then {
@@ -1368,12 +1367,10 @@ procedure bc_emit_param_rval(s, c, params, accumulate, i)
                 put(s, j_aload_1() )	#%#%# arguments array
                 put(s, j_ipush(i-1))
                 put(s, j_aaload())
-                put(s, j_invokevirtual(deref) )
             put(s, endlab)
         }
     } else {
         put(s, j_Aload(i))
-        put(s, j_invokevirtual(deref) )
     }
 end
 
@@ -1386,7 +1383,7 @@ procedure bc_emit_prologue_params(s, c, params, accumulate)
         k := params[i]
         if \bc_var_table[k] then {
             put(s, j_Aload(bc_var_table[k] + bc_var_offset))
-            bc_emit_param_rval(s, c, params, accumulate, i)
+            bc_emit_param_val(s, c, params, accumulate, i)
             put(s, j_invokevirtual(assign) )
             put(s, j_pop())
         }
@@ -1454,7 +1451,7 @@ procedure bc_createvars_into_array(s, c, params, locals, undeclared, accumulate)
             put(s, j_ipush(bc_var_table[k]) )
             v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
             put(s, j_ldc_w(v) )
-            bc_emit_param_rval(s, c, params, accumulate, i)
+            bc_emit_param_val(s, c, params, accumulate, i)
             put(s, j_invokestatic(newsimplevar) )
             put(s, j_aastore() )
         }
