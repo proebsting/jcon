@@ -9,6 +9,8 @@ public class vString extends vValue {
 // constructors
 
 vString(String s)		{ value = s; }
+vString(char c)			{ value = "" + c; }
+
 vString mkString()		{ return this; }
 
 

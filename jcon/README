@@ -31,6 +31,7 @@ strings and csets:
 -- image() doesn't escape special characters
 -- image(c) doesn't recognize &digits, &lcase, etc.
 -- csets may be up to 2^16 characters; big ones run slowly; &cset is missing
+-- char() and ord() work in the range 0 - 65535
 
 numerics:
 -- overflow or underflow is not detected

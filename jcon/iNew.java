@@ -24,6 +24,7 @@ public static vCset Cset(String x) 		{ return new vCset(x); }
 public static vCset Cset(int low, int high)	{ return new vCset(low, high); }
 
 public static vString String(String x) 		{ return new vString(x); }
+public static vString String(char c) 		{ return new vString(c); }
 
 public static vList List(int n, vValue x)	{ return new vList(n, x); }
 public static vList List(vDescriptor[] elements)

@@ -15,6 +15,7 @@ void announce(iEnv env) {
 	declare(env, "acos");
 	declare(env, "asin");
 	declare(env, "atan");
+	declare(env, "char");
 	declare(env, "cos");
 	declare(env, "cset");
 	declare(env, "delay");
@@ -36,6 +37,7 @@ void announce(iEnv env) {
 	declare(env, "log");
 	declare(env, "member");
 	declare(env, "numeric");
+	declare(env, "ord");
 	declare(env, "pop");
 	declare(env, "pull");
 	declare(env, "push");
@@ -43,6 +45,7 @@ void announce(iEnv env) {
 	declare(env, "read");
 	declare(env, "real");
 	declare(env, "repl");
+	declare(env, "reverse");
 	declare(env, "right");
 	declare(env, "rtod");
 	declare(env, "set");
