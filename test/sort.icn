@@ -3,6 +3,7 @@
 procedure main()
    listtest()
    rectest()
+   tbltest()
 end
 
 
@@ -48,6 +49,34 @@ procedure rectest()
    wlist(sort(r5(2,7,1,8,3)))
    wlist(sort(r5(3,1,4,1,6)))
    wlist(sort(r5("t","e","p","a","d")))
+   return
+end
+
+
+
+#  tbltest() -- test sorting of tables
+
+procedure tbltest()
+   local T, L
+
+   T := table()
+   T[7] := "h"
+   T[2] := "a"
+   T[8] := "r"
+   T[0] := "e"
+   T[3] := "o"
+   T[6] := "s"
+   T[5] := "n"
+   T[1] := "t"
+   T[4] := "i"
+   T[9] := "d"
+   write()
+   L := sort(T);    every writes(" ", *L | !!L | "\n")
+   L := sort(T, 1); every writes(" ", *L | !!L | "\n")
+   L := sort(T, 2); every writes(" ", *L | !!L | "\n")
+   L := sort(T, 3); every writes(" ", *L |  !L | "\n")
+   L := sort(T, 4); every writes(" ", *L |  !L | "\n")
+   return
 end
 
 
