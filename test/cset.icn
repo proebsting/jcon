@@ -9,8 +9,15 @@ procedure main()
    every writes("!x:   " | !x | "\n");
    write("?z:   ", ?'z')
    write("?empty: ", ?'', " (OOPS)")	# should fail
-
    write()
+
+   kw("digits", &digits)
+   kw("lcase", &lcase)
+   kw("ucase", &ucase)
+   kw("letters", &letters)
+   write("    &ascii: ", *&ascii, " elements")
+   write()
+
    write ("   x         y     ",
       "     x++y         y++x     x--y   y--x   x**y   y**x   ~~x")
 
@@ -25,3 +32,9 @@ procedure main()
    }
 
 end
+
+procedure kw(label, value)
+   write(right("&" || label, 10), ": '", value, "'")
+   return
+end
+

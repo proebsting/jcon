@@ -3,6 +3,12 @@ x:    123abc
 !x:   123abc
 ?z:   z
 
+   &digits: '0123456789'
+    &lcase: 'abcdefghijklmnopqrstuvwxyz'
+    &ucase: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+  &letters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+    &ascii: 128 elements
+
    x         y          x++y         y++x     x--y   y--x   x**y   y**x   ~~x
 '123abc' 'abcxyz'    123abcxyz    123abcxyz    123    xyz    abc    abc 123abc
 '123abc' "xyzabc"    123abcxyz    123abcxyz    123    xyz    abc    abc 123abc
