@@ -1,3 +1,30 @@
+hello2 from iconprocs
+procedure proc1a
+procedure proc1b
+procedure proc1a
+procedure proc2a
+procedure proc2b
+
+proc1a(1100):  &null, &null, &null
+hello1 from proc2a
+hello2 from proc2a
+proc2a(1200):  1111, 1112, &null
+proc1b(1300):  1221, 1222, &null
+proc1a(1400):  1316, 1317, &null
+proc2b(1500):  1411, 1412, 1223
+proc2b:  calling proc1b
+proc1b(1550):  1526, 1527, &null
+
+proc1a(2100):  1566, 1567, &null
+hello1 from proc2a
+hello2 from proc2a
+proc2a(2200):  2111, 2112, 1528
+proc1b(2300):  2221, 2222, &null
+proc1a(2400):  2316, 2317, &null
+proc2b(2500):  2411, 2412, 2223
+proc2b:  calling proc1b
+proc1b(2550):  2526, 2527, &null
+
 function sum3 : 3 args
 function factors : 1 args
 function threen : 1 args

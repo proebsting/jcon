@@ -1,0 +1,21 @@
+#  load2.icn -- used with loadfunc test
+
+global glob2 
+
+procedure proc2a(n)
+   hello1("from proc2a")
+   hello2("from proc2a")
+   write("proc2a(",n,"):  ",image(glob0),", ",image(glob1),", ",image(glob2))
+   glob0 := n + 21
+   glob1 := n + 22
+   glob2 := n + 23
+end
+
+procedure proc2b(n)
+   write("proc2b(",n,"):  ",image(glob0),", ",image(glob1),", ",image(glob2))
+   glob0 := n + 26
+   glob1 := n + 27
+   glob2 := n + 28
+   write("proc2b:  calling proc1b")
+   proc1b(n + 50)
+end

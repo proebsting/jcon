@@ -2,10 +2,52 @@
 
 #  test dynamic loading, especially examples from the doc
 
+global glob0
+invocable "hello1"
+# and hello2 is invocable by virtue of ref from iconprocs()
+
+
+
 procedure main()
+   iconprocs()		# test separately compiled Icon procedures
    javaprocs()		# test separately compiled Java procedures
    genproc()		# generate, build, and test an Icon procedure
 end
+
+
+
+procedure iconprocs()
+   local proc1a, proc1b, proc1c, proc2a, proc2b
+
+   proc1a := loadfunc("load1.zip", "proc1a")
+   proc2b := loadfunc("load2.zip", "proc2b")
+   proc2a := loadfunc("load2.zip", "proc2a")
+   proc1b := loadfunc("load1.zip", "proc1b")
+   proc1c := loadfunc("load1.zip", "proc1a")  # 1c is copy of 1a
+
+   hello2("from iconprocs")
+   every write(image(proc1a | proc1b | proc1c | proc2a | proc2b))
+
+   every n := 1000 | 2000 do {
+      write()
+      proc1a(n + 100)
+      proc2a(n + 200)
+      proc1b(n + 300)
+      proc1c(n + 400)
+      proc2b(n + 500)
+   }
+
+end
+
+procedure hello1(s)
+   write("hello1 ", s)
+end
+
+procedure hello2(s)
+   write("hello2 ", s)
+end
+
+
 
 procedure javaprocs()
    local sum3, factors, threen, f, i
@@ -14,6 +56,7 @@ procedure javaprocs()
    factors := loadfunc("jfuncs.zip", "factors")
    threen := loadfunc("jfuncs.zip", "threen")
 
+   write()
    every f := sum3 | factors | threen do
       write(image(f), " : ", args(f), " args")
 
@@ -35,6 +78,8 @@ procedure javaprocs()
    }
    return
 end
+
+
 
 procedure genproc()
    local f, p, i

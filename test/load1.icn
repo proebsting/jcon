@@ -1,0 +1,19 @@
+#  load1.icn -- used with loadfunc test
+
+global glob1 
+
+invocable "proc1b"
+
+procedure proc1a(n)
+   write("proc1a(",n,"):  ",image(glob0),", ",image(glob1),", ",image(glob2))
+   glob0 := n + 11
+   glob1 := n + 12
+   glob2 := n + 13
+end
+
+procedure proc1b(n)
+   write("proc1b(",n,"):  ",image(glob0),", ",image(glob1),", ",image(glob2))
+   glob0 := n + 16
+   glob1 := n + 17
+   glob2 := n + 18
+end
