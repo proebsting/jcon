@@ -1,6 +1,6 @@
 package rts;
 
-public class vCset extends vValue {
+public final class vCset extends vValue {
 
     int size;			// cset size; -1 if unknown
     long w1, w2, w3, w4;	// four words of cset bits

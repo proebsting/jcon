@@ -4,7 +4,7 @@ package rts;
 
 
 
-class fScan {
+final class fScan {
 
     //  fScan.subj(arg) -- return explicit or defaulted subject argument
 
@@ -34,7 +34,7 @@ class fScan {
 
 
 
-class f$pos extends vProc1 {			// pos(i)
+final class f$pos extends vProc1 {			// pos(i)
     public vDescriptor Call(vDescriptor a) {
 	long i = a.mkInteger().value;
 	vString s = (vString) k$subject.self.Deref();
@@ -48,7 +48,7 @@ class f$pos extends vProc1 {			// pos(i)
 
 
 
-class f$any extends vProc4 {			// any(c,s,i1,i2)
+final class f$any extends vProc4 {			// any(c,s,i1,i2)
 
     public vDescriptor Call(
 	    vDescriptor a, vDescriptor b, vDescriptor c, vDescriptor d) {
@@ -86,7 +86,7 @@ class f$any extends vProc4 {			// any(c,s,i1,i2)
 
 
 
-class f$many extends vProc4 {			// many(c,s,i1,i2)
+final class f$many extends vProc4 {			// many(c,s,i1,i2)
 
     public vDescriptor Call(
 	    vDescriptor a, vDescriptor b, vDescriptor c, vDescriptor d) {
@@ -139,7 +139,7 @@ class f$many extends vProc4 {			// many(c,s,i1,i2)
 
 
 
-class f$match extends vProc4 {			// match(s1,s2,i1,i2)
+final class f$match extends vProc4 {			// match(s1,s2,i1,i2)
     public vDescriptor Call(
 	    vDescriptor a, vDescriptor b, vDescriptor c, vDescriptor d) {
 	vString s1 = a.mkString();
@@ -175,7 +175,7 @@ class f$match extends vProc4 {			// match(s1,s2,i1,i2)
 
 
 
-class f$find extends vProc4 {				// find(s1,s2,i1,i2)
+final class f$find extends vProc4 {			// find(s1,s2,i1,i2)
     public vDescriptor Call(
 	vDescriptor a, vDescriptor b, vDescriptor c, vDescriptor d) {
 
@@ -216,7 +216,7 @@ class f$find extends vProc4 {				// find(s1,s2,i1,i2)
 
 
 
-class f$upto extends vProc4 {				// upto(c,s2,i1,i2)
+final class f$upto extends vProc4 {			// upto(c,s2,i1,i2)
     public vDescriptor Call(
 	vDescriptor a, vDescriptor b, vDescriptor c, vDescriptor d) {
 
@@ -288,7 +288,7 @@ class f$upto extends vProc4 {				// upto(c,s2,i1,i2)
 
 
 
-class f$bal extends vProc6 {				// bal(c1,c2,c3,s,i1,i2)
+final class f$bal extends vProc6 {			// bal(c1,c2,c3,s,i1,i2)
     static vCset c1def = vCset.New(0, vCset.MAX_VALUE);
     static vCset c2def = vCset.New('(');
     static vCset c3def = vCset.New(')');
@@ -343,7 +343,7 @@ class f$bal extends vProc6 {				// bal(c1,c2,c3,s,i1,i2)
 
 
 
-class f$move extends vProc1 {				// move(j)
+final class f$move extends vProc1 {			// move(j)
     public vDescriptor Call(vDescriptor a) {
 	final vInteger oldpos = (vInteger) k$pos.self.Deref();
 	final int i = (int) oldpos.value;
@@ -372,7 +372,7 @@ class f$move extends vProc1 {				// move(j)
 
 
 
-class f$tab extends vProc1 {				// tab(j)
+final class f$tab extends vProc1 {			// tab(j)
     public vDescriptor Call(vDescriptor a) {
 	final vInteger oldpos = (vInteger) k$pos.self.Deref();
 	final vString s = (vString) k$subject.self.Deref();

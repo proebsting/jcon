@@ -2,7 +2,7 @@
 
 package rts;
 
-public class vCoexp extends vValue implements Runnable {
+public final class vCoexp extends vValue implements Runnable {
 
     Thread thread;
     vClosure closure;

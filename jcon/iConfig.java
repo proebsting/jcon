@@ -2,7 +2,7 @@
 
 package rts;
 
-class iConfig {
+final class iConfig {
 
 
 

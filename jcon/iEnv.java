@@ -2,7 +2,7 @@ package rts;
 
 import java.util.*;
 
-public class iEnv {
+public final class iEnv {
 
 
 

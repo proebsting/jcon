@@ -2,7 +2,7 @@
 
 package rts;
 
-public class iError extends Error {
+public final class iError extends Error {
 
     int num;				// error number
     vDescriptor desc;			// offending value

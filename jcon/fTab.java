@@ -4,7 +4,7 @@ package rts;
 
 
 
-class fTab {
+final class fTab {
 
 static int[] deftabs = {1, 9};
 
@@ -40,7 +40,7 @@ static int nextTab(int[] stops, int col) {
 
 // detab(s,i,...) - replace tabs with spaces, with stops at columns indicated
 
-class f$detab extends vProcV {
+final class f$detab extends vProcV {
     public vDescriptor Call(vDescriptor[] v) {
 	byte[] s = iRuntime.arg(v, 0).mkString().getBytes();
 	int stops[] = fTab.stops(v);
@@ -84,7 +84,7 @@ class f$detab extends vProcV {
 
 // entab(s,i,...) - replace spaces with tabs, with stops at columns indicated
 
-class f$entab extends vProcV {
+final class f$entab extends vProcV {
     public vDescriptor Call(vDescriptor[] v) {
 	byte[] s = iRuntime.arg(v, 0).mkString().getBytes();
 	int stops[] = fTab.stops(v);

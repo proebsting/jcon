@@ -18,7 +18,7 @@ import java.io.*;
 import java.util.*;
 import java.util.zip.*;
 
-class FindFiles {
+final class FindFiles {
 
 
 

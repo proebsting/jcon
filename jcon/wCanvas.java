@@ -7,7 +7,7 @@ import java.util.*;
 
 
 
-class wCanvas extends Canvas {
+final class wCanvas extends Canvas {
 
     Frame f;			// enclosing Frame object
     Image i;			// backing image for refreshing visable image

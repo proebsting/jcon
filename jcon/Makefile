@@ -21,4 +21,4 @@ compile:
 
 
 clean:
-	rm -f *.class *.[cho]
+	rm -f *.class *.[cho] trampolinegen

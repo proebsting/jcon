@@ -10,7 +10,7 @@ import java.awt.*;
 
 
 
-public class wCoords {
+public final class wCoords {
 
     int xPoints[];
     int yPoints[];

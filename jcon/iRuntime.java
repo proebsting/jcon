@@ -4,7 +4,7 @@
 
 package rts;
 
-public class iRuntime {
+public final class iRuntime {
 
 
 

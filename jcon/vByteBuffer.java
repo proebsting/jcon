@@ -4,7 +4,7 @@
 
 package rts;
 
-public class vByteBuffer {
+public final class vByteBuffer {
 
     vString prefix;		// prefix string(s), if any
     byte[] data;		// byte array

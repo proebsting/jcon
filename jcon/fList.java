@@ -2,11 +2,11 @@
 
 package rts;
 
-class fList {} //dummy
+final class fList {} //dummy
 
 
 
-class f$list extends vProc2 {				// list(i, x)
+final class f$list extends vProc2 {				// list(i, x)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	int i = a.isnull() ? 0 : (int) a.mkInteger().value;
 	return vList.New(i, b.Deref());
@@ -15,7 +15,7 @@ class f$list extends vProc2 {				// list(i, x)
 
 
 
-class f$push extends vProcV {				// push(L, x...)
+final class f$push extends vProcV {				// push(L, x...)
 
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	return a.Push(b.Deref());
@@ -33,7 +33,7 @@ class f$push extends vProcV {				// push(L, x...)
 
 
 
-class f$pull extends vProc1 {				// pull(L)
+final class f$pull extends vProc1 {				// pull(L)
     public vDescriptor Call(vDescriptor a) {
 	return a.Pull();
     }
@@ -41,7 +41,7 @@ class f$pull extends vProc1 {				// pull(L)
 
 
 
-class f$pop extends vProc1 {				// pop(L)
+final class f$pop extends vProc1 {				// pop(L)
     public vDescriptor Call(vDescriptor a) {
 	return a.Pop();
     }
@@ -49,7 +49,7 @@ class f$pop extends vProc1 {				// pop(L)
 
 
 
-class f$get extends vProc1 {				// get(L)
+final class f$get extends vProc1 {				// get(L)
     public vDescriptor Call(vDescriptor a) {
 	return a.Get();
     }
@@ -57,7 +57,7 @@ class f$get extends vProc1 {				// get(L)
 
 
 
-class f$put extends vProcV {				// put(L, x...)
+final class f$put extends vProcV {				// put(L, x...)
 
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	return a.Put(b.Deref());
@@ -79,7 +79,7 @@ class f$put extends vProcV {				// put(L, x...)
 
 //  sort() and sortf() process several datatypes but always produce a list
 
-class f$sort extends vProc2 {				// sort(X,i)
+final class f$sort extends vProc2 {				// sort(X,i)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	int i = b.isnull() ? 1 : (int) b.mkInteger().value;
 	if (i < 1 || i > 4) {
@@ -89,7 +89,7 @@ class f$sort extends vProc2 {				// sort(X,i)
     }
 }
 
-class f$sortf extends vProc2 {				// sortf(X,i)
+final class f$sortf extends vProc2 {				// sortf(X,i)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	vValue[] v = a.mkArray(125);
 	vInteger i = b.isnull() ? vInteger.New(1) : b.mkInteger();
@@ -107,7 +107,7 @@ class f$sortf extends vProc2 {				// sortf(X,i)
     }
 }
 
-class vSortElem extends vValue {		// key/value pair for sortf()
+final class vSortElem extends vValue {		// key/value pair for sortf()
 
     vValue key;		// value x[i] used for sorting, if any
     vValue value;	// value x used if x[i] did not exist

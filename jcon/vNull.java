@@ -1,6 +1,6 @@
 package rts;
 
-public class vNull extends vValue {
+public final class vNull extends vValue {
 
 
 

@@ -2,11 +2,11 @@
 
 package rts;
 
-class fNumeric {} // dummy
+final class fNumeric {} // dummy
 
 
 
-class f$abs extends vProc1 {					// abs(n)
+final class f$abs extends vProc1 {				// abs(n)
     public vDescriptor Call(vDescriptor a) {
 	return a.Abs();
     }
@@ -14,7 +14,7 @@ class f$abs extends vProc1 {					// abs(n)
 
 
 
-class f$seq extends vProc2 {					// seq(i1,i2)
+final class f$seq extends vProc2 {				// seq(i1,i2)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	final long i1 = a.isnull() ? 1 : a.mkInteger().value;
 	final long i2 = b.isnull() ? 1 : b.mkInteger().value;
@@ -32,7 +32,7 @@ class f$seq extends vProc2 {					// seq(i1,i2)
 
 //  bit-manipulation functions
 
-class f$icom extends vProc1 {					// icom(n)
+final class f$icom extends vProc1 {				// icom(n)
     public vDescriptor Call(vDescriptor a) {
 	return vInteger.New(~a.mkInteger().value);
     }
@@ -40,7 +40,7 @@ class f$icom extends vProc1 {					// icom(n)
 
 
 
-class f$iand extends vProc2 {					// iand(m, n)
+final class f$iand extends vProc2 {				// iand(m, n)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	return vInteger.New(a.mkInteger().value & b.mkInteger().value);
     }
@@ -48,7 +48,7 @@ class f$iand extends vProc2 {					// iand(m, n)
 
 
 
-class f$ior extends vProc2 {					// ior(m, n)
+final class f$ior extends vProc2 {				// ior(m, n)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	return vInteger.New(a.mkInteger().value | b.mkInteger().value);
     }
@@ -56,7 +56,7 @@ class f$ior extends vProc2 {					// ior(m, n)
 
 
 
-class f$ixor extends vProc2 {					// ixor(m, n)
+final class f$ixor extends vProc2 {				// ixor(m, n)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	return vInteger.New(a.mkInteger().value ^ b.mkInteger().value);
     }
@@ -64,7 +64,7 @@ class f$ixor extends vProc2 {					// ixor(m, n)
 
 
 
-class f$ishift extends vProc2 {					// ishift(m, n)
+final class f$ishift extends vProc2 {				// ishift(m, n)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	long v = a.mkInteger().value;
 	long n = b.mkInteger().value;
@@ -84,7 +84,7 @@ class f$ishift extends vProc2 {					// ishift(m, n)
 
 //  mathematical functions
 
-class f$sqrt extends vProc1 {					// sqrt(r)
+final class f$sqrt extends vProc1 {				// sqrt(r)
     public vDescriptor Call(vDescriptor a) {
 	double d = a.mkReal().value;
 	if (d >= 0) {
@@ -96,13 +96,13 @@ class f$sqrt extends vProc1 {					// sqrt(r)
     }
 }
 
-class f$exp extends vProc1 {					// exp(r)
+final class f$exp extends vProc1 {				// exp(r)
     public vDescriptor Call(vDescriptor a) {
 	return vReal.New(Math.exp(a.mkReal().value));
     }
 }
 
-class f$log extends vProc2 {					// log(r,b)
+final class f$log extends vProc2 {				// log(r,b)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	double r = a.mkReal().value;
 	double x = b.isnull() ? Math.E : b.mkReal().value;
@@ -116,31 +116,31 @@ class f$log extends vProc2 {					// log(r,b)
     }
 }
 
-class f$dtor extends vProc1 {					// dtor(r)
+final class f$dtor extends vProc1 {				// dtor(r)
     public vDescriptor Call(vDescriptor a) {
 	return vReal.New(a.mkReal().value * Math.PI / 180.0);
     }
 }
 
-class f$rtod extends vProc1 {					// rtod(r)
+final class f$rtod extends vProc1 {				// rtod(r)
     public vDescriptor Call(vDescriptor a) {
 	return vReal.New(a.mkReal().value * 180.0 / Math.PI);
     }
 }
 
-class f$sin extends vProc1 {					// sin(r)
+final class f$sin extends vProc1 {				// sin(r)
     public vDescriptor Call(vDescriptor a) {
 	return vReal.New(Math.sin(a.mkReal().value));
     }
 }
 
-class f$cos extends vProc1 {					// cos(r)
+final class f$cos extends vProc1 {				// cos(r)
     public vDescriptor Call(vDescriptor a) {
 	return vReal.New(Math.cos(a.mkReal().value));
     }
 }
 
-class f$tan extends vProc1 {					// tan(r)
+final class f$tan extends vProc1 {				// tan(r)
     public vDescriptor Call(vDescriptor a) {
 	double d = Math.tan(a.mkReal().value);
 	if (Double.isInfinite(d)) {
@@ -150,7 +150,7 @@ class f$tan extends vProc1 {					// tan(r)
     }
 }
 
-class f$asin extends vProc1 {					// asin(r)
+final class f$asin extends vProc1 {				// asin(r)
     public vDescriptor Call(vDescriptor a) {
 	double d = Math.asin(a.mkReal().value);
 	if (Double.isNaN(d)) {
@@ -160,7 +160,7 @@ class f$asin extends vProc1 {					// asin(r)
     }
 }
 
-class f$acos extends vProc1 {					// acos(r)
+final class f$acos extends vProc1 {				// acos(r)
     public vDescriptor Call(vDescriptor a) {
 	double d = Math.acos(a.mkReal().value);
 	if (Double.isNaN(d)) {
@@ -170,7 +170,7 @@ class f$acos extends vProc1 {					// acos(r)
     }
 }
 
-class f$atan extends vProc2 {					// atan(r1,r2)
+final class f$atan extends vProc2 {				// atan(r1,r2)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	double r1 = a.mkReal().value;
 	double r2 = b.isnull() ? 1.0 : b.mkReal().value;

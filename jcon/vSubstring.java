@@ -1,6 +1,6 @@
 package rts;
 
-public class vSubstring extends vVariable {
+public final class vSubstring extends vVariable {
 
     vVariable var;
 

@@ -1,6 +1,6 @@
 package rts;
 
-public class iInterface {
+public final class iInterface {
 
 
 

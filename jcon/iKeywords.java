@@ -14,7 +14,7 @@ import java.util.*;
 
 
 
-public class iKeywords extends iFile {
+public final class iKeywords extends iFile {
 
 static void announce() {
     vCset lcase = vCset.New('a', 'z');
@@ -86,7 +86,7 @@ static void announce() {
 
 //  common class used for constant-valued keywords, including &fail
 
-class kConstant extends vProc0 {
+final class kConstant extends vProc0 {
     vValue value;
 
     kConstant(vValue v)		{ value = v; }		// constructor
@@ -104,42 +104,42 @@ abstract class kReadOnly extends vProc0 {
     public vDescriptor Call()		{ return value; }
 }
 
-class k$progname extends kReadOnly {				// &progname
+final class k$progname extends kReadOnly {			// &progname
     static k$progname self;
     k$progname()		{ self = this; }
 }
 
-class k$errornumber extends kReadOnly {				// &errornumber
+final class k$errornumber extends kReadOnly {			// &errornumber
     static k$errornumber self;
     k$errornumber()		{ self = this; }
 }
 
-class k$errortext extends kReadOnly {				// &errortext
+final class k$errortext extends kReadOnly {			// &errortext
     static k$errortext self;
     k$errortext()		{ self = this; }
 }
 
-class k$errorvalue extends kReadOnly {				// &errorvalue
+final class k$errorvalue extends kReadOnly {			// &errorvalue
     static k$errorvalue self;
     k$errorvalue()		{ self = this; }
 }
 
-class k$control extends kReadOnly {				// &control
+final class k$control extends kReadOnly {			// &control
     static k$control self;
     k$control()			{ self = this; }
 }
 
-class k$meta extends kReadOnly {				// &meta
+final class k$meta extends kReadOnly {				// &meta
     static k$meta self;
     k$meta()			{ self = this; }
 }
 
-class k$shift extends kReadOnly {				// &shift
+final class k$shift extends kReadOnly {				// &shift
     static k$shift self;
     k$shift()			{ self = this; }
 }
 
-class k$interval extends kReadOnly {				// &interval
+final class k$interval extends kReadOnly {			// &interval
     static k$interval self;
     k$interval()		{ self = this; }
 }
@@ -183,24 +183,24 @@ abstract class kCounter extends vProc0 {
     }
 }
 
-class k$trace extends kCounter {
+final class k$trace extends kCounter {
     static k$trace self;
     k$trace()		{ super("&trace"); self = this; }
 }
 
-class k$error extends kCounter {
+final class k$error extends kCounter {
     static k$error self;
     k$error()		{ super("&error"); self = this; }
 }
 
-class k$dump extends kCounter {
+final class k$dump extends kCounter {
     static k$dump self;
     k$dump()		{ super("&dump"); self = this; }
 }
 
 
 
-class k$features extends vProc0 {				// &features
+final class k$features extends vProc0 {				// &features
 
     //  The features list is hard-wired.
     //  (And it's not completely clear what we should report.)
@@ -231,19 +231,19 @@ class k$features extends vProc0 {				// &features
 
 
 
-class k$current extends vProc0 {				// &current
+final class k$current extends vProc0 {				// &current
     public vDescriptor Call() {
 	return iEnv.cur_coexp;
     }
 }
 
-class k$main extends vProc0 {					// &main
+final class k$main extends vProc0 {				// &main
     public vDescriptor Call() {
 	return iEnv.main;
     }
 }
 
-class k$source extends vProc0 {					// &source
+final class k$source extends vProc0 {				// &source
     public vDescriptor Call() {
 	if (iEnv.cur_coexp.callers.empty()) {
 	    return iEnv.main;
@@ -252,7 +252,7 @@ class k$source extends vProc0 {					// &source
     }
 }
 
-class k$level extends vProc0 {					// &level
+final class k$level extends vProc0 {				// &level
     public vDescriptor Call() {
 	StringWriter w = new StringWriter();
 	PrintWriter p = new PrintWriter(w);
@@ -275,7 +275,7 @@ class k$level extends vProc0 {					// &level
 
 
 
-class k$clock extends vProc0 {					// &clock
+final class k$clock extends vProc0 {				// &clock
 
     static SimpleDateFormat formatter;
 
@@ -292,7 +292,7 @@ class k$clock extends vProc0 {					// &clock
 
 
 
-class k$date extends vProc0 {					// &date
+final class k$date extends vProc0 {				// &date
 
     static SimpleDateFormat formatter;
 
@@ -309,7 +309,7 @@ class k$date extends vProc0 {					// &date
 
 
 
-class k$time extends vProc0 {					// &time
+final class k$time extends vProc0 {				// &time
 
     private static long tbase;
 
@@ -324,7 +324,7 @@ class k$time extends vProc0 {					// &time
 
 
 
-class k$dateline extends vProc0 {				// &dateline
+final class k$dateline extends vProc0 {				// &dateline
 
     static SimpleDateFormat formatter;
 
@@ -344,7 +344,7 @@ class k$dateline extends vProc0 {				// &dateline
 
 
 
-class k$host extends vProc0 {					// &host
+final class k$host extends vProc0 {				// &host
 
     private static vString hostname;
 
@@ -375,7 +375,7 @@ class k$host extends vProc0 {					// &host
 
 
 
-class k$input extends vProc0 {					// &input
+final class k$input extends vProc0 {				// &input
 
     static vFile file =		// referenced externally
 	vFile.New("&input", System.in);	
@@ -387,7 +387,7 @@ class k$input extends vProc0 {					// &input
 
 
 
-class k$output extends vProc0 {					// &output
+final class k$output extends vProc0 {				// &output
 
     static vFile file =		// referenced externally
 	vFile.New("&output", System.out, true);
@@ -399,7 +399,7 @@ class k$output extends vProc0 {					// &output
 
 
 
-class k$errout extends vProc0 {					// &errout
+final class k$errout extends vProc0 {				// &errout
 
     static vFile file = 		// referenced externally
 	vFile.New("&errout", System.err, false);
@@ -411,7 +411,7 @@ class k$errout extends vProc0 {					// &errout
 
 
 
-class k$subject extends vProc0 {				// &subject
+final class k$subject extends vProc0 {				// &subject
 
     static vSimpleVar self = new vSimpleVar("&subject", vString.New()) {
 	public vVariable Assign(vDescriptor v) {
@@ -432,7 +432,7 @@ class k$subject extends vProc0 {				// &subject
 
 
 
-class k$pos extends vProc0 {				// &pos
+final class k$pos extends vProc0 {				// &pos
 
     static vSimpleVar self = new vSimpleVar("&pos", vInteger.New(1)) {
 	public vVariable Assign(vDescriptor v) {
@@ -466,7 +466,7 @@ class k$pos extends vProc0 {				// &pos
 //  this random number generator is compatible with Icon v9
 //  see Icon Analyst 38 (October, 1996) for an extensive analysis
 
-class k$random extends vProc0 {				// &random
+final class k$random extends vProc0 {				// &random
 
     private static long randval;			// current value
 
@@ -504,7 +504,7 @@ class k$random extends vProc0 {				// &random
 
 //  allocation keywords just generate three or four zero values
 
-class kZeroes extends vClosure {
+final class kZeroes extends vClosure {
     static vInteger zero = vInteger.New(0);
 
     int count;			// remaining count
@@ -523,25 +523,25 @@ class kZeroes extends vClosure {
     }
 }
 
-class k$allocated extends vProc0 {			// &allocated
+final class k$allocated extends vProc0 {			// &allocated
     public vDescriptor Call() {
 	return new kZeroes(4);
     }
 }
 
-class k$collections extends vProc0 {			// &collections
+final class k$collections extends vProc0 {			// &collections
     public vDescriptor Call() {
 	return new kZeroes(4);
     }
 }
 
-class k$regions extends vProc0 {			// &regions
+final class k$regions extends vProc0 {				// &regions
     public vDescriptor Call() {
 	return new kZeroes(3);
     }
 }
 
-class k$storage extends vProc0 {			// &storage
+final class k$storage extends vProc0 {				// &storage
     public vDescriptor Call() {
 	return new kZeroes(3);
     }
@@ -549,7 +549,7 @@ class k$storage extends vProc0 {			// &storage
 
 
 
-class k$window extends vProc0 {				// &window
+final class k$window extends vProc0 {				// &window
 
     private static vSimpleVar kwindow = new vSimpleVar("&window") {
 
@@ -607,7 +607,7 @@ abstract class kMirrored extends vProc0 {	// super for "mirrored" int kwds
     }
 }
 
-class k$x extends kMirrored {				// &x
+final class k$x extends kMirrored {				// &x
     static kMirrored self;
     k$x()			{ super("&x"); self = this; }
 
@@ -617,7 +617,7 @@ class k$x extends kMirrored {				// &x
     }
 }
 
-class k$y extends kMirrored {				// &y
+final class k$y extends kMirrored {				// &y
     static kMirrored self;
     k$y()			{ super("&y"); self = this; }
 
@@ -627,7 +627,7 @@ class k$y extends kMirrored {				// &y
     }
 }
 
-class k$row extends kMirrored {				// &row
+final class k$row extends kMirrored {				// &row
     static kMirrored self;
     k$row()			{ super("&row"); self = this; }
 
@@ -637,7 +637,7 @@ class k$row extends kMirrored {				// &row
     }
 }
 
-class k$col extends kMirrored {				// &col
+final class k$col extends kMirrored {				// &col
     static kMirrored self;
     k$col()			{ super("&col"); self = this; }
 

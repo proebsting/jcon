@@ -13,7 +13,7 @@
 
 package rts;
 
-class vFuncVar extends vSimpleVar {
+final class vFuncVar extends vSimpleVar {
 
     vString img;		// image
     String classname;		// class name

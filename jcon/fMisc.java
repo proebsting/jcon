@@ -5,11 +5,11 @@ package rts;
 import java.io.*;
 import java.util.*;
 
-class fMisc {} //dummy
+final class fMisc {} //dummy
 
 
 
-class f$name extends vProc1 {					// name(v)
+final class f$name extends vProc1 {				// name(v)
     public vDescriptor Call(vDescriptor a) {
 	return a.Name();
     }
@@ -17,7 +17,7 @@ class f$name extends vProc1 {					// name(v)
 
 
 
-class f$display extends vProc2 {				// display(i,f)
+final class f$display extends vProc2 {				// display(i,f)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	if (!a.isnull()) {
 	    a.mkInteger();		// validate and ignore level count
@@ -29,7 +29,7 @@ class f$display extends vProc2 {				// display(i,f)
 
 
 
-class f$variable extends vProc1 {				// variable(x)
+final class f$variable extends vProc1 {				// variable(x)
     public vDescriptor Call(vDescriptor a) {
 	String s = a.mkString().toString();
 	vVariable v = (vVariable) iEnv.symtab.get(s);
@@ -49,7 +49,7 @@ class f$variable extends vProc1 {				// variable(x)
 
 
 
-class f$function extends vProc0 {				// function()
+final class f$function extends vProc0 {				// function()
     public vDescriptor Call() {
 	final java.util.Enumeration e = iEnv.enumBuiltins();
 	return new vClosure() {
@@ -67,7 +67,7 @@ class f$function extends vProc0 {				// function()
 
 
 
-class f$args extends vProc1 {					// args(x)
+final class f$args extends vProc1 {				// args(x)
     public vDescriptor Call(vDescriptor a) {
 	return a.Args();
     }
@@ -75,7 +75,7 @@ class f$args extends vProc1 {					// args(x)
 
 
 
-class f$proc extends vProc2 {					// proc(s, i)
+final class f$proc extends vProc2 {				// proc(s, i)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	vValue v = a.Deref();
 	long i = b.isnull() ? 1 : b.mkInteger().value;
@@ -88,7 +88,7 @@ class f$proc extends vProc2 {					// proc(s, i)
 
 
 
-class f$collect extends vProc2 {				// collect(i,j)
+final class f$collect extends vProc2 {				// collect(i,j)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	long i1 = a.isnull() ? 0 : a.mkInteger().value;
 	long i2 = b.isnull() ? 0 : b.mkInteger().value;
@@ -122,7 +122,7 @@ class f$collect extends vProc2 {				// collect(i,j)
 
 
 
-class f$delay extends vProc1 {					// delay(i)
+final class f$delay extends vProc1 {				// delay(i)
     public vDescriptor Call(vDescriptor a) {
 	int i = a.isnull() ? 1 : (int) a.mkInteger().value;
 	try {
@@ -136,7 +136,7 @@ class f$delay extends vProc1 {					// delay(i)
 
 
 
-class f$exit extends vProc1 {					// exit(n)
+final class f$exit extends vProc1 {				// exit(n)
     public vDescriptor Call(vDescriptor a) {
 	int n = a.isnull() ? 0 : (int) a.mkInteger().value;
 	iRuntime.exit(n);
@@ -146,7 +146,7 @@ class f$exit extends vProc1 {					// exit(n)
 
 
 
-class f$getenv extends vProc1 {					// getenv(s)
+final class f$getenv extends vProc1 {				// getenv(s)
 
     static Hashtable env = new Hashtable();
 
@@ -179,7 +179,7 @@ class f$getenv extends vProc1 {					// getenv(s)
 
 
 
-class f$system extends vProc1 {					// system(s)
+final class f$system extends vProc1 {				// system(s)
     public vDescriptor Call(vDescriptor a) {
 	String argv[] = { "sh", "-c", a.mkString().toString() };
 	int status;
@@ -198,7 +198,7 @@ class f$system extends vProc1 {					// system(s)
 
 
 
-class f$errorclear extends vProc0 {				// errorclear()
+final class f$errorclear extends vProc0 {			// errorclear()
     public vDescriptor Call() {
 	k$errornumber.self.set(null);
 	k$errortext.self.set(null);
@@ -209,7 +209,7 @@ class f$errorclear extends vProc0 {				// errorclear()
 
 
 
-class f$runerr extends vProc2 {					// runerr(i,x)
+final class f$runerr extends vProc2 {				// runerr(i,x)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	long i = a.mkInteger().value;
 	vDescriptor x = b.Deref();

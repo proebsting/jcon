@@ -4,7 +4,7 @@ import java.util.*;
 
 
 
-public class vSet extends vStructure {
+public final class vSet extends vStructure {
 
     private java.util.Hashtable t;
 

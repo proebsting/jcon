@@ -2,7 +2,7 @@ package rts;
 
 
 
-public class vRecordProc extends vProcV {
+public final class vRecordProc extends vProcV {
     vString name;		// name of record Type
     String[] fieldnames;	// names of fields
     String[] varnames;		// variable names

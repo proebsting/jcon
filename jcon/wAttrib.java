@@ -138,7 +138,7 @@ static vValue unsettable(String name, String value) {
 
 // dummy attribute class: for attributes not yet implemented
 
-class aDummy extends wAttrib {
+final class aDummy extends wAttrib {
 
     String accept;
     vValue attval;
@@ -156,13 +156,13 @@ class aDummy extends wAttrib {
 
 
 
-class aCanvas extends wAttrib {
+final class aCanvas extends wAttrib {
     vValue get(vWindow win)	{ return win.getCanvas().Canvas(win, null); }
     vValue set(vWindow win)	{ return win.getCanvas().Canvas(win, val); }
 }
 
 
-class aDepth extends wAttrib {
+final class aDepth extends wAttrib {
     vValue get(vWindow win)	{ return vInteger.New(
 	Toolkit.getDefaultToolkit().getColorModel().getPixelSize()); }
     vValue set(vWindow win)
@@ -171,31 +171,31 @@ class aDepth extends wAttrib {
 
 
 
-class aLabel extends wAttrib {
+final class aLabel extends wAttrib {
     vValue get(vWindow win)	{ return win.getCanvas().Label(win, null); }
     vValue set(vWindow win)	{ return win.getCanvas().Label(win, val); }
 }
 
 
 
-class aFg extends wAttrib {
+final class aFg extends wAttrib {
     vValue get(vWindow win)	{ return win.Fg(null); }
     vValue set(vWindow win)	{ return win.Fg(vString.New(val)); }
 }
 
-class aBg extends wAttrib {
+final class aBg extends wAttrib {
     vValue get(vWindow win)	{ return win.Bg(null); }
     vValue set(vWindow win)	{ return win.Bg(vString.New(val)); }
 }
 
 
 
-class aFont extends wAttrib {
+final class aFont extends wAttrib {
     vValue get(vWindow win)	 { return win.Font(null); }
     vValue set(vWindow win)	 { return win.Font(vString.New(val)); }
 }
 
-class aLeading extends wAttrib {
+final class aLeading extends wAttrib {
     vValue get(vWindow win)	 { return vInteger.New(win.Leading()); }
     vValue set(vWindow win)	 {
 	try {
@@ -206,21 +206,21 @@ class aLeading extends wAttrib {
     }
 }
 
-class aAscent extends wAttrib {
+final class aAscent extends wAttrib {
     vValue get(vWindow win)
 	{ return vInteger.New(win.getFontMetrics().getMaxAscent()); }
     vValue set(vWindow win)
 	{ return wAttrib.unsettable("ascent=", val); }
 }
 
-class aDescent extends wAttrib {
+final class aDescent extends wAttrib {
     vValue get(vWindow win)
 	{ return vInteger.New(win.getFontMetrics().getMaxDescent()); }
     vValue set(vWindow win)
 	{ return wAttrib.unsettable("descent=", val); }
 }
 
-class aFheight extends wAttrib {
+final class aFheight extends wAttrib {
     vValue get(vWindow win) {
 	FontMetrics m = win.getFontMetrics();
 	return vInteger.New(m.getMaxAscent() + m.getMaxDescent());
@@ -229,46 +229,46 @@ class aFheight extends wAttrib {
 	{ return wAttrib.unsettable("fheight=", val); }
 }
 
-class aFwidth extends wAttrib {
+final class aFwidth extends wAttrib {
     vValue get(vWindow win) { return vInteger.New(win.Fwidth()); }
     vValue set(vWindow win) { return wAttrib.unsettable("fwidth=", val); }
 }
 
 
 
-class aEcho extends wAttrib {
+final class aEcho extends wAttrib {
     vValue get(vWindow win)	{ return win.getTTY().Echo(null); }
     vValue set(vWindow win)	{ return win.getTTY().Echo(val); }
 }
 
-class aCursor extends wAttrib {
+final class aCursor extends wAttrib {
     vValue get(vWindow win)	{ return win.getTTY().Cursor(null); }
     vValue set(vWindow win)	{ return win.getTTY().Cursor(val); }
 }
 
-class aX extends wAttrib {
+final class aX extends wAttrib {
     vValue get(vWindow win)	{ return win.getTTY().X(null); }
     vValue set(vWindow win)	{ return win.getTTY().X(val); }
 }
 
-class aY extends wAttrib {
+final class aY extends wAttrib {
     vValue get(vWindow win)	{ return win.getTTY().Y(null); }
     vValue set(vWindow win)	{ return win.getTTY().Y(val); }
 }
 
-class aRow extends wAttrib {
+final class aRow extends wAttrib {
     vValue get(vWindow win)	{ return win.getTTY().Row(win, null); }
     vValue set(vWindow win)	{ return win.getTTY().Row(win, val); }
 }
 
-class aCol extends wAttrib {
+final class aCol extends wAttrib {
     vValue get(vWindow win)	{ return win.getTTY().Col(win, null); }
     vValue set(vWindow win)	{ return win.getTTY().Col(win, val); }
 }
 
 
 
-class aWidth extends wAttrib {
+final class aWidth extends wAttrib {
 
     vValue get(vWindow win) {
 	return vInteger.New(win.getCanvas().getSize().width);
@@ -286,7 +286,7 @@ class aWidth extends wAttrib {
 
 
 
-class aHeight extends wAttrib {
+final class aHeight extends wAttrib {
 
     vValue get(vWindow win) {
 	return vInteger.New(win.getCanvas().getSize().height);
@@ -304,7 +304,7 @@ class aHeight extends wAttrib {
 
 
 
-class aSize extends wAttrib {
+final class aSize extends wAttrib {
 
     vValue get(vWindow win) {
 	Dimension d = win.getCanvas().getSize();
@@ -329,7 +329,7 @@ class aSize extends wAttrib {
 
 
 
-class aRows extends wAttrib {
+final class aRows extends wAttrib {
 
     vValue get(vWindow win) {
 	int l = win.Leading();
@@ -351,7 +351,7 @@ class aRows extends wAttrib {
 
 
 
-class aColumns extends wAttrib {
+final class aColumns extends wAttrib {
 
     vValue get(vWindow win) {
 	return vInteger.New(win.getCanvas().getSize().width / win.Fwidth());

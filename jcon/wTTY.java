@@ -6,7 +6,7 @@ import java.awt.*;
 
 
 
-class wTTY {
+final class wTTY {
 
     int xloc, yloc;		// current text position
 

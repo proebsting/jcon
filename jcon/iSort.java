@@ -4,7 +4,7 @@
 
 package rts;
 
-class iSort {
+final class iSort {
 
 
 

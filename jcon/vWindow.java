@@ -9,7 +9,7 @@ import java.awt.*;
 
 
 
-public class vWindow extends vFile {
+public final class vWindow extends vFile {
 
     // NOTE: when adding instance variables, update cloning initializion below
 

@@ -2,11 +2,11 @@
 
 package rts;
 
-class fStruct {} // dummy
+final class fStruct {} // dummy
 
 
 
-class f$set extends vProc1 {				// set(x)
+final class f$set extends vProc1 {				// set(x)
     public vDescriptor Call(vDescriptor a) {
 	return vSet.New(a.Deref());
     }
@@ -14,7 +14,7 @@ class f$set extends vProc1 {				// set(x)
 
 
 
-class f$table extends vProc1 {				// table(x)
+final class f$table extends vProc1 {				// table(x)
     public vDescriptor Call(vDescriptor a) {
 	return vTable.New(a.Deref());
     }
@@ -22,7 +22,7 @@ class f$table extends vProc1 {				// table(x)
 
 
 
-class f$insert extends vProc3 {				// insert(X,x,y)
+final class f$insert extends vProc3 {				// insert(X,x,y)
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
 	return a.Insert(b.Deref(), c.Deref());
     }
@@ -30,7 +30,7 @@ class f$insert extends vProc3 {				// insert(X,x,y)
 
 
 
-class f$member extends vProc2 {				// member(X,x)
+final class f$member extends vProc2 {				// member(X,x)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	return a.Member(b.Deref());
     }
@@ -38,7 +38,7 @@ class f$member extends vProc2 {				// member(X,x)
 
 
 
-class f$delete extends vProc2 {				// delete(X,x)
+final class f$delete extends vProc2 {				// delete(X,x)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	return a.Delete(b.Deref());
     }
@@ -46,7 +46,7 @@ class f$delete extends vProc2 {				// delete(X,x)
 
 
 
-class f$key extends vProc1 {					//  key(T)
+final class f$key extends vProc1 {				//  key(T)
     public vDescriptor Call(vDescriptor a) {
 	return a.Key();
     }
@@ -54,7 +54,7 @@ class f$key extends vProc1 {					//  key(T)
 
 
 
-class f$copy extends vProc1 {				// copy(x)
+final class f$copy extends vProc1 {				// copy(x)
     public vDescriptor Call(vDescriptor a) {
 	return a.Copy();
     }
@@ -62,7 +62,7 @@ class f$copy extends vProc1 {				// copy(x)
 
 
 
-class f$serial extends vProc1 {				// serial(x)
+final class f$serial extends vProc1 {				// serial(x)
     public vDescriptor Call(vDescriptor a) {
 	return a.Serial();
     }

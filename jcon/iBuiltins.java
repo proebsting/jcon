@@ -4,7 +4,7 @@ package rts;
 
 
 
-public class iBuiltins extends iFile {
+public final class iBuiltins extends iFile {
 
 
 

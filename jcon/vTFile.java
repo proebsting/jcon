@@ -6,7 +6,7 @@ import java.io.*;
 
 
 
-public class vTFile extends vFile {
+public final class vTFile extends vFile {
 
 private static String nlstring = System.getProperty("line.separator");
 private static boolean nleasy = nlstring.equals("\n");

@@ -2,7 +2,7 @@ package rts;
 
 import java.util.*;
 
-public class vTable extends vStructure {
+public final class vTable extends vStructure {
 
     public java.util.Hashtable t;	// #%#% MS JVM chokes on "private"
     vValue dflt;
@@ -201,7 +201,7 @@ public vList Sort(int n) {
 
 
 
-class vTrappedTable extends vVariable {
+final class vTrappedTable extends vVariable {
 
     vTable table;
     vValue key;
@@ -234,7 +234,7 @@ class vTrappedTable extends vVariable {
 
 
 
-class vTableElem extends vValue {	// key/value pair for sorting
+final class vTableElem extends vValue {	// key/value pair for sorting
 
     vValue sortkey;	// value used for sorting (table key or value)
     vValue other;	// the other half of the pair

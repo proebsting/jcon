@@ -1,6 +1,6 @@
 package rts;
 
-public class vInteger extends vNumeric {
+public final class vInteger extends vNumeric {
 
     long value;
 

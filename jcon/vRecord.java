@@ -1,6 +1,6 @@
 package rts;
 
-public class vRecord extends vStructure {
+public final class vRecord extends vStructure {
 
     private vRecordProc constr;		// constructor
     private vSimpleVar[] values;	// values

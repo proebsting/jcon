@@ -195,7 +195,9 @@ public vClosure refreshcopy() {
 
 } // class vClosure
 
-public class vTracedClosure extends vClosure {
+
+
+public final class vTracedClosure extends vClosure {
     vDescriptor tracedFn;
     vDescriptor[] tracedArgs;
 
@@ -219,8 +221,11 @@ public vDescriptor Resume() {
 
 } // class vTracedClosure
 
+
+
 // vProcClosure creates a closure from a vProc.  Used for &main.
-public class vProcClosure extends vClosure {
+
+public final class vProcClosure extends vClosure {
     vDescriptor vproc;
     vDescriptor[] args;
     vDescriptor closure;

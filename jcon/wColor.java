@@ -8,7 +8,7 @@ import java.util.*;
 
 
 
-class wHue {		// table entry for named colors
+final class wHue {		// table entry for named colors
     String name;
     String ish;
     float h, s, b;
@@ -24,7 +24,7 @@ class wHue {		// table entry for named colors
 
 
 
-class wColor extends Color {
+final class wColor extends Color {
 
     vString spec;	// original spcification string
 

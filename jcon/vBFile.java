@@ -6,7 +6,7 @@ import java.io.*;
 
 
 
-public class vBFile extends vFile {
+public final class vBFile extends vFile {
 
 
 

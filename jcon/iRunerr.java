@@ -3,7 +3,7 @@
 
 package rts;
 
-public class iRunerr {
+public final class iRunerr {
 
 
 

@@ -9,7 +9,7 @@ import java.util.*;
 
 
 
-public class vList extends vStructure {
+public final class vList extends vStructure {
 
     public Vector v;	// #%#% MS JVM cannot handle this being private.
 
@@ -241,7 +241,7 @@ vValue[] mkArray(int errno) {		// make array for sort(L) or p ! L
 
 
 
-class vListEnumeration implements java.util.Enumeration {
+final class vListEnumeration implements java.util.Enumeration {
     java.util.Vector v;
     int i;
 
@@ -261,7 +261,7 @@ class vListEnumeration implements java.util.Enumeration {
 
 
 
-class vListVar extends vSimpleVar {
+final class vListVar extends vSimpleVar {
     vList parent;
 
     vListVar(vList parent, vValue value) {

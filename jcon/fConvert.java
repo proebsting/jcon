@@ -2,11 +2,11 @@
 
 package rts;
 
-class fConvert {} //dummy
+final class fConvert {} //dummy
 
 
 
-class f$type extends vProc1 {					// type(x)
+final class f$type extends vProc1 {				// type(x)
     public vDescriptor Call(vDescriptor a) {
 	return a.Type();
     }
@@ -14,7 +14,7 @@ class f$type extends vProc1 {					// type(x)
 
 
 
-class f$image extends vProc1 {					// image(x)
+final class f$image extends vProc1 {				// image(x)
     public vDescriptor Call(vDescriptor a) {
 	return a.image();
     }
@@ -22,7 +22,7 @@ class f$image extends vProc1 {					// image(x)
 
 
 
-class f$integer extends vProc1 {				// integer(x)
+final class f$integer extends vProc1 {				// integer(x)
     public vDescriptor Call(vDescriptor a) {
 	try {
 	    return a.mkInteger();
@@ -34,7 +34,7 @@ class f$integer extends vProc1 {				// integer(x)
 
 
 
-class f$numeric extends vProc1 {				// numeric(x)
+final class f$numeric extends vProc1 {				// numeric(x)
     public vDescriptor Call(vDescriptor a) {
 	try {
 	    return a.Numerate();
@@ -46,7 +46,7 @@ class f$numeric extends vProc1 {				// numeric(x)
 
 
 
-class f$real extends vProc1 {					// real(x)
+final class f$real extends vProc1 {				// real(x)
     public vDescriptor Call(vDescriptor a) {
 	try {
 	    return a.mkReal();
@@ -58,7 +58,7 @@ class f$real extends vProc1 {					// real(x)
 
 
 
-class f$string extends vProc1 {					// string(x)
+final class f$string extends vProc1 {				// string(x)
     public vDescriptor Call(vDescriptor a) {
 	try {
 	    return a.mkString();
@@ -70,7 +70,7 @@ class f$string extends vProc1 {					// string(x)
 
 
 
-class f$cset extends vProc1 {					// cset(x)
+final class f$cset extends vProc1 {				// cset(x)
     public vDescriptor Call(vDescriptor a) {
 	try {
 	    return a.mkCset();

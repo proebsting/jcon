@@ -10,7 +10,7 @@
 
 package rts;
 
-public class vString extends vValue {
+public final class vString extends vValue {
 
     private int tlength;		// total string length
     private vString prefix;		// first part of string (optional)

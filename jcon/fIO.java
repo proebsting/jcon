@@ -6,7 +6,7 @@ import java.io.*;
 
 
 
-class fIO {
+final class fIO {
 
     // print(f, arglist, newline) -- helper for write(), writes(), stop()
 
@@ -32,7 +32,7 @@ class fIO {
 
 
 
-class f$open extends vProcV {				// open(s1,s2,...)
+final class f$open extends vProcV {				// open(s1,s2,...)
     public vDescriptor Call(vDescriptor[] v) {
 	String fname;
 	String mode;
@@ -53,7 +53,7 @@ class f$open extends vProcV {				// open(s1,s2,...)
 
 
 
-class f$flush extends vProc1 {				// flush(f)
+final class f$flush extends vProc1 {				// flush(f)
     public vDescriptor Call(vDescriptor a) {
 	return(vFile.arg(a).flush());
     }
@@ -61,7 +61,7 @@ class f$flush extends vProc1 {				// flush(f)
 
 
 
-class f$close extends vProc1 {				// close(f)
+final class f$close extends vProc1 {				// close(f)
     public vDescriptor Call(vDescriptor a) {
 	return(vFile.arg(a).close());
     }
@@ -69,7 +69,7 @@ class f$close extends vProc1 {				// close(f)
 
 
 
-class f$read extends vProc1 {				// read(f)
+final class f$read extends vProc1 {				// read(f)
     public vDescriptor Call(vDescriptor a) {
 	return(vFile.arg(a, k$input.file).read());
     }
@@ -77,7 +77,7 @@ class f$read extends vProc1 {				// read(f)
 
 
 
-class f$reads extends vProc2 {				// reads(f,n)
+final class f$reads extends vProc2 {				// reads(f,n)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	vFile f = vFile.arg(a, k$input.file);
 	long n = b.isnull() ? 1 : b.mkInteger().value;
@@ -91,7 +91,7 @@ class f$reads extends vProc2 {				// reads(f,n)
 
 
 
-class f$write extends vProcV {				// write(...)
+final class f$write extends vProcV {				// write(...)
 
     static vDescriptor a0[] = new vDescriptor[0];
     static vDescriptor a1[] = new vDescriptor[1];
@@ -204,7 +204,7 @@ class f$write extends vProcV {				// write(...)
 
 
 
-class f$writes extends vProcV {				// writes(...)
+final class f$writes extends vProcV {				// writes(...)
 
     static vDescriptor a0[] = new vDescriptor[0];
     static vDescriptor a1[] = new vDescriptor[1];
@@ -316,7 +316,7 @@ class f$writes extends vProcV {				// writes(...)
 
 
 
-class f$stop extends vProcV {				// stop(...)
+final class f$stop extends vProcV {				// stop(...)
     public vDescriptor Call(vDescriptor[] v) {
 	k$output.file.flush();			// flush stdout
 	fIO.print(k$errout.file, v, true);	// write msg
@@ -327,7 +327,7 @@ class f$stop extends vProcV {				// stop(...)
 
 
 
-class f$seek extends vProc2 {				// seek(f,i)
+final class f$seek extends vProc2 {				// seek(f,i)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	return vFile.arg(a).seek(b.mkInteger().value);
     }
@@ -335,7 +335,7 @@ class f$seek extends vProc2 {				// seek(f,i)
 
 
 
-class f$where extends vProc1 {				// where(f)
+final class f$where extends vProc1 {				// where(f)
     public vDescriptor Call(vDescriptor a) {
 	return(vFile.arg(a).where());
     }
@@ -343,7 +343,7 @@ class f$where extends vProc1 {				// where(f)
 
 
 
-class f$remove extends vProc1 {				// remove(s)
+final class f$remove extends vProc1 {				// remove(s)
     public vDescriptor Call(vDescriptor a) {
 	String s = a.mkString().toString();
 	java.io.File f = new java.io.File(s);
@@ -357,7 +357,7 @@ class f$remove extends vProc1 {				// remove(s)
 
 
 
-class f$rename extends vProc2 {				// rename(s1,s2)
+final class f$rename extends vProc2 {				// rename(s1,s2)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	String s1 = a.mkString().toString();
 	String s2 = b.mkString().toString();

@@ -1,6 +1,6 @@
 package rts;
 
-public class vReal extends vNumeric {
+public final class vReal extends vNumeric {
 
     double value;
 

@@ -1,6 +1,6 @@
 package rts;
 
-public class Semaphore {
+public final class Semaphore {
 
     int value = 0;
 

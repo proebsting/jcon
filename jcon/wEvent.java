@@ -7,7 +7,7 @@ import java.awt.event.*;
 
 
 
-class wEvent implements WindowListener,  //#%#% ComponentListener,
+final class wEvent implements WindowListener,  //#%#% ComponentListener,
     KeyListener, MouseListener, MouseMotionListener
 {
     wCanvas c;		// associated canvas

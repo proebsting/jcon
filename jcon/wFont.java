@@ -8,7 +8,7 @@ import java.util.*;
 
 
 
-class wFont extends Font {
+final class wFont extends Font {
 
     vString spec;		// original spcification string
 

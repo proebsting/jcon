@@ -2,11 +2,11 @@
 
 package rts;
 
-class fString {} // dummy
+final class fString {} // dummy
 
 
 
-class f$char extends vProc1 {					// char(i)
+final class f$char extends vProc1 {				// char(i)
     public vDescriptor Call(vDescriptor a) {
 	long i = a.mkInteger().value;
 	if (i < 0 || i > vCset.MAX_VALUE) {
@@ -18,7 +18,7 @@ class f$char extends vProc1 {					// char(i)
 
 
 
-class f$ord extends vProc1 {					// ord(s)
+final class f$ord extends vProc1 {				// ord(s)
     public vDescriptor Call(vDescriptor a) {
 	vString s = a.mkString();
 	if (s.length() != 1) {
@@ -30,7 +30,7 @@ class f$ord extends vProc1 {					// ord(s)
 
 
 
-class f$repl extends vProc2 {					// repl(s,i)
+final class f$repl extends vProc2 {				// repl(s,i)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	byte[] s = a.mkString().getBytes();
 	long ln = b.isnull() ? 1 : b.mkInteger().value;
@@ -53,7 +53,7 @@ class f$repl extends vProc2 {					// repl(s,i)
 
 
 
-class f$reverse extends vProc1 {				// reverse(s)
+final class f$reverse extends vProc1 {				// reverse(s)
     public vDescriptor Call(vDescriptor a) {
 	byte[] s = a.mkString().getBytes();
 	byte[] t = new byte[s.length];
@@ -67,7 +67,7 @@ class f$reverse extends vProc1 {				// reverse(s)
 
 
 
-class f$left extends vProc3 {					// left(s,i,s)
+final class f$left extends vProc3 {				// left(s,i,s)
     static byte[] onespace = { (byte) ' ' };
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
@@ -105,7 +105,7 @@ class f$left extends vProc3 {					// left(s,i,s)
 
 
 
-class f$right extends vProc3 {					// right(s,i,s)
+final class f$right extends vProc3 {				// right(s,i,s)
     static byte[] onespace = { (byte) ' ' };
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
@@ -144,7 +144,7 @@ class f$right extends vProc3 {					// right(s,i,s)
 
 
 
-class f$center extends vProc3 {					// center(s,i,s)
+final class f$center extends vProc3 {				// center(s,i,s)
     static byte[] onespace = { (byte) ' ' };
 
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
@@ -197,7 +197,7 @@ class f$center extends vProc3 {					// center(s,i,s)
 
 
 
-class f$trim extends vProc2 {				// trim(s,c)
+final class f$trim extends vProc2 {				// trim(s,c)
     static vCset defset = vCset.New(' ');
 
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
@@ -216,7 +216,7 @@ class f$trim extends vProc2 {				// trim(s,c)
 
 
 
-class f$map extends vProc3 {				// map(s1,s2,s3)
+final class f$map extends vProc3 {				// map(s1,s2,s3)
 
     static int[] map, initmap;
     static vString s2def, s3def;
