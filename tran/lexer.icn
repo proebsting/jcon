@@ -1,4 +1,5 @@
 global newline, yyline, coord_pos, yyfile
+record coordinate(file, line, column)
 record TOK(sym, str, coord)
 
 procedure yylex(getline)

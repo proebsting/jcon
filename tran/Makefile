@@ -5,7 +5,6 @@ JLINK = ../bin/jlink
 
 
 BASESRC = \
-	globals.icn \
 	dump.icn
 
 LEXSRC = \
