@@ -20,8 +20,9 @@ void announce() {
 	declare("bal", 6);
 	declare("center", 3);
 	declare("char", 1);
-	declare("cos", 1);
+	declare("collect", 2);
 	declare("copy", 1);
+	declare("cos", 1);
 	declare("cset", 1);
 	declare("delay", 1);
 	declare("delete", 2);
@@ -167,6 +168,39 @@ class f$variable extends iFunctionClosure {			// variable(x)
 			}
 		}
 		return null;
+	}
+}
+
+class f$collect extends iFunctionClosure {			// collect(i1,i2)
+	vDescriptor function(vDescriptor[] args) {
+		long i1 = vInteger.argVal(args, 0, 0);
+		long i2 = vInteger.argVal(args, 1, 0);
+		vNull n = iNew.Null();
+		if (i1 == 0) {
+			System.gc();
+			return n;
+		} else if (i1 > 0 && i1 < 4) {
+			if (i2 < 0) {
+				iRuntime.error(205, args[1]);
+			}
+			int ii2 = (int)i2;
+			if (i2 < 0 || i2 != (long)ii2) {
+				iRuntime.error(205, args[1]);
+			}
+			System.gc();
+			try {
+				byte[] dummy = new byte[ii2];
+				// the following (not the preceding) line
+				// actually triggers the out of memory error.
+				dummy[0] = dummy[ii2-1] = 1;
+			} catch (OutOfMemoryError e) {
+				return null;
+			}
+			return n;
+		} else {
+			iRuntime.error(205, args[0]);
+			return null;
+		}
 	}
 }
 
