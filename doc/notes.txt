@@ -1,3 +1,9 @@
+changes in v2:
+-- variable(), display(), and &dump can access only global variables.
+-- &level always returns 0
+
+------------------------------------------------------------------------------
+
 what's implemented:
 -- all datatypes (but only 64-bit integers; no large integers)
 -- all keywords, although resource keywords produce zeroes
@@ -23,7 +29,6 @@ execution:
 known bugs:
 -- local variables are not dereferenced prior to being returned
 -- more procedures may be "invocable" than in v9
--- termination dump (&dump) gets errors if program not compiled for debugging
 
 ------------------------------------------------------------------------------
 
