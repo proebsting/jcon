@@ -21,4 +21,6 @@ procedure main()
 
    s := "abcde"
    every !s := "." do write("r. ", s)
+
+   every write("s. ", (-3|-2|-1|0|1|2|3)(101,102))
 end
