@@ -1052,8 +1052,8 @@ procedure bc_nextval_code(nextvalcode, c, start, params, locals, undeclared, acc
         put(s, switch)
         runtimeerror := bc_error_methodref(c)
         put(s, deflab)
-        put(s, j_ipush(902) )
-        put(s, j_invokestatic(runtimeerror) )
+        # put(s, j_ipush(902) )			#%#% disabled as temporary hack
+        # put(s, j_invokestatic(runtimeerror) )	#%#% to fix return/suspend bug
         put(s, j_aconst_null())
         put(s, j_areturn())
     } else {
