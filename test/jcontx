@@ -1,6 +1,0 @@
-#!/bin/ksh
-
-set -e
-set -x
-./jcont "$*"
-./jconx "${1%.zip}"

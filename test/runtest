@@ -9,6 +9,6 @@ fi
 for FNAME; do
     BASE=${FNAME%.*}
     echo ${BASE}:
-    ./jcont $BASE -x >$BASE.out
+    ./jcont -s $BASE -x >$BASE.out
     cmp $BASE.std $BASE.out
 done

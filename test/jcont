@@ -1,62 +1,103 @@
 #!/bin/ksh
 #
-#  jcont -- build file.zip containing classes of icon executable
+#  jcont -- compile Icon program
 #
-#  usage:  jcont [-d] [-v] file[.icn] ... [-x [arguments]]
+#  usage:  jcont [-cdsv] [-o exe] file[.icn]... [file.zip...] [-x [arguments]]
 #
-#	-d	debug: use ./jtmp for temp files, and don't delete
-#	-v	verbose: echo shell commands
+#     -c	compile only: don't produce an executable
+#     -s	silence: suppress commentary
+#     -o exe	specify output file for executable
 #
-#	-x	execute after compilation
+#     -d	debug jcont: use ./jtmp for temp files, and don't delete
+#     -v	verbose: echo shell commands, trace linking steps
+#		(this option is not for the squeamish)
+#
+#     -x	execute after compilation
+#
+#  Jcont translates Icon source files into .zip files, and links .zip
+#  files to make an excutable program.  Jcont is similar to icont in
+#  concept and behavior.  Think of a .zip file as analagous to a .u1/.u2
+#  pair from icont.
 
 PROJHOME=/cs/jive
 SUMATRA=/cs/sumatra
 
-# clear Icon environment
+#  save command line and user IPATH
+CMDLINE="$0 $*"
+UIPATH="$IPATH"
+
+#  clear Icon and other environments
 unset ICONX ICONCORE TRACE IPATH LPATH NOERRBUF
 unset BLKSIZE HEAPSIZE STRSIZE COEXPSIZE MSTKSIZE QLSIZE
+unset UNZIP UNZIPOPT
 
-# set default command tracing (none), temp directory name, and its deletion
+#  set tracing modes
+ANNOUNCE=echo
 CMDTRACE=
+LINKTRACE=
+
+# set temporary directory name, and assume its deletion
 TDIR=./jcon$$
 NODELETE=
 
-#  assume no execute
+#  assume an executable script is created
+XFILE=
+NOLINK=
+
+#  assume no subsequent execution
 NOEXECUTE=exit
 
 #  process options
 
-USAGE="usage: $0 [-d] [-v] file[.icn] ..."
+USAGE="usage: $0 [-cdsv] [-o exe] file[.icn]... [file.zip...] [-x [arguments]]"
 
-while getopts "dv" c; do
+while getopts "cdsvo:" c 2>/dev/null; do
     case $c in
+	c)	NOLINK="exit";;
 	d)	TDIR=./jtmp; NODELETE=":";;
-	v)	CMDTRACE="set -x";;
-    	\?)	echo $USAGE; exit 1;;
+	s)	ANNOUNCE=":";;
+	v)	CMDTRACE="set -x"; LINKTRACE="-t";;
+	o)	XFILE="$OPTARG";;
+    	\?)	echo 1>&2 $USAGE; exit 1;;
     esac
 done
 
 #  check that at least one argument was given
 shift `expr $OPTIND - 1`
 if [ $# = 0 ]; then
-    echo "$USAGE"
+    echo 1>&2 "$USAGE"
     exit 1
 fi
 
-#  set output file name
-OFILE="${1%.icn}.zip"
+#  set script file name
+if [ "$XFILE" = "" ]; then
+    XFILE="${1%.icn}"
+    XFILE="${XFILE%.zip}"
+fi
 
-#  accumulate .icn file names
+#  accumulate .icn and .zip file names
+IFILES=
+ZFILES=
+ZBUILT=
+ROOTS=
 for FNAME; do
     case $FNAME in
-	-x) NOEXECUTE=
-	    shift
-	    break
-	    ;;
-	*)  BASE=${FNAME%.icn}
-	    FILES="$FILES $BASE.icn"
-	    shift
-	    ;;
+	-x)	NOEXECUTE=
+		shift
+		break
+		;;
+	*.zip)	BASE=${FNAME%.zip}
+		ZFILES="$ZFILES $BASE.zip"
+		ROOTS="$ROOTS l\\\$$BASE"
+		shift
+		;;
+	*)	BASE=${FNAME%.icn}
+		IFILES="$IFILES $BASE"
+		ZFILES="$ZFILES $BASE.zip"
+		ZBUILT="$ZBUILT $BASE.zip"
+		ROOTS="$ROOTS l\\\$$BASE"
+		shift
+		;;
     esac
 done
 
@@ -69,11 +110,12 @@ case $IDIR in
 esac
 
 #  determine architecture type
+SYSEXPORT=
 case `uname -sr | sed 's/ //'` in
     SunOS4*)    ARCH=sunos;;
     SunOS5*)    ARCH=solaris;;
     IRIX*)      ARCH=irix;;
-    OSF*)       ARCH=digital; export SYSNAME=alpha_osf32c;;
+    OSF*)       ARCH=digital; SYSEXPORT="export SYSNAME=alpha_osf32c";;
     ULTRIX*)    ARCH=ultrix;;
     Linux*)     ARCH=linux;;
     HP-UX*)     ARCH=hpux;;
@@ -91,6 +133,7 @@ else
 fi
 JCON="$JCON -O -target=java"
 ZIP="$PROJHOME/$ARCH/bin/zip"
+UNZIP="$PROJHOME/$ARCH/bin/unzip"
 
 #  set Java names and paths
 JDK="$SUMATRA/$ARCH/jdk.1.0.2"
@@ -98,7 +141,19 @@ JDK="$SUMATRA/$ARCH/jdk.1.0.2"
 #%#% JAVAC="$SUMATRA/$ARCH/toba/bin/toba -K"
 JAVAC="$JDK/bin/javac -nowarn"
 JAVA="$JDK/bin/java"
-CLASSPATH=".:$JRTS:$JDK/lib/classes.zip"
+CLASSPATH="$JRTS:$JDK/lib/classes.zip"
+
+# estimate the needed header size
+HBASE=450	# approximate size of fixed text, plus a little slop
+(( HDRSIZE = $HBASE + ${#SYSEXPORT} + ${#CMDLINE} + ${#ROOTS} ))  # est. total
+(( HDRSIZE = (HDRSIZE + 15) & ~15 ))			# round to mult of 16
+
+# conditionalize "Translating:" announcement
+if [ "$IFILES" != "" ]; then
+    TANNOUNCE="$ANNOUNCE"
+else
+    TANNOUNCE=":"
+fi
 
 #  arrange deletion of temporary directory, if NODELETE is not set
 $NODELETE trap "rm -rf $TDIR" 0 1 2 15
@@ -106,6 +161,8 @@ $NODELETE trap "rm -rf $TDIR" 0 1 2 15
 #  now, finally, do some work
 set -e
 $CMDTRACE
+export CLASSPATH=$CLASSPATH
+$SYSEXPORT
 
 # create temporary directory
 if [ -d $TDIR ]; then
@@ -114,18 +171,84 @@ else
     mkdir $TDIR
 fi
 
-# translate Icon to Java
-$JCON $FILES >$TDIR/a_out.java
+# translate each .icn file in turn
+$TANNOUNCE 1>&2 "Translating:"
+ERREXIT=":"
+for FNAME in $IFILES; do
+    rm -f $TDIR/*.class
+    # Icon to Java
+    $ANNOUNCE 1>&2 $FNAME.icn:
+    if $JCON $FNAME.icn >$TDIR/$FNAME.java ; then
+	# extract linkage information from stylized comments
+	sed -n 's=^//JCON//links:==p' $TDIR/$FNAME.java >$TDIR/links
+	# Java to .class
+	(cd $TDIR; $JAVAC $FNAME.java)
+	# .class files (and linkage info) to .zip
+	$ZIP -0 -j -q $FNAME.zip $TDIR/links $TDIR/*.class
+    else
+	ERREXIT="exit"
+    fi
+done
+$ERREXIT 1
+$TANNOUNCE 1>&2 "No errors"
 
-# translate Java to .class files
-export CLASSPATH=$CLASSPATH
-(cd $TDIR; $JAVAC a_out.java)
+# exit here if no linking wanted
+$NOLINK
+$ANNOUNCE 1>&2 "Linking:"
 
-# bundle up .class files in a zip file
-$ZIP -0 -j -q $OFILE $TDIR/*.class
+# generate list of files needed for linking
+$JAVA rts.FindFiles $LINKTRACE "$UIPATH" $ZFILES >$TDIR/zip.list
+
+# unpack all those .zip files
+rm -f $TDIR/*.class
+for FNAME in `<$TDIR/zip.list`; do
+    $UNZIP -n -d $TDIR -q $FNAME '[lp]*.class'
+done
+
+# combine the Icon files from there
+(cd $TDIR; ls | grep '^[lp].*\.class$' | xargs $ZIP -0 -q combined.zip)
+
+# combine a header (padded via dd) with that zip file to make a script
+# (if making significant changes here, also adjust HBASE above)
+(dd bs=$HDRSIZE conv=sync 2>/dev/null; cat $TDIR/combined.zip) \
+    <<=====EOF===== >$XFILE
+#!/bin/ksh
+
+# built by:  $CMDLINE
+
+WHENCE=\`whence \$0\`
+case \$WHENCE in
+    /*)	THISFILE=\$WHENCE;;
+    *)	THISFILE=\$PWD/\$WHENCE;;
+esac
+
+TZIP=/tmp/jcon\$\$.zip
+dd bs=$HDRSIZE skip=1 <\$THISFILE >\$TZIP 2>/dev/null
+
+$SYSEXPORT
+export CLASSPATH="\$TZIP:$CLASSPATH"
+
+trap "rm -rf \$TZIP" 0 1 2 15
+$JAVA rts.Main $ROOTS -- "\$0" "\$@"
+exit
+
+[binary data follows]
+
+%%%%
+=====EOF=====
+
+# verify that the header was big enough
+dd bs=$HDRSIZE count=1 <$XFILE 2>/dev/null | grep '%%%%' >/dev/null ||
+    (echo 1>&2 "internal error in $0: header too small" && exit 1)
+
+# the process was successful
+# mark the script as executable and delete built .zip files
+chmod +x $XFILE
+$NODELETE rm -f $ZBUILT
+
 
 # execute, or don't
 $NOEXECUTE
 $NODELETE rm -rf $TDIR
-export CLASSPATH=$OFILE:$CLASSPATH
-exec $JAVA a_out "$@"
+$ANNOUNCE 1>&2 "Executing:"
+exec ./$XFILE "$@"

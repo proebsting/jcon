@@ -2,6 +2,7 @@ run:
 	./runtest
 
 clean:
-	rm -rf jtmp *.java *.class *.out *.zip
+	rm -rf jtmp *.java *.class *.out *.zip *.u[12]
 	grep -l '$${ICONX-/' `find . -type f -perm -100 -print` | xargs rm -f
+	grep -l '^WHENCE=`' `find . -type f -perm -100 -print` | xargs rm -f
 	grep -l '/.  created by Toba  ./' *.[ch] 2>/dev/null   | xargs rm -f

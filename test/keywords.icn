@@ -18,6 +18,7 @@ procedure main()
    kw("e", &e)
    kw("phi", &phi)
    kw("pi", &pi)
+   kw("random", &random)
    write()
 
    kw("digits", &digits)
@@ -28,8 +29,10 @@ procedure main()
 #   kw("cset", *&cset || " elements")	# &cset is currently disabled
    write()
 
+   kw("progname", &progname)
    kw("file", &file)
    kw("line", &line)
+   kw("level", &level)
    kw("trace", &trace)
 end
 
