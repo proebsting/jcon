@@ -60,16 +60,19 @@ record iload_1()
 record iload_2()
 record iload_3()
 record lload(index)
+record lload_w(index)
 record lload_0()
 record lload_1()
 record lload_2()
 record lload_3()
 record fload(index)
+record fload_w(index)
 record fload_0()
 record fload_1()
 record fload_2()
 record fload_3()
 record dload(index)
+record dload_w(index)
 record dload_0()
 record dload_1()
 record dload_2()
@@ -108,6 +111,7 @@ record astore_1()
 record astore_2()
 record astore_3()
 record iinc(index, const)
+record iinc_w(index, const)
 record wide()
 record newarray(atype)
 record anewarray(index)
@@ -526,16 +530,19 @@ procedure writer_opcodes(writer, p)
         opcode_table["iload_2"] := 28
         opcode_table["iload_3"] := 29
         opcode_table["lload"] := 22
+        opcode_table["lload_w"] := 196
         opcode_table["lload_0"] := 30
         opcode_table["lload_1"] := 31
         opcode_table["lload_2"] := 32
         opcode_table["lload_3"] := 33
         opcode_table["fload"] := 23
+        opcode_table["fload_w"] := 196
         opcode_table["fload_0"] := 34
         opcode_table["fload_1"] := 35
         opcode_table["fload_2"] := 36
         opcode_table["fload_3"] := 37
         opcode_table["dload"] := 24
+        opcode_table["dload_w"] := 196
         opcode_table["dload_0"] := 38
         opcode_table["dload_1"] := 39
         opcode_table["dload_2"] := 40
@@ -553,16 +560,19 @@ procedure writer_opcodes(writer, p)
         opcode_table["istore_2"] := 61
         opcode_table["istore_3"] := 62
         opcode_table["lstore"] := 55
+        opcode_table["lstore_w"] := 196
         opcode_table["lstore_0"] := 63
         opcode_table["lstore_1"] := 64
         opcode_table["lstore_2"] := 65
         opcode_table["lstore_3"] := 66
         opcode_table["fstore"] := 56
+        opcode_table["fstore_w"] := 196
         opcode_table["fstore_0"] := 67
         opcode_table["fstore_1"] := 68
         opcode_table["fstore_2"] := 69
         opcode_table["fstore_3"] := 70
         opcode_table["dstore"] := 57
+        opcode_table["dstore_w"] := 196
         opcode_table["dstore_0"] := 71
         opcode_table["dstore_1"] := 72
         opcode_table["dstore_2"] := 73
@@ -574,6 +584,7 @@ procedure writer_opcodes(writer, p)
         opcode_table["astore_2"] := 77
         opcode_table["astore_3"] := 78
         opcode_table["iinc"] := 132
+        opcode_table["iinc_w"] := 196
         opcode_table["wide"] := 196
         opcode_table["newarray"] := 188
         opcode_table["anewarray"] := 189
@@ -682,7 +693,7 @@ procedure writer_opcodes(writer, p)
         opcode_table["jsr"] := 168
         opcode_table["jsr_w"] := 201
         opcode_table["ret"] := 169
-        opcode_table["ret_w"] := 209
+        opcode_table["ret_w"] := 196
         opcode_table["ireturn"] := 172
         opcode_table["lreturn"] := 173
         opcode_table["freturn"] := 174
@@ -706,156 +717,58 @@ procedure writer_opcodes(writer, p)
         opcode_table["instanceof"] := 193
         opcode_table["monitorenter"] := 194
         opcode_table["monitorexit"] := 195
-opcode_leaf := set([])
-insert(opcode_leaf, "aconst_null")
-insert(opcode_leaf, "iconst_m1")
-insert(opcode_leaf, "iconst_0")
-insert(opcode_leaf, "iconst_1")
-insert(opcode_leaf, "iconst_2")
-insert(opcode_leaf, "iconst_3")
-insert(opcode_leaf, "iconst_4")
-insert(opcode_leaf, "iconst_5")
-insert(opcode_leaf, "lconst_0")
-insert(opcode_leaf, "lconst_1")
-insert(opcode_leaf, "fconst_0")
-insert(opcode_leaf, "fconst_1")
-insert(opcode_leaf, "fconst_2")
-insert(opcode_leaf, "dconst_0")
-insert(opcode_leaf, "dconst_1")
-insert(opcode_leaf, "iload_0")
-insert(opcode_leaf, "iload_1")
-insert(opcode_leaf, "iload_2")
-insert(opcode_leaf, "iload_3")
-insert(opcode_leaf, "lload_0")
-insert(opcode_leaf, "lload_1")
-insert(opcode_leaf, "lload_2")
-insert(opcode_leaf, "lload_3")
-insert(opcode_leaf, "fload_0")
-insert(opcode_leaf, "fload_1")
-insert(opcode_leaf, "fload_2")
-insert(opcode_leaf, "fload_3")
-insert(opcode_leaf, "dload_0")
-insert(opcode_leaf, "dload_1")
-insert(opcode_leaf, "dload_2")
-insert(opcode_leaf, "dload_3")
-insert(opcode_leaf, "aload_0")
-insert(opcode_leaf, "aload_1")
-insert(opcode_leaf, "aload_2")
-insert(opcode_leaf, "aload_3")
-insert(opcode_leaf, "istore_0")
-insert(opcode_leaf, "istore_1")
-insert(opcode_leaf, "istore_2")
-insert(opcode_leaf, "istore_3")
-insert(opcode_leaf, "lstore_0")
-insert(opcode_leaf, "lstore_1")
-insert(opcode_leaf, "lstore_2")
-insert(opcode_leaf, "lstore_3")
-insert(opcode_leaf, "fstore_0")
-insert(opcode_leaf, "fstore_1")
-insert(opcode_leaf, "fstore_2")
-insert(opcode_leaf, "fstore_3")
-insert(opcode_leaf, "dstore_0")
-insert(opcode_leaf, "dstore_1")
-insert(opcode_leaf, "dstore_2")
-insert(opcode_leaf, "dstore_3")
-insert(opcode_leaf, "astore_0")
-insert(opcode_leaf, "astore_1")
-insert(opcode_leaf, "astore_2")
-insert(opcode_leaf, "astore_3")
-insert(opcode_leaf, "arraylength")
-insert(opcode_leaf, "iaload")
-insert(opcode_leaf, "laload")
-insert(opcode_leaf, "faload")
-insert(opcode_leaf, "daload")
-insert(opcode_leaf, "aaload")
-insert(opcode_leaf, "baload")
-insert(opcode_leaf, "caload")
-insert(opcode_leaf, "saload")
-insert(opcode_leaf, "iastore")
-insert(opcode_leaf, "lastore")
-insert(opcode_leaf, "fastore")
-insert(opcode_leaf, "dastore")
-insert(opcode_leaf, "aastore")
-insert(opcode_leaf, "bastore")
-insert(opcode_leaf, "castore")
-insert(opcode_leaf, "sastore")
-insert(opcode_leaf, "nop")
-insert(opcode_leaf, "Pop")
-insert(opcode_leaf, "pop2")
-insert(opcode_leaf, "dup")
-insert(opcode_leaf, "dup2")
-insert(opcode_leaf, "dup_x1")
-insert(opcode_leaf, "dup2_x1")
-insert(opcode_leaf, "dup_x2")
-insert(opcode_leaf, "dup2_x2")
-insert(opcode_leaf, "swap")
-insert(opcode_leaf, "iadd")
-insert(opcode_leaf, "ladd")
-insert(opcode_leaf, "fadd")
-insert(opcode_leaf, "dadd")
-insert(opcode_leaf, "isub")
-insert(opcode_leaf, "lsub")
-insert(opcode_leaf, "fsub")
-insert(opcode_leaf, "dsub")
-insert(opcode_leaf, "imul")
-insert(opcode_leaf, "lmul")
-insert(opcode_leaf, "fmul")
-insert(opcode_leaf, "dmul")
-insert(opcode_leaf, "idiv")
-insert(opcode_leaf, "ldiv")
-insert(opcode_leaf, "fdiv")
-insert(opcode_leaf, "ddiv")
-insert(opcode_leaf, "irem")
-insert(opcode_leaf, "lrem")
-insert(opcode_leaf, "frem")
-insert(opcode_leaf, "drem")
-insert(opcode_leaf, "ineg")
-insert(opcode_leaf, "lneg")
-insert(opcode_leaf, "fneg")
-insert(opcode_leaf, "dneg")
-insert(opcode_leaf, "ishl")
-insert(opcode_leaf, "ishr")
-insert(opcode_leaf, "iushr")
-insert(opcode_leaf, "lshl")
-insert(opcode_leaf, "lshr")
-insert(opcode_leaf, "lushr")
-insert(opcode_leaf, "Iand")
-insert(opcode_leaf, "land")
-insert(opcode_leaf, "ior")
-insert(opcode_leaf, "lor")
-insert(opcode_leaf, "ixor")
-insert(opcode_leaf, "lxor")
-insert(opcode_leaf, "i2l")
-insert(opcode_leaf, "i2f")
-insert(opcode_leaf, "i2d")
-insert(opcode_leaf, "l2i")
-insert(opcode_leaf, "l2f")
-insert(opcode_leaf, "l2d")
-insert(opcode_leaf, "f2i")
-insert(opcode_leaf, "f2l")
-insert(opcode_leaf, "f2d")
-insert(opcode_leaf, "d2i")
-insert(opcode_leaf, "d2l")
-insert(opcode_leaf, "d2f")
-insert(opcode_leaf, "int2byte")
-insert(opcode_leaf, "int2char")
-insert(opcode_leaf, "int2short")
-insert(opcode_leaf, "lcmp")
-insert(opcode_leaf, "fcmpl")
-insert(opcode_leaf, "fcmpg")
-insert(opcode_leaf, "dcmpl")
-insert(opcode_leaf, "dcmpg")
-insert(opcode_leaf, "ireturn")
-insert(opcode_leaf, "lreturn")
-insert(opcode_leaf, "freturn")
-insert(opcode_leaf, "dreturn")
-insert(opcode_leaf, "areturn")
-insert(opcode_leaf, "vreturn")
-insert(opcode_leaf, "breakpoint")
-insert(opcode_leaf, "athrow")
-insert(opcode_leaf, "monitorenter")
-insert(opcode_leaf, "monitorexit")
-insert(opcode_leaf, "label")
+
+        opcode_leaf := set([
+            "aconst_null",
+            "iconst_m1", "iconst_0", "iconst_1", "iconst_2", "iconst_3",
+            "iconst_4", "iconst_5",
+			"lconst_0", "lconst_1",
+            "fconst_0", "fconst_1", "fconst_2",
+            "dconst_0", "dconst_1",
+            "iload_0", "iload_1", "iload_2", "iload_3",
+            "lload_0", "lload_1", "lload_2", "lload_3",
+            "fload_0", "fload_1", "fload_2", "fload_3",
+            "dload_0", "dload_1", "dload_2", "dload_3",
+            "aload_0", "aload_1", "aload_2", "aload_3",
+            "istore_0", "istore_1", "istore_2", "istore_3",
+            "lstore_0", "lstore_1", "lstore_2", "lstore_3",
+            "fstore_0", "fstore_1", "fstore_2", "fstore_3",
+            "dstore_0", "dstore_1", "dstore_2", "dstore_3",
+            "astore_0", "astore_1", "astore_2", "astore_3",
+            "arraylength",
+            "iaload", "laload", "faload", "daload", "aaload",
+			"baload", "caload", "saload",
+            "iastore", "lastore", "fastore", "dastore", "aastore",
+            "bastore", "castore", "sastore",
+            "nop",
+            "Pop", "pop2",
+			"dup", "dup2", "dup_x1", "dup2_x1", "dup_x2", "dup2_x2",
+            "swap",
+            "iadd", "ladd", "fadd", "dadd",
+            "isub", "lsub", "fsub", "dsub",
+            "imul", "lmul", "fmul", "dmul",
+            "idiv", "ldiv", "fdiv", "ddiv",
+            "irem", "lrem", "frem", "drem",
+            "ineg", "lneg", "fneg", "dneg",
+            "ishl", "ishr", "iushr", "lshl", "lshr", "lushr",
+            "Iand", "land",
+            "ior", "lor",
+            "ixor", "lxor",
+            "i2l", "i2f", "i2d",
+            "l2i", "l2f", "l2d",
+            "f2i", "f2l", "f2d",
+            "d2i", "d2l", "d2f",
+            "int2byte", "int2char", "int2short",
+            "lcmp",
+            "fcmpl", "fcmpg",
+            "dcmpl", "dcmpg",
+            "ireturn", "lreturn", "freturn", "dreturn", "areturn", "vreturn",
+            "breakpoint",
+            "athrow",
+            "monitorenter",
+            "monitorexit",
+            "label"
+		 ])
     }
 
     t := type(p)
@@ -959,24 +872,59 @@ insert(opcode_leaf, "label")
     "lload": {
         writer_u1(writer, p.index)
     }
+    "lload_w": {
+        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        writer_u2(writer, p.index)
+        return
+    }
     "fload": {
         writer_u1(writer, p.index)
+    }
+    "fload_w": {
+        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        writer_u2(writer, p.index)
+        return
     }
     "dload": {
         writer_u1(writer, p.index)
     }
+    "dload_w": {
+        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        writer_u2(writer, p.index)
+        return
+    }
     "lstore": {
         writer_u1(writer, p.index)
+    }
+    "lstore_w": {
+        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        writer_u2(writer, p.index)
+        return
     }
     "fstore": {
         writer_u1(writer, p.index)
     }
+    "fstore_w": {
+        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        writer_u2(writer, p.index)
+        return
+    }
     "dstore": {
         writer_u1(writer, p.index)
+    }
+    "dstore_w": {
+        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        writer_u2(writer, p.index)
+        return
     }
     "iinc": {
         writer_u1(writer, p.index)
         writer_s1(writer, p.const)
+    }
+    "iinc_w": {
+        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        writer_u2(writer, p.index)
+        writer_s2(writer, p.const)
     }
     "newarray": {
         writer_u1(writer, p.atype)
@@ -1045,6 +993,7 @@ insert(opcode_leaf, "label")
         writer_u1(writer, p.index)
     }
     "ret_w": {
+        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
         writer_u2(writer, p.index)
     }
     "lookupswitch": {
@@ -1114,16 +1063,19 @@ procedure offset_opcodes(p, offset, locations)
         offset_table["iload_2"] := 0
         offset_table["iload_3"] := 0
         offset_table["lload"] := 1
+        offset_table["lload_w"] := 3
         offset_table["lload_0"] := 0
         offset_table["lload_1"] := 0
         offset_table["lload_2"] := 0
         offset_table["lload_3"] := 0
         offset_table["fload"] := 1
+        offset_table["fload_w"] := 3
         offset_table["fload_0"] := 0
         offset_table["fload_1"] := 0
         offset_table["fload_2"] := 0
         offset_table["fload_3"] := 0
         offset_table["dload"] := 1
+        offset_table["dload_w"] := 3
         offset_table["dload_0"] := 0
         offset_table["dload_1"] := 0
         offset_table["dload_2"] := 0
@@ -1141,16 +1093,19 @@ procedure offset_opcodes(p, offset, locations)
         offset_table["istore_2"] := 0
         offset_table["istore_3"] := 0
         offset_table["lstore"] := 1
+        offset_table["lstore_w"] := 3
         offset_table["lstore_0"] := 0
         offset_table["lstore_1"] := 0
         offset_table["lstore_2"] := 0
         offset_table["lstore_3"] := 0
         offset_table["fstore"] := 1
+        offset_table["fstore_w"] := 3
         offset_table["fstore_0"] := 0
         offset_table["fstore_1"] := 0
         offset_table["fstore_2"] := 0
         offset_table["fstore_3"] := 0
         offset_table["dstore"] := 1
+        offset_table["dstore_w"] := 3
         offset_table["dstore_0"] := 0
         offset_table["dstore_1"] := 0
         offset_table["dstore_2"] := 0
@@ -1162,6 +1117,7 @@ procedure offset_opcodes(p, offset, locations)
         offset_table["astore_2"] := 0
         offset_table["astore_3"] := 0
         offset_table["iinc"] := 2
+        offset_table["iinc_w"] := 5
         offset_table["newarray"] := 1
         offset_table["anewarray"] := 2
         offset_table["multinewarray"] := 3
@@ -1269,7 +1225,7 @@ procedure offset_opcodes(p, offset, locations)
         offset_table["jsr"] := 2
         offset_table["jsr_w"] := 4
         offset_table["ret"] := 1
-        offset_table["ret_w"] := 2
+        offset_table["ret_w"] := 3
         offset_table["ireturn"] := 0
         offset_table["lreturn"] := 0
         offset_table["freturn"] := 0
