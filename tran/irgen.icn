@@ -167,31 +167,30 @@ procedure ir_ExclAlt(p, st, target, bounded)
 	CG.emit(p.e2.ir.failure, [ irGoto(p.ir.failure) ])
 end
 
-# record Alt( e1 e2 )
+# record Alt( eList )
 procedure ir_Alt(p, st, target, bounded)
-	local t, tmpst
+	local t, tmpst, i
 	
 	init4ir(p)
 	/bounded & (t := ir_tmploc(st))
 
-	tmpst := copy(st)
+	every i := 1 to *p.eList do {
+		tmpst := copy(st)
+		ir(p.eList[i], tmpst, target, bounded)
+		max_st(st, tmpst)
+	}
 
-	ir(p.e1, st, target, bounded)
-	ir(p.e2, tmpst, target, bounded)
-	max_st(st, tmpst)
-
-	CG.emit(p.ir.start, [ irGoto(p.e1.ir.start) ])
+	CG.emit(p.ir.start, [ irGoto(p.eList[1].ir.start) ])
 	/bounded & CG.emit(p.ir.resume, [ irGoto(t) ])
-	CG.emit(p.e1.ir.success, [
-		irMove(t, p.e1.ir.resume),
-		irGoto(p.ir.success)
-		])
-	CG.emit(p.e1.ir.failure, [ irGoto(p.e2.ir.start) ])
-	CG.emit(p.e2.ir.success, [
-		irMove(t, p.e2.ir.resume),
-		irGoto(p.ir.success)
-		])
-	CG.emit(p.e2.ir.failure, [ irGoto(p.ir.failure) ])
+
+	every i := 1 to *p.eList do {
+		CG.emit(p.eList[i].ir.success, [
+			irMove(t, p.eList[i].ir.resume),
+			irGoto(p.ir.success)
+			])
+		CG.emit(p.eList[i].ir.failure, [ irGoto(p.eList[i+1].ir.start)])
+	}
+	CG.emit(p.eList[-1].ir.failure, [ irGoto(p.ir.failure)])
 end
 
 # record RepAlt( expr )
@@ -841,7 +840,7 @@ procedure ir_Create(p, st, target, bounded)
 	init4ir(p)
 	t := (\target | ir_tmp(st))
 
-	ir(p.expr, st, t, bounded)
+	ir(p.expr, st, t, &null)
 
 	CG.emit(p.ir.start, [
 		irCoord(p.coord),

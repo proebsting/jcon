@@ -471,14 +471,14 @@ end
 
 procedure expr3()
 #  expr4 {  BAR  expr3 } 
-	local ret, right, coord
+	local ret, a
 
 	ret := expr4()
 	while tok_rec === BAR do {
-		coord := tok_rec.coord
-		eat_token()
-		right := expr3()
-		ret := Alt(ret, right, coord)
+		/a := Alt([ret], tok_rec.coord)
+	    	eat_token()
+		put(a.eList, expr3())
+		ret := a
 	}
 	return ret
 end

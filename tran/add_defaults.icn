@@ -58,10 +58,13 @@ procedure add_defaults_ExclAlt(p)
 	return p
 end
 
-# record Alt( e1 e2 )
+# record Alt( eList )
 procedure add_defaults_Alt(p)
-	p.e1 := add_defaults(p.e1)
-	p.e2 := add_defaults(p.e2)
+	local i
+
+	every i := 1 to *p.eList do {
+		p.eList[i] := add_defaults(p.eList[i])
+	}
 	return p
 end
 
