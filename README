@@ -23,11 +23,12 @@ Features and implementation details are subject to change.
 
 REQUIREMENTS
 
-1.  UNIX WITH /BIN/KSH
+1.  A UNIX-LIKE ENVIRONMENT WITH THE KORN SHELL
 
-Jcon runs on UNIX.  The translator and runtime system are mostly
-OS-independent, but a Korn Shell script is the current means of
-tying things together.
+Building and running Jcon requires various Unix utilities including
+the Korn Shell.  Unix systems with /bin/ksh qualify, of course.
+Similar environments are also available for other platforms; in
+particular, Jcon runs on Windows NT using the MKS Toolkit.
 
 2.  INSTALLED SOFTWARE
 
@@ -72,6 +73,8 @@ Jcon has been tested by us on:
     SGI Indigo2 / Irix 6.2 / SGI Java 1.1.2
     Sun Sparc2 / Solaris 2.5.1 (SunOS 5.5.1) / Sun Java 1.1.2
     DEC Alpha 4/233 / Digital Unix 4.0B / Digital Java 1.1.1beta
+And by others on:
+    Intel PC / Windows NT + MKS toolkit / JDK for Win95
 We would be interested to learn of either successes or failures
 on other platforms.
 
