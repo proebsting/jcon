@@ -132,7 +132,7 @@ procedure def_use(p, this, uses, defs)
 			every def_use(!p.valueList, uses, uses, defs); }
 	"irOpFunction":{def_use(p.lhs, defs, uses, defs);
 			def_use(p.fn, uses, uses, defs);
-			def_use(p.failLabel, uses, uses, defs);
+			def_use(\p.failLabel, uses, uses, defs);
 			every def_use(!p.argList, uses, uses, defs); }
 	"irMakeClosure":{ def_use(p.lhs, defs, uses, defs);
 			def_use(p.fn, uses, uses, defs);
@@ -190,7 +190,7 @@ procedure opt_rewrite(p, rename)
 			every i := 1 to *p.argList do {
 				p.argList[i] := opt_rewrite(p.argList[i],
 							    rename); }
-			p.failLabel := opt_rewrite(p.failLabel, rename);
+			p.failLabel := opt_rewrite(\p.failLabel, rename);
 			}
 	"irMakeClosure":{ p.lhs := opt_rewrite(p.lhs, rename);
 			p.fn := opt_rewrite(p.fn, rename);
@@ -308,8 +308,8 @@ procedure gotos(p, wl, seen, t)
 		gotos(\p.continuation, wl, seen, t)
 		}
 	"irOpFunction" : {  # irOpFunction : ( lhs fn argList failLabel )
-		p.failLabel := goto_chain(p.failLabel, t)
-		gotos(p.failLabel, wl, seen, t)
+		p.failLabel := goto_chain(\p.failLabel, t)
+		gotos(\p.failLabel, wl, seen, t)
 		}
 	"irResume" : {  # irResume : ( closure failLabel retValue )
 		p.failLabel := goto_chain(p.failLabel, t)

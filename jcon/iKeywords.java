@@ -559,6 +559,11 @@ class k$error extends vSimpleVar {		// &trace
 	public vVariable Assign(vValue i) {
 		value = i.mkInteger();
 		error = ((vInteger)value).value;
+		if (error != 0 & !iEnv.error_conversion) {
+		    error = 0;
+		    value = iNew.Integer(error);
+		    iRuntime.error(904,this);
+		}
 		return this;
 	}
 

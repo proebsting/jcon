@@ -69,9 +69,7 @@ end
 
 procedure transfer_to(s, p)
 	case type(p) of {
-	default: {
-		stop("ERROR ", image(&file), " ", &line, ": ", image(p))
-	}
+	default: runerr(1000, p)
 	"irLabel" : {
 		put(s, goto_w(\bc_ir2bc_labels[p]) ) | runerr(1000, p)
 	}
@@ -563,16 +561,24 @@ procedure gen_bc_irOpFunction(s, p)
 	method := create_methodref(bc_proc_classptr, "call", "(" || args || ")Lrts/vDescriptor;", class)
 	put(s, invokevirtual(method))
 
-	if \p.lhs then {
-		put(s, dup())
-		target := label()
-		put(s, ifnonnull(target))
-		put(s, Pop())
-		transfer_to(s, p.failLabel)
-		put(s, target)
-		gen_bc_assign_to(s, p.lhs)
+	if \p.failLabel then {
+		if \p.lhs then {
+			put(s, dup())
+			target := label()
+			put(s, ifnonnull(target))
+			put(s, Pop())
+			transfer_to(s, p.failLabel)
+			put(s, target)
+			gen_bc_assign_to(s, p.lhs)
+		} else {
+			put(s, ifnull(p.failLabel))
+		}
 	} else {
-		put(s, ifnull(p.failLabel))
+		if \p.lhs then {
+			gen_bc_assign_to(s, p.lhs)
+		} else {
+			put(s, Pop())
+		}
 	}
 	return s
 end
@@ -1376,12 +1382,16 @@ end
 
 procedure bc_create_declare(c)
 	local declare, declarecode, declareGlobal, k, s, declareProcedure
-	local declareRecord, stringclass, i, f
+	local declareRecord, stringclass, i, f, declareNoErrorConversion
 
 	declare := create_method(c, 0, "declare", "()V")
 	declarecode := create_code(c, 10, 10)
 	put(declare.attributes, declarecode)
 
+	if \noerror2failure then {
+		declareNoErrorConversion := create_methodref(c, "declareNoErrorConversion", "()V", "rts/iEnv")
+		put(declarecode.code, invokestatic(declareNoErrorConversion) )
+	}
 	declareGlobal := create_methodref(c, "declareGlobal", "(Ljava/lang/String;)V", "rts/iEnv")
 	every k := !bc_global_set do {
 		s := cp_String(c, cp_Utf8(c, k)) | stop("ERROR ", &file, " ", &line)

@@ -4,6 +4,7 @@ import java.util.Hashtable;
 
 public class iEnv {
 	static boolean invokeAll = false;
+	static boolean error_conversion = true;
 	static Hashtable invoke = new Hashtable();
 	static Hashtable symtab = new Hashtable();
 	static Hashtable keytab = new Hashtable();
@@ -17,6 +18,10 @@ public class iEnv {
 
 	public static vCoexp main;
 	public static vCoexp cur_coexp;
+
+	public static void declareNoErrorConversion() {
+		error_conversion = false;
+	}
 
 	public static void declareInvoke(String s) {
 		invoke.put(s,s);
