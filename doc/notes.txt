@@ -34,9 +34,9 @@ error reporting:
 -- long strings are not elided, list contents are omitted, etc.
 
 miscellaneous:
--- system(s) will connect the new process's stdout/stderr to
-   nonexistent files, and stdin will not be written to.
--- random selection of elements of some types will differ from v9
+-- system(s) connects the new process's stdout/stderr to
+   nonexistent files, and stdin will not be written to
+-- random selection of elements of some types differs from v9
 -- read() and write() don't accept file arguments
 -- display() ignores its arguments (and displays everything)
 -- display() prints globals in an unsorted order

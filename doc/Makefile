@@ -12,7 +12,7 @@ sep.t:
 	echo $(DASHES)$(DASHES)				>>sep.t
 	echo ""						>>sep.t
 
-hdr.t:
+hdr.t:	FORCE
 	echo "Jcon Usage and Status Notes"		> hdr.t
 	date						>>hdr.t
 
@@ -33,6 +33,8 @@ funcs.t:  ../rts/iBuiltins.java funcs.sed
 	echo ""						>>funcs.t
 	sed -f funcs.sed ../rts/iBuiltins.java | sort | \
 	    pr -5 -t -w 60 -l 18 | sed 's/^/	/'	>>funcs.t
+
+FORCE:
 
 clean:
 	rm -f $(OUT) *.t
