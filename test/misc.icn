@@ -1,4 +1,6 @@
 procedure main()
+   local x
+   x := "o"
    write("a" & "b")
    write("c" | "d")
    write(\"e")
@@ -7,4 +9,5 @@ procedure main()
    write(/&null & "h")
    write("i" || "jk")
    write(23 || "skidoo")
+   write(x, .x, x := "b")
 end
