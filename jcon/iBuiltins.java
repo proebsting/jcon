@@ -30,10 +30,10 @@ void announce() {
 	declare("cset", 1);
 	declare("delay", 1);
 	declare("delete", 2);
-	declare("detab", -1);
+	declare("detab", -2);
 	declare("display", 2);
 	declare("dtor", 1);
-	declare("entab", -1);
+	declare("entab", -2);
 	declare("errorclear", 0);
 	declare("exit", 1);
 	declare("exp", 1);
@@ -61,7 +61,7 @@ void announce() {
 	declare("move", 1);
 	declare("name", 1);
 	declare("numeric", 1);
-	declare("open", 2);
+	declare("open", -3);
 	declare("ord", 1);
 	declare("pop", 1);
 	declare("pos", 1);
