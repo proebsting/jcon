@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/ksh -p
 #
 #  addtest filename.icn ... -- add test(s) to standard collection
 #

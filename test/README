@@ -1,0 +1,13 @@
+jcon/test
+
+This directory contains automated test for jcon.
+The important scripts are:
+
+    runtest	runs tests -- all or some
+
+    addtest	adds a new test, using icont as baseline for correctness
+
+    jxprof	runs a Jcon program with profiling
+		(robustness and reliability of this tool is questionable)
+
+See the script headers for usage.

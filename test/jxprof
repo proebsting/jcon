@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/ksh -p
 #
 #  jxprof filename [args] -- execute Jcon program with profiling
 #

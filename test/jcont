@@ -1,6 +1,3 @@
 #!/bin/sh
-#
-#  if I really trusted CVS to do the right thing
-#  this file would now be a symbolic link
 
 exec ../bin/jcont "$@"

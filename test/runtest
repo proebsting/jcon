@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/ksh -p
 #
 #  runtest [-JP] [file...] -- run test
 #
