@@ -29,7 +29,7 @@ UIPATH="$IPATH"
 
 #  clear Icon and other environments
 unset ICONX ICONCORE TRACE IPATH LPATH NOERRBUF
-unset BLKSIZE HEAPSIZE STRSIZE COEXPSIZE MSTKSIZE QLSIZE
+#unset BLKSIZE HEAPSIZE STRSIZE COEXPSIZE MSTKSIZE QLSIZE
 unset UNZIP UNZIPOPT
 
 #  set tracing modes
@@ -134,7 +134,7 @@ else
     JCON=$IDIR/src/jcon
     JRTS=$IDIR/rts/rts.zip
 fi
-JCON="$JCON $JCOPT -target=java"
+JCON="$JCON $JCOPT -target=bc"
 ZIP="$PROJHOME/$ARCH/bin/zip"
 UNZIP="$PROJHOME/$ARCH/bin/unzip"
 
@@ -146,11 +146,11 @@ JDK="$SUMATRA/$ARCH/jdk.1.0.2"
 #%#% would like to use toba, but need a no-warnings option
 #%#% JAVAC="$SUMATRA/$ARCH/toba/bin/toba -K"
 JAVAC="$JDK/bin/javac -nowarn"
-JAVA="$JDK/bin/java"
+JAVA="$JDK/bin/java -verify"
 CLASSPATH="$JRTS:$JDK/lib/classes.zip"
 
 # estimate the needed header size
-HBASE=450	# approximate size of fixed text, plus a little slop
+HBASE=500	# approximate size of fixed text, plus a little slop
 (( HDRSIZE = $HBASE + ${#SYSEXPORT} + ${#CMDLINE} + ${#ROOTS} ))  # est. total
 (( HDRSIZE = (HDRSIZE + 15) & ~15 ))			# round to mult of 16
 
@@ -184,11 +184,7 @@ for FNAME in $IFILES; do
     rm -f $TDIR/*.class
     # Icon to Java
     $ANNOUNCE 1>&2 $FNAME.icn:
-    if $PREPROC $FNAME.icn | $JCON -class=l\$$FNAME >$TDIR/$FNAME.java ; then
-	# extract linkage information from stylized comments
-	sed -n 's=^//JCON//links:==p' $TDIR/$FNAME.java >$TDIR/links
-	# Java to .class
-	(cd $TDIR; $JAVAC $FNAME.java)
+    if $PREPROC $FNAME.icn | $JCON -class=l\$$FNAME -dir=$TDIR/ ; then
 	# .class files (and linkage info) to .zip
 	$ZIP -0 -j -q $FNAME.zip $TDIR/links $TDIR/*.class
     else

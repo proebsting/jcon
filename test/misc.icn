@@ -3,6 +3,9 @@ record message(who,gap,what)
 procedure main()
    local i, x
 
+   x := 1
+   x +:= |1		# tickled optimizer bug.
+   write(x)
    x := "o"
    write("a" & "b")
    write("c" | "d")
