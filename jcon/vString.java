@@ -25,10 +25,14 @@ public boolean equals(Object o)	{
 String write()		{ return value; }
 String type()		{ return "string"; }
 
-String image() {
-    StringBuffer b = new StringBuffer(value.length() + 3);
-    b.append("\"");
-    for (int i = 0; i < value.length(); i++) {
+String image()		{ return image(value.length()); }
+String report()		{ return image(16); }	 // limit to max of 16 chars
+
+String image(int maxlen) {		// make image, up to maxlen chars
+    StringBuffer b = new StringBuffer(maxlen + 5);
+    b.append('"');
+    int i;
+    for (i = 0; i < maxlen && i < value.length(); i++) {
 	char c = value.charAt(i);
 	if (c == '"') {
 	    b.append("\\\"");
@@ -36,11 +40,13 @@ String image() {
 	    appendEscaped(b, c);
         }
     }
-    b.append("\"");
+    if (i < value.length()) {
+	b.append("...");
+    }
+    b.append('"');
     return b.toString();
 }
 
-String report()		{ return image(); }	 //#%#% should elide if long
 
 int rank()		{ return 30; }		// strings rank after reals
 
