@@ -1,4 +1,4 @@
-#!/bin/ksh
+#!/bin/ksh -p
 #
 #  jcont -- compile Icon program
 #
@@ -223,7 +223,7 @@ done
 # (if making significant changes here, also adjust HBASE above)
 (dd bs=$HDRSIZE conv=sync 2>$NULLFILE; cat $TDIR/combined.zip) \
     <<=====EOF===== >$XFILE
-#!/bin/ksh
+#!/bin/ksh -p
 
 # built by:  $CMDLINE
 
