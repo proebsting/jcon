@@ -1,5 +1,9 @@
 Version History
 
+0.5.3
+	fix coercion and error checking in x ^ y
+	minor error reporting changes for v9 compatibility
+
 0.5.2	July 28, 1997
 	incorporate new preprocessor
 	use Icon program for linking
