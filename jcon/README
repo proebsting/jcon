@@ -41,6 +41,8 @@ error reporting:
 -- no error recovery yet
 -- long strings are not elided, list contents are omitted, etc.
 -- main's argument list is shown in the traceback
+-- arg lists for functions show actual instead of expected number of arguments
+   (e.g.: a call to insert() traces as insert() not insert(&null,&null,&null))
 
 arguably correct differences:
 -- "n to MAXINT" case works correctly in to-by

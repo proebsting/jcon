@@ -2,7 +2,7 @@
 //
 //  A VarExpr represents an assignable expression such as a substring,
 //  table element, or indexed list entry.  Every VarExpr points to 
-//  an underlying SimpleVar.
+//  an underlying vVariable.
 
 abstract class vVarExpr extends vVariable {
 

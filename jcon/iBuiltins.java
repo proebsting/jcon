@@ -200,6 +200,9 @@ class f$insert extends iFunctionClosure {			// insert(X,x,y)
 
 class f$key extends iClosure {					//  key(X)
 	void nextval() {
+		if (arguments.length == 0) {
+			iRuntime.error(124);
+		}
 		retvalue = arguments[0].Key(this);
 	}
 }
