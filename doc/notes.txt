@@ -3,7 +3,7 @@ what's implemented:
 -- all keywords, although resource keywords produce zeroes
 -- preprocessing
 -- most functions; missing chdir(), loadfunc(), getch()/getche()/kbhit()
--- almost no graphics, although a start has been made (see below)
+-- only part of the graphics repertoire (see below)
 
 general caveats:
 -- little optimization has been done
@@ -89,14 +89,14 @@ compatible, although the book is unclear or wrong:
 ------------------------------------------------------------------------------
 
 graphics overview:
--- very few things are implemented at this time; few existing programs will run
+-- only some of the graphics features are present
 -- see rts/wBuiltins.java for the list of implemented functions
--- limitations other than "to be fixed" are likely to remain
+-- see rts/wAttrib.java for the list of implemented attributes
 
 graphics bugs:
 -- open(s, "g") can return before the window is fully open 
+-- the window can be seen resizing itself as it opens
 -- window repair is only done when paused for event input
--- resize events are not reported
 -- &interval is always zero
 -- graphics output is flushed before any read() -- even untranslated from disk
 
@@ -109,12 +109,13 @@ events:
 -- &meta is never set with mouse events (Java uses it to encode "which button")
 -- X returns "\r" for the Enter key but Java (and therefore Jcon) returns "\n"
 -- "outboard" keys differ from X, but are similar to Windows; see keysyms.icn
+-- resize events are not reported yet
 
 colors:
 -- variants (dark, weak, etc.) of unsaturated colors (brown, pink, violet)
-   are different and arguably better  
+   are different from v9 and arguably better  
 -- "light black" and "pale black" are black, not shades of gray
--- on 8-bit displays, colors may be approximated
+-- on 8-bit displays, colors may be approximated (depending on Java system)
 -- there is no inherent limit to the number of colors in use (v9 stops at 256)
 -- mutable colors are not available
 -- gamma correction is not yet implemented; acts as if gamma=1.0
@@ -124,8 +125,7 @@ fonts:
 -- Icon generic family names, and all characteristics, are case-insensitive
 -- generic names {serif, sans, typewriter} work well; bold/italic variants work
 -- generic "mono" appearance varies by platform; bold/italic don't always work
--- Font(s) always succeeds for non-empty s
-   (Java always returns a valid font, even for unrecognized family names)
+-- Font(s) always succeeds for non-empty s (Java never rejects any name)
 -- the special X font name "fixed" is modeled imperfectly by "mono,10"
 
 ------------------------------------------------------------------------------
