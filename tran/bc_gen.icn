@@ -814,7 +814,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 		put(clinitcode.code, putstatic(f))
 	}
 
-	bc_create_nextval(c)
+	bc_create_nextval(c, code.ir.start)
 
 	init := create_method(c, 1, "<init>", "()V")
 	initcode := create_code(c, 10, 10)
@@ -900,7 +900,7 @@ procedure bc_register(t)
 	}
 end
 
-procedure bc_create_nextval(c)
+procedure bc_create_nextval(c, start)
 	local PC, nextval, nextvalcode, k, lab, switch, insns, deflab
 	local runtimeerror, r
 	local a, s, tmplab
@@ -1000,12 +1000,7 @@ procedure bc_create_nextval(c)
 	put(nextvalcode.code, switch := tableswitch(0, deflab, 1, *bc_emit_table, list(*bc_emit_table)) )
 
 
-	every k := key(bc_emit_table) do {
-		lab := switch.offsets[bc_labels[k]] := bc_ir2bc_labels[k]
-		put(nextvalcode.code, lab)
-		insns := bc_emit_table[k]
-		every gen_bc(nextvalcode.code, !insns)
-	}
+	bc_emit_code(nextvalcode.code, switch, start)
 
 	runtimeerror := runtimeerror_methodref(c)
 	put(nextvalcode.code, deflab)
@@ -1013,6 +1008,31 @@ procedure bc_create_nextval(c)
 	put(nextvalcode.code, invokestatic(runtimeerror) )
 
 	put(nextvalcode.code, vreturn())
+end
+
+global bc_emitted
+
+procedure bc_emit_code0(s, switch, k)
+	local lab, insns
+
+	if member(bc_emitted, k) then return
+	insert(bc_emitted, k)
+
+	lab := switch.offsets[bc_labels[k]] := bc_ir2bc_labels[k]
+	put(s, lab)
+	insns := bc_emit_table[k]
+	every gen_bc(s, insns[1 to *insns-1])
+	if type(insns[-1]) == "irGoto" & type(insns[-1].location) == "irLabel" & not member(bc_emitted, insns[-1].location) then {
+		bc_emit_code0(s, switch, insns[-1].location)
+	} else {
+		gen_bc(s, insns[-1])
+	}
+end
+
+procedure bc_emit_code(s, switch, start)
+	bc_emitted := set([])
+	bc_emit_code0(s, switch, start)
+	every bc_emit_code0(s, switch, key(bc_emit_table))
 end
 
 procedure bc_create_locals(c, undeclared, statics, sortedvars)
