@@ -114,7 +114,7 @@ String args2string(vDescriptor[] args) {
     return call;
 }
 
-void propagate(String procname, vDescriptor[] args) {
+public void propagate(String procname, vDescriptor[] args) {
     String call = procname + args2string(args);
     propagate(null, 0, call);
 }
