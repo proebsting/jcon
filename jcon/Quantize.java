@@ -36,7 +36,7 @@ public class Quantize {
 
 //  configuration: n bits of resolution require a 2^(3n)-sized int array
 
-private static final int Qres = 6;			// quantizatn resoultion
+private static final int Qres = 6;			// quantizatn resolution
 private static final int Qignore = 8 - Qres;		// bits ignored
 private static final int Qshades = 1 << Qres;		// shades per primary
 private static final int Qmask = Qshades - 1;		// corresponding bitmask

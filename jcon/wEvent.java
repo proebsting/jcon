@@ -157,8 +157,11 @@ public void componentShown(ComponentEvent e)	{}
 
 public void componentResized(ComponentEvent e) {
     Dimension d = e.getComponent().getSize();			// get new size
-    if (c.width == d.width && c.height == d.height) {
+    if (d.width == c.width && d.height == c.height) {
 	return;		// discard program-generated resize
+    }
+    if (d.width == c.width + 1 && d.height == c.height) {
+	return;		// discard bogus initial resize from some Java impls
     }
     c.resize(null, d.width, d.height);				// resize image
     enqueue(vInteger.New(Resize), d.width, d.height, null);	// enqueue event

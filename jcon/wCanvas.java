@@ -10,7 +10,7 @@ import java.util.*;
 public final class wCanvas extends Canvas {
 
     Frame f;			// enclosing Frame object
-    Image i;			// backing image for refreshing visable image
+    Image i;			// backing image for refreshing visible image
 
     vList evq;			// event queue
     wTTY tty;			// file I/O stuff

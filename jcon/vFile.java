@@ -80,7 +80,7 @@ public vDescriptor Bang() {
 
 //  shutdown() -- handle files for program termination.
 //
-//  This method must be called when the progam exits.  It flushes
+//  This method must be called when the program exits.  It flushes
 //  stdout/stderr and closes other files.  This is especially needed
 //  to kill any processes spawned by opening pipes.
 
@@ -128,7 +128,7 @@ public static vFile New(String filename, String mode, vDescriptor args[]) {
 // new vFile() -- degenerate constructor for vWindow subclass
 
 vFile() {
-    openfiles.put(this, this);				// rememver open file
+    openfiles.put(this, this);				// remember open file
 }
 
 

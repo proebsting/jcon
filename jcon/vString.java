@@ -254,7 +254,7 @@ public boolean equals(Object o)	{
 
 //  general vDescriptor primitives
 
-public vString mkString()	{ return this; } // no-op coversion to vString
+public vString mkString()	{ return this; } // no-op conversion to vString
 
 public vString write()		{ return this; }
 

@@ -1,4 +1,4 @@
-//  iOperators.java -- string invodation of Icon operators
+//  iOperators.java -- string invocation of Icon operators
 
 package rts;
 
