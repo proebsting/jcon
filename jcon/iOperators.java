@@ -9,6 +9,8 @@ public class iOperators extends iFile {
 
 void announce() {
 
+    declare("#", 1, "oLimit");		// check L in (E\L)
+
     declare(":=", 2, "oAssign");
     declare("<-", 2, "oRevAssign");
     declare("<->", 2, "oRevSwap");
@@ -90,6 +92,17 @@ static void declare(String opr, int args, String name)
 //------------------------------------------  individual operators follow
 
 
+public class oLimit extends iUnaryValueClosure {		//  #x
+	public static iClosure instance = new oLimit();
+	vDescriptor function(vDescriptor arg) {
+		vInteger i = arg.mkInteger();
+		if (i.value > 0) {
+			return i;
+		}
+		return null;
+	}
+	String tfmt() { return "limit counter: $1"; }
+}
 
 public class oAssign extends iBinaryRefClosure {		// x1 := x2
 	public static iClosure instance = new oAssign();
