@@ -92,16 +92,225 @@ class f$reads extends vProc2 {				// reads(f,n)
 
 
 class f$write extends vProcV {				// write(...)
+
+    static vDescriptor a0[] = new vDescriptor[0];
+    static vDescriptor a1[] = new vDescriptor[1];
+    static vDescriptor a2[] = new vDescriptor[2];
+    static vDescriptor a3[] = new vDescriptor[3];
+    static vDescriptor a4[] = new vDescriptor[4];
+    static vDescriptor a5[] = new vDescriptor[5];
+    static vDescriptor a6[] = new vDescriptor[6];
+    static vDescriptor a7[] = new vDescriptor[7];
+    static vDescriptor a8[] = new vDescriptor[8];
+    static vDescriptor a9[] = new vDescriptor[9];
+
     public vDescriptor Call(vDescriptor[] v) {
 	return fIO.print(k$output.file, v, true);
     }
+
+    public vDescriptor Call() {
+	return fIO.print(k$output.file, a0, true);
+    }
+
+    public vDescriptor Call(vDescriptor a) {
+	a1[0] = a;
+	return fIO.print(k$output.file, a1, true);
+    }
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	a2[0] = a;
+	a2[1] = b;
+	return fIO.print(k$output.file, a2, true);
+    }
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
+	a3[0] = a;
+	a3[1] = b;
+	a3[2] = c;
+	return fIO.print(k$output.file, a3, true);
+    }
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d) {
+	a4[0] = a;
+	a4[1] = b;
+	a4[2] = c;
+	a4[3] = d;
+	return fIO.print(k$output.file, a4, true);
+    }
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e) {
+	a5[0] = a;
+	a5[1] = b;
+	a5[2] = c;
+	a5[3] = d;
+	a5[4] = e;
+	return fIO.print(k$output.file, a5, true);
+    }
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f) {
+	a6[0] = a;
+	a6[1] = b;
+	a6[2] = c;
+	a6[3] = d;
+	a6[4] = e;
+	a6[5] = f;
+	return fIO.print(k$output.file, a6, true);
+    }
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g) {
+	a7[0] = a;
+	a7[1] = b;
+	a7[2] = c;
+	a7[3] = d;
+	a7[4] = e;
+	a7[5] = f;
+	a7[6] = g;
+	return fIO.print(k$output.file, a7, true);
+    }
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h) {
+	a8[0] = a;
+	a8[1] = b;
+	a8[2] = c;
+	a8[3] = d;
+	a8[4] = e;
+	a8[5] = f;
+	a8[6] = g;
+	a8[7] = h;
+	return fIO.print(k$output.file, a8, true);
+    }
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h,
+    vDescriptor i) {
+	a9[0] = a;
+	a9[1] = b;
+	a9[2] = c;
+	a9[3] = d;
+	a9[4] = e;
+	a9[5] = f;
+	a9[6] = g;
+	a9[7] = h;
+	a9[8] = i;
+	return fIO.print(k$output.file, a9, true);
+    }
+
 }
 
 
 
 class f$writes extends vProcV {				// writes(...)
+
+    static vDescriptor a0[] = new vDescriptor[0];
+    static vDescriptor a1[] = new vDescriptor[1];
+    static vDescriptor a2[] = new vDescriptor[2];
+    static vDescriptor a3[] = new vDescriptor[3];
+    static vDescriptor a4[] = new vDescriptor[4];
+    static vDescriptor a5[] = new vDescriptor[5];
+    static vDescriptor a6[] = new vDescriptor[6];
+    static vDescriptor a7[] = new vDescriptor[7];
+    static vDescriptor a8[] = new vDescriptor[8];
+    static vDescriptor a9[] = new vDescriptor[9];
+
     public vDescriptor Call(vDescriptor[] v) {
 	return fIO.print(k$output.file, v, false);
+    }
+
+    public vDescriptor Call() {
+	return fIO.print(k$output.file, a0, false);
+    }
+
+    public vDescriptor Call(vDescriptor a) {
+	a1[0] = a;
+	return fIO.print(k$output.file, a1, false);
+    }
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	a2[0] = a;
+	a2[1] = b;
+	return fIO.print(k$output.file, a2, false);
+    }
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
+	a3[0] = a;
+	a3[1] = b;
+	a3[2] = c;
+	return fIO.print(k$output.file, a3, false);
+    }
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d) {
+	a4[0] = a;
+	a4[1] = b;
+	a4[2] = c;
+	a4[3] = d;
+	return fIO.print(k$output.file, a4, false);
+    }
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e) {
+	a5[0] = a;
+	a5[1] = b;
+	a5[2] = c;
+	a5[3] = d;
+	a5[4] = e;
+	return fIO.print(k$output.file, a5, false);
+    }
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f) {
+	a6[0] = a;
+	a6[1] = b;
+	a6[2] = c;
+	a6[3] = d;
+	a6[4] = e;
+	a6[5] = f;
+	return fIO.print(k$output.file, a6, false);
+    }
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g) {
+	a7[0] = a;
+	a7[1] = b;
+	a7[2] = c;
+	a7[3] = d;
+	a7[4] = e;
+	a7[5] = f;
+	a7[6] = g;
+	return fIO.print(k$output.file, a7, false);
+    }
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h) {
+	a8[0] = a;
+	a8[1] = b;
+	a8[2] = c;
+	a8[3] = d;
+	a8[4] = e;
+	a8[5] = f;
+	a8[6] = g;
+	a8[7] = h;
+	return fIO.print(k$output.file, a8, false);
+    }
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+    vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h,
+    vDescriptor i) {
+	a9[0] = a;
+	a9[1] = b;
+	a9[2] = c;
+	a9[3] = d;
+	a9[4] = e;
+	a9[5] = f;
+	a9[6] = g;
+	a9[7] = h;
+	a9[8] = i;
+	return fIO.print(k$output.file, a9, false);
     }
 }
 
