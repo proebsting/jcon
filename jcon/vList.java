@@ -39,9 +39,13 @@ private vList(vDescriptor[] elements) {		// new Vlist(elements[])
     }
 }
 
-private vList(Vector v) {			// new Vlist(Vector v)
+private vList(Vector oldv) {			// new Vlist(Vector v)
     super(nextsn++);
-    this.v = (Vector) v.clone();
+    v = new Vector(oldv.size());
+    for (int i = 0; i < oldv.size(); i++) {
+	vValue vv = ((vDescriptor)(oldv.elementAt(i))).Deref();
+	v.addElement(new vListVar(this, vv));
+    }
 }
 
 

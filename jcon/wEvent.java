@@ -82,9 +82,9 @@ void enqueue(vValue a, InputEvent e) {
 
 
 
-//  dequeue(list) -- get next event from a window
+//  dequeue(list, dx, dy) -- get next event from a window
 
-static vValue dequeue(vList evq) {
+static vValue dequeue(vList evq, int dx, int dy) {
     vValue a, xv, yv;
 
     a = evq.Get();
@@ -118,9 +118,8 @@ static vValue dequeue(vList evq) {
     long expo = y >> 28;
     iKeyword.interval.set(vInteger.New(msec << (4 * expo)));
 
-    x = (int)(short)x;			// extract signed coordinate values
-    y = (int)(short)y;
-    //#%#% need to translate x/y to this window's coordinate system
+    x = (long)(short)x - dx;		// extract & translate signed coords
+    y = (long)(short)y - dy;
 
     iKeyword.x.assign(x);		// also sets k$col
     iKeyword.y.assign(y);		// also sets k$row
@@ -151,6 +150,9 @@ public void keyPressed(KeyEvent e) {}
 
 public void keyReleased(KeyEvent e)	{
     char c = e.getKeyChar();
+    if (c == '\n' && ! e.isControlDown()) {
+	c = '\r';				// v9 compatibility
+    }
     if (c != KeyEvent.CHAR_UNDEFINED) {
 	enqueue(vString.New((char)c), e);
     } else if (e.isActionKey()) {

@@ -5,13 +5,14 @@
 package rts;
 
 import java.io.*;
+import java.util.*;
 import java.awt.*;
 
 
 
 public final class vWindow extends vFile {
 
-    // NOTE: when adding instance variables, update cloning initializion below
+    // when a window has closed, a/b/c are null
 
     private wCanvas c;		// underlying Icon canvas
     private Graphics a, b;	// graphics context for canvas and backing image
@@ -20,6 +21,7 @@ public final class vWindow extends vFile {
     private int gnum;		// graphics context serial number
 
     // graphics context attributes
+    // when adding new ones, be sure to update the cloning code below
 
     private boolean clipping;	// is clipping enabled?
     int dx, dy;			// graphics origin
@@ -44,8 +46,14 @@ private static vString vSreverse = vString.New("reverse");
 
 public boolean iswin()		{ return true; }
 
-wCanvas getCanvas()		{ return c; }
-wTTY getTTY()			{ return c.tty; }
+wCanvas getCanvas() {
+    if (c == null) {
+	iRuntime.error(142, this);
+    }
+    return c;
+}
+wTTY getTTY()			{ return getCanvas().tty; }
+
 wColor getBg()			{ return bg; }
 wFont getFont()			{ return font; }
 FontMetrics getFontMetrics()	{ return c.getFontMetrics(font); }
@@ -60,13 +68,15 @@ private static int gcount = 0;	// count of graphics contexts allocated
 
 
 static vString typestring = vString.New("window");
-public vString Type()		{ return typestring; }
-public vString image()		{ return vString.New("window_" + wnum + ":" +
-				    gnum + "(" + c.f.getTitle() + ")"); }
+public vString Type()	{ return typestring; }
 
-int rank()			{ return 50; }	// windows sort after csets
-int compareTo(vValue v)
-	    { return c.f.getTitle().compareTo(((vWindow)v).c.f.getTitle()); }
+public vString image()	{
+    return vString.New("window_" + wnum + ":" + gnum + "(" + title() + ")");
+}
+String title()		{ return c == null ? "<closed>" : c.f.getTitle(); }
+
+int rank()		{ return 50; }		// windows sort after csets
+int compareTo(vValue v)	{ return title().compareTo(((vWindow)v).title()); }
 
 
 
@@ -134,6 +144,7 @@ vWindow(vWindow w) {
     //#%#% really clone it, to ensure it gets all attribs??
     c = w.c;
     wnum = w.wnum;
+    c.wlist.addElement(this);
 
     a = w.a.create();
     b = w.b.create();
@@ -193,6 +204,50 @@ static vWindow getCurrent() {
 
 
 
+//  close() -- close window -- overrides vFile.close()
+
+vFile close() {
+    if (a == null) {
+	return this;		// already closed
+    }
+    c.f.dispose();		// dispose frame
+    c.i.flush();		// dispose backing image
+    a.dispose();		// dispose graphics contexts
+    b.dispose();
+
+    Vector v = c.wlist;		// list of windows sharing the canvas
+    for (int j = 0; j < v.size(); j++) {
+	vWindow win = (vWindow) v.elementAt(j);
+	win.a = null;		// mark each as closed
+	win.b = null;
+	win.c = null;
+    }
+    v.removeAllElements();
+    return this;
+}
+
+
+
+//  uncouple() -- close this graphics context only
+
+vFile uncouple() {
+    if (a == null) {
+	return this;		// already closed
+    }
+    if (c.wlist.size() == 1) {
+	return this.close();	// this is last binding
+    }
+    c.wlist.removeElement(this);
+    a.dispose();
+    b.dispose();
+    a = null;
+    b = null;
+    c = null;
+    return this;
+}
+
+
+
 //  static function that references the toolkit
 
 static void beep() {		// send a beep
@@ -219,26 +274,30 @@ static int argBase(vDescriptor args[]) {
 //  winArg(args) -- get explicit window argument, or implicit value from &window
 
 static vWindow winArg(vDescriptor args[]) {
+    vWindow win;
+
     if (argBase(args) == 1) {
-	return (vWindow) args[0].Deref();
+	win = (vWindow) args[0].Deref();
     } else {
-	return iKeyword.window.getWindow();
+	win = iKeyword.window.getWindow();
     }
+
+    if (win.a == null) {
+	iRuntime.error(142, win);
+    }
+    return win;
 }
 
 
 
 //  tty-mode I/O
 
-vString read()			{ return c.tty.read(this); }
-vString reads(long n)		{ return c.tty.reads(this, n); }
-void writes(vString s)		{ c.tty.writes(this, s); }
-void newline()			{ c.tty.newline(this); }
+vString read()			{ return getTTY().read(this); }
+vString reads(long n)		{ return getTTY().reads(this, n); }
+void writes(vString s)		{ getTTY().writes(this, s); }
+void newline()			{ getTTY().newline(this); }
 
 vFile flush()			{ toolkit.sync(); return this; }
-
-vFile close()			{ return this; } //#%#% TO BE DONE
-
 
 
 
@@ -254,7 +313,7 @@ vValue Event() {
     if (c.evq.Size().value == 0) {	// if we're going to block
 	iKeyword.output.file().flush();	// flush stdout first
     }
-    vValue e = wEvent.dequeue(c.evq);
+    vValue e = wEvent.dequeue(c.evq, dx, dy);
     setCurrent(this);
     return e;
 }
@@ -476,10 +535,10 @@ void CopyArea(vWindow src, int x1, int y1, int w, int h, int x2, int y2) {
     // check for source portions outside window bounds
     Dimension d = src.c.getSize();
     int lmar, rmar, tmar, bmar;
-    lmar = -x1;			// amount outside left edge
-    rmar = x1 + w - d.width;	// amount outside right edge
-    tmar = -y1;			// amount outside top edge
-    bmar = y1 + h - d.height;	// amount outside bottom edge
+    lmar = -src.dx - x1;		// amount outside left edge
+    rmar = -src.dx + x1 + w - d.width;	// amount outside right edge
+    tmar = -src.dy - y1;		// amount outside top edge
+    bmar = -src.dy + y1 + h - d.height;	// amount outside bottom edge
 
     // adjust bounds for any positive margins; truncate negative margins to 0
     if (lmar > 0) {

@@ -43,14 +43,11 @@ static void announce() {
     iEnv.declareBuiltin("NewColor", 2);		// always fails
     iEnv.declareBuiltin("Pending", 1);
     iEnv.declareBuiltin("TextWidth", 2);
-    iEnv.declareBuiltin("Uncouple", 1);		// calls close(), a no-op so far
+    iEnv.declareBuiltin("Uncouple", 1);
     iEnv.declareBuiltin("WAttrib", -1);
     iEnv.declareBuiltin("WDefault", 3);		// always fails
     iEnv.declareBuiltin("WFlush", 1);
     iEnv.declareBuiltin("WSync", 1);
-
-    // #%#% IMPLEMENTED AS NO-OPS:
-    // close(win)	(see wTTY.java)
 
     // #%#% NOT YET IMPLEMENTED:
     //
@@ -535,12 +532,12 @@ final class f$Alert extends vProc1 {		// Alert(W) sends a beep
     }
 }
 
-final class f$Uncouple extends vProc1 {		// Uncouple(W) calls close(W)
+final class f$Uncouple extends vProc1 {		// Uncouple(W)
     public vDescriptor Call(vDescriptor a) {
 	if (!a.iswin()) {
 	    return Call(iKeyword.window.getWindow());
 	}
-	((vWindow)a.Deref()).close();
+	((vWindow)a.Deref()).uncouple();
 	return a;
     }
 }
