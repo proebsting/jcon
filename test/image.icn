@@ -4,7 +4,7 @@ record point(x,y)
 record circle(x, y, r)
 
 procedure main(args)
-   local c1, c2, c3, c4
+   local c1, c2, c3, c4, s
 
    dump()
    dump(047)
@@ -46,6 +46,13 @@ procedure main(args)
    every convert(0 | 0.0 | "0" | '0' | 7 | 7.315 | "7.315" | '7.315' | 
    	"25e-2" | "25e-1" | " 4e+3 " | " 3.8e3  " |
    	"" | " " | "  9  " |  "  4.7  ")
+
+   s := string(&cset)[1:140] || string(&cset)[250:256]
+   write()
+   write(image(s))
+   write()
+   write(image(cset(s)))
+   write()
 
 end
 
