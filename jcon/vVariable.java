@@ -8,8 +8,8 @@ abstract class vVariable extends vDescriptor {
 
     // for many operations on variables, default action is to deref and retry
 
-    iClosure instantiate(vDescriptor[] args)
-    				{ return this.deref().instantiate(args); }
+    iClosure instantiate(vDescriptor[] args, iClosure parent)
+    				{ return this.deref().instantiate(args, parent); }
 
     vString mkString()		{ return this.deref().mkString(); }
     vInteger mkInteger()	{ return this.deref().mkInteger(); }

@@ -2,7 +2,7 @@ abstract class vValue extends vDescriptor {
 
     // many of these are default methods, often overridden by individual types
 
-    iClosure instantiate(vDescriptor[] args)
+    iClosure instantiate(vDescriptor[] args, iClosure parent)
 				{ iRuntime.error(106, this); return null; }
 
     // dereferencing and assignment

@@ -21,7 +21,7 @@ class vProc extends vValue {
 		}
 	}
 
-	iClosure instantiate(vDescriptor[] args) {
+	iClosure instantiate(vDescriptor[] args, iClosure parent) {
 		iClosure c = null;
 
 		try {
@@ -29,7 +29,7 @@ class vProc extends vValue {
 		} catch (InstantiationException e) {
 		} catch (IllegalAccessException e) {
 		}
-		c.closure(env, args);
+		c.closure(env, args, parent);
 		return c;
 	}
 

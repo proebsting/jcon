@@ -8,7 +8,7 @@ JDIR=/home/gmt/jcon
 TMP=./tmp
 
 JCON="$JDIR/src/jcon -O -target=java"
-JAVAC="toba -K"
+JAVAC="javac"
 JAVA="java"
 
 for FNAME; do

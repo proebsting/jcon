@@ -3,6 +3,7 @@ abstract class iClosure {
 	int PC;
 	vDescriptor retvalue;
 	boolean initialized;
+	iClosure parent;
 
 	iEnv env;
 	vDescriptor[] arguments;
@@ -15,8 +16,9 @@ abstract class iClosure {
 
 	abstract void resume();
 
-	void closure(iEnv e, vDescriptor[] a) {
+	void closure(iEnv e, vDescriptor[] a, iClosure parent) {
 		env = e;
 		arguments = a;
+		this.parent = parent;
 	}
 }

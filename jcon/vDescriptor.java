@@ -2,7 +2,7 @@ abstract class vDescriptor {
 
     // methods declared here must be implemented for all descriptor classes
 
-    abstract iClosure instantiate(vDescriptor[] args);	// instantiate proc
+    abstract iClosure instantiate(vDescriptor[] args, iClosure parent);	// instantiate proc
 
     // dereferencing and assignment
     abstract vValue deref();			// dereference

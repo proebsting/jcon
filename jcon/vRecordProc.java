@@ -7,8 +7,8 @@ class vRecordProc extends vValue {
 		this.fieldnames = fieldnames;
 	}
 
-	iClosure instantiate(vDescriptor[] args) {
-		return new iRecordClosure(name, fieldnames, args);
+	iClosure instantiate(vDescriptor[] args, iClosure parent) {
+		return new iRecordClosure(name, fieldnames, args, parent);
 	}
 
 	String image() {
@@ -56,9 +56,10 @@ class iRecordClosure extends iFunctionClosure {
 	String name;
 	String[] fieldnames;
 
-	iRecordClosure(String name, String[] fieldnames, vDescriptor[] args) {
+	iRecordClosure(String name, String[] fieldnames, vDescriptor[] args, iClosure parent) {
 		super();
 		this.name = name;
+		this.parent = parent;
 		this.fieldnames = fieldnames;
 		arguments = args;
 	}
