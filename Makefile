@@ -42,7 +42,9 @@ clean:
 	cd rts;   $(MAKE) clean
 	cd doc;   $(MAKE) clean
 	cd test;  $(MAKE) clean
+	cd gtest; $(MAKE) clean
 	cd expt;  $(MAKE) clean
+	cd demo;  $(MAKE) clean
 	cd bmark; $(MAKE) clean
 	cd bin;   $(MAKE) clean
 
