@@ -36,7 +36,7 @@ public class iInterface {
 	}
 
 	static java.util.Hashtable fileTable = new java.util.Hashtable();
-	static void announce(String name) {
+	public static void announce(String name) {
 		if (fileTable.containsKey(name)) {
 			return;
 		}
