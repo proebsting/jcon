@@ -4,14 +4,19 @@ package rts;
 
 public class vRecordProc extends vValue {
 	String name;		// name of record type
-	vString vname;		// name of record type, as vString
+	vString vname;		// name of record type, as vString, for type()
 	String[] fieldnames;	// names of fields
+	String[] varnames;	// variable names
 	int nextsn = 1;		// next serial number
 
 	vRecordProc(String name, String[] fieldnames) {
 		this.name = name;
 		this.vname = iNew.String(name);
 		this.fieldnames = fieldnames;
+		this.varnames = new String[fieldnames.length];
+		for (int i = 0; i < varnames.length; i++) {
+			varnames[i] = name + "." + fieldnames[i];
+		}
 	}
 
 	public iClosure instantiate(vDescriptor[] args, iClosure parent) {

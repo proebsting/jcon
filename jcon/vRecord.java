@@ -12,16 +12,11 @@ vRecord(vRecordProc constr, vDescriptor[] inits) {
     this.constr = constr;
     values = new vSimpleVar[constr.fieldnames.length];
     for (int i = 0; i < values.length; i++) {
-	//#%#%#%#%##% should precompute these names!!!!!
-	//#%#%#%#% also fold in initialization (below) with creation
-	values[i] = iNew.SimpleVar(constr.name + "." + constr.fieldnames[i]);
-    }
-    int max = values.length;
-    if (max > inits.length) {
-	max = inits.length;
-    }
-    for (int i = 0; i < max; i++) {
-	values[i].Assign(inits[i].deref());
+	if (i < inits.length) {
+	    values[i] = iNew.SimpleVar(constr.varnames[i], inits[i].deref());
+	} else {
+	    values[i] = iNew.SimpleVar(constr.varnames[i]);
+	}
     }
 }
 
