@@ -7,8 +7,23 @@ public abstract class iUnaryClosure extends iClosure {
 	abstract vDescriptor function(vDescriptor arg);
 
 	public vDescriptor call(vDescriptor arg, iClosure parent) {
-		closure(arg, parent);
-		return resume();
+	    vDescriptor ret;
+	    
+	    closure(arg, parent);
+	    try {
+		try {
+		    ret = nextval();
+		} catch (OutOfMemoryError e) {
+		    iRuntime.error(307);	// #%#%# really out of memory.
+		    ret = null;
+		}
+	    } catch (iError e) {
+		//  e.printStackTrace();  //#%#%#% TEMP: enable for debugging
+		//#%#%# check &error here and fail or:
+		e.report(this);  // returns only on error->failure conversion.
+		ret = null;
+	    }
+	    return ret;
 	}
 
 	public void closure(vDescriptor[] args, iClosure parent) {
