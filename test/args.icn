@@ -5,29 +5,33 @@
 procedure main()
    local plist, alist, e
 
-   plist := [p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12]
-   every (!plist)()
-   every (!plist)(1)
-   every (!plist)(1, 2)
-   every (!plist)(1, 2, 3)
-   every (!plist)(1, 2, 3, 4)
-   every (!plist)(1, 2, 3, 4, 5)
-   every (!plist)(1, 2, 3, 4, 5, 6)
-   every (!plist)(1, 2, 3, 4, 5, 6, 7)
-   every (!plist)(1, 2, 3, 4, 5, 6, 7, 8)
-   every (!plist)(1, 2, 3, 4, 5, 6, 7, 8, 9)
-   every (!plist)(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)
-   every (!plist)(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11)
-   every (!plist)(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+   plist := [3, -2, "image", proc("~===", 2), 
+      p0, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12]
+
+   every write((!plist)())
+   every write((!plist)(1))
+   every write((!plist)(1, 2))
+   every write((!plist)(1, 2, 3))
+   every write((!plist)(1, 2, 3, 4))
+   every write((!plist)(1, 2, 3, 4, 5))
+   every write((!plist)(1, 2, 3, 4, 5, 6))
+   every write((!plist)(1, 2, 3, 4, 5, 6, 7))
+   every write((!plist)(1, 2, 3, 4, 5, 6, 7, 8))
+   every write((!plist)(1, 2, 3, 4, 5, 6, 7, 8, 9))
+   every write((!plist)(1, 2, 3, 4, 5, 6, 7, 8, 9, 10))
+   every write((!plist)(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11))
+   every write((!plist)(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12))
 
    alist := []
    while *alist < 14 do {
-       every (!plist) ! alist
+       every write((!plist) ! alist)
        put(alist, *alist + 1)
    }
 end
 
 
+
+#  p0 through p12 do their own output and then fail
 
 procedure p0()
    note("p0")
