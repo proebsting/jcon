@@ -124,7 +124,7 @@ cursors and pointers:
 
 infelicities:
 -- window repair may be delayed until the program pauses for input
--- "drawop=reverse" produces the wrong color under Java 1.1; okay under 1.2
+-- "drawop=reverse" may draw wrong color under rare conditions not understood
 -- DEC Java 1.1.6 exhibits problems with fonts and font metrics
 -- SGI Irix is unable to link very large programs (e.g. VIB)
 
