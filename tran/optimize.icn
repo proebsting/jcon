@@ -7,7 +7,7 @@ procedure optimize(t, start)
 	new := t
 	if \optimize_flag then {
 		new := goto_elimination(t, start)
-		new := copy_propagation(new, start)
+		# new := copy_propagation(new, start)
 		new := coord_optimize(new, start)
 	}
 	return new
