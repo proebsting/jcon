@@ -1265,6 +1265,8 @@ procedure bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
 			put(s, getfield(field) )
 		} else if \bc_var_table[k] then {
 			put(s, Aload(bc_var_table[k] + bc_var_offset))
+		} else {
+			next
 		}
 
 		if i = *params & \accumulate then {
