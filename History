@@ -1,5 +1,10 @@
 Version History
 
+0.5.1
+	use "jar" tool instead of Zip and UnZip
+	support translated mode I/O
+	on all platforms, accept CR or LF or CRLF as line terminator on input
+
 0.5.0	June 15, 1997
 	limited distribution
 
