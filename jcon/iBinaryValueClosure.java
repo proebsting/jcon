@@ -10,7 +10,6 @@ public abstract class iBinaryValueClosure extends iBinaryClosure {
 			argument0 = argument0.deref();
 			argument1 = argument1.deref();
 			vDescriptor v = function();
-			returned = true;
 			PC = 0;
 			return v;
 		} else {

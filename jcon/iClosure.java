@@ -8,8 +8,6 @@ public vDescriptor[] arguments;	// argument list
 
 public int PC;			// "program counter" (initially = 1)
 
-public boolean returned;	// flag to indicate resumption unnecessary
-
 public Object o;		// arbitrary storage for RTS methods
 public int oint;		// arbitrary storage for RTS methods
 
@@ -22,7 +20,6 @@ public vVariable[] variables;	//	contents of active closure.
 
 final void init() {
     PC = 1;
-    returned = false;
 }
 
 public iClosure() {		// constructor
@@ -54,6 +51,7 @@ String trace_coordinate() {
 
 public vDescriptor resume() {
     vDescriptor ret;
+
     try {
         try {
             if (k$trace.trace != 0) {
@@ -74,7 +72,7 @@ public vDescriptor resume() {
                 k$trace.trace--;
                 if (ret == null) {
                     p += " failed";
-                } else if (returned) {
+                } else if (PC==0) {
                     p += " returned " + ret.report();
                 } else {
                     p += " suspended " + ret.report();

@@ -197,7 +197,7 @@ public class oToBy extends iClosure {				// i1 to i2 by i3
 			if (i3 == 0) {
 				iRuntime.error(211, iNew.Integer(i3));
 			}
-			PC = 0;
+			PC = 2;
 			iprev = ivar = i1;
 		} else {
 			iprev = ivar;
@@ -646,7 +646,7 @@ public class oProcessArgs extends iClosure {			//  x ! y
             func = iInterface.Instantiate(arguments[0], a, parent);
         }
         vDescriptor v = func.resume();
-        this.returned = func.returned;
+        this.PC = func.PC;
         return v;
     }
     String tfmt() { return "{$1 ! $2}"; }

@@ -66,10 +66,6 @@ procedure PC_fieldref(c)
 	return create_fieldref(c, "PC", "I", "rts/iClosure")
 end
 
-procedure returned_fieldref(c)
-	return create_fieldref(c, "returned", "Z", "rts/iClosure")
-end
-
 procedure transfer_to(s, p)
 	case type(p) of {
 	default: {
@@ -335,7 +331,7 @@ end
 
 # record irSucceed( expr continuation )
 procedure gen_bc_irSucceed(s, p)
-	local r, e, PC, returned, k, a
+	local r, e, PC, k, a
 
 	PC := PC_fieldref(bc_proc_classptr)
 	if \p.continuation then {
@@ -394,9 +390,8 @@ procedure gen_bc_irSucceed(s, p)
 		}
 	} else {
 		put(s, aload_0())
-		returned := returned_fieldref(bc_proc_classptr)
-		put(s, iconst_1())
-		put(s, putfield(returned))
+		put(s, iconst_0())
+		put(s, putfield(PC))
 	}
 	gen_bc(s, p.expr)
 	put(s, areturn())
@@ -422,15 +417,15 @@ end
 
 # record irResume( closure failLabel retValue )
 procedure gen_bc_irResume(s, p)
-	local c, returned, target, resume
+	local c, PC, target, resume
 
-	returned := returned_fieldref(bc_proc_classptr)
+	PC := PC_fieldref(bc_proc_classptr)
 	resume := create_methodref(bc_proc_classptr, "resume", "()Lrts/vDescriptor;", "rts/iClosure")
 	gen_bc(s, p.closure)
 	put(s, dup())
-	put(s, getfield(returned))
+	put(s, getfield(PC))
 	target := label()
-	put(s, ifeq(target))
+	put(s, ifne(target))
 	put(s, Pop())
 	transfer_to(s, p.failLabel)
 	put(s, target)

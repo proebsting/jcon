@@ -9,7 +9,6 @@ public abstract class iUnaryValueClosure extends iUnaryClosure {
 		if (PC == 1) {
 			argument = argument.deref();
 			vDescriptor v = function(argument);
-			returned = true;
 			PC = 0;
 			return v;
 		} else {

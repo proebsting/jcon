@@ -11,7 +11,6 @@ public abstract class iValueClosure extends iFunctionClosure {
 				arguments[i] = arguments[i].deref();
 			}
 			vDescriptor v = function(arguments);
-			returned = true;
 			PC = 0;
 			return v;
 		} else {

@@ -225,7 +225,7 @@ procedure gen_java_irSucceed(p)
 	e := gen_java(p.expr)
 	s := ""
 	if not (c := gen_java(\p.continuation)) then {
-		s ||:= "returned = true; "
+		s ||:= "PC = 0; "
 	} else {
 		s ||:= "this.PC = " || c || "; "
 		java_suspend_flag := 1
@@ -258,7 +258,7 @@ procedure gen_java_irResume(p)
 
 	c := gen_java(p.closure)
 	f := gen_java(p.failLabel)
-	s   := "if (" || c || ".returned) { PC = " || f || "; continue; } "
+	s   := "if (" || c || ".PC==0) { PC = " || f || "; continue; } "
 	s ||:= c || ".resume(); "
 	s ||:= "if (" || c || ".retvalue == null) { PC = " || f || "; continue; } "
 	if \p.retValue then {

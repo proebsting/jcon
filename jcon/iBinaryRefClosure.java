@@ -8,7 +8,6 @@ public abstract class iBinaryRefClosure extends iBinaryClosure {
 	public vDescriptor nextval() {
 		if (PC == 1) {
 			vDescriptor v = function();
-			returned = true;
 			PC = 0;
 			return v;
 		} else {

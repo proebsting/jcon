@@ -10,7 +10,6 @@ public abstract class iRefClosure extends iFunctionClosure {
 
 		if (PC == 1) {
 			v = function(arguments);
-			returned = true;
 			PC = 0;
 			return v;
 		} else {

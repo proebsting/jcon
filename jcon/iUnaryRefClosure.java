@@ -8,7 +8,6 @@ public abstract class iUnaryRefClosure extends iUnaryClosure {
 	public vDescriptor nextval() {
 		if (PC == 1) {
 			vDescriptor v = function(argument);
-			returned = true;
 			PC = 0;
 			return v;
 		} else {
