@@ -34,8 +34,8 @@ procedure operators()
 	[ 1,     "^", "Refresh",      "rts.vCoexp"      ],
 	[ 1,     "=", "TabMatch",     "rts.vString"     ],
 
-	[ 1,     "/", "isNull",       "rts.vDescriptor" ],
-	[ 1,    "\\", "isntNull",     "rts.vDescriptor" ],
+	[ 1,     "/", "IsNull",       "rts.vDescriptor" ],
+	[ 1,    "\\", "IsntNull",     "rts.vDescriptor" ],
 	[ 1,     "?", "Select",       "rts.vDescriptor" ],
 	[ 1,     "!", "Bang",         "rts.vDescriptor" ],
 
