@@ -5,8 +5,10 @@
 #  (rebuild all .class files if any are out of date;
 #   not easily expressed in "make")
 
+JAVAC="javac -O"
 BZIP=bin/rts.zip
 ZIP=../$BZIP
+
 
 if [ -f $ZIP ]; then
     NEWER=`find *.java -newer $ZIP`
@@ -16,8 +18,8 @@ fi
 
 if [ "$NEWER" != "" ]; then
     set -e
-    echo "+ javac -O *.java"
-    javac -O *.java
+    echo "+ $JAVAC *.java"
+    $JAVAC *.java
     echo "+ cd ..; jar cfM $BZIP rts/*.class"
     cd ..
     jar cfM $BZIP rts/*.class 2>&1 
