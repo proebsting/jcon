@@ -8,3 +8,5 @@ The important scripts are:
     addtest	adds a new test, using icont as baseline for correctness
 
 See the script headers for usage.
+
+Some tests produce different output when run by Version 9 of Icon.

@@ -1,3 +1,5 @@
+#SRC: JCON
+
 # test grouping of various operators
 
 procedure main()
