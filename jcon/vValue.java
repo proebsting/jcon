@@ -40,7 +40,7 @@ public vVariable SubjAssign(vDescriptor x)
 				{ iRuntime.error(111,this); return null; }
 
 public vDescriptor Resume()	{ return null; /*FAIL*/ }
-public vInteger Limit()		{ return this.mkInteger().Limit(); }
+public vNumeric Limit()		{ return this.mkFixed().Limit(); }
 public vDescriptor Conjunction(vDescriptor x)	{ return x; }
 public vDescriptor ProcessArgs(vDescriptor x)
 				{ iRuntime.error(106, this); return null; }

@@ -177,7 +177,7 @@ public vNumeric Abs() {
     }
 }
 
-public vInteger Limit() {
+public vNumeric Limit() {
     if (value > 0) {
 	return this;
     } else {

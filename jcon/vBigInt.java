@@ -205,9 +205,12 @@ public vNumeric Abs() {						// abs(I)
     return Result(value.abs());
 }
 
-public vInteger Limit() {					// e \ I
-    iRuntime.error(101);
-    return null;
+public vNumeric Limit() {					// e \ I
+    if (this.NGreater(vZero) != null) {
+        return this;
+    } else {
+        return null;
+    }
 }
 
 public vDescriptor Select() {					// ?I

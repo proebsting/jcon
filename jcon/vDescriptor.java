@@ -42,7 +42,7 @@ public abstract vVariable Assign(vDescriptor x);	// v := x
 public abstract vVariable SubjAssign(vDescriptor x);	// &subject := x  
 
 // control-structure-like operations
-public abstract vInteger Limit();			// ... \ n
+public abstract vNumeric Limit();			// ... \ n
 public abstract vDescriptor Conjunction(vDescriptor x);	// e1 & e2
 public abstract vDescriptor ProcessArgs(vDescriptor x);	// p ! L
 public abstract vDescriptor Activate(vDescriptor x);	// v @ C

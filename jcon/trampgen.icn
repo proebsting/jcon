@@ -33,7 +33,7 @@ procedure operators()
 	[ 2,    "<-", "RevAssign",    "vDescriptor" ],
 	[ 2,   "<->", "RevSwap",      "vDescriptor" ],
 
-	[ 1,     "#", "Limit",        "vInteger",   "limit counter: $"    ],
+	[ 1,     "#", "Limit",        "vNumeric",   "limit counter: $"    ],
 	[ 2,     "&", "Conjunction",  "vDescriptor" ],
 	[ 2,     "@", "Activate",     "vDescriptor" ],
 	[ 3,   "...", "ToBy",         "vDescriptor", "{$ to $ by $}" ],

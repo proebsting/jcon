@@ -43,7 +43,7 @@ public vVariable SubjAssign(vDescriptor x)  { return retval.SubjAssign(x); }
 public vDescriptor RevAssign(vDescriptor x) { return retval.RevAssign(x); }
 public vDescriptor RevSwap(vDescriptor x)   { return retval.RevSwap(x); }
 
-public vInteger Limit()			{ return retval.Limit(); }
+public vNumeric Limit()			{ return retval.Limit(); }
 public vDescriptor Conjunction(vDescriptor x) { return retval.Conjunction(x); }
 public vDescriptor ProcessArgs(vDescriptor x) { return retval.ProcessArgs(x); }
 public vDescriptor Activate(vDescriptor x)    { return retval.Activate(x); }

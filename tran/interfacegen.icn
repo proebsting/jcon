@@ -99,7 +99,7 @@ procedure operators()
 	[ 2,    "<-", "RevAssign",    "rts.vDescriptor" ],
 	[ 2,   "<->", "RevSwap",      "rts.vDescriptor" ],
 
-	[ 1,     "#", "Limit",        "rts.vInteger"    ],
+	[ 1,     "#", "Limit",        "rts.vNumeric"    ],
 	[ 2,     "&", "Conjunction",  "rts.vDescriptor" ],
 	[ 2,     "!", "ProcessArgs",  "rts.vDescriptor" ],
 	[ 2,     "@", "Activate",     "rts.vDescriptor" ],

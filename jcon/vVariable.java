@@ -72,7 +72,7 @@ public vString image()			{ return Deref().image(); }
 
 public vVariable SubjAssign(vDescriptor x)	{ return this.Assign(x); }
 public vDescriptor Resume()			{ return null; /*FAIL*/ }
-public vInteger Limit()				{ return Deref().Limit(); }
+public vNumeric Limit()				{ return Deref().Limit(); }
 public vDescriptor Conjunction(vDescriptor x)	{return Deref().Conjunction(x);}
 public vDescriptor ProcessArgs(vDescriptor x)   {return Deref().ProcessArgs(x);}
 public vDescriptor Activate(vDescriptor x)	{ return Deref().Activate(x); }
