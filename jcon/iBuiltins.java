@@ -112,7 +112,7 @@ static void announce() {
     iEnv.declareBuiltin("Color", -1, fGraphics.self);		// always fails
     iEnv.declareBuiltin("ColorValue", 2, fGraphics.self);
     iEnv.declareBuiltin("CopyArea", 8, fGraphics.self);
-    //			"Couple"				// not possible?
+    iEnv.declareBuiltin("Couple", 2, fGraphics.self);		// always fails
     iEnv.declareBuiltin("DrawArc", -1, fDrawing.self);
     iEnv.declareBuiltin("DrawCircle", -1, fDrawing.self);
     iEnv.declareBuiltin("DrawCurve", -1, fDrawing.self);

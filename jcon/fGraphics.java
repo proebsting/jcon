@@ -15,6 +15,7 @@ public final class fGraphics extends iInstantiate {
         if (name.equals("f$Clone")) return new f$Clone();
         if (name.equals("f$Color")) return new f$Color();
         if (name.equals("f$ColorValue")) return new f$ColorValue();
+        if (name.equals("f$Couple")) return new f$Couple();
         if (name.equals("f$CopyArea")) return new f$CopyArea();
         if (name.equals("f$Event")) return new f$Event();
         if (name.equals("f$Fg")) return new f$Fg();
@@ -107,6 +108,14 @@ final class f$Clone extends vProcV {		// Clone(W,attribs...)
 	    }
 	}
 	return win;
+    }
+}
+
+final class f$Couple extends vProc2 {		// Couple(W1, W2) always fails
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	if (!a.iswin()) { iRuntime.error(140, a.Deref()); }
+	if (!b.iswin()) { iRuntime.error(140, b.Deref()); }
+	return null; /*FAIL*/
     }
 }
 
