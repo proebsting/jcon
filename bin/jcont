@@ -55,7 +55,7 @@
 #
 
 JAVAC="javac -nowarn"
-JAVA="java -verify"
+JAVA="java"
 JAR="jar"
 
 case `uname` in
