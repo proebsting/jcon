@@ -1529,17 +1529,14 @@ procedure bc_process_flags(flagList)
     \bc_java_classname | stop("ERROR: must specify -class:<name>")
 
     bc_nodebuginfo := 1
-    ir_noerror2failure := 1
     every k := !flagList do {
         k ? {
             if ="-f" then {
                 if find("e") | find("a") then {
-                    ir_noerror2failure := &null
                     bc_nodebuginfo := &null
                 }
                 if find("n") | find("a") then {
                     bc_nodebuginfo := &null
-                    ir_noerror2failure := &null
                 }
             }
         }
