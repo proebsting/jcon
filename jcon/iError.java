@@ -28,25 +28,25 @@ void report(iClosure c) {		// print message and abort
 	return;
     }
 
-    System.out.flush();
-    System.err.println();
-    System.err.println("Run-time error " + num);
+    k$output.file.flush();
+    vFile f = k$errout.file;
+    f.newline();
+    f.println("Run-time error " + num);
     if (c.parent != null) {
 	if (c.parent.file != null) {
-	    System.err.println(
-		"File " + c.parent.file + "; Line " + c.parent.line);
+	    f.println("File " + c.parent.file + "; Line " + c.parent.line);
 	}
     }
-    System.err.println(iRunerr.text(num));
+    f.println(iRunerr.text(num));
     if (desc != null) {
-	System.err.println("offending value: " + desc.report());
+	f.println("offending value: " + desc.report());
     }
-    System.err.println("Traceback:");
+    f.println("Traceback:");
 
     try {
 	traceback(c, iConfig.MaxTraceback);	// traceback to limited depth
     } catch (OutOfMemoryError e) {
-	System.err.println("   [out of memory; traceback truncated]");
+	f.println("   [out of memory; traceback truncated]");
     }
     iRuntime.exit(1, c.parent);
 }
@@ -62,13 +62,13 @@ static void traceback(iClosure c, int n) {
     }
 
     if (n == 0) {			// if recursion limit reached
-	System.err.println("   ...");
+	k$errout.file.println("   ...");
 	return;
     }
 
     traceback(c.parent, n - 1);		// print ancestry first
 
-    System.err.println("   " + c.trace());  // report this closure
+    k$errout.file.println("   " + c.trace());  // report this closure
 }
 
 

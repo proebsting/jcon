@@ -96,9 +96,7 @@ public static void declareBuiltin(String s, vValue x) {
 public static vDescriptor resolveKey(String s) {
     vDescriptor v = (vDescriptor) keytab.get(s);
     if (v == null) {
-	v = vNull.New();
-	System.err.println(
-	    "warning: keyword not found: &" + s);
+	iRuntime.bomb("keyword not found: &" + s);
     }
     return v;
 }
@@ -117,7 +115,7 @@ public static vDescriptor resolveProc(String s, int args) {
 	// diagnose missing operators (implementation bug):
 	char c = s.charAt(0);
 	if (c != '_' && ! Character.isLetter(c)) {
-	    System.err.println("warning: operation not found: " + s);
+	    iRuntime.bomb("operation not found: " + s);
 	}
     }
     return v;

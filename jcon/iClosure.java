@@ -61,17 +61,17 @@ public vDescriptor resume() {
 	try {
 	    if (k$trace.trace != 0) {
 		k$trace.trace--;
-		System.err.print(trace_coordinate());
+		k$errout.file.print(trace_coordinate());
 		for (iClosure p=this.parent; p != null; p=p.parent) {
-		    System.err.print("| ");
+		    k$errout.file.print("| ");
 		}
-		System.err.println(this.trace_prototype());
+		k$errout.file.println(this.trace_prototype().toString());
 	    }
 	    ret = nextval();
 	    if (k$trace.trace != 0) {
-		System.err.print(trace_coordinate());
+		k$errout.file.print(trace_coordinate());
 		for (iClosure p=this.parent; p != null; p=p.parent) {
-		    System.err.print("| ");
+		    k$errout.file.print("| ");
 		}
 		String p = this.trace_prototype().toString();
 		k$trace.trace--;
@@ -82,7 +82,7 @@ public vDescriptor resume() {
 		} else {
 		    p += " suspended " + ret.report();
 		}
-		System.err.println(p);
+		k$errout.file.println(p);
 	    }
 	} catch (OutOfMemoryError e) {
 	    iRuntime.error(307);	// #%#% really out of memory.

@@ -429,4 +429,15 @@ vString read() {						// read()
 
 
 
+// ------------------------ Internal I/O operations -----------------------
+
+
+//  These involve conversion to vString, so avoid in anything that
+//  needs to be fast.
+
+void print(String s)	{ this.writes(vString.New(s)); }
+void println(String s)	{ this.writes(vString.New(s)); this.newline(); }
+
+
+
 } // class vFile

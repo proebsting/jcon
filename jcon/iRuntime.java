@@ -32,16 +32,20 @@ public static void error(int n, vDescriptor d)	{ throw new iError(n,d); }
 
 
 //  bomb(s) -- abort with message due to internal error
+//
+//  these methods take a very quick exit and avoid the usual shutdown code.
 
 public static void bomb(String s) {
-    System.out.flush();
+    k$output.file.flush();
+    k$errout.file.flush();
     System.err.println();
     System.err.println("Runtime malfunction: " + s);
     System.exit(1);
 }
 
 public static void bomb(Exception e) {
-    System.out.flush();
+    k$output.file.flush();
+    k$errout.file.flush();
     System.err.println();
     System.err.println("Runtime malfunction: Java exception");
     e.printStackTrace();
@@ -105,34 +109,47 @@ public static long argPos(vDescriptor[] args, int index) {
 
 
 
-public static void display(iClosure parent) {
+public static void display(vFile f, iClosure parent, long ancestors) {
+
+    // do the current coexpression
+    f.writes(iEnv.cur_coexp.report());
+    f.newline();
+    f.newline();
+
     // do the call chain.
     for (iClosure p = parent; p != null; p = p.parent) {
+	if (ancestors-- <= 0) {
+	    break;
+	}
 	String s = p.getClass().getName();
 	int j = s.lastIndexOf('$');
 	if (j >= 0) {				// xxx$file$yyyyy format
 	    s = s.substring(j+1);
 	}
-	System.out.println(s + " local identifiers:");
+	f.println(s + " local identifiers:");
 	p.locals();
 	if (p.names == null) {
 	    continue;
 	}
 	for (int i = 0; p.names[i] != null; i++) {
-	    System.out.println("   " + p.names[i] + " = " +
+	    f.println("   " + p.names[i] + " = " +
 		p.variables[i].image());
 	}
     }
 
     // do the globals
-    // #%#%# not sorted....
-    System.out.println();
-    System.out.println("global identifiers:");
+    f.newline();
+    f.println("global identifiers:");
+    int i = 0;
+    vString[] a = new vString[iEnv.symtab.size()];
     java.util.Enumeration e = iEnv.symtab.keys();
     while (e.hasMoreElements()) {
-	String s = (String) e.nextElement();
-	vVariable v = (vVariable) iEnv.symtab.get(s);
-	System.out.println("   " + s + " = " + v.image());
+	a[i++] = vString.New((String) e.nextElement());
+    }
+    iSort.sort(a);
+    for (i = 0; i < a.length; i++) {
+	vVariable v = (vVariable) iEnv.symtab.get(a[i].toString());
+	f.println("   " + a[i] + " = " + v.image());
     }
 }
 
@@ -141,11 +158,11 @@ public static void display(iClosure parent) {
 //  exit()-- common termination routine for all exits except internal errors.
 
 public static void exit(int status, iClosure parent) {
-    if (k$dump.dump != 0) {
-	iRuntime.display(parent);	// honor &dump
+    vFile.shutdown();				// flush output files etc.
+    if (k$dump.dump != 0) {			// honor &dump
+	iRuntime.display(k$errout.file, parent, 1000000);
     }
-    vFile.shutdown();			// flush output files etc.
-    System.exit(status);		// shut down
+    System.exit(status);			// shut down
 }
 
 

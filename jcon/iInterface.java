@@ -35,8 +35,7 @@ public static void link(String name) {
 	c = Class.forName(name);
     } catch (ClassNotFoundException e) {
 	System.err.println();
-	System.err.println("linking error in startup code: " +
-	    e.toString());
+	System.err.println("linking error in startup code: " + e.toString());
 	System.err.println("error linking file " + name);
 	iRuntime.exit(1, null);
     }
@@ -45,14 +44,12 @@ public static void link(String name) {
 	o = c.newInstance();
     } catch (InstantiationException e) {
 	System.err.println();
-	System.err.println("linking error in startup code: " +
-	    e.toString());
+	System.err.println("linking error in startup code: " + e.toString());
 	System.err.println("error linking file " + name);
 	iRuntime.exit(1, null);
     } catch (IllegalAccessException e) {
 	System.err.println();
-	System.err.println("linking error in startup code: " +
-	    e.toString());
+	System.err.println("linking error in startup code: " + e.toString());
 	System.err.println("error linking file " + name);
 	iRuntime.exit(1, null);
     }

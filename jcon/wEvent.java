@@ -153,7 +153,7 @@ public void windowDeiconified(WindowEvent e)	{}
 
 public void windowClosing(WindowEvent e) {
     //#%#% window was closed. don't know how to handle; bail out.
-    System.out.println("WINDOW CLOSING... EXITING");
+    System.err.println("WINDOW CLOSING... EXITING");
     c.f.dispose();
     System.exit(0);
 }

@@ -9,7 +9,7 @@ public class vCoexp extends vValue implements Runnable {
     java.util.Stack callers;
     vDescriptor incomingValue;
     Semaphore lock;
-    int snum;	// serial number
+    int snum;		// serial number
     int resultCount;
 
 static int nextsn = 1;			// next serial number
@@ -40,7 +40,7 @@ public void run() {
     try {
 	lock.P();
     } catch (InterruptedException e) {
-	iRuntime.error(500);
+	iRuntime.error(902);
     }
     closure.resume();  // should never return;
 }
@@ -72,7 +72,7 @@ void transfer(vDescriptor value, vCoexp target) {
     try {
 	lock.P();
     } catch (InterruptedException e) {
-	iRuntime.error(500);
+	iRuntime.error(902);
     }
 }
 
