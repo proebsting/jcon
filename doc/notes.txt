@@ -56,5 +56,5 @@ compatible, although the book is unclear or wrong:
 -- records sort first by type and then by serial number
 
 known bugs:
--- +: and -: function identically to v9, which is wrong
+-- e[e+:e] and e[e-:e] function identically to v9, which is wrong
 -- on the Dec Alpha, a rightward ishift() doesn't sign extend  [Java bug]
