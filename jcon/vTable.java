@@ -54,8 +54,8 @@ public vValue Copy() {					// copy(T)
     return new vTable(this);
 }
 
-public vDescriptor Index(vValue i) {
-    return new vTrappedTable(this, i);
+public vDescriptor Index(vDescriptor i) {
+    return new vTrappedTable(this, i.Deref());
 }
 
 public vDescriptor Select() {

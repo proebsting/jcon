@@ -57,7 +57,7 @@ public vVariable Field(String s) {
     }
 }
 
-public vDescriptor Index(vValue i) {
+public vDescriptor Index(vDescriptor i) {
     try {
 	long m = i.mkInteger().value;
 	if (m <= 0) {

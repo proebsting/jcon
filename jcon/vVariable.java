@@ -18,10 +18,10 @@ public abstract class vVariable extends vIndirect {
 
 // must be implemented:
 
-public abstract vValue Deref();			// dereference
-public abstract vVariable Assign(vDescriptor x);// assign
-public abstract vString Name();			// return name
-abstract vString report();			// report for traceback
+public abstract vValue Deref();				// dereference
+public abstract vVariable Assign(vDescriptor x);	// assign
+public abstract vString Name();				// return name
+abstract vString report();				// report for traceback
 
 
 

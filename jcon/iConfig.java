@@ -8,7 +8,7 @@ class iConfig {
 
 // the following constants are peculiar to the Jcon implementation
 
-static final String Version = "Jcon Version 1.0, May 20, 1998";
+static final String Version = "Jcon Version 2.a, May 22, 1998";
 
 static final String FuncPrefix = "rts.f$";	// cls prefix for built-in funcs
 

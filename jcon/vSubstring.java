@@ -90,7 +90,7 @@ public vVariable Assign(vDescriptor x) {
     return vSubstring.New(this, start, start + s.length());
 }
 
-public vDescriptor Index(vValue i) {			// s[i]
+public vDescriptor Index(vDescriptor i) {			// s[i]
     this.strval();	// validate
     int m = this.posEq(i.mkInteger().value);
     if (m == 0) {
