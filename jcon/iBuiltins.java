@@ -84,7 +84,11 @@ class f$write extends iFunctionClosure {			// write(...)
 			System.out.print(args[i].write());
 		}
 		System.out.println();
-		return args[args.length-1];
+		if (args.length == 0) {
+		    return iNew.Null();
+		} else {
+		    return args[args.length-1];
+		}
 	}
 }
 
@@ -95,6 +99,10 @@ class f$writes extends iFunctionClosure {			// writes(...)
 		for (int i = 0; i < args.length; i++) {
 			System.out.print(args[i].write());
 		}
-		return args[args.length-1];
+		if (args.length == 0) {
+		    return iNew.Null();
+		} else {
+		    return args[args.length-1];
+		}
 	}
 }

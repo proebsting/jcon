@@ -91,6 +91,7 @@ static {
 
     tlist[901] = "implementation incomplete";
     tlist[902] = "implementation malfunction";
+    tlist[903] = "unexpected catastrophic event";
 };
 
 

@@ -21,4 +21,5 @@ abstract class iClosure {
 		arguments = a;
 		this.parent = parent;
 	}
-}
+
+} // class iClosure
