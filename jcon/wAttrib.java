@@ -23,6 +23,7 @@ private static Hashtable attlist = new Hashtable();
 
 static {
     newatt("canvas", new aCanvas());	//#%#% only normal and hidden, for now
+    newatt("depth", new aDepth());
     newatt("label", new aLabel());
 
     newatt("bg", new aBg());
@@ -104,6 +105,16 @@ static wAttrib[] parseAtts(vDescriptor[] args, int n) {
 
 
 
+//  unsettable(name, value) -- report error 147 (attrib can't be read/written)
+
+static vValue unsettable(String name, String value)
+{
+    iRuntime.error(147, iNew.String(name + "=" + value));
+    return null;
+}
+
+
+
 } // class wAttrib
 
 
@@ -111,6 +122,14 @@ static wAttrib[] parseAtts(vDescriptor[] args, int n) {
 class aCanvas extends wAttrib {
     vValue get(vWindow win)	{ return win.getCanvas().Canvas(win, null); }
     vValue set(vWindow win)	{ return win.getCanvas().Canvas(win, val); }	
+}
+
+
+class aDepth extends wAttrib {
+    vValue get(vWindow win)	{ return iNew.Integer(
+	Toolkit.getDefaultToolkit().getColorModel().getPixelSize()); }
+    vValue set(vWindow win)
+	{ return wAttrib.unsettable("depth=", val); }
 }
 
 
@@ -151,23 +170,17 @@ class aLeading extends wAttrib {
 }
 
 class aAscent extends wAttrib {
-    vValue get(vWindow win)	{ 
-	return iNew.Integer(win.getFontMetrics().getMaxAscent());
-    }
-    vValue set(vWindow win) {
-	iRuntime.error(147, iNew.String("ascent="));
-	return null;
-    }
+    vValue get(vWindow win)
+	{ return iNew.Integer(win.getFontMetrics().getMaxAscent()); }
+    vValue set(vWindow win)
+	{ return wAttrib.unsettable("ascent=", val); }
 }
 
 class aDescent extends wAttrib {
-    vValue get(vWindow win)	{ 
-	return iNew.Integer(win.getFontMetrics().getMaxDescent());
-    }
-    vValue set(vWindow win) {
-	iRuntime.error(147, iNew.String("descent="));
-	return null;
-    }
+    vValue get(vWindow win)
+	{ return iNew.Integer(win.getFontMetrics().getMaxDescent()); }
+    vValue set(vWindow win)
+	{ return wAttrib.unsettable("descent=", val); }
 }
 
 class aFheight extends wAttrib {
@@ -175,18 +188,13 @@ class aFheight extends wAttrib {
 	FontMetrics m = win.getFontMetrics();
 	return iNew.Integer(m.getMaxAscent() + m.getMaxDescent());
     }
-    vValue set(vWindow win) {
-	iRuntime.error(147, iNew.String("fheight="));
-	return null;
-    }
+    vValue set(vWindow win)
+	{ return wAttrib.unsettable("fheight=", val); }
 }
 
 class aFwidth extends wAttrib {
-    vValue get(vWindow win)	{ return iNew.Integer(win.Fwidth()); }
-    vValue set(vWindow win) {
-	iRuntime.error(147, iNew.String("fwidth="));
-	return null;
-    }
+    vValue get(vWindow win) { return iNew.Integer(win.Fwidth()); }
+    vValue set(vWindow win) { return wAttrib.unsettable("fwidth=", val); }
 }
 
 
