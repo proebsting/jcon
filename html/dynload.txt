@@ -23,15 +23,18 @@ it with a command such as <CODE>jcont -c file.icn</CODE>.
 This produces a <CODE>file.zip</CODE> archive suitable for use
 with <CODE>loadfunc()</CODE>.
 
-<P> A dynamically loaded Icon procedure can reference globals
-and procedures defined in the original program as well as any
-defined in its own source file (and therefore included in
-the Zip file).
-<B>#%#%#%#%(TEST THIS!)</B>
+<P> When a Zip file of Icon procedures is first referenced by
+<CODE>loadfunc()</CODE>, all the globals and procedures in the file
+are linked before the requested procedure is returned.
+Subsequent <CODE>loadfunc()</CODE> calls can access other procedures
+from the file, but the file is not relinked when this is done.
 
-<P> Dynamically loaded procedures in one file cannot reference
-those in another file regardless of the order of loading.
-<B>#%#%#%#%(TEST THIS!)</B>
+<P> A dynamically loaded Icon procedure can reference globals
+and procedures defined in the original program, its own source file,
+and any other files loaded before its own file is first linked.
+Unreferenced procedures must be declared <CODE>invocable</CODE>
+if they are to be referenced by subsequently loaded procedures.
+
 
 <H3>Preparing Java Procedures</H3>
 
