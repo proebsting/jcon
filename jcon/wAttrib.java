@@ -28,6 +28,13 @@ static {
     newatt("width", new aWidth());
     newatt("height", new aHeight());
     newatt("size", new aSize());
+
+    newatt("echo", new aEcho());
+    newatt("cursor", new aCursor());	//#%#%#% attrib is impl but cursor isn't
+    newatt("x", new aX());
+    newatt("y", new aY());
+    newatt("row", new aRow());
+    newatt("col", new aCol());
 }
 
 private static void newatt(String name, wAttrib a) {
@@ -41,8 +48,8 @@ private static void newatt(String name, wAttrib a) {
 //
 //  Returns a list of wAttrib objects, each of proper type and with
 //  the "name" field set.  The "val" field is set, always to a vString,
-//  if "=value" is found in an argument.  (Note that val==null is
-//  different from val=="").
+//  if "=value" is found in an argument.  (Note that val=null is
+//  different from val="").
 //
 //  Errors are possible:  103 (string expected), 145 (bad name)
 
@@ -89,28 +96,52 @@ static wAttrib[] parseAtts(vDescriptor[] args, int n) {
 
 
 class aFg extends wAttrib {
-
-vValue get(vWindow win)	{ return win.Fg(null); }
-vValue set(vWindow win)	{ return win.Fg(iNew.String(val)); }
-
+    vValue get(vWindow win)	{ return win.Fg(null); }
+    vValue set(vWindow win)	{ return win.Fg(iNew.String(val)); }
 }
 
-
-
 class aBg extends wAttrib {
-
-vValue get(vWindow win)	{ return win.Bg(null); }
-vValue set(vWindow win)	{ return win.Bg(iNew.String(val)); }
-
+    vValue get(vWindow win)	{ return win.Bg(null); }
+    vValue set(vWindow win)	{ return win.Bg(iNew.String(val)); }
 }
 
 
 
 class aFont extends wAttrib {
+    vValue get(vWindow win)	 { return win.Font(null); }
+    vValue set(vWindow win)	 { return win.Font(iNew.String(val)); }
+}
 
-vValue get(vWindow win)	 { return win.Font(null); }
-vValue set(vWindow win)	 { return win.Font(iNew.String(val)); }
 
+
+class aEcho extends wAttrib {
+    vValue get(vWindow win)	{ return win.getTTY().Echo(null); }
+    vValue set(vWindow win)	{ return win.getTTY().Echo(val); }
+}
+
+class aCursor extends wAttrib {
+    vValue get(vWindow win)	{ return win.getTTY().Cursor(null); }
+    vValue set(vWindow win)	{ return win.getTTY().Cursor(val); }
+}
+
+class aX extends wAttrib {
+    vValue get(vWindow win)	{ return win.getTTY().X(null); }
+    vValue set(vWindow win)	{ return win.getTTY().X(val); }
+}
+
+class aY extends wAttrib {
+    vValue get(vWindow win)	{ return win.getTTY().Y(null); }
+    vValue set(vWindow win)	{ return win.getTTY().Y(val); }
+}
+
+class aRow extends wAttrib {
+    vValue get(vWindow win)	{ return win.getTTY().Row(win, null); }
+    vValue set(vWindow win)	{ return win.getTTY().Row(win, val); }
+}
+
+class aCol extends wAttrib {
+    vValue get(vWindow win)	{ return win.getTTY().Col(win, null); }
+    vValue set(vWindow win)	{ return win.getTTY().Col(win, val); }
 }
 
 

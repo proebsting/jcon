@@ -13,6 +13,7 @@ Frame f;		// enclosing Frame object
 Image i;		// backing image used for refreshing visable image
 
 vList evq;		// event queue
+wTTY tty;		// file I/O stuff
 
 Vector wlist;		// list of associated vWindows
 
@@ -28,7 +29,6 @@ wCanvas(vWindow win, String label, int w, int h) {
     this.setSize(w, h);
 
     f = new Frame(label);
-
     f.add(this, "North");
     f.pack();
     f.show();		// must precede createImage (?)
@@ -36,6 +36,7 @@ wCanvas(vWindow win, String label, int w, int h) {
     i = this.createImage(w, h);
 
     evq = iNew.List(0, null);			// create event queue
+    tty = new wTTY();				// create TTY instance
 
     wEvent.register(this);			// register event handlers
 }

@@ -83,6 +83,12 @@ vFile(String name, String flags) throws IOException {
 
 
 
+// new vFile() -- degenerate constructor for vWindow subclass
+
+vFile() {}
+
+
+
 //  static methods for argument processing and defaulting
 
 static vFile argVal(vDescriptor[] args, int index)		// required arg

@@ -10,7 +10,7 @@ import java.util.*;
 
 class wFont extends Font {
 
-    vString spec;	// original spcification string
+    vString spec;		// original spcification string
 
 static final String DEFAULT_FONT = "fixed";	// initial font specification
 static final int DEFAULT_SIZE = 14;		// default font size
@@ -40,14 +40,14 @@ static wFont parse(vString spec) {
     }
 
     // set up string scanner
-    StringTokenizer tkr = new StringTokenizer(s, ",");
+    StringTokenizer tkr = new StringTokenizer(s);
     if (! tkr.hasMoreTokens()) {
     	return null;
     }
 
     // get family name (case sensitive)
     // map Icon standard names (recognized insensitively)
-    String family = tkr.nextToken();
+    String family = tkr.nextToken(",");
     String f = family.toLowerCase();
     if (f.equals("mono"))		family = "DialogInput";
     else if (f.equals("typewriter"))	family = "Monospaced";
@@ -56,7 +56,7 @@ static wFont parse(vString spec) {
 
     // process characteristics
     while (tkr.hasMoreTokens()) {
-    	String tk = tkr.nextToken().toLowerCase();
+    	String tk = tkr.nextToken(", ").toLowerCase();
 	try {
 	    // if numeric, it's a font size
 	    size = Integer.parseInt(tk);

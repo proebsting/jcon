@@ -20,6 +20,7 @@ void announce() {
 	iBuiltins.declare("Bg", 2);
 	iBuiltins.declare("Clone", -1);
 	iBuiltins.declare("Color", -1);
+	iBuiltins.declare("CopyArea", 8);	//#%#% within same window only
 	iBuiltins.declare("DrawArc", -1);
 	iBuiltins.declare("DrawCircle", -1);
 	iBuiltins.declare("DrawLine", -1);
@@ -37,24 +38,23 @@ void announce() {
 	iBuiltins.declare("FillPolygon", -1);
 	iBuiltins.declare("Font", 2);
 	iBuiltins.declare("FreeColor", -1);
+	iBuiltins.declare("GotoRC", 3);
+	iBuiltins.declare("GotoXY", 3);
 	iBuiltins.declare("NewColor", 2);
 	iBuiltins.declare("Pending", 1);
+	iBuiltins.declare("TextWidth", 2);
 	iBuiltins.declare("WAttrib", -1);
 	iBuiltins.declare("WFlush", 1);
 	iBuiltins.declare("WSync", 1);
+
+	// #%#%#%#%#%# IMPLEMENTED AS NO-OPS
+	// close(win) (see wTTY.java)
 
 	// #%#%#%#%#%# NOT YET IMPLEMENTED:
 	//
 	// iBuiltins.declare("Clip", 5);
 	// iBuiltins.declare("Pattern", 2);
 	//
-	// iBuiltins.declare("TextWidth", 2);
-	//
-	// iBuiltins.declare("GotoRC", 3);
-	// iBuiltins.declare("GotoXY", 3);
-	// also need read(W), write(W,s...), etc.
-	//
-	// iBuiltins.declare("CopyArea", 8);
 	// iBuiltins.declare("ReadImage", 5);
 	// iBuiltins.declare("WriteImage", 6);
 	// iBuiltins.declare("Pixel", 5);
@@ -188,6 +188,39 @@ class f$Font extends iValueClosure {		// Font(W,s)
 	}
 }
 
+class f$TextWidth extends iValueClosure {	// TextWidth(W,s)
+	vDescriptor function(vDescriptor[] args) {
+		vWindow win = vWindow.winArg(args);
+	    	String s = vString.argVal(args, vWindow.argBase(args));
+		return win.TextWidth(s);
+	}
+}
+
+class f$GotoXY extends iValueClosure {		// GotoXY(W,x,y)
+	vDescriptor function(vDescriptor[] args) {
+		vWindow win = vWindow.winArg(args);
+		int b = vWindow.argBase(args);
+	    	long x = vInteger.argVal(args, b, 0);
+	    	long y = vInteger.argVal(args, b + 1, 0);
+		win.getTTY().X(x + "");
+		win.getTTY().Y(y + "");
+		return win;
+	}
+}
+
+class f$GotoRC extends iValueClosure {		// GotoXY(W,r,c)
+	vDescriptor function(vDescriptor[] args) {
+		vWindow win = vWindow.winArg(args);
+		int b = vWindow.argBase(args);
+	    	long r = vInteger.argVal(args, b, 1);
+	    	long c = vInteger.argVal(args, b + 1, 1);
+		win.getTTY().Row(win, r + "");
+		win.getTTY().Col(win, c + "");
+		return win;
+	}
+}
+
+
 
 
 class f$DrawPoint extends iValueClosure {	// DrawPoint(W,x,y,...)
@@ -272,6 +305,21 @@ class f$FillRectangle extends iValueClosure {	// FillRectangle(W,x,y,w,h,...)
 		int[] a = wCoords.rectArgs(args, 4);
 		for (int i = 0; i < a.length; i += 4) {
 			win.FillRectangle(a[i], a[i+1], a[i+2], a[i+3]);
+		}
+		return win;
+	}
+}
+
+//#%#%#% CopyArea only works with one window argument
+class f$CopyArea extends iValueClosure {	// CopyArea(W,x1,y1,w,h,x2,y2)
+	vDescriptor function(vDescriptor[] args) {
+		vWindow win = vWindow.winArg(args);
+		int[] a = wCoords.rectArgs(args, 4);	// ignore w2, h2
+		if (a.length > 4) {	// explicit x2
+		    win.CopyArea(a[0], a[1], a[2], a[3], a[4], a[5]);
+		} else {
+		    win.CopyArea(a[0], a[1], a[2], a[3], 0, 0);
+		    	//#%#% (0,0) s/b (-dx,-dy)
 		}
 		return win;
 	}

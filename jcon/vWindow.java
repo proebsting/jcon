@@ -1,4 +1,6 @@
 //  vWindow.java -- graphics window type
+//
+//  note that vWindow extends vFile to support read(), write(), etc.
 
 package rts;
 
@@ -7,7 +9,7 @@ import java.awt.*;
 
 
 
-public class vWindow extends vValue {
+public class vWindow extends vFile {
 
     // NOTE: when adding instance variables, update cloning initializion below
 
@@ -26,8 +28,10 @@ public class vWindow extends vValue {
 
 
 wCanvas getCanvas()		{ return c; }
+wTTY getTTY()			{ return c.tty; }
 wColor getBg()			{ return bg; }
-
+wFont getFont()			{ return font; }
+FontMetrics getFontMetrics()	{ return c.getFontMetrics(font); }
 
 
 
@@ -46,7 +50,6 @@ int rank()			{ return 50; }	// windows sort after csets
 int compareTo(vValue v)
 	    { return c.f.getTitle().compareTo(((vWindow)v).c.f.getTitle()); }
 
-//#%#%#%   vDescriptor Bang(iClosure c)	{ return this.read(); }
 
 
 
@@ -187,11 +190,17 @@ static vWindow winArg(vDescriptor args[]) {
 
 
 
+//  tty-mode I/O
 
-//#%#%# seek, where:  fail
-//#%#%  flush, close
-//#%#%  read, reads
-//#%#%  write, writes
+vString read()			{ return c.tty.read(this); }
+vString reads(long n)		{ return c.tty.reads(this, n); }
+void writes(String s)		{ c.tty.writes(this, s); }
+void newline()			{ c.tty.newline(this); }
+
+vFile flush()			{ toolkit.sync(); return this; }
+
+vFile close()			{ return this; } //#%#%#%#%#% TO BE WRITTEN
+
 
 
 
@@ -258,6 +267,12 @@ vString Font(vString s) {
 
 
 
+vInteger TextWidth(String s) {
+    return iNew.Integer(c.getFontMetrics(font).stringWidth(s));
+}
+
+
+
 // drawing operations write backing store first in case of inopportune refresh
 
 
@@ -279,6 +294,67 @@ void EraseArea(int x, int y, int w, int h) {
     a.fillRect(x, y, w, h);
     b.setColor(fg);
     a.setColor(fg);
+}
+
+
+
+void CopyArea(int x1, int y1, int w, int h, int x2, int y2) {
+
+    // check for source portions outside window bounds
+    Dimension d = c.getSize();
+    int lmar, rmar, tmar, bmar;
+    lmar = -x1;			// amount outside left edge
+    rmar = x1 + w - d.width;	// amount outside right edge
+    tmar = -y1;			// amount outside top edge
+    bmar = y1 + h - d.height;	// amount outside bottom edge
+
+    // adjust bounds for any positive margins; truncate negative margins to 0
+    if (lmar > 0) {
+	x1 += lmar;
+	x2 += lmar;
+	w -= lmar;
+    } else {
+	lmar = 0;
+    }
+    if (rmar > 0) {
+	w -= rmar;
+    } else {
+	rmar = 0;
+    }
+    if (tmar > 0) {
+	y1 += tmar;
+	y2 += tmar;
+	h -= tmar;
+    } else {
+	tmar = 0;
+    }
+    if (bmar > 0) {
+	h -= bmar;
+    } else {
+	bmar = 0;
+    }
+
+    // copy source region, if anything remains
+    if (w > 0 && h > 0) {
+	// remaining source area is within bounds of window
+	// #%#%##%#% although it might be obscured -- need to handle that
+	b.copyArea(x1, y1, w, h, x2 - x1, y2 - y1);
+	a.copyArea(x1, y1, w, h, x2 - x1, y2 - y1);
+    }
+
+    // erase areas "copied" from outside window bounds
+    if (lmar > 0) {
+	EraseArea(x2 - lmar, y2 - tmar, lmar, tmar + h + bmar);
+    }
+    if (rmar > 0) {
+	EraseArea(x2 + w, y2 - tmar, rmar, tmar + h + bmar);
+    }
+    if (tmar > 0) {
+	EraseArea(x2, y2 - tmar, w, tmar);
+    }
+    if (bmar > 0) {
+	EraseArea(x2, y2 + h, w, bmar);
+    }
 }
 
 
