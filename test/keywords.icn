@@ -9,6 +9,7 @@ procedure main()
    every kw("features", &features)
    write()
 
+   kw("host", &host)
    kw("dateline", &dateline)
    kw("date", &date)
    kw("clock", &clock)

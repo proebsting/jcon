@@ -38,6 +38,7 @@ public class iKeywords extends iFile {
 		iEnv.declareKey("current", new k$current());
 		iEnv.declareKey("date", new k$date());
 		iEnv.declareKey("dateline", new k$dateline());
+		iEnv.declareKey("host", new k$host());
 		iEnv.declareKey("main", new k$main());
 		iEnv.declareKey("source", new k$source());
 		iEnv.declareKey("progname", new k$progname());
@@ -198,6 +199,37 @@ class k$dateline extends k$Value {		// &dateline
 		b.append((d.getHours() >= 12) ? " pm" : " am");
 		return iNew.String(b.toString());
 	}
+}
+
+
+
+class k$host extends k$Value {			// &host
+
+	static vString hostname;
+
+	public vValue deref() {
+		if (hostname == null) {
+			inithost();
+		}
+		return hostname;
+	}
+
+	static void inithost() {
+	    try {
+		Process p = Runtime.getRuntime().exec("/bin/hostname");
+		hostname = iNew.String(
+		    (new DataInputStream(p.getInputStream()))
+		    .readLine().trim());
+		p.destroy();
+	    } catch (Exception e1) {
+		try {
+		    hostname = iNew.String(System.getProperty("os.name"));
+		} catch (Exception e2) {
+		    hostname = iNew.String("Jcon");
+		}
+	    }
+	}
+
 }
 
 
