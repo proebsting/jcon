@@ -42,6 +42,10 @@ int compareTo(vValue v)
 
 
 
+wCanvas getCanvas()		{ return c; }
+
+
+
 
 //  window creation
 

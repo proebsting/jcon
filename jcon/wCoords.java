@@ -4,8 +4,10 @@
 //  suitable for passing to java.awt.graphics.drawPolygon()
 //  and similar methods.
 
-
 package rts;
+
+import java.awt.*;
+
 
 
 public class wCoords {
@@ -48,33 +50,33 @@ wCoords(vDescriptor args[]) {
 
 
 
-//  rectargs(arglist) -- extract x,y,w,h sets into array of ints
+//  rectargs(arglist, step) -- extract x,y,w,h sets into array of ints
+//
+//  step gives increment between arg sets (usually 4, but 6 for Draw/FillArc)
 
-//  #%#% doesn't handle defaulted values yet
+static int[] rectArgs(vDescriptor args[], int step) {	// get x,y,w,h int sets
 
-static int[] rectArgs(vDescriptor args[]) {	// get x,y,w,h sets as ints
-    int i, j, n;
-    int a[];
+    vWindow win = vWindow.winArg(args);
+    Dimension d = win.getCanvas().getSize();
 
-    if (args.length == 0) {
-	iRuntime.error(146);
+    int b = vWindow.argBase(args);
+    int nsets = (args.length - b + step - 1) / step;
+    if (nsets == 0) {
+	nsets = 1;
     }
-    if (args[0] instanceof vWindow) {
-	i = 1;
-    } else {
-	i = 0;
-    }
-    n = args.length - i;
-    if ((n % 4) != 0) {
-	iRuntime.error(146);
-    }
-    a = new int[n];
-    for (j = 0; j < n; j++) {
-	a[j] = (int) vInteger.argVal(args, i++);
+
+    int a[] = new int[4 * nsets];
+    int j = 0;
+    for (int i = 0; i < nsets * step; i += step) {
+	int x, y;
+	a[j++] = x = (int) vInteger.argVal(args, b + i, 0);	//#%#% s/b -dx
+	a[j++] = y = (int) vInteger.argVal(args, b + i + 1, 0);	//#%#% s/b -dy
+	a[j++] = (int) vInteger.argVal(args, b + i + 2, d.width - x);
+	a[j++] = (int) vInteger.argVal(args, b + i + 3, d.height - y);
     }
 
     // put in canonical form: handle negative w/h values
-    for (j = 0; j < n; j+=4) {
+    for (j = 0; j < a.length; j+=4) {
 	if (a[j+2] < 0) {
 	    a[j] -= (a[j+2] = -a[j+2]);
 	}
@@ -82,6 +84,7 @@ static int[] rectArgs(vDescriptor args[]) {	// get x,y,w,h sets as ints
 	    a[j+1] -= (a[j+3] = -a[j+3]);
 	}
     }
+
     return a;
 }
 
