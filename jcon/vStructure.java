@@ -34,7 +34,7 @@ static vString lpar = iNew.String('(');
 static vString rpar = iNew.String(')');
 
 vString image() {			// type_snum(size)
-    return this.type().concat(uscore).concat(iNew.String(snum))
+    return this.type().concat(uscore).concat(iNew.Integer(snum).mkString())
 	.concat(lpar).concat(this.Size().mkString()).concat(rpar);
 }
 

@@ -70,8 +70,6 @@ public static vInteger Integer(long x) {
 
 private static vString nullstring = new vString();
 private static vString strlist[] = new vString[vCset.MAX_VALUE + 1];
-private static vString intstrs[] =
-    new vString[iConfig.MaxCachedIntStr + 1 - iConfig.MinCachedIntStr];
 
 static {
     for (int i = 0; i < strlist.length; i++) {
@@ -127,18 +125,6 @@ public static vString String(vString s, int i, int j) {     // s[i:j], both > 0
 
 public static vString String(vString s, int i, int j, vString t) {
     return new vString(s, i, j, t);
-}
-
-public static vString String(long x) {
-    if (x > iConfig.MaxCachedIntStr || x < iConfig.MinCachedIntStr) {
-	return iNew.String(Long.toString(x));
-    }
-    int i = (int)x - iConfig.MinCachedIntStr;
-    vString v = intstrs[i];
-    if (v != null) {
-	return v;
-    }
-    return intstrs[i] = new vString(Long.toString(x).getBytes());
 }
 
 

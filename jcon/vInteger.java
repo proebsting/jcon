@@ -25,15 +25,14 @@ vInteger mkInteger()	{ return this; }
 vReal mkReal()		{ return iNew.Real(this.value); }
 
 vString mkString() {
-    if (cachedString != null) {
-	return cachedString;
+    if (cachedString == null) {
+       cachedString = iNew.String(Long.toString(value));
     }
-    return cachedString = iNew.String(this.value);
+    return cachedString;
 }
 
-vString write()		{ return iNew.String(this.value); }
-
-vString image()		{ return iNew.String(this.value); }
+vString write()		{ return mkString(); }
+vString image()		{ return mkString(); }
 
 static vString typestring = iNew.String("integer");
 vString type()		{ return typestring; }
