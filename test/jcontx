@@ -2,12 +2,12 @@
 #
 #  jcontx file.icn -- build and run an Icon program using the Jcon translator
 #
-#  writes temp files in ./tmp; cleans up class files if no errors
+#  assumes that the jcon "test" directory is the current directory
+#  writes class files in ./tmp after deleting previously existing class files
 
-JDIR=/home/todd/research/i2j/jcon
 TMP=./tmp
 
-JCON="$JDIR/src/jcon -O -target=java"
+JCON="../src/jcon -O -target=java"
 JAVAC="toba -K"
 JAVA="java"
 
@@ -17,7 +17,7 @@ for FNAME; do
 done
 
 set -e
-export CLASSPATH=${CLASSPATH-.}:$JDIR/rts
+export CLASSPATH=${CLASSPATH-.}:../../rts
 
 test -d $TMP || mkdir $TMP
 $JCON $FILES >$TMP/a_out.java

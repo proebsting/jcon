@@ -1,0 +1,13 @@
+#!/bin/ksh
+#
+#  jconx [args...] -- execute program just built by jcontx
+#
+#  assumes that the jcon "test" directory is the current directory
+#  assumes that the class name is "a_out" in directory "./tmp"
+
+TMP=./tmp
+JAVA="java"
+
+export CLASSPATH=${CLASSPATH-.}:../../rts
+cd $TMP
+$JAVA a_out
