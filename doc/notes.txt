@@ -19,7 +19,6 @@ execution:
 -- tracing (set by $TRACE or &trace) includes operators and built-in functions
 
 known bugs:
--- the preprocessor does not diagnose "$define f(a) ..."
 -- local variables are not dereferenced prior to being returned
 -- more procedures may be "invocable" than in v9
 
