@@ -53,7 +53,6 @@ compatible, although the book is unclear or wrong:
 -- records sort first by type and then by serial number
 
 known bugs:
--- string constants containing \e aren't properly generated
 -- resuming a "break" is handled improperly (program crashes with Java error)
 -- +:= and -:= function identically to v9, which is wrong
 -- on the Dec Alpha, a rightward ishift() doesn't sign extend  [Java bug]
