@@ -5,7 +5,7 @@
 #  usage:  jcont [-cdsv] [-o exe] file[.icn]... [file.zip...] [-x [arguments]]
 #
 #     -c	compile only: don't produce an executable
-#     -s	silence: suppress commentary
+#     -s	silent: suppress commentary
 #     -o exe	specify output file for executable
 #
 #     -d	debug jcont: use ./jtmp for temp files, and don't delete
