@@ -1694,7 +1694,8 @@ end
 
 procedure bc_create_declare(c)
     local declare, declarecode, declareGlobal, k, s, declareProcedure
-    local declareRecord, stringclass, i, f, declareNoErrorConversion
+    local declareRecord, stringclass, i, f, declareNoErrorConversion, nm
+    local class, init
     local declareDebugging
 
     declare := j_create_method(c, 0, "declare", "()V")
@@ -1720,9 +1721,14 @@ procedure bc_create_declare(c)
     every k := key(bc_proc_table) do {
         s := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(declarecode.code, j_ldc_w(s) )
-        s := j_cp_String(c, j_cp_Utf8(c, "p_" ||bc_java_classname|| "$" || k)) |
-            runerr(500)
-        put(declarecode.code, j_ldc_w(s) )
+
+	nm := "p_" || bc_java_classname || "$" || k
+        class := j_cp_Class(c, j_cp_Utf8(c, nm))
+        init := bc_init_methodref(c, nm)
+        put(declarecode.code, j_new(class) )
+        put(declarecode.code, j_dup() )
+        put(declarecode.code, j_invokespecial(init) )
+
         put(declarecode.code, j_ipush(bc_proc_table[k]) )
         put(declarecode.code, j_invokestatic(declareProcedure) )
     }

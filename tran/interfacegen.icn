@@ -154,7 +154,7 @@ procedure methodrefs()
             ["declareInvoke", "(Ljava/lang/String;)V", "rts/iEnv"],
             ["declareInvokeAll", "()V", "rts/iEnv"],
             ["declareNoErrorConversion", "()V", "rts/iEnv"],
-            ["declareProcedure", "(Ljava/lang/String;Ljava/lang/String;I)V",
+            ["declareProcedure", "(Ljava/lang/String;Lrts/vProc;I)V",
              "rts/iEnv"],
             ["declareRecord", "(Ljava/lang/String;[Ljava/lang/String;)V",
              "rts/iEnv"],
