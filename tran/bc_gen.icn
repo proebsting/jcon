@@ -1457,7 +1457,7 @@ procedure bc_File(getline, flagList)
 	bc_real_table := table()
 	bc_keys_link := table()
 
-	parse(getline)
+	every ir(add_defaults(parse(getline)))
 
 	c := bc_proc_classptr := ClassFile(3, 45, [&null], table(), 1,
 		&null,

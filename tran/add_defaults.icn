@@ -261,7 +261,7 @@ end
 
 # record ToBy( fromexpr toexpr byexpr )
 procedure add_defaults_ToBy(p)
-	/p.byexpr := Intlit("1")
+	/p.byexpr := Intlit(1)
 	p.fromexpr := add_defaults(p.fromexpr)
 	p.toexpr := add_defaults(p.toexpr)
 	p.byexpr := add_defaults(p.byexpr)

@@ -79,7 +79,7 @@ procedure dot_File(getline, flagList)
 	if match("-O", !flagList) then {
 		optimize_flag := 1
 	}
-	parse(getline)
+	every ir(add_defaults(parse(getline)))
 end
 
 procedure dot_CG()

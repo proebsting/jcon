@@ -6,10 +6,11 @@ procedure parse(getline)
 
 	tok := create yylex(getline)
 	tok_rec := @tok
-        every d := program() do {
-		add_defaults(d)
-		ir(d)
-	}
+	suspend program()
+        # every d := program() do {
+	# 	add_defaults(d)
+	# 	ir(d)
+	# }
 end
 
 #  CASE  expr  OF  LBRACE  cclause {  SEMICOL  cclause }  RBRACE 
@@ -712,12 +713,12 @@ procedure literal()
 	case tok_rec of {
 	INTLIT	:	# INTLIT 
 		{
-		return Intlit(eat_token(), coord)
+		return Intlit(integer(eat_token()), coord)
 		}
 
 	REALLIT	:	# REALLIT 
 		{
-		return Reallit(eat_token(), coord)
+		return Reallit(real(eat_token()), coord)
 		}
 
 	STRINGLIT	:	# STRINGLIT 
@@ -727,7 +728,7 @@ procedure literal()
 
 	CSETLIT	:	# CSETLIT 
 		{
-		return Csetlit(eat_token(), coord)
+		return Csetlit(cset(eat_token()), coord)
 		}
 
 	default : {

@@ -24,14 +24,15 @@ IRGENSRC = \
 	irgen.icn
 
 CODEGENSRC = \
-	cg.icn \
-	optimize.icn \
-	null_gen.icn \
+	bc_gen.icn \
 	dump_gen.icn \
 	dot_gen.icn \
-	bc_gen.icn \
-	bytecode.icn \
-	java_gen.icn
+	java_gen.icn \
+	null_gen.icn \
+	ucode_gen.icn \
+	cg.icn \
+	optimize.icn \
+	bytecode.icn 
 
 TRANSRC = $(BASESRC) $(LEXSRC) $(PARSESRC) $(IRGENSRC) $(CODEGENSRC)
 

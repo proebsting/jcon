@@ -18,7 +18,7 @@ procedure null_function(name, params, accumulate, locals, statics, code, coord)
 end
 
 procedure null_File(getline, flagList)
-	parse(getline)
+	every ir(add_defaults(parse(getline)))
 end
 
 procedure null_CG()

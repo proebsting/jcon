@@ -664,7 +664,7 @@ procedure java_File(getline, flagList)
 	java_integer_table := table()
 	java_real_table := table()
 
-	parse(getline)
+	every ir(add_defaults(parse(getline)))
 
 	write(outfile, "public class ", java_classname, " extends iFile {")
 	write(outfile, "\tpublic void declare() {")
