@@ -157,7 +157,7 @@ procedure bc_gen_ir_Deref(s, p)
     local deref
 
     bc_gen(s, p.value)
-    deref := bc_deref_methodref(bc_proc_classptr)
+    deref := bc_Deref_methodref(bc_proc_classptr)
     put(s, j_invokevirtual(deref))
     return s
 end
@@ -234,7 +234,7 @@ procedure bc_gen_ir_Move(s, p)
 
     bc_gen_rval(s, p.rhs)
     if type(p.lhs) == ("ir_Key" | "ir_Var") then {
-        deref := bc_deref_methodref(bc_proc_classptr)
+        deref := bc_Deref_methodref(bc_proc_classptr)
         put(s, j_invokevirtual(deref))
     }
     bc_gen_assign_to(s, p.lhs)
@@ -250,7 +250,7 @@ procedure bc_gen_ir_ScanSwap(s, p)
     subject := bc_gen([], p.subject)
     pos := bc_gen([], p.pos)
 
-    deref := bc_deref_methodref(bc_proc_classptr)
+    deref := bc_Deref_methodref(bc_proc_classptr)
     assign := bc_Assign_methodref(bc_proc_classptr)
     every put(s, !Kpos)
     put(s, j_invokevirtual(deref))
@@ -1305,7 +1305,7 @@ procedure bc_emit_prologue_params(s, c, params, accumulate)
 
     null := bc_New_vNull_methodref(bc_proc_classptr)
     arguments := bc_arguments_fieldref(c)
-    deref := bc_deref_methodref(c)
+    deref := bc_Deref_methodref(c)
     assign := bc_Assign_methodref(c)
 
     every i := 1 to *params do {
@@ -1352,7 +1352,7 @@ procedure bc_emit_prologue_locals(s, c, locals)
 
     null := bc_New_vNull_methodref(bc_proc_classptr)
     arguments := bc_arguments_fieldref(c)
-    deref := bc_deref_methodref(c)
+    deref := bc_Deref_methodref(c)
     assign := bc_Assign_methodref(c)
 
     every k := !locals do {
@@ -1372,7 +1372,7 @@ procedure bc_emit_prologue_undeclared(s, c, undeclared)
 
     null := bc_New_vNull_methodref(bc_proc_classptr)
     arguments := bc_arguments_fieldref(c)
-    deref := bc_deref_methodref(c)
+    deref := bc_Deref_methodref(c)
     assign := bc_Assign_methodref(c)
 
     every k := !undeclared do {
@@ -1447,7 +1447,7 @@ end
 procedure bc_copy_variable(s, c, k)
     local deref, assign, field
 
-    deref := bc_deref_methodref(c)
+    deref := bc_Deref_methodref(c)
     assign := bc_Assign_methodref(bc_proc_classptr)
     field := j_create_fieldref(c, "v$" || k, "Lrts/vVariable;",
                                bc_proc_classname)
@@ -1482,7 +1482,7 @@ procedure bc_create_copy(c, params, locals, undeclared)
         createvars := bc_createVars_methodref(c, bc_proc_classname)
         put(s, j_aload_2() )
         put(s, j_invokevirtual(createvars) )
-        deref := bc_deref_methodref(c)
+        deref := bc_Deref_methodref(c)
         assign := bc_Assign_methodref(bc_proc_classptr)
         every k := !params | !locals do {
             bc_copy_variable(s, c, k)

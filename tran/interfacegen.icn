@@ -103,7 +103,7 @@ procedure methodrefs()
     m := [
             ["<init>", "()V", &null, "init"],
             ["ArgArray", "(I)[Lrts/vDescriptor;", "rts/iClosure"],
-            ["Assign", "(Lrts/vValue;)Lrts/vVariable;", "rts/vDescriptor"],
+            ["Assign", "(Lrts/vDescriptor;)Lrts/vVariable;", "rts/vDescriptor"],
             ["Free", "()V", "rts/iClosure"],
             ["Instantiate",
             "(Lrts/vDescriptor;[Lrts/vDescriptor;Lrts/iClosure;)Lrts/iClosure;",
@@ -131,7 +131,7 @@ procedure methodrefs()
              "rts/iEnv"],
             ["declareRecord", "(Ljava/lang/String;[Ljava/lang/String;)V",
              "rts/iEnv"],
-            ["deref", "()Lrts/vValue;", "rts/vDescriptor"],
+            ["Deref", "()Lrts/vValue;", "rts/vDescriptor"],
             ["Field", "(Ljava.lang.String;)Lrts/vVariable;", "rts/vDescriptor"],
             ["error", "(I)V", "rts/iRuntime"],
             ["link", "(Ljava/lang/String;)V", "rts/iInterface"],
