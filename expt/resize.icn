@@ -4,6 +4,7 @@
 #  drag the mouse from window interior to desired new lower right corner.
 
 procedure main()
+   local c, s, colors
 
    &window := open("window", "g", "size=300,200", "fg=deep green")
    EraseArea()
@@ -20,5 +21,8 @@ procedure main()
 	 write(s)
 	 WAttrib(s) | write("[FAILED]")
          }
+      &rrelease: {
+	 write("current size=", WAttrib("size"))
+	 }
       }
 end

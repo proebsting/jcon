@@ -9,6 +9,7 @@
 $include "../bin/keysyms.icn"		 #  requires jcon-revised version
 
 procedure main()
+   local e
    &window := open(&progname, "g")
    while e := Event(&window) do {
       write(image(e), "\t", case e of {
