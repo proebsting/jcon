@@ -1,17 +1,17 @@
-#  Standard Icon benchmarks
-#
-#  These are the standard Icon benchmark programs from the tests/bench
-#  directory of version 9.3 of Icon.  The programs are unchanged, but
-#  the Makefile and scripts have been replaced.
-#
-#  The standard benchmarks use &time to report CPU usage, but &time
-#  can only report wall-clock time for jcont.  Consequently, we use
-#  times as reported by the shell.  These times include initialization,
-#  which puts jcont at a disadvantage compared to the previous method.
-#  To partially compensate, some program arguments and data files have
-#  been changed to yield longer execution times.
-#
-#  To run the benchmarks, just type "make".
-#  To redisplay the most recent timings, type "make report".
-#  To rerun the timings, type "make rerun".
-#  To clean up, type "make clean".
+jcon/bmark -- Standard Icon benchmarks
+
+These are the standard Icon benchmark programs from the tests/bench
+directory of version 9.3 of Icon.  The programs are unchanged, but
+the Makefile and scripts have been replaced.
+
+The standard benchmarks use &time to report CPU usage, but &time
+can only report wall-clock time for jcont.  Consequently, we use
+times as reported by the shell.  These times include initialization,
+which puts jcont at a disadvantage compared to the previous method.
+To partially compensate, some program arguments and data files have
+been changed to yield longer execution times.
+
+To run the benchmarks, just type "make".
+To redisplay the most recent timings, type "make report".
+To rerun the timings, type "make rerun".
+To clean up, type "make clean".
