@@ -118,7 +118,7 @@ global u_variables
 global u_u1, u_u2
 global u_lastline, u_lastfile, u_lastcolm
 
-procedure reset_coord()
+procedure u_reset_coord()
     u_lastline := u_lastfile := u_lastcolm := &null
 end
 procedure u_coord(s, p)
@@ -138,31 +138,31 @@ procedure u_coord(s, p)
 end
 
 # record a_NoOp( )
-procedure ucode_a_NoOp(s, p)
+procedure u_gen_a_NoOp(s, p)
 end
 
 # record a_ProcCode( init body )
-procedure ucode_a_ProcCode(s, p)
-    ucode(s, p.init)
-    ucode(s, p.body)
+procedure u_gen_a_ProcCode(s, p)
+    u_gen(s, p.init)
+    u_gen(s, p.body)
 end
 
 # record a_Field( expr field )
-procedure ucode_a_Field(s, p)
+procedure u_gen_a_Field(s, p)
     put(s, u_pnull())
-    ucode(s, p.expr)
+    u_gen(s, p.expr)
     u_coord(s, p)
     put(s, u_field(p.field.id))
 end
 
 # record a_Case( expr clauseList dflt)
-procedure ucode_a_Case(s, p)
+procedure u_gen_a_Case(s, p)
     local endlab, nextlab, i
 
     endlab := @u_nextlab
     put(s, u_mark0())
     u_loops[1].ir.markcount +:= 1
-    ucode(s, p.expr)
+    u_gen(s, p.expr)
     u_loops[1].ir.markcount -:= 1
     put(s, u_eret())
     every i := !p.clauseList do {
@@ -170,19 +170,19 @@ procedure ucode_a_Case(s, p)
         put(s, u_mark(nextlab))
         u_loops[1].ir.markcount +:= 1
         put(s, u_ccase())
-        ucode(s, i.expr)
+        u_gen(s, i.expr)
         u_coord(s, p)
         put(s, u_eqv())
         u_loops[1].ir.markcount -:= 1
         put(s, u_unmark())
         put(s, u_pop())
-        ucode(s, i.body)
+        u_gen(s, i.body)
         put(s, u_goto(endlab))
         put(s, u_lab(nextlab))
     }
     if \p.dflt then {
         put(s, u_pop())
-        ucode(s, p.dflt)
+        u_gen(s, p.dflt)
     } else {
         put(s, u_efail())
     }
@@ -190,13 +190,13 @@ procedure ucode_a_Case(s, p)
 end
 
 # record a_Not( expr )
-procedure ucode_a_Not(s, p)
+procedure u_gen_a_Not(s, p)
     local lab
 
     lab := @u_nextlab
     put(s, u_mark(lab))
     u_loops[1].ir.markcount +:= 1
-    ucode(s, p.expr)
+    u_gen(s, p.expr)
     u_loops[1].ir.markcount -:= 1
     put(s, u_unmark())
     put(s, u_efail())
@@ -205,23 +205,23 @@ procedure ucode_a_Not(s, p)
 end
 
 # record a_RepAlt( expr )
-procedure ucode_a_RepAlt(s, p)
+procedure u_gen_a_RepAlt(s, p)
     local lab
 
     lab := @u_nextlab
     put(s, u_lab(lab))
     put(s, u_mark0())
     u_loops[1].ir.markcount +:= 1
-    ucode(s, p.expr)
+    u_gen(s, p.expr)
     u_loops[1].ir.markcount -:= 1
     put(s, u_chfail(lab))
     put(s, u_esusp())
 end
 
 # record a_Call( fn args )
-procedure ucode_a_Call(s, p)
-    ucode(s, p.fn)
-    ucode(s, p.args)
+procedure u_gen_a_Call(s, p)
+    u_gen(s, p.fn)
+    u_gen(s, p.args)
     u_coord(s, p)
     if type(p.args) == "a_CoexpList" then {
         put(s, u_invoke(1))
@@ -233,7 +233,7 @@ end
 # The following is used rather than a more natural solution to get
 # .u1 files that match icont.
 # record a_Alt( eList )
-procedure ucode_a_Alt0(s, L)
+procedure u_gen_a_Alt0(s, L)
     local i, endlab, nextlab
 
     if *L > 1 then {
@@ -241,50 +241,50 @@ procedure ucode_a_Alt0(s, L)
         endlab := @u_nextlab
         put(s, u_mark(nextlab))
         u_loops[1].ir.markcount +:= 1
-        ucode(s, L[1])
+        u_gen(s, L[1])
         u_loops[1].ir.markcount -:= 1
         put(s, u_esusp())
         put(s, u_goto(endlab))
         put(s, u_lab(nextlab))
-        ucode_a_Alt0(s, L[2:0])
+        u_gen_a_Alt0(s, L[2:0])
         put(s, u_lab(endlab))
     } else {
-        ucode(s, L[1])
+        u_gen(s, L[1])
     }
 end
-procedure ucode_a_Alt(s, p)
-    ucode_a_Alt0(s, p.eList)
+procedure u_gen_a_Alt(s, p)
+    u_gen_a_Alt0(s, p.eList)
 end
 
 # record a_Limitation( expr limit )
-procedure ucode_a_Limitation(s, p)
-    ucode(s, p.limit)
+procedure u_gen_a_Limitation(s, p)
+    u_gen(s, p.limit)
     u_coord(s, p)
     put(s, u_limit())
     u_loops[1].ir.markcount +:= 1
-    ucode(s, p.expr)
+    u_gen(s, p.expr)
     u_loops[1].ir.markcount -:= 1
     put(s, u_lsusp())
 end
 
 # record a_Scan( op expr body )
-procedure ucode_a_Scan(s, p)
+procedure u_gen_a_Scan(s, p)
     case p.op of {
     "?": {
-        ucode(s, p.expr)
+        u_gen(s, p.expr)
         u_coord(s, p)
         put(s, u_bscan())
-        ucode(s, p.body)
+        u_gen(s, p.body)
         u_coord(s, p)
         put(s, u_escan())
     }
     "?:=": {
         put(s, u_pnull())
-        ucode(s, p.expr)
+        u_gen(s, p.expr)
         put(s, u_sj_dup())
         u_coord(s, p)
         put(s, u_bscan())
-        ucode(s, p.body)
+        u_gen(s, p.body)
         u_coord(s, p)
         put(s, u_escan())
         put(s, u_asgn())
@@ -294,17 +294,17 @@ procedure ucode_a_Scan(s, p)
 end
 
 # record a_Every( expr body )
-procedure ucode_a_Every(s, p)
+procedure u_gen_a_Every(s, p)
     p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1, "every")
     push(u_loops, p)
     put(s, u_mark0())
-    ucode(s, p.expr)
+    u_gen(s, p.expr)
     put(s, u_pop())
     if \p.body then {
         put(s, u_mark0())
         p.ir.everyflag := &null
         u_loops[1].ir.markcount +:= 1
-        ucode(s, p.body)
+        u_gen(s, p.body)
         u_loops[1].ir.markcount -:= 1
         put(s, u_unmark())
     }
@@ -315,7 +315,7 @@ procedure ucode_a_Every(s, p)
 end
 
 # record a_Sectioj_nop( op val left right )
-procedure ucode_a_Sectioj_nop(s, p)
+procedure u_gen_a_Sectioj_nop(s, p)
     static fn
     initial {
         fn := table()
@@ -325,26 +325,26 @@ procedure ucode_a_Sectioj_nop(s, p)
 
     if *p.op > *"[:]" then {
         put(s, u_pnull())
-        ucode(s, p.val)
-        ucode(s, p.left)
+        u_gen(s, p.val)
+        u_gen(s, p.left)
         put(s, u_dup())
-        ucode(s, p.right)
+        u_gen(s, p.right)
         u_coord(s, p)
         put(s, (\fn[p.op])()) | runerr(500, p)
         u_coord(s, p)
         put(s, u_sect())
     } else {
         put(s, u_pnull())
-        ucode(s, p.val)
-        ucode(s, p.left)
-        ucode(s, p.right)
+        u_gen(s, p.val)
+        u_gen(s, p.left)
+        u_gen(s, p.right)
         u_coord(s, p)
         put(s, u_sect())
     }
 end
 
 # record a_Binop( op left right )
-procedure ucode_a_Binop(s, p)
+procedure u_gen_a_Binop(s, p)
     local op
     static fn
     initial {
@@ -384,47 +384,47 @@ procedure ucode_a_Binop(s, p)
     }
 
     if p.op == "@" then {
-        ucode(s, p.left)
-        ucode(s, p.right)
+        u_gen(s, p.left)
+        u_gen(s, p.right)
         u_coord(s, p)
         put(s, u_coact())
     } else if p.op == "@:=" then {
         put(s, u_pnull())
-        ucode(s, p.left)
+        u_gen(s, p.left)
         put(s, u_sj_dup())
-        ucode(s, p.right)
+        u_gen(s, p.right)
         put(s, u_coact())
         u_coord(s, p)
         put(s, u_asgn())
     } else if p.op == "&" then {
-        ucode(s, p.left)
+        u_gen(s, p.left)
         put(s, u_pop())
-        ucode(s, p.right)
+        u_gen(s, p.right)
     } else if p.op == "!" then {
-        ucode(s, p.left)
-        ucode(s, p.right)
+        u_gen(s, p.left)
+        u_gen(s, p.right)
         # u_coord(s, p)
         put(s, u_invoke(-1))
     } else if op := (p.op ? tab(find(":="))) & op ~== "" & op ~== "&" then {
         put(s, u_pnull())
-        ucode(s, p.left)
+        u_gen(s, p.left)
         put(s, u_dup())
-        ucode(s, p.right)
+        u_gen(s, p.right)
         put(s, (\fn[op])()) | runerr(500, p)
         u_coord(s, p)
         put(s, u_asgn())
     } else {
         put(s, u_pnull())
-        ucode(s, p.left)
-        ucode(s, p.right) 
+        u_gen(s, p.left)
+        u_gen(s, p.right) 
         u_coord(s, p)
         put(s, (\fn[p.op])()) | runerr(500, p)
     }
 
 end
 
-# record a_Uj_nop( op operand )
-procedure ucode_a_Uj_nop(s, p)
+# record a_Unop( op operand )
+procedure u_gen_a_Unop(s, p)
     static fn
     initial {
         fn := table()
@@ -443,24 +443,24 @@ procedure ucode_a_Uj_nop(s, p)
 
     if p.op == "@" then {
         put(s, u_pnull())
-        ucode(s, p.operand)
+        u_gen(s, p.operand)
         u_coord(s, p)
         put(s, u_coact())
         return
     }
     put(s, u_pnull())
-    ucode(s, p.operand)
+    u_gen(s, p.operand)
     u_coord(s, p)
     put(s, (\fn[p.op])()) | runerr(500, p)
 end
 
 # record a_Global( idList )
-procedure ucode_a_Global(s, p)
+procedure u_gen_a_Global(s, p)
     put(s, p)
 end
 
 # record a_If( expr thenexpr elseexpr )
-procedure ucode_a_If(s, p)
+procedure u_gen_a_If(s, p)
     local elselab, endlab
 
     if \p.elseexpr then {
@@ -468,50 +468,50 @@ procedure ucode_a_If(s, p)
         endlab := @u_nextlab
         put(s, u_mark(elselab))
         u_loops[1].ir.markcount +:= 1
-        ucode(s, p.expr)
+        u_gen(s, p.expr)
         u_loops[1].ir.markcount -:= 1
         put(s, u_unmark())
-        ucode(s, p.thenexpr)
+        u_gen(s, p.thenexpr)
         put(s, u_goto(endlab))
         put(s, u_lab(elselab))
-        ucode(s, p.elseexpr)
+        u_gen(s, p.elseexpr)
         put(s, u_lab(endlab))
     } else {
         put(s, u_mark0())
         u_loops[1].ir.markcount +:= 1
-        ucode(s, p.expr)
+        u_gen(s, p.expr)
         u_loops[1].ir.markcount -:= 1
         put(s, u_unmark())
-        ucode(s, p.thenexpr)
+        u_gen(s, p.thenexpr)
     }
 end
 
 # record a_Initial( expr )
-procedure ucode_a_Initial(s, p)
+procedure u_gen_a_Initial(s, p)
     local lab
 
     if \p.expr then {
         lab := @u_nextlab
         put(s, u_init(lab))
         put(s, u_mark(lab))
-        ucode(s, p.expr)
+        u_gen(s, p.expr)
         put(s, u_unmark())
         put(s, u_lab(lab))
     }
 end
 
 # record a_Invocable( invocList )
-procedure ucode_a_Invocable(s, p)
+procedure u_gen_a_Invocable(s, p)
     put(s, p)
 end
 
 # record a_Link( linkfileList )
-procedure ucode_a_Link(s, p)
+procedure u_gen_a_Link(s, p)
     put(s, p)
 end
 
 # record a_Intlit( int )
-procedure ucode_a_Intlit(s, p)
+procedure u_gen_a_Intlit(s, p)
     local v
 
     v := p.int
@@ -521,7 +521,7 @@ procedure ucode_a_Intlit(s, p)
 end
 
 # record a_Reallit( real )
-procedure ucode_a_Reallit(s, p)
+procedure u_gen_a_Reallit(s, p)
     local v
 
     v := p.real
@@ -531,7 +531,7 @@ procedure ucode_a_Reallit(s, p)
 end
 
 # record a_Stringlit( str )
-procedure ucode_a_Stringlit(s, p)
+procedure u_gen_a_Stringlit(s, p)
     local v
 
     v := p.str
@@ -541,7 +541,7 @@ procedure ucode_a_Stringlit(s, p)
 end
 
 # record a_Csetlit( str )
-procedure ucode_a_Csetlit(s, p)
+procedure u_gen_a_Csetlit(s, p)
     local v
 
     v := p.str
@@ -551,15 +551,15 @@ procedure ucode_a_Csetlit(s, p)
 end
 
 # record a_Locals( idList )
-procedure ucode_a_Locals(s, p)
+procedure u_gen_a_Locals(s, p)
 end
 
 # record a_Statics( idList )
-procedure ucode_a_Statics(s, p)
+procedure u_gen_a_Statics(s, p)
 end
 
 # record a_ProcDecl( ident paramList localsList code )
-procedure ucode_a_ProcDecl(s, p)
+procedure u_gen_a_ProcDecl(s, p)
     local x, i, k, code
 
     put(s, p)
@@ -569,9 +569,9 @@ procedure ucode_a_ProcDecl(s, p)
     u_nextlab := create ("L" || seq())
     u_loops := []
     code := []
-    reset_coord()
+    u_reset_coord()
     u_coord(code, p)
-    ucode(code, p.code)
+    u_gen(code, p.code)
 
     write(u_u1, "proc ", p.ident.id)
     u_variables := table()
@@ -618,12 +618,12 @@ procedure u_constant_declarations()
         case type(x) of {
         "string": {
             writes(u_u1, "010000", ",", *x)
-            every writes(u_u1, ",", octal(ord(!x)))
+            every writes(u_u1, ",", u_octal(ord(!x)))
             write(u_u1)
         }
         "cset": {
             writes(u_u1, "020000", ",", *x)
-            every writes(u_u1, ",", octal(ord(!x)))
+            every writes(u_u1, ",", u_octal(ord(!x)))
             write(u_u1)
         }
         "integer": {
@@ -638,14 +638,14 @@ procedure u_constant_declarations()
 end
 
 # record a_ProcBody( nexprList )
-procedure ucode_a_ProcBody(s, p)
+procedure u_gen_a_ProcBody(s, p)
     local lab, i
 
     every i := !p.nexprList do {
         lab := @u_nextlab
         put(s, u_mark(lab))
         if \i then {
-            ucode(s, i)
+            u_gen(s, i)
         } else {
             put(s, u_pnull())
         }
@@ -660,12 +660,12 @@ procedure ucode_a_ProcBody(s, p)
 end
 
 # record a_Record( ident idlist )
-procedure ucode_a_Record(s, p)
+procedure u_gen_a_Record(s, p)
     put(s, p)
 end
 
 # record a_Repeat( expr )
-procedure ucode_a_Repeat(s, p)
+procedure u_gen_a_Repeat(s, p)
     local lab
 
     lab := @u_nextlab
@@ -673,7 +673,7 @@ procedure ucode_a_Repeat(s, p)
     push(u_loops, p)
     put(s, u_lab(lab))
     put(s, u_mark(lab))
-    ucode(s, p.expr)
+    u_gen(s, p.expr)
     put(s, u_lab(p.ir.nextlab))
     put(s, u_unmark())
     put(s, u_goto(lab))
@@ -682,7 +682,7 @@ procedure ucode_a_Repeat(s, p)
 end
 
 # record a_Return( expr )
-procedure ucode_a_Return(s, p)
+procedure u_gen_a_Return(s, p)
     local lab
 
     /u_createflag | semantic_error("invalid context for return", p.coord)
@@ -690,7 +690,7 @@ procedure ucode_a_Return(s, p)
     put(s, u_mark(lab))
     if \p.expr then {
         u_loops[1].ir.markcount +:= 1
-        ucode(s, p.expr)
+        u_gen(s, p.expr)
         u_loops[1].ir.markcount -:= 1
     } else {
         put(s, u_pnull())
@@ -703,18 +703,18 @@ procedure ucode_a_Return(s, p)
 end
 
 # record a_Fail( )
-procedure ucode_a_Fail(s, p)
+procedure u_gen_a_Fail(s, p)
     u_coord(s, p)
     put(s, u_pfail())
 end
 
 # record a_Suspend( expr body )
-procedure ucode_a_Suspend(s, p)
+procedure u_gen_a_Suspend(s, p)
     /u_createflag | semantic_error("invalid context for suspend", p.coord)
     p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1, "every")
     push(u_loops, p)
     put(s, u_mark0())
-    ucode(s, p.expr)
+    u_gen(s, p.expr)
     u_coord(s, p)
     put(s, u_psusp())
     put(s, u_pop())
@@ -722,7 +722,7 @@ procedure ucode_a_Suspend(s, p)
         put(s, u_mark0())
         u_loops[1].ir.markcount +:= 1
         p.ir.everyflag := &null
-        ucode(s, p.body)
+        u_gen(s, p.body)
         u_loops[1].ir.markcount -:= 1
         put(s, u_unmark())
     }
@@ -733,7 +733,7 @@ procedure ucode_a_Suspend(s, p)
 end
 
 # record a_Until( expr body )
-procedure ucode_a_Until(s, p)
+procedure u_gen_a_Until(s, p)
     local exprlab, bodylab
 
     exprlab := @u_nextlab
@@ -742,12 +742,12 @@ procedure ucode_a_Until(s, p)
     push(u_loops, p)
     put(s, u_lab(exprlab))
     put(s, u_mark(bodylab))
-    ucode(s, p.expr)
+    u_gen(s, p.expr)
     put(s, u_unmark())
     put(s, u_efail())
     put(s, u_lab(bodylab))
     put(s, u_mark(exprlab))
-    ucode(s, p.body)
+    u_gen(s, p.body)
     put(s, u_lab(p.ir.nextlab))
     put(s, u_unmark())
     put(s, u_goto(exprlab))
@@ -756,7 +756,7 @@ procedure ucode_a_Until(s, p)
 end
 
 # record a_While( expr body )
-procedure ucode_a_While(s, p)
+procedure u_gen_a_While(s, p)
     local lab
 
     lab := @u_nextlab
@@ -764,11 +764,11 @@ procedure ucode_a_While(s, p)
     push(u_loops, p)
     put(s, u_lab(lab))
     put(s, u_mark0())
-    ucode(s, p.expr)
+    u_gen(s, p.expr)
     if \p.body then {
         put(s, u_unmark())
         put(s, u_mark(lab))
-        ucode(s, p.body)
+        u_gen(s, p.body)
     }
     put(s, u_lab(p.ir.nextlab))
     put(s, u_unmark())
@@ -778,7 +778,7 @@ procedure ucode_a_While(s, p)
 end
 
 # record a_Create( expr )
-procedure ucode_a_Create(s, p)
+procedure u_gen_a_Create(s, p)
     local exprlab, faillab, createlab
 
     exprlab := @u_nextlab
@@ -790,7 +790,7 @@ procedure ucode_a_Create(s, p)
     put(s, u_mark(faillab))
     u_loops[1].ir.markcount +:= 1
     u_createflag := p.expr
-    ucode(s, p.expr)
+    u_gen(s, p.expr)
     u_createflag := &null
     u_loops[1].ir.markcount -:= 1
     u_coord(s, p)
@@ -804,12 +804,12 @@ procedure ucode_a_Create(s, p)
 end
 
 # record a_Ident( id )
-procedure ucode_a_Ident(s, p)
+procedure u_gen_a_Ident(s, p)
     put(s, u_var(p.id))
 end
 
 # record a_Next( )
-procedure ucode_a_Next(s, p)
+procedure u_gen_a_Next(s, p)
     *u_loops > 0 | semantic_error("invalid context for next", p.coord)
     if /u_loops[1].ir.everyflag then {
         every 1 to u_loops[1].ir.markcount-1 do {
@@ -820,7 +820,7 @@ procedure ucode_a_Next(s, p)
 end
 
 # record a_Break( expr )
-procedure ucode_a_Break(s, p)
+procedure u_gen_a_Break(s, p)
     local tmp
 
     *u_loops > 0 | semantic_error("invalid context for break", p.coord)
@@ -828,18 +828,18 @@ procedure ucode_a_Break(s, p)
         put(s, u_unmark())
     }
     tmp := pop(u_loops)
-    ucode(s, p.expr)
+    u_gen(s, p.expr)
     push(u_loops, tmp)
     put(s, u_goto(tmp.ir.breaklab))
 end
 
 # record a_ToBy( fromexpr toexpr byexpr )
-procedure ucode_a_ToBy(s, p)
+procedure u_gen_a_ToBy(s, p)
     put(s, u_pnull())
-    ucode(s, p.fromexpr)
-    ucode(s, p.toexpr)
+    u_gen(s, p.fromexpr)
+    u_gen(s, p.toexpr)
     if \p.byexpr then {
-        ucode(s, p.byexpr)
+        u_gen(s, p.byexpr)
     } else {
         put(s, u_push1())
     }
@@ -848,117 +848,117 @@ procedure ucode_a_ToBy(s, p)
 end
 
 # record a_Mutual( exprList )
-procedure ucode_a_Mutual(s, p)
+procedure u_gen_a_Mutual(s, p)
     if *p.exprList = 0 then {
         put(s, u_pnull())
     } else if *p.exprList = 1 then {
-        ucode(s, p.exprList[1])
+        u_gen(s, p.exprList[1])
     } else {
         put(s, u_pushn1())
-        every ucode(s, !p.exprList)
+        every u_gen(s, !p.exprList)
         put(s, u_invoke(*p.exprList))
     }
 end
 
 # record a_CoexpList( exprList )
-procedure ucode_a_CoexpList(s, p)
+procedure u_gen_a_CoexpList(s, p)
     local L
 
     L := []
     every put(L, a_Create(!p.exprList))
     p := a_Arglist([a_ListConstructor(L)])
-    ucode(s, p)
+    u_gen(s, p)
 end
 
 # record a_Arglist( exprList )
-procedure ucode_a_Arglist(s, p)
-    every ucode(s, !p.exprList)
+procedure u_gen_a_Arglist(s, p)
+    every u_gen(s, !p.exprList)
 end
 
 # record a_Compound( exprList )
-procedure ucode_a_Compound(s, p)
+procedure u_gen_a_Compound(s, p)
     local i, lab
 
     every i := 1 to *p.exprList-1 do {
         lab := @u_nextlab
         put(s, u_mark(lab))
         u_loops[1].ir.markcount +:= 1
-        ucode(s, p.exprList[i])
+        u_gen(s, p.exprList[i])
         u_loops[1].ir.markcount -:= 1
         put(s, u_unmark())
         put(s, u_lab(lab))
     }
-    ucode(s, p.exprList[-1])
+    u_gen(s, p.exprList[-1])
 end
 
 # record a_ListConstructor( exprList )
-procedure ucode_a_ListConstructor(s, p)
+procedure u_gen_a_ListConstructor(s, p)
     put(s, u_pnull())
-    every ucode(s, !p.exprList)
+    every u_gen(s, !p.exprList)
     put(s, u_llist(*p.exprList))
 end
 
 # record a_Key( id )
-procedure ucode_a_Key(s, p)
+procedure u_gen_a_Key(s, p)
     u_coord(s, p)
     put(s, u_keywd(p.id))
 end
 
-procedure ucode(s, p)
+procedure u_gen(s, p)
     case type(p) of {
 
     "null" : return put(s, u_pnull())
 
-    "a_Alt" : return ucode_a_Alt(s, p)
-    "a_Call" : return ucode_a_Call(s, p)
-    "a_Not" : return ucode_a_Not(s, p)
-    "a_RepAlt" : return ucode_a_RepAlt(s, p)
-    "a_Field" : return ucode_a_Field(s, p)
-    "a_NoOp" : return ucode_a_NoOp(s, p)
-    "a_Case" : return ucode_a_Case(s, p)
-    "a_Every" : return ucode_a_Every(s, p)
-    "a_Scan" : return ucode_a_Scan(s, p)
-    "a_Limitation" : return ucode_a_Limitation(s, p)
-    "a_Sectioj_nop" : return ucode_a_Sectioj_nop(s, p)
-    "a_Binop" : return ucode_a_Binop(s, p)
-    "a_Uj_nop" : return ucode_a_Uj_nop(s, p)
-    "a_Global" : return ucode_a_Global(s, p)
-    "a_If" : return ucode_a_If(s, p)
-    "a_Initial" : return ucode_a_Initial(s, p)
-    "a_Invocable" : return ucode_a_Invocable(s, p)
-    "a_Link" : return ucode_a_Link(s, p)
-    "a_Intlit" : return ucode_a_Intlit(s, p)
-    "a_Reallit" : return ucode_a_Reallit(s, p)
-    "a_Stringlit" : return ucode_a_Stringlit(s, p)
-    "a_Csetlit" : return ucode_a_Csetlit(s, p)
-    "a_Locals" : return ucode_a_Locals(s, p)
-    "a_Statics" : return ucode_a_Statics(s, p)
-    "a_ProcDecl" : return ucode_a_ProcDecl(s, p)
-    "a_ProcBody" : return ucode_a_ProcBody(s, p)
-    "a_ProcCode" : return ucode_a_ProcCode(s, p)
-    "a_Record" : return ucode_a_Record(s, p)
-    "a_Repeat" : return ucode_a_Repeat(s, p)
-    "a_Return" : return ucode_a_Return(s, p)
-    "a_Fail" : return ucode_a_Fail(s, p)
-    "a_Suspend" : return ucode_a_Suspend(s, p)
-    "a_Until" : return ucode_a_Until(s, p)
-    "a_While" : return ucode_a_While(s, p)
-    "a_Create" : return ucode_a_Create(s, p)
-    "a_Ident" : return ucode_a_Ident(s, p)
-    "a_Next" : return ucode_a_Next(s, p)
-    "a_Break" : return ucode_a_Break(s, p)
-    "a_ToBy" : return ucode_a_ToBy(s, p)
-    "a_Mutual" : return ucode_a_Mutual(s, p)
-    "a_Arglist" : return ucode_a_Arglist(s, p)
-    "a_CoexpList" : return ucode_a_CoexpList(s, p)
-    "a_Compound" : return ucode_a_Compound(s, p)
-    "a_ListConstructor" : return ucode_a_ListConstructor(s, p)
-    "a_Key" : return ucode_a_Key(s, p)
+    "a_Alt" : return u_gen_a_Alt(s, p)
+    "a_Call" : return u_gen_a_Call(s, p)
+    "a_Not" : return u_gen_a_Not(s, p)
+    "a_RepAlt" : return u_gen_a_RepAlt(s, p)
+    "a_Field" : return u_gen_a_Field(s, p)
+    "a_NoOp" : return u_gen_a_NoOp(s, p)
+    "a_Case" : return u_gen_a_Case(s, p)
+    "a_Every" : return u_gen_a_Every(s, p)
+    "a_Scan" : return u_gen_a_Scan(s, p)
+    "a_Limitation" : return u_gen_a_Limitation(s, p)
+    "a_Sectioj_nop" : return u_gen_a_Sectioj_nop(s, p)
+    "a_Binop" : return u_gen_a_Binop(s, p)
+    "a_Unop" : return u_gen_a_Unop(s, p)
+    "a_Global" : return u_gen_a_Global(s, p)
+    "a_If" : return u_gen_a_If(s, p)
+    "a_Initial" : return u_gen_a_Initial(s, p)
+    "a_Invocable" : return u_gen_a_Invocable(s, p)
+    "a_Link" : return u_gen_a_Link(s, p)
+    "a_Intlit" : return u_gen_a_Intlit(s, p)
+    "a_Reallit" : return u_gen_a_Reallit(s, p)
+    "a_Stringlit" : return u_gen_a_Stringlit(s, p)
+    "a_Csetlit" : return u_gen_a_Csetlit(s, p)
+    "a_Locals" : return u_gen_a_Locals(s, p)
+    "a_Statics" : return u_gen_a_Statics(s, p)
+    "a_ProcDecl" : return u_gen_a_ProcDecl(s, p)
+    "a_ProcBody" : return u_gen_a_ProcBody(s, p)
+    "a_ProcCode" : return u_gen_a_ProcCode(s, p)
+    "a_Record" : return u_gen_a_Record(s, p)
+    "a_Repeat" : return u_gen_a_Repeat(s, p)
+    "a_Return" : return u_gen_a_Return(s, p)
+    "a_Fail" : return u_gen_a_Fail(s, p)
+    "a_Suspend" : return u_gen_a_Suspend(s, p)
+    "a_Until" : return u_gen_a_Until(s, p)
+    "a_While" : return u_gen_a_While(s, p)
+    "a_Create" : return u_gen_a_Create(s, p)
+    "a_Ident" : return u_gen_a_Ident(s, p)
+    "a_Next" : return u_gen_a_Next(s, p)
+    "a_Break" : return u_gen_a_Break(s, p)
+    "a_ToBy" : return u_gen_a_ToBy(s, p)
+    "a_Mutual" : return u_gen_a_Mutual(s, p)
+    "a_Arglist" : return u_gen_a_Arglist(s, p)
+    "a_CoexpList" : return u_gen_a_CoexpList(s, p)
+    "a_Compound" : return u_gen_a_Compound(s, p)
+    "a_ListConstructor" : return u_gen_a_ListConstructor(s, p)
+    "a_Key" : return u_gen_a_Key(s, p)
     default : { runerr(500, p) }
     }
 end
 
-procedure ucode_File(parse, flagList)
+procedure u_gen_File(parse, flagList)
     local g, p, outfile
 
     outfile := (!flagList ? (="-out:" & tab(0)))
@@ -969,7 +969,7 @@ procedure ucode_File(parse, flagList)
 
     g := []
     while p := @parse do {
-        ucode(g, p)
+        u_gen(g, p)
     }
 
     # g contains nodes for global declarations
@@ -1056,7 +1056,7 @@ procedure u_global_declarations(g)
     }
 end
 
-procedure octal(x)
+procedure u_octal(x)
     local s
     s := ""
     while x > 0 do {

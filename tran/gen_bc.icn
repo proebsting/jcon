@@ -47,21 +47,21 @@ global bc_locals_set
 global bc_params_set
 global bc_statics_set
 
-procedure transfer_to(s, p)
+procedure bc_transfer_to(s, p)
     case type(p) of {
     default: runerr(500, p)
     "ir_Label" : {
         put(s, j_goto_w(\bc_ir2bc_labels[p]) ) | runerr(500, p)
     }
     "ir_TmpLabel": {
-        gen_bc_rval(s, p)
+        bc_gen_rval(s, p)
         put(s, j_goto_w(bc_switch_label) )
     }
     }
     return s
 end
 
-procedure conditional_transfer_to(s, p, cond, notcond)
+procedure bc_conditional_transfer_to(s, p, cond, notcond)
     local tmp
 
     case type(p) of {
@@ -72,7 +72,7 @@ procedure conditional_transfer_to(s, p, cond, notcond)
     "ir_TmpLabel": {
         tmp := j_label()
         put(s, notcond(tmp))
-        gen_bc_rval(s, p)
+        bc_gen_rval(s, p)
         put(s, j_goto_w(bc_switch_label) )
         put(s, tmp)
     }
@@ -81,23 +81,23 @@ procedure conditional_transfer_to(s, p, cond, notcond)
 end
 
 # assign top-of-stack to p
-procedure gen_bc_assign_to(s, p)
+procedure bc_gen_assign_to(s, p)
     local assign
 
     case type(p) of {
     default: { runerr(500, p) }
     "ir_Tmp": {
-        gen_bc_ir_Tmp_assign(s, p)
+        bc_gen_ir_Tmp_assign(s, p)
     }
     "ir_TmpLabel": {
-        gen_bc_ir_TmpLabel_assign(s, p)
+        bc_gen_ir_TmpLabel_assign(s, p)
     }
     "ir_TmpClosure": {
-        gen_bc_ir_TmpClosure_assign(s, p)
+        bc_gen_ir_TmpClosure_assign(s, p)
     }
     "ir_Var" |
     "ir_Key": {
-        gen_bc(s, p)
+        bc_gen(s, p)
         assign := Assign_methodref(bc_proc_classptr)
         put(s, j_swap())
         put(s, j_invokevirtual(assign))
@@ -109,25 +109,25 @@ end
 
 
 # record ir_Free( v )
-procedure gen_bc_ir_Free(s, p)
+procedure bc_gen_ir_Free(s, p)
     local free, c, lab
 
     free := Free_methodref(bc_proc_classptr)
     every c := !p.v.clo do {
         lab := j_label()
-        gen_bc_ir_TmpClosure_rval(s, c)
+        bc_gen_ir_TmpClosure_rval(s, c)
         put(s, j_ifnull(lab))
-        gen_bc_ir_TmpClosure_rval(s, c)
+        bc_gen_ir_TmpClosure_rval(s, c)
         put(s, j_invokevirtual(free))
         put(s, j_aconst_null() )
-        gen_bc_ir_TmpClosure_assign(s, c)
+        bc_gen_ir_TmpClosure_assign(s, c)
         put(s, lab)
     }
     return s
 end
 
 # record ir_Coord( coord )
-procedure gen_bc_ir_Coord(s, p)
+procedure bc_gen_ir_Coord(s, p)
     local f, line, column, field
 
     /nodebuginfo | return s
@@ -149,47 +149,47 @@ procedure gen_bc_ir_Coord(s, p)
 end
 
 # record ir_Deref( value )
-procedure gen_bc_ir_Deref(s, p)
+procedure bc_gen_ir_Deref(s, p)
     local deref
 
-    gen_bc(s, p.value)
+    bc_gen(s, p.value)
     deref := deref_methodref(bc_proc_classptr)
     put(s, j_invokevirtual(deref))
     return s
 end
 
 # record ir_Tmp( name )
-procedure gen_bc_ir_Tmp_rval(s, p)
+procedure bc_gen_ir_Tmp_rval(s, p)
     put(s, j_Aload(bc_tmp_table[p.name] + bc_tmp_offset))
     return s
 end
-procedure gen_bc_ir_Tmp_assign(s, p)
+procedure bc_gen_ir_Tmp_assign(s, p)
     put(s, j_Astore(bc_tmp_table[p.name] + bc_tmp_offset))
     return s
 end
 
 # record ir_TmpLabel( name )
-procedure gen_bc_ir_TmpLabel_rval(s, p)
+procedure bc_gen_ir_TmpLabel_rval(s, p)
     put(s, j_Iload(bc_tmpj_label_table[p.name] + bc_tmpj_label_offset))
     return s
 end
-procedure gen_bc_ir_TmpLabel_assign(s, p)
+procedure bc_gen_ir_TmpLabel_assign(s, p)
     put(s, j_Istore(bc_tmpj_label_table[p.name] + bc_tmpj_label_offset))
     return s
 end
 
 # record ir_TmpClosure( name )
-procedure gen_bc_ir_TmpClosure_rval(s, p)
+procedure bc_gen_ir_TmpClosure_rval(s, p)
     put(s, j_Aload(bc_tmpclosure_table[p.name] + bc_tmpclosure_offset))
     return s
 end
-procedure gen_bc_ir_TmpClosure_assign(s, p)
+procedure bc_gen_ir_TmpClosure_assign(s, p)
     put(s, j_Astore(bc_tmpclosure_table[p.name] + bc_tmpclosure_offset))
     return s
 end
 
 # record ir_Label( value )
-procedure gen_bc_ir_Label_rval(s, p)
+procedure bc_gen_ir_Label_rval(s, p)
 
     member(bc_indirect_targets, p) | runerr(500)
 
@@ -199,12 +199,12 @@ procedure gen_bc_ir_Label_rval(s, p)
 end
 
 # record ir_Field(lhs, expr, field, failLabel)
-procedure gen_bc_ir_Field(s, p)
+procedure bc_gen_ir_Field(s, p)
     local lab, method, fieldname, field, d
 
     field := field_fieldref(bc_proc_classptr)
     put(s, j_getstatic(field) )
-    gen_bc_rval(s, p.expr)
+    bc_gen_rval(s, p.expr)
     d := j_cp_String(bc_proc_classptr,
                    j_cp_Utf8(bc_proc_classptr, p.field)) | runerr(500)
     put(s, j_ldc_w(d) )
@@ -219,38 +219,38 @@ procedure gen_bc_ir_Field(s, p)
         lab := j_label()
         put(s, j_ifnonnull(lab) )
         put(s, j_Pop() )
-        transfer_to(s, p.failLabel)
+        bc_transfer_to(s, p.failLabel)
         put(s, lab )
-        gen_bc_assign_to(s, p.lhs)
+        bc_gen_assign_to(s, p.lhs)
     } else {
-        conditional_transfer_to(s, p.failLabel, j_ifnull, j_ifnonnull)
+        bc_conditional_transfer_to(s, p.failLabel, j_ifnull, j_ifnonnull)
     }
     return s
 end
 
 # record ir_Move( lhs rhs )
-procedure gen_bc_ir_Move(s, p)
+procedure bc_gen_ir_Move(s, p)
     local deref
 
     \p.lhs | return s
 
-    gen_bc_rval(s, p.rhs)
+    bc_gen_rval(s, p.rhs)
     if type(p.lhs) == ("ir_Key" | "ir_Var") then {
         deref := deref_methodref(bc_proc_classptr)
         put(s, j_invokevirtual(deref))
     }
-    gen_bc_assign_to(s, p.lhs)
+    bc_gen_assign_to(s, p.lhs)
     return s
 end
 
 # record ir_ScanSwap( subject pos )
-procedure gen_bc_ir_ScanSwap(s, p)
+procedure bc_gen_ir_ScanSwap(s, p)
     local subject, pos, Ksubject, Kpos, deref, assign
 
-    Ksubject := gen_bc([], ir_Key("subject"))
-    Kpos := gen_bc([], ir_Key("pos"))
-    subject := gen_bc([], p.subject)
-    pos := gen_bc([], p.pos)
+    Ksubject := bc_gen([], ir_Key("subject"))
+    Kpos := bc_gen([], ir_Key("pos"))
+    subject := bc_gen([], p.subject)
+    pos := bc_gen([], p.pos)
 
     deref := deref_methodref(bc_proc_classptr)
     assign := Assign_methodref(bc_proc_classptr)
@@ -270,19 +270,19 @@ procedure gen_bc_ir_ScanSwap(s, p)
     put(s, j_invokevirtual(assign))
     put(s, j_Pop())
 
-    gen_bc_assign_to(s, p.subject)
-    gen_bc_assign_to(s, p.pos)
+    bc_gen_assign_to(s, p.subject)
+    bc_gen_assign_to(s, p.pos)
     return s
 end
 
 # record ir_Goto( location )
-procedure gen_bc_ir_Goto(s, p)
-    transfer_to(s, p.location)
+procedure bc_gen_ir_Goto(s, p)
+    bc_transfer_to(s, p.location)
     return s
 end
 
 # record ir_Var( name )
-procedure gen_bc_ir_Var_rval(s, p)
+procedure bc_gen_ir_Var_rval(s, p)
     put(s, j_Aload(bc_var_table[p.name] + bc_var_offset))
     return s
 
@@ -299,20 +299,20 @@ procedure gen_bc_ir_Var_rval(s, p)
 end
 
 # record ir_Key( name )
-procedure gen_bc_ir_Key_register(p)
+procedure bc_gen_ir_Key_register(p)
     bc_keys_link[p.name] := 1
     /bc_key_table[p.name] := j_create_fieldref(bc_proc_classptr, "$" || p.name,
                                              "Lrts/vDescriptor;",
                                              java_classname)
 end
-procedure gen_bc_ir_Key_rval(s, p)
-    gen_bc_ir_Key_register(p)
+procedure bc_gen_ir_Key_rval(s, p)
+    bc_gen_ir_Key_register(p)
     put(s, j_getstatic(bc_key_table[p.name]))
     return s
 end
 
 # record ir_IntLit( val )
-procedure gen_bc_ir_IntLit(s, p)
+procedure bc_gen_ir_IntLit(s, p)
     local i, field
 
     i := integer(p.val)
@@ -324,7 +324,7 @@ procedure gen_bc_ir_IntLit(s, p)
 end
 
 # record ir_RealLit( val )
-procedure gen_bc_ir_RealLit(s, p)
+procedure bc_gen_ir_RealLit(s, p)
     local r, x, field
 
     r := real(p.val)
@@ -336,7 +336,7 @@ procedure gen_bc_ir_RealLit(s, p)
 end
 
 # record ir_StrLit( val )
-procedure gen_bc_ir_StrLit(s, p)
+procedure bc_gen_ir_StrLit(s, p)
     local x, field
 
     /bc_string_table[p.val] := "ls$" || *bc_string_table
@@ -347,7 +347,7 @@ procedure gen_bc_ir_StrLit(s, p)
 end
 
 # record ir_CsetLit( val )
-procedure gen_bc_ir_CsetLit(s, p)
+procedure bc_gen_ir_CsetLit(s, p)
     local v, field
 
     /bc_cset_table[p.val] := "lc$" || *bc_cset_table
@@ -358,7 +358,7 @@ procedure gen_bc_ir_CsetLit(s, p)
 end
 
 # record ir_Restore( )
-procedure gen_bc_ir_Restore(s, p)
+procedure bc_gen_ir_Restore(s, p)
     return s
 end
 
@@ -416,7 +416,7 @@ procedure bc_save_tmpclosures(s)
 end
 
 # record ir_Succeed( expr continuation )
-procedure gen_bc_ir_Succeed(s, p)
+procedure bc_gen_ir_Succeed(s, p)
     local r, e, PC, k, a
 
     PC := PC_fieldref(bc_proc_classptr)
@@ -424,7 +424,7 @@ procedure gen_bc_ir_Succeed(s, p)
         \bc_save_restore_flag | runerr(500)
 
         put(s, j_aload_0())
-        gen_bc(s, p.continuation)
+        bc_gen(s, p.continuation)
         put(s, j_putfield(PC))
 
         bc_save_tmps(s)
@@ -435,20 +435,20 @@ procedure gen_bc_ir_Succeed(s, p)
         put(s, j_iconst_0())
         put(s, j_putfield(PC))
     }
-    gen_bc(s, p.expr)
+    bc_gen(s, p.expr)
     put(s, j_areturn())
     return s
 end
 
 # record ir_Fail( )
-procedure gen_bc_ir_Fail(s, p)
+procedure bc_gen_ir_Fail(s, p)
     put(s, j_aconst_null())
     put(s, j_areturn())
     return s
 end
 
 # record ir_RunTimeError( )
-procedure gen_bc_ir_RunTimeError(s, p)
+procedure bc_gen_ir_RunTimeError(s, p)
     local runtimeerror
 
     runtimeerror := error_methodref(bc_proc_classptr)
@@ -460,18 +460,18 @@ procedure gen_bc_ir_RunTimeError(s, p)
 end
 
 # record ir_Resume( closure failLabel retValue )
-procedure gen_bc_ir_Resume(s, p)
+procedure bc_gen_ir_Resume(s, p)
     local c, PC, target, resume, free
 
     PC := PC_fieldref(bc_proc_classptr)
     resume := resume_methodref(bc_proc_classptr)
-    gen_bc(s, p.closure)
+    bc_gen(s, p.closure)
     put(s, j_dup())
     put(s, j_getfield(PC))
     target := j_label()
     put(s, j_ifne(target))
     put(s, j_Pop())
-    transfer_to(s, p.failLabel)
+    bc_transfer_to(s, p.failLabel)
     put(s, target)
     put(s, j_invokevirtual(resume))
     if \p.retValue then {
@@ -479,17 +479,17 @@ procedure gen_bc_ir_Resume(s, p)
         target := j_label()
         put(s, j_ifnonnull(target))
         put(s, j_Pop())
-        transfer_to(s, p.failLabel)
+        bc_transfer_to(s, p.failLabel)
         put(s, target)
-        gen_bc_assign_to(s, p.retValue)
+        bc_gen_assign_to(s, p.retValue)
     } else {
-        conditional_transfer_to(s, p.failLabel, j_ifnull, j_ifnonnull)
+        bc_conditional_transfer_to(s, p.failLabel, j_ifnull, j_ifnonnull)
     }
     return s
 end
 
 # record ir_MakeList( lhs valueList )
-procedure gen_bc_ir_MakeList(s, p)
+procedure bc_gen_ir_MakeList(s, p)
     local r, v, i, method
 
     \p.lhs | return s
@@ -501,12 +501,12 @@ procedure gen_bc_ir_MakeList(s, p)
     every i := 1 to *p.valueList do {
         put(s, j_dup())
         put(s, j_ipush(i-1))
-        gen_bc(s, p.valueList[i])
+        bc_gen(s, p.valueList[i])
         put(s, j_aastore())
     }
     method := New_vList_methodref(bc_proc_classptr)
     put(s, j_invokestatic(method))
-    gen_bc_assign_to(s, p.lhs)
+    bc_gen_assign_to(s, p.lhs)
     return s
 end
 
@@ -563,15 +563,15 @@ procedure initoptable()
     return optable
 end
 
-procedure gen_bc_call_op(s, p)
+procedure bc_gen_call_op(s, p)
     local r, l, f, v, n, i, method
 
     type(p.fn) == "ir_Operator" | runerr(500, p.fn)
 
-    gen_bc(s, p.fn)
+    bc_gen(s, p.fn)
     args := ""
     every i := 1 to *p.argList do {
-        gen_bc(s, p.argList[i])
+        bc_gen(s, p.argList[i])
         args ||:= "Lrts/vDescriptor;"
     }
     put(s, j_aload_0())
@@ -579,12 +579,12 @@ procedure gen_bc_call_op(s, p)
                                "(" || args || "Lrts/iClosure;)Lrts/iClosure;",
                                "rts/vDescriptor")
     put(s, j_invokevirtual(method))
-    gen_bc_assign_to(s, p.lhs)
+    bc_gen_assign_to(s, p.lhs)
     return s
 end
 
 # record ir_OpFunction( lhs fn argList failLabel )
-procedure gen_bc_ir_OpFunction(s, p)
+procedure bc_gen_ir_OpFunction(s, p)
     local target, args, method, class, i, op, field
     static optable
     initial optable := initoptable()
@@ -604,7 +604,7 @@ procedure gen_bc_ir_OpFunction(s, p)
 
     args := ""
     every i := 1 to *p.argList do {
-        gen_bc(s, p.argList[i])
+        bc_gen(s, p.argList[i])
         args ||:= "Lrts/vDescriptor;"
     }
     put(s, j_aload_0())
@@ -619,15 +619,15 @@ procedure gen_bc_ir_OpFunction(s, p)
             target := j_label()
             put(s, j_ifnonnull(target))
             put(s, j_Pop())
-            transfer_to(s, p.failLabel)
+            bc_transfer_to(s, p.failLabel)
             put(s, target)
-            gen_bc_assign_to(s, p.lhs)
+            bc_gen_assign_to(s, p.lhs)
         } else {
-            conditional_transfer_to(s, p.failLabel, j_ifnull, j_ifnonnull)
+            bc_conditional_transfer_to(s, p.failLabel, j_ifnull, j_ifnonnull)
         }
     } else {
         if \p.lhs then {
-            gen_bc_assign_to(s, p.lhs)
+            bc_gen_assign_to(s, p.lhs)
         } else {
             put(s, j_Pop())
         }
@@ -636,16 +636,16 @@ procedure gen_bc_ir_OpFunction(s, p)
 end
 
 # record ir_MakeClosure( lhs fn argList )
-procedure gen_bc_ir_MakeClosure(s, p)
+procedure bc_gen_ir_MakeClosure(s, p)
     local r, l, f, v, n, i, method
 
     \p.lhs | return ""
 
     if type(p.fn) == "ir_Operator" then {
-        return gen_bc_call_op(s, p)
+        return bc_gen_call_op(s, p)
     }
 
-    gen_bc(s, p.fn)
+    bc_gen(s, p.fn)
     put(s, j_ipush(*p.argList))
     method := ArgArray_methodref(bc_proc_classptr)
     put(s, j_invokestatic(method))
@@ -653,18 +653,18 @@ procedure gen_bc_ir_MakeClosure(s, p)
     every i := 1 to *p.argList do {
         put(s, j_dup())
         put(s, j_ipush(i-1))
-        gen_bc(s, p.argList[i])
+        bc_gen(s, p.argList[i])
         put(s, j_aastore())
     }
     put(s, j_aload_0())
     method := Instantiate_methodref(bc_proc_classptr)
     put(s, j_invokestatic(method))
-    gen_bc_assign_to(s, p.lhs)
+    bc_gen_assign_to(s, p.lhs)
     return s
 end
 
 # record ir_Operator( name arity )
-procedure gen_bc_ir_Operator(s, p)
+procedure bc_gen_ir_Operator(s, p)
     local n, x, field
 
     n := p.name || "," || p.arity
@@ -676,7 +676,7 @@ procedure gen_bc_ir_Operator(s, p)
 end
 
 # record ir_Create( location )
-procedure gen_bc_ir_Create(s, p)
+procedure bc_gen_ir_Create(s, p)
     local copymethod, createmethod
 
     bc_create_exists := 1
@@ -686,27 +686,27 @@ procedure gen_bc_ir_Create(s, p)
     copymethod := copy_methodref(bc_proc_classptr, bc_proc_classname)
     createmethod := a_Create_methodref(bc_proc_classptr)
     put(s, j_aload_0())
-    gen_bc(s, p.location)
+    bc_gen(s, p.location)
     put(s, j_invokevirtual(copymethod))
     put(s, j_invokestatic(createmethod))
     return s
 end
 
 # record ir_CoRet( value continuation )
-procedure gen_bc_ir_CoRet(s, p)
+procedure bc_gen_ir_CoRet(s, p)
     local r, coretmethod, current
 
     coretmethod := coret_methodref(bc_proc_classptr)
     current := cur_coexp_fieldref(bc_proc_classptr)
     put(s, j_getstatic(current))
-    gen_bc(s, p.value)
+    bc_gen(s, p.value)
     put(s, j_invokevirtual(coretmethod))
-    transfer_to(s, p.continuation)
+    bc_transfer_to(s, p.continuation)
     return s
 end
 
 # record ir_CoFail( )
-procedure gen_bc_ir_CoFail(s, p)
+procedure bc_gen_ir_CoFail(s, p)
     local cofailmethod, current
 
     cofailmethod := cofail_methodref(bc_proc_classptr)
@@ -720,7 +720,7 @@ procedure gen_bc_ir_CoFail(s, p)
 end
 
 # record ir_EnterInit( startj_label )
-procedure gen_bc_ir_EnterInit(s, p)
+procedure bc_gen_ir_EnterInit(s, p)
     local target, initialized
 
     j_create_field(bc_proc_classptr, 8, "initialized", "Z")
@@ -729,49 +729,49 @@ procedure gen_bc_ir_EnterInit(s, p)
     put(s, j_getstatic(initialized))
     target := j_label()
     put(s, j_ifeq(target))
-    transfer_to(s, p.startj_label )
+    bc_transfer_to(s, p.startj_label )
     put(s, target)
     put(s, j_iconst_1())
     put(s, j_putstatic(initialized))
     return s
 end
 
-procedure gen_bc_rval(s, p)
-    return gen_bc(s, p)
+procedure bc_gen_rval(s, p)
+    return bc_gen(s, p)
 end
 
-procedure gen_bc(s, p)
+procedure bc_gen(s, p)
     case type(p) of {
-    "ir_Tmp" : return gen_bc_ir_Tmp_rval(s, p)
-    "ir_TmpLabel" : return gen_bc_ir_TmpLabel_rval(s, p)
-    "ir_TmpClosure" : return gen_bc_ir_TmpClosure_rval(s, p)
-    "ir_Var" : return gen_bc_ir_Var_rval(s, p)
-    "ir_Key" : return gen_bc_ir_Key_rval(s, p)
-    "ir_Label" : return gen_bc_ir_Label_rval(s, p)
-    "ir_Coord" : return gen_bc_ir_Coord(s, p)
-    "ir_Deref" : return gen_bc_ir_Deref(s, p)
-    "ir_Move" : return gen_bc_ir_Move(s, p)
-    "ir_ScanSwap" : return gen_bc_ir_ScanSwap(s, p)
-    "ir_Goto" : return gen_bc_ir_Goto(s, p)
-    "ir_IntLit" : return gen_bc_ir_IntLit(s, p)
-    "ir_RealLit" : return gen_bc_ir_RealLit(s, p)
-    "ir_StrLit" : return gen_bc_ir_StrLit(s, p)
-    "ir_CsetLit" : return gen_bc_ir_CsetLit(s, p)
-    "ir_Restore" : return gen_bc_ir_Restore(s, p)
-    "ir_Succeed" : return gen_bc_ir_Succeed(s, p)
-    "ir_Fail" : return gen_bc_ir_Fail(s, p)
-    "ir_Resume" : return gen_bc_ir_Resume(s, p)
-    "ir_MakeList" : return gen_bc_ir_MakeList(s, p)
-    "ir_OpFunction" : return gen_bc_ir_OpFunction(s, p)
-    "ir_MakeClosure" : return gen_bc_ir_MakeClosure(s, p)
-    "ir_Operator" : return gen_bc_ir_Operator(s, p)
-    "ir_Create" : return gen_bc_ir_Create(s, p)
-    "ir_CoRet" : return gen_bc_ir_CoRet(s, p)
-    "ir_CoFail" : return gen_bc_ir_CoFail(s, p)
-    "ir_RunTimeError" : return gen_bc_ir_RunTimeError(s, p)
-    "ir_EnterInit" : return gen_bc_ir_EnterInit(s, p)
-    "ir_Free" : return gen_bc_ir_Free(s, p)
-    "ir_Field" : return gen_bc_ir_Field(s, p)
+    "ir_Tmp" : return bc_gen_ir_Tmp_rval(s, p)
+    "ir_TmpLabel" : return bc_gen_ir_TmpLabel_rval(s, p)
+    "ir_TmpClosure" : return bc_gen_ir_TmpClosure_rval(s, p)
+    "ir_Var" : return bc_gen_ir_Var_rval(s, p)
+    "ir_Key" : return bc_gen_ir_Key_rval(s, p)
+    "ir_Label" : return bc_gen_ir_Label_rval(s, p)
+    "ir_Coord" : return bc_gen_ir_Coord(s, p)
+    "ir_Deref" : return bc_gen_ir_Deref(s, p)
+    "ir_Move" : return bc_gen_ir_Move(s, p)
+    "ir_ScanSwap" : return bc_gen_ir_ScanSwap(s, p)
+    "ir_Goto" : return bc_gen_ir_Goto(s, p)
+    "ir_IntLit" : return bc_gen_ir_IntLit(s, p)
+    "ir_RealLit" : return bc_gen_ir_RealLit(s, p)
+    "ir_StrLit" : return bc_gen_ir_StrLit(s, p)
+    "ir_CsetLit" : return bc_gen_ir_CsetLit(s, p)
+    "ir_Restore" : return bc_gen_ir_Restore(s, p)
+    "ir_Succeed" : return bc_gen_ir_Succeed(s, p)
+    "ir_Fail" : return bc_gen_ir_Fail(s, p)
+    "ir_Resume" : return bc_gen_ir_Resume(s, p)
+    "ir_MakeList" : return bc_gen_ir_MakeList(s, p)
+    "ir_OpFunction" : return bc_gen_ir_OpFunction(s, p)
+    "ir_MakeClosure" : return bc_gen_ir_MakeClosure(s, p)
+    "ir_Operator" : return bc_gen_ir_Operator(s, p)
+    "ir_Create" : return bc_gen_ir_Create(s, p)
+    "ir_CoRet" : return bc_gen_ir_CoRet(s, p)
+    "ir_CoFail" : return bc_gen_ir_CoFail(s, p)
+    "ir_RunTimeError" : return bc_gen_ir_RunTimeError(s, p)
+    "ir_EnterInit" : return bc_gen_ir_EnterInit(s, p)
+    "ir_Free" : return bc_gen_ir_Free(s, p)
+    "ir_Field" : return bc_gen_ir_Field(s, p)
     default : { runerr(500, p); }
     }
 end
@@ -1197,14 +1197,14 @@ procedure bc_emit_code0(s, switch, k)
     put(s, lab)
     insns := bc_emit_table[k]
     every i := insns[1 to *insns-1] do {
-        gen_bc(s, i)
+        bc_gen(s, i)
     }
     if type(insns[-1]) == "ir_Goto" &
        type(insns[-1].location) == "ir_Label" &
        not member(bc_emitted, insns[-1].location) then {
         bc_emit_code0(s, switch, insns[-1].location)
     } else {
-        gen_bc(s, insns[-1])
+        bc_gen(s, insns[-1])
     }
 end
 

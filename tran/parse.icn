@@ -170,7 +170,7 @@ procedure expr10()
         case (op) of {
         "|":        return a_RepAlt(operand, coord)
         "not":      return a_Not(operand, coord)
-        default:    return a_Uj_nop(op, operand, coord)
+        default:    return a_Unop(op, operand, coord)
         }
     } else if member(expr10_set3, tok_rec) then {
         tmp_tok := tok_rec
@@ -180,9 +180,9 @@ procedure expr10()
         case tmp_tok of {
         CONCAT  : return a_RepAlt(operand, coord)
         LCONCAT : return a_RepAlt(operand, coord)
-        UNION     : return a_Uj_nop("+", operand, coord)
-        INTER     : return a_Uj_nop("*",a_Uj_nop("*", operand, coord), coord)
-        DIFF      : return a_Uj_nop("-",a_Uj_nop("-", operand, coord), coord)
+        UNION     : return a_Unop("+", operand, coord)
+        INTER     : return a_Unop("*",a_Unop("*", operand, coord), coord)
+        DIFF      : return a_Unop("-",a_Unop("-", operand, coord), coord)
         default     : runerr(500)
         }
     } else {
