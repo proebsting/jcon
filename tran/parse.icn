@@ -477,9 +477,9 @@ procedure expr3()
 	while tok_rec === BAR do {
 		/a := Alt([ret], tok_rec.coord)
 	    	eat_token()
-		put(a.eList, expr3())
-		ret := a
+		put(a.eList, expr4())
 	}
+	ret := \a
 	return ret
 end
 
