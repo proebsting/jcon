@@ -23,12 +23,12 @@
 #  pair from icont.
 #
 #  The following executables must be in the search path:
-#	icont, java, javac, zip, unzip 
+#	icont, java, zip, unzip 
 #  (zip and unzip may be installed in the same directory as jcont.)
 
 #%#%#%#%#% TEMPORARILY DISABLED BECAUSE THE OLD GENERATOR IS BROKEN:
-#     -J	use older Java code generator
-#		(instead of writing better class files directly)
+#     -J	use older Java code generator instead of writing
+#		class files directly; requires javac in search path
 
 PREPROC="icont -s -E"
 ZIP="zip"
