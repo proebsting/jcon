@@ -1,4 +1,4 @@
-#  Test Directory Makefile
+#  jcon/test/Makefile -- for running automated tests
 #
 #  to run all tests:		make
 #  to run some tests:		runtest filename...
@@ -8,8 +8,8 @@
 #  to execute:			./filename [args]
 #
 #  to run benchmarks of tgrlink and geddump
-#	compile them with icont or jcont
-#	run "make bmark"
+#				compile them with icont or jcont
+#				make bmark
 
 
 run:
@@ -25,7 +25,6 @@ bmark:	tgrlink geddump
 
 clean:
 	rm -rf *.out *.err *.sum
-	rm -rf jtmp *.java *.class *.zip *.jar *.o *.tx *.u[12]
+	rm -rf jtmp *.java *.class *.zip *.jar *.jvm *.[cho] *.tx *.u[12]
 	grep -l '$${ICONX-/' `find . -type f -perm -100 -print` | xargs rm -f
 	grep -l '^WHENCE=`' `find . -type f -perm -100 -print`  | xargs rm -f
-	grep -l '/.  created by Toba  ./' *.[ch] 2>/dev/null    | xargs rm -f

@@ -1,4 +1,6 @@
-#  Makefile for rough jcon documentation
+#  jcon/doc/Makefile -- for building rough Jcon documentation
+#
+#  Combines notes.txt with usage info from jcont script.
 
 OUT = ../bin/jcon.txt
 

@@ -1,4 +1,10 @@
-TOBA=t11
+#  jcon/rts/Makefile -- for building the Jcon runtime system
+#
+#  Creates ../bin/rts.zip
+#
+#  The "upclass" script is used to accomplish partial rebuilds.
+#  It is dependable only when small, local changes are made.
+#  When a change affects other classes, run "make clean" before rebuilding.
 
 
 build:
@@ -6,13 +12,5 @@ build:
 	cd ..; jar cfM bin/rts.zip rts/*.class 2>&1 | sed '/<GC: /d'
 
 
-# build package for use with Toba
-# warning: this takes a long time
-package:  build
-	CLASSPATH=..:$$CLASSPATH $(TOBA) -O -P JCON *.class
-	rm -rf ../bin/JCON
-	mv JCON ../bin
-	
-
 clean:
-	rm -f *.class
+	rm -f *.class *.[cho]

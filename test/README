@@ -1,4 +1,4 @@
-jcon/test
+jcon/test -- Jcon test directory
 
 This directory contains automated test for jcon.
 The important scripts are:

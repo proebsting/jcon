@@ -1,7 +1,7 @@
 #!/bin/sh
 #
 #  rtprof program args -- execute jtoba program with runtime system profiling
-#  (Solaris only)
+#  <<ARIZONA-ONLY>> (Solaris only)
 #
 #  stdout and stderr are directed to rtprof.out and rtprof.err
 

@@ -1,0 +1,8 @@
+jcon/doc -- Jcon documentation
+
+This directory is used to build the Jcon usage and notes file
+by combining the header of the jcont script with the notes.txt
+file found here.
+
+Also present in ./Article is an early article about Jcon written
+for the Icon Newsletter.

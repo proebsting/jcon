@@ -1,5 +1,5 @@
 JCON 1.0 README
-May 15, 1998
+May 18, 1998
 
 Gregg Townsend, The University of Arizona
 Todd Proebsting, Microsoft Research
@@ -69,6 +69,10 @@ directory, and type "make".  There are no configuration options.
 When the build completes, the "bin" directory contains everything
 needed to run Jcon.  It can be used in place or copied elsewhere.
 The rest of the Jcon distribution can be deleted if no longer wanted.
+
+After building Jcon using icont, it is possible to rebuild Jcon using
+Jcon.  This optional step is accomplished by typing "make jj"; it
+enables the use of "jcont -J".  
 
 
 

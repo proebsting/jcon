@@ -1,4 +1,10 @@
-#  Makefile for running benchmarks
+#  jcon/bmark/Makefile -- for running benchmarks
+#
+#  to build and run:	make
+#  to repeat report:	make report
+#  to rerun:		make rerun
+#  to clean up:		make clean
+
 
 ICONT = icont
 JCONT = ../bin/jcont

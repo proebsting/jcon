@@ -1,0 +1,6 @@
+#!/bin/sh
+#
+#  <<ARIZONA-ONLY>>  install jcon binaries in /cs/jcon/<platform>/bin
+
+PLATFORM=`/home/gmt/sh/platform`
+make install DEST=/cs/jcon/$PLATFORM/bin

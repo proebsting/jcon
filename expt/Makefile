@@ -1,11 +1,9 @@
-#  Makefile for experimentation directory
+#  jcon/expt/Makefile -- for cleaning up after experiments
 #
 #  to clean up:			make clean
 #
 #  to compile a file:		./jcont filename
 #  to execute:			./filename [args]
-
-#  NOT TESTED RECENTLY:
 #
 #  to execute with profiling:	./jxprof filename [args]
 
@@ -30,7 +28,6 @@ profsum:  profsum.icn
 
 clean:
 	rm -rf *.out *.err *.sum
-	rm -rf jtmp *.java *.class *.zip *.jar *.jvm *.o *.tx *.u[12]
+	rm -rf jtmp *.java *.class *.zip *.jar *.jvm *.[cho] *.tx *.u[12]
 	grep -l '$${ICONX-/' `find . -type f -perm -100 -print` | xargs rm -f
 	grep -l '^WHENCE=`' `find . -type f -perm -100 -print`  | xargs rm -f
-	grep -l '/.  created by Toba  ./' *.[ch] 2>/dev/null    | xargs rm -f

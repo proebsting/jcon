@@ -1,4 +1,4 @@
-jcon/bmark -- Standard Icon benchmarks
+jcon/bmark -- standard Icon benchmarks, adapted for Jcon
 
 These are the standard Icon benchmark programs from the tests/bench
 directory of version 9.3 of Icon.  The programs are unchanged, but

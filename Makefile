@@ -1,17 +1,19 @@
 #   Top-level Makefile for Jcon
 #
-#   to build:	make
 #
-#   to test:	make test
+#   to build:		make
 #
-#   to install:	make install DEST=path   (puts files in $DEST)
-#		(or: just copy the ./bin directory)
+#   to test:		make test
 #
-#   to clean up: make clean
+#   to install:		make install DEST=path   (puts files in $DEST)
+#			(or: just copy the ./bin directory)
+#
+#   to clean up:	make clean
+#
+#  
+#   to build using Jcon (optional), after completing initial build:
+#			make jj
 
-
-BUILT = jtran jlink jjtran jjlink rts.zip jcon.txt
-INSTALL = jcont $(BUILT)
 
 DEST = /must/specify/DEST/to/install
 
@@ -31,10 +33,7 @@ test:	build
 
 install: 
 	test -d $(DEST)
-	cd bin; cp $(INSTALL) $(DEST)
-
-az-install:
-	$(MAKE) install DEST=/cs/jcon/`/home/gmt/sh/platform`/bin
+	cp bin/* $(DEST)
 
 
 clean:
@@ -44,4 +43,11 @@ clean:
 	cd test;  $(MAKE) clean
 	cd expt;  $(MAKE) clean
 	cd bmark; $(MAKE) clean
-	cd bin;  rm -rf $(BUILT) JCON
+	cd bin;   $(MAKE) clean
+
+
+# clean up for distribution by removing locally-specific files
+
+dclean:	
+	rm -f `find * -type f | xargs grep -l '<< *ARIZONA-ONLY *>>' | cat`
+

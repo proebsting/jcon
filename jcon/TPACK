@@ -1,0 +1,26 @@
+#!/bin/ksh
+#
+#  build ../bin/JCON package using toba
+#  <<ARIZONA-ONLY>>
+#
+#  rebuilds all classfiles to ensure they're built with the "right" $CLASSPATH
+
+set -e
+set -x
+export TOBA=/cs/scout/build/pab/toba-1.1-12may98
+export PATH=$TOBA/bin:/cs/sumatra/linux/jdk1.1.3/bin:/bin:/usr/bin
+export CLASSPATH=$TOBA/packages/BISS/classes:$TOBA/packages/SUNAPI/classes:..
+
+# The following gets java.lang.Error: Fatal: Resource for javac is missing
+#       toba -w -v -i -c -O -P JCON *.java
+
+# So try in two steps:
+javac -nowarn -O *.java
+toba -v -i -c -O -P JCON *.class
+
+# toba -P doesn't make the library!
+cc -shared -o JCON/libJCON.so *.o
+
+# move package to ../bin
+rm -rf ../bin/JCON
+mv JCON ../bin

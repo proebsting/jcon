@@ -1,13 +1,9 @@
-jcon/rts
+jcon/rts -- Jcon run-time system
 
 This directory contains source code for the Jcon run-time system.
-
-See ../doc/notes.txt for the bug and feature list.
-
 Grep for '#%#%' in the code to find places that need revisiting.
 
-Java names are assigned as follows.
-
+Java names are assigned as follows:
     a.....	graphics attribute classes
     i.....	infrastructure classes
     f$.....	runtime function classes

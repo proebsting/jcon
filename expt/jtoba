@@ -1,6 +1,7 @@
 #!/bin/ksh -p
 #
 #  jtoba -- compile program with jcont and toba
+#  <<ARIZONA-ONLY>>
 #
 #  usage:  jtoba file.icn ...
 #	writes	file.tx		(toba executable)
