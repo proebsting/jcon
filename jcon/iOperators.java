@@ -17,6 +17,7 @@ void announce(iEnv env) {
     declare(env, "[+:],3", "oSectPlus");
     declare(env, "[-:],3", "oSectMinus");
 
+    declare(env, ".,1", "oDeref");
     declare(env, "/,1", "oIsNull");
     declare(env, "\\,1", "oIsntNull");
     declare(env, "*,1", "oSize");
@@ -168,6 +169,13 @@ class oSectMinus extends iRefClosure {			//  x1[x2-:x3]
 
 
 //  miscellaneous unary operators
+
+class oDeref extends iFunctionClosure {			//  .x
+	vDescriptor function(vDescriptor[] args) {
+		return args[0];		// deref'd by caller
+	}
+	String tfmt() { return "{.$1}"; }
+}
 
 class oIsNull extends iFunctionClosure {		//  /x
 	vDescriptor function(vDescriptor[] args) {
