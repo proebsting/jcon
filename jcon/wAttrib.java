@@ -33,6 +33,7 @@ static {
     newatt("clipw", new aClipw());
     newatt("cliph", new aCliph());
 
+    newatt("gamma", new aGamma());
     newatt("bg", new aBg());
     newatt("fg", new aFg());
 
@@ -71,7 +72,6 @@ static {
     // They are incomplete and/or problematical even in v9 Icon.
     newatt("reverse",	new aDummy("off",	vString.New("off")));
     newatt("drawop",	new aDummy("copy",	vString.New("copy")));
-    newatt("gamma",	new aDummy("1.0",	vReal.New(1.0)));
 }
 
 private static void newatt(String name, wAttrib a) {
@@ -256,6 +256,11 @@ final class aCliph extends wAttrib {
 }
 
 
+
+final class aGamma extends wAttrib {
+    vValue get(vWindow win)	{ return win.Gamma(null); }
+    vValue set(vWindow win)	{ return win.Gamma(vString.New(val)); }
+}
 
 final class aFg extends wAttrib {
     vValue get(vWindow win)	{ return win.Fg(null); }

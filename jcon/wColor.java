@@ -27,6 +27,9 @@ final class wHue {		// table entry for named colors
 final class wColor extends Color {
 
     vString spec;	// original spcification string
+    double gamma;	// gamma correction applied
+    double r, g, b;	// linear (uncorrected) r/g/b values, 0 - 1
+
 
 
 static Hashtable hueTable = new Hashtable();
@@ -57,67 +60,70 @@ private static void install(wHue h) {
 
 //  these must follow hueTable initialization, with nohue first:
 static final wHue nohue = new wHue("", "", 0, 0, 0);
-static final wColor Black = wColor.parse(vString.New("black"));
-static final wColor White = wColor.parse(vString.New("white"));
+static final wColor Black = New(vString.New("black"), iConfig.Gamma);
+static final wColor White = New(vString.New("white"), iConfig.Gamma);
 
 
 
 
-//  new wColor(s, rgb) -- attach name spec "s" to Java 24-bit-RGB color
+//  wColor.New(s, gamma) -- create new color, given an Icon color spec
 
-wColor(vString s, int rgb) {
-    super(rgb);
-    spec = s;
-}
-
-
-
-//  parse(s) -- interpret Icon color spec and return wColor value (or null)
-
-static wColor parse(vString s) {
-
-    String js = s.toString();
-    int rgb = parseInts(js);
-    if (rgb < 0) {
-	rgb = parseName(js);
-	if (rgb < 0) {
-	    return null; /*FAIL*/
-	}
+static wColor New(vString s, double gamma) {
+    wColor c = newIntColor(s, gamma);
+    if (c == null) {
+       c = newNamedColor(s, gamma);
     }
-    return new wColor(s, rgb);
+    return c;	// null for failure
+}
+
+//  new wColor(s, gamma, r, g, b) -- internal wColor constructor
+
+private wColor(vString s, double gamma, double r, double g, double b) {
+    super(jrgb(gamma, r, g, b));
+    this.spec = s;
+    this.gamma = gamma;
+    this.r = r;
+    this.g = g;
+    this.b = b;
+}
+
+//  jrgb(gamma, r, g, b) -- calculate Java RGB integer color spec
+
+private static int jrgb(double gamma, double r, double g, double b) {
+    double invg = 1.0 / gamma;
+    int ir = (int) (255 * Math.pow(r, invg));
+    int ig = (int) (255 * Math.pow(g, invg));
+    int ib = (int) (255 * Math.pow(b, invg));
+    return (ir << 16) + (ig << 8) + ib;
 }
 
 
 
-//  parseInts(s) -- parse "rrrrr,ggggg,bbbbb" color spec
-//
-//  returns Java 24-bit RGB integer, or -1 for failure
+//  newIntColor(s, gamma) -- parse "rrrrr,ggggg,bbbbb" color spec
 
-private static int parseInts(String s) {
-    StringTokenizer tkr = new StringTokenizer(s, ",");
+private static wColor newIntColor(vString s, double gamma) {
+    StringTokenizer tkr = new StringTokenizer(s.toString(), ",");
     try {
 	int r = Integer.parseInt(tkr.nextToken());
 	int g = Integer.parseInt(tkr.nextToken());
 	int b = Integer.parseInt(tkr.nextToken());
 	if (tkr.hasMoreTokens() || r < 0 || g < 0 || b < 0
 	    || r > 65535 || g > 65535 || b > 65535) {
-		return -1;
+		return null; /*FAIL*/
 	    }
-	return ((r & 0xFF00) << 8) | (g & 0xFF00) | (b >> 8);
+	return new wColor(s, gamma, r / 65535.0, g / 65535.0, b / 65535.0);
     } catch (Exception e) {
-	return -1;
+	return null; /*FAIL*/
     }
 }
 
 
 
-//  parseName(s) -- parse colors by name
-//
-//  returns Java 24-bit RGB integer, or -1 for failure
+//  newNamedColor(s, gamma) -- parse named color
 
-private static int parseName(String k) {
-    k = k.toLowerCase();
-    StringTokenizer tkr = new StringTokenizer(k, " -");
+private static wColor newNamedColor(vString vs, double gamma) {
+    String js = vs.toString().toLowerCase();
+    StringTokenizer tkr = new StringTokenizer(js, " -");
 
     try {
 	String t = tkr.nextToken();
@@ -151,14 +157,14 @@ private static int parseName(String k) {
 
 	    h1 = parseHue(t);		// must have a first hue
 	    if (h1 == null) {
-		return -1;
+		return null; /*FAIL*/
 	    }
 
 	    if (tkr.hasMoreTokens()) {
 		t = tkr.nextToken();
 		h2 = parseHue(t);	// two equally weighted hues
 		if (h2 == null) {
-		    return -1;
+		    return null; /*FAIL*/
 		}
 		weight = 0.50;
 	    } else {
@@ -168,7 +174,7 @@ private static int parseName(String k) {
 	}
 
 	if (tkr.hasMoreTokens()) {	// should be no more tokens
-	    return -1;
+	    return null; /*FAIL*/
 	}
 
 	// at this point we have a valid parse; figure out what it means
@@ -205,10 +211,14 @@ private static int parseName(String k) {
 	b = satAdjust * b + (1.0 - satAdjust) * (b - 0.5 * b * s);
 	s = satAdjust * s;
 
-	return Color.HSBtoRGB((float)h, (float)s, (float)b) & 0xFFFFFF;
+	int jrgb = Color.HSBtoRGB((float)h, (float)s, (float)b) & 0xFFFFFF;
+	int ir = (jrgb >> 16) & 0xFF;
+	int ig = (jrgb >>  8) & 0xFF;
+	int ib = (jrgb >>  0) & 0xFF;
+	return new wColor(vs, gamma, ir / 255.0, ig / 255.0, ib / 255.0);
 
     } catch (Exception e) {
-	return -1;
+	return null; /*FAIL*/
     }
 }
 

@@ -36,7 +36,7 @@ wCanvas(vWindow win, String label, int w, int h) {
     this.setSize(w, h);
 
     f = new Frame(label);
-    f.setTitle("");
+    f.setTitle(label);
     f.add(this, "North");
     f.pack();
 

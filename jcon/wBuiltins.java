@@ -207,15 +207,15 @@ final class f$Fg extends vProc2 {		// Fg(W, s)
 final class f$ColorValue extends vProc2 {	// ColorValue(W, s)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	if (!a.iswin()) {
-	    return Call(null, a);	// W is not needed or used
+	    b = a;			// W is not needed or used
 	}
 	vString s = b.mkString();
-	wColor k = wColor.parse(s);
+	wColor k = wColor.New(s, 1.0);	// parse string (gamma has no effect)
 	if (k == null) {
-	    return null;
+	    return null; /*FAIL*/
 	} else {
-	    return vString.New(257 * k.getRed() + "," +
-			257 * k.getGreen() + "," + 257 * k.getBlue());
+	    return vString.New((int)(65535 * k.r + 0.5) + "," + 
+		(int)(65535 * k.g + 0.5) + "," + (int)(65535 * k.b + 0.5));
 	}
     }
 }

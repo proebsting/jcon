@@ -24,10 +24,12 @@ public final class vWindow extends vFile {
     private boolean clipping;	// is clipping enabled?
     int dx, dy;			// graphics origin
 
-    private wColor bg;		// current background color
-    private wColor fg;		// current foreground color
-    private wFont font;		// current text font
-    private int leading;	// current leading value
+    private double gamma;	// gamma correction factor
+    private wColor bg;		// background color
+    private wColor fg;		// foreground color
+
+    private wFont font;		// text font
+    private int leading;	// leading value
 
 
 public boolean iswin()		{ return true; }
@@ -77,6 +79,7 @@ vWindow(String title, String mode, vDescriptor args[]) throws IOException {
     dx = 0;
     dy = 0;
 
+    gamma = iConfig.Gamma;
     fg = wColor.Black;
     bg = wColor.White;
     Font(vString.New(iConfig.FontName));
@@ -129,11 +132,11 @@ vWindow(vWindow w) {
     this.dx = w.dx;
     this.dy = w.dy;
 
+    this.gamma = w.gamma;
     this.fg = w.fg;
+    this.bg = w.bg;
     b.setColor(fg);
     a.setColor(fg);
-
-    this.bg = w.bg;
 
     this.font = w.font;
     b.setFont(font);
@@ -300,11 +303,25 @@ vWindow Clip(vString xs, vString ys, vString ws, vString hs) {	// set attribs
 
 
 
+vString Gamma(vString s) {
+    if (s == null) {
+	return vString.New(String.valueOf(gamma));
+    }
+    double d = s.mkReal().value;
+    if (d <= 0.0) {
+	return null; /*FAIL*/
+    }
+    gamma = d;			// save gamma value
+    Fg(fg.spec);		// respecify fg and bg
+    Bg(bg.spec);
+    return vString.New(String.valueOf(gamma));
+}
+
 vString Fg(vString s) {
     if (s == null) {
 	return this.fg.spec;
     }
-    wColor k = wColor.parse(s);
+    wColor k = wColor.New(s, gamma);
     if (k == null) {
 	return null;
     } else {
@@ -319,7 +336,7 @@ vString Bg(vString s) {
     if (s == null) {
 	return this.bg.spec;
     }
-    wColor k = wColor.parse(s);
+    wColor k = wColor.New(s, gamma);
     if (k == null) {
 	return null;
     } else {
