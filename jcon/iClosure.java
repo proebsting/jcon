@@ -97,7 +97,7 @@ public vDescriptor resume() {
 }
 
 public void Free() {
-    iNew.FreeArgs(arguments);
+    vDescriptor.FreeArgs(arguments);
     arguments = null;
     if (vproc != null) {
 	vproc.cachedclosure = this;
@@ -209,7 +209,7 @@ String trace() {
 
 vString getarg(int n) {
     if (arguments[n] == null || arguments.length <= n) {
-	return iNew.String("???");	// shouldn't happen, but handle it
+	return vString.New("???");	// shouldn't happen, but handle it
     } else {
 	return arguments[n].report();
     }

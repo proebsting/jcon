@@ -13,9 +13,9 @@ vRecord(vRecordProc constr, vDescriptor[] inits) {
     values = new vSimpleVar[constr.fieldnames.length];
     for (int i = 0; i < values.length; i++) {
 	if (i < inits.length) {
-	    values[i] = iNew.SimpleVar(constr.varnames[i], inits[i].deref());
+	    values[i] = vSimpleVar.New(constr.varnames[i], inits[i].deref());
 	} else {
-	    values[i] = iNew.SimpleVar(constr.varnames[i]);
+	    values[i] = vSimpleVar.New(constr.varnames[i]);
 	}
     }
 }
@@ -25,11 +25,11 @@ vRecord(vRecordProc constr, vDescriptor[] inits) {
 vString type()	{ return constr.name; }
 
 vString image() {
-    return iNew.String(
+    return vString.New(
 	"record " + constr.name + "_" + snum + "(" + values.length + ")");
 }
 
-vInteger Size()	{ return iNew.Integer(values.length); }
+vInteger Size()	{ return vInteger.New(values.length); }
 
 int rank()	{ return 120; }			// records sort last
 
@@ -106,7 +106,7 @@ vDescriptor Bang(iClosure c) {
 
 
 vValue Sort(int i) {					// sort(L)
-    return iNew.List(iUtil.sort(this.mkArray()));
+    return vList.New(iUtil.sort(this.mkArray()));
 }
 
 vValue[] mkArray() {

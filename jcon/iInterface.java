@@ -22,7 +22,7 @@ public static vList marshal( vDescriptor[] args, int len) {
     for (int i = 0; i < varlen; i++) {
 	varray[i] = args[len+i-1];
     }
-    return iNew.List(varray);
+    return vList.New(varray);
 }
 
 static java.util.Hashtable fileTable = new java.util.Hashtable();
@@ -102,9 +102,9 @@ public static void start(String[] filenames, String[] args, String name) {
 	v = new vDescriptor[1];
 	vDescriptor[] vargs = new vDescriptor[args.length];
 	for (int i = 0; i < args.length; i++) {
-	    vargs[i] = iNew.String(args[i]);
+	    vargs[i] = vString.New(args[i]);
 	}
-	v[0] = iNew.List(vargs);
+	v[0] = vList.New(vargs);
     }
     iClosure closure = p.instantiate(v, null);
     k$time.reset();				// zero &time

@@ -11,7 +11,7 @@ class fIO {
     // print(f, arglist, newline) -- helper for write(), writes(), stop()
 
     static vDescriptor print(vFile f, vDescriptor[] args, boolean nl) {
-	vDescriptor d = iNew.Null();	// last argument processed
+	vDescriptor d = vNull.New();	// last argument processed
 	for (int i = 0; i < args.length; i++) {
 	    d = args[i];
 	    if (d instanceof vFile) {	// if file value
@@ -33,7 +33,7 @@ class fIO {
 
 
 class f$open extends iValueClosure {				// open(s1,s2)
-    static vString defmode = iNew.String("r");
+    static vString defmode = vString.New("r");
     vDescriptor function(vDescriptor[] args) {
 	String fname = vString.argDescr(args, 0).toString();
 	String mode = vString.argDescr(args, 1, defmode).toString();
@@ -43,11 +43,7 @@ class f$open extends iValueClosure {				// open(s1,s2)
 		iRuntime.error(209, args[1]);
 	    }
 	}
-	if (iRuntime.upto("gG", mode)) {
-	    return iNew.Window(fname, mode, args);
-	} else {
-	    return iNew.File(fname, mode);
-	}
+	return vFile.New(fname, mode, args);
     }
 }
 
@@ -141,7 +137,7 @@ class f$remove extends iValueClosure {				// remove(s)
 	String s = vString.argDescr(args, 0).toString();
 	java.io.File f = new java.io.File(s);
 	if (f.delete()) {
-	    return iNew.Null();
+	    return vNull.New();
 	} else {
 	    return null;
 	}
@@ -157,7 +153,7 @@ class f$rename extends iValueClosure {				// rename(s1,s2)
 	java.io.File f1 = new java.io.File(s1);
 	java.io.File f2 = new java.io.File(s2);
 	if (f1.renameTo(f2)) {
-	    return iNew.Null();
+	    return vNull.New();
 	} else {
 	    return null;
 	}

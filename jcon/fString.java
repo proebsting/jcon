@@ -12,7 +12,7 @@ class f$char extends iValueClosure {				// char()
 	if (i < 0 || i > vCset.MAX_VALUE) {
 	    iRuntime.error(205, args[0]);
 	}
-	return iNew.String((char) i);
+	return vString.New((char) i);
     }
 }
 
@@ -24,7 +24,7 @@ class f$ord extends iValueClosure {				// ord()
 	if (s.length() != 1) {
 	    iRuntime.error(205, args[0]);
 	}
-	return iNew.Integer(s.charAt(0));
+	return vInteger.New(s.charAt(0));
     }
 }
 
@@ -47,7 +47,7 @@ class f$repl extends iValueClosure {				// repl()
 		t[k] = c;
 	    }
 	}
-	return iNew.String(t);
+	return vString.New(t);
     }
 }
 
@@ -61,14 +61,14 @@ class f$reverse extends iValueClosure {				// reverse()
 	for (int i = 0; i < n; i++) {
 	    t[i] = s[n - i - 1];
 	}
-	return iNew.String(t);
+	return vString.New(t);
     }
 }
 
 
 
 class f$left extends iValueClosure {				// left(s,i,s)
-    static vString space = iNew.String(' ');
+    static vString space = vString.New(' ');
     vDescriptor function(vDescriptor[] args) {
 	vString s = vString.argDescr(args, 0);
 	long llen = vInteger.argVal(args, 1, 1);
@@ -79,7 +79,7 @@ class f$left extends iValueClosure {				// left(s,i,s)
 	    iRuntime.error(205, args[1]);
 	}
 	if (dstlen <= s.length()) {
-	    return iNew.String(s, 1, dstlen + 1);
+	    return vString.New(s, 1, dstlen + 1);
 	}
 	if (pad.length == 0) {
 	    pad = space.getBytes();
@@ -98,14 +98,14 @@ class f$left extends iValueClosure {				// left(s,i,s)
 	}
 
 	System.arraycopy(src, 0, dst, 0, src.length);
-	return iNew.String(dst);
+	return vString.New(dst);
     }
 }
 
 
 
 class f$right extends iValueClosure {				// right(s,i,s)
-    static vString space = iNew.String(' ');
+    static vString space = vString.New(' ');
     vDescriptor function(vDescriptor[] args) {
 	vString s = vString.argDescr(args, 0);
 	long llen = vInteger.argVal(args, 1, 1);
@@ -117,7 +117,7 @@ class f$right extends iValueClosure {				// right(s,i,s)
 	}
 	int srclen = s.length();
 	if (dstlen <= srclen) {
-	    return iNew.String(s, srclen + 1 - dstlen, srclen + 1);
+	    return vString.New(s, srclen + 1 - dstlen, srclen + 1);
 	}
 	if (pad.length == 0) {
 	    pad = space.getBytes();
@@ -136,14 +136,14 @@ class f$right extends iValueClosure {				// right(s,i,s)
 	}
 
 	System.arraycopy(src, 0, dst, offset, srclen);
-	return iNew.String(dst);
+	return vString.New(dst);
     }
 }
 
 
 
 class f$center extends iValueClosure {				// center(s,i,s)
-    static vString space = iNew.String(' ');
+    static vString space = vString.New(' ');
     vDescriptor function(vDescriptor[] args) {
 	vString s = vString.argDescr(args, 0);
 	long llen = vInteger.argVal(args, 1, 1);
@@ -157,7 +157,7 @@ class f$center extends iValueClosure {				// center(s,i,s)
 
 	if (dstlen <= srclen) {
 	    int offset = (srclen - dstlen + 1) / 2;
-	    return iNew.String(s, offset + 1, offset + dstlen + 1);
+	    return vString.New(s, offset + 1, offset + dstlen + 1);
 	}
 
 	if (pad.length == 0) {
@@ -188,14 +188,14 @@ class f$center extends iValueClosure {				// center(s,i,s)
 
 	// finally, copy string
 	System.arraycopy(src, 0, dst, offset, srclen);
-	return iNew.String(dst);
+	return vString.New(dst);
     }
 }
 
 
 
 class f$trim extends iValueClosure {				// trim(s,c)
-    static vCset defset = iNew.Cset(' ');
+    static vCset defset = vCset.New(' ');
     vDescriptor function(vDescriptor[] args) {
 	vString s = vString.argDescr(args, 0);
 	vCset c = vCset.argVal(args, 1, defset);
@@ -207,7 +207,7 @@ class f$trim extends iValueClosure {				// trim(s,c)
 		break;
 	    }
 	}
-	return iNew.String(s, 1, i + 2);
+	return vString.New(s, 1, i + 2);
     }
 }
 
@@ -220,8 +220,8 @@ class f$map extends iValueClosure {				// map(s1,s2,s3)
     static vString s2prev, s3prev;
 
     static {
-	s2def = iNew.String("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
-	s3def = iNew.String("abcdefghijklmnopqrstuvwxyz");
+	s2def = vString.New("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
+	s3def = vString.New("abcdefghijklmnopqrstuvwxyz");
 	initmap = new int[(int) vCset.MAX_VALUE + 1];
 	for (int i = 0; i <= vCset.MAX_VALUE; i++) {
 	    initmap[i] = i;
@@ -256,6 +256,6 @@ class f$map extends iValueClosure {				// map(s1,s2,s3)
 	for (int i = 0; i < n; i++) {
 	    b[i] = (byte)map[b1[i] & 0xFF];
 	}
-	return iNew.String(b);
+	return vString.New(b);
     }
 }

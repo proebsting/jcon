@@ -29,7 +29,7 @@ public void closure(vDescriptor arg0, vDescriptor arg1, iClosure parent) {
 
 vString getarg(int n) {
     switch (n) {
-	default: return iNew.String("???");
+	default: return vString.New("???");
 	case 0 : return argument0.report();
 	case 1 : return argument1.report();
     }

@@ -26,20 +26,20 @@ public class iKeywords extends iFile {
     void announce() {
 
 	// constants
-	iEnv.declareKey("null", iNew.Null());
-	iEnv.declareKey("e", iNew.Real(Math.E));
-	iEnv.declareKey("phi", iNew.Real((1.0 + Math.sqrt(5.0)) / 2.0));
-	iEnv.declareKey("pi", iNew.Real(Math.PI));
-	iEnv.declareKey("version", iNew.String(iConfig.Version));
+	iEnv.declareKey("null", vNull.New());
+	iEnv.declareKey("e", vReal.New(Math.E));
+	iEnv.declareKey("phi", vReal.New((1.0 + Math.sqrt(5.0)) / 2.0));
+	iEnv.declareKey("pi", vReal.New(Math.PI));
+	iEnv.declareKey("version", vString.New(iConfig.Version));
 
 	// cset constants
 	vCset lcase, ucase;
-	iEnv.declareKey("digits", iNew.Cset('0', '9'));
-	iEnv.declareKey("lcase", lcase = iNew.Cset('a','z'));
-	iEnv.declareKey("ucase", ucase = iNew.Cset('A','Z'));
+	iEnv.declareKey("digits", vCset.New('0', '9'));
+	iEnv.declareKey("lcase", lcase = vCset.New('a','z'));
+	iEnv.declareKey("ucase", ucase = vCset.New('A','Z'));
 	iEnv.declareKey("letters", lcase.Union(ucase));
-	iEnv.declareKey("ascii", iNew.Cset(0, 127));
-	iEnv.declareKey("cset", iNew.Cset(0, vCset.MAX_VALUE));
+	iEnv.declareKey("ascii", vCset.New(0, 127));
+	iEnv.declareKey("cset", vCset.New(0, vCset.MAX_VALUE));
 
 	// read-only, but variable
 	iEnv.declareKey("clock", new k$clock());
@@ -62,30 +62,30 @@ public class iKeywords extends iFile {
 	k$pos p = new k$pos();			// &pos
 	s.pos = p;
 	p.subject = s;
-	s.Assign(iNew.String());
+	s.Assign(vString.New());
 	iEnv.declareKey("subject", s);
 	iEnv.declareKey("pos", p);
 
 	// error-related
 	iEnv.declareKey("error", new k$error());
-	iEnv.declareKey("errornumber", iNew.Proc(
+	iEnv.declareKey("errornumber", vProc.New(
 	    "&errornumber", "rts.k$errornumber", 0));
-	iEnv.declareKey("errortext", iNew.Proc(
+	iEnv.declareKey("errortext", vProc.New(
 	    "&errortext", "rts.k$errortext", 0));
-	iEnv.declareKey("errorvalue", iNew.Proc(
+	iEnv.declareKey("errorvalue", vProc.New(
 	    "&errorvalue", "rts.k$errorvalue", 0));
 
 	iEnv.declareKey("dump", new k$dump());
 
 	// generators
-	iEnv.declareKey("features", iNew.Proc("&features","rts.k$features",0));
-	iEnv.declareKey("level", iNew.Proc("&level", "rts.k$level", 0));
+	iEnv.declareKey("features", vProc.New("&features","rts.k$features",0));
+	iEnv.declareKey("level", vProc.New("&level", "rts.k$level", 0));
 
 	// bogus generators
-	vProc proc = iNew.Proc("k$gen4zeroes", "rts.k$gen4zeros", 0);
+	vProc proc = vProc.New("k$gen4zeroes", "rts.k$gen4zeros", 0);
 	iEnv.declareKey("allocated", proc);
 	iEnv.declareKey("collections", proc);
-	proc = iNew.Proc("k$gen3zeroes", "rts.k$gen3zeros", 0);
+	proc = vProc.New("k$gen3zeroes", "rts.k$gen3zeros", 0);
 	iEnv.declareKey("regions", proc);
 	iEnv.declareKey("storage", proc);
 
@@ -94,16 +94,16 @@ public class iKeywords extends iFile {
 	iEnv.declareKey("random", new k$random());
 
 	// graphics constants
-	iEnv.declareKey("lpress", iNew.Integer(wEvent.LPress));
-	iEnv.declareKey("mpress", iNew.Integer(wEvent.MPress));
-	iEnv.declareKey("rpress", iNew.Integer(wEvent.RPress));
-	iEnv.declareKey("ldrag", iNew.Integer(wEvent.LDrag));
-	iEnv.declareKey("mdrag", iNew.Integer(wEvent.MDrag));
-	iEnv.declareKey("rdrag", iNew.Integer(wEvent.RDrag));
-	iEnv.declareKey("lrelease", iNew.Integer(wEvent.LRelease));
-	iEnv.declareKey("mrelease", iNew.Integer(wEvent.MRelease));
-	iEnv.declareKey("rrelease", iNew.Integer(wEvent.RRelease));
-	iEnv.declareKey("resize", iNew.Integer(wEvent.Resize));
+	iEnv.declareKey("lpress", vInteger.New(wEvent.LPress));
+	iEnv.declareKey("mpress", vInteger.New(wEvent.MPress));
+	iEnv.declareKey("rpress", vInteger.New(wEvent.RPress));
+	iEnv.declareKey("ldrag", vInteger.New(wEvent.LDrag));
+	iEnv.declareKey("mdrag", vInteger.New(wEvent.MDrag));
+	iEnv.declareKey("rdrag", vInteger.New(wEvent.RDrag));
+	iEnv.declareKey("lrelease", vInteger.New(wEvent.LRelease));
+	iEnv.declareKey("mrelease", vInteger.New(wEvent.MRelease));
+	iEnv.declareKey("rrelease", vInteger.New(wEvent.RRelease));
+	iEnv.declareKey("resize", vInteger.New(wEvent.Resize));
 
 	// graphics variables
 	iEnv.declareKey("window", new k$window());	// &window
@@ -112,9 +112,9 @@ public class iKeywords extends iFile {
 	iEnv.declareKey("row", new k$row());		// &row
 	iEnv.declareKey("col", new k$col());		// &col
 	iEnv.declareKey("interval", new k$interval());	// &interval
-	iEnv.declareKey("control", iNew.Proc("&control", "rts.k$control", 0));
-	iEnv.declareKey("meta", iNew.Proc("&meta", "rts.k$meta", 0));
-	iEnv.declareKey("shift", iNew.Proc("&shift", "rts.k$shift", 0));
+	iEnv.declareKey("control", vProc.New("&control", "rts.k$control", 0));
+	iEnv.declareKey("meta", vProc.New("&meta", "rts.k$meta", 0));
+	iEnv.declareKey("shift", vProc.New("&shift", "rts.k$shift", 0));
     }
 }
 
@@ -137,7 +137,7 @@ class k$features extends iClosure {				// &features
 	    PC = 2;
 	}
 	if (posn < flist.length) {
-	    return iNew.String(flist[posn++]);
+	    return vString.New(flist[posn++]);
 	} else {
 	    return null;
 	}
@@ -195,7 +195,7 @@ class k$clock extends k$Value {					// &clock
 	}
 	Date d = new Date();
 	String s = formatter.format(d);
-	return iNew.String(s);
+	return vString.New(s);
     }
 }
 
@@ -212,7 +212,7 @@ class k$date extends k$Value {					// &date
 	}
 	Date d = new Date();
 	String s = formatter.format(d);
-	return iNew.String(s);
+	return vString.New(s);
     }
 }
 
@@ -227,7 +227,7 @@ class k$time extends k$Value {					// &time
     }
 
     public vValue deref() {			// read value
-	return iNew.Integer(System.currentTimeMillis() - tbase);
+	return vInteger.New(System.currentTimeMillis() - tbase);
     }
 }
 
@@ -247,7 +247,7 @@ class k$dateline extends k$Value {				// &dateline
 	String s = formatter.format(d);
 	int n = s.length() - 2;		// beginning of AM/PM
 	s = s.substring(0, n) + s.substring(n).toLowerCase();
-	return iNew.String(s);
+	return vString.New(s);
     }
 }
 
@@ -264,7 +264,7 @@ class k$host extends k$Value {					// &host
 	// warning: ugly unixisms follow
 	try {
 	    Process p = Runtime.getRuntime().exec("uname -n");
-	    hostname = iNew.String(
+	    hostname = vString.New(
 		new BufferedReader(
 		new InputStreamReader(p.getInputStream()))
 		.readLine().trim());
@@ -272,9 +272,9 @@ class k$host extends k$Value {					// &host
 	    hostname.charAt(0);		// ensure not empty
 	} catch (Exception e1) {
 	    try {
-		hostname = iNew.String(System.getProperty("os.name"));
+		hostname = vString.New(System.getProperty("os.name"));
 	    } catch (Exception e2) {
-		hostname = iNew.String("Jcon");
+		hostname = vString.New("Jcon");
 	    }
 	}
 	return hostname;
@@ -288,7 +288,7 @@ class k$progname extends k$Value {				// &progname
     static String name;
 
     public vValue deref() {
-	return iNew.String(name);
+	return vString.New(name);
     }
 }
 
@@ -298,7 +298,7 @@ class k$input extends k$Value {					// &input
     static vFile file;		// referenced externally
 
     k$input() {
-	file = iNew.File("&input",
+	file = vFile.New("&input",
 	    new DataInputStream(new BufferedInputStream(System.in)), null);
     }
 
@@ -309,7 +309,7 @@ class k$output extends k$Value {				// &output
     static vFile file;		// referenced externally
 
     k$output() {
-	file = iNew.File("&output", null,
+	file = vFile.New("&output", null,
 	    new DataOutputStream(new BufferedOutputStream(System.out)));
     }
 
@@ -320,7 +320,7 @@ class k$errout extends k$Value {				// &errout
     static vFile file;		// referenced externally
 
     k$errout() {		// unbuffered
-	file = iNew.File("&errout", null, new DataOutputStream(System.err));
+	file = vFile.New("&errout", null, new DataOutputStream(System.err));
     }
 
     public vValue deref()	{ return file; }
@@ -337,7 +337,7 @@ class k$subject extends vSimpleVar {				// &subject
 
     public vVariable Assign(vValue s) {
 	value = s.mkString();			// &subject := s
-	pos.SafeAssign(iNew.Integer(1));	// &pos := 1
+	pos.SafeAssign(vInteger.New(1));	// &pos := 1
 	return this;
     }
 }
@@ -355,7 +355,7 @@ class k$pos extends vSimpleVar {				// &pos
 	int n = ((vString)subject.value).posEq(((vInteger)i).value);
 	if (n == 0)
 	    return null;	// fail: position out of range
-	value = iNew.Integer(n);
+	value = vInteger.New(n);
 	return this;
     }
     public vVariable SafeAssign(vValue i) {
@@ -379,7 +379,7 @@ class k$trace extends vSimpleVar {				// &trace
     }
 
     public vValue deref() {
-	return value = iNew.Integer(trace);
+	return value = vInteger.New(trace);
     }
 }
 
@@ -406,7 +406,7 @@ private static final double RanScale = 4.65661286e-10;
     }
 
     public vValue deref() {			// dereference
-	return value = iNew.Integer(randval);
+	return value = vInteger.New(randval);
     }
 
     public static double nextVal() {		// gen val in [0.0, 1.0)
@@ -423,7 +423,7 @@ private static final double RanScale = 4.65661286e-10;
 
 class k$window extends vSimpleVar {				// &window
 
-    private static vValue value = iNew.Null();	// current value
+    private static vValue value = vNull.New();	// current value
 
     k$window() { super("&window"); }		// constructor
 
@@ -475,7 +475,7 @@ abstract class k$intWatcher extends vVariable { // super for "watched" int kwds
     }
 
     public vValue deref() {
-	return iNew.Integer(value);		// deref just returns value
+	return vInteger.New(value);		// deref just returns value
     }
 
     public vVariable Assign(vValue v) {		// assignment
@@ -489,9 +489,9 @@ abstract class k$intWatcher extends vVariable { // super for "watched" int kwds
 	value = i;
     }
 
-    vString Name()				{ return iNew.String(name); }
+    vString Name()				{ return vString.New(name); }
 
-    vString report()	{ return iNew.String("(" + name + " = " + value + ")");}
+    vString report()	{ return vString.New("(" + name + " = " + value + ")");}
 }
 
 class k$interval extends k$intWatcher {				// &interval
@@ -555,7 +555,7 @@ class k$dump extends vSimpleVar {				// &dump
     }
 
     public vValue deref() {
-	return value = iNew.Integer(dump);
+	return value = vInteger.New(dump);
     }
 }
 
@@ -570,14 +570,14 @@ class k$error extends vSimpleVar {				// &trace
 	error = ((vInteger)value).value;
 	if (error != 0 & !iEnv.error_conversion) {
 	    error = 0;
-	    value = iNew.Integer(error);
+	    value = vInteger.New(error);
 	    iRuntime.error(904,this);
 	}
 	return this;
     }
 
     public vValue deref() {
-	return value = iNew.Integer(error);
+	return value = vInteger.New(error);
     }
 }
 
@@ -611,7 +611,7 @@ class k$level extends iValueClosure {				// &level
 	for (iClosure p = this.parent; p != null; p = p.parent) {
 	    i++;
 	}
-	return iNew.Integer(i);
+	return vInteger.New(i);
     }
 
     String tfmt() { return "&level"; }
@@ -626,7 +626,7 @@ class k$gen4zeros extends iClosure {		// &allocated, &collections
 	}
 	if (i < 4) {
 	    i++;
-	    return iNew.Integer(0);
+	    return vInteger.New(0);
 	} else {
 	    return null;
 	}
@@ -644,7 +644,7 @@ class k$gen3zeros extends iClosure {		// &regions, &storage
 	}
 	if (i < 3) {
 	    i++;
-	    return iNew.Integer(0);
+	    return vInteger.New(0);
 	} else {
 	    return null;
 	}

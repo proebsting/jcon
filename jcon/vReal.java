@@ -8,9 +8,11 @@ public class vReal extends vNumeric {
 
 // constructors
 
-vReal(double x)		{ value = x; }
-vReal(long n)		{ value = n; }
-vReal(String s)		{ value = Double.valueOf(s).doubleValue(); }
+public static vReal New(double x)	{ return new vReal(x); }
+public static vReal New(String x)	{ return new vReal(x); }
+
+private vReal(double x)		{ value = x; }
+private vReal(String s)		{ value = Double.valueOf(s).doubleValue(); }
 				//#%#% handles all cases? what about errs?
 
 
@@ -29,7 +31,7 @@ vInteger mkInteger()	{
 	iRuntime.error(101, this);
 	return null;
     } else {
-	return iNew.Integer(this.value);
+	return vInteger.New(this.value);
     }
 }
 
@@ -44,12 +46,12 @@ vString mkString() {	// #%#% differs from v9 formatting
     if (s.indexOf('E') >= 0) {
 	s = s.replace('E','e');			// if E notation, change to 'e'
     }
-    return cachedString = iNew.String(s);
+    return cachedString = vString.New(s);
 }
 
 
 
-static vString typestring = iNew.String("real");
+static vString typestring = vString.New("real");
 vString type()		{ return typestring; }
 
 int rank()		{ return 20; }		// reals sort after integers
@@ -100,7 +102,7 @@ static double argVal(vDescriptor[] args, int index, double dflt) { // opt arg
 
 // operations
 
-vNumeric Negate()	{ return iNew.Real(-value); }
+vNumeric Negate()	{ return vReal.New(-value); }
 
 vDescriptor Select()	{ return this.mkInteger().Select(); }
 
@@ -112,40 +114,40 @@ vValue Power(vDescriptor v) {
     if (this.value == 0.0 && y.value <= 0.0) {
 	iRuntime.error(204);
     }
-    return iNew.Real(Math.pow(this.value, y.value));
+    return vReal.New(Math.pow(this.value, y.value));
 }
 
 vValue Add(vDescriptor v) {
-    return iNew.Real(this.value + ((vReal)v).value);
+    return vReal.New(this.value + ((vReal)v).value);
 }
 
 vValue Sub(vDescriptor v) {
-    return iNew.Real(this.value - ((vReal)v).value);
+    return vReal.New(this.value - ((vReal)v).value);
 }
 
 vValue Mul(vDescriptor v) {
-    return iNew.Real(this.value * ((vReal)v).value);
+    return vReal.New(this.value * ((vReal)v).value);
 }
 
 vValue Div(vDescriptor v) {
     if (((vReal)v).value == 0) {
 	iRuntime.error(204);
     }
-    return iNew.Real(this.value / ((vReal)v).value);
+    return vReal.New(this.value / ((vReal)v).value);
 }
 
 vValue Mod(vDescriptor v) {
     if (((vReal)v).value == 0) {
 	iRuntime.error(204);
     }
-    return iNew.Real(this.value % ((vReal)v).value);
+    return vReal.New(this.value % ((vReal)v).value);
 }
 
 vValue Abs() {
     if (this.value >= 0 ) {
 	return this;
     } else {
-	return iNew.Real(-this.value);
+	return vReal.New(-this.value);
     }
 }
 

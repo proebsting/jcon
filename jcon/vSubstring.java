@@ -10,15 +10,20 @@ public class vSubstring extends vVariable {
 
 //  constructors assume valid, ordered indices in positive form
 
-vSubstring(vVariable v, int i1, int i2) {	// construct from String
+public static vSubstring New(vVariable v, int i1, int i2)
+				{ return new vSubstring(v, i1, i2); }
+
+private vSubstring(vVariable v, int i1, int i2) {	// construct from String
     var = v;
     start = i1;
     end = i2;
 }
 
+
+
 vString Name() {
     String vname = var.Name().toString();
-    return iNew.String(vname +"[" + start + ":" + end + "]");
+    return vString.New(vname +"[" + start + ":" + end + "]");
 }
 
 
@@ -62,14 +67,14 @@ int posEq(long n) {
 //  internal methods
 
 public vValue deref() {
-    return iNew.String(this.strval(), start, end);
+    return vString.New(this.strval(), start, end);
 }
 
 vString report() {
     if (start + 1 == end) {
-	return iNew.String(var.deref().report() + "[" + start + "]");
+	return vString.New(var.deref().report() + "[" + start + "]");
     } else {
-	return iNew.String(var.deref().report() + "[" + start +":"+ end + "]");
+	return vString.New(var.deref().report() + "[" + start +":"+ end + "]");
     }
 }
 
@@ -80,8 +85,8 @@ vString report() {
 
 public vVariable Assign(vValue x) {
     vString s = x.mkString();		// coerce assigned value
-    var.Assign(iNew.String(this.strval(), start, end, s));
-    return iNew.Substring(this, start, start + s.length());
+    var.Assign(vString.New(this.strval(), start, end, s));
+    return vSubstring.New(this, start, start + s.length());
 }
 
 
@@ -98,7 +103,7 @@ vDescriptor Index(vValue i) {			// s[i]
     if (m == 0) {
 	return null; /*FAIL*/
     }
-    return iNew.Substring(var, m, m+1);
+    return vSubstring.New(var, m, m+1);
 }
 
 vDescriptor Section(int i, int j) {		// s[i:j]
@@ -109,9 +114,9 @@ vDescriptor Section(int i, int j) {		// s[i:j]
 	return null; /*FAIL*/
     }
     if (m > n) {
-	return iNew.Substring(var, n, m);
+	return vSubstring.New(var, n, m);
     } else {
-	return iNew.Substring(var, m, n);
+	return vSubstring.New(var, m, n);
     }
 }
 
@@ -122,7 +127,7 @@ vDescriptor Select() {				// ?s
 	return null; /*FAIL*/
     }
     int offset = (int) k$random.choose(end - start) + 1;
-    return iNew.Substring(this, offset, offset + 1);
+    return vSubstring.New(this, offset, offset + 1);
 }
 
 vDescriptor Bang(iClosure c) {			// !s
@@ -136,7 +141,7 @@ vDescriptor Bang(iClosure c) {			// !s
     if (n >= end) {
 	return null; /*FAIL*/
     } else {
-	return iNew.Substring(this, n, n + 1);
+	return vSubstring.New(this, n, n + 1);
     }
 }
 

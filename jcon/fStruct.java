@@ -8,7 +8,7 @@ class fStruct {} // dummy
 
 class f$set extends iValueClosure {				// set(x)
     vDescriptor function(vDescriptor[] args) {
-	return iNew.Set(iRuntime.argVal(args, 0));
+	return vSet.New(iRuntime.argVal(args, 0));
     }
 }
 
@@ -16,7 +16,7 @@ class f$set extends iValueClosure {				// set(x)
 
 class f$table extends iValueClosure {				// table(x)
     vDescriptor function(vDescriptor[] args) {
-	return iNew.Table(iRuntime.argVal(args, 0));
+	return vTable.New(iRuntime.argVal(args, 0));
     }
 }
 

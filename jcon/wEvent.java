@@ -76,8 +76,8 @@ void enqueue(vValue a, InputEvent e) {
     }
 
     c.enqueue(a,
-	iNew.Integer(flags | (xloc & 0xFFFF)),
-	iNew.Integer((expo << 28) | (msec << 16) | (yloc & 0xFFFF)));
+	vInteger.New(flags | (xloc & 0xFFFF)),
+	vInteger.New((expo << 28) | (msec << 16) | (yloc & 0xFFFF)));
 }
 
 
@@ -111,19 +111,19 @@ static vValue dequeue(vList evq) {
     }
 
     if ((x & ControlFlag) != 0) {	// check CONTROL flag
-	k$control.value = iNew.Null();	// succeed (null) if set
+	k$control.value = vNull.New();	// succeed (null) if set
     } else {
 	k$control.value = null;		// failure value
     }
 
     if ((x & MetaFlag) != 0) {		// check META flag
-	k$meta.value = iNew.Null();	// succeed (null) if set
+	k$meta.value = vNull.New();	// succeed (null) if set
     } else {
 	k$meta.value = null;		// failure value
     }
 
     if ((x & ShiftFlag) != 0) {		// check SHIFT flag
-	k$shift.value = iNew.Null();	// succeed (null) if set
+	k$shift.value = vNull.New();	// succeed (null) if set
     } else {
 	k$shift.value = null;		// failure value
     }
@@ -136,8 +136,8 @@ static vValue dequeue(vList evq) {
     y = (int)(short)y;
     //#%#% need to translate x/y to this window's coordinate system
 
-    k$x.self.Assign(iNew.Integer(x));	// also sets k$col
-    k$y.self.Assign(iNew.Integer(y));	// also sets k$row
+    k$x.self.Assign(vInteger.New(x));	// also sets k$col
+    k$y.self.Assign(vInteger.New(y));	// also sets k$row
 
     return a;				// return event code
 }
@@ -166,9 +166,9 @@ public void keyPressed(KeyEvent e) {}
 public void keyReleased(KeyEvent e)	{
     char c = e.getKeyChar();
     if (c != KeyEvent.CHAR_UNDEFINED) {
-	enqueue(iNew.String((char)(c & vCset.MAX_VALUE)), e);
+	enqueue(vString.New((char)(c & vCset.MAX_VALUE)), e);
     } else if (e.isActionKey()) {
-	enqueue(iNew.Integer(e.getKeyCode()), e);
+	enqueue(vInteger.New(e.getKeyCode()), e);
     }
 }
 
@@ -183,19 +183,19 @@ public void mouseExited(MouseEvent e)	{ xloc = yloc = 0; }
 public void mousePressed(MouseEvent e) {
     xloc = e.getX();
     yloc = e.getY();
-    enqueue(iNew.Integer(LPress + mouseMod(e)), e);
+    enqueue(vInteger.New(LPress + mouseMod(e)), e);
 }
 
 public void mouseReleased(MouseEvent e) {
     xloc = e.getX();
     yloc = e.getY();
-    enqueue(iNew.Integer(LRelease + mouseMod(e)), e);
+    enqueue(vInteger.New(LRelease + mouseMod(e)), e);
 }
 
 public void mouseDragged(MouseEvent e) {
     xloc = e.getX();
     yloc = e.getY();
-    enqueue(iNew.Integer(LDrag + mouseMod(e)), e);
+    enqueue(vInteger.New(LDrag + mouseMod(e)), e);
 }
 
 static int mouseMod(MouseEvent e) {	// adjust event code based on modifiers

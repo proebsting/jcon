@@ -2,7 +2,7 @@
 
 //  vFile is an abstract class that is subclassed by
 //  vTFile for text files or vBFile for binary files.
-//  iNew.vFile() examines flags to know which type to construct.
+//  vFile.New() examines flags to know which type to construct.
 //
 //  many common operations are implemented here, including read().
 //  reads(), writes(), and newline() are class-specific.
@@ -44,7 +44,7 @@ abstract void writes(vString s);	// write without appending newline
 abstract void newline();		// write newline
 
 
-static vString typestring = iNew.String("file");
+static vString typestring = vString.New("file");
 vString type()			{ return typestring; }
 vString image()			{ return this.img; }
 int rank()			{ return 60; }	// files sort after windows
@@ -76,6 +76,28 @@ public static void shutdown() {
 }
 
 
+
+// constructor methods
+
+public static vFile New(String kw, DataInput i, DataOutput o)
+				{ return new vTFile(kw, i, o); }        
+
+public static vFile New(String filename, String mode, vDescriptor args[]) {
+    try {
+	if (iRuntime.upto("gG", mode)) {
+	    return new vWindow(filename, mode, args);
+	} else if (iRuntime.upto("uU", mode)) {
+	    return new vBFile(filename, mode);	// binary (untranslated) file
+	} else {
+	    return new vTFile(filename, mode);	// text (translated) file
+	}
+    } catch (IOException e) {
+	return null; /*FAIL*/
+    }
+}
+
+
+
 // new vFile() -- degenerate constructor for vWindow subclass
 
 vFile() {}
@@ -85,7 +107,7 @@ vFile() {}
 // new vFile(kwname, instream, outstream) -- constructor for keyword files
 
 vFile(String kwname, DataInput i, DataOutput o) {
-    img = iNew.String(kwname);
+    img = vString.New(kwname);
     instream = i;
     outstream = o;
     openfiles.put(this, this);				// remember open file
@@ -100,7 +122,7 @@ vFile(String name, String flags) throws IOException {
 
     String mode;
 
-    img = iNew.String("file(" + name + ")");		// save image
+    img = vString.New("file(" + name + ")");		// save image
 
     if (iRuntime.upto("pP", flags)) {
 	newpipe(name, flags);				// open pipe (or throw)
@@ -363,10 +385,10 @@ vInteger where() {						// where()
 	return null; /*FAIL*/
     }
     if (ibuf != null) {		// if read-only & buffered, we know position
-	return iNew.Integer(1 + ifpos - icount);
+	return vInteger.New(1 + ifpos - icount);
     }
     try {
-	return iNew.Integer(1 + randfile.getFilePointer() - icount);
+	return vInteger.New(1 + randfile.getFilePointer() - icount);
     } catch (IOException e) {
 	return null; /*FAIL*/
     }

@@ -43,9 +43,9 @@ private static int gcount = 0;	// count of graphics contexts allocated
 
 
 
-static vString typestring = iNew.String("window");
+static vString typestring = vString.New("window");
 vString type()			{ return typestring; }
-vString image()			{ return iNew.String("window_" + wnum + ":" +
+vString image()			{ return vString.New("window_" + wnum + ":" +
 				    gnum + "(" + c.f.getTitle() + ")"); }
 
 int rank()			{ return 50; }	// windows sort after csets
@@ -54,42 +54,9 @@ int compareTo(vValue v)
 
 
 
+//  constructors
 
-//  window creation
-
-static vWindow open(String name, String mode, vDescriptor args[]) {
-
-    wAttrib alist[] = wAttrib.parseAtts(args, 2);  // verify parsing first
-
-    vWindow win = new vWindow(name);		// open a default window
-
-    for (int i = 0; i < alist.length; i++) {	// apply attributes
-	wAttrib a = alist[i];
-	if (a.val != null) {
-	    if (a.set(win) == null) {		// if couldn't set attribute
-		//#%#%#%#% win.close();
-		return null;			// open failed
-	    }
-	}
-    }
-
-    win.c.defconfig(win);	// set window size, if not set by attributes
-    win.c.tty.Row(win, "1");	// set text cursor position
-    win.c.tty.Col(win, "1");
-
-    // unless canvas attribute was specified, make visible now
-    if (win.c.Canvas(win, null) == null) {
-	win.c.Canvas(win, "normal");
-    }
-
-    // clear window and backing store, including out-of-bounds area, with new bg
-    win.EraseArea(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
-
-    setCurrent(win);		// remember as "current" window
-    return win;
-}
-
-vWindow(String title) {				// new vWindow(s)
+vWindow(String title, String mode, vDescriptor args[]) throws IOException {
 
     int w = 480;	// default width	// #%#% should depend on font
     int h = 156;	// default height	// #%#% should depend on font
@@ -104,7 +71,33 @@ vWindow(String title) {				// new vWindow(s)
     // set the usual defaults
     fg = wColor.Black;
     bg = wColor.White;
-    Font(iNew.String(iConfig.FontName));
+    Font(vString.New(iConfig.FontName));
+
+    wAttrib alist[] = wAttrib.parseAtts(args, 2);  // verify parsing first
+
+    for (int i = 0; i < alist.length; i++) {	// apply attributes
+	wAttrib a = alist[i];
+	if (a.val != null) {
+	    if (a.set(this) == null) {		// if couldn't set attribute
+		this.close();
+		throw new IOException();	// indicate failure
+	    }
+	}
+    }
+
+    c.defconfig(this);	// set window size, if not set by attributes
+    c.tty.Row(this, "1");	// set text cursor position
+    c.tty.Col(this, "1");
+
+    // unless canvas attribute was specified, make visible now
+    if (c.Canvas(this, null) == null) {
+	c.Canvas(this, "normal");
+    }
+
+    // clear window and backing store, including out-of-bounds area, with new bg
+    EraseArea(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
+
+    setCurrent(this);		// remember as "current" window
 }
 
 vWindow(vWindow w) {				// new vWindow(w)  [a Clone()]
@@ -291,7 +284,7 @@ int Fwidth() {
 
 
 vInteger TextWidth(String s) {
-    return iNew.Integer(c.getFontMetrics(font).stringWidth(s));
+    return vInteger.New(c.getFontMetrics(font).stringWidth(s));
 }
 
 

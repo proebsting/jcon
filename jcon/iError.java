@@ -22,8 +22,8 @@ void report(iClosure c) {		// print message and abort
     // if &error is not zero, decrement it and set other error keywords
     if (k$error.error != 0) {
 	k$error.error--;
-	k$errornumber.number = iNew.Integer(this.num);
-	k$errortext.text = iNew.String(iRunerr.text(num));
+	k$errornumber.number = vInteger.New(this.num);
+	k$errortext.text = vString.New(iRunerr.text(num));
 	k$errorvalue.value = (this.desc == null) ? null : this.desc.deref();
 	return;
     }

@@ -17,7 +17,13 @@ static int nextsn = 1;				// next serial number
 
 
 
-vList(int n, vValue x) {			// new Vlist(n, x)
+// constructors
+
+public static vList New(int n, vValue x)	{ return new vList(n, x); }
+public static vList New(vDescriptor[] elements)	{ return new vList(elements); }
+public static vList New(Vector v)		{ return new vList(v); }
+
+private vList(int n, vValue x) {		// new Vlist(n, x)
     super(nextsn++);
     v = new Vector(n);
     for (int i = 0; i < n; i++) {
@@ -25,7 +31,7 @@ vList(int n, vValue x) {			// new Vlist(n, x)
     }
 }
 
-vList(vDescriptor[] elements) {			// new Vlist(elements[])
+private vList(vDescriptor[] elements) {		// new Vlist(elements[])
     super(nextsn++);
     v = new Vector(elements.length);
     for (int i = 0; i < elements.length; i++) {
@@ -33,7 +39,7 @@ vList(vDescriptor[] elements) {			// new Vlist(elements[])
     }
 }
 
-vList(Vector v) {				// new Vlist(Vector v)
+private vList(Vector v) {			// new Vlist(Vector v)
     super(nextsn++);
     this.v = (Vector) v.clone();
 }
@@ -45,7 +51,7 @@ vList(Vector v) {				// new Vlist(Vector v)
 
 vString report()	{ return this.image(); } //#%#% should show some elems
 
-static vString typestring = iNew.String("list");
+static vString typestring = vString.New("list");
 vString type()		{ return typestring; }
 
 int rank()		{ return 90; }		// lists sort after procedures
@@ -82,11 +88,11 @@ java.util.Enumeration elements() {
 //  operations
 
 vInteger Size()	{					//  *L
-    return iNew.Integer(v.size());
+    return vInteger.New(v.size());
 }
 
 vValue Copy() {						// copy(L)
-    return iNew.List(this.v);
+    return vList.New(this.v);
 }
 
 
@@ -155,7 +161,7 @@ vDescriptor Section(int i, int j) {			//  L[i:j]
     for (int k = 0; k < a.length; k++) {
 	a[k] = (vDescriptor) v.elementAt(k + m - 1);
     }
-    return iNew.List(a);
+    return vList.New(a);
 }
 
 
@@ -198,7 +204,7 @@ vValue ListConcat(vDescriptor v) {			// L1 ||| L2
 }
 
 vValue Sort(int i) {					// sort(L)
-    return iNew.List(iUtil.sort(this.mkArray()));
+    return vList.New(iUtil.sort(this.mkArray()));
 }
 
 vValue[] mkArray() {
@@ -258,7 +264,7 @@ class vListVar extends vSimpleVar {
 	int i = 1;
 	while (e.hasMoreElements()) {
 	    if (this == e.nextElement()) {
-		return iNew.String("L[" + i + "]");
+		return vString.New("L[" + i + "]");
 	    }
 	    i++;
 	}

@@ -58,7 +58,7 @@ public static void bomb(Exception e) {
 
 public static vValue argVal(vDescriptor[] args, int index) {
     if (args.length <= index) {
-	return iNew.Null();
+	return vNull.New();
     } else {
 	return (vValue) args[index];
     }

@@ -90,16 +90,16 @@ vValue Refresh() {
 
 
 
-vInteger Size()		{ return iNew.Integer(resultCount); }
+vInteger Size()		{ return vInteger.New(resultCount); }
 
-static vString typestring = iNew.String("co-expression");
+static vString typestring = vString.New("co-expression");
 vString type()		{ return typestring;}
 
-vString image()		{ return iNew.String(
+vString image()		{ return vString.New(
 			    "co-expression_" + snum + "(" + resultCount + ")");
 }
 
-vInteger Serial()	{ return iNew.Integer(snum); }
+vInteger Serial()	{ return vInteger.New(snum); }
 
 int rank()		{ return 70; }	// co-expressns sort after files
 

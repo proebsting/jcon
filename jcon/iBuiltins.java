@@ -99,7 +99,7 @@ void announce() {
 
 
 static void declare(String name, int args) {
-    iEnv.declareBuiltin(name, iNew.Proc(
+    iEnv.declareBuiltin(name, vProc.New(
 	"function " + name, iConfig.FuncPrefix + name, args));
 }
 

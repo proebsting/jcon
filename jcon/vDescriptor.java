@@ -142,4 +142,27 @@ public iClosure instantiate(vDescriptor arg0, iClosure parent) {
 
 
 
+//  argument array caching methods
+
+static vDescriptor[][][] argCache = new vDescriptor[20][20][];
+static int[] argCacheSP = new int[20];
+public static vDescriptor[] ArgArray(int i) {
+    if (i < 20 && argCacheSP[i] > 0) {
+	return argCache[i][--argCacheSP[i]];
+    } else {
+	return new vDescriptor[i];
+    }
+}
+
+public static void FreeArgs(vDescriptor[] a) {
+    if (a != null) {
+	int len = a.length;
+	if (len < 20 && argCacheSP[len] < 20) {
+	    argCache[len][argCacheSP[len]++] = a;
+	}
+    }
+}
+
+
+
 } // class vDescriptor

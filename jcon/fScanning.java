@@ -36,7 +36,7 @@ class f$any extends iValueClosure {			// any(c,s,i1,i2)
 	    i2 = tmp;
 	}
 	if (i1 < i2 && c.member(s.charAt(i1-1))) {
-	    return iNew.Integer(i1+1);
+	    return vInteger.New(i1+1);
 	}
 	return null;
     }
@@ -72,7 +72,7 @@ class f$many extends iValueClosure {			// many(c,s,i1,i2)
 	if (i == i1) {
 	    return null;
 	} else {
-	    return iNew.Integer(i);
+	    return vInteger.New(i);
 	}
     }
 }
@@ -105,7 +105,7 @@ class f$match extends iValueClosure {			// match(s1,s2,i1,i2)
 	    return null;
 	}
 	if (s1.matches(s2, i1 - 1)) {
-	    return iNew.Integer(i1 + len1);
+	    return vInteger.New(i1 + len1);
 	} else {
 	    return null;
 	}
@@ -145,7 +145,7 @@ class f$find extends iClosure {				// find(s1,s2,i1,i2)
 	int lim = i2 - s1.length();
 	while (i1 <= lim) {
 	    if (s1.matches(s2, i1 - 1)) {
-		return iNew.Integer(i1++);
+		return vInteger.New(i1++);
 	    }
 	    i1++;
 	}
@@ -189,7 +189,7 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
 	for (; i1 < i2; i1++) {
 	    if (c.member((char) b[i1-1])) {
 		i1 = i1+1;
-		return iNew.Integer(i1-1);
+		return vInteger.New(i1-1);
 	    }
 	}
 	return null;
@@ -208,9 +208,9 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
     int i2;
     byte[] b;
 
-    static vCset c1def = iNew.Cset(0, vCset.MAX_VALUE);
-    static vCset c2def = iNew.Cset('(');
-    static vCset c3def = iNew.Cset(')');
+    static vCset c1def = vCset.New(0, vCset.MAX_VALUE);
+    static vCset c2def = vCset.New('(');
+    static vCset c3def = vCset.New(')');
 
     public vDescriptor nextval() {
 
@@ -240,7 +240,7 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 	for (; i1 < i2; i1++) {
 	    if (balance == 0 && c1.member((char) b[i1-1])) {
 		i1 = i1+1;
-		return iNew.Integer(i1-1);
+		return vInteger.New(i1-1);
 	    }
 	    if (c2.member(s.charAt(i1-1))) {
 		balance++;
@@ -273,11 +273,11 @@ class f$move extends iClosure {				// move(j)
 	    if (k < 0 || k > s.length()) {
 		return null;
 	    } else {
-		k$pos.self.SafeAssign(iNew.Integer(i + j));
+		k$pos.self.SafeAssign(vInteger.New(i + j));
 		if (j >= 0) {
-		    return iNew.String(s, i, i + j);
+		    return vString.New(s, i, i + j);
 		} else {
-		    return iNew.String(s, i + j, i);
+		    return vString.New(s, i + j, i);
 		}
 	    }
 	} else {
@@ -304,11 +304,11 @@ class f$tab extends iClosure {				// tab(j)
 	    if (j == 0) {
 		return null;
 	    } else {
-		k$pos.self.SafeAssign(iNew.Integer(j));
+		k$pos.self.SafeAssign(vInteger.New(j));
 		if (i < j) {
-		    return iNew.String(s, i, j);
+		    return vString.New(s, i, j);
 		} else {
-		    return iNew.String(s, j, i);
+		    return vString.New(s, j, i);
 		}
 	    }
 	} else {

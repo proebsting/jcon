@@ -13,12 +13,16 @@ static int nextsn = 1;		// next serial number
 
 
 
-vSet(java.util.Hashtable x) {
+// constructors
+
+public static vSet New(vValue x)		{ return new vSet(x); }
+
+private vSet(java.util.Hashtable x) {
     super(nextsn++);
     t = (java.util.Hashtable) x.clone();
 }
 
-vSet(vValue x) {
+private vSet(vValue x) {
     super(nextsn++);
     t = new java.util.Hashtable();
     if (x != null && !(x instanceof vNull)) {
@@ -37,11 +41,11 @@ vSet(vValue x) {
 
 
 
-static vString typestring = iNew.String("set");
+static vString typestring = vString.New("set");
 vString type()		{ return typestring;}
 int rank()		{ return 100; }		// sets rank after lists
 
-vInteger Size()		{ return iNew.Integer(t.size()); }
+vInteger Size()		{ return vInteger.New(t.size()); }
 
 vValue Copy()		{ return new vSet(this.t); }
 
@@ -79,7 +83,7 @@ vDescriptor Bang(iClosure c) {
 }
 
 vValue Sort(int i) {					// sort(L)
-    return iNew.List(iUtil.sort(this.mkArray()));
+    return vList.New(iUtil.sort(this.mkArray()));
 }
 
 vValue[] mkArray() {

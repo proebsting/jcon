@@ -56,15 +56,15 @@ static {
     // Other attempts to set the attribute fail.
 
     //     att name		   default	retval
-    newatt("dx",	new aDummy("0",		iNew.Integer(0)));
-    newatt("dy",	new aDummy("0",		iNew.Integer(0)));
-    newatt("reverse",	new aDummy("off",	iNew.String("off")));
-    newatt("drawop",	new aDummy("copy",	iNew.String("copy")));
-    newatt("gamma",	new aDummy("1.0",	iNew.Real(1.0)));
-    newatt("linewidth",	new aDummy("1",		iNew.Integer(1)));
-    newatt("linestyle",	new aDummy("solid",	iNew.String("solid")));
-    newatt("fillstyle",	new aDummy("solid",	iNew.String("solid")));
-    newatt("pattern",	new aDummy("solid",	iNew.String("black")));
+    newatt("dx",	new aDummy("0",		vInteger.New(0)));
+    newatt("dy",	new aDummy("0",		vInteger.New(0)));
+    newatt("reverse",	new aDummy("off",	vString.New("off")));
+    newatt("drawop",	new aDummy("copy",	vString.New("copy")));
+    newatt("gamma",	new aDummy("1.0",	vReal.New(1.0)));
+    newatt("linewidth",	new aDummy("1",		vInteger.New(1)));
+    newatt("linestyle",	new aDummy("solid",	vString.New("solid")));
+    newatt("fillstyle",	new aDummy("solid",	vString.New("solid")));
+    newatt("pattern",	new aDummy("solid",	vString.New("black")));
 }
 
 private static void newatt(String name, wAttrib a) {
@@ -124,7 +124,7 @@ static wAttrib[] parseAtts(vDescriptor[] args, int n) {
 //  unsettable(name, value) -- report error 147 (attrib can't be read/written)
 
 static vValue unsettable(String name, String value) {
-    iRuntime.error(147, iNew.String(name + "=" + value));
+    iRuntime.error(147, vString.New(name + "=" + value));
     return null;
 }
 
@@ -161,7 +161,7 @@ class aCanvas extends wAttrib {
 
 
 class aDepth extends wAttrib {
-    vValue get(vWindow win)	{ return iNew.Integer(
+    vValue get(vWindow win)	{ return vInteger.New(
 	Toolkit.getDefaultToolkit().getColorModel().getPixelSize()); }
     vValue set(vWindow win)
 	{ return wAttrib.unsettable("depth=", val); }
@@ -178,26 +178,26 @@ class aLabel extends wAttrib {
 
 class aFg extends wAttrib {
     vValue get(vWindow win)	{ return win.Fg(null); }
-    vValue set(vWindow win)	{ return win.Fg(iNew.String(val)); }
+    vValue set(vWindow win)	{ return win.Fg(vString.New(val)); }
 }
 
 class aBg extends wAttrib {
     vValue get(vWindow win)	{ return win.Bg(null); }
-    vValue set(vWindow win)	{ return win.Bg(iNew.String(val)); }
+    vValue set(vWindow win)	{ return win.Bg(vString.New(val)); }
 }
 
 
 
 class aFont extends wAttrib {
     vValue get(vWindow win)	 { return win.Font(null); }
-    vValue set(vWindow win)	 { return win.Font(iNew.String(val)); }
+    vValue set(vWindow win)	 { return win.Font(vString.New(val)); }
 }
 
 class aLeading extends wAttrib {
-    vValue get(vWindow win)	 { return iNew.Integer(win.Leading()); }
+    vValue get(vWindow win)	 { return vInteger.New(win.Leading()); }
     vValue set(vWindow win)	 {
 	try {
-	    return iNew.Integer(win.Leading(Integer.parseInt(val)));
+	    return vInteger.New(win.Leading(Integer.parseInt(val)));
 	} catch (Exception e) {
 	    return null; /*FAIL*/
 	}
@@ -206,14 +206,14 @@ class aLeading extends wAttrib {
 
 class aAscent extends wAttrib {
     vValue get(vWindow win)
-	{ return iNew.Integer(win.getFontMetrics().getMaxAscent()); }
+	{ return vInteger.New(win.getFontMetrics().getMaxAscent()); }
     vValue set(vWindow win)
 	{ return wAttrib.unsettable("ascent=", val); }
 }
 
 class aDescent extends wAttrib {
     vValue get(vWindow win)
-	{ return iNew.Integer(win.getFontMetrics().getMaxDescent()); }
+	{ return vInteger.New(win.getFontMetrics().getMaxDescent()); }
     vValue set(vWindow win)
 	{ return wAttrib.unsettable("descent=", val); }
 }
@@ -221,14 +221,14 @@ class aDescent extends wAttrib {
 class aFheight extends wAttrib {
     vValue get(vWindow win) {
 	FontMetrics m = win.getFontMetrics();
-	return iNew.Integer(m.getMaxAscent() + m.getMaxDescent());
+	return vInteger.New(m.getMaxAscent() + m.getMaxDescent());
     }
     vValue set(vWindow win)
 	{ return wAttrib.unsettable("fheight=", val); }
 }
 
 class aFwidth extends wAttrib {
-    vValue get(vWindow win) { return iNew.Integer(win.Fwidth()); }
+    vValue get(vWindow win) { return vInteger.New(win.Fwidth()); }
     vValue set(vWindow win) { return wAttrib.unsettable("fwidth=", val); }
 }
 
@@ -269,7 +269,7 @@ class aCol extends wAttrib {
 class aWidth extends wAttrib {
 
     vValue get(vWindow win) {
-	return iNew.Integer(win.getCanvas().getSize().width);
+	return vInteger.New(win.getCanvas().getSize().width);
     }
 
     vValue set(vWindow win) {
@@ -287,7 +287,7 @@ class aWidth extends wAttrib {
 class aHeight extends wAttrib {
 
     vValue get(vWindow win) {
-	return iNew.Integer(win.getCanvas().getSize().height);
+	return vInteger.New(win.getCanvas().getSize().height);
     }
 
     vValue set(vWindow win) {
@@ -306,7 +306,7 @@ class aSize extends wAttrib {
 
     vValue get(vWindow win) {
 	Dimension d = win.getCanvas().getSize();
-	return iNew.String(d.width + "," + d.height);
+	return vString.New(d.width + "," + d.height);
     }
 
     vValue set(vWindow win) {
@@ -334,7 +334,7 @@ class aRows extends wAttrib {
 	if (l == 0) {
 	    iRuntime.error(204);  // this is what v9 does: real division by 0
 	}
-	return iNew.Integer(win.getCanvas().getSize().height / l);
+	return vInteger.New(win.getCanvas().getSize().height / l);
     }
 
     vValue set(vWindow win) {
@@ -352,7 +352,7 @@ class aRows extends wAttrib {
 class aColumns extends wAttrib {
 
     vValue get(vWindow win) {
-	return iNew.Integer(win.getCanvas().getSize().width / win.Fwidth());
+	return vInteger.New(win.getCanvas().getSize().width / win.Fwidth());
     }
 
     vValue set(vWindow win) {

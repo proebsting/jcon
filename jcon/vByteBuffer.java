@@ -39,9 +39,9 @@ final int length() {
 final vByteBuffer append(char c) {
     if (len >= data.length) {
 	if (prefix == null) {
-	    prefix = iNew.String(data);
+	    prefix = vString.New(data);
 	} else {
-	    prefix = prefix.concat(iNew.String(data));
+	    prefix = prefix.concat(vString.New(data));
 	}
 	data = new byte[GrowthSize];
 	len = 0;
@@ -61,9 +61,9 @@ vString mkString() {
 	data = b;
     }
     if (prefix == null) {
-	return iNew.String(data);
+	return vString.New(data);
     } else {
-	return prefix.concat(iNew.String(data));
+	return prefix.concat(vString.New(data));
     }
 }
 

@@ -54,7 +54,7 @@ static void global(String s, vVariable x) {
 
 public static void declareGlobal(String s) {
     if (!symtab.containsKey(s)) {
-	global(s, iNew.SimpleVar(s));
+	global(s, vSimpleVar.New(s));
     }
 }
 
@@ -73,12 +73,12 @@ public static void declareGlobalInit(String s, vVariable x) {
 }
 
 public static void declareProcedure(String name, String classname, int arity) {
-    declareGlobalInit(name, iNew.SimpleVar(name,
-	iNew.Proc("procedure " + name, classname, arity)));
+    declareGlobalInit(name, vSimpleVar.New(name,
+	vProc.New("procedure " + name, classname, arity)));
 }
 
 public static void declareRecord(String name, String[] fields) {
-    declareGlobalInit(name, iNew.SimpleVar(name, iNew.RecordProc(name,fields)));
+    declareGlobalInit(name, vSimpleVar.New(name, vRecordProc.New(name,fields)));
 }
 
 public static vValue resolveBuiltin(String s) {
@@ -89,14 +89,14 @@ public static vValue resolveBuiltin(String s) {
 public static void declareBuiltin(String s, vValue x) {
     builtintab.put(s, x);
     if (!symtab.containsKey(s)) {
-	iEnv.declareGlobalInit(s, iNew.SimpleVar(s, x));
+	iEnv.declareGlobalInit(s, vSimpleVar.New(s, x));
     }
 }
 
 public static vDescriptor resolveKey(String s) {
     vDescriptor v = (vDescriptor) keytab.get(s);
     if (v == null) {
-	v = iNew.Null();
+	v = vNull.New();
 	System.err.println(
 	    "warning: keyword not found: &" + s);
     }
@@ -113,7 +113,7 @@ public static vDescriptor resolveProc(String s, int args) {
     }
     vDescriptor v = (vDescriptor) proctab[args-1].get(s);
     if (v == null) {
-	v = iNew.Null();
+	v = vNull.New();
 	// diagnose missing operators (implementation bug):
 	char c = s.charAt(0);
 	if (c != '_' && ! Character.isLetter(c)) {

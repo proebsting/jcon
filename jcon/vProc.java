@@ -12,11 +12,19 @@ public class vProc extends vValue {
 
 
 
-vProc(String img, String classname, int args) {
-    this.img = iNew.String(img);
+// constructors
+
+public static vProc New(String s, String classname, int args) {
+    return new vProc(s, classname, args);
+}
+
+private vProc(String img, String classname, int args) {
+    this.img = vString.New(img);
     this.classname = classname;
     this.args = args;
 }
+
+
 
 public vValue deref() {
     return this;
@@ -24,10 +32,10 @@ public vValue deref() {
 
 vString image()		{ return img; }
 
-static vString typestring = iNew.String("procedure");
+static vString typestring = vString.New("procedure");
 vString type()		{ return typestring; }
 
-vInteger Args()		{ return iNew.Integer(args); }
+vInteger Args()		{ return vInteger.New(args); }
 
 vValue getproc()	{ return this; }
 

@@ -10,11 +10,64 @@ private static final int UNKNOWN_SIZE = -1;	// indicates unknown cset size
 
 
 
-vCset()	{					// new Cset()
+// preallocated empty cset and one-character csets
+
+private static vCset zcset = new vCset();
+private static vCset cslist[] = new vCset[vCset.MAX_VALUE];
+
+static {
+    for (int i = 0; i < cslist.length; i++) {
+	cslist[i] = new vCset(i, i);
+    }
+}
+
+
+
+// constructor methods
+
+public static vCset New(int c) {
+    return cslist[c];
+}
+
+public static vCset New(int low, int high) {
+    if (low == high) {
+	return cslist[low];
+    } else {
+	return new vCset(low, high);
+    }
+}
+
+public static vCset New(String s) {
+    int len = s.length();
+    if (len < 1) {
+	return zcset;
+    } else if (len == 1) {
+	return cslist[s.charAt(0)];
+    } else {
+	return new vCset(s);
+    }
+}
+
+public static vCset New(vString s) {
+    int len = s.length();
+    if (len < 1) {
+	return zcset;
+    } else if (len == 1) {
+	return cslist[s.charAt(0)];
+    } else {
+	return new vCset(s);
+    }
+}
+
+
+
+// constructors
+
+private vCset()	{				// new Cset()
     size = 0;
 }
 
-vCset(int c, int d) {				// new Cset(c..d)
+private vCset(int c, int d) {			// new Cset(c..d)
     size = d - c + 1;
     while (c <= d && c < 64) {
 	w1 |= 1L << c++;
@@ -30,7 +83,7 @@ vCset(int c, int d) {				// new Cset(c..d)
     }
 }
 
-vCset(vString s) {				// new Cset(vString s)
+private vCset(vString s) {			// new Cset(vString s)
     byte[] b = s.getBytes();
     for (int i = 0; i < b.length; i++) {
 	int c = b[i] & 0xFF;
@@ -44,7 +97,7 @@ vCset(vString s) {				// new Cset(vString s)
     }
 }
 
-vCset(String s) {				// new Cset(String s)
+private vCset(String s) {			// new Cset(String s)
     for (int i = 0; i < s.length(); i++) {
 	int c = s.charAt(i);
 	long m = 1L << c;
@@ -72,12 +125,12 @@ final boolean member(int c) {			// cs.member(c)
 
 
 
-private static final vString csdigits = iNew.String("&digits");
-private static final vString csletters = iNew.String("&letters");
-private static final vString cslcase = iNew.String("&lcase");
-private static final vString csucase = iNew.String("&ucase");
-private static final vString csascii = iNew.String("&ascii");
-private static final vString cscset = iNew.String("&cset");
+private static final vString csdigits = vString.New("&digits");
+private static final vString csletters = vString.New("&letters");
+private static final vString cslcase = vString.New("&lcase");
+private static final vString csucase = vString.New("&ucase");
+private static final vString csascii = vString.New("&ascii");
+private static final vString cscset = vString.New("&cset");
 
 vString image() {				// image(cs)
 
@@ -128,7 +181,7 @@ vString image() {				// image(cs)
 
 
 
-static vString typestring = iNew.String("cset");
+static vString typestring = vString.New("cset");
 vString type()		{ return typestring;}
 
 
@@ -227,7 +280,7 @@ vString mkString() {			// string(c)
     long w;
 
     if (size == 0) {
-	return iNew.String();		// known empty cset
+	return vString.New();		// known empty cset
     } else if (size > 0) {
 	b = new vByteBuffer(size);	// known size
     } else {
@@ -275,7 +328,7 @@ vInteger Size() {			// *c
 	    }
 	}
     }
-    return iNew.Integer(size);
+    return vInteger.New(size);
 }
 
 
@@ -294,7 +347,7 @@ vDescriptor Select() {			// ?c
 	    ;
 	}
     }
-    return iNew.String((char) c);
+    return vString.New((char) c);
 }
 
 
@@ -308,7 +361,7 @@ vDescriptor Bang(iClosure c) {		// !c
     for (int k = c.oint; k <= MAX_VALUE; k++) {
 	if (this.member(k)) {
 	    c.oint = k + 1;
-	    return iNew.String((char) k);
+	    return vString.New((char) k);
 	}
     }
     return null;

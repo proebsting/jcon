@@ -23,18 +23,18 @@ vStructure(int snum) {			// constructor
 
 
 
-vInteger Serial()	{ return iNew.Integer(this.snum); }
+vInteger Serial()	{ return vInteger.New(this.snum); }
 
 
 
 //  x.image() -- common method for lists, sets, and tables
 
-static vString uscore = iNew.String('_');
-static vString lpar = iNew.String('(');
-static vString rpar = iNew.String(')');
+static vString uscore = vString.New('_');
+static vString lpar = vString.New('(');
+static vString rpar = vString.New(')');
 
 vString image() {			// type_snum(size)
-    return this.type().concat(uscore).concat(iNew.Integer(snum).mkString())
+    return this.type().concat(uscore).concat(vInteger.New(snum).mkString())
 	.concat(lpar).concat(this.Size().mkString()).concat(rpar);
 }
 

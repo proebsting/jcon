@@ -10,7 +10,7 @@ class f$list extends iValueClosure {				// list(i, x)
     vDescriptor function(vDescriptor[] args) {
 	int i = (int) vInteger.argVal(args, 0, 0);
 	vValue x = iRuntime.argVal(args, 1);
-	return iNew.List(i, x);
+	return vList.New(i, x);
     }
 }
 
@@ -83,7 +83,7 @@ class f$sort extends iValueClosure {				// sort(X,i)
 class f$sortf extends iValueClosure {				// sortf(X,i)
     vDescriptor function(vDescriptor[] args) {
 	vValue[] a = iRuntime.argVal(args, 0, 125).mkArray();
-	vInteger i = iNew.Integer(vInteger.argVal(args, 1, 1));
+	vInteger i = vInteger.New(vInteger.argVal(args, 1, 1));
 	if (i.value == 0) {
 	    iRuntime.error(205, i);
 	}
@@ -94,7 +94,7 @@ class f$sortf extends iValueClosure {				// sortf(X,i)
 	for (int j = 0; j < a.length; j++) {
 	    a[j] = ((vSortElem)a[j]).value;
 	}
-	return iNew.List(a);
+	return vList.New(a);
     }
 }
 
@@ -142,7 +142,7 @@ class vSortElem extends vValue {		// key/value pair for sortf()
 
     vString image()	{ return value.image().surround("<", ">"); }
 
-    static vString typestring = iNew.String("sortf");
+    static vString typestring = vString.New("sortf");
     vString type()	{ return typestring; }	// shouldn't ever be used
     int rank()		{ return -1; }		// never compared to other types
 

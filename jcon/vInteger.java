@@ -6,9 +6,34 @@ public class vInteger extends vNumeric {
 
 
 
-//  constructor
+private static vInteger intlist[] =		// cache for "common" integers
+    new vInteger[iConfig.MaxCachedInt + 1 - iConfig.MinCachedInt];
 
-vInteger(long n)	{ value = n; }
+
+
+//  constructors
+
+public static vInteger New(double x) {		// int from real
+    return New((long) x);			//#%#% what about overflow?
+}
+
+public static vInteger New(String x) {		// int from string
+    return New(Long.parseLong(x));		// can throw exception
+}
+
+public static vInteger New(long x) {
+    if (x > iConfig.MaxCachedInt || x < iConfig.MinCachedInt) {
+	return new vInteger(x);
+    }
+    int i = (int)x - iConfig.MinCachedInt;
+    vInteger v = intlist[i];
+    if (v != null) {
+	return v;
+    }
+    return intlist[i] = new vInteger(x);
+}
+
+private vInteger(long n) { value = n; }
 
 
 
@@ -22,11 +47,11 @@ public boolean equals(Object o)	{
 
 vInteger mkInteger()	{ return this; }
 
-vReal mkReal()		{ return iNew.Real(this.value); }
+vReal mkReal()		{ return vReal.New(this.value); }
 
 vString mkString() {
     if (cachedString == null) {
-       cachedString = iNew.String(Long.toString(value));
+       cachedString = vString.New(Long.toString(value));
     }
     return cachedString;
 }
@@ -34,7 +59,7 @@ vString mkString() {
 vString write()		{ return mkString(); }
 vString image()		{ return mkString(); }
 
-static vString typestring = iNew.String("integer");
+static vString typestring = vString.New("integer");
 vString type()		{ return typestring; }
 
 int rank()		{ return 10; }	// integers sort right after &null
@@ -150,7 +175,7 @@ static vInteger radixParse(String s) {
     if (negate) {
 	v = -v;
     }
-    return iNew.Integer(v);
+    return vInteger.New(v);
 }
 
 
@@ -159,13 +184,13 @@ static vInteger radixParse(String s) {
 //
 //  #%#% overflow is not detected by integer operations
 
-vNumeric Negate()	{ return iNew.Integer(-value); }
+vNumeric Negate()	{ return vInteger.New(-value); }
 
 vDescriptor Select() {
     if (value > 0) {
-	return iNew.Integer(1 + k$random.choose(value));
+	return vInteger.New(1 + k$random.choose(value));
     } else if (value == 0) {
-	return iNew.Real(k$random.nextVal());
+	return vReal.New(k$random.nextVal());
     } else {
 	iRuntime.error(205, this);
 	return null;
@@ -173,20 +198,20 @@ vDescriptor Select() {
 }
 
 vValue Add(vDescriptor v) {
-    return iNew.Integer(this.value + ((vInteger)v).value);
+    return vInteger.New(this.value + ((vInteger)v).value);
 }
 
 vValue Sub(vDescriptor v) {
-    return iNew.Integer(this.value - ((vInteger)v).value);
+    return vInteger.New(this.value - ((vInteger)v).value);
 }
 
 vValue Mul(vDescriptor v) {
-    return iNew.Integer(this.value * ((vInteger)v).value);
+    return vInteger.New(this.value * ((vInteger)v).value);
 }
 
 vValue Div(vDescriptor v) {
     try {
-	return iNew.Integer(this.value / ((vInteger)v).value);
+	return vInteger.New(this.value / ((vInteger)v).value);
     } catch (ArithmeticException e) {
 	iRuntime.error(201);
     }
@@ -195,7 +220,7 @@ vValue Div(vDescriptor v) {
 
 vValue Mod(vDescriptor v) {
     try {
-	return iNew.Integer(this.value % ((vInteger)v).value);
+	return vInteger.New(this.value % ((vInteger)v).value);
     } catch (ArithmeticException e) {
 	iRuntime.error(202);
     }
@@ -206,7 +231,7 @@ vValue Abs() {
     if (this.value >= 0 ) {
 	return this;
     } else {
-	return iNew.Integer(-this.value);
+	return vInteger.New(-this.value);
     }
 }
 
@@ -221,11 +246,11 @@ vValue Power(vDescriptor v) {
     }
     if (y < 0) {
 	if (x == 1) {
-	    return iNew.Integer(1);
+	    return vInteger.New(1);
 	} else if (x == -1) {
 	    y = -y;
 	} else {
-	    return iNew.Integer(0);
+	    return vInteger.New(0);
 	}
     }
     //#%#%# slow computation; should use powers of 2
@@ -233,7 +258,7 @@ vValue Power(vDescriptor v) {
     for (long i = 0; i < y; i++) {
 	p *= x;		//#%#%# totally ignoring overflow.
     }
-    return iNew.Integer(p);
+    return vInteger.New(p);
 }
 
 
@@ -292,14 +317,14 @@ class vIntegerProc extends vValue {
 
     vString image()	{ return value.mkString().surround("function ", ""); }
 
-    static vString typestring = iNew.String("procedure");
+    static vString typestring = vString.New("procedure");
     vString type()	{ return typestring; }
 
     int rank()		{ return 80; }		// integer "procedure"
     int compareTo(vValue v)
 			{ return vProc.compareLastWord(this.image(),v.image());}
 
-    vInteger Args()	{ return iNew.Integer(-1); }
+    vInteger Args()	{ return vInteger.New(-1); }
 }
 
 

@@ -78,7 +78,7 @@ void announce() {
 
 static void declare(String opr, int args, String name) {
     iEnv.declareProc(opr, args,
-	iNew.Proc("function " + opr, "rts." + name, args));
+	vProc.New("function " + opr, "rts." + name, args));
 }
 
 
@@ -213,7 +213,7 @@ public class oToBy extends iClosure {			// i1 to i2 by i3
 	    i2 = arguments[1].mkInteger().value;
 	    i3 = arguments[2].mkInteger().value;
 	    if (i3 == 0) {
-		iRuntime.error(211, iNew.Integer(i3));
+		iRuntime.error(211, vInteger.New(i3));
 	    }
 	    PC = 2;
 	    iprev = ivar = i1;
@@ -228,7 +228,7 @@ public class oToBy extends iClosure {			// i1 to i2 by i3
 	    if (ivar > i2 || ivar < iprev) {
 		return null;
 	    } else {
-		return iNew.Integer(ivar);
+		return vInteger.New(ivar);
 	    }
 
 	} else {			// descending loop
@@ -237,7 +237,7 @@ public class oToBy extends iClosure {			// i1 to i2 by i3
 	    if (ivar < i2 || ivar > iprev) {
 		return null;
 	    } else {
-		return iNew.Integer(ivar);
+		return vInteger.New(ivar);
 	    }
 
 	}

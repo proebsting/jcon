@@ -13,8 +13,8 @@ class wTTY {
     boolean echo = true;	// echo characters on input?
     boolean cursor = false;	// show text cursor on input?
 
-    static final vString ON = iNew.String("on");
-    static final vString OFF = iNew.String("off");
+    static final vString ON = vString.New("on");
+    static final vString OFF = vString.New("off");
 
 
 
@@ -38,7 +38,7 @@ vString read(vWindow win) {
     } while (c != '\n');			// until \n is seen
 
     b.setLength(b.length() - 1);		// remove \n from buffer
-    return iNew.String(b.toString());		// return string
+    return vString.New(b.toString());		// return string
 }
 
 
@@ -51,7 +51,7 @@ vString reads(vWindow win, long n) {
     while (b.length() < n) {			// until buffer is full
 	rchar(win, b);				// read character into b
     }
-    return iNew.String(b.toString());		// return string
+    return vString.New(b.toString());		// return string
 }
 
 
@@ -63,7 +63,7 @@ vString reads(vWindow win, long n) {
 //  maps \r into \n
 //  handles \b and \d
 
-private static vString NEWLINE = iNew.String("\n");
+private static vString NEWLINE = vString.New("\n");
 
 private char rchar(vWindow win, StringBuffer b) {
     vValue e;
@@ -102,7 +102,7 @@ private char rchar(vWindow win, StringBuffer b) {
 	}
 	b.append(c);				// add to buffer
 	if (echo) {
-	    writes(win, iNew.String(c));	// echo to screen
+	    writes(win, vString.New(c));	// echo to screen
 	}
     }
 
@@ -200,7 +200,7 @@ vValue X(String v) {
     } catch (Exception e) {
 	return null; /*FAIL*/
     }
-    return iNew.Integer(xloc);
+    return vInteger.New(xloc);
 }
 
 vValue Y(String v) {
@@ -209,7 +209,7 @@ vValue Y(String v) {
     } catch (Exception e) {
 	return null; /*FAIL*/
     }
-    return iNew.Integer(yloc);
+    return vInteger.New(yloc);
 }
 
 vValue Row(vWindow win, String v) {
@@ -226,7 +226,7 @@ vValue Row(vWindow win, String v) {
     if (leading == 0) {
 	iRuntime.error(204);	// this is what v9 does: real division by 0
     }
-    return iNew.Integer((yloc - a) / leading + 1);
+    return vInteger.New((yloc - a) / leading + 1);
 }
 
 vValue Col(vWindow win, String v) {
@@ -237,7 +237,7 @@ vValue Col(vWindow win, String v) {
     } catch (Exception e) {
 	return null; /*FAIL*/
     }
-    return iNew.Integer(xloc / a + 1);
+    return vInteger.New(xloc / a + 1);
 }
 
 

@@ -57,8 +57,8 @@ private static void install(wHue h) {
 
 //  these must follow hueTable initialization, with nohue first:
 static final wHue nohue = new wHue("", "", 0, 0, 0);
-static final wColor Black = wColor.parse(iNew.String("black"));
-static final wColor White = wColor.parse(iNew.String("white"));
+static final wColor Black = wColor.parse(vString.New("black"));
+static final wColor White = wColor.parse(vString.New("white"));
 
 
 

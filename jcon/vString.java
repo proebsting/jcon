@@ -12,47 +12,110 @@ package rts;
 
 public class vString extends vValue {
 
-    private int tlength;	// total string length
-    private vString prefix;	// first part of string (optional)
-    private byte[] data;	// character array
+    private int tlength;		// total string length
+    private vString prefix;		// first part of string (optional)
+    private byte[] data;		// character array
 
-    private vNumeric cachedNumeric; // cached numeric equivalent.
+    private vNumeric cachedNumeric;	// cached numeric equivalent.
+
+
+
+// preallocated empty string and one-character strings
+
+private static vString nullstring = new vString();
+private static vString strlist[] = new vString[vCset.MAX_VALUE + 1];
+
+static {
+    for (int i = 0; i < strlist.length; i++) {
+	strlist[i] = new vString((char) i);
+    }
+}
+
+
+
+// static constructor methods
+
+public static vString New()		{ return nullstring; }
+
+public static vString New(char c)	{ return strlist[c]; }
+
+public static vString New(String s) {
+    int len = s.length();
+    if (len < 1) {
+	return nullstring;
+    } else if (len == 1) {
+	return strlist[s.charAt(0)];
+    } else {
+	byte[] b = new byte[len];
+	for (int i = 0; i < len; i++)
+	    b[i] = (byte) s.charAt(i);
+	return new vString(b);
+    }
+}
+
+public static vString New(byte[] b) {
+    int len = b.length;
+    if (len < 1) {
+	return nullstring;
+    } else if (len == 1) {
+	return strlist[b[0]];
+    } else {
+	return new vString(b);
+    }
+}
+
+public static vString New(vString s, int i, int j) {     // s[i:j], both > 0
+    int len = j - i;
+    if (len == s.length()) {		// if extracting entire string
+	return s;			// reuse it
+    } else if (len == 0) {
+	return nullstring;
+    } else if (len == 1) {
+	return strlist[s.charAt(i - 1)];
+    } else {
+	return new vString(s, i, j);
+    }
+}
+
+public static vString New(vString s, int i, int j, vString t) {
+    return new vString(s, i, j, t);
+}
 
 
 
 //  constructors
 
-vString() {					// new vString()
+private vString() {				// new vString()
     data = new byte[0];
 }
 
-vString(char c) {				// new vString(char)
+private vString(char c) {			// new vString(char)
     tlength = 1;
     data = new byte[1];
     data[0] = (byte)c;
 }
 
-vString(byte[] b) {				// new vString(b[])
+private vString(byte[] b) {			// new vString(b[])
 						// embeds b (does not copy it)
     data = b;
     tlength = data.length;
 }
 
-vString(vString s, byte b[]) {			// new vString := s || b[]
+private vString(vString s, byte b[]) {		// new vString := s || b[]
 						// embeds b (does not copy it)
     tlength = s.tlength + b.length;
     prefix = s;
     data = b;
 }
 
-vString(vString s, int i, int j) {		// new vString := .s[i:j]
+private vString(vString s, int i, int j) {	// new vString := .s[i:j]
     s.flatten();
     tlength = j - i;
     data = new byte[tlength];
     System.arraycopy(s.data, i - 1, data, 0, tlength);
 }
 
-vString(vString s, int i, int j, vString t) {	// new vString := (s[i:j] := t)
+private vString(vString s, int i, int j, vString t) {	// new := (s[i:j] := t)
 
     s.flatten();
     t.flatten();
@@ -122,7 +185,7 @@ public final vString surround(String js1, String js2) {	// s.surround(js1, js2)
     for (int i = 0; i < len2; i++) {
 	b[o + i] = (byte) js2.charAt(i);
     }
-    return iNew.String(b);
+    return vString.New(b);
 }
 
 public final byte[] getBytes() {	// s.getBytes() rtns data (NOT a copy)
@@ -179,9 +242,9 @@ final vInteger toInteger() {		// s.toInteger -- no radix or exponent
     if (i < tlength) {
 	return null;
     } else if (neg) {
-	return iNew.Integer(-v);
+	return vInteger.New(-v);
     } else {
-	return iNew.Integer(v);
+	return vInteger.New(v);
     }
 }
 
@@ -238,7 +301,7 @@ public boolean equals(Object o)	{
 
 vString write()		{ return this; }
 
-static vString typestring = iNew.String("string");
+static vString typestring = vString.New("string");
 vString type()		{ return typestring; }
 int rank()		{ return 30; }		// strings rank after reals
 
@@ -307,14 +370,14 @@ vNumeric mkNumeric()	{					// numeric(s)
     }
 
     try {
-	return cachedNumeric = iNew.Integer(Long.parseLong(s));
+	return cachedNumeric = vInteger.New(Long.parseLong(s));
     } catch (NumberFormatException e) {
     }
 
     try {
 	Double d = Double.valueOf(s);
 	if (!d.isInfinite()) {
-	    return cachedNumeric = iNew.Real(d.doubleValue());
+	    return cachedNumeric = vReal.New(d.doubleValue());
 	}
     } catch (NumberFormatException e) {
     }
@@ -342,7 +405,7 @@ vReal mkReal()		{					// real(s)
 }
 
 vCset mkCset() {						// cset(s)
-    return iNew.Cset(this);
+    return vCset.New(this);
 }
 
 
@@ -419,7 +482,7 @@ int posEq(long n) {
 
 
 vInteger Size()	{
-    return iNew.Integer(tlength);
+    return vInteger.New(tlength);
 }
 
 
@@ -435,7 +498,7 @@ vDescriptor Index(vValue i) {
     if (m == 0 || m > tlength) {
 	return null; /*FAIL*/
     }
-    return iNew.String(this, m, m + 1);
+    return vString.New(this, m, m + 1);
 }
 
 vDescriptor IndexVar(vVariable v, vValue i) {
@@ -443,7 +506,7 @@ vDescriptor IndexVar(vVariable v, vValue i) {
     if (m == 0 || m > tlength) {
 	return null; /*FAIL*/
     }
-    return iNew.Substring(v, m, m + 1);
+    return vSubstring.New(v, m, m + 1);
 }
 
 vDescriptor Section(int i, int j) {
@@ -453,9 +516,9 @@ vDescriptor Section(int i, int j) {
 	return null; /*FAIL*/
     }
     if (m > n) {
-	return iNew.String(this, n, m);
+	return vString.New(this, n, m);
     } else {
-	return iNew.String(this, m, n);
+	return vString.New(this, m, n);
     }
 }
 
@@ -466,9 +529,9 @@ vDescriptor SectionVar(vVariable v, int i, int j) {
 	return null; /*FAIL*/
     }
     if (m > n) {
-	return iNew.Substring(v, n, m);
+	return vSubstring.New(v, n, m);
     } else {
-	return iNew.Substring(v, m, n);
+	return vSubstring.New(v, m, n);
     }
 }
 
@@ -479,7 +542,7 @@ vDescriptor Select() {
 	return null; /*FAIL*/
     }
     int i = (int) k$random.choose(tlength);
-    return iNew.String(charAt(i));
+    return vString.New(charAt(i));
 }
 
 vDescriptor SelectVar(vVariable v) {
@@ -487,7 +550,7 @@ vDescriptor SelectVar(vVariable v) {
 	return null; /*FAIL*/
     }
     int i = (int) k$random.choose(tlength);
-    return iNew.Substring(v, i+1, i+2);
+    return vSubstring.New(v, i+1, i+2);
 }
 
 vDescriptor Bang(iClosure c) {
@@ -501,7 +564,7 @@ vDescriptor Bang(iClosure c) {
     if (c.oint >= tlength) {
 	return null; /*FAIL*/
     } else {
-	return iNew.String(charAt(c.oint));
+	return vString.New(charAt(c.oint));
     }
 }
 
@@ -516,7 +579,7 @@ vDescriptor BangVar(iClosure c, vVariable v) {
     if (i > ((vString)v.deref()).tlength) {
 	return null; /*FAIL*/
     } else {
-	return iNew.Substring(v, i, i+1);
+	return vSubstring.New(v, i, i+1);
     }
 }
 

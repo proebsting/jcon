@@ -13,17 +13,23 @@ static int nextsn = 1;	// next serial number
 
 
 
-vTable(vValue dflt) {
+// constructors
+
+public static vTable New(vValue x)		{ return new vTable(x); }
+
+private vTable(vValue dflt) {
     super(nextsn++);
     this.dflt = dflt;
     t = new java.util.Hashtable();
 }
 
-vTable(vTable x) {
+private vTable(vTable x) {
     super(nextsn++);
     this.dflt = x.dflt;
     this.t = (java.util.Hashtable) x.t.clone();
 }
+
+
 
 vValue get(vValue i) {
     return (vValue) this.t.get(i);
@@ -34,13 +40,14 @@ void put(vValue key, vValue val) {
 }
 
 
-static vString typestring = iNew.String("table");
+
+static vString typestring = vString.New("table");
 vString type()		{ return typestring; }
 
 int rank()		{ return 110; }		// tables rank after sets
 
 vInteger Size() {
-    return iNew.Integer(t.size());
+    return vInteger.New(t.size());
 }
 
 vValue Copy() {						// copy(T)
@@ -143,7 +150,7 @@ vValue Sort(int n) {
 		pair[0] = a[i].other;
 		pair[1] = a[i].sortkey;
 	    }
-	    b[i] = iNew.List(pair);
+	    b[i] = vList.New(pair);
 	}
 
     } else {					// return 2x-long list
@@ -160,7 +167,7 @@ vValue Sort(int n) {
 	}
     }
 
-    return iNew.List(b);			// turn results into Icon list
+    return vList.New(b);			// turn results into Icon list
 }
 
 
@@ -175,7 +182,7 @@ class vTrappedTable extends vVariable {
     vValue key;
 
     vString report()	{
-	return iNew.String("(variable = " + this.table.report() +
+	return vString.New("(variable = " + this.table.report() +
 	    "[" + this.key.report() + "])");
     }
 
@@ -223,11 +230,11 @@ class vTableElem extends vValue {	// key/value pair for sorting
     }
 
     vString image()  {			// not normally used
-	return iNew.String("(" + sortkey.image().mkString() + "," +
+	return vString.New("(" + sortkey.image().mkString() + "," +
 	    other.image().mkString() + ")");
     }
 
-    static vString typestring = iNew.String("telem");
+    static vString typestring = vString.New("telem");
     vString type()	{ return typestring; }
     int rank()		{ return -1; }		// never compared to other types
 

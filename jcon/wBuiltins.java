@@ -185,7 +185,7 @@ class f$ColorValue extends iValueClosure {	// ColorValue(W, s)
 	if (k == null) {
 	    return null;
 	} else {
-	    return iNew.String(257 * k.getRed() + "," +
+	    return vString.New(257 * k.getRed() + "," +
 			257 * k.getGreen() + "," + 257 * k.getBlue());
 	}
     }

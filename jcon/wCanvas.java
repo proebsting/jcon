@@ -42,7 +42,7 @@ wCanvas(vWindow win, String label, int w, int h) {
 
     i = this.createImage(w, h);
 
-    evq = iNew.List(0, null);			// create event queue
+    evq = vList.New(0, null);			// create event queue
     tty = new wTTY();				// create TTY instance
 
     wEvent.register(this);			// register event handlers
@@ -178,7 +178,7 @@ vString Canvas(vWindow win, String s) {
     if (visibility == null) {
 	return null;
     } else {
-	return iNew.String(visibility);
+	return vString.New(visibility);
     }
 }
 
@@ -189,7 +189,7 @@ vString Label(vWindow win, String s) {
     if (s != null) {
 	f.setTitle(s);
     }
-    return iNew.String(f.getTitle());
+    return vString.New(f.getTitle());
 }
 
 

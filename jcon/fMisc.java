@@ -26,7 +26,7 @@ class f$display extends iValueClosure {				// display(x)
 	long level = vInteger.argVal(args, 0, 1000000);
 	vFile f = vFile.argVal(args, 1, k$errout.file);
 	iRuntime.display(parent);
-	return iNew.Null();
+	return vNull.New();
     }
 }
 
@@ -68,7 +68,7 @@ class f$function extends iClosure {				// function()
 	    PC = 2;
 	}
 	if (e.hasMoreElements()) {
-	    return iNew.String((String) e.nextElement());
+	    return vString.New((String) e.nextElement());
 	} else {
 	    return null;
 	}
@@ -102,7 +102,7 @@ class f$collect extends iValueClosure {				// collect(i,j)
     vDescriptor function(vDescriptor[] args) {
 	long i1 = vInteger.argVal(args, 0, 0);
 	long i2 = vInteger.argVal(args, 1, 0);
-	vNull n = iNew.Null();
+	vNull n = vNull.New();
 	if (i1 == 0) {
 	    System.gc();
 	    return n;
@@ -143,7 +143,7 @@ class f$delay extends iValueClosure {				// delay(i)
 	} catch (InterruptedException e) {
 	    // nothing; just return
 	}
-	return iNew.Null();
+	return vNull.New();
     }
 }
 
@@ -176,7 +176,7 @@ class f$getenv extends iValueClosure {				// getenv(s)
 		if (n > 0) {
 		    String key = s.substring(0, n);
 		    String val = s.substring(n + 1);
-		    env.put(key, iNew.String(val));
+		    env.put(key, vString.New(val));
 		}
 	    }
 	    p.destroy();
@@ -205,7 +205,7 @@ class f$system extends iValueClosure {				// system(s)
 	} catch (Throwable e) {
 	    status = -1;
 	}
-	return iNew.Integer(status);
+	return vInteger.New(status);
     }
 }
 
@@ -216,7 +216,7 @@ class f$errorclear extends iValueClosure {			// errorclear()
 	k$errornumber.number = null;
 	k$errortext.text = null;
 	k$errorvalue.value = null;
-	return iNew.Null();
+	return vNull.New();
     }
 }
 
@@ -231,6 +231,6 @@ class f$runerr extends iValueClosure {				// runerr(i,x)
 	} else {
 	    iRuntime.error((int) i, x);
 	}
-	return iNew.Null();
+	return vNull.New();
     }
 }
