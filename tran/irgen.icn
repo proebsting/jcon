@@ -214,7 +214,7 @@ end
 
 # record Case( expr clauseList dflt )
 procedure ir_Case(p)
-	local dummy, t, L, i
+	local t, L, i
 
 	ir(p.expr)
 	every ir((!p.clauseList).expr)
@@ -222,7 +222,6 @@ procedure ir_Case(p)
 	ir(p.dflt)
 
 	init4ir(p)
-	dummy := ir_tmp(p, "dummy")
 
 	t := ir_tmploc(p, "gate")
 
@@ -238,7 +237,7 @@ procedure ir_Case(p)
 		every i := 1 to *L do {
 			CG.emit(L[i].expr.ir.success, [
 				irCoord(p.coord),
-				ir_opfn(dummy, irOperator("===", 2), [ p.expr.ir.value, L[i].expr.ir.value ], L[i].expr.ir.resume),
+				ir_opfn(&null, irOperator("===", 2), [ p.expr.ir.value, L[i].expr.ir.value ], L[i].expr.ir.resume),
 				irGoto(L[i].body.ir.start)
 				])
 			CG.emit(L[i].expr.ir.failure, [ irGoto(L[i+1].expr.ir.start) ])

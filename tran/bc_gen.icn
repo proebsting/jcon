@@ -443,7 +443,7 @@ procedure gen_bc_irResume(s, p)
 		put(s, target)
 		gen_bc_assign_to(s, p.retValue)
 	} else {
-		put(s, ifnull(p.failLabel))
+		put(s, ifnull(\bc_ir2bc_labels[p.failLabel])) | runerr(1000)
 	}
 	return s
 end
@@ -578,7 +578,7 @@ procedure gen_bc_irOpFunction(s, p)
 			put(s, target)
 			gen_bc_assign_to(s, p.lhs)
 		} else {
-			put(s, ifnull(p.failLabel))
+			put(s, ifnull(\bc_ir2bc_labels[p.failLabel])) | runerr(1000)
 		}
 	} else {
 		if \p.lhs then {

@@ -130,7 +130,7 @@ procedure def_use(p, this, uses, defs)
 			def_use(p.retValue, defs, uses, defs); }
 	"irMakeList" :	{ def_use(p.lhs, defs, uses, defs);
 			every def_use(!p.valueList, uses, uses, defs); }
-	"irOpFunction":{def_use(p.lhs, defs, uses, defs);
+	"irOpFunction":{def_use(\p.lhs, defs, uses, defs);
 			def_use(p.fn, uses, uses, defs);
 			def_use(\p.failLabel, uses, uses, defs);
 			every def_use(!p.argList, uses, uses, defs); }
@@ -185,7 +185,7 @@ procedure opt_rewrite(p, rename)
 				p.valueList[i] := opt_rewrite(p.valueList[i],
 							      rename); }
 			}
-	"irOpFunction":{p.lhs := opt_rewrite(p.lhs, rename);
+	"irOpFunction":{p.lhs := opt_rewrite(\p.lhs, rename);
 			p.fn := opt_rewrite(p.fn, rename); 
 			every i := 1 to *p.argList do {
 				p.argList[i] := opt_rewrite(p.argList[i],
