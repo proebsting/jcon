@@ -81,9 +81,9 @@ procedure main(args)
 ##>>   w := optwindow(options(args, winoptions()))
 w := open(&progname, "g") | stop("can't open window")
 
-   &error := 1
+##>>   &error := 1
 ##>>   WAttrib(w, "resize=on")
-   &error := 0
+##>>   &error := 0
 
    repeat {
       while (* (q := Pending(w))) = 0 do

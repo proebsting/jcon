@@ -27,7 +27,6 @@ procedure main(args)
 	 next
       if hue == "exit" then
 	 break
-      EraseArea()
       if not Fg(hue) then {
          write("[FAILED]")
 	 next
