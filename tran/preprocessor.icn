@@ -385,6 +385,10 @@ procedure preproc_scan_define_value()
     local q,interesting_in_quotes
     static interesting_chars
     initial interesting_chars := '#"\''
+
+    if ="(" then {
+	fail	# "$define name(" is specifically prohibited; needs whitespace
+    }
     preproc_space()
     q := &pos
     (while tab(upto(interesting_chars)) do {
