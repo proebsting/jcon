@@ -18,6 +18,7 @@ void announce() {
 	iBuiltins.declare("Bg", 2);
 	iBuiltins.declare("Clone", -1);
 	iBuiltins.declare("Color", -1);
+	iBuiltins.declare("ColorValue", 2);
 	iBuiltins.declare("CopyArea", 8);	//#%#% within same window only
 	iBuiltins.declare("DrawArc", -1);
 	iBuiltins.declare("DrawCircle", -1);
@@ -59,7 +60,6 @@ void announce() {
 	// iBuiltins.declare("WriteImage", 6);
 	// iBuiltins.declare("Pixel", 5);
 	//
-	// iBuiltins.declare("ColorValue", 2);
 	// iBuiltins.declare("PaletteChars", 2);
 	// iBuiltins.declare("PaletteColor", 3);
 	// iBuiltins.declare("PaletteKey", 3);
@@ -176,6 +176,23 @@ class f$Fg extends iValueClosure {		// Fg(W, s)
 		return win.Fg(s);
 	}
 }
+
+class f$ColorValue extends iValueClosure {	// ColorValue(W, s)
+	vDescriptor function(vDescriptor[] args) {
+		// ignore window argument if present
+	    	vString s = vString.argDescr(args, vWindow.argBase(args), null);
+		wColor k = wColor.parse(s);
+		if (k == null) {
+			return null;
+		} else {
+			return iNew.String(257 * k.getRed() + "," +
+				257 * k.getGreen() + "," + 257 * k.getBlue()); 
+		}
+	}
+}
+
+
+
 
 class f$Font extends iValueClosure {		// Font(W,s)
 	vDescriptor function(vDescriptor[] args) {

@@ -49,6 +49,22 @@ static {
     newatt("y", new aY());
     newatt("row", new aRow());
     newatt("col", new aCol());
+
+    // The following attributes are incompletely implemented:
+    // they can be set only to a string exactly matching the one
+    // given below, which is the default value and has no effect.
+    // Other attempts to set the attribute fail.
+
+    //     att name	           default	retval 
+    newatt("dx",	new aDummy("0",		iNew.Integer(0)));
+    newatt("dy",	new aDummy("0",		iNew.Integer(0)));
+    newatt("reverse",	new aDummy("off",	iNew.String("off")));
+    newatt("drawop",	new aDummy("copy",	iNew.String("copy")));
+    newatt("gamma",	new aDummy("1.0",	iNew.Real(1.0)));
+    newatt("linewidth",	new aDummy("1",		iNew.Integer(1)));
+    newatt("linestyle",	new aDummy("solid",	iNew.String("solid")));
+    newatt("fillstyle",	new aDummy("solid",	iNew.String("solid")));
+    newatt("pattern",	new aDummy("solid",	iNew.String("black")));
 }
 
 private static void newatt(String name, wAttrib a) {
@@ -116,6 +132,26 @@ static vValue unsettable(String name, String value)
 
 
 } // class wAttrib
+
+
+
+// dummy attribute class: for attributes not yet implemented
+
+class aDummy extends wAttrib {
+
+    String accept;
+    vValue attval;
+
+    aDummy(String s, vValue v) 		{ accept = s; attval = v; }
+    vValue get(vWindow win)		{ return attval; }
+    vValue set(vWindow win) {
+	if (val.equals(accept)) {
+	    return attval;
+	} else {
+	    return null; /*FAIL*/
+	}
+    }
+}
 
 
 
