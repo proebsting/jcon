@@ -61,27 +61,27 @@ public class iKeywords extends iFile {
 		// error-related
 		iEnv.declareKey("error", new k$error());
 		iEnv.declareKey("errornumber", iNew.Proc(
-			"&errornumber", (new k$errornumber()).getClass(), 0));
+			"&errornumber", "rts.k$errornumber", 0));
 		iEnv.declareKey("errortext", iNew.Proc(
-			"&errortext", (new k$errortext()).getClass(), 0));
+			"&errortext", "rts.k$errortext", 0));
 		iEnv.declareKey("errorvalue", iNew.Proc(
-			"&errorvalue", (new k$errorvalue()).getClass(), 0));
+			"&errorvalue", "rts.k$errorvalue", 0));
 
 		iEnv.declareKey("dump", new k$dump());
 
 		// generators
 		iEnv.declareKey("features", iNew.Proc(
-			"&features", (new k$features()).getClass(), 0));
+			"&features", "rts.k$features", 0));
 		iEnv.declareKey("level", iNew.Proc(
-			"&level", (new k$level()).getClass(), 0));
+			"&level", "rts.k$level", 0));
 
 		// bogus generators
 		vProc proc = iNew.Proc(
-			"k$gen4zeroes", (new k$gen4zeros()).getClass(), 0);
+			"k$gen4zeroes", "rts.k$gen4zeros", 0);
 		iEnv.declareKey("allocated", proc);
 		iEnv.declareKey("collections", proc);
 		proc = iNew.Proc(
-			"k$gen3zeroes", (new k$gen3zeros()).getClass(), 0);
+			"k$gen3zeroes", "rts.k$gen3zeros", 0);
 		iEnv.declareKey("regions", proc);
 		iEnv.declareKey("storage", proc);
 

@@ -105,12 +105,8 @@ void announce() {
 
 static void declare(String name, int args)
 {
-    try {
 	iEnv.declareBuiltin(name, iNew.Proc(
-	    "function " + name, Class.forName(PREFIX + name), args));
-    } catch (ClassNotFoundException e) {
-	iRuntime.bomb("cannot declare builtin function " + name + "()");
-    }
+	    "function " + name, PREFIX + name, args));
 }
 
 

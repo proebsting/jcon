@@ -39,8 +39,9 @@ public static vTable Table(vValue x)		{ return new vTable(x); }
 
 public static vSet Set(vValue x)		{ return new vSet(x); }
 
-public static vProc Proc(String s, Class c, int args)
-						{ return new vProc(s, c, args);}
+public static vProc Proc(String s, String classname, int args) {
+	return new vProc(s, classname, args);
+}
 
 public static vRecordProc RecordProc(String name, String[] fields)
 					{ return new vRecordProc(name, fields);}

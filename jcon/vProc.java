@@ -4,11 +4,12 @@ public class vProc extends vValue {
 	
 	String img;	// image for printing
 	Class proc;	// class that implements proc
+	String classname;
 	int args;	// number of args
 
-	vProc(String s, Class c, int args) {
-		img = s;
-		proc = c;
+	vProc(String img, String classname, int args) {
+		this.img = img;
+		this.classname = classname;
 		this.args = args;
 	}
 
@@ -34,7 +35,16 @@ public class vProc extends vValue {
 		iClosure c = null;
 
 		try {
-			c = (iClosure) proc.newInstance();
+			try {
+				c = (iClosure) proc.newInstance();
+			} catch (NullPointerException e) {
+				try {
+					this.proc = Class.forName(classname);
+				} catch (ClassNotFoundException e1) {
+					iRuntime.bomb("cannot load " + img);
+				}
+				c = (iClosure) proc.newInstance();
+			}
 		} catch (InstantiationException e) {
 			iRuntime.bomb(e);
 		} catch (IllegalAccessException e) {

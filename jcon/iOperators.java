@@ -78,12 +78,8 @@ void announce() {
 
 static void declare(String opr, int args, String name)
 {
-    try {
 	iEnv.declareProc(opr, args,
-	    iNew.Proc("function " + opr, Class.forName("rts." + name), args));
-    } catch (ClassNotFoundException e) {
-	iRuntime.bomb("cannot declare opr " + opr + " using class " + name);
-    }
+	    iNew.Proc("function " + opr, "rts." + name, args));
 }
 
 
