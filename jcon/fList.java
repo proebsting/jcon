@@ -71,8 +71,6 @@ final class f$put extends vProcV {				// put(L, x...)
 	}
 	return L;
     }
-
-    //#%#% to do (graphics): guarantee that put(L,a,b,c) is an atomic action
 }
 
 

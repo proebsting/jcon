@@ -18,7 +18,6 @@ public abstract class vProc extends vValue {
 
 
 
-//#%#% following shouldn't be needed; make an error?
 vString image()   { return (img == null) ? vString.New(this.toString()) : img; }
 
 static vString typestring = vString.New("procedure");

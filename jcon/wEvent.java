@@ -57,7 +57,7 @@ static void register(wCanvas cv) {		// register event handlers
 
 void enqueue(vValue a, InputEvent e) {
 
-    int msec = 0;	//#%#%#% msec values not known yet
+    int msec = 0;			// msec values not known 
     int expo = 0;
     while (msec > 0x1000) {
 	msec >>= 4;

@@ -95,8 +95,9 @@ final class kConstant extends vProc0 {
 
 
 
-//  simple read-only keywords are assigned by rts calls to k$keyword.self.set().
-//  assigning a Java null makes the keyword fail.
+//  These keywords are read-only from the Icon programmer's standpoint
+//  (but not necessarily constant).  They are assigned by rts calls to
+//  k$keyword.self.set().  Setting a Java null makes the keyword fail.
 
 abstract class kReadOnly extends vProc0 {
     vValue value;			// may be null for failure
@@ -151,8 +152,8 @@ final class k$interval extends kReadOnly {			// &interval
 //  k$kwname.self.check() succeeds, and decrements, if the counter is nonzero.
 
 abstract class kCounter extends vProc0 {
-    public long count = 0;	// #%#% MS JVM cannot handle this being private.
-    public vSimpleVar kwvar;	// #%#% MS JVM cannot handle this being private.
+    public long count = 0;	// MS JVM cannot handle this being private
+    public vSimpleVar kwvar;	// MS JVM cannot handle this being private
 
     kCounter(String name) {	// constructor
 

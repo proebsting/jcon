@@ -1,6 +1,8 @@
 changes in v2:
--- variable(), display(), and &dump can access only global variables.
--- compilation with "-fn" is needed to see line numbers in traceback.
+-- integer overflow is detected
+-- section wraparound (e.g. "abcd"[-2+:3]) yields failure
+-- variable(), display(), and &dump can access only global variables
+-- compilation with "-fn" is needed to see line numbers in traceback messages
 
 ------------------------------------------------------------------------------
 
@@ -10,7 +12,7 @@ what's implemented:
 -- preprocessing
 -- most functions; missing chdir(), loadfunc(), getch()/getche()/kbhit()
 -- only part of the graphics repertoire (see below)
--- Icon as defined by LB3/GB; undocumented & deprecated features are omitted
+-- based Icon as defined by LB3/GB; undocumented behavior may differ
 
 compilation and linking:
 -- jcont is a complex script that only runs on Unix
@@ -18,6 +20,7 @@ compilation and linking:
 -- link directives must give a simple name (not a path)
 -- compiled .zip files cannot be renamed: name must match original .icn name
    (however, executables can be renamed)
+-- more procedures may be "invocable" by default than in v9
 
 execution:
 -- if Java runs out of memory, setenv JXOPTS='-mx50m' (e.g.) to increase max
@@ -29,26 +32,21 @@ execution:
 
 known bugs:
 -- local variables are not dereferenced prior to being returned
--- more procedures may be "invocable" than in v9
 
 ------------------------------------------------------------------------------
 
 strings and csets:
--- Jcon uses 8-bit characters, not Unicode
-
-numerics:
--- arithmetic overflow and underflow are not detected
--- conversions to or from strings may differ slightly from v9
+-- Jcon uses 8-bit characters (as does v9), not Unicode
+-- conversion to or from numeric may differ slightly from v9
 
 structures:
 -- random selection from sets and tables differs from v9
 
 files:
--- a tty input request does not automatically flush tty output first
 -- &errout is always unbuffered
 -- random I/O (seek(), where()) fails for &input/&output/&errout
 -- processes run by system(s) or open(s,"p") do not inherit stdin/stdout/error 
-   -- stdin is empty, except with open(s,"wp") where it comes from the program
+   -- stdin is empty, except where provided by the program for open(s,"wp")
    -- stdout and stderr are copied from the process when it terminates
 
 debugging:
@@ -56,6 +54,7 @@ debugging:
 -- arg lists in traceback show actual instead of expected number of arguments
    (e.g.: a call to insert() traces as insert() not insert(&null,&null,&null))
 -- record fields are not shown in traceback images
+-- variable(), display(), and &dump can access only global variables
 
 keywords:
 -- &features includes "Java"; _JAVA is predefined in the preprocessor
@@ -90,6 +89,7 @@ events:
 -- &meta is never set with mouse events (Java uses it to encode "which button")
 -- X returns "\r" for the Enter key but Java (and therefore Jcon) returns "\n"
 -- "outboard" keys differ from X, are similar to Windows; see bin/keysyms.icn
+-- no timing information is provided (&interval is always zero)
 -- resize events are not reported yet
 
 colors:

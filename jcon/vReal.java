@@ -38,7 +38,7 @@ vInteger mkInteger()	{
 vString write()		{ return this.mkString(); }
 vString image()		{ return this.mkString(); }
 
-vString mkString() {	// #%#% may differ from v9 formatting
+vString mkString() {
     if (cachedString != null) {
 	return cachedString;
     }

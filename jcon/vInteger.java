@@ -6,10 +6,6 @@ public final class vInteger extends vNumeric {
 
 
 
-//#%#% need to add overflow checking throughout
-
-
-
 static vInteger intlist[] =			// cache for "common" integers
     new vInteger[iConfig.MaxCachedInt + 1 - iConfig.MinCachedInt];
 

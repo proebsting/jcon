@@ -33,7 +33,6 @@ void report() {				// print message and abort
     }
     f.println("Traceback:");
     f.print(message);
-    // this.printStackTrace(); 	//#%#% temporary
     iRuntime.exit(1);
 }
 
