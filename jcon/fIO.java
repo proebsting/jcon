@@ -36,13 +36,17 @@ class f$open extends iValueClosure {				// open(s1,s2)
 	vDescriptor function(vDescriptor[] args) {
 		String fname = vString.argVal(args, 0);
 		String mode = vString.argVal(args, 1, "r");
-		String validFlags = "rwabctuRWABCTU";
+		String validFlags = "rwabctugRWABCTUG";
 		for (int i = 0; i < mode.length(); i++) {
 		    if (validFlags.indexOf(mode.charAt(i)) < 0) {
 			iRuntime.error(209, args[1]);
 		    }
 		}
-		return iNew.File(fname, mode);
+		if (iRuntime.upto("gG", mode)) {
+		    return iNew.Window(fname, mode, args);
+		} else {
+		    return iNew.File(fname, mode);
+		}
 	}
 }
 

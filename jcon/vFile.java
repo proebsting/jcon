@@ -57,9 +57,9 @@ vFile(String name, String flags) throws IOException {
 
     img = "file(" + name + ")";				// save image
 
-    if (any("wabcWABC", flags)) {			// planning to write?
+    if (iRuntime.upto("wabcWABC", flags)) {		// planning to write?
 	mode = "rw";
-	if (any("cC", flags) || ! any("abrABR", flags)) {
+	if (iRuntime.upto("cC", flags) || ! iRuntime.upto("abrABR", flags)) {
 	    (new FileOutputStream(name)).close();	// truncate
 	}
     } else {
@@ -68,26 +68,17 @@ vFile(String name, String flags) throws IOException {
 
     randfile = new RandomAccessFile(name, mode);	// open file
 
-    if (any("aA", flags)) {				// if append mode
+    if (iRuntime.upto("aA", flags)) {			// if append mode
 	randfile.seek(randfile.length());
     }
-    if (any("wabcWABC", flags)) {
+    if (iRuntime.upto("wabcWABC", flags)) {
 	outstream = randfile;				// output side
-	if (any("rbRB", flags)) {
+	if (iRuntime.upto("rbRB", flags)) {
 	    instream = randfile;			// input side
 	}
     } else {
 	instream = randfile;				// input side
     }
-}
-
-static boolean any(String c, String s) {	// any(c,s) -- like Icon's
-    for (int i = 0; i < c.length(); i++) {
-    	if (s.indexOf(c.charAt(i)) >= 0) {
-	    return true;
-	}
-    }
-    return false;
 }
 
 

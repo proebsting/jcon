@@ -1,8 +1,10 @@
-See ../doc/notes.txt for bug list etc.
+jcon/rts
 
+This directory contains source code for the Jcon run-time system.
+
+See ../doc/notes.txt for the bug and feature list.
 
 Grep for '#%#%' in the code to find places that need revisiting.
-
 
 Java names are assigned as follows.
 
@@ -14,3 +16,4 @@ Java names are assigned as follows.
     p$.....	user procedure classes
     v$.....	user variables
     v.....	implementation value and variable classes
+    w.....	window (graphics) code

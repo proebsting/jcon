@@ -4,6 +4,7 @@ public class iInterface {
 
 	public static void init() {    // general runtime initialization
 		(new iBuiltins()).announce();
+		(new wBuiltins()).announce();
 		(new iKeywords()).announce();
 		(new iOperators()).announce();
 	}

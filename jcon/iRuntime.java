@@ -6,6 +6,19 @@ public class iRuntime {
 
 
 
+//  upto(c, s) -- is any char of c contained in s?  (like Icon's upto())
+
+static boolean upto(String c, String s) {
+    for (int i = 0; i < c.length(); i++) {
+    	if (s.indexOf(c.charAt(i)) >= 0) {
+	    return true;
+	}
+    }
+    return false;
+}
+
+
+
 // error(n, d) -- diagnose runtime error.
 //
 // never returns.

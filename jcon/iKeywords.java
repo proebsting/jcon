@@ -1,5 +1,18 @@
 //  iKeywords.java -- Icon keywords
 
+//  This file implements most of the Icon keywords.  However,
+//  three keywords are implemented entirely in the compiler:
+//	&fail
+//	&file
+//	&line
+//
+//  Also note that "functional" keywords (those that extend iValueClosure,
+//  usually because they can fail) must be registered in ../tran/key.icn.
+
+//  #%#%#% To do: unify methods for global references to keyword values
+
+
+
 package rts;
 
 import java.io.*;
@@ -10,12 +23,6 @@ import java.util.*;
 public class iKeywords extends iFile {
 
 	void announce() {
-
-		// implemented in the compiler:
-		//	&fail
-		//	&file
-		//	&line
-		// (preserve that line format for the documentation extractor)
 		
 		// constants
 		iEnv.declareKey("null", iNew.Null());
@@ -23,7 +30,7 @@ public class iKeywords extends iFile {
 		iEnv.declareKey("phi", iNew.Real((1.0 + Math.sqrt(5.0)) / 2.0));
 		iEnv.declareKey("pi", iNew.Real(Math.PI));
 		iEnv.declareKey("version", 
-			    iNew.String("Jcon Version 0.5.3, August 7, 1997"));
+			    iNew.String("Jcon Version 0.6.0, September 10, 1997"));
 
 		// constant for lack of a better solution
 		iEnv.declareKey("time", iNew.Integer(0));
@@ -91,6 +98,32 @@ public class iKeywords extends iFile {
 		// special behavior
 		iEnv.declareKey("trace", new k$trace());
 		iEnv.declareKey("random", new k$random());
+
+		// graphics constants
+		iEnv.declareKey("lpress", iNew.Integer(wEvent.LPress));
+		iEnv.declareKey("mpress", iNew.Integer(wEvent.MPress));
+		iEnv.declareKey("rpress", iNew.Integer(wEvent.RPress));
+		iEnv.declareKey("ldrag", iNew.Integer(wEvent.LDrag));
+		iEnv.declareKey("mdrag", iNew.Integer(wEvent.MDrag));
+		iEnv.declareKey("rdrag", iNew.Integer(wEvent.RDrag));
+		iEnv.declareKey("lrelease", iNew.Integer(wEvent.LRelease));
+		iEnv.declareKey("mrelease", iNew.Integer(wEvent.MRelease));
+		iEnv.declareKey("rrelease", iNew.Integer(wEvent.RRelease));
+		iEnv.declareKey("resize", iNew.Integer(wEvent.Resize));
+
+		// graphics variables
+		iEnv.declareKey("window", new k$window());	// &window
+		iEnv.declareKey("x", new k$x());		// &x
+		iEnv.declareKey("y", new k$y());		// &y
+		iEnv.declareKey("row", new k$row());		// &row
+		iEnv.declareKey("col", new k$col());		// &col
+		iEnv.declareKey("interval", new k$interval());	// &interval
+		iEnv.declareKey(
+			"control", iNew.Proc("&control", "rts.k$control", 0));
+		iEnv.declareKey(
+			"meta", iNew.Proc("&meta", "rts.k$meta", 0));
+		iEnv.declareKey(
+			"shift", iNew.Proc("&shift", "rts.k$shift", 0));
 	}
 }
 
@@ -300,6 +333,8 @@ class k$pos extends vSimpleVar {		// &pos
 	}
 }
 
+
+
 class k$trace extends vSimpleVar {		// &trace
 
 	static long trace;		// #%#%#% referenced in iClosure
@@ -316,6 +351,7 @@ class k$trace extends vSimpleVar {		// &trace
 		return value = iNew.Integer(trace);
 	}
 }
+
 
 
 
@@ -349,6 +385,127 @@ private static final double RanScale = 4.65661286e-10;
 
 	public static long choose(long limit) {		// gen val in [0, limit)
 		return (long) (limit * nextVal());
+	}
+}
+
+
+
+class k$window extends vSimpleVar {		// &window
+
+	private static vWindow window;		// current value
+
+	k$window() { super("&random"); }	// constructor
+
+	public vVariable Assign(vValue w) {	// assign
+		if (w != null && !(w instanceof vWindow)) {
+			iRuntime.error(140, w);
+		}
+		window = (vWindow) w;
+		vWindow.setCurrent(window);
+		return this;
+	}
+
+	public vValue deref() {			// dereference
+		return window;
+	}
+
+	public static vWindow getWindow() {	// get &window, must be !null
+		if (window == null) {
+			iRuntime.error(140);
+		} 
+		return window;
+	}
+}
+
+class k$control extends iValueClosure {		// &control
+	static vValue value;			// null value produces failure
+	vDescriptor function(vDescriptor args[]) { return value; }
+}
+
+class k$meta extends iValueClosure {		// &meta
+	static vValue value;			// null value produces failure
+	vDescriptor function(vDescriptor args[]) { return value; }
+}
+
+class k$shift extends iValueClosure {		// &shift
+	static vValue value;			// null value produces failure
+	vDescriptor function(vDescriptor args[]) { return value; }
+}
+
+
+
+abstract class k$intWatcher extends vVariable { // super for "watched" int kwds
+	String name;
+	long value;
+	abstract void newValue(long i);		// subclass must impl this
+
+	k$intWatcher(String name) {		// constructor just saves name
+		this.name = name;
+	}
+
+	public vValue deref() {
+		return iNew.Integer(value);	// deref just returns value
+	}
+
+	public vVariable Assign(vValue v) {	// assignment
+		long i = v.mkInteger().value;	// must be integer
+		newValue(i);			// call subclass (may give err)
+		value = i;			// if no error, set value
+		return this;
+	}
+
+	public void set(long i)	{		// set without side effects
+		value = i;
+	}
+
+	vString Name()		{ return iNew.String(name); }
+
+	String report()		{ return "(" + name + " = " + value + ")"; }
+}
+
+class k$interval extends k$intWatcher {		// &interval
+	static k$interval self;
+	k$interval()		{ super("k$interval"); self = this; }
+	void newValue(long i) {} // no side effects 
+}
+
+class k$x extends k$intWatcher {		// &x
+	static k$x self;
+	k$x()			{ super("k$x"); self = this; }
+
+	void newValue(long i) {
+		vWindow win = vWindow.getCurrent();
+		k$col.self.set(1 + i / 12);	//#%#%#%#%# bogus
+	}
+}
+
+class k$y extends k$intWatcher {		// &y
+	static k$y self;
+	k$y()			{ super("k$y"); self = this; }
+
+	void newValue(long i) {
+		vWindow win = vWindow.getCurrent();
+		k$row.self.set(1 + i / 7);	//#%#%#%#%# bogus
+	}
+}
+
+class k$row extends k$intWatcher {		// &row
+	static k$row self;
+	k$row()			{ super("k$row"); self = this; }
+
+	void newValue(long i) {
+		vWindow win = vWindow.getCurrent();
+		k$y.self.set(12 * i);		//#%#%#%#%# bogus
+	}
+}
+
+class k$col extends k$intWatcher {		// &col
+	static k$col self;
+	k$col()			{ super("k$col"); self = this; }
+
+	void newValue(long i) {
+		vWindow win = vWindow.getCurrent();
+		k$x.self.set(7 * i);		//#%#%#%#%# bogus
 	}
 }
 

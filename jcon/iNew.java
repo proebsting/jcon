@@ -50,7 +50,7 @@ public static vFile File(String kw, InputStream i) { return new vTFile(kw, i); }
 public static vFile File(String kw, PrintStream p) { return new vTFile(kw, p); }
 public static vFile File(String filename, String mode) {
     try {
-	if (vFile.any("uU", mode)) {
+	if (iRuntime.upto("uU", mode)) {
 	    return new vBFile(filename, mode);	// binary (untranslated) file
 	} else {
 	    return new vTFile(filename, mode);	// text (translated) file
@@ -58,6 +58,10 @@ public static vFile File(String filename, String mode) {
     } catch (IOException e) {
     	return null; /*FAIL*/
     }
+}
+
+public static vWindow Window(String name, String mode, vDescriptor args[]) {
+    return vWindow.open(name, mode, args);
 }
 
 

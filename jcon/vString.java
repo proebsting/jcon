@@ -106,13 +106,23 @@ vCset mkCset() {
 
 //  static methods for argument processing and defaulting
 
-static String argVal(vDescriptor[] args, int index)		// required arg
+static vString argDescr(vDescriptor[] args, int index)		// required arg
 {
     if (index >= args.length) {
 	iRuntime.error(103);
 	return null;
     } else {
-	return args[index].mkString().value;
+	return args[index].mkString();
+    }
+}
+
+static String argVal(vDescriptor[] args, int index)		// required arg
+{
+    vString s = argDescr(args, index);
+    if (s == null) {
+    	return null;
+    } else {
+    	return s.value;
     }
 }
 
