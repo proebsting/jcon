@@ -54,7 +54,7 @@ and arguments can be passed as usual.
 	silent: suppress commentary</TD></TR>
 <TR><TD WIDTH=50 VALIGN=TOP><CODE>-t</CODE></TD><TD>
 	compile with <CODE>-f d</CODE> (to allow tracing)
-	and initialize <CODE>&AMP;trace</CODE> to -1</TD></TR>
+	and initialize <CODE>&amp;trace</CODE> to -1</TD></TR>
 <TR><TD WIDTH=50 VALIGN=TOP><CODE>-u</CODE></TD><TD>
 	list undeclared variables</TD></TR>
 <TR><TD WIDTH=50 VALIGN=TOP><CODE>-x</CODE></TD><TD>
@@ -99,7 +99,7 @@ and arguments can be passed as usual.
 	Depending on the implementation, JXOPTS can select options
 	such as profiling or run-time compilation to machine code.
 <TR><TD WIDTH=100 VALIGN=TOP><CODE>TRACE</CODE></TD><TD>
-	Initial value of the Icon keyword <CODE>&AMP;trace</CODE>.
+	Initial value of the Icon keyword <CODE>&amp;trace</CODE>.
 	If set, it overrides compilation with <CODE>-t</CODE>. 
 </TABLE></BLOCKQUOTE>
 

@@ -13,7 +13,7 @@ Changes include the following:
 	 <CODE>seq()</CODE>, limitation (<CODE>e1 \ e2</CODE>),
 	 and exponentiation (<CODE>e1 ^ e2</CODE>)
     <LI> A zero increment value is diagnosed by <CODE>seq()</CODE>
-    <LI> <CODE>&host</CODE> no longer spawns a shell invocation
+    <LI> <CODE>&amp;host</CODE> no longer spawns a shell invocation
 	of <CODE>uname</CODE> (but see <CITE>Problems</CITE>, below)
     <LI> The run-time package name has been changed from <CODE>rts</CODE>
     	to <CODE>jcon</CODE>.  All programs must be recompiled.
