@@ -9,12 +9,16 @@ import java.io.*;
 class fIO {
 
 	// print(f, arglist, newline) -- helper for write(), writes(), stop()
+
 	static vDescriptor print(vFile f, vDescriptor[] args, boolean nl) {
-		vDescriptor d = iNew.Null();
+		vDescriptor d = iNew.Null();	// last argument processed
 		for (int i = 0; i < args.length; i++) {
 			d = args[i];
-			if (d instanceof vFile) {
-				f = (vFile) d;
+			if (d instanceof vFile) {	// if file value
+				if (i > 0 && nl) {
+					f.newline();	// write newline
+				}
+				f = (vFile) d;		// change files
 			} else {
 				f.writes(args[i].write());
 			}
