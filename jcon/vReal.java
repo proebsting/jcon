@@ -19,17 +19,17 @@ vReal(String s)		{ value = Double.valueOf(s).doubleValue(); }
 public int hashCode()	{ return (int) (value  * 1129.27586206896558); } // = v9
 
 public boolean equals(Object o)	{
-	return (o instanceof vReal) && (((vReal)o).value == value);
+    return (o instanceof vReal) && (((vReal)o).value == value);
 }
 
 vReal mkReal()		{ return this; }
 
 vInteger mkInteger()	{
     if (value < Long.MIN_VALUE || value > Long.MAX_VALUE) {
-	    iRuntime.error(101, this);
-	    return null;
+	iRuntime.error(101, this);
+	return null;
     } else {
-	    return iNew.Integer(this.value);
+	return iNew.Integer(this.value);
     }
 }
 
@@ -52,14 +52,14 @@ vString type()		{ return typestring; }
 int rank()		{ return 20; }		// reals sort after integers
 
 int compareTo(vValue v) {
-	double x = ((vReal) v).value;
-	if (this.value < x) {
-		return -1;
-	} else if (this.value > x) {
-		return 1;
-	} else {
-		return 0;
-	}
+    double x = ((vReal) v).value;
+    if (this.value < x) {
+	return -1;
+    } else if (this.value > x) {
+	return 1;
+    } else {
+	return 0;
+    }
 		
 }
 

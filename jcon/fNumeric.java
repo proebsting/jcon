@@ -49,7 +49,7 @@ class f$ixor extends iValueClosure {				// ixor(n)
 
 
 
-class f$ishift extends iValueClosure {			// ishift(n)
+class f$ishift extends iValueClosure {				// ishift(n)
     vDescriptor function(vDescriptor[] args) {
 	long v = vInteger.argVal(args, 0);
 	long n = vInteger.argVal(args, 1);

@@ -17,16 +17,16 @@ vInteger(long n)	{ value = n; }
 public int hashCode()	{ return (int) ((13255 * value) >> 10); } // same as v9
 
 public boolean equals(Object o)	{
-	return (o instanceof vInteger) && (((vInteger)o).value == value);
+    return (o instanceof vInteger) && (((vInteger)o).value == value);
 }
 
 vInteger mkInteger()	{ return this; }
 vReal mkReal()		{ return iNew.Real(this.value); }
 vString mkString() {
-	if (cachedString != null) {
-		return cachedString;
-	}
-	return cachedString = iNew.String(this.value);
+    if (cachedString != null) {
+	return cachedString;
+    }
+    return cachedString = iNew.String(this.value);
 }
 
 vString write()		{ return iNew.String(this.value); }
@@ -37,19 +37,19 @@ vString type()		{ return typestring; }
 int rank()		{ return 10; } 	// integers sort right after &null
 
 int compareTo(vValue v) {
-	long x = ((vInteger) v).value;
-	if (this.value < x) {
-		return -1;
-	} else if (this.value > x) {
-		return 1;
-	} else {
-		return 0;
-	}
+    long x = ((vInteger) v).value;
+    if (this.value < x) {
+	return -1;
+    } else if (this.value > x) {
+	return 1;
+    } else {
+	return 0;
+    }
 		
 }
 
 vValue getproc() {
-	return new vIntegerProc(this);
+    return new vIntegerProc(this);
 }
 
 
@@ -279,34 +279,35 @@ vValue NGreater(vDescriptor v) {
 } // class vInteger
 
 
+
 class vIntegerProc extends vValue {
-	vInteger value;
+    vInteger value;
 	
-	vIntegerProc(vInteger value) {
-		this.value = value;
-	}
+    vIntegerProc(vInteger value) {
+	this.value = value;
+    }
 
-	public iClosure instantiate (vDescriptor[] args, iClosure parent) {
-		return new iIntegerClosure(this.value, args, parent);
-	}
+    public iClosure instantiate (vDescriptor[] args, iClosure parent) {
+	return new iIntegerClosure(this.value, args, parent);
+    }
 
-	vValue getproc()	{ return this; }
+    vValue getproc()	{ return this; }
 
-	vString image()	{ return value.mkString().surround("function ", ""); }
+    vString image()	{ return value.mkString().surround("function ", ""); }
 
-	static vString typestring = iNew.String("procedure");
-	vString type()	{ return typestring; }
+    static vString typestring = iNew.String("procedure");
+    vString type()	{ return typestring; }
 
-	int rank()	{ return 80; }	// integer "procedure"
-	int compareTo(vValue v)
-		{ return vProc.compareLastWord(this.image(), v.image()); }
+    int rank()		{ return 80; }	// integer "procedure"
+    int compareTo(vValue v)
+			{ return vProc.compareLastWord(this.image(),v.image());}
 
-	vInteger Args()	{ return iNew.Integer(-1); }
+    vInteger Args()	{ return iNew.Integer(-1); }
 }
 
 
 class iIntegerClosure extends iRefClosure {
-	vInteger value;
+    vInteger value;
 
     iIntegerClosure(vInteger value, vDescriptor[] args, iClosure parent) {
 	init();
@@ -322,7 +323,7 @@ class iIntegerClosure extends iRefClosure {
 	}
 	i -= 1;
 	if (i < 0 || i >= args.length) {
-		return null;
+	    return null;
 	}
 	return args[(int)i];
     }

@@ -210,14 +210,14 @@ vValue[] mkArray() {
 }
 
 vDescriptor[] mkArgs() {
-	vDescriptor[] arglist = new vDescriptor[v.size()];
-	java.util.Enumeration e = this.elements();
-	int i = 0;
-	while (e.hasMoreElements()) {
-		arglist[i] = (vDescriptor) e.nextElement();
-		i++;
-	}
-	return arglist;
+    vDescriptor[] arglist = new vDescriptor[v.size()];
+    java.util.Enumeration e = this.elements();
+    int i = 0;
+    while (e.hasMoreElements()) {
+	arglist[i] = (vDescriptor) e.nextElement();
+	i++;
+    }
+    return arglist;
 }
 
 
@@ -226,43 +226,43 @@ vDescriptor[] mkArgs() {
 
 
 class vListEnumeration implements java.util.Enumeration {
-	java.util.Vector v;
-	int i;
+    java.util.Vector v;
+    int i;
 
-	vListEnumeration(java.util.Vector v) {
-		this.v = v;
-		this.i = 0;
-	}
+    vListEnumeration(java.util.Vector v) {
+	this.v = v;
+	this.i = 0;
+    }
 
-	public boolean hasMoreElements() {
-		return i < v.size();
-	}
+    public boolean hasMoreElements() {
+	return i < v.size();
+    }
 
-	public Object nextElement() {
-		return v.elementAt(i++);
-	}
+    public Object nextElement() {
+	return v.elementAt(i++);
+    }
 }
 
 
 
 class vListVar extends vSimpleVar {
-	vList parent;
+    vList parent;
 
-	vListVar(vList parent, vValue value) {
-		super("N/A", value);
-		this.parent = parent;
-	}
+    vListVar(vList parent, vValue value) {
+	super("N/A", value);
+	this.parent = parent;
+    }
 
-	vString Name() {
-		java.util.Enumeration e = parent.elements();
-		int i = 1;
-		while (e.hasMoreElements()) {
-			if (this == e.nextElement()) {
-				return iNew.String("L[" + i + "]");
-			}
-			i++;
-		}
-		// %#%##% can this happen?
-		return null;
+    vString Name() {
+	java.util.Enumeration e = parent.elements();
+	int i = 1;
+	while (e.hasMoreElements()) {
+	    if (this == e.nextElement()) {
+		return iNew.String("L[" + i + "]");
+	    }
+	    i++;
 	}
+	// %#%##% can this happen?
+	return null;
+    }
 }

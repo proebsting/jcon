@@ -30,7 +30,7 @@ public static vTable Table(vValue x)		{ return new vTable(x); }
 public static vSet Set(vValue x)		{ return new vSet(x); }
 
 public static vProc Proc(String s, String classname, int args) {
-	return new vProc(s, classname, args);
+    return new vProc(s, classname, args);
 }
 
 public static vRecordProc RecordProc(String name, String[] fields)
@@ -217,20 +217,20 @@ public static vWindow Window(String name, String mode, vDescriptor args[]) {
 static vDescriptor[][][] argCache = new vDescriptor[20][20][];
 static int[] argCacheSP = new int[20];
 public static vDescriptor[] ArgArray(int i) {
-	if (i < 20 && argCacheSP[i] > 0) {
-		return argCache[i][--argCacheSP[i]];
-	} else {
-		return new vDescriptor[i];
-	}
+    if (i < 20 && argCacheSP[i] > 0) {
+	return argCache[i][--argCacheSP[i]];
+    } else {
+	return new vDescriptor[i];
+    }
 }
 
 public static void FreeArgs(vDescriptor[] a) {
-	if (a != null) {
-		int len = a.length;
-		if (len < 20 && argCacheSP[len] < 20) {
-			argCache[len][argCacheSP[len]++] = a;
-		}
+    if (a != null) {
+	int len = a.length;
+	if (len < 20 && argCacheSP[len] < 20) {
+	    argCache[len][argCacheSP[len]++] = a;
 	}
+    }
 }
 
 

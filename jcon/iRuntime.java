@@ -109,34 +109,34 @@ public static long argPos(vDescriptor[] args, int index) {
 
 
 public static void display(iClosure parent) {
-	// do the call chain.
-	for (iClosure p = parent; p != null; p = p.parent) {
-		String s = p.getClass().getName();
-		int j = s.lastIndexOf('$');
-		if (j >= 0) {                   // xxx$file$yyyyy format
-		    s = s.substring(j+1);
-		}
-		System.out.println(s + " local identifiers:");
-		p.locals();
-		if (p.names == null) {
-			continue;
-		}
-		for (int i = 0; p.names[i] != null; i++) {
-			System.out.println("   " + p.names[i] + " = " +
-				p.variables[i].image());
-		}
+    // do the call chain.
+    for (iClosure p = parent; p != null; p = p.parent) {
+	String s = p.getClass().getName();
+	int j = s.lastIndexOf('$');
+	if (j >= 0) {                   // xxx$file$yyyyy format
+	    s = s.substring(j+1);
 	}
+	System.out.println(s + " local identifiers:");
+	p.locals();
+	if (p.names == null) {
+	    continue;
+	}
+	for (int i = 0; p.names[i] != null; i++) {
+	    System.out.println("   " + p.names[i] + " = " +
+		p.variables[i].image());
+	}
+    }
 
-	// do the globals
-	// #%#%# not sorted....
-	System.out.println();
-	System.out.println("global identifiers:");
-	java.util.Enumeration e = iEnv.symtab.keys();
-	while (e.hasMoreElements()) {
-		String s = (String) e.nextElement();
-		vVariable v = (vVariable) iEnv.symtab.get(s);
-		System.out.println("   " + s + " = " + v.image());
-	}
+    // do the globals
+    // #%#%# not sorted....
+    System.out.println();
+    System.out.println("global identifiers:");
+    java.util.Enumeration e = iEnv.symtab.keys();
+    while (e.hasMoreElements()) {
+	String s = (String) e.nextElement();
+	vVariable v = (vVariable) iEnv.symtab.get(s);
+	System.out.println("   " + s + " = " + v.image());
+    }
 }
 
 
@@ -144,11 +144,11 @@ public static void display(iClosure parent) {
 //  exit()-- common termination routine for all exits except internal errors.
 
 public static void exit(int status, iClosure parent) {
-	if (k$dump.dump != 0) {
-		iRuntime.display(parent);	// honor &dump
-	}
-	vFile.shutdown();			// flush output files etc.
-	System.exit(status);			// shut down
+    if (k$dump.dump != 0) {
+	    iRuntime.display(parent);	// honor &dump
+    }
+    vFile.shutdown();			// flush output files etc.
+    System.exit(status);		// shut down
 }
 
 

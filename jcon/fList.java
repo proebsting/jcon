@@ -7,62 +7,62 @@ class fList {} //dummy
 
 
 class f$list extends iValueClosure {				// list(i, x)
-	vDescriptor function(vDescriptor[] args) {
-		int i = (int) vInteger.argVal(args, 0, 0);
-		vValue x = iRuntime.argVal(args, 1);
-		return iNew.List(i, x);
-	}
+    vDescriptor function(vDescriptor[] args) {
+	int i = (int) vInteger.argVal(args, 0, 0);
+	vValue x = iRuntime.argVal(args, 1);
+	return iNew.List(i, x);
+    }
 }
 
 
 
 class f$push extends iValueClosure {				// push(L, x...)
-	vDescriptor function(vDescriptor[] args) {
-		vValue L = iRuntime.argVal(args, 0, 108);
-		L.Push(iRuntime.argVal(args, 1));		// at least one
-		for (int i = 2; i < args.length; i++) {
-			L.Push(args[i]);
-		}
-		return L;
+    vDescriptor function(vDescriptor[] args) {
+	vValue L = iRuntime.argVal(args, 0, 108);
+	L.Push(iRuntime.argVal(args, 1));	// always push at least one val
+	for (int i = 2; i < args.length; i++) {
+	    L.Push(args[i]);
 	}
+	return L;
+    }
 }
 
 
 
 class f$pull extends iValueClosure {				// pull(L)
-	vDescriptor function(vDescriptor[] args) {
-		return iRuntime.argVal(args, 0, 108).Pull();
-	}
+    vDescriptor function(vDescriptor[] args) {
+	return iRuntime.argVal(args, 0, 108).Pull();
+    }
 }
 
 
 
 class f$pop extends iValueClosure {				// pop(L)
-	vDescriptor function(vDescriptor[] args) {
-		return iRuntime.argVal(args, 0, 108).Pop();
-	}
+    vDescriptor function(vDescriptor[] args) {
+	return iRuntime.argVal(args, 0, 108).Pop();
+    }
 }
 
 
 
 class f$get extends iValueClosure {				// get(L)
-	vDescriptor function(vDescriptor[] args) {
-		return iRuntime.argVal(args, 0, 108).Get();
-	}
+    vDescriptor function(vDescriptor[] args) {
+	return iRuntime.argVal(args, 0, 108).Get();
+    }
 }
 
 
 
 class f$put extends iValueClosure {				// put(L, x...)
-	vDescriptor function(vDescriptor[] args) {
-		vValue L = iRuntime.argVal(args, 0, 108);
+    vDescriptor function(vDescriptor[] args) {
+	vValue L = iRuntime.argVal(args, 0, 108);
 //#%#% put(L,a,b,c) needs to be an atomic action when used w/ Window event queue
-		L.Put(iRuntime.argVal(args, 1));		// at least one
-		for (int i = 2; i < args.length; i++) {
-			L.Put(args[i]);
-		}
-		return L;
+	L.Put(iRuntime.argVal(args, 1));	// always add at least one val
+	for (int i = 2; i < args.length; i++) {
+	    L.Put(args[i]);
 	}
+	return L;
+    }
 }
 
 
@@ -70,32 +70,32 @@ class f$put extends iValueClosure {				// put(L, x...)
 //  sort() and sortf() process several datatypes but always produce a list
 
 class f$sort extends iValueClosure {				// sort(X,i)
-	vDescriptor function(vDescriptor[] args) {
-		vValue x = iRuntime.argVal(args, 0, 115);
-		long i = vInteger.argVal(args, 1, 1);
-		if (i < 1 || i > 4) {
-			iRuntime.error(205, args[1]);
-		}
-		return x.Sort((int) i);
+    vDescriptor function(vDescriptor[] args) {
+	vValue x = iRuntime.argVal(args, 0, 115);
+	long i = vInteger.argVal(args, 1, 1);
+	if (i < 1 || i > 4) {
+	    iRuntime.error(205, args[1]);
 	}
+	return x.Sort((int) i);
+    }
 }
 
-class f$sortf extends iValueClosure {			// sortf(X,i)
-	vDescriptor function(vDescriptor[] args) {
-		vValue[] a = iRuntime.argVal(args, 0, 125).mkArray();
-		vInteger i = iNew.Integer(vInteger.argVal(args, 1, 1));
-		if (i.value == 0) {
-			iRuntime.error(205, i);
-		}
-		for (int j = 0; j < a.length; j++) {
-			a[j] = new vSortElem(a[j], i);
-		}
-		iUtil.sort(a);
-		for (int j = 0; j < a.length; j++) {
-			a[j] = ((vSortElem)a[j]).value;
-		}
-		return iNew.List(a);
+class f$sortf extends iValueClosure {				// sortf(X,i)
+    vDescriptor function(vDescriptor[] args) {
+	vValue[] a = iRuntime.argVal(args, 0, 125).mkArray();
+	vInteger i = iNew.Integer(vInteger.argVal(args, 1, 1));
+	if (i.value == 0) {
+	    iRuntime.error(205, i);
 	}
+	for (int j = 0; j < a.length; j++) {
+	    a[j] = new vSortElem(a[j], i);
+	}
+	iUtil.sort(a);
+	for (int j = 0; j < a.length; j++) {
+	    a[j] = ((vSortElem)a[j]).value;
+	}
+	return iNew.List(a);
+    }
 }
 
 class vSortElem extends vValue {		// key/value pair for sortf()

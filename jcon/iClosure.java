@@ -2,23 +2,24 @@ package rts;
 
 public abstract class iClosure {
 
+    public iClosure parent;		// enclosing closure
+    public vDescriptor[] arguments;	// argument list
 
-public iClosure parent;		// enclosing closure
-public vDescriptor[] arguments;	// argument list
+    public vProc vproc;			// "creator" object;
 
-public vProc vproc;		// "creator" object;
+    public int PC;			// "program counter" (initially = 1)
 
-public int PC;			// "program counter" (initially = 1)
+    public Object o;			// arbitrary storage for RTS methods
+    public int oint;			// arbitrary storage for RTS methods
 
-public Object o;		// arbitrary storage for RTS methods
-public int oint;		// arbitrary storage for RTS methods
+    public String file;			// location in source file
+    public int line;
+    public int column;
 
-public String file;		// location in source file
-public int line;
-public int column;
+    public String[] names;		// created by locals() for returning
+    public vVariable[] variables;	//	contents of active closure.
 
-public String[] names;		// arrays created by locals() for returning
-public vVariable[] variables;	//	contents of active closure.
+
 
 public final void init() {
     PC = 1;
@@ -119,11 +120,13 @@ public void closure(vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosu
     vDescriptor[] args = { arg0, arg1, arg2 };
     closure(args, parent);
 }
+
 public void closure(vDescriptor arg0, vDescriptor arg1, iClosure parent) {
     init();
     vDescriptor[] args = { arg0, arg1 };
     closure(args, parent);
 }
+
 public void closure(vDescriptor arg0, iClosure parent) {
     init();
     vDescriptor[] args = { arg0 };

@@ -82,9 +82,9 @@ class f$match extends iValueClosure {			// match(s1,s2,i1,i2)
 	    return null;
 	}
 	if (i1 > i2) {
-		int tmp = i1;
-		i1 = i2;
-		i2 = tmp;
+	    int tmp = i1;
+	    i1 = i2;
+	    i2 = tmp;
 	}
 
 	int len1 = s1.length();
