@@ -91,7 +91,7 @@ class k$dateline extends k$Value {			// &dateline
 		b.append(d.getYear() + 1900);
 		b.append("  ");
 		b.append(((d.getHours() + 11) % 12) + 1);  // 12, 1, 2, .. 11
-		b.append(d.toString().substring(16, 19));  // :mm
+		b.append(d.toString().substring(13, 16));  // :mm
 		b.append((d.getHours() >= 12) ? " pm" : " am");
 		return iNew.String(b.toString());
 	}

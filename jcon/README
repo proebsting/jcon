@@ -47,4 +47,3 @@ arguably correct differences:
 -- 1 / 0 gives error 201 instead of error 204
 -- traceback is deliberately limited to the innermost 100 nested calls
 -- "R . field" errors (e.g. 107, 207) give actual field name attempted
--- successive references to &dateline return updated values
