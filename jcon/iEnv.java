@@ -70,6 +70,7 @@ static void global(String s, vVariable x) {
 
 public static void declareGlobal(String s) {
     if (!symtab.containsKey(s)) {
+	undeclared(s);			// always enter declared globals
 	global(s, vSimpleVar.New(s));
     }
 }

@@ -26,6 +26,7 @@ final class fLoad extends iInstantiate {
 final class f$loadfunc extends vProc2 {				// loadfunc(s,s)
     private static final String linkhead = "l$";
     private static final String prochead = "p_l$";
+    private static Hashtable ilinked = new Hashtable();  // icnfiles prev linked
 
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	String filename = a.mkString().toString();
@@ -79,12 +80,17 @@ final class f$loadfunc extends vProc2 {				// loadfunc(s,s)
 	String linkname = classname.substring(2, classname.lastIndexOf('$'));
 
 	DynamicLoader dl = DynamicLoader.get(filename);
-	Class c = dl.loadClass(linkname);	// get link director for file
-	iFile r = (iFile) c.newInstance();	// create instance
-	r.unresolved();				// create new globals 
-	iBuiltins.announce();			// init with builtins
-	r.declare();				// declare procedures
-	r.resolve();				// resolve references
+	Class c;
+
+	if (ilinked.get(linkname) == null) {
+	    c = dl.loadClass(linkname);		// get link director for file
+	    iFile r = (iFile) c.newInstance();	// create instance
+	    r.unresolved();			// create new globals 
+	    iBuiltins.announce();		// init with builtins
+	    r.declare();			// declare procedures
+	    r.resolve();			// resolve references
+	    ilinked.put(linkname, linkname);	// record as linked
+	}
 
 	c = dl.loadClass(classname);		// now find procedure class
 	vProc p = (vProc) c.newInstance();	// create procedure
