@@ -23,6 +23,7 @@ public boolean equals(Object o)		{ return retval.equals(o); }
 public int hashCode()			{ return retval.hashCode(); }
 
 boolean isnull()			{ return retval.isnull(); }
+boolean iswin()				{ return retval.iswin(); }
 vString mkString()			{ return retval.mkString(); }
 vInteger mkInteger()			{ return retval.mkInteger(); }
 vReal mkReal()				{ return retval.mkReal(); }

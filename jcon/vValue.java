@@ -20,6 +20,7 @@ abstract int compareTo(vValue v);	// compare to value of same rank
 // Many of these are default methods, often overridden by individual types.
 
 boolean isnull()		{ return false; }
+boolean iswin()			{ return false; }
 vString mkString()		{ iRuntime.error(103, this); return null; }
 vInteger mkInteger()		{ iRuntime.error(101, this); return null; }
 vReal mkReal()			{ iRuntime.error(102, this); return null; }

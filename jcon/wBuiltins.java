@@ -12,67 +12,67 @@ public final class wBuiltins extends iFile {
 
 static void announce() {
 
-//#%#%	    // graphics functions that are at least partially implemented:
-//#%#%	
-//#%#%	    iBuiltins.declare("Alert", 1);
-//#%#%	    iBuiltins.declare("Bg", 2);
-//#%#%	    iBuiltins.declare("Clone", -1);
-//#%#%	    iBuiltins.declare("Color", -1);
-//#%#%	    iBuiltins.declare("ColorValue", 2);
-//#%#%	    iBuiltins.declare("CopyArea", 8);	//#%#% within same window only
-//#%#%	    iBuiltins.declare("DrawArc", -1);
-//#%#%	    iBuiltins.declare("DrawCircle", -1);
-//#%#%	    iBuiltins.declare("DrawLine", -1);
-//#%#%	    iBuiltins.declare("DrawPoint", -1);
-//#%#%	    iBuiltins.declare("DrawPolygon", -1);
-//#%#%	    iBuiltins.declare("DrawRectangle", -1);
-//#%#%	    iBuiltins.declare("DrawSegment", -1);
-//#%#%	    iBuiltins.declare("DrawString", -1);
-//#%#%	    iBuiltins.declare("EraseArea", -1);
-//#%#%	    iBuiltins.declare("Event", 1);
-//#%#%	    iBuiltins.declare("Fg", 2);
-//#%#%	    iBuiltins.declare("FillArc", -1);
-//#%#%	    iBuiltins.declare("FillCircle", -1);
-//#%#%	    iBuiltins.declare("FillRectangle", -1);
-//#%#%	    iBuiltins.declare("FillPolygon", -1);
-//#%#%	    iBuiltins.declare("Font", 2);
-//#%#%	    iBuiltins.declare("FreeColor", -1);
-//#%#%	    iBuiltins.declare("GotoRC", 3);
-//#%#%	    iBuiltins.declare("GotoXY", 3);
-//#%#%	    iBuiltins.declare("NewColor", 2);
-//#%#%	    iBuiltins.declare("Pending", 1);
-//#%#%	    iBuiltins.declare("TextWidth", 2);
-//#%#%	    iBuiltins.declare("Uncouple", 1);	// calls close(), a no-op so far
-//#%#%	    iBuiltins.declare("WAttrib", -1);
-//#%#%	    iBuiltins.declare("WDefault", 3);	// always fails
-//#%#%	    iBuiltins.declare("WFlush", 1);
-//#%#%	    iBuiltins.declare("WSync", 1);
+    // graphics functions that are at least partially implemented:
+
+    iEnv.declareBuiltin("Alert", 1);
+    iEnv.declareBuiltin("Bg", 2);
+    iEnv.declareBuiltin("Clone", -1);
+    iEnv.declareBuiltin("Color", -1);		// always fails
+    iEnv.declareBuiltin("ColorValue", 2);
+    iEnv.declareBuiltin("CopyArea", 8);		//#%#% within same window only
+    iEnv.declareBuiltin("DrawArc", -1);
+    iEnv.declareBuiltin("DrawCircle", -1);
+    iEnv.declareBuiltin("DrawLine", -1);
+    iEnv.declareBuiltin("DrawPoint", -1);
+    iEnv.declareBuiltin("DrawPolygon", -1);
+    iEnv.declareBuiltin("DrawRectangle", -1);
+    iEnv.declareBuiltin("DrawSegment", -1);
+    iEnv.declareBuiltin("DrawString", -1);
+    iEnv.declareBuiltin("EraseArea", -1);
+    iEnv.declareBuiltin("Event", 1);
+    iEnv.declareBuiltin("Fg", 2);
+    iEnv.declareBuiltin("FillArc", -1);
+    iEnv.declareBuiltin("FillCircle", -1);
+    iEnv.declareBuiltin("FillRectangle", -1);
+    iEnv.declareBuiltin("FillPolygon", -1);
+    iEnv.declareBuiltin("Font", 2);
+    iEnv.declareBuiltin("FreeColor", -1);
+    iEnv.declareBuiltin("GotoRC", 3);
+    iEnv.declareBuiltin("GotoXY", 3);
+    iEnv.declareBuiltin("NewColor", 2);		// always fails
+    iEnv.declareBuiltin("Pending", 1);
+    iEnv.declareBuiltin("TextWidth", 2);
+    iEnv.declareBuiltin("Uncouple", 1);		// calls close(), a no-op so far
+    iEnv.declareBuiltin("WAttrib", -1);
+    iEnv.declareBuiltin("WDefault", 3);		// always fails
+    iEnv.declareBuiltin("WFlush", 1);
+    iEnv.declareBuiltin("WSync", 1);
 
     // #%#% IMPLEMENTED AS NO-OPS:
     // close(win)	(see wTTY.java)
 
     // #%#% NOT YET IMPLEMENTED:
     //
-    // iBuiltins.declare("Clip", 5);
-    // iBuiltins.declare("Pattern", 2);
+    // iEnv.declareBuiltin("Clip", 5);
+    // iEnv.declareBuiltin("Pattern", 2);
     //
-    // iBuiltins.declare("ReadImage", 5);
-    // iBuiltins.declare("WriteImage", 6);
-    // iBuiltins.declare("Pixel", 5);
+    // iEnv.declareBuiltin("ReadImage", 5);
+    // iEnv.declareBuiltin("WriteImage", 6);
+    // iEnv.declareBuiltin("Pixel", 5);
     //
-    // iBuiltins.declare("PaletteChars", 2);
-    // iBuiltins.declare("PaletteColor", 3);
-    // iBuiltins.declare("PaletteKey", 3);
-    // iBuiltins.declare("DrawImage", 4);
+    // iEnv.declareBuiltin("PaletteChars", 2);
+    // iEnv.declareBuiltin("PaletteColor", 3);
+    // iEnv.declareBuiltin("PaletteKey", 3);
+    // iEnv.declareBuiltin("DrawImage", 4);
     //
-    // iBuiltins.declare("DrawCurve", -1);
+    // iEnv.declareBuiltin("DrawCurve", -1);
     //
-    // iBuiltins.declare("Active", 0);
+    // iEnv.declareBuiltin("Active", 0);
     //
-    // iBuiltins.declare("Lower", 1);
-    // iBuiltins.declare("Raise", 1);
+    // iEnv.declareBuiltin("Lower", 1);
+    // iEnv.declareBuiltin("Raise", 1);
     //
-    // iBuiltins.declare("Couple", 2);
+    // iEnv.declareBuiltin("Couple", 2);
 }
 
 
@@ -86,437 +86,465 @@ static void announce() {
 
 
 
-//#%#%	final class f$WAttrib extends iClosure {		// WAttrib(W,attribs,...)
-//#%#%	    vWindow win;
-//#%#%	    wAttrib alist[];
-//#%#%	    int next;
-//#%#%	
-//#%#%	    public vDescriptor nextval() {
-//#%#%		if (PC == 1) {
-//#%#%		    for (int i = 0; i < arguments.length; i++) {
-//#%#%			arguments[i] = arguments[i].Deref();
-//#%#%		    }
-//#%#%		    win = vWindow.winArg(arguments);
-//#%#%		    int b = vWindow.argBase(arguments);
-//#%#%		    alist = wAttrib.parseAtts(arguments, b);
-//#%#%		    for (int i = 0; i < alist.length; i++) {
-//#%#%			wAttrib a = alist[i];
-//#%#%			if (a.val != null) {		// if nm=val arg
-//#%#%			    if (a.set(win) == null) {
-//#%#%				alist[i] = null;	// set failed
-//#%#%			    }
-//#%#%			}
-//#%#%		    }
-//#%#%		    next = 0;
-//#%#%		    PC = 2;
-//#%#%		}
-//#%#%		vDescriptor v = null;
-//#%#%		while (next < alist.length) {
-//#%#%		    wAttrib a = alist[next++];
-//#%#%		    if (a != null) {
-//#%#%			v = a.get(win);
-//#%#%			if (v != null) {
-//#%#%			    break;			// generate value
-//#%#%			}
-//#%#%		    }
-//#%#%		}
-//#%#%		return v;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	
-//#%#%	
-//#%#%	final class f$Clone extends iValueClosure {		// Clone(W,attribs...)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(arguments);
-//#%#%		int b = vWindow.argBase(arguments);
-//#%#%		wAttrib alist[] = wAttrib.parseAtts(args, b);
-//#%#%	
-//#%#%		win = win.Clone();			// clone window
-//#%#%		for (int i = 0; i < alist.length; i++) { // apply attribs
-//#%#%		    wAttrib a = alist[i];
-//#%#%		    if (a.val != null) {		// if val given
-//#%#%			if (a.set(win) == null) {	// if set fails
-//#%#%			    return null;		// clone failed
-//#%#%			}
-//#%#%		    }
-//#%#%		}
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	
-//#%#%	
-//#%#%	final class f$Pending extends iValueClosure {		// Pending(W)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		return vWindow.winArg(args).Pending();
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$Event extends iValueClosure {		// Event(W)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		return vWindow.winArg(args).Event();
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	
-//#%#%	
-//#%#%	final class f$Bg extends iValueClosure {		// Bg(W, s)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		vString s = vString.argDescr(args, vWindow.argBase(args), null);
-//#%#%		return win.Bg(s);
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$Fg extends iValueClosure {		// Fg(W, s)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		vString s = vString.argDescr(args, vWindow.argBase(args), null);
-//#%#%		return win.Fg(s);
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$ColorValue extends iValueClosure {	// ColorValue(W, s)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		// ignore window argument if present
-//#%#%		vString s = vString.argDescr(args, vWindow.argBase(args), null);
-//#%#%		wColor k = wColor.parse(s);
-//#%#%		if (k == null) {
-//#%#%		    return null;
-//#%#%		} else {
-//#%#%		    return vString.New(257 * k.getRed() + "," +
-//#%#%				257 * k.getGreen() + "," + 257 * k.getBlue());
-//#%#%		}
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	
-//#%#%	
-//#%#%	
-//#%#%	final class f$Font extends iValueClosure {		// Font(W,s)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		vString s = vString.argDescr(args, vWindow.argBase(args), null);
-//#%#%		return win.Font(s);
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$TextWidth extends iValueClosure {	// TextWidth(W,s)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		vString s = vString.argDescr(args, vWindow.argBase(args));
-//#%#%		return win.TextWidth(s.toString());
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$GotoXY extends iValueClosure {		// GotoXY(W,x,y)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		int b = vWindow.argBase(args);
-//#%#%		long x = vInteger.argVal(args, b, 0);
-//#%#%		long y = vInteger.argVal(args, b + 1, 0);
-//#%#%		win.getTTY().X(x + "");
-//#%#%		win.getTTY().Y(y + "");
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$GotoRC extends iValueClosure {		// GotoXY(W,r,c)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		int b = vWindow.argBase(args);
-//#%#%		long r = vInteger.argVal(args, b, 1);
-//#%#%		long c = vInteger.argVal(args, b + 1, 1);
-//#%#%		win.getTTY().Row(win, r + "");
-//#%#%		win.getTTY().Col(win, c + "");
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	
-//#%#%	
-//#%#%	
-//#%#%	final class f$DrawPoint extends iValueClosure {	// DrawPoint(W,x,y,...)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		wCoords c = new wCoords(args);
-//#%#%		for (int i = 0; i < c.nPoints; i++) {
-//#%#%		    int x = c.xPoints[i];
-//#%#%		    int y = c.yPoints[i];
-//#%#%		    win.DrawLine(x, y, x, y);
-//#%#%		}
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$DrawLine extends iValueClosure {	// DrawLine(W,x,y,...)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		win.DrawLine(new wCoords(args));
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$DrawSegment extends iValueClosure {	// DrawSegment(W,x,y,...)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		wCoords c = new wCoords(args);
-//#%#%		if (c.nPoints % 2 != 0) {
-//#%#%		    iRuntime.error(146);
-//#%#%		}
-//#%#%		for (int i = 0; i < c.nPoints; i += 2) {
-//#%#%		    win.DrawLine(c.xPoints[i], c.yPoints[i],
-//#%#%			c.xPoints[i+1], c.yPoints[i+1]);
-//#%#%		}
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$DrawPolygon extends iValueClosure {	// DrawPolygon(W,x,y,...)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		win.DrawPolygon(new wCoords(args));
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$FillPolygon extends iValueClosure {	// FillPolygon(W,x,y,...)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		win.FillPolygon(new wCoords(args));
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	
-//#%#%	
-//#%#%	final class f$DrawRectangle extends iValueClosure {	// DrawRectangle(W,x,y,w,h,...)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		int[] a = wCoords.rectArgs(args, 4);
-//#%#%		for (int i = 0; i < a.length; i += 4) {
-//#%#%		    win.DrawRectangle(a[i], a[i+1], a[i+2], a[i+3]);
-//#%#%		}
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$EraseArea extends iValueClosure {	// EraseArea(W,x,y,w,h,...)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		int[] a = wCoords.rectArgs(args, 4);
-//#%#%		for (int i = 0; i < a.length; i += 4) {
-//#%#%		    win.EraseArea(a[i], a[i+1], a[i+2], a[i+3]);
-//#%#%		}
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$FillRectangle extends iValueClosure {	// FillRectangle(W,x,y,w,h,...)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		int[] a = wCoords.rectArgs(args, 4);
-//#%#%		for (int i = 0; i < a.length; i += 4) {
-//#%#%		    win.FillRectangle(a[i], a[i+1], a[i+2], a[i+3]);
-//#%#%		}
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	//#%#%#% CopyArea only works with one window argument
-//#%#%	final class f$CopyArea extends iValueClosure {	// CopyArea(W,x1,y1,w,h,x2,y2)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		int[] a = wCoords.rectArgs(args, 4);	// ignore w2, h2
-//#%#%		if (a.length > 4) {	// explicit x2
-//#%#%		    win.CopyArea(a[0], a[1], a[2], a[3], a[4], a[5]);
-//#%#%		} else {
-//#%#%		    win.CopyArea(a[0], a[1], a[2], a[3], 0, 0);
-//#%#%		    //#%#% (0,0) s/b (-dx,-dy)
-//#%#%		}
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	
-//#%#%	
-//#%#%	final class f$DrawArc extends iValueClosure {		// DrawArc(W,x,y,w,h,t,a,...)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		int b = vWindow.argBase(args);
-//#%#%	
-//#%#%		int[] r = wCoords.rectArgs(args, 6);
-//#%#%		for (int i = 0; i < r.length; i += 4) {
-//#%#%		    double t = vReal.argVal(args, b + 4, 0.0);
-//#%#%		    double a = vReal.argVal(args, b + 5, 2.0 * Math.PI);
-//#%#%		    win.DrawArc(r[i], r[i+1], r[i+2], r[i+3], t, a);
-//#%#%		    b += 6;
-//#%#%		}
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$FillArc extends iValueClosure {		// FillArc(W,x,y,w,h,t,a,...)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		int b = vWindow.argBase(args);
-//#%#%	
-//#%#%		int[] r = wCoords.rectArgs(args, 6);
-//#%#%		for (int i = 0; i < r.length; i += 4) {
-//#%#%		    double t = vReal.argVal(args, b + 4, 0.0);
-//#%#%		    double a = vReal.argVal(args, b + 5, 2.0 * Math.PI);
-//#%#%		    win.FillArc(r[i], r[i+1], r[i+2], r[i+3], t, a);
-//#%#%		    b += 6;
-//#%#%		}
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	
-//#%#%	
-//#%#%	final class f$DrawCircle extends iValueClosure {	// DrawCircle(W,x,y,r,t,a,...)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		int b = vWindow.argBase(args);
-//#%#%		int ncir = (args.length - b + 4) / 5;
-//#%#%		if (ncir == 0) {
-//#%#%		    ncir = 1;
-//#%#%		}
-//#%#%		for (int i = 0; i < 5 * ncir; i += 5) {
-//#%#%		    double x = vReal.argVal(args, b + i);
-//#%#%		    double y = vReal.argVal(args, b + i + 1);
-//#%#%		    double r = vReal.argVal(args, b + i + 2);
-//#%#%		    double t = vReal.argVal(args, b + i + 3, 0.0);
-//#%#%		    double a = vReal.argVal(args, b + i + 4, 2.0 * Math.PI);
-//#%#%		    int ix = (int) (x - r);
-//#%#%		    int iy = (int) (y - r);
-//#%#%		    int w = (int) (2 * r);
-//#%#%		    win.DrawArc(ix, iy, w, w, t, a);
-//#%#%		}
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$FillCircle extends iValueClosure {	// FillCircle(W,x,y,r,t,a,...)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		int b = vWindow.argBase(args);
-//#%#%		int ncir = (args.length - b + 4) / 5;
-//#%#%		if (ncir == 0) {
-//#%#%		    ncir = 1;
-//#%#%		}
-//#%#%		for (int i = 0; i < 5 * ncir; i += 5) {
-//#%#%		    double x = vReal.argVal(args, b + i);
-//#%#%		    double y = vReal.argVal(args, b + i + 1);
-//#%#%		    double r = vReal.argVal(args, b + i + 2);
-//#%#%		    double t = vReal.argVal(args, b + i + 3, 0.0);
-//#%#%		    double a = vReal.argVal(args, b + i + 4, 2.0 * Math.PI);
-//#%#%		    int ix = (int) (x - r);
-//#%#%		    int iy = (int) (y - r);
-//#%#%		    int w = (int) (2 * r);
-//#%#%		    win.FillArc(ix, iy, w, w, t, a);
-//#%#%		}
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	
-//#%#%	
-//#%#%	
-//#%#%	final class f$DrawString extends iValueClosure {	// DrawString(W,x,y,s,...)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);	// validate args
-//#%#%		int b = vWindow.argBase(args);
-//#%#%		if ((args.length - b) % 3 != 0) {
-//#%#%		    iRuntime.error(146);
-//#%#%		}
-//#%#%		for (int i = b; i < args.length; i += 3) {
-//#%#%		    int x = (int) vInteger.argVal(args, i);
-//#%#%		    int y = (int) vInteger.argVal(args, i + 1);
-//#%#%		    String s = vString.argDescr(args, i + 2).toString();
-//#%#%		    win.DrawString(x, y, s);
-//#%#%		}
-//#%#%		return null;				// fail
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	
-//#%#%	
-//#%#%	//  mutable colors are not available
-//#%#%	
-//#%#%	final class f$NewColor extends iValueClosure {	// NewColor(W,k) always fails
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);	// validate args
-//#%#%		vString.argDescr(args, vWindow.argBase(args));
-//#%#%		return null;				// fail
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$Color extends iValueClosure {		// Color(W,i,k,...) always fails
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);	// validate args
-//#%#%		int i = vWindow.argBase(args);
-//#%#%		if ((args.length - i) % 2 != 0) {
-//#%#%		    iRuntime.error(146);
-//#%#%		}
-//#%#%		for (; i < args.length; i += 2) {
-//#%#%		    vInteger.argVal(args, i);
-//#%#%		    vString.argDescr(args, i + 1);
-//#%#%		}
-//#%#%		return null;				// fail
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$FreeColor extends iValueClosure {	// FreeColor(W,k,...) is a no-op
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);	// validate args
-//#%#%		for (int i = vWindow.argBase(args); i < args.length; i++) {
-//#%#%		    vString.argDescr(args, i);
-//#%#%		}
-//#%#%		return win;				// succeed
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	
-//#%#%	
-//#%#%	//  miscellaneous AWT functions
-//#%#%	
-//#%#%	final class f$Alert extends iValueClosure {		// Alert(W) sends a beep
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);	// validate arg
-//#%#%		vWindow.beep();
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$Uncouple extends iValueClosure {	// Uncouple(W) calls close(W)
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		win.close();
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$WDefault extends iValueClosure {	// WDefault(W,s1,s2) just fails
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);	// validate arg
-//#%#%		return null; /*FAIL*/
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$WFlush extends iValueClosure {		// WFlush(W) syncs w/ toolkit
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		win.flush();
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
-//#%#%	
-//#%#%	final class f$WSync extends iValueClosure {		// WSync(W) syncs w/ toolkit
-//#%#%	    vDescriptor function(vDescriptor[] args) {
-//#%#%		vWindow win = vWindow.winArg(args);
-//#%#%		win.flush();
-//#%#%		return win;
-//#%#%	    }
-//#%#%	}
+final class f$WAttrib extends vProcV { 		// WAttrib(W,attribs,..)
+    public vDescriptor Call(vDescriptor[] args) {
+
+	final vWindow win = vWindow.winArg(args);
+	int b = vWindow.argBase(args);
+
+	for (int i = b; i < args.length; i++) {
+	    args[i] = args[i].Deref();
+	}
+	final wAttrib alist[] = wAttrib.parseAtts(args, b);
+
+	for (int i = 0; i < alist.length; i++) {
+	    wAttrib a = alist[i];
+	    if (a.val != null) {		// if name=val argument
+		if (a.set(win) == null) {
+		    alist[i] = null;		// set failed
+		}
+	    }
+	}
+
+	return new vClosure() {
+	    int next = 0;
+	    public vDescriptor Resume() {
+		vDescriptor v = null;
+		while (next < alist.length) {
+		    wAttrib a = alist[next++];
+		    if (a != null) {
+			v = a.get(win);
+			if (v != null) {
+			    break;			// generate value
+			}
+		    }
+		}
+		return v;
+	    }
+	}.Resume();
+    }
+}
+
+
+
+final class f$Clone extends vProcV {		// Clone(W,attribs...)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	int b = vWindow.argBase(args);
+	wAttrib alist[] = wAttrib.parseAtts(args, b);
+
+	win = win.Clone();			// clone window
+	for (int i = 0; i < alist.length; i++) { // apply attribs
+	    wAttrib a = alist[i];
+	    if (a.val != null) {		// if val given
+		if (a.set(win) == null) {	// if set fails
+		    return null;		// clone failed
+		}
+	    }
+	}
+	return win;
+    }
+}
+
+
+
+final class f$Pending extends vProc1 {		// Pending(W)
+    public vDescriptor Call(vDescriptor a) {
+	if (!a.iswin()) {
+	    return Call(k$window.getWindow());
+	}
+	return ((vWindow)a).Pending();
+    }
+}
+
+final class f$Event extends vProc1 {		// Event(W)
+    public vDescriptor Call(vDescriptor a) {
+	if (!a.iswin()) {
+	    return Call(k$window.getWindow());
+	}
+	return ((vWindow)a).Event();
+    }
+}
+
+
+
+final class f$Bg extends vProc2 {		// Bg(W, s)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	if (!a.iswin()) {
+	    return Call(k$window.getWindow(), a);
+	}
+	return ((vWindow)a).Bg(b.isnull() ? null : b.mkString());
+    }
+}
+
+final class f$Fg extends vProc2 {		// Fg(W, s)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	if (!a.iswin()) {
+	    return Call(k$window.getWindow(), a);
+	}
+	return ((vWindow)a).Fg(b.isnull() ? null : b.mkString());
+    }
+}
+
+final class f$ColorValue extends vProc2 {	// ColorValue(W, s)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	if (!a.iswin()) {
+	    return Call(null, a);	// W is not needed or used
+	}
+	vString s = b.mkString();
+	wColor k = wColor.parse(s);
+	if (k == null) {
+	    return null;
+	} else {
+	    return vString.New(257 * k.getRed() + "," +
+			257 * k.getGreen() + "," + 257 * k.getBlue());
+	}
+    }
+}
+
+
+
+
+final class f$Font extends vProc2 {		// Font(W,s)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	if (!a.iswin()) {
+	    return Call(k$window.getWindow(), a);
+	}
+	return ((vWindow)a).Font(b.isnull() ? null : b.mkString());
+    }
+}
+
+final class f$TextWidth extends vProc2 {	// TextWidth(W,s)
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	if (!a.iswin()) {
+	    return Call(k$window.getWindow(), a);
+	}
+	return ((vWindow)a).TextWidth(b.mkString().toString());
+    }
+}
+
+final class f$GotoXY extends vProc3 {		// GotoXY(W,x,y)
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
+	if (!a.iswin()) {
+	    return Call(k$window.getWindow(), a, b);
+	}
+	vWindow win = (vWindow)a;
+	long x = b.mkInteger().value;
+	long y = c.mkInteger().value;
+	win.getTTY().X(x + "");
+	win.getTTY().Y(y + "");
+	return win;
+    }
+}
+
+final class f$GotoRC extends vProc3 {		// GotoXY(W,r,c)
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
+	if (!a.iswin()) {
+	    return Call(k$window.getWindow(), a, b);
+	}
+	vWindow win = (vWindow)a;
+	long row = b.mkInteger().value;
+	long col = c.mkInteger().value;
+	win.getTTY().Row(win, row + "");
+	win.getTTY().Col(win, col + "");
+	return win;
+    }
+}
+
+
+
+
+final class f$DrawPoint extends vProcV {	// DrawPoint(W,x,y,...)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	wCoords c = new wCoords(args);
+	for (int i = 0; i < c.nPoints; i++) {
+	    int x = c.xPoints[i];
+	    int y = c.yPoints[i];
+	    win.DrawLine(x, y, x, y);
+	}
+	return win;
+    }
+}
+
+final class f$DrawLine extends vProcV {		// DrawLine(W,x,y,...)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	win.DrawLine(new wCoords(args));
+	return win;
+    }
+}
+
+final class f$DrawSegment extends vProcV {	// DrawSegment(W,x,y,...)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	wCoords c = new wCoords(args);
+	if (c.nPoints % 2 != 0) {
+	    iRuntime.error(146);
+	}
+	for (int i = 0; i < c.nPoints; i += 2) {
+	    win.DrawLine(c.xPoints[i], c.yPoints[i],
+		c.xPoints[i+1], c.yPoints[i+1]);
+	}
+	return win;
+    }
+}
+
+final class f$DrawPolygon extends vProcV {	// DrawPolygon(W,x,y,...)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	win.DrawPolygon(new wCoords(args));
+	return win;
+    }
+}
+
+final class f$FillPolygon extends vProcV {	// FillPolygon(W,x,y,...)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	win.FillPolygon(new wCoords(args));
+	return win;
+    }
+}
+
+
+
+final class f$DrawRectangle extends vProcV {	// DrawRectangle(W,x,y,w,h,...)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	int[] a = wCoords.rectArgs(args, 4);
+	for (int i = 0; i < a.length; i += 4) {
+	    win.DrawRectangle(a[i], a[i+1], a[i+2], a[i+3]);
+	}
+	return win;
+    }
+}
+
+final class f$EraseArea extends vProcV {	// EraseArea(W,x,y,w,h,...)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	int[] a = wCoords.rectArgs(args, 4);
+	for (int i = 0; i < a.length; i += 4) {
+	    win.EraseArea(a[i], a[i+1], a[i+2], a[i+3]);
+	}
+	return win;
+    }
+}
+
+final class f$FillRectangle extends vProcV {	// FillRectangle(W,x,y,w,h,...)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	int[] a = wCoords.rectArgs(args, 4);
+	for (int i = 0; i < a.length; i += 4) {
+	    win.FillRectangle(a[i], a[i+1], a[i+2], a[i+3]);
+	}
+	return win;
+    }
+}
+
+//#%#%#% CopyArea only works with one window argument
+final class f$CopyArea extends vProcV {		// CopyArea(W,x1,y1,w,h,x2,y2)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	int[] a = wCoords.rectArgs(args, 4);	// ignore w2, h2
+	if (a.length > 4) {	// explicit x2
+	    win.CopyArea(a[0], a[1], a[2], a[3], a[4], a[5]);
+	} else {
+	    win.CopyArea(a[0], a[1], a[2], a[3], 0, 0);
+	    //#%#% (0,0) s/b (-dx,-dy)
+	}
+	return win;
+    }
+}
+
+
+
+final class f$DrawArc extends vProcV {		// DrawArc(W,x,y,w,h,t,a,...)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	int b = vWindow.argBase(args);
+
+	int[] r = wCoords.rectArgs(args, 6);
+	for (int i = 0; i < r.length; i += 4) {
+	    double t = vReal.argVal(args, b + 4, 0.0);
+	    double a = vReal.argVal(args, b + 5, 2.0 * Math.PI);
+	    win.DrawArc(r[i], r[i+1], r[i+2], r[i+3], t, a);
+	    b += 6;
+	}
+	return win;
+    }
+}
+
+final class f$FillArc extends vProcV {		// FillArc(W,x,y,w,h,t,a,...)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	int b = vWindow.argBase(args);
+
+	int[] r = wCoords.rectArgs(args, 6);
+	for (int i = 0; i < r.length; i += 4) {
+	    double t = vReal.argVal(args, b + 4, 0.0);
+	    double a = vReal.argVal(args, b + 5, 2.0 * Math.PI);
+	    win.FillArc(r[i], r[i+1], r[i+2], r[i+3], t, a);
+	    b += 6;
+	}
+	return win;
+    }
+}
+
+
+
+final class f$DrawCircle extends vProcV {	// DrawCircle(W,x,y,r,t,a,...)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	int b = vWindow.argBase(args);
+	int ncir = (args.length - b + 4) / 5;
+	if (ncir == 0) {
+	    ncir = 1;
+	}
+	for (int i = 0; i < 5 * ncir; i += 5) {
+	    double x = vReal.argVal(args, b + i);
+	    double y = vReal.argVal(args, b + i + 1);
+	    double r = vReal.argVal(args, b + i + 2);
+	    double t = vReal.argVal(args, b + i + 3, 0.0);
+	    double a = vReal.argVal(args, b + i + 4, 2.0 * Math.PI);
+	    int ix = (int) (x - r);
+	    int iy = (int) (y - r);
+	    int w = (int) (2 * r);
+	    win.DrawArc(ix, iy, w, w, t, a);
+	}
+	return win;
+    }
+}
+
+final class f$FillCircle extends vProcV {	// FillCircle(W,x,y,r,t,a,...)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	int b = vWindow.argBase(args);
+	int ncir = (args.length - b + 4) / 5;
+	if (ncir == 0) {
+	    ncir = 1;
+	}
+	for (int i = 0; i < 5 * ncir; i += 5) {
+	    double x = vReal.argVal(args, b + i);
+	    double y = vReal.argVal(args, b + i + 1);
+	    double r = vReal.argVal(args, b + i + 2);
+	    double t = vReal.argVal(args, b + i + 3, 0.0);
+	    double a = vReal.argVal(args, b + i + 4, 2.0 * Math.PI);
+	    int ix = (int) (x - r);
+	    int iy = (int) (y - r);
+	    int w = (int) (2 * r);
+	    win.FillArc(ix, iy, w, w, t, a);
+	}
+	return win;
+    }
+}
+
+
+
+
+final class f$DrawString extends vProcV {	// DrawString(W,x,y,s,...)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);	// validate args
+	int b = vWindow.argBase(args);
+	if ((args.length - b) % 3 != 0) {
+	    iRuntime.error(146);
+	}
+	for (int i = b; i < args.length; i += 3) {
+	    int x = (int) vInteger.argVal(args, i);
+	    int y = (int) vInteger.argVal(args, i + 1);
+	    String s = vString.argDescr(args, i + 2).toString();
+	    win.DrawString(x, y, s);
+	}
+	return null;				// fail
+    }
+}
+
+
+
+//  mutable colors are not available
+
+final class f$NewColor extends vProc2 {		// NewColor(W,k) always fails
+    public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	if (!a.iswin()) {
+	    return Call(k$window.getWindow(), a);
+	}
+	return null; /*FAIL*/
+    }
+}
+
+final class f$Color extends vProcV {		// Color(W,i,k,...) always fails
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);	// validate args
+	int i = vWindow.argBase(args);
+	if ((args.length - i) % 2 != 0) {
+	    iRuntime.error(146);
+	}
+	for (; i < args.length; i += 2) {
+	    vInteger.argVal(args, i);
+	    vString.argDescr(args, i + 1);
+	}
+	return null; /*FAIL*/
+    }
+}
+
+final class f$FreeColor extends vProcV {	// FreeColor(W,k,...) is a no-op
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);	// validate args
+	for (int i = vWindow.argBase(args); i < args.length; i++) {
+	    vString.argDescr(args, i);
+	}
+	return win;				// succeed
+    }
+}
+
+
+
+//  miscellaneous AWT functions
+
+final class f$Alert extends vProc1 {		// Alert(W) sends a beep
+    public vDescriptor Call(vDescriptor a) {
+	if (!a.iswin()) {
+	    return Call(k$window.getWindow());
+	}
+	((vWindow)a).beep();
+	return a;
+    }
+}
+
+final class f$Uncouple extends vProc1 {		// Uncouple(W) calls close(W)
+    public vDescriptor Call(vDescriptor a) {
+	if (!a.iswin()) {
+	    return Call(k$window.getWindow());
+	}
+	((vWindow)a).close();
+	return a;
+    }
+}
+
+final class f$WDefault extends vProc3 {		// WDefault(W,s1,s2) just fails
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
+	if (!a.iswin()) {
+	    return Call(k$window.getWindow(), a, b);
+	}
+	return null; /*FAIL*/
+    }
+}
+
+final class f$WFlush extends vProc1 {		// WFlush(W) syncs w/ toolkit
+    public vDescriptor Call(vDescriptor a) {
+	if (!a.iswin()) {
+	    return Call(k$window.getWindow());
+	}
+	((vWindow)a).flush();
+	return a;
+    }
+}
+
+final class f$WSync extends vProc1 {		// WSync(W) syncs w/ toolkit
+    public vDescriptor Call(vDescriptor a) {
+	if (!a.iswin()) {
+	    return Call(k$window.getWindow());
+	}
+	((vWindow)a).flush();
+	return a;
+    }
+}

@@ -27,6 +27,7 @@ public int hashCode()			{ return Deref().hashCode(); }
 // (See vDescriptor.java for a commented version of this method list.)
 
 boolean isnull()			{ return Deref().isnull(); }
+boolean iswin()				{ return Deref().iswin(); }
 vString mkString()			{ return Deref().mkString(); }
 vInteger mkInteger()			{ return Deref().mkInteger(); }
 vReal mkReal()				{ return Deref().mkReal(); }

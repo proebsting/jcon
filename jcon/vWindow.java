@@ -27,6 +27,7 @@ public final class vWindow extends vFile {
     private int leading;	// current leading value
 
 
+boolean iswin()			{ return true; }
 
 wCanvas getCanvas()		{ return c; }
 wTTY getTTY()			{ return c.tty; }
@@ -180,7 +181,7 @@ static void beep() {		// send a beep
 //  argBase(args) -- get index of first non-window argument, 0 or 1
 
 static int argBase(vDescriptor args[]) {
-    if (args.length > 0 && args[0] instanceof vWindow) {
+    if (args.length > 0 && args[0].iswin()) {
 	return 1;
     } else {
 	return 0;
