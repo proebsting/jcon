@@ -60,10 +60,13 @@ void announce() {
 	declare("put", -2);
 	declare("read", 1);
 	declare("real", 1);
+	declare("remove", 1);
+	declare("rename", 2);
 	declare("repl", 2);
 	declare("reverse", 1);
 	declare("right", 3);
 	declare("rtod", 1);
+	declare("runerr", 2);
 	declare("seq", 2);
 	declare("serial", 1);
 	declare("set", 1);
@@ -351,5 +354,44 @@ class f$seq extends iClosure {					// seq(i1,i2)
 		}
 		retvalue = i1;
 		i1 = iNew.Integer(i1.value + i2.value);
+	}
+}
+
+class f$remove extends iFunctionClosure {			// remove(s)
+	vDescriptor function(vDescriptor[] args) {
+		String s = vString.argVal(args, 0);
+		java.io.File f = new java.io.File(s);
+		if (f.delete()) {
+			return iNew.Null();
+		} else {
+			return null;
+		}
+	}
+}
+
+class f$rename extends iFunctionClosure {			// rename(s1,s2)
+	vDescriptor function(vDescriptor[] args) {
+		String s1 = vString.argVal(args, 0);
+		String s2 = vString.argVal(args, 1);
+		java.io.File f1 = new java.io.File(s1);
+		java.io.File f2 = new java.io.File(s2);
+		if (f1.renameTo(f2)) {
+			return iNew.Null();
+		} else {
+			return null;
+		}
+	}
+}
+
+class f$runerr extends iFunctionClosure {			// runerr(i,x)
+	vDescriptor function(vDescriptor[] args) {
+		long i = vInteger.argVal(args, 0);
+		vDescriptor x = iRuntime.argVal(args, 1);
+		if (x instanceof vNull) {
+			iRuntime.error((int) i);
+		} else {
+			iRuntime.error((int) i, x);
+		}
+		return iNew.Null();
 	}
 }
