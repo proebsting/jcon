@@ -1,6 +1,10 @@
-changes in v2:
--- large integers are supported
--- section wraparound (e.g. "abcd"[-2+:3]) yields failure
+additions in v2:
+-- large integers are implemented
+-- loadfunc() is implemented
+-- for graphics, clipping is implemented
+-- section wraparound (e.g. "abcd"[-2+:3]) yields failure  (this is a bugfix)
+
+losses in v2:
 -- variable(), display(), and &dump can access only global variables
 -- compilation with "-fn" is needed to see line numbers in traceback messages
 -- tracing (&trace) does not function
@@ -14,7 +18,7 @@ what's implemented:
 -- most functions; missing chdir(), getch()/getche()/kbhit()
 -- loadfunc(zipfile,funcname) links in Java code; supports generators, too
 -- only part of the graphics repertoire (see below)
--- based Icon as defined by LB3/GB; undocumented behavior may differ
+-- based on Icon as defined by LB3/GB; undocumented behavior may differ
 
 compilation and linking:
 -- jcont is a complex script that only runs on Unix
@@ -30,6 +34,7 @@ execution:
 -- $PATH must include env and uname commands to use getenv() and &hostname
 -- executables are portable among dissimilar Unix platforms (just need ksh+Java)
 -- very large .icn files (e.g. 9000 lines) may produce bogus ClassFormatErrors
+   -- #%#% is this still a problem with JDK1.1?
 
 known bugs:
 -- local variables are not dereferenced prior to being returned
@@ -39,6 +44,7 @@ known bugs:
 strings and csets:
 -- Jcon uses 8-bit characters (as does v9), not Unicode
 -- conversion to or from numeric may differ slightly from v9
+-- in particular, conversion from real to string shows more digits
 
 structures:
 -- random selection from sets and tables differs from v9
@@ -68,17 +74,16 @@ keywords:
 
 graphics overview:
 -- only some of the graphics features are present
--- omissions include clipping, dx/dy translation, images, wide lines
+-- omissions include dx/dy translation, images, wide lines
 -- see rts/wBuiltins.java for the list of implemented functions
 -- see rts/wAttrib.java for the list of implemented attributes
 
 graphics bugs:
 -- window repair is only done when paused for event input
 -- &interval is always zero
--- graphics output is flushed before any read() -- even untranslated from disk
 
 graphics (general):
--- no sharing of graphics contexts among windows by Couple() or Clone()
+-- there is no sharing of graphics contexts among windows by Couple() or Clone()
 
 events:
 -- Java distinguishes "alt" and "meta" keys; Jcon maps both to the &meta flag
