@@ -207,4 +207,3 @@ class f$map extends iFunctionClosure {				// map(s1,s2,s3)
 		return iNew.String(new String(s));
 	}
 }
-

@@ -54,7 +54,7 @@ class f$many extends iFunctionClosure {			// many(c,s,i1,i2)
     }
 }
 
-class f$match extends iFunctionClosure {			// match(s1,s2,i1,i2)
+class f$match extends iFunctionClosure {		// match(s1,s2,i1,i2)
     vDescriptor function(vDescriptor[] args) {
 	String s1 = vString.argVal(args, 0);
 	vString s2 = iRuntime.argSubject(args, 1);

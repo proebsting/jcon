@@ -157,6 +157,10 @@ class f$atan extends iFunctionClosure {				// atan(r1,r2)
     vDescriptor function(vDescriptor[] args) {
 	double r1 = vReal.argVal(args, 0);
 	double r2 = vReal.argVal(args, 1, 1.0);
-	return iNew.Real(Math.atan2(r1, r2));
+	if (r2 == 0.0 && r1 == 0.0) {
+	    return iNew.Real(0.0);	// define as 0 and avoid "domain error"
+	} else {
+	    return iNew.Real(Math.atan2(r1, r2));
+	}
     }
 }
