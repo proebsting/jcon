@@ -1,6 +1,24 @@
 Important (externally visible) changes since 2.0 release:
 <<ARIZONA-ONLY>>
 
+Since release of Version 2.1 (Sept 99):
+
+
+From todd  Tue Jan 25 21:55:06 2000
+Prevent the resumption of a returned closure, by adding a new Return method
+to vDescriptor.  Originally discovered in ddfread() as called from dlgvu.
+
+From gmt  Dec 15 1998
+General cleanup of benchmark area motivated by problems running Linux
+benchmarks to add to SP&E paper.
+
+From gmt  Dec 10 1998
+In translator, change confusing name ir_RunTimeError to ir_Unreachable
+in response to referee comments on SP&E paper.
+
+------------------------------------------------------------------------------
+
+Earlier:
 
 From todd Sat Aug 29 10:36:25 1998
 seq() cannot have a zero increment value.
