@@ -280,17 +280,15 @@ $TANNOUNCE 1>&2 "No errors"
 $NOLINK
 $ANNOUNCE 1>&2 "Linking:"
 
+# create $MAIN class
+rm -f $TDIR/*.class
+(cd $TDIR; $JLINK $MAIN $ROOTS)
+
 # generate list of files needed for linking
 $JAVA rts.FindFiles $LINKTRACE "$UIPATH" $ZFILES >$TDIR/zip.list
 
-# unpack all those .zip files
-rm -f $TDIR/*.class
-for FNAME in `<$TDIR/zip.list`; do
-    (cd $TDIR; $JAR xf $FNAME)
-done
-
-# create $MAIN class
-(cd $TDIR; $JLINK $MAIN $ROOTS)
+# unpack all the .zip files and combine the class files to make a new .zip file
+(cd $TDIR; $JAVA rts.ZipMerge combined.zip $MAIN.class `cat zip.list`)
 
 # disassemble $MAIN class, if requested
 if [ "$JVMDUMP" != "" ]; then (
@@ -301,9 +299,6 @@ if [ "$JVMDUMP" != "" ]; then (
     CLASSPATH=$JRTS:. $JVMDUMP $MAIN >>../$MAIN.jvm
     )
 fi
-
-# combine the class files to make a new .zip file
-(cd $TDIR; $JAR cfM combined.zip $MAIN.class [lpc]*.class)
 
 # write the output file
 case $XTYPE in
