@@ -98,6 +98,19 @@ void closure(vDescriptor[] a, iClosure parent) {
     this.parent = parent;
 }
 
+void closure(vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosure parent) {
+    vDescriptor[] args = { arg0, arg1, arg2 };
+    closure(args, parent);
+}
+void closure(vDescriptor arg0, vDescriptor arg1, iClosure parent) {
+    vDescriptor[] args = { arg0, arg1 };
+    closure(args, parent);
+}
+void closure(vDescriptor arg0, iClosure parent) {
+    vDescriptor[] args = { arg0 };
+    closure(args, parent);
+}
+
 
 
 // tfmt() -- return trace message format

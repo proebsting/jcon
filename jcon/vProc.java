@@ -43,7 +43,7 @@ public class vProc extends vValue {
 		return s1.compareTo(s2);
 	}
 
-	public iClosure instantiate(vDescriptor[] args, iClosure parent) {
+	iClosure getClosure() {
 		iClosure c = null;
 
 		try {
@@ -53,7 +53,27 @@ public class vProc extends vValue {
 		} catch (IllegalAccessException e) {
 			iRuntime.bomb(e);
 		}
+		return c;
+	}
+
+	public iClosure instantiate(vDescriptor[] args, iClosure parent) {
+		iClosure c = getClosure();
 		c.closure(args, parent);
+		return c;
+	}
+	public iClosure instantiate(vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosure parent) {
+		iClosure c = getClosure();
+		c.closure(arg0, arg1, arg2, parent);
+		return c;
+	}
+	public iClosure instantiate(vDescriptor arg0, vDescriptor arg1, iClosure parent) {
+		iClosure c = getClosure();
+		c.closure(arg0, arg1, parent);
+		return c;
+	}
+	public iClosure instantiate(vDescriptor arg0, iClosure parent) {
+		iClosure c = getClosure();
+		c.closure(arg0, parent);
 		return c;
 	}
 

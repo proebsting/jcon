@@ -117,4 +117,17 @@ public abstract class vDescriptor {
 	System.err.println("NYI: " + this + "." + (s != null ? s : "?"));
 	System.exit(1);
     }
+
+    public iClosure instantiate(vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosure parent) {
+	vDescriptor[] args = { arg0, arg1, arg2};
+	return this.instantiate(args, parent);
+    }
+    public iClosure instantiate(vDescriptor arg0, vDescriptor arg1, iClosure parent) {
+	vDescriptor[] args = { arg0, arg1};
+	return this.instantiate(args, parent);
+    }
+    public iClosure instantiate(vDescriptor arg0, iClosure parent) {
+	vDescriptor[] args = { arg0};
+	return this.instantiate(args, parent);
+    }
 }
