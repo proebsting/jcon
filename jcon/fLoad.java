@@ -1,6 +1,6 @@
 //  fLoad.java -- the loadfunc() function
 
-package rts;
+package jcon;
 
 import java.io.*;
 import java.util.*;
@@ -17,7 +17,7 @@ final class fLoad extends iInstantiate {
 
 //  loadfunc(library, funcname)
 //
-//  Loads a class (which must extend rts.vProc[0-9V]) from a Zip (or Jar)
+//  Loads a class (which must extend jcon.vProc[0-9V]) from a Zip (or Jar)
 //  library and returns a procedure.  Loadfunc selects the first class
 //  named either "funcname.class" (assumed to be a Java procedure) or
 //  "p_l$<anything>$funcname.class" (an Icon procedure).  For an Icon

@@ -1,6 +1,6 @@
 //  cEntry.java -- a single color palette entry
 
-package rts;
+package jcon;
 
 final class cEntry {
 

@@ -2,7 +2,7 @@
 //
 //  superclass of cNamed, cColors, and cGrays
 
-package rts;
+package jcon;
 
 import java.util.*;
 import java.awt.*;

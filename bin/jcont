@@ -45,7 +45,7 @@
 #  Zip archive.  Execution is accomplished by naming the file in the
 #  CLASSPATH (with the runtime files) and then running java:
 #	jcont -j myprog.icn
-#	setenv CLASSPATH myprog.jar:/myhome/jcon/bin/rts.zip
+#	setenv CLASSPATH myprog.jar:/myhome/jcon/bin/jcon.zip
 #	java myprog
 #
 
@@ -199,7 +199,7 @@ done
 # set paths for translator and for runtime files
 JTRAN="$ICONX $IDIR${FILESEP}$TRAN"
 JLINK="$ICONX $IDIR${FILESEP}$LINK"
-JRTS="$IDIR${FILESEP}rts.zip"
+JRTS="$IDIR${FILESEP}jcon.zip"
 
 # estimate the needed header size
 HBASE=480		# approximate size of fixed text, plus breathing room
@@ -284,10 +284,10 @@ rm -f $TDIR/*.class
 (cd $TDIR; $JLINK $MAIN $ROOTS)
 
 # generate list of files needed for linking
-$JAVA rts.FindFiles $LINKTRACE "$UIPATH" $ZFILES >$TDIR/zip.list
+$JAVA jcon.FindFiles $LINKTRACE "$UIPATH" $ZFILES >$TDIR/zip.list
 
 # unpack all the .zip files and combine the class files to make a new .zip file
-(cd $TDIR; $JAVA rts.ZipMerge combined.zip $MAIN.class `cat zip.list`)
+(cd $TDIR; $JAVA jcon.ZipMerge combined.zip $MAIN.class `cat zip.list`)
 
 # disassemble $MAIN class, if requested
 if [ "$JVMDUMP" != "" ]; then (

@@ -1,6 +1,6 @@
 //  fIO.java -- functions dealing with I/O
 
-package rts;
+package jcon;
 
 import java.io.*;
 

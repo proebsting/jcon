@@ -1,6 +1,6 @@
 //  fGraphics.java -- built-in graphics functions, except drawing functions
 
-package rts;
+package jcon;
 
 import java.awt.*;
 import java.util.*;

@@ -56,11 +56,11 @@ An understanding of Java is assumed in what follows.
 <H4>Run-time system basics</H4>
 
 <P> The Jcon run-time system is contained in the source directory 
-named <CODE>rts</CODE>
+named <CODE>jcon</CODE>
 and forms a Java package of that name.
-A file containing a loadable procedure declares <CODE>import rts.*;</CODE>
+A file containing a loadable procedure declares <CODE>import jcon.*;</CODE>
 to gain access
-to the <CODE>rts</CODE> namespace.
+to the <CODE>jcon</CODE> namespace.
 
 <P> Icon values of the various types are instances of classes such as
 <EM>vInteger</EM>, <EM>vString</EM>, and <EM>vList</EM>.
@@ -117,7 +117,7 @@ Suspension will be covered in the next subsection.
 <P> Here is a procedure that accepts three arguments,
 coerces them to integer, and returns the sum:
 <BLOCKQUOTE><PRE>
-import rts.*;
+import jcon.*;
 
 public class sum3 extends vProc3 {
 
@@ -145,13 +145,13 @@ end
 <CODE>sumtest.icn</CODE>, the shell commands would be something like this:
 <BLOCKQUOTE><PRE>
 jcont -u sumtest.icn
-setenv CLASSPATH /myhome/jcon/bin/rts.zip
+setenv CLASSPATH /myhome/jcon/bin/jcon.zip
 javac sum3.java
 jar cf sum3.zip sum3.class
 ./sumtest
 </PRE></BLOCKQUOTE>
 
-<P> Many examples of procedures can be found in the <CODE>rts/f*.java</CODE>
+<P> Many examples of procedures can be found in the <CODE>jcon/f*.java</CODE>
 files in the Jcon distribution.
 These files implement Icon's built-in functions.
 
@@ -193,7 +193,7 @@ To avoid a special case, even the first value is produced
 by calling the <CODE>Resume()</CODE> method.
 
 <BLOCKQUOTE><PRE>
-import rts.*;
+import jcon.*;
 
 public class factors extends vProc1 {
 

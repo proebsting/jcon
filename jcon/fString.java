@@ -1,6 +1,6 @@
 //  fString.java -- functions operating on Icon strings
 
-package rts;
+package jcon;
 
 final class fString extends iInstantiate {
     public static fString self = new fString();

@@ -1,6 +1,6 @@
 //  vBFile.java -- Icon Binary ("untranslated") Files
 
-package rts;
+package jcon;
 
 import java.io.*;
 

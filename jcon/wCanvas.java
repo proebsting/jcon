@@ -1,6 +1,6 @@
 //  wCanvas.java -- an Icon window canvas, including attributes
 
-package rts;
+package jcon;
 
 import java.awt.*;
 import java.util.*;

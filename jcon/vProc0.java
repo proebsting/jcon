@@ -1,6 +1,6 @@
 //  vProc0 -- parent class for procedures declared with 0 arguments
 
-package rts;
+package jcon;
 
 public abstract class vProc0 extends vProc {
 

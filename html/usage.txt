@@ -114,13 +114,13 @@ Execution is accomplished by naming the file in the CLASSPATH,
 along with the run-time library, and then running java:
 <BLOCKQUOTE><PRE>
 jcont -j myprog.icn
-setenv CLASSPATH myprog.jar:/myhome/jcon/bin/rts.zip
+setenv CLASSPATH myprog.jar:/myhome/jcon/bin/jcon.zip
 java myprog
 </PRE></BLOCKQUOTE>
 
 <P> It is possible to transport such a Jar file for execution on another
 machine, possibly even one of different architecture.
-The run-time library <CODE>rts.zip</CODE> must also be made available on
+The run-time library <CODE>jcon.zip</CODE> must also be made available on
 the target machine.
 Details depend on the particular Java implementation,
 but the general concept is the same.

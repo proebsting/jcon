@@ -2,7 +2,7 @@
 //
 // (part of the loadfunc test)
 
-import rts.*;
+import jcon.*;
 
 public class threen extends vProc1 {
     public vDescriptor Call(vDescriptor a) {

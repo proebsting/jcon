@@ -272,7 +272,7 @@ procedure bc_gen_ir_Var_rval(s, p)
 
     /bc_var_field[p.name] := j_create_fieldref(bc_current_classptr,
                                                "v$" || p.name,
-                                               "Lrts/vVariable;",
+                                               "Ljcon/vVariable;",
                                                bc_current_classname)
     if member(bc_statics_set, p.name) then {
         put(s, j_getstatic(bc_var_field[p.name]))
@@ -291,7 +291,7 @@ procedure bc_gen_ir_Key_register(p)
     /bc_key_table[p.name] := j_create_fieldref(bc_current_classptr,
 					       bc_keywords(p.name)[1],
 					       bc_keywords(p.name)[2],
-                                               "rts/iKeyword")
+                                               "jcon/iKeyword")
 end
 procedure bc_gen_ir_Key_rval(s, p)
     bc_gen_ir_Key_register(p)
@@ -306,7 +306,7 @@ procedure bc_gen_ir_IntLit(s, p)
     i := integer(p.val)
     /bc_integer_table[i] := "li$" || map(i, "-", "m")
     field := j_create_fieldref(bc_current_classptr, bc_integer_table[i],
-                               "Lrts/vNumeric;", bc_java_classname)
+                               "Ljcon/vNumeric;", bc_java_classname)
     put(s, j_getstatic(field))
     return s
 end
@@ -318,7 +318,7 @@ procedure bc_gen_ir_RealLit(s, p)
     r := real(p.val)
     /bc_real_table[r] := "lr$" || map(r, ".-+", "dmp")
     field := j_create_fieldref(bc_current_classptr, bc_real_table[r],
-                               "Lrts/vReal;", bc_java_classname)
+                               "Ljcon/vReal;", bc_java_classname)
     put(s, j_getstatic(field))
     return s
 end
@@ -329,7 +329,7 @@ procedure bc_gen_ir_StrLit(s, p)
 
     /bc_string_table[p.val] := "ls$" || *bc_string_table
     field := j_create_fieldref(bc_current_classptr, bc_string_table[p.val],
-                             "Lrts/vString;", bc_java_classname)
+                             "Ljcon/vString;", bc_java_classname)
     put(s, j_getstatic(field))
     return s
 end
@@ -340,7 +340,7 @@ procedure bc_gen_ir_CsetLit(s, p)
 
     /bc_cset_table[p.val] := "lc$" || *bc_cset_table
     field := j_create_fieldref(bc_current_classptr, bc_cset_table[p.val],
-                             "Lrts/vCset;", bc_java_classname)
+                             "Ljcon/vCset;", bc_java_classname)
     put(s, j_getstatic(field))
     return s
 end
@@ -355,7 +355,7 @@ procedure bc_save_tmps(s)
 
     if *bc_tmp_table > 0 then {
         a := j_create_fieldref(bc_current_classptr, "tmpArray",
-                             "[Lrts/vDescriptor;", bc_current_classname)
+                             "[Ljcon/vDescriptor;", bc_current_classname)
         put(s, j_aload_0())
         put(s, j_getfield(a))
         every k := key(bc_tmp_table) do {
@@ -415,7 +415,7 @@ procedure bc_gen_ir_Succeed(s, p)
         put(s, j_Aload(bc_stackptr + bc_var_offset))
 	if \bc_save_restore_flag then {
             class_index := j_cp_Class(bc_current_classptr,
-                              j_cp_Utf8(bc_current_classptr, "rts/vLocalVar"))
+                              j_cp_Utf8(bc_current_classptr, "jcon/vLocalVar"))
 	    put(s, j_checkcast(class_index))
 	}
 	put(s, j_invokestatic(free))
@@ -436,7 +436,7 @@ procedure bc_gen_ir_Fail(s, p)
         put(s, j_Aload(bc_stackptr + bc_var_offset))
 	if \bc_save_restore_flag then {
             class_index := j_cp_Class(bc_current_classptr,
-                              j_cp_Utf8(bc_current_classptr, "rts/vLocalVar"))
+                              j_cp_Utf8(bc_current_classptr, "jcon/vLocalVar"))
 	    put(s, j_checkcast(class_index))
 	}
 	put(s, j_invokestatic(free))
@@ -522,7 +522,7 @@ procedure bc_gen_ir_MakeList(s, p)
 
     put(s, j_ipush(*p.valueList))
     class_index := j_cp_Class(bc_current_classptr,
-                              j_cp_Utf8(bc_current_classptr, "rts/vDescriptor"))
+                              j_cp_Utf8(bc_current_classptr,"jcon/vDescriptor"))
     put(s, j_anewarray(class_index) )
 
     every i := 1 to *p.valueList do {
@@ -598,7 +598,7 @@ procedure bc_gen_ir_Call(s, p)
     } else {
         put(s, j_ipush(*p.argList))
         class_index := j_cp_Class(bc_current_classptr,
-                                  j_cp_Utf8(bc_current_classptr, "rts/vDescriptor"))
+                                  j_cp_Utf8(bc_current_classptr, "jcon/vDescriptor"))
         put(s, j_anewarray(class_index) )
         every i := 1 to *p.argList do {
             put(s, j_dup())
@@ -624,7 +624,7 @@ procedure bc_gen_ir_Operator(s, p)
     n := p.name || "," || p.arity
     /bc_op_table[n] := "proc_" || *bc_op_table
     field := j_create_fieldref(bc_current_classptr, bc_op_table[n],
-                             "Lrts/vDescriptor;", bc_java_classname)
+                             "Ljcon/vDescriptor;", bc_java_classname)
     put(s, j_getstatic(field))
     return s
 end
@@ -643,7 +643,7 @@ procedure bc_gen_ir_Create(s, p)
     newmethod := bc_New_vCoexp_methodref(bc_current_classptr)
     createmethod := bc_create_methodref(bc_current_classptr)
     vararray := j_create_fieldref(bc_current_classptr, "tmpVarArray",
-                                  "[Lrts/vDescriptor;", bc_current_classname)
+                                  "[Ljcon/vDescriptor;", bc_current_classname)
 
     put(s, j_new(class))
     put(s, j_dup())
@@ -811,10 +811,10 @@ procedure bc_alloc_tmps(s, c, class, classname)
     if *bc_tmp_table > 0 then {
         put(s, j_aload_0() )
         put(s, j_ipush(*bc_tmp_table) )
-        class_index := j_cp_Class(c, j_cp_Utf8(c, "rts/vDescriptor"))
+        class_index := j_cp_Class(c, j_cp_Utf8(c, "jcon/vDescriptor"))
         put(s, j_anewarray(class_index) )
         a := j_create_fieldref(class, "tmpArray",
-                             "[Lrts/vDescriptor;", classname)
+                             "[Ljcon/vDescriptor;", classname)
         put(s, j_putfield(a) )
     }
 end
@@ -886,7 +886,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     bc_current_classname := bc_vProc_classname
     c := bc_current_classptr := j_ClassFile(3, 45, [&null], table(), 16r11,
 					&null, &null, [], [], [], [])
-    superclass := "rts/vProc" || ((/accumulate & 9 >= *params) | "V")
+    superclass := "jcon/vProc" || ((/accumulate & 9 >= *params) | "V")
     c.super_class := j_cp_Class(c, j_cp_Utf8(c, superclass))
     c.this_class := j_cp_Class(c, j_cp_Utf8(c, bc_current_classname))
 
@@ -909,7 +909,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
         bc_current_classname := bc_vClosure_classname
         c := bc_current_classptr := j_ClassFile(3, 45, [&null], table(), 16r11,
 					&null, &null, [], [], [], [])
-        superclass := "rts/vClosure"
+        superclass := "jcon/vClosure"
         c.super_class := j_cp_Class(c, j_cp_Utf8(c, superclass))
         c.this_class := j_cp_Class(c, j_cp_Utf8(c, bc_current_classname))
 
@@ -922,7 +922,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
 
         bc_create_vClosure_constructor(c, params, locals, undeclared, accumulate)
         if \bc_create_exists then {
-            j_create_field(bc_current_classptr, 0, "refreshArray", "[Lrts/vDescriptor;")
+            j_create_field(bc_current_classptr, 0, "refreshArray", "[Ljcon/vDescriptor;")
             j_create_field(bc_current_classptr, 0, "refreshPC", "I")
             bc_create_vClosure_copy_constructor(c, params, locals, undeclared)
             bc_create_refresher(c)
@@ -944,8 +944,8 @@ procedure bc_class_constructor(c, statics)
 
     newsimplevar := bc_New_vSimpleVar_methodref(c)
     every k := !statics do {
-        j_create_field(c, 8, "v$" || k, "Lrts/vVariable;")
-        f := j_create_fieldref(c, "v$" || k, "Lrts/vVariable;",
+        j_create_field(c, 8, "v$" || k, "Ljcon/vVariable;")
+        f := j_create_fieldref(c, "v$" || k, "Ljcon/vVariable;",
                                bc_current_classname)
         n := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(clinitcode.code, j_ldc_w(n))
@@ -962,7 +962,7 @@ procedure bc_create_vProc_constructor(c, params, accumulate)
     initcode := j_create_code(c, 15, 15)
     put(init.attributes, initcode)
     s := initcode.code
-    superclass := "rts/vProc" || ((/accumulate & 9 >= *params) | "V")
+    superclass := "jcon/vProc" || ((/accumulate & 9 >= *params) | "V")
     constructor := bc_init_methodref(c, superclass)
     put(s, j_aload_0() )
     put(s, j_invokespecial(constructor) )
@@ -973,27 +973,27 @@ procedure bc_create_vClosure_constructor(c, params, locals, undeclared, accumula
     local init, initcode, constructor, createvars, s, superclass, PC
     local class_index, vararray
 
-    init := j_create_method(c, 1, "<init>", "([Lrts/vDescriptor;)V")
+    init := j_create_method(c, 1, "<init>", "([Ljcon/vDescriptor;)V")
     initcode := j_create_code(c, 15, 15)
     put(init.attributes, initcode)
     s := initcode.code
 
     if *bc_tmp_table > 0 then {
         j_create_field(bc_current_classptr, 0, "tmpArray",
-                       "[Lrts/vDescriptor;")
+                       "[Ljcon/vDescriptor;")
     }
     if *bc_tmplabel_table > 0 then {
         j_create_field(bc_current_classptr, 0, "tmpLabelArray", "[I")
     }
     j_create_field(bc_current_classptr, 0, "tmpVarArray",
-                       "[Lrts/vDescriptor;")
+                       "[Ljcon/vDescriptor;")
 
-    superclass := "rts/vClosure"
+    superclass := "jcon/vClosure"
     constructor := bc_init_methodref(c, superclass)
     put(s, j_aload_0() )
     put(s, j_invokespecial(constructor) )
     vararray := j_create_fieldref(bc_current_classptr, "tmpVarArray",
-                                  "[Lrts/vDescriptor;", bc_current_classname)
+                                  "[Ljcon/vDescriptor;", bc_current_classname)
     put(s, j_aload_0() )
     put(s, j_aload_1() )
     put(s, j_putfield(vararray) )
@@ -1011,7 +1011,7 @@ end
 procedure bc_create_refresher(c)
     local refresher, code, s, class, init, refreshArray, refreshPC
 
-    refresher := j_create_method(c, 1, "refreshcopy", "()Lrts/vClosure;")
+    refresher := j_create_method(c, 1, "refreshcopy", "()Ljcon/vClosure;")
     code := j_create_code(c, 15, 15)
     put(refresher.attributes, code)
     s := code.code
@@ -1036,21 +1036,21 @@ procedure bc_create_vClosure_copy_constructor(c, params, locals, undeclared)
     local class_index, vararray, v
     local newsimplevar, k, linkvalue, lab1, refresharray, deref
 
-    init := j_create_method(c, 1, "<init>", "([Lrts/vDescriptor;I)V")
+    init := j_create_method(c, 1, "<init>", "([Ljcon/vDescriptor;I)V")
     initcode := j_create_code(c, 15, 15)
     put(init.attributes, initcode)
     s := initcode.code
-    superclass := "rts/vClosure"
+    superclass := "jcon/vClosure"
     constructor := bc_init_methodref(c, superclass)
     put(s, j_aload_0() )
     put(s, j_invokespecial(constructor) )
     vararray := j_create_fieldref(bc_current_classptr, "tmpVarArray",
-                                  "[Lrts/vDescriptor;", bc_current_classname)
+                                  "[Ljcon/vDescriptor;", bc_current_classname)
     refresharray := bc_refreshArray_fieldref(bc_current_classptr, bc_current_classname)
     newsimplevar := bc_New_Local_Assign_Unstacked_methodref(c)
     # newsimplevar := bc_New_vSimpleVar_Assign_methodref(c)
     class_index := j_cp_Class(bc_current_classptr,
-                              j_cp_Utf8(bc_current_classptr, "rts/vDescriptor"))
+                              j_cp_Utf8(bc_current_classptr,"jcon/vDescriptor"))
     deref := bc_Deref_methodref(c)
 
     put(s, j_aload_0() )
@@ -1079,7 +1079,7 @@ procedure bc_create_vClosure_copy_constructor(c, params, locals, undeclared)
         put(s, j_aload_0() )
         put(s, j_getfield(vararray) )
         put(s, j_ipush(bc_var_table[k]) )
-        linkvalue := j_create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
+        linkvalue := j_create_fieldref(c, "v$" || k ||"$", "Ljcon/vVariable;",
                                      bc_java_classname)
         lab1 := j_label()
         put(s, j_getstatic(linkvalue) )
@@ -1146,7 +1146,7 @@ procedure bc_restore_tmps(s)
 
     if *bc_tmp_table > 0 then {
         a := j_create_fieldref(bc_current_classptr, "tmpArray",
-                             "[Lrts/vDescriptor;", bc_current_classname)
+                             "[Ljcon/vDescriptor;", bc_current_classname)
         put(s, j_aload_0())
         put(s, j_getfield(a))
         every k := key(bc_tmp_table) do {
@@ -1180,7 +1180,7 @@ end
 procedure bc_create_Resume(c, start, params, locals, undeclared, accumulate)
     local nextval, nextvalcode
 
-    nextval := j_create_method(c, 0, "Resume", "()Lrts/vDescriptor;")
+    nextval := j_create_method(c, 0, "Resume", "()Ljcon/vDescriptor;")
     nextvalcode := j_create_code(c, 15, 15)
     put(nextval.attributes, nextvalcode)
     bc_nextval_code(nextvalcode, c, start, params, locals, undeclared,
@@ -1191,7 +1191,7 @@ procedure bc_create_Call(c, start, params, locals, undeclared, accumulate)
     local nextval, nextvalcode
 
     if \accumulate | (*params > 9) then {
-        nextval := j_create_method(c, 0, "Call", "([Lrts/vDescriptor;)Lrts/vDescriptor;")
+        nextval := j_create_method(c, 0, "Call", "([Ljcon/vDescriptor;)Ljcon/vDescriptor;")
     } else {
         nextval := bc_CallN_method(c, *params)
     }
@@ -1304,7 +1304,7 @@ procedure bc_emit_exception(c, s, params, etab, last_label, i)
     local catch_type, lab, e, f, coord, class_index, k, propagate, v
 
     catch_type := j_cp_Class(bc_current_classptr,
-                             j_cp_Utf8(bc_current_classptr, "rts/iError"))
+                             j_cp_Utf8(bc_current_classptr, "jcon/iError"))
     lab := j_label()
     e := j_exception_table_info(last_label, i, lab, catch_type)
     put(etab, e)
@@ -1315,7 +1315,7 @@ procedure bc_emit_exception(c, s, params, etab, last_label, i)
 
     put(s, j_ipush(*params))
     class_index := j_cp_Class(bc_current_classptr,
-                              j_cp_Utf8(bc_current_classptr, "rts/vDescriptor"))
+                              j_cp_Utf8(bc_current_classptr,"jcon/vDescriptor"))
     put(s, j_anewarray(class_index) )
     every i := 1 to *params do {
         k := params[i]
@@ -1340,13 +1340,13 @@ procedure bc_load_variables(s)
 
     every k := key(bc_var_table) do {
         /bc_var_field[k] := j_create_fieldref(bc_current_classptr, "v$" || k,
-                                            "Lrts/vVariable;",
+                                            "Ljcon/vVariable;",
                                             bc_current_classname)
         if member(bc_statics_set, k) then {
             put(s, j_getstatic(bc_var_field[k]))
         } else {
             vararray := j_create_fieldref(bc_current_classptr, "tmpVarArray",
-                                  "[Lrts/vDescriptor;", bc_current_classname)
+                                  "[Ljcon/vDescriptor;", bc_current_classname)
             put(s, j_aload_0() )
             put(s, j_getfield(vararray) )
             put(s, j_ipush(bc_var_table[k]) )
@@ -1361,7 +1361,7 @@ procedure bc_load_statics(s)
 
     every k := key(bc_var_table) & member(bc_statics_set, k) do {
         /bc_var_field[k] := j_create_fieldref(bc_current_classptr, "v$" || k,
-                                            "Lrts/vVariable;",
+                                            "Ljcon/vVariable;",
                                             bc_current_classname)
         put(s, j_getstatic(bc_var_field[k]))
         put(s, j_Astore(bc_var_table[k] + bc_var_offset))
@@ -1448,7 +1448,7 @@ procedure bc_createvars_into_array(s, c, params, locals, undeclared, accumulate)
 
     put(s, j_ipush(*bc_var_table))
     class_index := j_cp_Class(bc_current_classptr,
-                              j_cp_Utf8(bc_current_classptr, "rts/vDescriptor"))
+                              j_cp_Utf8(bc_current_classptr,"jcon/vDescriptor"))
     put(s, j_anewarray(class_index) )
 
     newsimplevar := bc_New_Local_Assign_methodref(c)
@@ -1489,7 +1489,7 @@ procedure bc_createvars_into_array(s, c, params, locals, undeclared, accumulate)
         put(s, j_dup() )
         put(s, j_ipush(bc_var_table[k]) )
 
-        linkvalue := j_create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
+        linkvalue := j_create_fieldref(c, "v$" || k ||"$", "Ljcon/vVariable;",
                                      bc_java_classname)
         lab1 := j_label()
         v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
@@ -1539,7 +1539,7 @@ procedure bc_createvars(s, c, params, locals, undeclared, accumulate)
     }
 
     every k := !undeclared do {
-        linkvalue := j_create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
+        linkvalue := j_create_fieldref(c, "v$" || k ||"$", "Ljcon/vVariable;",
                                      bc_java_classname)
         lab1 := j_label()
         v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
@@ -1559,7 +1559,7 @@ procedure bc_copy_variable(s, c, k)
 
     deref := bc_Deref_methodref(c)
     assign := bc_Assign_methodref(bc_current_classptr)
-    field := j_create_fieldref(c, "v$" || k, "Lrts/vVariable;",
+    field := j_create_fieldref(c, "v$" || k, "Ljcon/vVariable;",
                                bc_current_classname)
     put(s, j_aload_2() )
     put(s, j_getfield(field) )
@@ -1636,7 +1636,7 @@ procedure bc_File(irgen, flagList)
 
     c := j_ClassFile(3, 45, [&null], table(), 16r11, &null,
                                          &null, [], [], [], [])
-    c.super_class := j_cp_Class(c, j_cp_Utf8(c, "rts/iFile"))
+    c.super_class := j_cp_Class(c, j_cp_Utf8(c, "jcon/iFile"))
     c.this_class := j_cp_Class(c, j_cp_Utf8(c, bc_java_classname))
 
     bc_create_declare(c)
@@ -1815,7 +1815,7 @@ procedure bc_create_resolve(c)
 
     resolvemethod := bc_resolve_methodref(c)
     every k := !bc_undeclared_set do {
-        f := j_create_fieldref(c, "v$" || k || "$", "Lrts/vVariable;",
+        f := j_create_fieldref(c, "v$" || k || "$", "Ljcon/vVariable;",
                              bc_java_classname)
         s := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(resolvecode.code, j_ldc_w(s) )
@@ -1830,7 +1830,7 @@ procedure bc_create_resolve(c)
             move(1)
             args := integer(tab(0))
         }
-        f := j_create_fieldref(c, bc_op_table[k], "Lrts/vDescriptor;",
+        f := j_create_fieldref(c, bc_op_table[k], "Ljcon/vDescriptor;",
                              bc_java_classname)
         s := j_cp_String(c, j_cp_Utf8(c, op)) | runerr(500)
         put(resolvecode.code, j_ldc_w(s) )
@@ -1850,10 +1850,10 @@ procedure bc_create_linkinit(c)
     s := initcode.code
 
     every j_create_field(c, 8, "v$" || !bc_undeclared_set || "$",
-                       "Lrts/vVariable;")
-    every j_create_field(c, 8, !bc_op_table, "Lrts/vDescriptor;")
+                       "Ljcon/vVariable;")
+    every j_create_field(c, 8, !bc_op_table, "Ljcon/vDescriptor;")
 
-    constructor := bc_init_methodref(c, "rts/iFile")
+    constructor := bc_init_methodref(c, "jcon/iFile")
     put(s, j_aload_0() )
     put(s, j_invokespecial(constructor) )
     put(s, j_return() )
@@ -1869,8 +1869,8 @@ procedure bc_create_class_linkinit(c)
 
     newmethod := bc_New_vReal_methodref(c)
     every k := key(bc_real_table) do {
-        j_create_field(c, 8, bc_real_table[k], "Lrts/vReal;")
-        f := j_create_fieldref(c, bc_real_table[k], "Lrts/vReal;",
+        j_create_field(c, 8, bc_real_table[k], "Ljcon/vReal;")
+        f := j_create_fieldref(c, bc_real_table[k], "Ljcon/vReal;",
                              bc_java_classname)
         d := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(s, j_ldc_w(d) )
@@ -1879,8 +1879,8 @@ procedure bc_create_class_linkinit(c)
     }
 
     every k := key(bc_integer_table) do {
-        j_create_field(c, 8, bc_integer_table[k], "Lrts/vNumeric;")
-        f := j_create_fieldref(c, bc_integer_table[k], "Lrts/vNumeric;",
+        j_create_field(c, 8, bc_integer_table[k], "Ljcon/vNumeric;")
+        f := j_create_fieldref(c, bc_integer_table[k], "Ljcon/vNumeric;",
                              bc_java_classname)
 	if k >= (2^63) then {
             newmethod := bc_New_vBigInt_methodref(c)
@@ -1897,8 +1897,8 @@ procedure bc_create_class_linkinit(c)
 
     newmethod := bc_New_vString_methodref(c)
     every k := key(bc_string_table) do {
-        j_create_field(c, 8, bc_string_table[k], "Lrts/vString;")
-        f := j_create_fieldref(c, bc_string_table[k], "Lrts/vString;",
+        j_create_field(c, 8, bc_string_table[k], "Ljcon/vString;")
+        f := j_create_fieldref(c, bc_string_table[k], "Ljcon/vString;",
                              bc_java_classname)
         d := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(s, j_ldc_w(d) )
@@ -1908,8 +1908,8 @@ procedure bc_create_class_linkinit(c)
 
     newmethod := bc_New_vCset_methodref(c)
     every k := key(bc_cset_table) do {
-        j_create_field(c, 8, bc_cset_table[k], "Lrts/vCset;")
-        f := j_create_fieldref(c, bc_cset_table[k], "Lrts/vCset;",
+        j_create_field(c, 8, bc_cset_table[k], "Ljcon/vCset;")
+        f := j_create_fieldref(c, bc_cset_table[k], "Ljcon/vCset;",
                              bc_java_classname)
         d := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(s, j_ldc_w(d) )

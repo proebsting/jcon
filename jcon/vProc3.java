@@ -1,6 +1,6 @@
 //  vProc3 -- parent class for procedures declared with 3 arguments
 
-package rts;
+package jcon;
 
 public abstract class vProc3 extends vProc {
 

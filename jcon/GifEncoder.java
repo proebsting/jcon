@@ -28,7 +28,7 @@
 // Visit the ACME Labs Java page for up-to-date versions of this and other
 // fine Java utilities: http://www.acme.com/java/
 
-package rts; 			// originally package Acme.JPM.Encoders;
+package jcon; 			// originally package Acme.JPM.Encoders;
 
 import java.util.*;
 import java.io.*;
@@ -207,8 +207,9 @@ public class GifEncoder extends ImageEncoder
     int Pass = 0;
 
     void GIFEncode(
-	OutputStream outs, int Width, int Height, boolean Interlace, byte Background, int Transparent, int BitsPerPixel, byte[] Red, byte[] Green, byte[] Blue )
-	throws IOException
+	OutputStream outs, int Width, int Height, boolean Interlace,
+	    byte Background, int Transparent, int BitsPerPixel,
+	    byte[] Red, byte[] Green, byte[] Blue ) throws IOException
 	{
 	byte B;
 	int LeftOfs, TopOfs;

@@ -86,7 +86,7 @@ nongraphical tests and experiments.
 	    also includes <CODE>jcont</CODE> script</TD></TR>
 <TR><TD><CODE>tran</CODE></TD>
 	<TD>source code for the translator</TD></TR>
-<TR><TD><CODE>rts</CODE></TD>
+<TR><TD><CODE>jcon</CODE></TD>
 	<TD>source code for the run-time system</TD></TR>
 <TR><TD><CODE>html</CODE></TD>
 	<TD>files for building documentation pages</TD></TR>

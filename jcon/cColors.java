@@ -1,6 +1,6 @@
 //  cColors.java -- regular color palettes (c2 through c6)
 
-package rts;
+package jcon;
 
 import java.awt.*;
 

@@ -1,6 +1,6 @@
 //  ftab.java -- entab and detab functions
 
-package rts;
+package jcon;
 
 
 

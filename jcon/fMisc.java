@@ -1,6 +1,6 @@
 //  fMisc.java -- miscellaneous built-in functions
 
-package rts;
+package jcon;
 
 import java.io.*;
 import java.util.*;

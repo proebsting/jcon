@@ -1,6 +1,6 @@
 //  wTTY.java -- read() and write() support for graphics windows
 
-package rts;
+package jcon;
 
 import java.awt.*;
 

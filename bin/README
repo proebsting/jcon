@@ -16,6 +16,6 @@ jlink		helper program used in linking phase
 jjtran		translator as built by Jcon
 jjlink		linker as built by Jcon
 
-rts.zip		run-time library (contains Java class files)
+jcon.zip	run-time library (contains Java class files)
 
 keysyms.icn	revised $include file containing keycode definitions

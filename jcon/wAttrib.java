@@ -1,6 +1,6 @@
 //  wAttrib.java -- code dealing with window attributes
 
-package rts;
+package jcon;
 
 import java.awt.*;
 import java.util.*;

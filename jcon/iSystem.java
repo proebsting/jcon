@@ -2,7 +2,7 @@
 
 //  This file holds code containing known Unix dependencies.
 
-package rts;
+package jcon;
 
 import java.io.*;
 import java.util.*;

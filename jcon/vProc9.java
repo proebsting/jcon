@@ -1,6 +1,6 @@
 //  vProc9 -- parent class for procedures declared with 9 arguments
 
-package rts;
+package jcon;
 
 public abstract class vProc9 extends vProc {
 

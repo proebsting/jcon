@@ -1,6 +1,6 @@
 //  fList.java -- functions operating on Icon lists
 
-package rts;
+package jcon;
 
 final class fList extends iInstantiate {
     public static fList self = new fList();

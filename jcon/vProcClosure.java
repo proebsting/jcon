@@ -1,6 +1,6 @@
 // vProcClosure creates a closure from a vProc.  Used for &main.
 
-package rts;
+package jcon;
 
 public final class vProcClosure extends vClosure {
     vDescriptor vproc;

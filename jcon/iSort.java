@@ -2,7 +2,7 @@
 
 
 
-package rts;
+package jcon;
 
 final class iSort {
 

@@ -1,6 +1,6 @@
 //  iError -- an Icon run-time error, thrown as an exception
 
-package rts;
+package jcon;
 
 public final class iError extends Error {
 

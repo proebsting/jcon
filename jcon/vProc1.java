@@ -1,6 +1,6 @@
 //  vProc1 -- parent class for procedures declared with 1 argument
 
-package rts;
+package jcon;
 
 public abstract class vProc1 extends vProc {
 

@@ -10,7 +10,7 @@
 
 
 
-package rts;
+package jcon;
 
 final class vFuncVar extends vSimpleVar {
 

@@ -1,6 +1,6 @@
-#  jcon/rts/Makefile -- for building the Jcon runtime system
+#  jcon/jcon/Makefile -- for building the Jcon runtime system
 #
-#  Creates ../bin/rts.zip
+#  Creates ../bin/jcon.zip
 #
 #  Uses a script because it's hard to handle this correctly in the Makefile
 

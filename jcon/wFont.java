@@ -1,6 +1,6 @@
 //  wFont.java -- font handling
 
-package rts;
+package jcon;
 
 import java.awt.*;
 import java.awt.event.*;

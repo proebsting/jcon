@@ -4,7 +4,7 @@
 //  suitable for passing to java.awt.graphics.drawPolygon()
 //  and similar methods.
 
-package rts;
+package jcon;
 
 import java.awt.*;
 

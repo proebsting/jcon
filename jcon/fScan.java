@@ -1,6 +1,6 @@
 //  fScan.java -- built-in string scanning functions
 
-package rts;
+package jcon;
 
 
 

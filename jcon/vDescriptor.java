@@ -8,7 +8,7 @@
 //	vVariable	assignable object such as &subject, s[i:j]
 //	vClosure	suspended generator, including latest suspended value
 
-package rts;
+package jcon;
 
 public abstract class vDescriptor {
 

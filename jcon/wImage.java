@@ -1,6 +1,6 @@
 //  wImage.java -- image operations
 
-package rts;
+package jcon;
 
 import java.awt.*;
 import java.awt.image.*;

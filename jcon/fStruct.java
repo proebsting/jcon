@@ -1,6 +1,6 @@
 //  fStruct.java -- functions dealing with sets, tables, structures in general
 
-package rts;
+package jcon;
 
 final class fStruct extends iInstantiate {
     public static fStruct self = new fStruct();

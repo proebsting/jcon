@@ -1,6 +1,6 @@
 //  vProc2 -- parent class for procedures declared with 2 arguments
 
-package rts;
+package jcon;
 
 public abstract class vProc2 extends vProc {
 

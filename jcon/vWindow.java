@@ -2,7 +2,7 @@
 //
 //  note that vWindow extends vFile to support read(), write(), etc.
 
-package rts;
+package jcon;
 
 import java.io.*;
 import java.util.*;

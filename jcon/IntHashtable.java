@@ -5,7 +5,7 @@
 // Visit the ACME Labs Java page for up-to-date versions of this and other
 // fine Java utilities: http://www.acme.com/java/
 
-package rts; 			// originally package Acme;
+package jcon; 			// originally package Acme;
 
 import java.util.*;
 

@@ -2,7 +2,7 @@
 //
 //  (part of the loadfunc test)
 
-import rts.*;
+import jcon.*;
 
 public class sum3 extends vProc3 {
 

@@ -1,6 +1,6 @@
 //  vProc4 -- parent class for procedures declared with 4 arguments
 
-package rts;
+package jcon;
 
 public abstract class vProc4 extends vProc {
 

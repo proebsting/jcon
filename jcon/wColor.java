@@ -1,6 +1,6 @@
 //  wColor.java -- color handling
 
-package rts;
+package jcon;
 
 import java.awt.*;
 import java.awt.event.*;

@@ -1,4 +1,4 @@
-package rts;
+package jcon;
 
 public final class vRecord extends vStructure {
 

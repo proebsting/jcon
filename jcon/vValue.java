@@ -3,7 +3,7 @@
 //  vValue is an abstract class encompassing values of all Icon types.
 //  Each type implements a concrete class; all records share one class.
 
-package rts;
+package jcon;
 
 public abstract class vValue extends vDescriptor {
 

@@ -3,7 +3,7 @@
 //  subclasses must maintain a serial number counter
 //  and call super(sn) in constructors.
 
-package rts;
+package jcon;
 
 
 

@@ -3,7 +3,7 @@
 //  A vClosure encapsulates a return value and a suspended generator.
 //  Subclasses add instance variables needed to retain state.
 
-package rts;
+package jcon;
 
 public abstract class vClosure extends vDescriptor {
 

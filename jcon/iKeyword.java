@@ -6,7 +6,7 @@
 //	&line
 
 
-package rts;
+package jcon;
 
 import java.io.*;
 import java.text.*;
@@ -149,7 +149,7 @@ static void announce() {
 //  kValue -- read-only keyword class
 //
 //  Many keywords are read-only from the Icon programmer's standpoint
-//  (but not necessarily constant).  They are assigned by rts calls to
+//  (but not necessarily constant).  They are assigned by runtime calls to
 //  iKeyword.keywordname.set().  Setting a Java null makes the keyword fail.
 
 final class kValue extends vProc0 {
@@ -273,7 +273,9 @@ final class k$level extends vProc0 {				// &level
 		// Exclude those routines that are simply trampolines into
 		// closures.
 		if ((s.indexOf("c_l$") >= 0) ||
-		   (((i = s.indexOf("p_l$")) >= 0) && ((prev.indexOf("c_l$") < 0) || !s.regionMatches(i+4,prev,i+4,s.indexOf(".")-4-i)))) {
+		    (((i = s.indexOf("p_l$")) >= 0)
+		    && ((prev.indexOf("c_l$") < 0)
+		        || !s.regionMatches(i+4,prev,i+4,s.indexOf(".")-4-i)))){
 		    n++;
 		}
 		prev = s;

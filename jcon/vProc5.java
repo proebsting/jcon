@@ -1,6 +1,6 @@
 //  vProc5 -- parent class for procedures declared with 5 arguments
 
-package rts;
+package jcon;
 
 public abstract class vProc5 extends vProc {
 

@@ -11,7 +11,7 @@
 
 
 
-package rts;
+package jcon;
 
 import java.io.*;
 import java.util.*;

@@ -20,7 +20,7 @@ DEST = /must/specify/DEST/to/install
 build:
 	cd html; $(MAKE)
 	cd tran; $(MAKE)
-	cd rts; $(MAKE)
+	cd jcon; $(MAKE)
 
 jj:
 	cd tran; $(MAKE) jj
@@ -32,7 +32,7 @@ test:	build
 
 install: 
 	test -d $(DEST) || mkdir $(DEST)
-	cp bin/j* bin/rts.zip $(DEST)
+	cp bin/j* bin/jcon.zip $(DEST)
 
 
 clean:
@@ -40,7 +40,7 @@ clean:
 	cd html;  $(MAKE) clean
 	cd paper; $(MAKE) clean
 	cd tran;  $(MAKE) clean
-	cd rts;   $(MAKE) clean
+	cd jcon;  $(MAKE) clean
 	cd test;  $(MAKE) clean
 	cd gtest; $(MAKE) clean
 	cd expt;  $(MAKE) clean

@@ -1,6 +1,6 @@
 //  fDrawing.java -- built-in drawing functions
 
-package rts;
+package jcon;
 
 import java.awt.*;
 import java.util.*;

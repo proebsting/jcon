@@ -6,7 +6,7 @@
 #   not easily expressed in "make")
 
 JC=${JC-"javac -O"}
-BZIP=bin/rts.zip
+BZIP=bin/jcon.zip
 ZIP=../$BZIP
 
 
@@ -20,7 +20,7 @@ if [ "$NEWER" != "" ]; then
     set -e
     echo "+ CLASSPATH=.. $JC *.java"
     CLASSPATH=.. $JC *.java
-    echo "+ cd ..; jar cfM $BZIP rts/*.class"
+    echo "+ cd ..; jar cfM $BZIP jcon/*.class"
     cd ..
-    jar cfM $BZIP rts/*.class 2>&1 
+    jar cfM $BZIP jcon/*.class 2>&1 
 fi

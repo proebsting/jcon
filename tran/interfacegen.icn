@@ -14,64 +14,64 @@ procedure keywords()
 
     keys := [
 	# field, type, [name]		(name defaults to field if not present)
-	[ "allocated", "Lrts/kZeroes;" ],
-	[ "ascii", "Lrts/kValue;" ],
-	[ "clock", "Lrts/vProc;" ],
-	[ "col", "Lrts/kPaired;" ],
-	[ "collections", "Lrts/kZeroes;" ],
-	[ "control", "Lrts/kValue;" ],
-	[ "cset", "Lrts/kValue;" ],
-	[ "current", "Lrts/kValue;" ],
-	[ "date", "Lrts/vProc;" ],
-	[ "dateline", "Lrts/vProc;" ],
-	[ "digits", "Lrts/kValue;" ],
-	[ "dump", "Lrts/kCounter;" ],
-	[ "e", "Lrts/kValue;" ],
-	[ "error", "Lrts/kCounter;" ],
-	[ "errornumber", "Lrts/kValue;" ],
-	[ "errortext", "Lrts/kValue;" ],
-	[ "errorvalue", "Lrts/kValue;" ],
-	[ "errout", "Lrts/kValue;" ],
-	[ "fail", "Lrts/kValue;" ],
-	[ "features", "Lrts/vProc;" ],
-	[ "host", "Lrts/vProc;" ],
-	[ "input", "Lrts/kValue;" ],
-	[ "interval", "Lrts/kValue;" ],
-	[ "lcase", "Lrts/kValue;" ],
-	[ "ldrag", "Lrts/kValue;" ],
-	[ "letters", "Lrts/kValue;" ],
-	[ "level", "Lrts/vProc;" ],
-	[ "lpress", "Lrts/kValue;" ],
-	[ "lrelease", "Lrts/kValue;" ],
-	[ "main", "Lrts/kValue;" ],
-	[ "mdrag", "Lrts/kValue;" ],
-	[ "meta", "Lrts/kValue;" ],
-	[ "mpress", "Lrts/kValue;" ],
-	[ "mrelease", "Lrts/kValue;" ],
-	[ "nulll", "Lrts/kValue;", "null" ],	# note third element
-	[ "output", "Lrts/kValue;" ],
-	[ "phi", "Lrts/kValue;" ],
-	[ "pi", "Lrts/kValue;" ],
-	[ "pos", "Lrts/k$pos;" ],
-	[ "progname", "Lrts/kValue;" ],
-	[ "random", "Lrts/k$random;" ],
-	[ "rdrag", "Lrts/kValue;" ],
-	[ "regions", "Lrts/kZeroes;" ],
-	[ "resize", "Lrts/kValue;" ],
-	[ "row", "Lrts/kPaired;" ],
-	[ "rpress", "Lrts/kValue;" ],
-	[ "rrelease", "Lrts/kValue;" ],
-	[ "shift", "Lrts/kValue;" ],
-	[ "source", "Lrts/vProc;" ],
-	[ "storage", "Lrts/kZeroes;" ],
-	[ "subject", "Lrts/k$subject;" ],
-	[ "time", "Lrts/k$time;" ],
-	[ "trace", "Lrts/kCounter;" ],
-	[ "ucase", "Lrts/kValue;" ],
-	[ "version", "Lrts/kValue;" ],
-	[ "window", "Lrts/k$window;" ],
-	[ "x", "Lrts/kPaired;" ],
-	[ "y", "Lrts/kPaired;" ],
+	[ "allocated", "Ljcon/kZeroes;" ],
+	[ "ascii", "Ljcon/kValue;" ],
+	[ "clock", "Ljcon/vProc;" ],
+	[ "col", "Ljcon/kPaired;" ],
+	[ "collections", "Ljcon/kZeroes;" ],
+	[ "control", "Ljcon/kValue;" ],
+	[ "cset", "Ljcon/kValue;" ],
+	[ "current", "Ljcon/kValue;" ],
+	[ "date", "Ljcon/vProc;" ],
+	[ "dateline", "Ljcon/vProc;" ],
+	[ "digits", "Ljcon/kValue;" ],
+	[ "dump", "Ljcon/kCounter;" ],
+	[ "e", "Ljcon/kValue;" ],
+	[ "error", "Ljcon/kCounter;" ],
+	[ "errornumber", "Ljcon/kValue;" ],
+	[ "errortext", "Ljcon/kValue;" ],
+	[ "errorvalue", "Ljcon/kValue;" ],
+	[ "errout", "Ljcon/kValue;" ],
+	[ "fail", "Ljcon/kValue;" ],
+	[ "features", "Ljcon/vProc;" ],
+	[ "host", "Ljcon/vProc;" ],
+	[ "input", "Ljcon/kValue;" ],
+	[ "interval", "Ljcon/kValue;" ],
+	[ "lcase", "Ljcon/kValue;" ],
+	[ "ldrag", "Ljcon/kValue;" ],
+	[ "letters", "Ljcon/kValue;" ],
+	[ "level", "Ljcon/vProc;" ],
+	[ "lpress", "Ljcon/kValue;" ],
+	[ "lrelease", "Ljcon/kValue;" ],
+	[ "main", "Ljcon/kValue;" ],
+	[ "mdrag", "Ljcon/kValue;" ],
+	[ "meta", "Ljcon/kValue;" ],
+	[ "mpress", "Ljcon/kValue;" ],
+	[ "mrelease", "Ljcon/kValue;" ],
+	[ "nulll", "Ljcon/kValue;", "null" ],	# note third element
+	[ "output", "Ljcon/kValue;" ],
+	[ "phi", "Ljcon/kValue;" ],
+	[ "pi", "Ljcon/kValue;" ],
+	[ "pos", "Ljcon/k$pos;" ],
+	[ "progname", "Ljcon/kValue;" ],
+	[ "random", "Ljcon/k$random;" ],
+	[ "rdrag", "Ljcon/kValue;" ],
+	[ "regions", "Ljcon/kZeroes;" ],
+	[ "resize", "Ljcon/kValue;" ],
+	[ "row", "Ljcon/kPaired;" ],
+	[ "rpress", "Ljcon/kValue;" ],
+	[ "rrelease", "Ljcon/kValue;" ],
+	[ "shift", "Ljcon/kValue;" ],
+	[ "source", "Ljcon/vProc;" ],
+	[ "storage", "Ljcon/kZeroes;" ],
+	[ "subject", "Ljcon/k$subject;" ],
+	[ "time", "Ljcon/k$time;" ],
+	[ "trace", "Ljcon/kCounter;" ],
+	[ "ucase", "Ljcon/kValue;" ],
+	[ "version", "Ljcon/kValue;" ],
+	[ "window", "Ljcon/k$window;" ],
+	[ "x", "Ljcon/kPaired;" ],
+	[ "y", "Ljcon/kPaired;" ],
     ]
     write("procedure bc_keywords(name)")
     write("\tstatic t")
@@ -90,75 +90,76 @@ procedure operators()
 
     ops := [
 
-	# arity,  op, method name,    return type
+	# arity,  op, method name,  return type
 
-	[ 1,     ".", "Deref",        "rts.vValue"      ],
-	[ 2,    ":=", "Assign",       "rts.vVariable"   ],
-	[ 2,   ":=:", "Swap",         "rts.vVariable"   ],
-	[ 2,    ":?", "SubjAssign",   "rts.vVariable"   ],
-	[ 2,    "<-", "RevAssign",    "rts.vDescriptor" ],
-	[ 2,   "<->", "RevSwap",      "rts.vDescriptor" ],
+	[ 1,     ".", "Deref",      "jcon.vValue"      ],
+	[ 2,    ":=", "Assign",     "jcon.vVariable"   ],
+	[ 2,   ":=:", "Swap",       "jcon.vVariable"   ],
+	[ 2,    ":?", "SubjAssign", "jcon.vVariable"   ],
+	[ 2,    "<-", "RevAssign",  "jcon.vDescriptor" ],
+	[ 2,   "<->", "RevSwap",    "jcon.vDescriptor" ],
 
-	[ 1,     "#", "Limit",        "rts.vNumeric"    ],
-	[ 2,     "&", "Conjunction",  "rts.vDescriptor" ],
-	[ 2,     "!", "ProcessArgs",  "rts.vDescriptor" ],
-	[ 2,     "@", "Activate",     "rts.vDescriptor" ],
-	[ 3,   "...", "ToBy",         "rts.vDescriptor" ],
+	[ 1,     "#", "Limit",      "jcon.vNumeric"    ],
+	[ 2,     "&", "Conjunction","jcon.vDescriptor" ],
+	[ 2,     "!", "ProcessArgs","jcon.vDescriptor" ],
+	[ 2,     "@", "Activate",   "jcon.vDescriptor" ],
+	[ 3,   "...", "ToBy",       "jcon.vDescriptor" ],
 
-	[ 1,     "+", "Numerate",     "rts.vNumeric"    ],
-	[ 1,     "-", "Negate",       "rts.vNumeric"    ],
-	[ 1,     "*", "Size",         "rts.vInteger"    ],
-	[ 1,     "~", "Complement",   "rts.vValue"      ],
-	[ 1,     "^", "Refresh",      "rts.vCoexp"      ],
-	[ 1,     "=", "TabMatch",     "rts.vDescriptor" ],
+	[ 1,     "+", "Numerate",   "jcon.vNumeric"    ],
+	[ 1,     "-", "Negate",     "jcon.vNumeric"    ],
+	[ 1,     "*", "Size",       "jcon.vInteger"    ],
+	[ 1,     "~", "Complement", "jcon.vValue"      ],
+	[ 1,     "^", "Refresh",    "jcon.vCoexp"      ],
+	[ 1,     "=", "TabMatch",   "jcon.vDescriptor" ],
 
-	[ 1,     "/", "IsNull",       "rts.vDescriptor" ],
-	[ 1,    "\\", "IsntNull",     "rts.vDescriptor" ],
+	[ 1,     "/", "IsNull",     "jcon.vDescriptor" ],
+	[ 1,    "\\", "IsntNull",   "jcon.vDescriptor" ],
 
-	[ 1,     "?", "Select",       "rts.vDescriptor", ["Val", "rts.vValue"] ],
-	[ 1,     "!", "Bang",         "rts.vDescriptor", ["Val", "rts.vDescriptor"] ],
+	[ 1,     "?", "Select",     "jcon.vDescriptor", ["Val","jcon.vValue"] ],
+	[ 1,     "!", "Bang",       "jcon.vDescriptor",
+						["Val","jcon.vDescriptor"] ],
 
-	[ 2,    "[]", "Index",        "rts.vDescriptor", ["Val", "rts.vValue"] ],
-	[ 3,   "[:]", "Section",      "rts.vDescriptor", ["Val", "rts.vValue"] ],
-	[ 3,  "[+:]", "SectPlus",     "rts.vDescriptor", ["Val", "rts.vValue"] ],
-	[ 3,  "[-:]", "SectMinus",    "rts.vDescriptor", ["Val", "rts.vValue"] ],
+	[ 2,    "[]", "Index",      "jcon.vDescriptor", ["Val","jcon.vValue"] ],
+	[ 3,   "[:]", "Section",    "jcon.vDescriptor", ["Val","jcon.vValue"] ],
+	[ 3,  "[+:]", "SectPlus",   "jcon.vDescriptor", ["Val","jcon.vValue"] ],
+	[ 3,  "[-:]", "SectMinus",  "jcon.vDescriptor", ["Val","jcon.vValue"] ],
 
-	[ 2,     "+", "Add",          "rts.vNumeric"    ],
-	[ 2,     "-", "Sub",          "rts.vNumeric"    ],
-	[ 2,     "*", "Mul",          "rts.vNumeric"    ],
-	[ 2,     "/", "Div",          "rts.vNumeric"    ],
-	[ 2,     "%", "Mod",          "rts.vNumeric"    ],
-	[ 2,     "^", "Power",        "rts.vNumeric"    ],
+	[ 2,     "+", "Add",        "jcon.vNumeric"    ],
+	[ 2,     "-", "Sub",        "jcon.vNumeric"    ],
+	[ 2,     "*", "Mul",        "jcon.vNumeric"    ],
+	[ 2,     "/", "Div",        "jcon.vNumeric"    ],
+	[ 2,     "%", "Mod",        "jcon.vNumeric"    ],
+	[ 2,     "^", "Power",      "jcon.vNumeric"    ],
 
-	[ 2,     "<", "NLess",        "rts.vNumeric"    ],
-	[ 2,    "<=", "NLessEq",      "rts.vNumeric"    ],
-	[ 2,     "=", "NEqual",       "rts.vNumeric"    ],
-	[ 2,    "~=", "NUnequal",     "rts.vNumeric"    ],
-	[ 2,    ">=", "NGreaterEq",   "rts.vNumeric"    ],
-	[ 2,     ">", "NGreater",     "rts.vNumeric"    ],
+	[ 2,     "<", "NLess",      "jcon.vNumeric"    ],
+	[ 2,    "<=", "NLessEq",    "jcon.vNumeric"    ],
+	[ 2,     "=", "NEqual",     "jcon.vNumeric"    ],
+	[ 2,    "~=", "NUnequal",   "jcon.vNumeric"    ],
+	[ 2,    ">=", "NGreaterEq", "jcon.vNumeric"    ],
+	[ 2,     ">", "NGreater",   "jcon.vNumeric"    ],
 
-	[ 2,    "<<", "LLess",        "rts.vString"     ],
-	[ 2,   "<<=", "LLessEq",      "rts.vString"     ],
-	[ 2,    "==", "LEqual",       "rts.vString"     ],
-	[ 2,   "~==", "LUnequal",     "rts.vString"     ],
-	[ 2,   ">>=", "LGreaterEq",   "rts.vString"     ],
-	[ 2,    ">>", "LGreater",     "rts.vString"     ],
+	[ 2,    "<<", "LLess",      "jcon.vString"     ],
+	[ 2,   "<<=", "LLessEq",    "jcon.vString"     ],
+	[ 2,    "==", "LEqual",     "jcon.vString"     ],
+	[ 2,   "~==", "LUnequal",   "jcon.vString"     ],
+	[ 2,   ">>=", "LGreaterEq", "jcon.vString"     ],
+	[ 2,    ">>", "LGreater",   "jcon.vString"     ],
 
-	[ 2,   "===", "VEqual",       "rts.vValue"      ],
-	[ 2,  "~===", "VUnequal",     "rts.vValue"      ],
+	[ 2,   "===", "VEqual",     "jcon.vValue"      ],
+	[ 2,  "~===", "VUnequal",   "jcon.vValue"      ],
 
-	[ 2,    "||", "Concat",       "rts.vString"     ],
-	[ 2,   "|||", "ListConcat",   "rts.vList"       ],
+	[ 2,    "||", "Concat",     "jcon.vString"     ],
+	[ 2,   "|||", "ListConcat", "jcon.vList"       ],
 
-	[ 2,    "**", "Intersect",    "rts.vValue"      ],
-	[ 2,    "++", "Union",        "rts.vValue"      ],
-	[ 2,    "--", "Diff",         "rts.vValue"      ]
+	[ 2,    "**", "Intersect",  "jcon.vValue"      ],
+	[ 2,    "++", "Union",      "jcon.vValue"      ],
+	[ 2,    "--", "Diff",       "jcon.vValue"      ]
     ]
 
-    op_methodrefs(ops, "op_methodref", "", "rts/vDescriptor")
+    op_methodrefs(ops, "op_methodref", "", "jcon/vDescriptor")
     op_methodrefs(ops, "trampoline_op_methodref",
-                       "Ljava/lang/String;ILrts/vDescriptor;",
-		       "rts/iTrampoline")
+                       "Ljava/lang/String;ILjcon/vDescriptor;",
+		       "jcon/iTrampoline")
 end
 
 procedure op_methodrefs(ops, fn, prefix, ty)
@@ -182,7 +183,7 @@ procedure op_select(o, prefix, ty)
         if \o[5] then {
 	    signature := "(" || prefix
 	    every 1 to o[1]-1 do {
-	        signature ||:= "Lrts/vDescriptor;"
+	        signature ||:= "Ljcon/vDescriptor;"
 	    }
 	    signature ||:= ")"
 	    signature ||:= "L" || map(o[5][2], ".", "/") || ";"
@@ -196,7 +197,7 @@ procedure op_select(o, prefix, ty)
 	}
 	signature := "(" || prefix
 	every 1 to o[1]-1 do {
-	    signature ||:= "Lrts/vDescriptor;"
+	    signature ||:= "Ljcon/vDescriptor;"
 	}
 	signature ||:= ")"
 	signature ||:= "L" || map(o[4], ".", "/") || ";"
@@ -212,64 +213,72 @@ procedure methodrefs()
     local m, def, i, args
 
     m := [
-            ["<init>", "()V", &null, "init"],
-            ["<init>", "([Lrts/vDescriptor;)V", &null, "initV"],
-            ["<init>", "([Lrts/vDescriptor;I)V", &null, "initVI"],
-            ["Assign", "(Lrts/vDescriptor;)Lrts/vVariable;", "rts/vDescriptor"],
-            ["Call", "([Lrts/vDescriptor;)Lrts/vDescriptor;",
-             "rts/vDescriptor",  "CallV"],
-            ["New", "()Lrts/vNull;", "rts/vNull", "New_vNull"],
-            ["New", "(J)Lrts/vInteger;", "rts/vInteger",
+	["<init>", "()V", &null, "init"],
+	["<init>", "([Ljcon/vDescriptor;)V", &null, "initV"],
+	["<init>", "([Ljcon/vDescriptor;I)V", &null, "initVI"],
+	["Assign", "(Ljcon/vDescriptor;)Ljcon/vVariable;","jcon/vDescriptor"],
+	["Call", "([Ljcon/vDescriptor;)Ljcon/vDescriptor;",
+             "jcon/vDescriptor",  "CallV"],
+	["New", "()Ljcon/vNull;", "jcon/vNull", "New_vNull"],
+	["New", "(J)Ljcon/vInteger;", "jcon/vInteger",
 	     "New_vInteger"],
-            ["New", "(Ljava/lang/String;)Lrts/vBigInt;", "rts/vBigInt",
+	["New", "(Ljava/lang/String;)Ljcon/vBigInt;", "jcon/vBigInt",
 	     "New_vBigInt"],
-            ["New", "(Lrts/vClosure;)Lrts/vCoexp;", "rts/vCoexp", "New_vCoexp"],
-            ["New", "(Ljava/lang/String;)Lrts/vCset;", "rts/vCset","New_vCset"],
-            ["New", "(Ljava/lang/String;)Lrts/vReal;", "rts/vReal","New_vReal"],
-            ["New", "(Ljava/lang/String;Lrts/vDescriptor;)Lrts/vSimpleVar;",
-             "rts/vSimpleVar", "New_vSimpleVar_Assign"],
-            ["New", "(Ljava/lang/String;)Lrts/vSimpleVar;", "rts/vSimpleVar",
+	["New", "(Ljcon/vClosure;)Ljcon/vCoexp;", "jcon/vCoexp","New_vCoexp"],
+	["New", "(Ljava/lang/String;)Ljcon/vCset;","jcon/vCset","New_vCset"],
+	["New", "(Ljava/lang/String;)Ljcon/vReal;","jcon/vReal","New_vReal"],
+	["New", "(Ljava/lang/String;Ljcon/vDescriptor;)Ljcon/vSimpleVar;",
+             "jcon/vSimpleVar", "New_vSimpleVar_Assign"],
+	["New", "(Ljava/lang/String;)Ljcon/vSimpleVar;", "jcon/vSimpleVar",
              "New_vSimpleVar"],
-            ["NewLocalUnstacked","(Ljava/lang/String;Lrts/vDescriptor;)Lrts/vLocalVar;",
-             "rts/vLocalVar", "New_Local_Assign_Unstacked"],
-            ["NewLocal","(Ljava/lang/String;Lrts/vDescriptor;)Lrts/vLocalVar;",
-             "rts/vLocalVar", "New_Local_Assign"],
-            ["NewLocal", "(Ljava/lang/String;)Lrts/vLocalVar;",
-	     "rts/vLocalVar", "New_Local"],
-            ["New", "(Ljava/lang/String;)Lrts/vString;", "rts/vString",
+	["NewLocalUnstacked",
+	     "(Ljava/lang/String;Ljcon/vDescriptor;)Ljcon/vLocalVar;",
+             "jcon/vLocalVar", "New_Local_Assign_Unstacked"],
+	["NewLocal","(Ljava/lang/String;Ljcon/vDescriptor;)Ljcon/vLocalVar;",
+             "jcon/vLocalVar", "New_Local_Assign"],
+	["NewLocal", "(Ljava/lang/String;)Ljcon/vLocalVar;",
+	     "jcon/vLocalVar", "New_Local"],
+	["New", "(Ljava/lang/String;)Ljcon/vString;", "jcon/vString",
              "New_vString"],
-            ["New", "([Lrts/vDescriptor;)Lrts/vList;", "rts/vList",
+	["New", "([Ljcon/vDescriptor;)Ljcon/vList;", "jcon/vList",
              "New_vList"],
-            ["Free", "(Lrts/vLocalVar;)V", "rts/vLocalVar"],
-            ["cofail", "()V", "rts/vCoexp"],
-            ["copy", "(I)Lrts/vClosure;", &null],
-            ["coret", "(Lrts/vDescriptor;)V", "rts/vCoexp"],
-            ["create", "()V", "rts/vCoexp"],
-            ["createVars", "()V", &null],
-            ["declareDebugging", "()V", "rts/iEnv"],
-            ["declareGlobal", "(Ljava/lang/String;)V", "rts/iEnv"],
-            ["declareInvoke", "(Ljava/lang/String;)V", "rts/iEnv"],
-            ["declareInvokeAll", "()V", "rts/iEnv"],
-            ["declareProcedure", "(Ljava/lang/String;Lrts/vProc;I)V",
-             "rts/iEnv"],
-            ["declareRecord", "(Ljava/lang/String;[Ljava/lang/String;)V",
-             "rts/iEnv"],
-            ["Deref", "()Lrts/vValue;", "rts/vDescriptor"],
-            ["DerefLocal", "()Lrts/vDescriptor;", "rts/vDescriptor"],
-            ["Field", "(Ljava/lang/String;)Lrts/vVariable;", "rts/vDescriptor"],
-            ["Field", "(Ljava/lang/String;ILrts/vDescriptor;Ljava/lang/String;)Lrts/vVariable;", "rts/iTrampoline", "trampoline_Field"],
-            ["error", "(I)V", "rts/iRuntime"],
-            ["link", "(Lrts/iFile;Ljava/lang/String;)V", "rts/iInterface"],
-            ["marshal", "([Lrts/vDescriptor;I)Lrts/vList;", "rts/iInterface"],
-            ["propagate", "(Ljava/lang/String;[Lrts/vDescriptor;)V", "rts/iError"],
-            ["resolve", "(Ljava/lang/String;)Lrts/vVariable;", "rts/iEnv"],
-            ["resolveKey", "(Ljava/lang/String;)Lrts/vProc;", "rts/iEnv"],
-            ["resolveProc", "(Ljava/lang/String;I)Lrts/vDescriptor;",
-             "rts/iEnv"],
-            ["Resume", "()Lrts/vDescriptor;", "rts/vDescriptor"],
-            ["Resume", "(Ljava/lang/String;ILrts/vDescriptor;)Lrts/vDescriptor;", "rts/iTrampoline", "trampoline_Resume"],
-            ["undeclared", "(Ljava/lang/String;)V", "rts/iEnv"],
-            ["undeclared", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", "rts/iEnv", "announce_undeclared"]
+	["Free", "(Ljcon/vLocalVar;)V", "jcon/vLocalVar"],
+	["cofail", "()V", "jcon/vCoexp"],
+	["copy", "(I)Ljcon/vClosure;", &null],
+	["coret", "(Ljcon/vDescriptor;)V", "jcon/vCoexp"],
+	["create", "()V", "jcon/vCoexp"],
+	["createVars", "()V", &null],
+	["declareDebugging", "()V", "jcon/iEnv"],
+	["declareGlobal", "(Ljava/lang/String;)V", "jcon/iEnv"],
+	["declareInvoke", "(Ljava/lang/String;)V", "jcon/iEnv"],
+	["declareInvokeAll", "()V", "jcon/iEnv"],
+	["declareProcedure", "(Ljava/lang/String;Ljcon/vProc;I)V",
+             "jcon/iEnv"],
+	["declareRecord", "(Ljava/lang/String;[Ljava/lang/String;)V",
+             "jcon/iEnv"],
+	["Deref", "()Ljcon/vValue;", "jcon/vDescriptor"],
+	["DerefLocal", "()Ljcon/vDescriptor;", "jcon/vDescriptor"],
+	["Field", "(Ljava/lang/String;)Ljcon/vVariable;","jcon/vDescriptor"],
+	["Field",
+  "(Ljava/lang/String;ILjcon/vDescriptor;Ljava/lang/String;)Ljcon/vVariable;",
+	     "jcon/iTrampoline", "trampoline_Field"],
+	["error", "(I)V", "jcon/iRuntime"],
+	["link", "(Ljcon/iFile;Ljava/lang/String;)V", "jcon/iInterface"],
+	["marshal", "([Ljcon/vDescriptor;I)Ljcon/vList;", "jcon/iInterface"],
+	["propagate", "(Ljava/lang/String;[Ljcon/vDescriptor;)V",
+	     "jcon/iError"],
+	["resolve", "(Ljava/lang/String;)Ljcon/vVariable;", "jcon/iEnv"],
+	["resolveKey", "(Ljava/lang/String;)Ljcon/vProc;", "jcon/iEnv"],
+	["resolveProc", "(Ljava/lang/String;I)Ljcon/vDescriptor;",
+             "jcon/iEnv"],
+	["Resume", "()Ljcon/vDescriptor;", "jcon/vDescriptor"],
+	["Resume",
+	     "(Ljava/lang/String;ILjcon/vDescriptor;)Ljcon/vDescriptor;",
+	     "jcon/iTrampoline", "trampoline_Resume"],
+	["undeclared", "(Ljava/lang/String;)V", "jcon/iEnv"],
+	["undeclared",
+	     "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V",
+	     "jcon/iEnv", "announce_undeclared"]
         ]
     def := [ "name", "type", "class" ]
     every gen_procedure(!m, def, "methodref")
@@ -279,8 +288,8 @@ procedure methodrefs()
     args := ""
     every i := 0 to 9 do {
         write("\t", i, ": j_create_methodref(c, \"Call\", \"(", args,
-              ")Lrts/vDescriptor;\", \"rts/vDescriptor\")")
-        args ||:= "Lrts/vDescriptor;"
+              ")Ljcon/vDescriptor;\", \"jcon/vDescriptor\")")
+        args ||:= "Ljcon/vDescriptor;"
     }
     write("\tdefault : runerr(500, N)")
     write("\t}")
@@ -290,11 +299,14 @@ procedure methodrefs()
     write("\treturn case N of {")
     args := ""
     every i := 0 to 9 do {
-        write("\t", i, ": j_create_methodref(c, \"Call\", \"(Ljava/lang/String;ILrts/vDescriptor;", args,
-              ")Lrts/vDescriptor;\", \"rts/iTrampoline\")")
-        args ||:= "Lrts/vDescriptor;"
+        write("\t", i, ": j_create_methodref(c, \"Call\", ",
+	      "\"(Ljava/lang/String;ILjcon/vDescriptor;", args,
+              ")Ljcon/vDescriptor;\", \"jcon/iTrampoline\")")
+        args ||:= "Ljcon/vDescriptor;"
     }
-    write("\tdefault : j_create_methodref(c, \"Call\", \"(Ljava/lang/String;ILrts/vDescriptor;[Lrts/vDescriptor;)Lrts/vDescriptor;\", \"rts/iTrampoline\")")
+    write("\tdefault : j_create_methodref(c, \"Call\", ",
+          "\"(Ljava/lang/String;ILjcon/vDescriptor;[Ljcon/vDescriptor;)",
+	  "Ljcon/vDescriptor;\", \"jcon/iTrampoline\")")
     write("\t}")
     write("end")
 
@@ -304,7 +316,7 @@ procedure methodrefs()
     every i := 0 to 9 do {
         write("\t", i, ": j_create_methodref(c, \"<init>\", \"(", args,
               ")V\", classname)")
-        args ||:= "Lrts/vDescriptor;"
+        args ||:= "Ljcon/vDescriptor;"
     }
     write("\tdefault : runerr(500, N)")
     write("\t}")
@@ -319,8 +331,8 @@ procedure methods()
     args := ""
     every i := 0 to 9 do {
         write("\t", i, ": j_create_method(c, 0, \"Call\", \"(", args,
-              ")Lrts/vDescriptor;\")")
-        args ||:= "Lrts/vDescriptor;"
+              ")Ljcon/vDescriptor;\")")
+        args ||:= "Ljcon/vDescriptor;"
     }
     write("\tdefault : runerr(500, N)")
     write("\t}")
@@ -332,7 +344,7 @@ procedure methods()
     every i := 0 to 9 do {
         write("\t", i, ": j_create_method(c, 0, \"<init>\", \"(", args,
               ")V\")")
-        args ||:= "Lrts/vDescriptor;"
+        args ||:= "Ljcon/vDescriptor;"
     }
     write("\tdefault : runerr(500, N)")
     write("\t}")
@@ -344,13 +356,13 @@ procedure fieldrefs()
 
     f := [
         [ "PC", "I", &null],
-        [ "arguments", "[Lrts/vDescriptor;", "rts/vClosure"],
-        [ "retval", "Lrts/vDescriptor;", "rts/vClosure"],
-        [ "refreshArray", "[Lrts/vDescriptor;", &null],
+        [ "arguments", "[Ljcon/vDescriptor;", "jcon/vClosure"],
+        [ "retval", "Ljcon/vDescriptor;", "jcon/vClosure"],
+        [ "refreshArray", "[Ljcon/vDescriptor;", &null],
         [ "refreshPC", "I", &null],
-        [ "cur_coexp", "Lrts/vCoexp;", "rts/iEnv"],
-        [ "file", "Ljava/lang/String;", "rts/iTrace"],
-        [ "line", "I", "rts/iTrace"]
+        [ "cur_coexp", "Ljcon/vCoexp;", "jcon/iEnv"],
+        [ "file", "Ljava/lang/String;", "jcon/iTrace"],
+        [ "line", "I", "jcon/iTrace"]
     ]
     def := [ "name", "type", "class" ]
     every gen_procedure(!f, def, "fieldref")

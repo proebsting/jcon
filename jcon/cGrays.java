@@ -1,6 +1,6 @@
 //  cGrays.java -- regular monochrome palettes (g2 through g256)
 
-package rts;
+package jcon;
 
 import java.awt.*;
 

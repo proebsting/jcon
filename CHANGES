@@ -1,0 +1,22 @@
+Changes since 2.0 release:
+
+From todd Sat Aug 29 10:36:25 1998
+seq() cannot have a zero increment value.
+
+From gmt Wed Sep  2 17:09:04 1998
+I've stumbled across a way to get the host name without spawning "uname".
+
+From todd Fri Sep  4 22:22:29 1998
+Subject: seq() and TobY
+Both now work with BigInts.
+
+From todd Fri Sep  4 23:14:38 1998
+Limitation (a\b) now works if b is a big integer....
+
+From gmt Wed Dec  9 09:48:20 1998
+I've updated jcon to support writing JPEG images when run by a
+sufficiently recent version of JDK (1.2beta4 or newer).
+
+From gmt Tue Mar 23 15:44:22 1999
+Changed package name "rts" to "jcon", necessitating
+a corresponding change in subdirectory name (ugh).

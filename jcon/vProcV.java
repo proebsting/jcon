@@ -1,7 +1,7 @@
 //  vProcV -- parent class for procedures declared with variable arglists
 //	      or with more than nine fixed arguments
 
-package rts;
+package jcon;
 
 public abstract class vProcV extends vProc {
 

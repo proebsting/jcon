@@ -6,7 +6,7 @@
 
 
 
-package rts;
+package jcon;
 
 import java.lang.reflect.*;
 

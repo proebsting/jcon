@@ -1,6 +1,6 @@
 //  iOperators.java -- string invocation of Icon operators
 
-package rts;
+package jcon;
 
 
 

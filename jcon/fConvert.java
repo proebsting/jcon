@@ -1,6 +1,6 @@
 //  fConvert.java -- type conversion functions
 
-package rts;
+package jcon;
 
 final class fConvert extends iInstantiate {
 public static fConvert self = new fConvert();

@@ -1,6 +1,6 @@
 //  fNumeric.java -- functions operating on Icon integers and reals
 
-package rts;
+package jcon;
 
 final class fNumeric extends iInstantiate {
     public static fNumeric self = new fNumeric();

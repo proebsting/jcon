@@ -3,7 +3,7 @@
 procedure main()
     write("//  AUTOMATICALLY GENERATED FILE -- DO NOT EDIT!")
     write()
-    write("package rts;")
+    write("package jcon;")
     operators()
     boilerplate()
 end

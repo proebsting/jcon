@@ -1,6 +1,6 @@
 //  iConfig.java -- configuration constants.
 
-package rts;
+package jcon;
 
 final class iConfig {
 
@@ -10,7 +10,7 @@ final class iConfig {
 
 static final String Version = "Jcon Version 2.1.b, December 8, 1998";
 
-static final String PackageName = "rts";	// class prefix
+static final String PackageName = "jcon";	// class prefix
 static final String KeywordPrefix = "k$";	// name prefix for keywords
 static final String FunctionPrefix = "f$";	// name prefix for builtin funcs
 

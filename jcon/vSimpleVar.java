@@ -1,4 +1,4 @@
-package rts;
+package jcon;
 
 public class vSimpleVar extends vVariable {
 

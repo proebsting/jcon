@@ -1,6 +1,6 @@
 //  vTFile.java -- Icon Text ("translated") Files
 
-package rts;
+package jcon;
 
 import java.io.*;
 

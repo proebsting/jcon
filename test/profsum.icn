@@ -115,7 +115,7 @@ end
 procedure fixname(s)
    s ? {
       # strip "meaningless" prefix
-      ="rts/" | (="java/" & tab(upto('/') + 1)) | (="p_l$" & tab(upto('$')))
+      ="jcon/" | (="java/" & tab(upto('/') + 1)) | (="p_l$" & tab(upto('$')))
       return tab(0)
    }
 end

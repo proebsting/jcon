@@ -3,7 +3,7 @@
 //  java.util.vectors are used to implement lists.
 //  push(), pop(), and get() presumably take O(N) time where N is list size.
 
-package rts;
+package jcon;
 
 import java.util.*;
 

@@ -1,6 +1,6 @@
 //  vCoexp -- coexpressions
 
-package rts;
+package jcon;
 
 public final class vCoexp extends vValue implements Runnable {
 

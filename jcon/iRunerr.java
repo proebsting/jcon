@@ -1,7 +1,7 @@
 //  iRunerr.java -- Icon runtime errors
 
 
-package rts;
+package jcon;
 
 public final class iRunerr {
 

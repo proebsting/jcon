@@ -5,7 +5,7 @@
 
 
 
-package rts;
+package jcon;
 
 import java.math.BigInteger;
 import java.util.*;

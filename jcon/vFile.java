@@ -7,7 +7,7 @@
 //  many common operations are implemented here, including read().
 //  reads(), writes(), and newline() are class-specific.
 
-package rts;
+package jcon;
 
 import java.io.*;
 import java.util.*;

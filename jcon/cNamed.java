@@ -1,6 +1,6 @@
 //  cNamed.java -- the c1 palette based on named colors
 
-package rts;
+package jcon;
 
 import java.awt.*;
 
