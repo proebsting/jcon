@@ -1,9 +1,9 @@
 what's implemented:
 -- all datatypes (but only 64-bit integers; no large integers)
 -- all keywords, although resource keywords produce zeroes
+-- preprocessing
 -- most functions; missing chdir(), loadfunc(), getch()/getche()/kbhit()
 -- no graphics
--- "icont -E" is used for preprocessing
 
 general caveats:
 -- little optimization has been done
@@ -41,6 +41,7 @@ error reporting:
 -- in traceback images, list contents and record fields are omitted
 
 miscellaneous:
+-- no OS symbols (e.g. _UNIX) are predefined; _JAVA is predefined
 -- commands run by system(s) do not inherit stdin/stdout/error 
 -- display() ignores its arguments (and displays everything)
 -- display() prints globals in an unsorted order
