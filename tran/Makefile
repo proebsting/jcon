@@ -27,6 +27,7 @@ CODEGENSRC = \
 	gen_dot.icn \
 	gen_ucode.icn \
 	optimize.icn \
+	interface.icn \
 	bytecode.icn 
 
 TRANSRC = $(BASESRC) \
@@ -47,8 +48,14 @@ $(JTRAN):  $(TRANSRC)
 oplexgen: oplexgen.icn
 	$(ICONT) -o oplexgen oplexgen.icn
 
+interfacegen: interfacegen.icn
+	$(ICONT) -o interfacegen interfacegen.icn
+
+interface.icn: interfacegen
+	interfacegen > interface.icn
+
 do_ops.icn: oplexgen
 	./oplexgen > do_ops.icn
 
 clean:
-	rm -f do_ops.icn lexer parse oplexgen gen *.u[12]
+	rm -f do_ops.icn interface.icn oplexgen *.u[12]

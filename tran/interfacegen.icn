@@ -1,0 +1,82 @@
+procedure main()
+    methodrefs()
+    fieldrefs()
+end
+
+procedure methodrefs()
+    local m, def
+
+    m := [
+            ["<init>", "()V", &null, "init"],
+            ["ArgArray", "(I)[Lrts/vDescriptor;", "rts/iClosure"],
+            ["Assign", "(Lrts/vValue;)Lrts/vVariable;", "rts/vDescriptor"],
+            ["Free", "()V", "rts/iClosure"],
+            ["Instantiate",
+            "(Lrts/vDescriptor;[Lrts/vDescriptor;Lrts/iClosure;)Lrts/iClosure;",
+            "rts/iInterface"],
+            ["New", "()Lrts/vNull;", "rts/vNull", "New_vNull"],
+            ["New", "(J)Lrts/vInteger;", "rts/vInteger", "New_vInteger"],
+            ["New", "(Ljava/lang/String;)Lrts/vCset;", "rts/vCset","New_vCset"],
+            ["New", "(Ljava/lang/String;)Lrts/vReal;", "rts/vReal","New_vReal"],
+            ["New", "(Ljava/lang/String;)Lrts/vSimpleVar;", "rts/vSimpleVar",
+             "New_vSimpleVar"],
+            ["New", "(Ljava/lang/String;)Lrts/vString;", "rts/vString",
+             "New_vString"],
+            ["New", "([Lrts/vDescriptor;)Lrts/vList;", "rts/vList",
+             "New_vList"],
+            ["cofail", "()V", "rts/vCoexp"],
+            ["copy", "(I)Lrts/iClosure;", &null],
+            ["coret", "(Lrts/vDescriptor;)V", "rts/vCoexp"],
+            ["create", "(Lrts/iClosure;)Lrts/vCoexp;", "rts/iCoexp", "Create"],
+            ["createVars", "()V", &null],
+            ["declareGlobal", "(Ljava/lang/String;)V", "rts/iEnv"],
+            ["declareInvoke", "(Ljava/lang/String;)V", "rts/iEnv"],
+            ["declareInvokeAll", "()V", "rts/iEnv"],
+            ["declareNoErrorConversion", "()V", "rts/iEnv"],
+            ["declareProcedure", "(Ljava/lang/String;Ljava/lang/String;I)V",
+             "rts/iEnv"],
+            ["declareRecord", "(Ljava/lang/String;[Ljava/lang/String;)V",
+             "rts/iEnv"],
+            ["deref", "()Lrts/vValue;", "rts/vDescriptor"],
+            ["error", "(I)V", "rts/iRuntime"],
+            ["link", "(Ljava/lang/String;)V", "rts/iInterface"],
+            ["marshal", "([Lrts/vDescriptor;I)Lrts/vList;", "rts/iInterface"],
+            ["resolve", "(Ljava/lang/String;)Lrts/vVariable;", "rts/iEnv"],
+            ["resolveKey", "(Ljava/lang/String;)Lrts/vDescriptor;", "rts/iEnv"],
+            ["resolveProc", "(Ljava/lang/String;I)Lrts/vDescriptor;",
+             "rts/iEnv"],
+            ["resume", "()Lrts/vDescriptor;", "rts/iClosure"],
+            ["undeclared", "(Ljava/lang/String;)V", "rts/iEnv"]
+        ]
+    def := [ "name", "type", "class" ]
+    every gen_procedure(!m, def, "methodref")
+end
+
+procedure fieldrefs()
+    local f, def
+
+    f := [
+        [ "PC", "I", "rts/iClosure"],
+        [ "arguments", "[Lrts/vDescriptor;", "rts/iClosure"],
+        [ "cur_coexp", "Lrts/vCoexp;", "rts/iEnv"],
+        [ "field", "Lrts/oField;", "rts/oField"],
+        [ "file", "Ljava/lang/String;", "rts/iClosure"],
+        [ "line", "I", "rts/iClosure"],
+        [ "names", "[Ljava/lang/String;", "rts/iClosure"],
+        [ "variables", "[Lrts/vVariable;", "rts/iClosure"]
+    ]
+    def := [ "name", "type", "class" ]
+    every gen_procedure(!f, def, "fieldref")
+end
+
+procedure gen_procedure(i, def, suffix)
+    writes("procedure ", i[4] | i[1], "_", suffix, "(c")
+    if /i[2] then writes(", ", def[2])
+    if /i[3] then writes(", ", def[3])
+    write(")")
+    write("    return create_", suffix, "(c, ",
+                          image(\i[1]) | def[1], ", ",
+                          image(\i[2]) | def[2], ", ",
+                          image(\i[3]) | def[3], ")")
+    write("end")
+end
