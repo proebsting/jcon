@@ -14,11 +14,6 @@ Jcon does not use Java's Unicode character set.
 <P> Conversion of real numbers to strings produces more digits
 than Version 9.
 
-<H3>Structures</H3>
-
-<P> Random selection from sets and tables differs from Version 9,
-even with the same random seed.
-
 <H3>Files</H3>
 
 <P> Standard error output (<CODE>&amp;errout</CODE>) is always unbuffered.
@@ -34,6 +29,14 @@ Except for the case of <CODE>open(s,"wp")</CODE>, where it is provided
 by the program, <CODE>&amp;input</CODE> is always empty.
 The two output files, <CODE>&amp;output</CODE> and <CODE>&amp;errout</CODE>,
 are copied from the process after it terminates.
+
+<H3>Other Data Types</H3>
+
+<P> Random selection from sets and tables differs from Version 9,
+even with the same random seed.
+
+<P> Jcon is not always consistent with Version 9 when it encounters
+large Integers in unsupported contexts such as subscripting.
 
 <H3>Keywords</H3>
 

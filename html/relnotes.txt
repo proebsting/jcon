@@ -1,19 +1,13 @@
-<P> Version 1.0 of Jcon implemented the classic core of the
-Icon programming language and some basic graphics facilities.
-Version 2.0 completes the graphics facilities
-and adds large integers and dynamic loading.
+<P> Version 2.1 of Jcon includes minor feature additions,
+documentation edits, and bug fixes.  
+Changes include the following:
 
-<P> Version 2.0 also incorporates radical changes in the implementation
-that provide a typical performance improvement of 40%.
-
-<H3>Notable changes from Version 1</H3>
 <UL>
-    <LI>Compilation with <CODE>-f d</CODE> is now needed for tracing,
-	detailed traceback, or error conversion (<CODE>&amp;error</CODE>)
-    <LI><CODE>variable()</CODE>, <CODE>display()</CODE>,
-	and <CODE>&amp;dump</CODE> can access only global variables
-    <LI>Command options for <CODE>jcont</CODE> are closer to those
-	of <CODE>icont</CODE>
+    <LI> Large integers now work with <CODE>to</CODE>-<CODE>by</CODE>,
+	 <CODE>seq()</CODE>, and limitation (<CODE>e1 \ e2</CODE>)
+    <LI> A zero increment value is diagnosed by <CODE>seq()</CODE>
+    <LI> <CODE>&hostname</CODE> no longer spawns a shell invocation
+	of <CODE>uname</CODE> (but see <CITE>Problems</CITE>, below)
 </UL>
 
 <H3>Tested Platforms</H3>

@@ -13,10 +13,10 @@
 	<P>  Gregg M. Townsend, The University of Arizona
 	<BR> Todd A. Proebsting, Microsoft Research
 
-	<P>  Icon Project Document 286  (IPD286)
+	<P>  Icon Project Document 286  (IPD286a)
 	<BR> Department of Computer Science
 	<BR> The University of Arizona
-	<BR> August 27, 1998
+	<BR> September 8, 1998 <STRONG>DRAFT REVISION</STRONG>
 	<BR> http://www.cs.arizona.edu/icon/docs/ipd286.htm 
     </TD></TR></TABLE>
 </CENTER>
