@@ -3,7 +3,7 @@ what's implemented:
 -- all keywords, although resource keywords produce zeroes
 -- preprocessing
 -- most functions; missing chdir(), loadfunc(), getch()/getche()/kbhit()
--- almost no graphics, although a start has been made
+-- almost no graphics, although a start has been made (see below)
 
 general caveats:
 -- little optimization has been done
@@ -18,6 +18,17 @@ building and running programs:
 -- compiled .zip files cannot be renamed: name must match original .icn name
    (however, executables can be renamed)
 -- $PATH must include env and uname commands to use getenv() and &hostname
+
+------------------------------------------------------------------------------
+
+known bugs:
+-- the preprocessor does not diagnose "$define f(a) ..."
+-- local variables are not dereferenced prior to being returned
+-- e[e+:e] and e[e-:e] function identically to v9, which is wrong in some cases
+-- "invocable" procedures are computed incorrectly.  "invocable all" works.
+   Basically, too many user procedures are considered invocable.
+
+------------------------------------------------------------------------------
 
 strings and csets:
 -- Jcon uses 8-bit characters, not Unicode
@@ -34,26 +45,7 @@ structures:
 files:
 -- no pipes
 -- random I/O (seek(), where()) fails for &input/&output/&errout
-
-graphics status:
--- very few things are implemented at this time
--- notes below reflect problems only in things partly finished
--- limitations other than "to be fixed" are likely to remain
-
-graphics -- to be fixed if possible:
--- resize events are not reported
--- &interval is always zero
-
-graphics (general):
--- all windows collate after all files when sorting
--- no mutable colors
--- no sharing of graphics contexts among windows by Couple() or Clone()
-
-graphics events:
--- Java distinguishes "alt" and "meta" keys; Jcon maps both to the &meta flag
--- &meta is never set with mouse events (Java uses it to encode "which button")
--- X returns "\r" for the Enter key but Java (and therefore Jcon) returns "\n"
--- "outboard" keys differ from X, but are close to Windows; see keysyms.icn
+-- a tty input request does not automatically flush tty output first
 
 error reporting:
 -- arg lists in traceback show actual instead of expected number of arguments
@@ -68,6 +60,8 @@ miscellaneous:
 -- function() generates names in an unsorted order
 -- resource-related keywords (&time, &allocated, &collections, &storage,
    &regions) produce only 0's
+
+------------------------------------------------------------------------------
 
 arguably correct differences:
 -- tables sort after sets, and co-expressions after files, as per the Icon book
@@ -92,13 +86,41 @@ compatible, although the book is unclear or wrong:
 -- flush(f) returns f, not null
 -- any() and match() return position beyond matched string even if i2<i1
 
-known bugs:
--- the preprocessor does not diagnose "$define f(a) ..."
--- flush(&output) may not always work? (not confirmed)
--- e[e+:e] and e[e-:e] function identically to v9, which is wrong in some cases
--- local variables are not dereferenced prior to being returned
--- "invocable" procedures are computed incorrectly.  "invocable all" works.
-   Basically, too many user procedures are considered invocable.
+------------------------------------------------------------------------------
+
+graphics overview:
+-- very few things are implemented at this time; few existing programs will run
+-- see rts/wBuiltins.java for the list of implemented functions
+-- limitations other than "to be fixed" are likely to remain
+
+graphics bugs:
+-- there are no defaults for rectangle functions (including EraseArea)
+-- open(s, "g") can return before the window is fully open 
+-- window repair is only done when paused for event input
+-- resize events are not reported
+-- &interval is always zero
+-- graphics output is flushed before any read() -- even untranslated from disk
+
+graphics (general):
+-- all windows collate after all files when sorting
+-- no sharing of graphics contexts among windows by Couple() or Clone()
+
+events:
+-- Java distinguishes "alt" and "meta" keys; Jcon maps both to the &meta flag
+-- &meta is never set with mouse events (Java uses it to encode "which button")
+-- X returns "\r" for the Enter key but Java (and therefore Jcon) returns "\n"
+-- "outboard" keys differ from X, but are close to Windows; see keysyms.icn
+
+colors:
+-- variants (dark, weak, etc.) of unsaturated colors (brown, pink, violet)
+   are different and arguably better  
+-- "light black" and "pale black" are black, not shades of gray
+-- on 8-bit displays, colors may be approximated
+-- there is no inherent limit to the number of colors in use (v9 stops at 256)
+-- mutable colors are not available
+-- gamma correction is not yet implemented; acts as if gamma=1.0
+
+------------------------------------------------------------------------------
 
 Irix implementation note:
 -- The SGI Java implementation may issue "JIT translation fails" messages
