@@ -357,6 +357,15 @@ end
 # record Binop( op left right )
 procedure ir_Binop(p)
 	local closure, tmp, op
+	static funcs	# functions for which resumption fails immediately.
+	initial {
+		funcs := set([
+			"+",
+			".",
+			"[]",
+			":="
+		])
+	}
 
 	ir(p.left)
 	ir(p.right)
@@ -384,16 +393,28 @@ procedure ir_Binop(p)
 			irGoto(p.ir.success)
 			])
 	} else {
-		CG.emit(p.ir.resume, [
-			irCoord(p.coord),
-			irResume(closure, p.right.ir.resume, p.ir.value),
-			irGoto(p.ir.success)
-			])
-		CG.emit(p.right.ir.success, [
-			irCoord(p.coord),
-			irMakeClosure(closure, irOperator(p.op, 2), [ p.left.ir.value, p.right.ir.value ]),
-			irGoto(p.ir.resume)
-			])
+		if member(funcs, op) then {
+			CG.emit(p.ir.resume, [
+				irGoto(p.ir.failure)
+				])
+			CG.emit(p.right.ir.success, [
+				irCoord(p.coord),
+				irMakeClosure(closure, irOperator(p.op, 2), [ p.left.ir.value, p.right.ir.value ]),
+				irResume(closure, p.right.ir.resume, p.ir.value),
+				irGoto(p.ir.success)
+				])
+		} else {
+			CG.emit(p.ir.resume, [
+				irCoord(p.coord),
+				irResume(closure, p.right.ir.resume, p.ir.value),
+				irGoto(p.ir.success)
+				])
+			CG.emit(p.right.ir.success, [
+				irCoord(p.coord),
+				irMakeClosure(closure, irOperator(p.op, 2), [ p.left.ir.value, p.right.ir.value ]),
+				irGoto(p.ir.resume)
+				])
+		}
 	}
 end
 
