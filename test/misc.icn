@@ -60,11 +60,12 @@ procedure main()
    # the following should all be harmless, at least
    every collect(&null | (0 to 3), &null | 0 | 1 | 100 | 1000)
 
+   evaluation("1234567890", "abcdefghi")
+
    write("done")
    exit()
    write("oops!")
    dummy()
-   evaluation("1234567890", "abcdefghi")
 end
 
 # test Icon's (odd) two-pass argument evaluation process.
