@@ -823,6 +823,14 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 		bc_ir2bc_labels[k] := label()
 	}
 
+	bc_save_restore_flag := &null
+	if a := !!bc_emit_table & type(a)=="irSucceed" & \a.continuation then {
+		bc_save_restore_flag := 1
+	}
+	if a := !!!bc_emit_table & type(a)=="irCreate" then {
+		bc_save_restore_flag := 1
+	}
+
 	clinit := create_method(c, 8, "<clinit>", "()V")
 	clinitcode := create_code(c, 10, 10)
 	put(clinit.attributes, clinitcode)
@@ -844,10 +852,11 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	bc_register(bc_emit_table)
 
 	undeclared := bc_var_set -- bc_params_set -- bc_locals_set -- bc_statics_set
-	every k := !params | !locals | !undeclared do {
-		create_field(c, 0, "v$" || k, "Lrts/vVariable;")
+	if /nointrospection | \bc_save_restore_flag then {
+		every k := !params | !locals | !undeclared do {
+			create_field(c, 0, "v$" || k, "Lrts/vVariable;")
+		}
 	}
-
 
 	bc_create_nextval(c, code.ir.start, params, locals, undeclared, accumulate)
 
@@ -965,14 +974,6 @@ procedure bc_create_nextval(c, start, params, locals, undeclared, accumulate)
 	nextvalcode.max_locals := bc_var_offset + *bc_var_table
 	s := nextvalcode.code
 
-	bc_save_restore_flag := &null
-	if a := !!bc_emit_table & type(a)=="irSucceed" & \a.continuation then {
-		bc_save_restore_flag := 1
-	}
-	if a := !!!bc_emit_table & type(a)=="irCreate" then {
-		bc_save_restore_flag := 1
-	}
-
 	bc_switch_label := label()
 	var_load_label := label()
 	tmplab := label()
@@ -1058,19 +1059,31 @@ procedure bc_create_nextval(c, start, params, locals, undeclared, accumulate)
 
 	put(nextvalcode.code, var_load_label)
 
-	every k := key(bc_var_table) do {
-		/bc_var_field[k] := create_fieldref(bc_proc_classptr,
+	if /nointrospection | \bc_save_restore_flag then {
+		every k := key(bc_var_table) do {
+			/bc_var_field[k] := create_fieldref(bc_proc_classptr,
 							"v$" || k,
 							"Lrts/vVariable;",
 							bc_proc_classname)
-		if member(bc_statics, k) then {
-			put(s, getstatic(bc_var_field[k]))
-		} else {
-			put(s, aload_0() )
-			put(s, getfield(bc_var_field[k]))
+			if member(bc_statics, k) then {
+				put(s, getstatic(bc_var_field[k]))
+			} else {
+				put(s, aload_0() )
+				put(s, getfield(bc_var_field[k]))
+			}
+			put(s, Astore(bc_var_table[k] + bc_var_offset))
 		}
-		put(s, Astore(bc_var_table[k] + bc_var_offset))
+	} else {
+		every k := !bc_statics & \bc_var_table[k] do {
+			/bc_var_field[k] := create_fieldref(bc_proc_classptr,
+							"v$" || k,
+							"Lrts/vVariable;",
+							bc_proc_classname)
+			put(s, getstatic(bc_var_field[k]))
+			put(s, Astore(bc_var_table[k] + bc_var_offset))
+		}
 	}
+
 	deflab := label()
 	
 	switch := tableswitch(0, deflab, 1, *bc_emit_table, list(*bc_emit_table))
@@ -1215,10 +1228,14 @@ procedure bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
 
 	every i := 1 to *params do {
 		k := params[i]
-		field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
+		if /nointrospection | \bc_save_restore_flag then {
+			field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
+			put(s, aload_0() )
+			put(s, getfield(field) )
+		} else if \bc_var_table[k] then {
+			put(s, Aload(bc_var_table[k] + bc_var_offset))
+		}
 
-		put(s, aload_0() )
-		put(s, getfield(field) )
 		if i = *params & \accumulate then {
 			marshal := create_methodref(c, "marshal", "([Lrts/vDescriptor;I)Lrts/vList;", "rts/iInterface")
 			put(s, aload_0() )
@@ -1243,7 +1260,9 @@ procedure bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
 			put(s, endlab)
 			put(s, invokevirtual(deref) )
 		}
-		put(s, invokevirtual(assign) )
+		if /nointrospection | \bc_save_restore_flag | \bc_var_table[k] then {
+			put(s, invokevirtual(assign) )
+		}
 		put(s, Pop())
 	}
 end
@@ -1254,29 +1273,46 @@ procedure bc_createvars(s, c, params, locals, undeclared)
 
 	newsimplevar := create_methodref(c, "SimpleVar", "(Ljava/lang/String;)Lrts/vSimpleVar;", "rts/iNew")
 	every k := !params | !locals do {
-		field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
 		v := cp_String(c, cp_Utf8(c, k)) | stop("ERROR ", &file, " ", &line)
-		put(s, aload_0() )
-		put(s, ldc_w(v) )
-		put(s, invokestatic(newsimplevar) )
-		put(s, putfield(field) )
+		if /nointrospection | \bc_save_restore_flag then {
+			field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
+			put(s, aload_0() )
+			put(s, ldc_w(v) )
+			put(s, invokestatic(newsimplevar) )
+			put(s, putfield(field) )
+		} else if \bc_var_table[k] then {
+			put(s, ldc_w(v) )
+			put(s, invokestatic(newsimplevar) )
+			put(s, Astore(bc_var_table[k] + bc_var_offset))
+		}
 	}
 
 	every k := !undeclared do {
-		# v$k = link.v$k$ == null ? iNew.SimpleVar("k") : link.v$k$
-		field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
 		linkvalue := create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;", bc_link_classname)
-		v := cp_String(c, cp_Utf8(c, k)) | stop("ERROR ", &file, " ", &line)
 		lab1 := label()
-		put(s, aload_0() )
-		put(s, getstatic(linkvalue) )
-		put(s, dup() )
-		put(s, ifnonnull(lab1) )
-		put(s, Pop() )
-		put(s, ldc_w(v) )
-		put(s, invokestatic(newsimplevar) )
-		put(s, lab1 )
-		put(s, putfield(field) )
+		v := cp_String(c, cp_Utf8(c, k)) | stop("ERROR ", &file, " ", &line)
+		if /nointrospection | \bc_save_restore_flag then {
+			# v$k = link.v$k$ == null ? iNew.SimpleVar("k") : link.v$k$
+			field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
+			put(s, aload_0() )
+			put(s, getstatic(linkvalue) )
+			put(s, dup() )
+			put(s, ifnonnull(lab1) )
+			put(s, Pop() )
+			put(s, ldc_w(v) )
+			put(s, invokestatic(newsimplevar) )
+			put(s, lab1 )
+			put(s, putfield(field) )
+		} else {
+			put(s, getstatic(linkvalue) )
+			put(s, dup() )
+			put(s, ifnonnull(lab1) )
+			put(s, Pop() )
+			put(s, ldc_w(v) )
+			put(s, invokestatic(newsimplevar) )
+			put(s, lab1 )
+			put(s, Astore(bc_var_table[k] + bc_var_offset))
+		}
 	}
 end
 
