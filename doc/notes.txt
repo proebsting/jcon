@@ -85,7 +85,7 @@ graphics attributes:
 -- attempts to set "display", "iconpos", "iconlabel", or "iconimage" are ignored
 
 fonts:
--- Java family names are case sensitive
+-- Java family names may be case sensitive, depending on the implementation
 -- Icon generic family names, and all characteristics, are case-insensitive
 -- generic names {serif, sans, typewriter} work well; bold/italic variants work
 -- generic "mono" appearance varies by platform; bold/italic don't always work
@@ -112,6 +112,7 @@ events:
 -- Java distinguishes "alt" and "meta" keys; Jcon maps both to the &meta flag
 -- &meta is never set with mouse events (Java uses it to encode "which button")
 -- "outboard" keycodes differ from X, are close to Windows; see bin/keysyms.icn
+-- if the user closes a window, a resize(-1,-1) event is produced
 
 cursors and pointers:
 -- the visible text cursor, when enabled, is a solid, nonblinking underbar
@@ -126,3 +127,7 @@ infelicities:
 -- "drawop=reverse" produces the wrong color under Java 1.1; okay under 1.2
 -- DEC Java 1.1.6 exhibits problems with fonts and font metrics
 -- SGI Irix is unable to link very large programs (e.g. VIB)
+
+deprecated features omitted from Jcon:
+-- "very light" and "very dark" colors
+-- bi-level images expressed in decimal
