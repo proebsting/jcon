@@ -1,0 +1,47 @@
+#SRC: JCON
+
+#  fonts.icn -- show some fonts
+
+global x, y
+
+procedure main()
+   local line
+
+   &window := open("window", "g", "size=500,300")
+   x := 10
+   y := 15
+
+   show()
+   show("fixed")
+   every show(("mono" | "typewriter" | "sans" | "serif") || 
+      ("" | ",italic" | ",oblique" | ",bold" | ",bold,italic"))
+
+   repeat {
+      writes("font> ")
+      flush(&output)
+      line := trim(read()) | break
+      if *line = 0 then next
+      if line == "exit" then break
+      show(line)
+      }
+end
+
+procedure show(s)
+   if /s then
+      s := "[default font]"
+   else if not Font(s) then {
+      s := "FAILED: " || s
+      write("[FAILED]")
+      }
+   DrawString(x, y, s)
+   y +:= 15
+   if y >= 300 then {
+      y := 15
+      x +:= 160
+      if x > 420 then {
+	 EraseArea()
+	 x := 10
+	 }
+      }
+   return
+end
