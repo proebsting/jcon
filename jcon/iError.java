@@ -62,13 +62,13 @@ public vDescriptor propagate(String fname, int lineno, String procname, vDescrip
 	    if (args[0] == null) {
 	        call += "~";
 	    } else {
-	        call += args[0].report();
+	        call += args[0].Deref().report();
 	    }
 	    for (int i = 1; i < args.length; i++) {
 	        if (args[i] == null) {
 	            call += ",~";
 	        } else {
-	            call += "," + args[i].report();
+	            call += "," + args[i].Deref().report();
 	        }
 	    }
 	}
