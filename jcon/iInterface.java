@@ -35,37 +35,43 @@ public class iInterface {
 		return a;
 	}
 
-	public static void link(String name) {
-		try {
-			Class c = Class.forName(name);
-			Object o = c.newInstance();
-			iFile file = (iFile) o;
-			file.announce();
-		} catch (ClassNotFoundException e) {
-			System.err.println();
-			System.err.println("linking error in startup code");
-			System.err.println("error linking file " + name);
-			iRuntime.exit(1, null);
-		} catch (InstantiationException e) {
-			System.err.println();
-			System.err.println("linking error in startup code");
-			System.err.println("error linking file " + name);
-			iRuntime.exit(1, null);
-		} catch (IllegalAccessException e) {
-			System.err.println();
-			System.err.println("linking error in startup code");
-			System.err.println("error linking file " + name);
-			iRuntime.exit(1, null);
+	static iFile[] getFiles(String[] names) {
+		iFile[] files = new iFile[names.length];
+		for (int i = 0; i < names.length; i++) {
+			try {
+				Class c = Class.forName(names[i]);
+				Object o = c.newInstance();
+				files[i] = (iFile) o;
+			} catch (ClassNotFoundException e) {
+				System.err.println();
+				System.err.println("linking error in startup code");
+				System.err.println("error linking file " + names[i]);
+				iRuntime.exit(1, null);
+			} catch (InstantiationException e) {
+				System.err.println();
+				System.err.println("linking error in startup code");
+				System.err.println("error linking file " + names[i]);
+				iRuntime.exit(1, null);
+			} catch (IllegalAccessException e) {
+				System.err.println();
+				System.err.println("linking error in startup code");
+				System.err.println("error linking file " + names[i]);
+				iRuntime.exit(1, null);
+			}
 		}
+		return files;
 	}
 
 	public static void start(String[] filenames, String[] args, String name) {
-		iFile[] files = new iFile[filenames.length];
-		for (int i = 0; i < filenames.length; i++) {
-			link(filenames[i]);
+		iFile[] files = getFiles(filenames);
+		for (int i = 0; i < files.length; i++) {
+			files[i].announce();
+		}
+		iInterface.init();
+		for (int i = 0; i < files.length; i++) {
+			files[i].link();
 		}
 		k$progname.name = name;
-		iInterface.init();
 		vDescriptor m = iEnv.resolve("main");
 		if (m == null || !(m.deref() instanceof vProc)) {
 		    System.err.println();
