@@ -85,7 +85,7 @@ procedure frn(r, w, d)
 
    r := real(r) | runerr(102, r)
    (/d := 0) | (d >=:= MAXDECIMALS)
-   if r >= 0 then {
+   if r >= 0.0 then {
       s := string(integer(r * mlist[d + 1] + 0.5))
       s := right(s, *s < d, "0")
       }
