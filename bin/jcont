@@ -13,6 +13,7 @@
 #			-f d	display() and variable() functions
 #			-f e	error conversion to failure
 #			-f n	file and line number tracking
+#			-f o	pass lvalue args to allow ":="(a,b) etc.
 #     -h	print this usage message and exit
 #     -j	produce .jar file instead of executable script
 #     -o exe	specify output file for executable
@@ -241,7 +242,7 @@ for FNAME in $IFILES; do
 	    $JTRAN preproc $FNAME.icn : yylex : parse : u_gen_File -out:$FNAME
 	    ;;
 	bytecode)
-	    if $JTRAN preproc $FNAME.icn : yylex : parse : ast2ir : \
+	    if $JTRAN preproc $FNAME.icn : yylex : parse : ast2ir $TFLAGS : \
 		bc_File $OFLAG $TFLAGS -class:l\$${FNAME##*/} -dir:$TDIR/; then
 		# bundle .class files (and linkage info) into .zip file
 		(cd $TDIR; $JAR cfM ../$FNAME.zip links *.class)
