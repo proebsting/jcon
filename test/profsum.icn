@@ -1,0 +1,112 @@
+#  profsum -- read and summarize profiling data from "java -prof"
+#
+#  usage:  profsum [file]	-- typically: profsum java.prof
+#
+#  3-jul-97/gmt
+
+
+
+link numbers
+
+
+
+record proc(name, ncalls, tself, tcalled, tlocal)
+
+global ptab
+global tmax
+
+
+
+procedure main(args)
+   local f, line, p, l, tlocal, pct
+
+   if *args > 0 then
+      f := open(args[1]) | stop(&progname, ": can't open ", args[1])
+   else
+      f := &input
+
+   tmax := 0
+
+   while line := read(f) do line ? {
+      if ="count" then
+          next
+      if not any(&digits) then
+          break
+      accumulate()
+      }
+
+   l := []
+   every p := !ptab do {
+      p.tlocal := p.tself - p.tcalled
+      put(l, p)
+   }
+   l := sortf(l, 5)
+
+   write("   ncalls  tottime inmethod  pct  method")
+
+   while p := pull(l) do {
+      if p.ncalls == 0 then
+	 next
+      pct := (100 * p.tlocal + tmax / 2) / tmax
+      write(
+	 right(p.ncalls, 9),
+	 right(p.tself, 9),
+	 right(p.tlocal, 9),
+         right(pct, 4), "%",
+	 "  ",
+	 p.name);
+      }
+
+end
+
+
+
+procedure lookup(s)
+   local p
+   initial ptab := table()
+
+   if p := \ptab[s] then
+      return p
+   else
+      return ptab[s] := proc(s, 0, 0, 0)
+end
+
+
+
+procedure accumulate()
+   local count, caller, callee, time, p, q
+
+   count := integer(tab(many(&digits)))
+   tab(many(' '))
+   callee := tab(upto(' '))
+   tab(many(' '))
+   caller := tab(upto(' '))
+   if caller ||:= =" caller" then
+      caller ||:= tab(upto(' '))
+   tab(many(' '))
+   time := integer(tab(many(&digits)))
+
+   caller := fixname(caller)
+   callee := fixname(callee)
+
+   p := lookup(callee)
+   p.tself +:= time
+   p.ncalls +:= count
+
+   q := lookup(caller)
+   q.tcalled +:= time
+
+   tmax <:= time
+
+   return
+end
+
+
+
+procedure fixname(s)
+   s ? {
+      # strip "meaningless" prefix
+      ="rts/" | (="java/" & tab(upto('/') + 1)) | (="p_l$" & tab(upto('$')))
+      return tab(0)
+   }
+end
