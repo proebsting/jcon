@@ -71,4 +71,11 @@ abstract class vValue extends vDescriptor {
     vValue NGreater(vDescriptor v)   { iRuntime.error(102, this); return null; }
 
     vValue Concat(vDescriptor v)     { iRuntime.error(103, this); return null; }
+
+    // list operations
+    vValue Push(vDescriptor v)	{ iRuntime.error(108, this); return null; }
+    vValue Pull()		{ iRuntime.error(108, this); return null; }
+    vValue Pop()		{ iRuntime.error(108, this); return null; }
+    vValue Get()		{ iRuntime.error(108, this); return null; }
+    vValue Put(vDescriptor v)	{ iRuntime.error(108, this); return null; }
 }

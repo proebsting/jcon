@@ -66,6 +66,13 @@ abstract class vDescriptor {
 
     abstract vValue Concat(vDescriptor v);	//  s1 || s2
 
+    // list operations
+    abstract vValue Push(vDescriptor v);
+    abstract vValue Pull();
+    abstract vValue Pop();
+    abstract vValue Get();
+    abstract vValue Put(vDescriptor v);
+
     //#%#%#%# not-yet-implemented abort
     void NYI(String s) {
 	System.err.println("NYI: " + this + "." + (s != null ? s : "?"));

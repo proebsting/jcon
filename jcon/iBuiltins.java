@@ -14,7 +14,13 @@ static final String PREFIX = "f$";	// classname prefix for built-in funcs
 
 void announce(iEnv env) {
 	declare(env, "exit");
+	declare(env, "get");
 	declare(env, "image");
+	declare(env, "list");
+	declare(env, "pop");
+	declare(env, "pull");
+	declare(env, "push");
+	declare(env, "put");
 	declare(env, "right");
 	declare(env, "stop");
 	declare(env, "type");
@@ -149,5 +155,91 @@ class f$exit extends iFunctionClosure {				// exit(n)
 		int n = (int) vInteger.argVal(args, 0, 0);
 		System.exit(n);					// exit
 		return null;	// not reached
+	}
+}
+
+
+
+class f$list extends iFunctionClosure {				// list(i, x)
+	vDescriptor function(vDescriptor[] args) {
+		vValue x;
+		int i = (int) vInteger.argVal(args, 0, 0);
+		if (args.length > 1) {
+			x = (vValue) args[1];
+		} else {
+			x = iNew.Null();
+		}
+		return iNew.List(i, x);
+	}
+}
+
+
+
+class f$push extends iFunctionClosure {				// push(L, x...)
+	vDescriptor function(vDescriptor[] args) {
+		if (args.length == 0) {
+			iRuntime.error(108, iNew.Null());
+		} else if (args.length == 1) {
+			args[0].Push(iNew.Null());
+		} else {
+			for (int i = 1; i < args.length; i++)
+				args[0].Push(args[i]);
+		}
+		return args[0];
+	}
+}
+
+
+
+class f$pull extends iFunctionClosure {				// pull(L)
+	vDescriptor function(vDescriptor[] args) {
+		if (args.length == 0) {
+			iRuntime.error(108, iNew.Null());
+			return null;
+		} else {
+			return args[0].Pull();
+		}
+	}
+}
+
+
+
+class f$pop extends iFunctionClosure {				// pop(L)
+	vDescriptor function(vDescriptor[] args) {
+		if (args.length == 0) {
+			iRuntime.error(108, iNew.Null());
+			return null;
+		} else {
+			return args[0].Pop();
+		}
+	}
+}
+
+
+
+class f$get extends iFunctionClosure {				// get(L)
+	vDescriptor function(vDescriptor[] args) {
+		if (args.length == 0) {
+			iRuntime.error(108, iNew.Null());
+			return null;
+		} else {
+			return args[0].Get();
+		}
+	}
+}
+
+
+
+class f$put extends iFunctionClosure {				// put(L, x...)
+	vDescriptor function(vDescriptor[] args) {
+		if (args.length == 0) {
+			iRuntime.error(108, iNew.Null());
+		} else if (args.length == 1) {
+			args[0].Put(iNew.Null());
+		} else {
+			for (int i = 1; i < args.length; i++)
+				args[0].Put(args[i]);
+		}
+		return args[0];
 	}
 }

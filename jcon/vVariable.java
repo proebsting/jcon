@@ -53,4 +53,11 @@ abstract class vVariable extends vDescriptor {
     vValue NGreater(vDescriptor v)	{ return this.deref().NGreater(v); }
 
     vValue Concat(vDescriptor v)	{ return this.deref().Concat(v); }
+
+    // list operations
+    vValue Push(vDescriptor v)		{ return this.deref().Push(v); }
+    vValue Pull()			{ return this.deref().Pull(); }
+    vValue Pop()			{ return this.deref().Pop(); }
+    vValue Get()			{ return this.deref().Get(); }
+    vValue Put(vDescriptor v)		{ return this.deref().Put(v); }
 }

@@ -20,13 +20,13 @@ static vReal Real(double x) 		{ return new vReal(x); }
 
 static vString String(String x) 	{ return new vString(x); }
 
+static vDescriptor List(int n, vValue x)	{ return new vList(n, x); }
+static vDescriptor List(vDescriptor[] elements)	{ return new vList(elements); }
+
 static vProc Proc(Class c, iEnv e)	{ return new vProc(c, e); }
 
 static vRecordProc RecordProc(String name, String[] fields)
 					{ return new vRecordProc(name, fields);}
-
-static vDescriptor List(vDescriptor[] elements)
-					{ return null; }
 
 // for construction of internal types
 
