@@ -2,6 +2,9 @@
 
 package rts;
 
+import java.io.*;
+import java.util.*;
+
 
 
 public class iBuiltins extends iFile {
@@ -36,6 +39,7 @@ void announce() {
 	declare("flush", 1);
 	declare("function", 0);
 	declare("get", 1);
+	declare("getenv", 1);
 	declare("iand", 2);
 	declare("icom", 1);
 	declare("image", 1);
@@ -156,7 +160,7 @@ class f$variable extends iFunctionClosure {			// variable(x)
 	}
 }
 
-class f$collect extends iFunctionClosure {			// collect(i1,i2)
+class f$collect extends iFunctionClosure {			// collect(i,j)
 	vDescriptor function(vDescriptor[] args) {
 		long i1 = vInteger.argVal(args, 0, 0);
 		long i2 = vInteger.argVal(args, 1, 0);
@@ -395,6 +399,37 @@ class f$system extends iFunctionClosure {			// system(s)
 			status = -1;
 		}
 		return iNew.Integer(status);
+	}
+}
+
+class f$getenv extends iFunctionClosure {			// getenv(s)
+
+	static Hashtable env = new Hashtable();
+
+	static {				// initialization on first call
+		try {
+			Process p =
+				Runtime.getRuntime().exec("/usr/bin/printenv");
+			DataInputStream d =
+				new DataInputStream(p.getInputStream());
+			String s;
+			while ((s = d.readLine()) != null) {
+				s = s.trim();
+				int n = s.indexOf('=');
+				if (n > 0) {
+					String key = s.substring(0, n);
+					String val = s.substring(n + 1);
+					env.put(key, iNew.String(val));
+				}
+			}
+			p.destroy();
+		} catch (Exception e1) {
+			// nothing; table remains empty, all calls fail
+		}
+	}
+
+	vDescriptor function(vDescriptor[] args) {
+		return (vString) env.get(vString.argVal(args, 0));
 	}
 }
 

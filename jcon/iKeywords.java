@@ -95,7 +95,9 @@ class k$features extends iClosure {		// &features
 	//#%#%  The features list is hard-wired for now.
 	//#%#%  It's not completely clear what we should report.
 
-	static String[] flist = { "Java", "ASCII", "co-expressions" };
+	static String[] flist = { 
+		"Java", "ASCII", "co-expressions",
+		"environment variables", "system function" };
 
 	int posn = 0;
 
