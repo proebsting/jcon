@@ -207,4 +207,47 @@ iClosure instantiate(vDescriptor[] args, iClosure parent) {
     return new iErrorClosure(this, args, parent);  // will gen err 106
 }
 
+vValue LLess(vDescriptor v) {
+    if (!(v instanceof vString)) {
+	iRuntime.error(103, v);
+    }
+    String vs = ((vString)v).value;
+    return this.value.compareTo(vs) < 0 ? (vValue)v : null;
+}
+vValue LLessEq(vDescriptor v) {
+    if (!(v instanceof vString)) {
+	iRuntime.error(103, v);
+    }
+    String vs = ((vString)v).value;
+    return this.value.compareTo(vs) <= 0 ? (vValue)v : null;
+}
+vValue LEqual(vDescriptor v) {
+    if (!(v instanceof vString)) {
+	iRuntime.error(103, v);
+    }
+    String vs = ((vString)v).value;
+    return this.value.compareTo(vs) == 0 ? (vValue)v : null;
+}
+vValue LUnequal(vDescriptor v) {
+    if (!(v instanceof vString)) {
+	iRuntime.error(103, v);
+    }
+    String vs = ((vString)v).value;
+    return this.value.compareTo(vs) != 0 ? (vValue)v : null;
+}
+vValue LGreaterEq(vDescriptor v) {
+    if (!(v instanceof vString)) {
+	iRuntime.error(103, v);
+    }
+    String vs = ((vString)v).value;
+    return this.value.compareTo(vs) >= 0 ? (vValue)v : null;
+}
+vValue LGreater(vDescriptor v) {
+    if (!(v instanceof vString)) {
+	iRuntime.error(103, v);
+    }
+    String vs = ((vString)v).value;
+    return this.value.compareTo(vs) > 0 ? (vValue)v : null;
+}
+
 } // class vString

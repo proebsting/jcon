@@ -48,6 +48,13 @@ void announce(iEnv env) {
     declare(env, ">=,2", "oNGreaterEq");
     declare(env, ">,2", "oNGreater");
 
+    declare(env, "<<,2", "oLLess");
+    declare(env, "<<=,2", "oLLessEq");
+    declare(env, "==,2", "oLEqual");
+    declare(env, "~==,2", "oLUnequal");
+    declare(env, ">>=,2", "oLGreaterEq");
+    declare(env, ">>,2", "oLGreater");
+
     declare(env, "===,2", "oVEqual");
     declare(env, "~===,2", "oVUnequal");
 
@@ -382,6 +389,63 @@ class oNGreater extends iFunctionClosure {		//  n1 > n2
 	String tfmt() { return "{$1 > $2}"; }
 }
 
+//  lexical comparison
+
+class oLLess extends iFunctionClosure {			//  n1 << n2
+	vDescriptor function(vDescriptor[] args) {
+		args[0] = args[0].mkString();
+		args[1] = args[1].mkString();
+		return args[0].LLess(args[1]);
+	}
+	String tfmt() { return "{$1 << $2}"; }
+}
+
+class oLLessEq extends iFunctionClosure {		//  n1 <<= n2
+	vDescriptor function(vDescriptor[] args) {
+		args[0] = args[0].mkString();
+		args[1] = args[1].mkString();
+		return args[0].LLessEq(args[1]);
+	}
+	String tfmt() { return "{$1 <<= $2}"; }
+}
+
+class oLEqual extends iFunctionClosure {		//  n1 == n2
+	vDescriptor function(vDescriptor[] args) {
+		args[0] = args[0].mkString();
+		args[1] = args[1].mkString();
+		return args[0].LEqual(args[1]);
+	}
+	String tfmt() { return "{$1 == $2}"; }
+}
+
+class oLUnequal extends iFunctionClosure {		//  n1 ~== n2
+	vDescriptor function(vDescriptor[] args) {
+		args[0] = args[0].mkString();
+		args[1] = args[1].mkString();
+		return args[0].LUnequal(args[1]);
+	}
+	String tfmt() { return "{$1 ~== $2}"; }
+}
+
+class oLGreaterEq extends iFunctionClosure {		//  n1 >>= n2
+	vDescriptor function(vDescriptor[] args) {
+		args[0] = args[0].mkString();
+		args[1] = args[1].mkString();
+		return args[0].LGreaterEq(args[1]);
+	}
+	String tfmt() { return "{$1 >>= $2}"; }
+}
+
+class oLGreater extends iFunctionClosure {		//  n1 >> n2
+	vDescriptor function(vDescriptor[] args) {
+		args[0] = args[0].mkString();
+		args[1] = args[1].mkString();
+		return args[0].LGreater(args[1]);
+	}
+	String tfmt() { return "{$1 >> $2}"; }
+}
+
+// value comparison
 class oVEqual extends iFunctionClosure {		//  n1 === n2
 	vDescriptor function(vDescriptor[] args) {
 		return (args[0].equals(args[1].deref())) ? args[1] : null;

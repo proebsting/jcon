@@ -55,6 +55,13 @@ abstract class vVariable extends vDescriptor {
     vValue NGreaterEq(vDescriptor v)	{ return this.deref().NGreaterEq(v); }
     vValue NGreater(vDescriptor v)	{ return this.deref().NGreater(v); }
 
+    vValue LLess(vDescriptor v)		{ return this.deref().LLess(v); }
+    vValue LLessEq(vDescriptor v)	{ return this.deref().LLessEq(v); }
+    vValue LEqual(vDescriptor v)	{ return this.deref().LEqual(v); }
+    vValue LUnequal(vDescriptor v)	{ return this.deref().LUnequal(v); }
+    vValue LGreaterEq(vDescriptor v)	{ return this.deref().LGreaterEq(v); }
+    vValue LGreater(vDescriptor v)	{ return this.deref().LGreater(v); }
+
     vValue Concat(vDescriptor v)	{ return this.deref().Concat(v); }
 
     // list operations

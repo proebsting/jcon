@@ -65,6 +65,13 @@ abstract class vDescriptor {
     abstract vValue NGreaterEq(vDescriptor v);	//  n1 >= n2
     abstract vValue NGreater(vDescriptor v);	//  n1 > n2
 
+    abstract vValue LLess(vDescriptor v);	//  n1 << n2
+    abstract vValue LLessEq(vDescriptor v);	//  n1 <<= n2
+    abstract vValue LEqual(vDescriptor v);	//  n1 == n2
+    abstract vValue LUnequal(vDescriptor v);	//  n1 ~== n2
+    abstract vValue LGreaterEq(vDescriptor v);	//  n1 >>= n2
+    abstract vValue LGreater(vDescriptor v);	//  n1 >> n2
+
     abstract vValue Concat(vDescriptor v);	//  s1 || s2
 
     // list operations
