@@ -2,7 +2,7 @@
 #
 #  jcont -- compile Icon program
 #
-#  usage:  jcont [-cdsvJP] [-o exe] file[.icn]... [file.zip...] [-x [arguments]]
+#  usage:  jcont [-cdjsvJP] [-o exe] file[.icn]... [file.zip...] [-x [args]]
 #
 #     -c	compile only: don't produce an executable
 #     -s	silent: suppress commentary
@@ -93,7 +93,7 @@ NOEXECUTE=exit
 
 #  process options, changing devault values set above
 
-USAGE="usage: $0 [-cdsvP] [-o exe] file[.icn]... [file.zip...] [-x [arguments]]"
+USAGE="usage: $0 [-cdjsvJP] [-o exe] file[.icn]... [file.zip...] [-x [args]]"
 
 while getopts "cdjsvJPo:" c 2>$NULLFILE; do
     case $c in
