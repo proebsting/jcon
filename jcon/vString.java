@@ -87,7 +87,7 @@ vDescriptor Select() {
 	return null; /*FAIL*/
     }
     int i = (int) iRuntime.random(value.length());
-    return iNew.String(value.substring(i, i+1));
+    return iNew.String(value.substring(i+1, i+2));
 }
 
 vDescriptor SelectVar(vSimpleVar v) {
@@ -95,7 +95,7 @@ vDescriptor SelectVar(vSimpleVar v) {
 	return null; /*FAIL*/
     }
     int i = (int) iRuntime.random(value.length());
-    return iNew.Substring(v, i, i+1);
+    return iNew.Substring(v, i+1, i+2);
 }
 
 vDescriptor Bang(iClosure c) {

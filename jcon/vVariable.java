@@ -1,3 +1,15 @@
+//  vVariable -- vDescriptor subclass for Icon variables.
+//
+//  Variables represent assignable expressions in Icon.
+//
+//  The subclass vSimpleVar is used for Icon global and local variables 
+//  and, when further subclassed, for certain keywords such as &subject.
+//
+//  The abstract subclass vVarExpr represents a variable expression such
+//  as a substring, list or table index, etc.  Each VarExpr points to
+//  an underlying SimpleVar.
+
+
 abstract class vVariable extends vDescriptor {
 
     // must be implemented:

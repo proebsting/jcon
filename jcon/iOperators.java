@@ -136,21 +136,21 @@ class oIsntNull extends iFunctionClosure {		//  \x
 	}
 }
 
-class oSize extends iFunctionClosure {		//  ?x
+class oSize extends iFunctionClosure {			//  ?x
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].Size();
 	}
 }
 
-class oSelect extends iFunctionClosure {		//  ?x
+class oSelect extends iRefClosure {			//  ?x
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].Select();
 	}
 }
 
-class oBang extends iClosure {		//  !x
+class oBang extends iClosure {				//  !x
 	void nextval() {
-		retvalue = arguments[0].deref().Bang(this);
+		retvalue = arguments[0].Bang(this);
 	}
 }
 

@@ -1,3 +1,13 @@
+//  vDescriptor -- master abstract class.
+//
+//  A descriptor is the basic object of Icon operation.
+//  Descriptors are used for method arguments, intermediate results, etc.
+//
+//  Descriptors come in two flavors (q.v.):
+//	vValue		dereferenced values such as 3, "x", list L, etc.
+//	vVariable	assignable objects such as i, a[3], &subject, etc.
+
+
 abstract class vDescriptor {
 
     // methods declared here must be implemented for all descriptor classes

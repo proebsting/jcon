@@ -1,3 +1,9 @@
+//  vValue -- vDescriptor subclass for Icon values.
+//
+//  vValue is an abstract class encompassing values of all Icon types.
+//  Each type implements a concrete class; all records share one class.
+
+
 abstract class vValue extends vDescriptor {
 
     // many of these are default methods, often overridden by individual types

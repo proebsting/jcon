@@ -33,9 +33,14 @@ static void bomb(String s)
 
 // #%#%#% redo later to use Icon's &random etc.
 
-static double random()	{ return Math.random(); }
+static double random() {	// return double value "between 0 and 1"
+    return Math.random();
+}
 
-static long random(long limit) { return (long) (limit * Math.random()); }
+
+static long random(long limit) {	// return long value in [0, limit)
+    return (long) (limit * Math.random());
+}
 
 
 

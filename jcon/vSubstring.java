@@ -1,35 +1,57 @@
-class vSubstring extends vVariable {
+class vSubstring extends vVarExpr {
 
-    vString sval;	// underlying string
-    int start, end;	// substring bounds (in Icon terms)
+    int start, end;	// substring bounds, in Icon terms
 
-    vSubstring(vSimpleVar v, int i1, int i2) {
-    	sval = (vString) v.value;
+
+    // constructors assume valid indices (in positive form)
+
+    vSubstring(vSimpleVar v, int i1, int i2) {	// construct from String
+	super(v);
 	start = i1;
 	end = i2;
     }
 
-    vSubstring(vSubstring v, int i1, int i2) {
-        sval = v.sval;
+    vSubstring(vSubstring v, int i1, int i2) {	// construct from Substring
+	super(v.var);
 	start = v.start - 1 + i1;
 	end = v.start - 1 + i2;
     }
 
-    vValue deref(){
-	//#%#%# should check that indices are still in range
-	return iNew.String(sval.value.substring(start - 1, end - 1));
+
+    vValue deref() {
+	vString s = var.mkString();		// deref and validate type
+	if (end > s.value.length() + 1) {	// if index now out of range
+	    return null; /*FAIL*/
+	}
+	return iNew.String(s.value.substring(start - 1, end - 1));
     }
 
+
     vVariable Assign(vValue x) {
-    	iRuntime.error(901, this);	//#%#%#% substring assignment NYI
-	return this;
+
+	String xs = x.mkString().value;		// coerce assigned value
+
+	String s = var.mkString().value;	// deref and validate base strg
+	if (end > s.length() + 1) {		// if index now out of range
+	    return null; /*FAIL*/
+	}
+
+	var.Assign(iNew.String(
+	    new StringBuffer()
+	    .append(s.substring(0, start - 1))
+	    .append(xs)
+	    .append(s.substring(end - 1))
+	    .toString()));
+	    
+	return iNew.Substring(this, start, start + xs.length());
     }
+
 
 
     vDescriptor isNull()	{ return null; /*FAIL*/ }
     vDescriptor isntNull()	{ return this; }
 
-    vDescriptor Select() {		// ?s
+    vDescriptor Select() {				// ?s
 	if (start == end) {
 	    return null; /*FAIL*/
 	}
@@ -37,10 +59,10 @@ class vSubstring extends vVariable {
 	return iNew.Substring(this, offset, offset + 1);
     }
 
-    vDescriptor Bang(iClosure c) {	// !s
+    vDescriptor Bang(iClosure c) {			// !s
 	int n;
 	if (c.o == null) {
-	    c.o = new Integer(n = this.start);
+	    c.o = new Integer(n = start);
 	} else {
 	    c.o = new Integer(n = ((Integer)c.o).intValue() + 1);
 	}
