@@ -129,7 +129,13 @@ String args2string(vDescriptor[] args) {
     return call;
 }
 
+// Called by generated code---it cannot handle error conversion.
 public void propagate(String procname, vDescriptor[] args) {
+    // if &error is not zero, print diagnostic, reset to zero, issue
+    if (iKeyword.error.check()) {
+	System.err.println("Attempted error conversion in procedure " + procname);
+	iKeyword.errornumber.set(vInteger.New(0));
+    }
     String call = procname + args2string(args);
     propagate(null, 0, call);
 }

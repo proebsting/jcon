@@ -1650,7 +1650,7 @@ end
 
 procedure bc_create_declare(c)
     local declare, declarecode, declareGlobal, k, s, declareProcedure
-    local declareRecord, stringclass, i, f, declareNoErrorConversion, nm
+    local declareRecord, stringclass, i, f, nm
     local class, init
     local declareDebugging
 
@@ -1658,10 +1658,6 @@ procedure bc_create_declare(c)
     declarecode := j_create_code(c, 15, 15)
     put(declare.attributes, declarecode)
 
-    if \ir_noerror2failure then {
-        declareNoErrorConversion := bc_declareNoErrorConversion_methodref(c)
-        put(declarecode.code, j_invokestatic(declareNoErrorConversion) )
-    }
     if /bc_nodebuginfo then {
         declareDebugging := bc_declareDebugging_methodref(c)
         put(declarecode.code, j_invokestatic(declareDebugging) )
