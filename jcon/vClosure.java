@@ -16,7 +16,6 @@ public abstract class vClosure extends vDescriptor {
 public abstract vDescriptor Resume();
 
 
-
 // most methods other than Resume() just get applied to the retval field.
 
 public boolean equals(Object o)		{ return retval.equals(o); }
@@ -36,6 +35,7 @@ public vString write()			{ return retval.write(); }
 public vString image()			{ return retval.image(); }
 public vString report()			{ return retval.report(); }
 
+public vDescriptor DerefLocal()		{ return this; }
 public vValue Deref()			{ return retval.Deref(); }
 public vVariable Assign(vDescriptor x)	{ return retval.Assign(x); }
 public vVariable Swap(vDescriptor x)	{ return retval.Swap(x); }

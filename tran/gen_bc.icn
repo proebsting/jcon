@@ -386,6 +386,7 @@ end
 procedure bc_gen_ir_Succeed(s, p)
     local r, e, PC, k, a
     local free, class_index
+    local dereflocal
 
     PC := bc_PC_fieldref(bc_current_classptr, bc_vClosure_classname)
     if \p.continuation then {
@@ -403,16 +404,18 @@ procedure bc_gen_ir_Succeed(s, p)
         put(s, j_putfield(PC))
     }
     bc_gen(s, p.expr)
-#    if /p.continuation & \bc_stackptr then {
-#        free := bc_FreeLocals_methodref(bc_current_classptr)
-#        put(s, j_Aload(bc_stackptr + bc_var_offset))
-#	if \bc_save_restore_flag then {
-#            class_index := j_cp_Class(bc_current_classptr,
-#                              j_cp_Utf8(bc_current_classptr, "rts/vSimpleVar"))
-#	    put(s, j_checkcast(class_index))
-#	}
-#	put(s, j_invokestatic(free))
-#    }
+    dereflocal := bc_DerefLocal_methodref(bc_current_classptr)
+    put(s, j_invokevirtual(dereflocal) )
+    if /p.continuation & \bc_stackptr then {
+        free := bc_Free_methodref(bc_current_classptr)
+        put(s, j_Aload(bc_stackptr + bc_var_offset))
+	if \bc_save_restore_flag then {
+            class_index := j_cp_Class(bc_current_classptr,
+                              j_cp_Utf8(bc_current_classptr, "rts/vLocalVar"))
+	    put(s, j_checkcast(class_index))
+	}
+	put(s, j_invokestatic(free))
+    }
     if /bc_nodebuginfo then {
 	bc_emitlineinfo(s, p.coord)
     }
@@ -424,16 +427,16 @@ end
 procedure bc_gen_ir_Fail(s, p)
     local free, class_index
 
-#    if /bc_save_restore_flag & \bc_stackptr then {
-#        free := bc_FreeLocals_methodref(bc_current_classptr)
-#        put(s, j_Aload(bc_stackptr + bc_var_offset))
-#	if \bc_save_restore_flag then {
-#            class_index := j_cp_Class(bc_current_classptr,
-#                              j_cp_Utf8(bc_current_classptr, "rts/vSimpleVar"))
-#	    put(s, j_checkcast(class_index))
-#	}
-#	put(s, j_invokestatic(free))
-#    }
+    if /bc_save_restore_flag & \bc_stackptr then {
+        free := bc_Free_methodref(bc_current_classptr)
+        put(s, j_Aload(bc_stackptr + bc_var_offset))
+	if \bc_save_restore_flag then {
+            class_index := j_cp_Class(bc_current_classptr,
+                              j_cp_Utf8(bc_current_classptr, "rts/vLocalVar"))
+	    put(s, j_checkcast(class_index))
+	}
+	put(s, j_invokestatic(free))
+    }
     if /bc_nodebuginfo then {
 	bc_emitlineinfo(s, p.coord)
     }
@@ -1037,8 +1040,8 @@ procedure bc_create_vClosure_copy_constructor(c, params, locals, undeclared)
     vararray := j_create_fieldref(bc_current_classptr, "tmpVarArray",
                                   "[Lrts/vDescriptor;", bc_current_classname)
     refresharray := bc_refreshArray_fieldref(bc_current_classptr, bc_current_classname)
-    #newsimplevar := bc_New_Local_Assign_methodref(c)
-    newsimplevar := bc_New_vSimpleVar_Assign_methodref(c)
+    newsimplevar := bc_New_Local_Assign_Unstacked_methodref(c)
+    # newsimplevar := bc_New_vSimpleVar_Assign_methodref(c)
     class_index := j_cp_Class(bc_current_classptr,
                               j_cp_Utf8(bc_current_classptr, "rts/vDescriptor"))
     deref := bc_Deref_methodref(c)
@@ -1439,8 +1442,7 @@ procedure bc_createvars_into_array(s, c, params, locals, undeclared, accumulate)
                               j_cp_Utf8(bc_current_classptr, "rts/vDescriptor"))
     put(s, j_anewarray(class_index) )
 
-    #newsimplevar := bc_New_Local_Assign_methodref(c)
-    newsimplevar := bc_New_vSimpleVar_Assign_methodref(c)
+    newsimplevar := bc_New_Local_Assign_methodref(c)
     deref := bc_Deref_methodref(c)
     every i := 1 to *params do {
         k := params[i]
@@ -1461,8 +1463,7 @@ procedure bc_createvars_into_array(s, c, params, locals, undeclared, accumulate)
         }
     }
 
-    #newsimplevar := bc_New_Local_methodref(c)
-    newsimplevar := bc_New_vSimpleVar_methodref(c)
+    newsimplevar := bc_New_Local_methodref(c)
     every k := !locals do {
         if \bc_var_table[k] then {
 	    /bc_stackptr := bc_var_table[k]
@@ -1498,8 +1499,7 @@ procedure bc_createvars(s, c, params, locals, undeclared, accumulate)
     local newsimplevar, k, field, v, i, deref
     local linkvalue, lab1
 
-    # newsimplevar := bc_New_Local_Assign_methodref(c)
-    newsimplevar := bc_New_vSimpleVar_Assign_methodref(c)
+    newsimplevar := bc_New_Local_Assign_methodref(c)
     deref := bc_Deref_methodref(c)
     every i := 1 to *params do {
         k := params[i]
@@ -1518,8 +1518,7 @@ procedure bc_createvars(s, c, params, locals, undeclared, accumulate)
         }
     }
 
-    # newsimplevar := bc_New_Local_methodref(c)
-    newsimplevar := bc_New_vSimpleVar_methodref(c)
+    newsimplevar := bc_New_Local_methodref(c)
     every k := !locals do {
         if \bc_var_table[k] then {
 	    /bc_stackptr := bc_var_table[k]

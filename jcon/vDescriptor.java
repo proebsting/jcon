@@ -33,6 +33,7 @@ public abstract vString image();		// convert for use in image()
 public abstract vString report();		// convert for error, traceback
 
 // dereferencing and assignment
+public abstract vDescriptor DerefLocal();		// .x iff x refs a local
 public abstract vValue Deref();				// . x
 public abstract vVariable Assign(vDescriptor x);	// v := x
 public abstract vVariable SubjAssign(vDescriptor x);	// &subject := x  

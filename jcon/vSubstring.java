@@ -19,8 +19,6 @@ private vSubstring(vVariable v, int i1, int i2) {	// construct from String
     end = i2;
 }
 
-
-
 public boolean isnull()			{ return false; }
 
 public vString Name() {
@@ -36,7 +34,9 @@ public vString Name() {
 //  that the indices are still in range, and returns the vString.
 
 vString strval() {
-    vDescriptor v = var.Deref();
+    return strval(var.Deref());
+}
+vString strval(vDescriptor v) {
     if (! (v instanceof vString)) {
 	iRuntime.error(103, var);
     }
@@ -67,6 +67,15 @@ int posEq(long n) {
 
 
 //  internal methods
+
+public vDescriptor DerefLocal() {
+    vDescriptor v = var.DerefLocal();
+    if (v instanceof vValue) {
+        return vString.New(this.strval(v), start, end);
+    }
+    var = (vVariable) v;
+    return this;
+}
 
 public vValue Deref() {
     return vString.New(this.strval(), start, end);

@@ -33,6 +33,7 @@ public vString write()		{ return this.mkString(); }
 public vString report()		{ return this.image(); }
 public abstract vString image();	// required of all subclasses
 
+public vDescriptor DerefLocal()	{ return this; }
 public vValue Deref()		{ return this; }
 public vVariable Assign(vDescriptor x) { iRuntime.error(111,this); return null;}
 public vVariable SubjAssign(vDescriptor x)

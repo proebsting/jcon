@@ -226,6 +226,10 @@ final class vTrappedTable extends vVariable {
 	this.key = key;
     }
 
+    public vDescriptor DerefLocal() {
+	return this;
+    }
+
     public vValue Deref() {
 	vValue v = table.get(key);
 	return (v == null) ? table.dflt : v;

@@ -4,8 +4,8 @@ package rts;
 
 public final class vCoexp extends vValue implements Runnable {
 
-    // stack of locals, maintained by vSimpleVar (with sentinel)
-    public vSimpleVar locals = vSimpleVar.New(null);
+    // stack of locals, maintained by vLocalVar
+    public vLocalVar locals;
 
     Thread thread;
     vClosure closure;
