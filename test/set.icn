@@ -37,6 +37,8 @@ procedure main()
    wset("+ 1", insert(x, 1))
    wset("+ 7.0", insert(x, 7.0))
    wset("+ 7.0", insert(x, 7.0))
+   wset("+ 'cs'", insert(x, 'cs'))
+   wset("+ 'cs'", insert(x, 'cs'))
    wset("x =", x)
    write()
 
@@ -54,13 +56,13 @@ end
 
 
 #  dump a set, assuming it contains nothing other than:
-#	&null, 0 - 9, 0.0 - 9.0, "", "a" - "e"
+#	&null, 0 - 9, 0.0 - 9.0, "", "a" - "e", '', 'cs'
 
 procedure wset(label, S)
    local x
 
    writes(right(label, 10), " :", right(*S, 2), " :")
-   every x := &null | (0 to 9) | 0.0+(0 to 9) | "" | !"abcde" do
+   every x := &null | (0 to 9) | 0.0+(0 to 9) | "" | !"abcde" | '' | 'cs' do
       writes(" ", image(member(S, x)))
    write()
    return
