@@ -186,7 +186,7 @@ procedure preproc_scan_directive()
 					}
 					else {
 						if new_file := open(
-								new_filename := ("" | !path_list) || sym) then {
+								new_filename := sym | (!path_list || "/" || sym)) then {
 							push(preproc_file_stack,
 									preproc_file,preproc_filename,
 									preproc_include_name,preproc_line,
@@ -449,7 +449,7 @@ procedure preproc_compute_path_list()
 	local result,path_string,path_sep
 	result := []	# FIX ME: compute path list
 	if path_string := "" ~== getenv("LPATH") then {
-		path_sep := getenv("PATHSEP") | ":"
+		path_sep := getenv("PATHSEP") | " "
 		path_string ? {
 			while put(result,tab(find(path_sep))) do
 				move(1)
