@@ -11,6 +11,9 @@ procedure optim_optimize(t, start)
         new := optim_free_elimination(new, start)
         new := optim_dead_assignment(new, start)
         new := optim_goto_elimination(new, start)
+        new := optim_goto_elimination(new, start)	#$#$ why is this needed?
+        new := optim_test_elimination(new, start)
+        new := optim_goto_elimination(new, start)
         new := optim_copy_propagation(new, start)
     }
     if i := new[start] &
@@ -343,3 +346,15 @@ procedure optim_gotos(p, wl, seen, t)
     default : runerr(500, p)
     }
 end
+
+procedure optim_test_elimination(t, start)
+	local chunk
+
+	every chunk := !t &
+	      type(chunk[-1]) == "ir_Goto" &
+	      type(chunk[-2]) == ("ir_Call" | "ir_OpFunction") &
+	      chunk[-1].location === \chunk[-2].failLabel do {
+	    chunk[-2].failLabel := &null
+	}
+end
+
