@@ -27,7 +27,7 @@ procedure main()
    kw("ucase", &ucase)
    kw("letters", &letters)
    kw("ascii", *&ascii || " elements")
-#   kw("cset", *&cset || " elements")	# &cset is currently disabled
+   kw("cset", *&cset || " elements")
    write()
 
    kw("progname", &progname)
