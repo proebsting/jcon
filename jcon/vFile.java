@@ -21,9 +21,11 @@ public abstract class vFile extends vValue {
     DataOutput outstream;	// output stream, if writable
     RandomAccessFile randfile;	// random handle, if seekable
 
-    byte[] ibuf;		// input buffer, if needed
+    byte[] ibuf;		// input buffer, if read-only random file
     int inext;			// offset to next buffered character
     int icount;			// number of remaining buffered chars
+    long ifpos;			// input file position (only valid mode "r")
+    long iflen;			// input file length (only valid mode "r")
 
     char lastCharRead = '\0';	// last char seen by read()
 
@@ -114,6 +116,7 @@ vFile(String name, String flags) throws IOException {
     if (instream != null && outstream == null) {	// if only for input
 	ibuf = new byte[BufferSize];			// allocate input buffer
 	inext = icount = 0;
+	iflen = randfile.length();			// record length
     }
 }
 
@@ -158,14 +161,14 @@ static vFile argVal(vDescriptor[] args, int index, vFile dflt)	// optional arg
 
 
 
-//  rchar() -- read one character.  USE THIS FOR ALL INPUT.
+//  rchar() -- read one character.  MUST USE THIS FOR ALL INPUT.
 
 char rchar() throws IOException, EOFException {
     if (icount > 0) {			// if buffer is not empty
 	icount--;
 	return (char) (ibuf[inext++] & 0xFF);
     }
-    if (randfile == null) {		// if not buffered by us
+    if (ibuf == null) {			// if not buffered by us
 	return (char) (instream.readByte() & 0xFF);
     }
 
@@ -173,6 +176,7 @@ char rchar() throws IOException, EOFException {
     if (n <= 0) {
 	throw new EOFException();
     }
+    ifpos += n;				// update file position
     inext = 1;				// point to second byte
     icount = n - 1;
     return (char) (ibuf[0] & 0xFF);	// return first byte
@@ -207,7 +211,7 @@ vFile close() {						// close()
     randfile = null;			// indicate file closed
     instream = null;
     outstream = null;
-    icount = 0;
+    inext = icount = 0;
     if (r != null) {			// if not stdin/stdout/stderr
     	try {
 	    r.close();			// try system close
@@ -224,18 +228,42 @@ vFile seek(long n) {					// seek(n)
     if (randfile == null) {		// if not seekable
     	return null; /*FAIL*/
     }
-    icount = 0;				// clear input buffer
     try {
-    	if (n > 0) {
-	    n--;			// remove Icon bias
+	long len;
+
+	if (ibuf != null) {
+	    len = iflen;		// file length known if read-buffered
 	} else {
-	    n = randfile.length() + n;	// distance from end
+	    len = randfile.length();	// otherwise can change; must ask
 	}
-	if (n < 0 || n > randfile.length()) {
+
+    	if (n > 0) {
+	    n--;			// remove Icon bias from seek address
+	} else {
+	    n = len + n;		// distance from end
+	}
+
+	if (n < 0 || n > len) {
 	    return null; /*FAIL*/
 	}
-	randfile.seek(n);
+
+	if (ibuf != null) { 			// if buffered, we know position
+	    int bdata = inext + icount;		// valid data in buffer
+	    long off = bdata - ifpos + n;	// offset to new posn in buffer
+	    if (off >= 0 && off <= bdata) {
+		// sought position is within current buffer
+		inext = (int) off;
+		icount = bdata - inext;
+		return this;
+	    }
+	}
+
+	// not buffered, or position is not in buffer
+	randfile.seek(n);		// reposition file
+	ifpos = n;			// record new position
+	inext = icount = 0;		// clear input buffer
 	return this;
+
     } catch (IOException e) {
 	return null; /*FAIL*/
     }
@@ -247,6 +275,9 @@ vInteger where() {					// where()
     if (randfile == null) {
     	return null; /*FAIL*/
     } 
+    if (ibuf != null) {		// if read-only & buffered, we know position
+	return iNew.Integer(1 + ifpos - icount);
+    }
     try {
 	return iNew.Integer(1 + randfile.getFilePointer() - icount);
     } catch (IOException e) {
