@@ -58,13 +58,15 @@ static {
     //     att name		   default	retval
     newatt("dx",	new aDummy("0",		vInteger.New(0)));
     newatt("dy",	new aDummy("0",		vInteger.New(0)));
-    newatt("reverse",	new aDummy("off",	vString.New("off")));
-    newatt("drawop",	new aDummy("copy",	vString.New("copy")));
-    newatt("gamma",	new aDummy("1.0",	vReal.New(1.0)));
     newatt("linewidth",	new aDummy("1",		vInteger.New(1)));
     newatt("linestyle",	new aDummy("solid",	vString.New("solid")));
     newatt("fillstyle",	new aDummy("solid",	vString.New("solid")));
     newatt("pattern",	new aDummy("solid",	vString.New("black")));
+    // These last three are especially unlikely to be implemented.
+    // They are incomplete and/or problematical even in v9 Icon.
+    newatt("reverse",	new aDummy("off",	vString.New("off")));
+    newatt("drawop",	new aDummy("copy",	vString.New("copy")));
+    newatt("gamma",	new aDummy("1.0",	vReal.New(1.0)));
 }
 
 private static void newatt(String name, wAttrib a) {

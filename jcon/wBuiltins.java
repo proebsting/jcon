@@ -505,6 +505,14 @@ class f$WDefault extends iValueClosure {	// WDefault(W,s1,s2) just fails
     }
 }
 
+class f$WFlush extends iValueClosure {		// WFlush(W) syncs w/ toolkit
+    vDescriptor function(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	win.flush();
+	return win;
+    }
+}
+
 class f$WSync extends iValueClosure {		// WSync(W) syncs w/ toolkit
     vDescriptor function(vDescriptor[] args) {
 	vWindow win = vWindow.winArg(args);
