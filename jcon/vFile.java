@@ -50,19 +50,12 @@ vFile(String kwname, DataInput i, DataOutput o) {
 
 // new vFile(name, flags) -- constructor for open()
 // throws IOException for failure
-//
-// ignores "t/u" flags, which should have been checked by open()
-// disallows "p" flag
 
 vFile(String name, String flags) throws IOException {
 
     String mode;
 
     img = "file(" + name + ")";				// save image
-
-    if (any("pP", flags)) {
-    	throw new IOException("can't open pipe"); /*FAIL*/	//%#%#%#
-    }
 
     if (any("wabcWABC", flags)) {			// planning to write?
 	mode = "rw";
