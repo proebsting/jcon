@@ -10,16 +10,16 @@ procedure yylex(getline)
         initialize()
     }
 
-    newline := 0
+    newline := &null
     yyline := 0
     yyfile := "<<stdin>>"
 
     "" ? {
         every t := yylex0(getline) do {
-            if newline = 1 then {
-                newline := 0
+            if \newline then {
+                newline := &null
                 if member(ender_set,\last_token) &
-		   member(beginner_set,\t) then {
+                   member(beginner_set,\t) then {
                     SEMICOL.coord := coordinate(yyfile, yyline-1, last_pos)
                     suspend SEMICOL
                     last_token := SEMICOL
@@ -32,8 +32,8 @@ procedure yylex(getline)
         }
         ptok := EOFX
         ptok.str := &null
-            ptok.coord := coordinate(yyfile, yyline, coord_pos)
-            last_pos := &pos
+        ptok.coord := coordinate(yyfile, yyline, coord_pos)
+        last_pos := &pos
         suspend ptok
     }
 end
@@ -46,11 +46,10 @@ procedure yylex0(getline)
     initial {
         let_und := &letters ++ '_'
         let_und_dig := &letters ++ '_' ++ &digits
-            let_dig := &letters ++ &digits
+        let_dig := &letters ++ &digits
     }
 
     repeat {
-
             if pos(1) then {
             newline := 1
             if ="#line " then {
@@ -99,7 +98,12 @@ procedure yylex0(getline)
         if str := tab(many(&digits)) then {
             sym := INTLIT
             if str ||:= =("r"|"R") then { # radix
-                str ||:= tab(many(let_dig))
+                str ||:= tab(many(let_dig)) |
+		    lex_error("invalid integer literal")
+                ptok := sym
+                ptok.str := str
+                suspend ptok
+                next
             }
 
             # check if real lit
@@ -134,13 +138,13 @@ procedure yylex0(getline)
 
         # check if op
         if op := do_ops() then {
-                suspend op
-                next
+            suspend op
+            next
         }
 
         # check if string lit
         if str := parse_quoted("\"", getline) then {
-                    ptok := STRINGLIT
+            ptok := STRINGLIT
             ptok.str := str
             suspend ptok
             next
@@ -155,20 +159,16 @@ procedure yylex0(getline)
         }
 
         # default
-        lex_error("invalid character: "||&subject)
+        lex_error("invalid character: " || image(&subject[&pos]))
     }
 end
 
 procedure lex_error(msg)
     if \tok_rec then {
-      write(&errout,
-	    "File ", tok_rec.coord.file, ": ",
-	    "Line ", tok_rec.coord.line, " # ", msg)
+        stop("File ", yyfile, ": ", "Line ", yyline, " # ", msg)
+    } else {
+        stop(msg)
     }
-    else {
-      write(&errout, msg)
-    }
-    stop()
 end
 
 procedure nextline(getline)
@@ -180,8 +180,8 @@ procedure nextline(getline)
 end
 
 procedure parse_quoted(delim, getline) 
+    local str, dset, hex, h, ch, octal, o
     static lookup
-        local str, dset, hex, h, ch, octal, o
     initial {
         lookup := table()
         lookup["b"] := "\b"
@@ -229,7 +229,7 @@ procedure parse_quoted(delim, getline)
                     str ||:= (\lookup[ch] | ch)
                     next
                 } else {
-                    lex_error("Malformed escape sequence")
+                    lex_error("unclosed quote")
                 }
             } else {
                 every (str ||:= tab(upto('_'))) do {
