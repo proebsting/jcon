@@ -60,8 +60,8 @@ procedure main()
    limage("r", x[2:5])
    limage("s", x[-3:5])
    limage("t", x[-5:-1])
-   limage("u", x[-3+:6])
-   limage("v", x[3-:6])
+   limage("u", x[-3+:6]) | write("u. wraparound failed")	# should fail
+   limage("v", x[3-:6]) | write("v. wraparound failed")		# should fail
 
 end
 
