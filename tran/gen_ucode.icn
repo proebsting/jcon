@@ -90,7 +90,7 @@ record u_var(s)
 procedure u_emit(i)
     local s
 
-    type(i) ? ="u_" | runerr(1000, i)
+    type(i) ? ="u_" | runerr(500, i)
 
     case type(i) of {
     "u_var": {
@@ -289,7 +289,7 @@ procedure ucode_Scan(s, p)
         put(s, u_escan())
         put(s, u_asgn())
     }
-    default: runerr(1000, p)
+    default: runerr(500, p)
     }
 end
 
@@ -330,7 +330,7 @@ procedure ucode_Sectionop(s, p)
         put(s, u_dup())
         ucode(s, p.right)
         u_coord(s, p)
-        put(s, (\fn[p.op])()) | runerr(1000, p)
+        put(s, (\fn[p.op])()) | runerr(500, p)
         u_coord(s, p)
         put(s, u_sect())
     } else {
@@ -410,7 +410,7 @@ procedure ucode_Binop(s, p)
         ucode(s, p.left)
         put(s, u_dup())
         ucode(s, p.right)
-        put(s, (\fn[op])()) | runerr(1000, p)
+        put(s, (\fn[op])()) | runerr(500, p)
         u_coord(s, p)
         put(s, u_asgn())
     } else {
@@ -418,7 +418,7 @@ procedure ucode_Binop(s, p)
         ucode(s, p.left)
         ucode(s, p.right) 
         u_coord(s, p)
-        put(s, (\fn[p.op])()) | runerr(1000, p)
+        put(s, (\fn[p.op])()) | runerr(500, p)
     }
 
 end
@@ -451,7 +451,7 @@ procedure ucode_Unop(s, p)
     put(s, u_pnull())
     ucode(s, p.operand)
     u_coord(s, p)
-    put(s, (\fn[p.op])()) | runerr(1000, p)
+    put(s, (\fn[p.op])()) | runerr(500, p)
 end
 
 # record Global( idList )
@@ -515,7 +515,7 @@ procedure ucode_Intlit(s, p)
     local v
 
     v := p.int
-    type(v) == "integer" | runerr(1000, v)
+    type(v) == "integer" | runerr(500, v)
     /u_constants[v] := *u_constants & put(u_constList, v)
     put(s, u_int(u_constants[v]))
 end
@@ -525,7 +525,7 @@ procedure ucode_Reallit(s, p)
     local v
 
     v := p.real
-    type(v) == "real" | runerr(1000, v)
+    type(v) == "real" | runerr(500, v)
     /u_constants[v] := *u_constants & put(u_constList, v)
     put(s, u_real(u_constants[v]))
 end
@@ -535,7 +535,7 @@ procedure ucode_Stringlit(s, p)
     local v
 
     v := p.str
-    type(v) == "string" | runerr(1000, v)
+    type(v) == "string" | runerr(500, v)
     /u_constants[v] := *u_constants & put(u_constList, v)
     put(s, u_str(u_constants[v]))
 end
@@ -545,7 +545,7 @@ procedure ucode_Csetlit(s, p)
     local v
 
     v := p.str
-    type(v) == "cset" | runerr(1000, v)
+    type(v) == "cset" | runerr(500, v)
     /u_constants[v] := *u_constants & put(u_constList, v)
     put(s, u_cset(u_constants[v]))
 end
@@ -632,7 +632,7 @@ procedure u_constant_declarations()
         "real": {
             write(u_u1, "004000", ",", x)
         }
-        default: runerr(1000, u_constList[i])
+        default: runerr(500, u_constList[i])
         }
     }
 end
@@ -954,7 +954,7 @@ procedure ucode(s, p)
     "Compound" : return ucode_Compound(s, p)
     "ListConstructor" : return ucode_ListConstructor(s, p)
     "Key" : return ucode_Key(s, p)
-    default : { runerr(1000, p) }
+    default : { runerr(500, p) }
     }
 end
 

@@ -86,7 +86,7 @@ procedure dump_File(irgen, flagList)
 	"irLink" : {
 	    dump_links(p.nameList)
 	}
-	default: runerr(1000, p)
+	default: runerr(500, p)
 	}
     }
 end

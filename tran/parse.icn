@@ -183,7 +183,7 @@ procedure expr10()
         UNION     : return Unop("+", operand, coord)
         INTER     : return Unop("*",Unop("*", operand, coord), coord)
         DIFF      : return Unop("-",Unop("-", operand, coord), coord)
-        default     : runerr(1000)
+        default     : runerr(500)
         }
     } else {
         parse_error("\""||tok_rec.str||"\": invalid argument")

@@ -282,7 +282,7 @@ procedure writer_cp_info(writer, p)
 
     case (type(p)) of {
     default: {
-        runerr(1000, p)
+        runerr(500, p)
     }
     "CONSTANT_Class": {
         writer_u1(writer, 7)
@@ -391,7 +391,7 @@ procedure writer_attribute_info(writer, p)
 
     case (type(p)) of {
     default: {
-        runerr(1000, p)
+        runerr(500, p)
     }
     "SourceFile_attribute": {
         writer_u2(writer, p.attribute_name_index)
@@ -864,7 +864,7 @@ procedure writer_opcodes(writer, p)
         writer_s4(writer, p.default_offset)
         writer_s4(writer, p.low)
         writer_s4(writer, p.high)
-        p.high - p.low +1 = *p.offsets | runerr(1000, p)
+        p.high - p.low +1 = *p.offsets | runerr(500, p)
         every i := !p.offsets do {
             writer_s4(writer, i)
         }
@@ -1250,7 +1250,7 @@ procedure offset_opcodes(p, offset, locations)
 
     case (type(p)) of {
     default: {
-        runerr(1000, p)
+        runerr(500, p)
     }
     "tableswitch": {
         p.pad := offset
@@ -1423,7 +1423,7 @@ procedure offset_attribute_info(offset)
     offset +:= 6
     case (type(p)) of {
     default: {
-        runerr(1000, p)
+        runerr(500, p)
     }
     "SourceFile_attribute": {
         offset +:= 2
@@ -1536,10 +1536,10 @@ end
 procedure create_fieldref(classfile, name, Type, class)
     local name_index, type_index, class_index, nat_index, field_index
 
-    type(classfile) == "ClassFile" | runerr(1000, classfile)
-    type(name) == "string" | runerr(1000, name)
-    type(Type) == "string" | runerr(1000, Type)
-    type(class) == "string" | runerr(1000, class)
+    type(classfile) == "ClassFile" | runerr(500, classfile)
+    type(name) == "string" | runerr(500, name)
+    type(Type) == "string" | runerr(500, Type)
+    type(class) == "string" | runerr(500, class)
 
     name_index := cp_Utf8(classfile, name)
     type_index := cp_Utf8(classfile, Type)
@@ -1552,10 +1552,10 @@ end
 procedure create_field(classfile, access, name, Type)
     local name_index, type_index, field
 
-    type(classfile) == "ClassFile" | runerr(1000, classfile)
-    type(name) == "string" | runerr(1000, name)
-    type(Type) == "string" | runerr(1000, Type)
-    type(access) == "integer" | runerr(1000, access)
+    type(classfile) == "ClassFile" | runerr(500, classfile)
+    type(name) == "string" | runerr(500, name)
+    type(Type) == "string" | runerr(500, Type)
+    type(access) == "integer" | runerr(500, access)
 
     name_index := cp_Utf8(classfile, name)
     type_index := cp_Utf8(classfile, Type)
@@ -1567,10 +1567,10 @@ end
 procedure create_methodref(classfile, name, Type, class)
     local name_index, type_index, class_index, nat_index, method_index
 
-    type(classfile) == "ClassFile" | runerr(1000, classfile)
-    type(name) == "string" | runerr(1000, name)
-    type(Type) == "string" | runerr(1000, Type)
-    type(class) == "string" | runerr(1000, class)
+    type(classfile) == "ClassFile" | runerr(500, classfile)
+    type(name) == "string" | runerr(500, name)
+    type(Type) == "string" | runerr(500, Type)
+    type(class) == "string" | runerr(500, class)
 
     name_index := cp_Utf8(classfile, name)
     type_index := cp_Utf8(classfile, Type)
@@ -1583,10 +1583,10 @@ end
 procedure create_method(classfile, access, name, Type)
     local name_index, type_index, method
 
-    type(classfile) == "ClassFile" | runerr(1000, classfile)
-    type(name) == "string" | runerr(1000, name)
-    type(Type) == "string" | runerr(1000, Type)
-    type(access) == "integer" | runerr(1000, access)
+    type(classfile) == "ClassFile" | runerr(500, classfile)
+    type(name) == "string" | runerr(500, name)
+    type(Type) == "string" | runerr(500, Type)
+    type(access) == "integer" | runerr(500, access)
 
     name_index := cp_Utf8(classfile, name)
     type_index := cp_Utf8(classfile, Type)
@@ -1598,9 +1598,9 @@ end
 procedure create_code(classfile, stacksize, localsize)
     local code, cp_index
 
-    type(classfile) == "ClassFile" | runerr(1000, classfile)
-    type(stacksize) == "integer" | runerr(1000, stacksize)
-    type(localsize) == "integer" | runerr(1000, localsize)
+    type(classfile) == "ClassFile" | runerr(500, classfile)
+    type(stacksize) == "integer" | runerr(500, stacksize)
+    type(localsize) == "integer" | runerr(500, localsize)
 
     cp_index := cp_Utf8(classfile, "Code")
     code := Code_attribute(cp_index, stacksize, localsize, [], [], [])
@@ -1614,12 +1614,12 @@ procedure writer_align4(writer, pad)
 end
 
 procedure writer_u1(writer, u1)
-    (0 <= u1 < 256) | runerr(1000, u1)
+    (0 <= u1 < 256) | runerr(500, u1)
     writes(writer, char(iand(u1, 255)))
 end
 
 procedure writer_u2(writer, u2)
-    (0 <= u2 < 65536) | runerr(1000, u2)
+    (0 <= u2 < 65536) | runerr(500, u2)
     writes(writer, char(iand(ishift(u2, - 8), 255)),
                    char(iand(u2, 255)))
 end
@@ -1632,12 +1632,12 @@ procedure writer_u4(writer, u4)
 end
 
 procedure writer_s1(writer, s1)
-    (-128 <= s1 <= 127) | runerr(1000, s1)
+    (-128 <= s1 <= 127) | runerr(500, s1)
     writes(writer, char(iand(s1, 255)))
 end
 
 procedure writer_s2(writer, s2)
-    (-32768 <= s2 <= 32767) | runerr(1000, s2)
+    (-32768 <= s2 <= 32767) | runerr(500, s2)
     writes(writer, char(iand(ishift(s2, - 8), 255)),
                    char(iand(s2, 255)))
 end

@@ -185,7 +185,7 @@ procedure def_use(p, this, uses, defs)
     "irEnterInit" : { def_use(p.startlabel, uses, uses, defs) }
     "irCoord" : { }
 
-    default :   { runerr(1000, p); }
+    default :   { runerr(500, p); }
     }
 end
 
@@ -250,7 +250,7 @@ procedure opt_rewrite(p, rename)
     "irEnterInit" : { p.startlabel := opt_rewrite(p.startlabel, rename) }
     "irCoord" : { }
 
-    default :   { runerr(1000,p); }
+    default :   { runerr(500,p); }
     }
     return p;
 end
@@ -279,7 +279,7 @@ procedure goto_elimination(t, start)
               type(insn.location) == "irLabel" &
               ref_count[insn.location] = 1 do {
             if /new[insn.location] then {
-                runerr(1000, insn.location)
+                runerr(500, insn.location)
             }
             new[lab] := chunk[1:-1] ||| new[insn.location]
             delete(new, insn.location)
@@ -382,6 +382,6 @@ procedure gotos(p, wl, seen, t)
         p.startlabel := goto_chain(p.startlabel, t)
         gotos(p.startlabel, wl, seen, t)
         }
-    default : runerr(1000, p)
+    default : runerr(500, p)
     }
 end

@@ -1317,7 +1317,7 @@ procedure ir(p, st, inuse, target, bounded)
                                                    bounded)
     "Key" : suspend ir_Key(p, st, inuse, target, bounded)
     "Arglist" : suspend ir_Arglist(p, st, inuse, target, bounded)
-    default : runerr(1000, p)
+    default : runerr(500, p)
     }
 end
 

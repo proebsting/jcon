@@ -98,7 +98,7 @@ procedure dot_File(irgen, flagList)
 	    dot_function(p.name, p.paramList, p.accumulate, p.localList,
 			p.staticList, p.codeList, p.codeStart)
 	}
-	default: runerr(1000, p)
+	default: runerr(500, p)
 	}
     }
 end
