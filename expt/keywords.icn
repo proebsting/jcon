@@ -12,6 +12,7 @@ procedure main()
    kw("dateline", &dateline)
    kw("date", &date)
    kw("clock", &clock)
+   kw("time", &time)
    write()
 
    kw("null", &null)
