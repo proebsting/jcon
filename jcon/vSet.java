@@ -14,7 +14,7 @@ vSet(vValue x) {
 	}
 	vList list = (vList) x;
 	java.util.Enumeration i = list.elements();
-        while ( i.hasMoreElements() ) {
+        while (i.hasMoreElements()) {
 	    vDescriptor v = (vDescriptor) i.nextElement();
 	    v = v.deref();
 	    t.put(v, v);

@@ -13,7 +13,7 @@ vCset(String s) {
     }
 }
 
-String image() {
+String image() {	//#%#% need to add escapes for special characters
     StringBuffer b = new StringBuffer();
     b.append("'");
     for (int i = 0; i < t.size(); i++) {
@@ -65,10 +65,8 @@ vDescriptor Bang(iClosure c) {
     Integer i = (Integer) c.o;
     for (int k = i.intValue(); k < t.size(); k++) {
 	if (t.get(k)) {
-	    char[] cstr = { (char) k };
-	    String s = new String(cstr);
 	    c.o = new Integer(k+1);
-	    return iNew.String(s);
+	    return iNew.String(String.valueOf((char) k));
 	}
     }
     return null;

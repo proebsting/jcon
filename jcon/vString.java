@@ -106,7 +106,7 @@ vDescriptor Index(vValue i) {
     if (m == 0 || m > value.length()) {
     	return null; /*FAIL*/
     }
-    return iNew.String(value.substring(m, m+1));
+    return iNew.String(value.substring(m-1, m));
 }
 
 vDescriptor IndexVar(vVariable v, vValue i) {
@@ -124,9 +124,9 @@ vDescriptor Section(vValue i, vValue j) {
     	return null; /*FAIL*/
     }
     if (m > n) {
-	return iNew.String(value.substring(n, m));
+	return iNew.String(value.substring(n-1, m-1));
     } else {
-	return iNew.String(value.substring(m, n));
+	return iNew.String(value.substring(m-1, n-1));
     }
 }
 
@@ -150,7 +150,7 @@ vDescriptor Select() {
 	return null; /*FAIL*/
     }
     int i = (int) iRuntime.random(value.length());
-    return iNew.String(value.substring(i+1, i+2));
+    return iNew.String(value.substring(i, i+1));
 }
 
 vDescriptor SelectVar(vVariable v) {
