@@ -2,6 +2,7 @@ class vCoexp extends vValue implements Runnable {
 	int originalPC;
 	Thread thread;
 	iClosure closure;
+	iClosure refreshCopy;
 	java.util.Stack callers;
 	vDescriptor incomingValue;
 	Semaphore lock;
@@ -63,11 +64,13 @@ class vCoexp extends vValue implements Runnable {
 
 	public void create() {
 		thread.start();
+		this.refreshCopy = closure.copy(this.closure.PC);
 	}
 
 	vValue Refresh() {
-		vCoexp c = new vCoexp(closure.copy(this.originalPC));
-		c.create();
+		vCoexp c = new vCoexp(refreshCopy.copy(this.originalPC));
+		c.refreshCopy = refreshCopy;
+		c.thread.start();
 		return c;
 	}
 
