@@ -139,7 +139,6 @@ end
 
 # record NoOp( )
 procedure ucode_NoOp(s, p)
-    runerr(1000, p)
 end
 
 # record ProcCode( init body )
@@ -190,11 +189,6 @@ procedure ucode_Case(s, p)
     put(s, u_lab(endlab))
 end
 
-# record Cclause( expr body )
-procedure ucode_Cclause(s, p)
-    runerr(1000)    # should be handled in ucode_Case()
-end
-
 # record Not( expr )
 procedure ucode_Not(s, p)
     local lab
@@ -242,26 +236,7 @@ procedure ucode_ExclAlt(s, p)
     ucode(s, p.e2)
 end
 
-# record Alt( eList )
-# procedure ucode_Alt(s, p)
-#   local i, endlab, nextlab
-# 
-#   endlab := @u_nextlab
-#   every i := 1 to *p.eList-1 do {
-#       nextlab := @u_nextlab
-#       put(s, u_mark(nextlab))
-#       u_loops[1].ir.markcount +:= 1
-#       ucode(s, p.eList[i])
-#       u_loops[1].ir.markcount -:= 1
-#       put(s, u_esusp())
-#       put(s, u_goto(endlab))
-#       put(s, u_lab(nextlab))
-#   }
-#   ucode(s, p.eList[-1])
-#   put(s, u_lab(endlab))
-# end
-
-# The following is used rather than the more natural solution above to get
+# The following is used rather than a more natural solution to get
 # .u1 files that match icont.
 # record Alt( eList )
 procedure ucode_Alt0(s, L)
@@ -606,6 +581,17 @@ procedure ucode_ProcDecl(s, p)
 
     write(u_u1, "proc ", p.ident.id)
     u_variables := table()
+    u_local_declarations(p, code)
+    u_constant_declarations()
+
+    write(u_u1, "\tdeclend")
+    every write(u_u1, u_emit(!code))
+    write(u_u1, "\tend")
+end
+
+procedure u_local_declarations(p, code)
+    local i, x, k
+
     i := 0
     every x := !p.paramList do {
         write(u_u1, "\tlocal\t", i, ",", "001000", ",", x.id)
@@ -628,6 +614,10 @@ procedure ucode_ProcDecl(s, p)
             i +:= 1
         }
     }
+end
+
+procedure u_constant_declarations()
+    local i, x
 
     every i := 1 to *u_constList & x := u_constList[i] do {
         writes(u_u1, "\tcon\t", i-1, ",")
@@ -651,9 +641,6 @@ procedure ucode_ProcDecl(s, p)
         default: runerr(1000, u_constList[i])
         }
     }
-    write(u_u1, "\tdeclend")
-    every write(u_u1, u_emit(!code))
-    write(u_u1, "\tend")
 end
 
 # record ProcBody( nexprList )
@@ -936,7 +923,6 @@ procedure ucode(s, p)
     "Field" : return ucode_Field(s, p)
     "NoOp" : return ucode_NoOp(s, p)
     "Case" : return ucode_Case(s, p)
-    "Cclause" : return ucode_Cclause(s, p)
     "Every" : return ucode_Every(s, p)
     "Scan" : return ucode_Scan(s, p)
     "Limitation" : return ucode_Limitation(s, p)
@@ -979,26 +965,8 @@ procedure ucode(s, p)
     }
 end
 
-procedure ucode_emit(label, code)
-end
-
-procedure ucode_invocables(all, L)
-end
-
-procedure ucode_links(L)
-end
-
-procedure ucode_records(name, fields, coord)
-end
-
-procedure ucode_globals(L)
-end
-
-procedure ucode_function(name, params, accumulate, locals, statics, code, coord)
-end
-
 procedure ucode_File(parse, flagList)
-    local g, p, i, t, outfile
+    local g, p, outfile
 
     outfile := (!flagList ? (="-out:" & tab(0)))
     if \outfile then {
@@ -1010,23 +978,41 @@ procedure ucode_File(parse, flagList)
     while p := @parse do {
         ucode(g, p)
     }
-    # every ucode(g, parse(getline))
 
     # g contains nodes for global declarations
     write(/u_u2, "# stuff for .u2 file")
     write(u_u2, "version\t", "U9.0.00")
+    u_record_declarations(g)
+    write(u_u2, "impl\t", "local")
+    u_link_declarations(g)
+    u_invocable_declarations(g)
+    u_global_declarations(g)
+end
+
+procedure u_record_declarations(g)
+    local p, i
+
     every p := !g & type(p) == "Record" do {
         write(u_u2, "record\t", p.ident.id, ",", *p.idlist)
         every i := 1 to *p.idlist do {
             write(u_u2, "\t", i-1, ",", p.idlist[i].id)
         }
     }
-    write(u_u2, "impl\t", "local")
+end
+
+procedure u_link_declarations(g)
+    local p, i
+
     every p := !g & type(p) == "Link" do {
         every i := !p.linkfileList do {
             write(u_u2, "link\t", i, ".u1")
         }
     }
+end
+
+procedure u_invocable_declarations(g)
+    local p, i, t
+
     every p := !g & type(p) == "Invocable" do {
         every i := !p.ivocopList do {
             case type(i) of {
@@ -1041,6 +1027,10 @@ procedure ucode_File(parse, flagList)
             write(u_u2, "invocable\t", t)
         }
     }
+end
+
+procedure u_global_declarations(g)
+    local p, t, i
 
     t := 0
     every p := !g do {
@@ -1071,17 +1061,6 @@ procedure ucode_File(parse, flagList)
         }
         }
     }
-end
-
-procedure ucode_CG()
-    return code_gen(ucode_emit,
-            ucode_globals,
-            ucode_invocables,
-            ucode_links,
-            ucode_function,
-            ucode_records,
-            ucode_File
-            )
 end
 
 procedure octal(x)
