@@ -26,6 +26,11 @@ static {
     newatt("depth", new aDepth());
     newatt("label", new aLabel());
 
+    newatt("clipx", new aClipx());
+    newatt("clipy", new aClipy());
+    newatt("clipw", new aClipw());
+    newatt("cliph", new aCliph());
+
     newatt("bg", new aBg());
     newatt("fg", new aFg());
 
@@ -174,6 +179,52 @@ final class aDepth extends wAttrib {
 final class aLabel extends wAttrib {
     vValue get(vWindow win)	{ return win.getCanvas().Label(win, null); }
     vValue set(vWindow win)	{ return win.getCanvas().Label(win, val); }
+}
+
+
+
+final class aClipx extends wAttrib {
+    vValue get(vWindow win) {
+	Rectangle r = win.getClip();
+	return (r == null) ? vNull.New() : (vValue)vInteger.New(r.x);
+    }
+    vValue set(vWindow win) {
+	vString s = vString.New(val);
+	return (win.Clip(s, null, null, null) == null) ? null : s;
+    }
+}
+
+final class aClipy extends wAttrib {
+    vValue get(vWindow win) {
+	Rectangle r = win.getClip();
+	return (r == null) ? vNull.New() : (vValue)vInteger.New(r.y);
+    }
+    vValue set(vWindow win) {
+	vString s = vString.New(val);
+	return (win.Clip(null, s, null, null) == null) ? null : s;
+    }
+}
+
+final class aClipw extends wAttrib {
+    vValue get(vWindow win) {
+	Rectangle r = win.getClip();
+	return (r == null) ? vNull.New() : (vValue)vInteger.New(r.width);
+    }
+    vValue set(vWindow win) {
+	vString s = vString.New(val);
+	return (win.Clip(null, null, s, null) == null) ? null : s;
+    }
+}
+
+final class aCliph extends wAttrib {
+    vValue get(vWindow win) {
+	Rectangle r = win.getClip();
+	return (r == null) ? vNull.New() : (vValue)vInteger.New(r.height);
+    }
+    vValue set(vWindow win) {
+	vString s = vString.New(val);
+	return (win.Clip(null, null, null, s) == null) ? null : s;
+    }
 }
 
 

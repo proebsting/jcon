@@ -16,6 +16,7 @@ static void announce() {
 
     iEnv.declareBuiltin("Alert", 1);
     iEnv.declareBuiltin("Bg", 2);
+    iEnv.declareBuiltin("Clip", 5);
     iEnv.declareBuiltin("Clone", -1);
     iEnv.declareBuiltin("Color", -1);		// always fails
     iEnv.declareBuiltin("ColorValue", 2);
@@ -53,7 +54,6 @@ static void announce() {
 
     // #%#% NOT YET IMPLEMENTED:
     //
-    // iEnv.declareBuiltin("Clip", 5);
     // iEnv.declareBuiltin("Pattern", 2);
     //
     // iEnv.declareBuiltin("ReadImage", 5);
@@ -168,6 +168,19 @@ final class f$Event extends vProc1 {		// Event(W)
 	    return Call(iKeyword.window.getWindow());
 	}
 	return ((vWindow)a.Deref()).Event();
+    }
+}
+
+
+
+final class f$Clip extends vProcV {		// Clip(W, x, y, w, h)
+    public vDescriptor Call(vDescriptor[] args) {
+	vWindow win = vWindow.winArg(args);
+	if (vWindow.argBase(args) >= args.length) {
+	    return win.Clip();			// disable clipping
+	}
+	int[] a = wCoords.rectArgs(args, 4);
+	return win.Clip(a[0], a[1], a[2], a[3]); // set clipping
     }
 }
 

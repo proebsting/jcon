@@ -21,6 +21,7 @@ public final class vWindow extends vFile {
 
     // graphics context attributes
 
+    private boolean clipping;	// is clipping enabled?
     private wColor bg;		// current background color
     private wColor fg;		// current foreground color
     private wFont font;		// current text font
@@ -233,6 +234,53 @@ vValue Event() {
 }
 
 
+Rectangle getClip() {				// inquire about clipping
+    if (clipping) {
+	return b.getClipBounds();
+    } else {
+	return null;
+    }
+}
+
+vWindow Clip() {				// disable clipping
+    b.setClip(-Integer.MIN_VALUE, -Integer.MIN_VALUE,
+	Integer.MAX_VALUE, Integer.MAX_VALUE);
+    a.setClip(-Integer.MIN_VALUE, -Integer.MIN_VALUE,
+	Integer.MAX_VALUE, Integer.MAX_VALUE);
+    clipping = false;
+    return this;
+}
+
+vWindow Clip(int x, int y, int w, int h) {	// enable clipping (int vals)
+    b.setClip(x, y, w, h);
+    a.setClip(x, y, w, h);
+    clipping = true;
+    return this;
+}
+
+static vValue clipArgs[] = new vValue[4];
+
+vWindow Clip(vString xs, vString ys, vString ws, vString hs) {	// set attribs
+    try {
+	Rectangle r;
+	if (clipping) {
+	    r = b.getClipBounds();
+	} else {
+	    r = c.getBounds();
+	    r.x = 0;	//#%#% s/b -dx
+	    r.y = 0;	//#%#% s/b -dy
+	}
+	if (xs != null) r.x = (int) xs.mkInteger().value;
+	if (ys != null) r.y = (int) ys.mkInteger().value;
+	if (ws != null) r.width = (int) ws.mkInteger().value;
+	if (hs != null) r.height = (int) hs.mkInteger().value;
+	return Clip(r.x, r.y, r.width, r.height);
+    } catch (iError e) {
+	return null;
+    }
+}
+
+
 
 vString Fg(vString s) {
     if (s == null) {
@@ -242,8 +290,8 @@ vString Fg(vString s) {
     if (k == null) {
 	return null;
     } else {
-	a.setColor(k);
 	b.setColor(k);
+	a.setColor(k);
 	fg = k;
 	return k.spec;
     }

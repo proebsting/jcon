@@ -146,7 +146,11 @@ void resize(vWindow win, int w, int h) {
 //  paint(g) -- refresh the canvas from the backing image
 
 public void paint(Graphics g) {
+    Rectangle r = g.getClipBounds();
+    g.setClip(-Integer.MIN_VALUE, -Integer.MIN_VALUE,
+	Integer.MAX_VALUE, Integer.MAX_VALUE);
     g.drawImage(i,0,0,null);
+    g.setClip(r.x, r.y, r.width, r.height);
 }
 
 
