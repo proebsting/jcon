@@ -72,14 +72,17 @@ vDescriptor Bang(iClosure c) {
 	    a[i++] = (vValue) e.nextElement();
 	}
 	c.o = a;
+	c.ival = 0;
+	c.PC = 2;
     }
-    int i = c.PC++ - 1;
     vValue a[] = (vValue[]) c.o;
-    if (i < a.length) {
-	return a[i];
-    } else {
-	return null;
+    while (c.ival < a.length) {
+	vValue v = a[c.ival++];
+	if (t.containsKey(v)) {	// if not stale
+	    return v;		// return value
+	}
     }
+    return null; /*FAIL*/
 }
 
 vValue Sort(int i) {					// sort(L)

@@ -79,14 +79,17 @@ vDescriptor Bang(iClosure c) {
 	    a[i++] = new vTrappedTable(this, (vValue) e.nextElement());
 	}
 	c.o = a;
+	c.ival = 0;
+	c.PC = 2;
     }
-    int i = c.PC++ - 1;
     vTrappedTable a[] = (vTrappedTable[]) c.o;
-    if (i < a.length) {
-	return a[i];
-    } else {
-	return null;
+    while (c.ival < a.length) {
+	vTrappedTable v = a[c.ival++];
+	if (t.containsKey(v.key)) {	// if not stale
+	    return v;			// return value
+	}
     }
+    return null; /*FAIL*/
 }
 
 vValue Key(iClosure c) {
@@ -98,14 +101,17 @@ vValue Key(iClosure c) {
 	    a[i++] = (vValue) e.nextElement();
 	}
 	c.o = a;
+	c.ival = 0;
+	c.PC = 2;
     }
-    int i = c.PC++ - 1;
     vValue a[] = (vValue[]) c.o;
-    if (i < a.length) {
-	return a[i];
-    } else {
-	return null;
+    while (c.ival < a.length) {
+	vValue v = a[c.ival++];
+	if (t.containsKey(v)) {		// if not stale
+	    return v;			// return value
+	}
     }
+    return null; /*FAIL*/
 }
 
 vValue Member(vDescriptor i) {

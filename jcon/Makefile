@@ -9,7 +9,7 @@ build:
 # build package for use with Toba
 # warning: this takes a long time
 package:  build
-	$(TOBA) -O -P JCON *.class
+	CLASSPATH=..:$$CLASSPATH $(TOBA) -O -P JCON *.class
 	rm -rf ../bin/JCON
 	mv JCON ../bin
 	
