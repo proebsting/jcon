@@ -138,6 +138,8 @@ procedure gen_bc_irFree(s, p)
 		gen_bc_irTmpClosure_rval(s, c)
 		free := create_methodref(bc_proc_classptr, "Free", "()V", "rts/iClosure")
 		put(s, invokevirtual(free))
+		put(s, aconst_null() )
+		gen_bc_irTmpClosure_assign(s, c)
 	}
 	return s
 end
@@ -799,6 +801,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	local init, initcode, f, n, constructor, a, class_index
 	local clinit, clinitcode
 	local t
+	local createvars
 
 	bc_statics := set(statics)
 	if member(bc_declare_set, name) then {
@@ -898,10 +901,8 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	bc_register(bc_emit_table)
 
 	undeclared := bc_var_set -- bc_params_set -- bc_locals_set -- bc_statics_set
-	if /nointrospection | \bc_save_restore_flag then {
-		every k := !params | !locals | !undeclared do {
-			create_field(c, 0, "v$" || k, "Lrts/vVariable;")
-		}
+	every k := !params | !locals | !undeclared do {
+		create_field(c, 0, "v$" || k, "Lrts/vVariable;")
 	}
 
 	bc_create_nextval(c, code.ir.start, params, locals, undeclared, accumulate)
@@ -923,6 +924,9 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	constructor := create_methodref(c, "<init>", "()V", "rts/iClosure")
 	put(initcode.code, aload_0() )
 	put(initcode.code, invokenonvirtual(constructor) )
+	createvars := create_methodref(c, "createVars", "()V", bc_proc_classname)
+	put(initcode.code, aload_0() )
+	put(initcode.code, invokevirtual(createvars) )
 
 	if \bc_save_restore_flag then {
 
@@ -1109,29 +1113,18 @@ procedure bc_create_nextval(c, start, params, locals, undeclared, accumulate)
 
 	put(nextvalcode.code, var_load_label)
 
-	if /nointrospection | \bc_save_restore_flag then {
-		every k := key(bc_var_table) do {
-			/bc_var_field[k] := create_fieldref(bc_proc_classptr,
-							"v$" || k,
-							"Lrts/vVariable;",
-							bc_proc_classname)
-			if member(bc_statics, k) then {
-				put(s, getstatic(bc_var_field[k]))
-			} else {
-				put(s, aload_0() )
-				put(s, getfield(bc_var_field[k]))
-			}
-			put(s, Astore(bc_var_table[k] + bc_var_offset))
-		}
-	} else {
-		every k := !bc_statics & \bc_var_table[k] do {
-			/bc_var_field[k] := create_fieldref(bc_proc_classptr,
-							"v$" || k,
-							"Lrts/vVariable;",
-							bc_proc_classname)
+	every k := key(bc_var_table) do {
+		/bc_var_field[k] := create_fieldref(bc_proc_classptr,
+						"v$" || k,
+						"Lrts/vVariable;",
+						bc_proc_classname)
+		if member(bc_statics, k) then {
 			put(s, getstatic(bc_var_field[k]))
-			put(s, Astore(bc_var_table[k] + bc_var_offset))
+		} else {
+			put(s, aload_0() )
+			put(s, getfield(bc_var_field[k]))
 		}
+		put(s, Astore(bc_var_table[k] + bc_var_offset))
 	}
 
 	deflab := label()
@@ -1267,34 +1260,22 @@ procedure bc_create_locals(c, undeclared, statics, sortedvars)
 end
 
 procedure bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
-	local createvars, arguments, marshal
+	local arguments, marshal
 	local deref, assign, i, k, field
 	local elselab, endlab
+	local null, lab1, linkvalue
 
-	createvars := create_methodref(c, "createVars", "()V", bc_proc_classname)
 
-	if \bc_create_exists then {
-		put(s, aload_0() )
-		put(s, invokevirtual(createvars) )
-	} else {
-		bc_createvars(s, c, params, locals, undeclared)
-	}
-
+	null := create_methodref(bc_proc_classptr, "Null", "()Lrts/vNull;", "rts/iNew")
 	arguments := create_fieldref(c, "arguments", "[Lrts/vDescriptor;", "rts/iClosure")
 	deref := deref_methodref(c)
 	assign := assign_methodref(c)
 
 	every i := 1 to *params do {
 		k := params[i]
-		if /nointrospection | \bc_save_restore_flag then {
-			field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
-			put(s, aload_0() )
-			put(s, getfield(field) )
-		} else if \bc_var_table[k] then {
-			put(s, Aload(bc_var_table[k] + bc_var_offset))
-		} else {
-			next
-		}
+		field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
+		put(s, aload_0() )
+		put(s, getfield(field) )
 
 		if i = *params & \accumulate then {
 			marshal := create_methodref(c, "marshal", "([Lrts/vDescriptor;I)Lrts/vList;", "rts/iInterface")
@@ -1302,9 +1283,7 @@ procedure bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
 			put(s, getfield(arguments))
 			put(s, ipush(*params))
 			put(s, invokestatic(marshal))
-			if /nointrospection | \bc_save_restore_flag | \bc_var_table[k] then {
-				put(s, invokevirtual(assign) )
-			}
+			put(s, invokevirtual(assign) )
 			put(s, Pop())
 		} else {
 			elselab := label()
@@ -1316,18 +1295,37 @@ procedure bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
 			put(s, ipush(i))
 			put(s, if_icmpge(elselab))
 				put(s, Pop())
-				put(s, Pop())
+				put(s, invokestatic(null))
 				put(s, goto(endlab))
 			put(s, elselab)
 				put(s, ipush(i-1))
 				put(s, aaload())
 				put(s, invokevirtual(deref) )
-				if /nointrospection | \bc_save_restore_flag | \bc_var_table[k] then {
-					put(s, invokevirtual(assign) )
-				}
-				put(s, Pop())
 			put(s, endlab)
+			put(s, invokevirtual(assign) )
+			put(s, Pop())
 		}
+	}
+	every k := !locals do {
+		field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
+		put(s, aload_0() )
+		put(s, getfield(field) )
+		put(s, invokestatic(null))
+		put(s, invokevirtual(assign) )
+		put(s, Pop())
+	}
+	every k := !undeclared do {
+		linkvalue := create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;", bc_link_classname)
+		lab1 := label()
+		field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
+		put(s, getstatic(linkvalue) )
+		put(s, ifnonnull(lab1) )
+		put(s, aload_0() )
+		put(s, getfield(field) )
+		put(s, invokestatic(null))
+		put(s, invokevirtual(assign) )
+		put(s, Pop())
+		put(s, lab1 )
 	}
 end
 
@@ -1338,52 +1336,33 @@ procedure bc_createvars(s, c, params, locals, undeclared)
 	newsimplevar := create_methodref(c, "SimpleVar", "(Ljava/lang/String;)Lrts/vSimpleVar;", "rts/iNew")
 	every k := !params | !locals do {
 		v := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-		if /nointrospection | \bc_save_restore_flag then {
-			field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
-			put(s, aload_0() )
-			put(s, ldc_w(v) )
-			put(s, invokestatic(newsimplevar) )
-			put(s, putfield(field) )
-		} else if \bc_var_table[k] then {
-			put(s, ldc_w(v) )
-			put(s, invokestatic(newsimplevar) )
-			put(s, Astore(bc_var_table[k] + bc_var_offset))
-		}
+		field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
+		put(s, aload_0() )
+		put(s, ldc_w(v) )
+		put(s, invokestatic(newsimplevar) )
+		put(s, putfield(field) )
 	}
 
 	every k := !undeclared do {
 		linkvalue := create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;", bc_link_classname)
 		lab1 := label()
 		v := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-		if /nointrospection | \bc_save_restore_flag then {
-			# v$k = link.v$k$ == null ? iNew.SimpleVar("k") : link.v$k$
-			field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
-			put(s, aload_0() )
-			put(s, getstatic(linkvalue) )
-			put(s, dup() )
-			put(s, ifnonnull(lab1) )
-			put(s, Pop() )
-			put(s, ldc_w(v) )
-			put(s, invokestatic(newsimplevar) )
-			put(s, lab1 )
-			put(s, putfield(field) )
-		} else {
-			put(s, getstatic(linkvalue) )
-			put(s, dup() )
-			put(s, ifnonnull(lab1) )
-			put(s, Pop() )
-			put(s, ldc_w(v) )
-			put(s, invokestatic(newsimplevar) )
-			put(s, lab1 )
-			put(s, Astore(bc_var_table[k] + bc_var_offset))
-		}
+		# v$k = link.v$k$ == null ? iNew.SimpleVar("k") : link.v$k$
+		field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
+		put(s, aload_0() )
+		put(s, getstatic(linkvalue) )
+		put(s, dup() )
+		put(s, ifnonnull(lab1) )
+		put(s, Pop() )
+		put(s, ldc_w(v) )
+		put(s, invokestatic(newsimplevar) )
+		put(s, lab1 )
+		put(s, putfield(field) )
 	}
 end
 
 procedure bc_create_createvars(c, params, locals, undeclared)
 	local createvars, createvarscode
-
-	\bc_create_exists | return
 
 	createvars := create_method(c, 0, "createVars", "()V")
 	createvarscode := create_code(c, 10, 10)
