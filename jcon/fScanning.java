@@ -23,6 +23,9 @@ class f$any extends iValueClosure {			// any(c,s,i1,i2)
 	int i1 = s.posEq(iRuntime.argPos(args, 2));
 	int i2 = s.posEq(vInteger.argVal(args, 3, 0));
 
+	if (i1 == 0 || i2 == 0) {
+	    return null;
+	}
 	if (i1 > i2) {
 	    int tmp = i1;
 	    i1 = i2;
@@ -41,12 +44,15 @@ class f$many extends iValueClosure {			// many(c,s,i1,i2)
 	vString s = iRuntime.argSubject(args, 1);
 	int i1 = s.posEq(iRuntime.argPos(args, 2));
 	int i2 = s.posEq(vInteger.argVal(args, 3, 0));
+
+	if (i1 == 0 || i2 == 0) {
+	    return null;
+	}
 	if (i1 > i2) {
 	    int tmp = i1;
 	    i1 = i2;
 	    i2 = tmp;
 	}
-
 	if (i1 >= i2) {
 	    return null;
 	}
@@ -64,13 +70,16 @@ class f$many extends iValueClosure {			// many(c,s,i1,i2)
     }
 }
 
-class f$match extends iValueClosure {		// match(s1,s2,i1,i2)
+class f$match extends iValueClosure {			// match(s1,s2,i1,i2)
     vDescriptor function(vDescriptor[] args) {
 	String s1 = vString.argVal(args, 0);
 	vString s2 = iRuntime.argSubject(args, 1);
 	int i1 = s2.posEq(iRuntime.argPos(args, 2));
 	int i2 = s2.posEq(vInteger.argVal(args, 3, 0));
 
+	if (i1 == 0 || i2 == 0) {
+	    return null;
+	}
 	if (i1 > i2) {
 		int tmp = i1;
 		i1 = i2;
@@ -107,6 +116,10 @@ class f$find extends iClosure {				// find(s1,s2,i1,i2)
 	    s2 = iRuntime.argSubject(arguments, 1);
 	    i1 = s2.posEq(iRuntime.argPos(arguments, 2));
 	    i2 = s2.posEq(vInteger.argVal(arguments, 3, 0));
+	    if (i1 == 0 || i2 == 0) {
+	        retvalue = null;
+		return;
+	    }
 	    if (i1 > i2) {
 		int tmp = i1;
 		i1 = i2;
@@ -116,16 +129,20 @@ class f$find extends iClosure {				// find(s1,s2,i1,i2)
 
 	if (i1 > i2) {
 	    retvalue = null;
+	    return;
 	}
 	if (s2.value.length() < i1+s1.length()-1) {
 	    retvalue = null;
+	    return;
 	}
 	int i = s2.value.indexOf(s1, i1-1);
 	if (i >= 0 && i+s1.length() < i2) {
 	    i1 = i+2;
 	    retvalue = iNew.Integer(i+1);
+	    return;
 	} else {
 	    retvalue = null;
+	    return;
 	}
     }
 }
@@ -147,6 +164,10 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
 	    s = iRuntime.argSubject(arguments, 1);
 	    i1 = s.posEq(iRuntime.argPos(arguments, 2));
 	    i2 = s.posEq(vInteger.argVal(arguments, 3, 0));
+	    if (i1 == 0 || i2 == 0) {
+	        retvalue = null;
+		return;
+	    }
 	    if (i1 > i2) {
 	        int tmp = i1;
 	        i1 = i2;
@@ -187,6 +208,10 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 	    s = iRuntime.argSubject(arguments, 3);
 	    i1 = s.posEq(iRuntime.argPos(arguments, 4));
 	    i2 = s.posEq(vInteger.argVal(arguments, 5, 0));
+	    if (i1 == 0 || i2 == 0) {
+	        retvalue = null;
+		return;
+	    }
 	    if (i1 > i2) {
 		int tmp = i1;
 		i1 = i2;
