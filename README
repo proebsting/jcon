@@ -76,6 +76,13 @@ names of the tests, one at a time, as they run.  (On SGI systems,
 there may also be a few messages from the Java system about "JIT
 translation failed".)
 
+Jcon has been tested by us on:
+    SGI Indigo2 / Irix 6.2 / SGI Java 1.1.2
+    Sun Sparc2 / Solaris 2.5.1 (SunOS 5.5.1) / Sun Java 1.1.2
+    DEC Alpha 4/233 / Digital Unix 4.0B / Digital Java 1.1.1beta
+We would be interested to learn of either successes or failures
+on other platforms.
+
 
 
 DOCUMENTATION
