@@ -67,7 +67,7 @@ class oAssign extends iRefClosure {			// x1 := x2
 class oConjunction extends iRefClosure {		// x1 & x2
 
 	vDescriptor function(vDescriptor[] args) {
-		args[0].deref();
+		args[0].deref(); //#%#% is this correct??
 		return args[1];
 	}
 }
