@@ -156,6 +156,10 @@ static vFile argVal(vDescriptor[] args, int index, vFile dflt)	// optional arg
 
 // ------------- input buffering for random-access input files ------------
 
+
+
+//  rchar() -- read one character.  USE THIS FOR ALL INPUT.
+
 char rchar() throws IOException, EOFException {
     if (icount > 0) {			// if buffer is not empty
 	icount--;
@@ -203,6 +207,7 @@ vFile close() {						// close()
     randfile = null;			// indicate file closed
     instream = null;
     outstream = null;
+    icount = 0;
     if (r != null) {			// if not stdin/stdout/stderr
     	try {
 	    r.close();			// try system close
@@ -219,7 +224,7 @@ vFile seek(long n) {					// seek(n)
     if (randfile == null) {		// if not seekable
     	return null; /*FAIL*/
     }
-    icount = 0;				// clear input buffering
+    icount = 0;				// clear input buffer
     try {
     	if (n > 0) {
 	    n--;			// remove Icon bias
@@ -256,10 +261,8 @@ vString read() {					// read()
 	iRuntime.error(212, this);	// not open for reading
     }
 
-    if (fileToSync != null) {
-	if (instream instanceof InputStream) {		// if possibly tty
-	    fileToSync.flush();			// flush pending graphics output
-	}
+    if (fileToSync != null && instream == System.in) {
+	fileToSync.flush();			// flush pending graphics output
     }
 
     vByteBuffer b = new vByteBuffer(100);

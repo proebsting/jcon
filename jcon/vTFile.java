@@ -38,10 +38,8 @@ vString reads(long n) {
 	iRuntime.error(212, this);	// not open for reading
     }
 
-    if (fileToSync != null) {
-	if (instream instanceof DataInputStream) {	// if possibly tty
-	    fileToSync.flush();		// flush pending graphics output
-	}
+    if (fileToSync != null && instream == System.in) {
+	fileToSync.flush();			// flush pending graphics output
     }
 
     try {
