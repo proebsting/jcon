@@ -278,6 +278,9 @@ end
 
 # record ir_Key( name )
 procedure bc_gen_ir_Key_register(p)
+    if /bc_keywords(p.name) then {
+	semantic_error("invalid keyword" || " &" || p.name)
+    }
     /bc_key_table[p.name] := j_create_fieldref(bc_current_classptr,
 					       bc_keywords(p.name)[1],
 					       bc_keywords(p.name)[2],
@@ -820,7 +823,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     bc_register(bc_emit_table)
     bc_target_bookkeeping()
 
-    bc_tmp_offset := 12
+    bc_tmp_offset := 15+2
     bc_tmplabel_offset := bc_tmp_offset + *bc_tmp_table
     bc_var_offset := bc_tmplabel_offset + *bc_tmplabel_table
 
@@ -883,7 +886,7 @@ procedure bc_class_constructor(c, statics)
     local clinit, clinitcode, k, f, n, newsimplevar
 
     clinit := j_create_method(c, 8, "<clinit>", "()V")
-    clinitcode := j_create_code(c, 10, 10)
+    clinitcode := j_create_code(c, 15, 15)
     put(clinit.attributes, clinitcode)
 
     newsimplevar := bc_New_vSimpleVar_methodref(c)
@@ -903,7 +906,7 @@ procedure bc_create_vProc_constructor(c, params, accumulate)
     local init, initcode, constructor, createvars, s, superclass
 
     init := j_create_method(c, 1, "<init>", "()V")
-    initcode := j_create_code(c, 10, 10)
+    initcode := j_create_code(c, 15, 15)
     put(init.attributes, initcode)
     s := initcode.code
     superclass := "rts/vProc" || ((/accumulate & 9 >= *params) | "V")
@@ -918,7 +921,7 @@ procedure bc_create_vClosure_constructor(c, params, locals, undeclared, accumula
     local class_index, vararray
 
     init := j_create_method(c, 1, "<init>", "([Lrts/vDescriptor;)V")
-    initcode := j_create_code(c, 10, 10)
+    initcode := j_create_code(c, 15, 15)
     put(init.attributes, initcode)
     s := initcode.code
 
@@ -956,7 +959,7 @@ procedure bc_create_refresher(c)
     local refresher, code, s, class, init, refreshArray, refreshPC
 
     refresher := j_create_method(c, 1, "refreshcopy", "()Lrts/vClosure;")
-    code := j_create_code(c, 10, 10)
+    code := j_create_code(c, 15, 15)
     put(refresher.attributes, code)
     s := code.code
 
@@ -981,7 +984,7 @@ procedure bc_create_vClosure_copy_constructor(c, params, locals, undeclared)
     local newsimplevar, k, linkvalue, lab1, refresharray, deref
 
     init := j_create_method(c, 1, "<init>", "([Lrts/vDescriptor;I)V")
-    initcode := j_create_code(c, 10, 10)
+    initcode := j_create_code(c, 15, 15)
     put(init.attributes, initcode)
     s := initcode.code
     superclass := "rts/vClosure"
@@ -1126,7 +1129,7 @@ procedure bc_create_Resume(c, start, params, locals, undeclared, accumulate)
     local nextval, nextvalcode
 
     nextval := j_create_method(c, 0, "Resume", "()Lrts/vDescriptor;")
-    nextvalcode := j_create_code(c, 10, 10)
+    nextvalcode := j_create_code(c, 15, 15)
     put(nextval.attributes, nextvalcode)
     bc_nextval_code(nextvalcode, c, start, params, locals, undeclared,
                     accumulate)
@@ -1140,7 +1143,7 @@ procedure bc_create_Call(c, start, params, locals, undeclared, accumulate)
     } else {
         nextval := bc_CallN_method(c, *params)
     }
-    nextvalcode := j_create_code(c, 10, 10)
+    nextvalcode := j_create_code(c, 15, 15)
     put(nextval.attributes, nextvalcode)
     if \bc_save_restore_flag then {
         bc_trampoline(nextvalcode, c, params, locals, undeclared, accumulate)
@@ -1534,7 +1537,7 @@ procedure bc_create_createvars(c, params, locals, undeclared)
     local createvars, createvarscode
 
     createvars := j_create_method(c, 0, "createVars", "()V")
-    createvarscode := j_create_code(c, 10, 10)
+    createvarscode := j_create_code(c, 15, 15)
     put(createvars.attributes, createvarscode)
 
     bc_createvars(createvarscode.code, c, params, locals, undeclared)
@@ -1564,7 +1567,7 @@ procedure bc_create_copy(c, params, locals, undeclared)
 
     if \bc_create_exists then {
         Copy := j_create_method(c, 0, "copy", "(I)Lrts/vClosure;")
-        copycode := j_create_code(c, 10, 10)
+        copycode := j_create_code(c, 15, 15)
         put(Copy.attributes, copycode)
         s := copycode.code
 
@@ -1696,7 +1699,7 @@ procedure bc_create_declare(c)
     local declareDebugging
 
     declare := j_create_method(c, 0, "declare", "()V")
-    declarecode := j_create_code(c, 10, 10)
+    declarecode := j_create_code(c, 15, 15)
     put(declare.attributes, declarecode)
 
     if \ir_noerror2failure then {
@@ -1756,7 +1759,7 @@ procedure bc_create_unresolved(c)
     local undeclaredmethod
 
     unresolved := j_create_method(c, 0, "unresolved", "()V")
-    unresolvedcode := j_create_code(c, 10, 10)
+    unresolvedcode := j_create_code(c, 15, 15)
     put(unresolved.attributes, unresolvedcode)
 
     if \bc_invoke_all then {
@@ -1787,7 +1790,7 @@ procedure bc_create_linked(c)
         j_create_field(c, 8, "linked", "Z")
 
         linked := j_create_method(c, 0, "link", "()V")
-        linkedcode := j_create_code(c, 10, 10)
+        linkedcode := j_create_code(c, 15, 15)
         put(linked.attributes, linkedcode)
 
         linkref := j_create_fieldref(c, "linked", "Z", bc_java_classname)
@@ -1818,7 +1821,7 @@ procedure bc_create_resolve(c)
     local resolve, resolvecode, resolvemethod, k, f, s, op
 
     resolve := j_create_method(c, 0, "resolve", "()V")
-    resolvecode := j_create_code(c, 10, 10)
+    resolvecode := j_create_code(c, 15, 15)
     put(resolve.attributes, resolvecode)
 
     resolvemethod := bc_resolve_methodref(c)
@@ -1853,7 +1856,7 @@ procedure bc_create_linkinit(c)
     local init, initcode, constructor, s
 
     init := j_create_method(c, 1, "<init>", "()V")
-    initcode := j_create_code(c, 10, 10)
+    initcode := j_create_code(c, 15, 15)
     put(init.attributes, initcode)
     s := initcode.code
 
@@ -1871,7 +1874,7 @@ procedure bc_create_class_linkinit(c)
     local clinit, clinitcode, newmethod, k, f, d, s
 
     clinit := j_create_method(c, 8, "<clinit>", "()V")
-    clinitcode := j_create_code(c, 10, 10)
+    clinitcode := j_create_code(c, 15, 15)
     put(clinit.attributes, clinitcode)
     s := clinitcode.code
 
