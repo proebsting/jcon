@@ -2,6 +2,8 @@
 
 package rts;
 
+class fScanning {} // dummy
+
 class f$pos extends iFunctionClosure {			// pos(i)
     vDescriptor function(vDescriptor[] args) {
 	long i;
