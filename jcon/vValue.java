@@ -18,8 +18,8 @@ public abstract class vValue extends vDescriptor {
     public vVariable Assign(vValue x)	{ iRuntime.error(111,this);return null;}
 
     // sorting
-    abstract int rank();	// required of all subclasses
-    int compareTo(vValue v)	{ return 0; } //#%#% later compare serial nums
+    abstract int rank();	// required of all subclasses (all different)
+    int compareTo(vValue v)	{ return 0; }//#%#% for procs & others undefined
 
     // accessing functions
     vVariable field(String s)	{ iRuntime.error(107, this); return null;}
@@ -38,6 +38,7 @@ public abstract class vValue extends vDescriptor {
     // simple unary operators that always return values
     vNumeric Negate()		{ return this.mkNumeric().Negate(); }
     vInteger Size()		{ iRuntime.error(112, this); return null; }
+    vInteger Serial()		{ return null; /*FAIL*/ }
 
     // simple unary operators that may return variables
     vDescriptor isNull()	{ return null; /*FAIL*/ }

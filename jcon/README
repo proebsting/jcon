@@ -38,6 +38,7 @@ numerics:
 -- conversion of reals (& possibly integers) to strings does not match v9
 -- conversion of strings to reals and integers probably follows different rules
 -- "%" just uses the Java "%" operator; does that match what Icon needs?
+-- on the Dec Alpha, a rightward ishift() doesn't sign extend  [Java bug]
 
 error reporting:
 -- no error recovery yet
@@ -47,15 +48,16 @@ error reporting:
 
 miscellaneous:
 -- random selection uses Java's RNG, presumably generating different sequences
--- random sequences are different every time
--- structures don't have serial numbers yet (and so, they don't sort right)
--- sort(X) works for set, list, record, but not table (yet)
+-- random sequences are different on every run
 -- crude tracing can be enabled by setting &trace
 -- read() and write() doen't accept file arguments
 -- x ! R doesn't work for records (only for lists)
 -- resuming a "break" is handled improperly (program crashes with Java error)
+-- for coexpressions, image(), *C, and serial() don't work
+-- jcon always allocates a list for main() even if it doesn't declare an arg
 
 arguably correct differences:
+-- tables sort after sets, as per LB but contrary to v9
 -- to-by handles overflow in "n to MAXINT" case
 -- 1 / 0 gives error 201 instead of error 204
 -- traceback is deliberately limited to the innermost 100 nested calls

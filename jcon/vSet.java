@@ -2,15 +2,21 @@ package rts;
 
 import java.util.*;
 
-public class vSet extends vValue {
+public class vSet extends vStructure {
 
     java.util.Hashtable t;
 
+
+static int nextsn = 1;		// next serial number
+
+
 vSet(java.util.Hashtable x) {
+    super(nextsn++);
     t = (java.util.Hashtable) x.clone();
 }
 
 vSet(vValue x) {
+    super(nextsn++);
     t = new java.util.Hashtable();
     if (x != null && !(x instanceof vNull)) {
         if (!(x instanceof vList)) {
@@ -26,13 +32,9 @@ vSet(vValue x) {
     }
 }
 
-String image()		{ return "set()"; }
-
-String report()		{ return image(); }
-
 String type()		{ return "set";}
 
-int rank()		{ return 40; }	// sets rank after lists
+int rank()		{ return 100; }		// sets rank after lists
 
 vInteger Size() {
     return iNew.Integer(t.size());

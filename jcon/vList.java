@@ -9,13 +9,18 @@ package rts;
 
 import java.util.*;
 
-public class vList extends vValue {
+public class vList extends vStructure {
 
     Vector v;
 
 
 
+static int nextsn = 1;				// next serial number
+
+
+
 vList(int n, vValue x)  {			// new Vlist(n, x)
+    super(nextsn++);
     v = new Vector(n);
     for (int i = 0; i < n; i++) {
     	v.addElement(iNew.SimpleVar(x));
@@ -23,6 +28,7 @@ vList(int n, vValue x)  {			// new Vlist(n, x)
 }
 
 vList(vDescriptor[] elements) {			// new Vlist(elements[])
+    super(nextsn++);
     v = new Vector(elements.length);
     for (int i = elements.length - 1; i >= 0; i--) {	// add back-to-front
     	v.addElement(iNew.SimpleVar(elements[i]));
@@ -33,9 +39,7 @@ vList(vDescriptor[] elements) {			// new Vlist(elements[])
 
 // runtime primitives
 
-int rank()		{ return 90; }		// lists rank after procedures
-
-String image()		{ return "list(" + v.size() + ")"; }	//#%#% add s/n
+int rank()		{ return 90; }		// lists sort after procedures
 
 String report()		{ return this.image(); } //#%#% redo with elem details
 

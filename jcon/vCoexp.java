@@ -1,6 +1,7 @@
 package rts;
 
 public class vCoexp extends vValue implements Runnable {
+
 	int originalPC;
 	Thread thread;
 	iClosure closure;
@@ -8,15 +9,19 @@ public class vCoexp extends vValue implements Runnable {
 	java.util.Stack callers;
 	vDescriptor incomingValue;
 	Semaphore lock;
+	int snum;	// serial number
 
-	int rank() {
-		return 70;		// co-expressions rank after files
-	}
 
+	static int nextsn = 1;		// next serial number
+
+	int rank()	{ return 70; }	// co-expressions sort after files
+
+	//#%#% incorp. into first constructor, call that from other one?
 	void setup(Thread thread, iClosure closure) {
 		this.closure = closure;
 		this.thread = thread;
 		this.originalPC = closure.PC;
+		this.snum = nextsn++;
 		callers = new java.util.Stack();
 		lock = new Semaphore();
 	}
@@ -80,7 +85,9 @@ public class vCoexp extends vValue implements Runnable {
 		return c;
 	}
 
-	String image()	{ return "co-expression";}	//#%#% incomplete image
-
 	String type()	{ return "co-expression";}
+
+	String image()  {			//#%#% count is bogus in image
+		return "co-expression_" + snum + "(" + "0" + ")";
+	}
 }

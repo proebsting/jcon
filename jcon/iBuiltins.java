@@ -48,6 +48,7 @@ void announce(iEnv env) {
 	declare(env, "reverse");
 	declare(env, "right");
 	declare(env, "rtod");
+	declare(env, "serial");
 	declare(env, "set");
 	declare(env, "sin");
 	declare(env, "sort");
@@ -93,6 +94,14 @@ class f$image extends iFunctionClosure {			// image(x)
 class f$type extends iFunctionClosure {				// type(x)
 	vDescriptor function(vDescriptor[] args) {
 		return iNew.String(iRuntime.argVal(args, 0).type());
+	}
+}
+
+
+
+class f$serial extends iFunctionClosure {			// serial(x)
+	vDescriptor function(vDescriptor[] args) {
+		return iRuntime.argVal(args, 0).Serial();
 	}
 }
 

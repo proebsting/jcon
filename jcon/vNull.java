@@ -5,7 +5,7 @@ public class vNull extends vValue {
     vDescriptor isNull()	{ return this; }
     vDescriptor isntNull()	{ return null; /*FAIL*/ }
 
-    int rank()			{ return 0; }	// nulls rank first
+    int rank()			{ return 0; }	// nulls sort first
     int compareTo(vValue v)	{ return 0; }	// all nulls are equal
 
     String write()		{ return ""; }

@@ -30,7 +30,7 @@ String write()		{ return String.valueOf(value); }
 String image()		{ return String.valueOf(value); }
 String type()		{ return "integer"; }
 
-int rank()		{ return 10; } 	// integers rank right after &null
+int rank()		{ return 10; } 	// integers sort right after &null
 
 int compareTo(vValue v) {
 	long x = ((vInteger) v).value;

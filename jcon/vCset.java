@@ -41,7 +41,7 @@ String report()		{ return image(); }
 
 String type()		{ return "cset";}
 
-int rank()		{ return 40; }		// csets rank after strings
+int rank()		{ return 40; }		// csets sort after strings
 
 int compareTo(vValue v) {
     return this.mkString().compareTo(v.mkString());  //#%#% horribly slow 

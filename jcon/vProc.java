@@ -14,10 +14,6 @@ public class vProc extends vValue {
 		return this;
 	}
 
-	int rank() {
-		return 80;		// procedures rank after co-expressions
-	}
-
 	String image() {
 
 		String s = proc.getName();
@@ -35,8 +31,16 @@ public class vProc extends vValue {
 		}
 	}
 
-	String type() { 
-		return "procedure";
+	String type()	{ return "procedure"; }
+
+	int rank()	{ return 80; }	// procedures sort after co-expressions
+
+	int compareTo(vValue v) {	// must handle procs, funcs, rec constrs
+		String s1 = this.image();
+		String s2 = v.image();
+		s1 = s1.substring(s1.lastIndexOf(' ') + 1);
+		s2 = s2.substring(s2.lastIndexOf(' ') + 1);
+		return s1.compareTo(s2);
 	}
 
 	public iClosure instantiate(vDescriptor[] args, iClosure parent) {

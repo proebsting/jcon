@@ -40,6 +40,7 @@ public abstract class vDescriptor {
     // simple unary operators that always return values
     abstract vNumeric Negate();			//  -n
     abstract vInteger Size();			//  *x
+    abstract vInteger Serial();			//  serial(x)
 
     // simple unary operators that may return variables
     abstract vDescriptor isNull();		//  /x

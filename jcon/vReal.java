@@ -40,7 +40,7 @@ String image()		{
 
 String type()		{ return "real"; }
 
-int rank()		{ return 20; }		// reals rank after integers
+int rank()		{ return 20; }		// reals sort after integers
 
 int compareTo(vValue v) {
 	double x = ((vReal) v).value;

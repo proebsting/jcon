@@ -2,19 +2,19 @@ package rts;
 
 import java.util.*;
 
-public class vTable extends vValue {
+public class vTable extends vStructure {
 
     java.util.Hashtable t;
     vValue dflt;
 
+static int nextsn = 1;	// next serial number
+
+
 vTable(vValue dflt) {
+    super(nextsn++);
     this.dflt = dflt;
     t = new java.util.Hashtable();
 }
-
-String image()		{ return "table()"; }
-
-String report()		{ return image(); }
 
 String type()		{ return "table";}
 
