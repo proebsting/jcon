@@ -52,7 +52,7 @@ procedure operators()
 	[ 2,   "<->", "RevSwap",      "rts.vDescriptor" ],
 	[ 2,    "<-", "RevAssign",    "rts.vDescriptor" ],
 	[ 2,    ":=", "Assign",       "rts.vVariable"   ],
-	[ 3,   "...", "ToBy",         "rts.vInteger"    ],
+	[ 3,   "...", "ToBy",         "rts.vDescriptor" ],
 	[ 3,  "[+:]", "SectPlus",     "rts.vValue"      ],
 	[ 3,  "[-:]", "SectMinus",    "rts.vValue"      ],
 	[ 1,     ".", "Deref",        "rts.vValue"      ],
