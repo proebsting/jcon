@@ -1,0 +1,110 @@
+#!/bin/ksh
+#
+#  jcont -- build file.zip containing classes of icon executable
+#
+#  usage:  jcont [-d] [-v] file[.icn] ...
+#
+#	-d	debug: use ./jtmp for temp files, and don't delete
+#	-v	verbose: echo shell commands
+
+PROJHOME=/cs/jive
+SUMATRA=/cs/sumatra
+
+# set default tracing (none), temp directory name, and its deletion
+TRACE=
+TDIR=./jcon$$
+NODELETE=
+
+#  process options
+
+USAGE="usage: $0 [-d] [-v] file[.icn] ..."
+
+while getopts "dv" c; do
+    case $c in
+	d)	TDIR=./jtmp; NODELETE=":";;
+	v)	TRACE="set -x";;
+    	\?)	echo $USAGE; exit 1;;
+    esac
+done
+
+#  check that at least one argument was given
+shift `expr $OPTIND - 1`
+if [ $# = 0 ]; then
+    echo "$USAGE"
+    exit 1
+fi
+
+#  accumulate .icn file names
+for FNAME; do
+    BASE=${FNAME%.icn}
+    FILES="$FILES $BASE.icn"
+done
+
+#  set output file name
+OFILE="${1%.icn}.zip"
+
+#  determine installed directory
+PRG=`whence $0` >/dev/null 2>&1
+IDIR=`dirname $PRG`/..
+case $IDIR in 
+    /*)	;;
+    *)	IDIR=`pwd`/$IDIR;;
+esac
+
+#  determine architecture type
+set `uname -sr`
+case "$1$2" in
+    SunOS4*)    ARCH=sunos;;
+    SunOS5*)    ARCH=solaris;;
+    IRIX*)      ARCH=irix;;
+    OSF*)       ARCH=digital;;
+    ULTRIX*)    ARCH=ultrix;;
+    Linux*)     ARCH=linux;;
+    HP-UX*)     ARCH=hpux;;
+    AIX*)       ARCH=aix;;
+    *)          echo 1>&2 "unrecognized system: $*"; exit 1;;
+esac
+
+#  set names for Jcon files
+if [ -d $IDIR/bin ]; then
+    JCON=$IDIR/lib/jcon
+    JRTS=$IDIR/lib/rts.zip
+else
+    JCON=$IDIR/src/jcon
+    JRTS=$IDIR/rts/rts.zip
+fi
+JCON="$JCON -O -target=java"
+ZIP="$PROJHOME/$ARCH/bin/zip"
+
+#  set Java names and paths
+JDK="$SUMATRA/$ARCH/jdk.1.0.2"
+#%#% would like to use toba, but need a no-warnings option
+#%#% JAVAC="$SUMATRA/$ARCH/toba/bin/toba -K"
+JAVAC="$JDK/bin/javac -nowarn"
+JAVA="$JDK/bin/java"
+CLASSPATH=".:$JRTS:$JDK/lib/classes.zip"
+
+#  arrange deletion of temporary directory, if NODELETE is not set
+$NODELETE trap "rm -rf $TDIR" 0 1 2 15
+
+#  now, finally, do some work
+set -e
+$TRACE
+
+# create temporary directory
+if [ -d $TDIR ]; then
+    rm -f $TDIR/*
+else
+    mkdir $TDIR
+fi
+
+# translate Icon to Java
+#%#%#% later modify jcon to generate the import:
+(echo "import rts.*;"; $JCON $FILES) >$TDIR/a_out.java
+
+# translate Java to .class files
+export CLASSPATH=$CLASSPATH
+(cd $TDIR; $JAVAC a_out.java)
+
+# bundle up .class files in a zip file
+$ZIP -0 -j -q $OFILE $TDIR/*.class

@@ -1,0 +1,39 @@
+#  This program prints keyword values.  Run it by hand.
+#  It's nonportable and irreproducible, so there's no corresponding
+#  .std file of expected output, and consequently it's not run with
+#  the other automated tests.
+
+procedure main()
+
+   kw("version", &version)
+   every kw("features", &features)
+   write()
+
+   kw("dateline", &dateline)
+   kw("date", &date)
+   kw("clock", &clock)
+   write()
+
+   kw("null", &null)
+   kw("e", &e)
+   kw("phi", &phi)
+   kw("pi", &pi)
+   write()
+
+   kw("digits", &digits)
+   kw("lcase", &lcase)
+   kw("ucase", &ucase)
+   kw("letters", &letters)
+   kw("ascii", *&ascii || " elements")
+#   kw("cset", *&cset || " elements")	# &cset is currently disabled
+   write()
+
+   kw("file", &file)
+   kw("line", &line)
+   kw("trace", &trace)
+end
+
+procedure kw(label, value)
+   write(right("&" || label, 10), ": ", value)
+   return
+end

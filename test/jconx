@@ -1,13 +1,51 @@
 #!/bin/ksh
 #
-#  jconx [args...] -- execute program just built by jcontx
-#
-#  assumes that the jcon "test" directory is the current directory
-#  assumes that the class name is "a_out" in directory "./tmp"
+#  jcont file.zip [args...] -- execute Icon program built by jcont
 
-TMP=./tmp
-JAVA="java"
+PROJHOME=/cs/jive
+SUMATRA=/cs/sumatra
 
-export CLASSPATH=${CLASSPATH-.}:../../rts
-cd $TMP
-$JAVA a_out
+#  check that at least one argument was given
+if [ $# = 0 ]; then
+    echo "usage: $0 file.zip ..." 1>&2
+    exit 1
+fi
+
+#  set zip file name and remove from arg list
+ZFILE="${1%.zip}.zip"
+shift
+
+#  determine installed directory
+PRG=`whence $0` >/dev/null 2>&1
+IDIR=`dirname $PRG`/..
+case $IDIR in 
+    /*)	;;
+    *)	IDIR=`pwd`/$IDIR;;
+esac
+
+#  determine architecture type
+case `uname -sr | sed 's/ //'` in
+    SunOS4*)    ARCH=sunos;;
+    SunOS5*)    ARCH=solaris;;
+    IRIX*)      ARCH=irix;;
+    OSF*)       ARCH=digital;;
+    ULTRIX*)    ARCH=ultrix;;
+    Linux*)     ARCH=linux;;
+    HP-UX*)     ARCH=hpux;;
+    AIX*)       ARCH=aix;;
+    *)          echo 1>&2 "unrecognized system: $*"; exit 1;;
+esac
+
+#  set name for RTS library 
+if [ -d $IDIR/lib ]; then
+    JRTS=$IDIR/lib/rts.zip
+else
+    JRTS=$IDIR/rts/rts.zip
+fi
+
+#  set Java names and paths
+JDK="$SUMATRA/$ARCH/jdk.1.0.2"
+JAVA="$JDK/bin/java"
+
+export CLASSPATH=./$ZFILE:$JRTS:$JDK/lib/classes.zip
+exec $JAVA a_out "$@"
