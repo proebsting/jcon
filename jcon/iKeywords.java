@@ -175,8 +175,9 @@ class k$dateline extends k$Value {			// &dateline
 class k$subject extends vSimpleVar {		// &subject
 	
 	k$pos pos;		// associated &pos variable
+	static k$subject self;
 
-	k$subject() { super("&subject"); }
+	k$subject() { super("&subject"); self = this; }
 
 	public vVariable Assign(vValue s) {
 		value = s.mkString();			// &subject := s
@@ -190,8 +191,9 @@ class k$subject extends vSimpleVar {		// &subject
 class k$pos extends vSimpleVar {		// &pos
 
 	k$subject subject;		// associated &subject variable
+	static k$pos self;
 
-	k$pos() { super("&pos"); }
+	k$pos() { super("&pos"); self = this; }
 
 	public vVariable Assign(vValue i) {
 		i = i.mkInteger();

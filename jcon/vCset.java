@@ -43,6 +43,10 @@ String type()		{ return "cset";}
 
 int rank()		{ return 40; }		// csets sort after strings
 
+boolean member(char c) {
+    return this.t.get((int)c);
+}
+
 int compareTo(vValue v) {
     return this.mkString().compareTo(v.mkString());  //#%#% horribly slow 
 }

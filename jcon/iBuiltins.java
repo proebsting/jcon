@@ -13,9 +13,11 @@ static final String PREFIX = "rts.f$";	// classname prefix for built-in funcs
 void announce() {
 	declare("abs", 1);
 	declare("acos", 1);
+	declare("any", 4);
 	declare("args", 1);
 	declare("asin", 1);
 	declare("atan", 2);
+	declare("bal", 6);
 	declare("char", 1);
 	declare("cos", 1);
 	declare("copy", 1);
@@ -26,6 +28,7 @@ void announce() {
 	declare("dtor", 1);
 	declare("exit", 1);
 	declare("exp", 1);
+	declare("find", 4);
 	declare("get", 1);
 	declare("iand", 2);
 	declare("icom", 1);
@@ -38,7 +41,10 @@ void announce() {
 	declare("key", 1);
 	declare("list", 2);
 	declare("log", 2);
+	declare("many", 4);
+	declare("match", 4);
 	declare("member", 2);
+	declare("move", 1);
 	declare("name", 1);
 	declare("numeric", 1);
 	declare("ord", 1);
@@ -60,9 +66,11 @@ void announce() {
 	declare("sqrt", 1);
 	declare("stop", -1);
 	declare("string", 1);
+	declare("tab", 1);
 	declare("table", 1);
 	declare("tan", 1);
 	declare("type", 1);
+	declare("upto", 4);
 	declare("variable", 1);
 	declare("write", -1);
 	declare("writes", -1);

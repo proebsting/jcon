@@ -65,6 +65,30 @@ public static vValue argVal(vDescriptor[] args, int index, int errcode)
     }
 }
 
+// argSubject(args, index) handles string defaulting in scanning functions.
+// returns &subject's vString if args[index] defaulted
+// o/w returns vString value.
+
+public static vString argSubject(vDescriptor[] args, int index) {
+    if (index < args.length) {
+	return args[index].mkString();
+    }
+    return (vString) k$subject.self.deref();
+}
+
+// argPos(args, index) handles defaulting of &pos in scanning functions.
+// returns &pos's value if args[index-1] defaulted,
+// o/w returns 1 if args[index] defaulted,
+// o/w returns argument's integer value.
+
+public static long argPos(vDescriptor[] args, int index) {
+    if (index < args.length) {
+	return args[index].mkInteger().value;
+    } else if (index < args.length+1) {
+        return 1;
+    }
+    return ((vInteger)k$pos.self.deref()).value;
+}
 
 
 // #%#%#% redo later to use Icon's &random etc.
