@@ -6,6 +6,10 @@ procedure main()
    x := 1
    x +:= |1		# tickled optimizer bug.
    write(x)
+
+   x := table(3)
+   write(x[])
+
    x := "o"
    write("a" & "b")
    write("c" | "d")
