@@ -87,8 +87,24 @@ to load a GIF or JPEG file.
 The <CODE>image</CODE> attribute is readable and returns
 the filename of the most recently loaded image.
 
-<P> <CODE>WriteImage()</CODE> always writes a GIF file,
-quantizing the image to 256 colors if necessary.
+<P> <CODE>WriteImage()</CODE>
+attempts to write a JPEG file if the specified filename
+ends in <CODE>".jpg"</CODE> or <CODE>".jpeg"</CODE> (case insensitive).
+JPEG writing fails for Java versions earlier than 1.2beta4.
+For all other filenames, a GIF file is written;  if the area being
+written contains more than 256 colors, automatic quantization occurs.
+
+<P> <CODE>WriteImage(W,s,x,y,w,h,q)</CODE> accepts a final "quality"
+parameter not present in Version 9 of Icon.
+For a GIF file, if 2&nbsp;<=&nbsp;q&nbsp;<=&nbsp;256,
+then the image is written with a maximum of <CODE>q</CODE> colors.
+For a JPEG file, if 0.0&nbsp;<=&nbsp;q&nbsp;<=&nbsp;1.0,
+then the image is written with the corresponding quality setting
+(as interpreted by the Java library).
+If a GIF setting is specified for a JPEG file, or vice versa, an attempt
+is made to approximate the requested quality.
+The default value of <CODE>q</CODE> is 256,
+which corresponds to a JPEG quality setting of 0.75.
 
 <P> Image reading and writing ignores the <CODE>gamma</CODE> attribute.
 
