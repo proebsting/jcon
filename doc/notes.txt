@@ -1,4 +1,16 @@
-general:
+running the scripts:
+-- add /cs/jive/<platform>/bin to your Unix search path
+-- <platform> is one of {linux,digital,solaris}
+
+what's implemented:
+-- all datatypes except "file" (but there are no large integers)
+-- all operators except unary "="
+-- some keywords (see list)
+-- some built-in functions (see list)
+-- no graphics
+-- no preprocessor
+
+general caveats:
 -- scripts etc. are still somewhat primitive
 -- separate compilation is not available
 -- no optimization has been done
