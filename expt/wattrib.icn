@@ -45,11 +45,17 @@ end
 procedure dump()		# test using WAttrib
    local s, t
    static atts
-   initial atts := ["size", "width", "height", "fg", "bg", "font",
-	"cursor", "echo", "x", "y", "row", "col"]
+   initial atts := [
+      # canvas attributes:
+      "size", "height", "width",
+      "echo", "cursor", "x", "y", "row", "col",
+      # graphics context attributes:
+      "fg", "bg", 
+      "font", "fheight", "fwidth", "ascent", "descent", "leading",
+      ]
 
    write()
-   every s := !atts do {
+   every s := \!atts do {
       t := left("WAttrib(" || image(s) || "):  ", 20)
       write(t, WAttrib(s) | "[FAILED]")
       }
