@@ -777,7 +777,7 @@ procedure ir_a_ProcDecl(p, st, inuse, target, bounded, rval)
     every put(code, ir(p.code))
 
     return ir_Function(p.ident.id, params, p.accumulate, locals, statics, code,
-                      ir_start, p.ident.coord)
+                      ir_start, ir_LvalSet, p.ident.coord)
 end
 
 # record a_ProcBody( nexprList )
@@ -1072,6 +1072,10 @@ procedure ir_a_Ident(p, st, inuse, target, bounded, rval)
         # #%#%# prevents nasty interaction with targeting.
         # %#%#% probably a symptom of bad design....
         target := &null
+    }
+
+    if /rval then {
+	insert(ir_LvalSet, p.id)
     }
 
     ir_init(p)
