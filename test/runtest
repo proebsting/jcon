@@ -22,14 +22,14 @@ if [ $# = 0 ]; then
    set *.std
 fi
 
-ERRORS=0
+FAILED=""
 
 for FNAME; do
     BASE=${FNAME%.*}
     echo ${BASE}:
     if [ ! -r $BASE.icn -o ! -r $BASE.std ]; then
 	echo "   invalid test: missing $BASE.icn or $BASE.std"
-	let 'ERRORS = ERRORS + 1'
+	FAILED="$FAILED $BASE"
 	continue
     fi
     $JCONT $JCOPT $BASE
@@ -38,11 +38,10 @@ for FNAME; do
     else
 	./$BASE </dev/null >$BASE.out
     fi
-    cmp $BASE.std $BASE.out || let 'ERRORS = ERRORS + 1'
+    cmp $BASE.std $BASE.out || FAILED="$FAILED $BASE"
 done
 
-case $ERRORS in
-    0)  echo "Testing complete; no errors.";  exit 0;;
-    1)  echo "Testing complete; ***** $ERRORS error. *****";  exit 1;;
-    *)  echo "Testing complete; ***** $ERRORS errors. *****";  exit 1;;
+case "X$FAILED"  in
+    X)  echo "Testing successful.";  exit 0;;
+    *)  echo "Testing FAILED for: $FAILED"; exit 1;;
 esac
