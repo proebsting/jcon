@@ -335,7 +335,7 @@ class k$subject extends vSimpleVar {		// &subject
 
 	public vVariable Assign(vValue s) {
 		value = s.mkString();			// &subject := s
-		pos.Assign(iNew.Integer(1));		// &pos := 1
+		pos.SafeAssign(iNew.Integer(1));	// &pos := 1
 		return this;
 	}
 
@@ -355,6 +355,10 @@ class k$pos extends vSimpleVar {		// &pos
 		if (n == 0)
 			return null;	// fail: position out of range
 		value = iNew.Integer(n);
+		return this;
+	}
+	public vVariable SafeAssign(vValue i) {
+		value = i;
 		return this;
 	}
 }

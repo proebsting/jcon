@@ -257,7 +257,7 @@ class f$move extends iClosure {				// move(j)
 	    if (k < 0 || k > s.length()) {
 		return null;
 	    } else {
-	        k$pos.self.Assign(iNew.Integer(i + j));
+	        k$pos.self.SafeAssign(iNew.Integer(i + j));
 		if (j >= 0) {
 		    return iNew.String(s, i, i + j);
 		} else {
@@ -286,7 +286,7 @@ class f$tab extends iClosure {				// tab(j)
 	    if (j == 0) {
 		return null;
 	    } else {
-	        k$pos.self.Assign(iNew.Integer(j));
+	        k$pos.self.SafeAssign(iNew.Integer(j));
 		if (i < j) {
 		    return iNew.String(s, i, j);
 		} else {
