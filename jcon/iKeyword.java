@@ -357,7 +357,12 @@ final class k$dateline extends vProc0 {				// &dateline
 
 final class k$host extends vProc0 {				// &host
     public vDescriptor Call() {
-	return iSystem.hostname();
+	try {
+	    return vString.New(
+		java.net.InetAddress.getLocalHost().getHostName());
+	} catch (java.net.UnknownHostException e) {
+	    return vString.New("Java");
+	}
     }
 }
 

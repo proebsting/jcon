@@ -58,32 +58,4 @@ public static vString getenv(String name) {
 
 
 
-//  hostname() -- return system name for &host
-
-private static vString host;
-
-public static vString hostname() {
-    if (host != null) {
-	return host;
-    }
-    try {
-	Process p = Runtime.getRuntime().exec("uname -n");
-	host = vString.New(
-	    new BufferedReader(
-	    new InputStreamReader(p.getInputStream()))
-	    .readLine().trim());
-	p.destroy();
-	host.charAt(0);		// ensure not empty
-    } catch (Exception e1) {
-	try {
-	    host = vString.New(System.getProperty("os.name"));
-	} catch (Exception e2) {
-	    host = vString.New("Jcon");
-	}
-    }
-    return host;
-}
-
-
-
 } // class iSystem
