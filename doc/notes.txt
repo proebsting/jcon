@@ -13,6 +13,7 @@ general caveats:
 -- little optimization has been done
 -- some Java datatypes are suboptimal e.g. for push(L)/pop(L)
 -- crude tracing can be enabled by setting &trace
+-- the TRACE environment variable is *not* honored
 
 building programs:
 -- jcont is a complex script that only runs on Unix
@@ -45,7 +46,6 @@ error reporting:
 
 miscellaneous:
 -- commands run by system(s) do not inherit stdin/stdout/error 
--- getenv(s) on the Alpha sees a truncated environment [Java problem?]
 -- random selection from sets and tables differs from v9
 -- display() ignores its arguments (and displays everything)
 -- display() prints globals in an unsorted order
@@ -78,4 +78,3 @@ known bugs:
 -- local variables are not dereferenced prior to being returned
 -- "invocable" procedures are computed incorrectly.  "invocable all" works.
    Basically, too many user procedures are considered invocable.
--- on the Dec Alpha, a rightward ishift() doesn't sign extend  [Java bug]
