@@ -476,7 +476,11 @@ procedure gen_bc_irMakeList(s, p)
 
 	put(s, ipush(*p.valueList))
 	atype := cp_Class(bc_proc_classptr, cp_Utf8(bc_proc_classptr, "rts/vDescriptor"))
-	put(s, anewarray(atype))
+
+	method := create_methodref(bc_proc_classptr, "ArgArray", "(I)[Lrts/vDescriptor;", "rts/iNew")
+	put(s, invokestatic(method))
+	# put(s, anewarray(atype))
+
 	every i := 1 to *p.valueList do {
 		put(s, dup())
 		put(s, ipush(i-1))
@@ -623,7 +627,11 @@ procedure gen_bc_irMakeClosure(s, p)
 	gen_bc(s, p.fn)
 	put(s, ipush(*p.argList))
 	atype := cp_Class(bc_proc_classptr, cp_Utf8(bc_proc_classptr, "rts/vDescriptor"))
-	put(s, anewarray(atype))
+
+	method := create_methodref(bc_proc_classptr, "ArgArray", "(I)[Lrts/vDescriptor;", "rts/iNew")
+	put(s, invokestatic(method))
+	# put(s, anewarray(atype))
+
 	every i := 1 to *p.argList do {
 		put(s, dup())
 		put(s, ipush(i-1))

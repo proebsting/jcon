@@ -63,6 +63,10 @@ public vDescriptor resume() {
                 System.err.println(this.trace_prototype());
             }
             ret = nextval();
+	    if (ret == null || PC == 0) {
+		iNew.FreeArgs(arguments);
+		arguments = null;
+	    }
             if (k$trace.trace != 0) {
 		System.err.print(trace_coordinate());
                 for (iClosure p=this.parent; p != null; p=p.parent) {
