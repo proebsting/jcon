@@ -41,16 +41,10 @@ public static vRecordProc RecordProc(String name, String[] fields)
 
 
 
-//  for integers, preallocate some static values
+//  for integers, cache some values
 
 private static vInteger intlist[] = 
-    new vInteger[iConfig.MaxPrebuiltInt + 1 - iConfig.MinPrebuiltInt];
-
-static {
-    for (int i = iConfig.MinPrebuiltInt; i <= iConfig.MaxPrebuiltInt; i++) {
-	intlist[i - iConfig.MinPrebuiltInt] = new vInteger(i);
-    }
-}
+    new vInteger[iConfig.MaxCachedInt + 1 - iConfig.MinCachedInt];
 
 public static vInteger Integer(double x) {	// int from real
     return Integer((long) x);			//#%#% what about overflow?
@@ -61,11 +55,15 @@ public static vInteger Integer(String x) {	// int from string
 }
 
 public static vInteger Integer(long x) {
-    if (x <= iConfig.MaxPrebuiltInt && x >= iConfig.MinPrebuiltInt) {
-	return intlist[(int) x - iConfig.MinPrebuiltInt];
-    } else {
+    if (x > iConfig.MaxCachedInt || x < iConfig.MinCachedInt) {
 	return new vInteger(x);
     }
+    int i = (int)x - iConfig.MinCachedInt;
+    vInteger v = intlist[i];
+    if (v != null) {
+	return v;
+    }
+    return intlist[i] = new vInteger(x);
 }
 
 
@@ -77,7 +75,7 @@ private static vString strlist[] = new vString[vCset.MAX_VALUE + 1];
 
 static {
     for (int i = 0; i < strlist.length; i++) {
-	strlist[i] = new vString((char) i + "");
+	strlist[i] = new vString(String.valueOf((char)i));
     }
 }
 
