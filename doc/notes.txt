@@ -34,6 +34,7 @@ error reporting:
 -- long strings are not elided, list contents are omitted, etc.
 
 miscellaneous:
+-- random selection of elements of some types will differ from v9
 -- read() and write() don't accept file arguments
 -- display() ignores its arguments (and displays everything)
 -- display() prints globals in an unsorted order
