@@ -75,7 +75,7 @@ static Image decode(vWindow win, vString s) {
 
 //  palimage(win, width, s, i) -- decode palette image
 
-static Image palimage(vWindow win, int width, vString s, int off) {
+private static Image palimage(vWindow win, int width, vString s, int off) {
     byte[] data = s.getBytes();
 
     // parse palette name and get palette
@@ -149,7 +149,7 @@ static Image palimage(vWindow win, int width, vString s, int off) {
 
 //  heximage(win, width, s, off) -- decode bi-level (hex-digit) image
 
-static Image heximage(vWindow win, int width, vString s, int off) {
+private static Image heximage(vWindow win, int width, vString s, int off) {
     byte[] data = s.getBytes();		// array of data bytes
     byte flag = data[off++];		// bi-level flag: '#' or '~'
     int ldig = (width + 3) / 4;		// hex digits per scan line
@@ -188,7 +188,7 @@ static Image heximage(vWindow win, int width, vString s, int off) {
 
 //  hexpix(w, h, data, offset) -- build pixel index array from hex digits
 
-static byte[] hexpix(int width, int height, byte[] data, int off) {
+private static byte[] hexpix(int width, int height, byte[] data, int off) {
 
     byte[] pix = new byte[width * height];
 
@@ -224,7 +224,7 @@ static byte[] hexpix(int width, int height, byte[] data, int off) {
 
 //  hexdigit(c) -- convert character from hex digit to binary bits  (-1 if err)
 
-static int hexdigit(int c)
+private static int hexdigit(int c)
 {
     if (c >= '0' && c <= '9') {
 	return c - '0';
@@ -235,6 +235,81 @@ static int hexdigit(int c)
     } else {
 	return -1;
     }
+}
+
+
+
+//  wImage.Pixels(window, x, y, w, h) -- generate pixels for Pixel()
+
+static vDescriptor Pixel(vWindow win, int x, int y, int w, int h) {
+
+    Image im = win.getCanvas().i;
+
+    // adjust negative width and height
+    if (w < 0) {
+	x -= (w = -w);
+    }
+    if (h < 0) {
+	y -= (h = -h);
+    }
+
+    // factor in dx/dy
+    x += win.dx;
+    y += win.dy;
+
+    // trim to image bounds	//#%#% should gen bg color instead??
+    if (x < 0) {
+	w += x;
+	x = 0;
+    }
+    if (y < 0) {
+	w += y;
+	y = 0;
+    }
+    if (w > im.getWidth(null)) {
+	w = im.getWidth(null);
+    }
+    if (h > im.getHeight(null)) {
+	h = im.getHeight(null);
+    }
+    if (w <= 0 || h <= 0) {
+	return null; /*FAIL*/
+    }
+
+    // get data
+    final int[] data = new int[w * h];
+    PixelGrabber pg = new PixelGrabber(im, x, y, w, h, data, 0, w);
+    try {
+	pg.grabPixels();
+    } catch (InterruptedException e) {
+	return null; /*FAIL*/
+    }
+
+    // generate values
+    final double gamma = win.gamma;
+
+    return new vClosure() {
+	int i = 0;
+	int previous = 0x08000000; 	// a value we won't ever see
+
+	public vDescriptor Resume() {
+	    if (i >= data.length) {
+		return null; /*FAIL*/
+	    }
+	    int rgb = data[i++];
+	    if (rgb != previous) {
+		int r = (rgb >> 16) & 0xFF;
+		int g = (rgb >>  8) & 0xFF;
+		int b = rgb & 0xFF;
+		r = (int) (65535 * Math.pow(r / 255.0, gamma));
+		g = (int) (65535 * Math.pow(g / 255.0, gamma));
+		b = (int) (65535 * Math.pow(b / 255.0, gamma));
+		retval = vString.New(r + "," + g + "," + b);
+	    }
+	    return this;
+	}; 
+
+    }.Resume();
 }
 
 

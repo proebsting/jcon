@@ -42,6 +42,7 @@ public final class wFunctions extends iInstantiate {
         if (name.equals("f$PaletteKey")) return new f$PaletteKey();
         if (name.equals("f$Pattern")) return new f$Pattern();
         if (name.equals("f$Pending")) return new f$Pending();
+        if (name.equals("f$Pixel")) return new f$Pixel();
         if (name.equals("f$Raise")) return new f$Raise();
         if (name.equals("f$ReadImage")) return new f$ReadImage();
         if (name.equals("f$TextWidth")) return new f$TextWidth();
@@ -246,6 +247,9 @@ final class f$PaletteKey extends vProc3 {	// PaletteKey(W, s, k)
 	}
 	vString s = c.mkString();
 	wColor k = wColor.New(s, 1.0);	// parse string (gamma has no effect)
+	if (k == null) {
+	    return null; /*FAIL*/
+	}
 	return p.Key(k);
     }
 }
@@ -562,6 +566,24 @@ final class f$ReadImage extends vProc4 {	// ReadImage(W,s,x,y)  [no ,s2]
 	im.flush();
 	win.getCanvas().image = fname;
 	return vNull.New();	// note: returns null, not window
+    }
+}
+
+
+
+final class f$Pixel extends vProc5 {		// Pixel(W, x, y, w, h)
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+				vDescriptor d, vDescriptor e) {
+	if (!a.iswin()) {
+	    return Call(iKeyword.window.getWindow(), a, b, c, d);
+	}
+	vWindow win = (vWindow)(a.Deref());
+	Dimension wd = win.getCanvas().getSize();
+	int x = b.isnull() ? -win.dx : ((int) b.mkInteger().value);
+	int y = c.isnull() ? -win.dy : ((int) c.mkInteger().value);
+	int w = d.isnull() ? wd.width-x+win.dy : ((int) d.mkInteger().value);
+	int h = e.isnull() ? wd.height-y+win.dy : ((int) e.mkInteger().value);
+	return wImage.Pixel(win, x, y, w, h);
     }
 }
 

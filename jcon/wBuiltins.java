@@ -48,6 +48,7 @@ static void announce() {
     iEnv.declareBuiltin("PaletteKey", 3, wFunctions.self);
     iEnv.declareBuiltin("Pattern", 2, wFunctions.self);		// always fails
     iEnv.declareBuiltin("Pending", 1, wFunctions.self);
+    iEnv.declareBuiltin("Pixel", 5, wFunctions.self);
     iEnv.declareBuiltin("Raise", 1, wFunctions.self);
     iEnv.declareBuiltin("ReadImage", 4, wFunctions.self);	// no quantizatn
     iEnv.declareBuiltin("TextWidth", 2, wFunctions.self);
@@ -59,7 +60,6 @@ static void announce() {
 
     //#%#% Not implemented:
     // iEnv.declareBuiltin("WriteImage", 6);
-    // iEnv.declareBuiltin("Pixel", 5);
     // iEnv.declareBuiltin("Active", 0);
     // iEnv.declareBuiltin("Couple", 2);	// may not be possible
 }

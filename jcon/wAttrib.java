@@ -422,22 +422,22 @@ final class aCol extends wAttrib {
 
 final class aPointerX extends wAttrib {
     vValue get(vWindow win)	{ return vInteger.New(win.getCanvas().xloc); }
-    vValue set(vWindow win)	{ return wAttrib.unsettable("pointerx", val); }
+    vValue set(vWindow win)	{ return get(win); }   // ignore attempt to set
 }
 
 final class aPointerY extends wAttrib {
     vValue get(vWindow win)	{ return vInteger.New(win.getCanvas().yloc); }
-    vValue set(vWindow win)	{ return wAttrib.unsettable("pointery", val); }
+    vValue set(vWindow win)	{ return get(win); }   // ignore attempt to set
 }
 
 final class aPointerRow extends wAttrib {
     vValue get(vWindow win)	{ return win.getTTY().PointerRow(win); }
-    vValue set(vWindow win)	{ return wAttrib.unsettable("pointerrow",val); }
+    vValue set(vWindow win)	{ return get(win); }   // ignore attempt to set
 }
 
 final class aPointerCol extends wAttrib {
     vValue get(vWindow win)	{ return win.getTTY().PointerCol(win); }
-    vValue set(vWindow win)	{ return wAttrib.unsettable("pointercol",val); }
+    vValue set(vWindow win)	{ return get(win); }   // ignore attempt to set
 }
 
 
