@@ -18,6 +18,7 @@ void announce() {
 	declare("asin", 1);
 	declare("atan", 2);
 	declare("bal", 6);
+	declare("center", 3);
 	declare("char", 1);
 	declare("cos", 1);
 	declare("copy", 1);
@@ -39,9 +40,11 @@ void announce() {
 	declare("ishift", 2);
 	declare("ixor", 2);
 	declare("key", 1);
+	declare("left", 3);
 	declare("list", 2);
 	declare("log", 2);
 	declare("many", 4);
+	declare("map", 3);
 	declare("match", 4);
 	declare("member", 2);
 	declare("move", 1);
@@ -71,6 +74,7 @@ void announce() {
 	declare("tab", 1);
 	declare("table", 1);
 	declare("tan", 1);
+	declare("trim", 2);
 	declare("type", 1);
 	declare("upto", 4);
 	declare("variable", 1);
