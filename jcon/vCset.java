@@ -223,6 +223,8 @@ vDescriptor Section(int i, int j)	{ return this.mkString().Section(i,j); }
 
 vString mkString() {			// string(c)
     vByteBuffer b;
+    long w;
+
     if (size == 0) {
 	return iNew.String();		// known empty cset
     } else if (size > 0) {
@@ -230,9 +232,33 @@ vString mkString() {			// string(c)
     } else {
     	b = new vByteBuffer(64);	// arbitrary guess;
     }
-    for (int i = 0; i <= MAX_VALUE; i++) {
-	if (this.member(i)) {
-	    b.append((char)i);
+
+    if (w1 != 0) {
+	for (int i = 0; i < 64; i++) {
+	    if (((w1 >> i) & 1) != 0) {
+		b.append((char) i);
+	    }
+	}
+    }
+    if (w2 != 0) {
+	for (int i = 64; i < 128; i++) {
+	    if (((w2 >> i) & 1) != 0) {
+		b.append((char) i);
+	    }
+	}
+    }
+    if (w3 != 0) {
+	for (int i = 128; i < 192; i++) {
+	    if (((w3 >> i) & 1) != 0) {
+		b.append((char) i);
+	    }
+	}
+    }
+    if (w4 != 0) {
+	for (int i = 192; i < 256; i++) {
+	    if (((w4 >> i) & 1) != 0) {
+		b.append((char) i);
+	    }
 	}
     }
     return b.mkString();

@@ -224,24 +224,29 @@ class f$map extends iValueClosure {				// map(s1,s2,s3)
 		vString s1 = vString.argDescr(args, 0);
 		vString s2 = vString.argDescr(args, 1, s2def);
 		vString s3 = vString.argDescr(args, 2, s3def);
+		byte b1[] = s1.getBytes();
+		byte b2[] = s2.getBytes();
+		byte b3[] = s3.getBytes();
 
-		if (s2.length() != s3.length()) {
+		int n = b2.length;
+		if (n != b3.length) {
 			iRuntime.error(208);
 		}
 
 		if (s2 != s2prev || s3 != s3prev) {
 			map = new int[(int) vCset.MAX_VALUE + 1];
 			System.arraycopy(initmap, 0, map, 0, map.length);
-			for (int i = 0; i < s2.length(); i++) {
-				map[s2.charAt(i)] = s3.charAt(i);
+			for (int i = 0; i < n; i++) {
+				map[b2[i] & 0xFF] = b3[i];
 			}
 			s2prev = s2;
 			s3prev = s3;
 		}
 
-		byte[] b = new byte[s1.length()];
-		for (int i = 0; i < s1.length(); i++) {
-			b[i] = (byte)map[s1.charAt(i)];
+		n = b1.length;
+		byte[] b = new byte[n];
+		for (int i = 0; i < n; i++) {
+			b[i] = (byte)map[b1[i] & 0xFF];
 		}
 		return iNew.String(b);
 	}
