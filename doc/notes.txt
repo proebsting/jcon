@@ -45,6 +45,8 @@ miscellaneous:
    (e.g., record foo(a,a,a), procedure foo(a,a,a), etc.)
 -- "linker" silently ignores multiply-defined names
    (e.g., global foo, procedure foo())
+-- allocation-related keywords (&allocated, &collections, &storage, &regions)
+   produce only 0's.
 
 arguably correct differences:
 -- tables sort after sets, as per the Icon book but contrary to v9

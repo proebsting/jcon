@@ -65,6 +65,14 @@ public class iKeywords extends iFile {
 		iEnv.declareKey("level", 
 			iNew.Proc((new k$level()).getClass(), 0));
 
+		// bogus generators
+		vProc proc = iNew.Proc((new k$gen4zeros()).getClass(), 0);
+		iEnv.declareKey("allocated", proc);
+		iEnv.declareKey("collections", proc);
+		proc = iNew.Proc((new k$gen3zeros()).getClass(), 0);
+		iEnv.declareKey("regions", proc);
+		iEnv.declareKey("storage", proc);
+
 		// special behavior
 		iEnv.declareKey("trace", new k$trace());
 	}
@@ -290,5 +298,29 @@ class k$level extends iFunctionClosure {
 			i++;
 		}
 		return iNew.Integer(i);
+	}
+}
+
+class k$gen4zeros extends iClosure {		// &allocated, &collections
+	int i;
+	void nextval() {
+		if (i < 4) {
+			i++;
+			retvalue = iNew.Integer(0);
+		} else {
+			retvalue = null;
+		}
+	}
+}
+
+class k$gen3zeros extends iClosure {		// &regions, &storage
+	int i;
+	void nextval() {
+		if (i < 3) {
+			i++;
+			retvalue = iNew.Integer(0);
+		} else {
+			retvalue = null;
+		}
 	}
 }
