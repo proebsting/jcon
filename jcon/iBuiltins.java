@@ -335,7 +335,7 @@ class f$exit extends iFunctionClosure {				// exit(n)
 class f$function extends iClosure {				// function()
 	java.util.Enumeration e;
 
-	void nextval() {
+	public void nextval() {
 		if (e == null) {
 			e = iEnv.builtintab.keys();
 		}
@@ -351,7 +351,7 @@ class f$seq extends iClosure {					// seq(i1,i2)
 	vInteger i1;
 	vInteger i2;
 
-	void nextval() {
+	public void nextval() {
 		if (i1 == null) {
 			i1 = (arguments.length >= 1) ?
 				arguments[0].mkInteger(): iNew.Integer(1);

@@ -7,7 +7,7 @@ public abstract class iBinaryRefClosure extends iClosure {
 
 	vDescriptor argument0, argument1;
 
-	void nextval() {
+	public void nextval() {
 		if (PC == 1) {
 			retvalue = function(argument0, argument1);
 			returned = true;

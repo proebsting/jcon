@@ -113,7 +113,7 @@ class oSwap extends iBinaryRefClosure {			// x1 :=: x2
 class oRevAssign extends iClosure {			// x1 <- x2
 	vValue old;
 
-	void nextval() {
+	public void nextval() {
 		if (old == null) {
 			old = arguments[0].deref();
 			retvalue = arguments[0].Assign(arguments[1].deref());
@@ -129,7 +129,7 @@ class oRevSwap extends iClosure {			// x1 <-> x2
 	vValue oldleft;
 	vValue oldright;
 
-	void nextval() {
+	public void nextval() {
 		if (oldleft == null) {
 			oldleft = arguments[0].deref();
 			oldright = arguments[1].deref();
@@ -173,7 +173,7 @@ class oToBy extends iClosure {				// i1 to i2 by i3
 
 	vInteger i1, i2, i3, iprev, ivar;
 
-	void nextval() {
+	public void nextval() {
 		if (PC == 1) {
 			for (int i = 0; i < arguments.length; i++) {
 				arguments[i] = arguments[i].deref();
@@ -298,7 +298,7 @@ class oSelect extends iUnaryRefClosure {			//  ?x
 }
 
 class oBang extends iClosure {				//  !x
-	void nextval() {
+	public void nextval() {
 		retvalue = arguments[0].Bang(this);
 	}
 	String tfmt() { return "{!$1}"; }
@@ -559,7 +559,7 @@ class oActivate extends iBinaryFunctionClosure {		//  x @ C
 class oTabMatch extends iClosure {			// =s
     iClosure tab;
 
-    void nextval() {
+    public void nextval() {
 	if (tab == null) {
 	    iClosure match = new f$match();
 	    vDescriptor[] args = { arguments[0].mkString() };
@@ -580,7 +580,7 @@ class oTabMatch extends iClosure {			// =s
 
 class oProcessArgs extends iClosure {			//  x ! y
     iClosure func;
-    void nextval() {
+    public void nextval() {
         if (func == null) {
             arguments[0] = arguments[0].deref();
             vDescriptor[] a = arguments[1].mkArgs();

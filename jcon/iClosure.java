@@ -88,10 +88,10 @@ public final void resume() {
     }
 }
 
-abstract void nextval();
+public abstract void nextval();
 
 // copy() is used to return a "refreshed" copy of the closure.
-iClosure copy(int PC) { iRuntime.error(901); return null; }
+public iClosure copy(int PC) { iRuntime.error(901); return null; }
 
 void closure(vDescriptor[] a, iClosure parent) {
     arguments = a;

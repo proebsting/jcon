@@ -24,15 +24,16 @@
 #  pair from icont.
 
 PROJHOME=/cs/jive
-SUMATRA=/cs/sumatra
 
 #  save command line and user IPATH
+#  (remove spaces from IPATH to work around SGI java bug in argument handling)
 CMDLINE="$0 $*"
-UIPATH="$IPATH"
+UIPATH=`echo "$IPATH" | tr ' ' ':'`
 
 #  clear Icon and other environments
 unset ICONX ICONCORE TRACE IPATH LPATH NOERRBUF
-#unset BLKSIZE HEAPSIZE STRSIZE COEXPSIZE MSTKSIZE QLSIZE
+unset BLKSIZE HEAPSIZE STRSIZE COEXPSIZE MSTKSIZE QLSIZE
+#%#%#% set BLKSIZE, HEAPSIZE to non-default values?
 
 #  set tracing modes
 ANNOUNCE=echo
@@ -117,12 +118,11 @@ case $IDIR in
 esac
 
 #  determine architecture type
-SYSEXPORT=
 case `uname -sr | sed 's/ //'` in
     SunOS4*)    ARCH=sunos;;
     SunOS5*)    ARCH=solaris;;
     IRIX*)      ARCH=irix;;
-    OSF*)       ARCH=digital; SYSEXPORT="export SYSNAME=alpha_osf32c";;
+    OSF*)       ARCH=digital;;
     ULTRIX*)    ARCH=ultrix;;
     Linux*)     ARCH=linux;;
     HP-UX*)     ARCH=hpux;;
@@ -146,16 +146,13 @@ UNZIP="$PROJHOME/$ARCH/bin/unzip"
 PREPROC="icont -s -E"
 
 #  set Java names and paths
-JDK="$SUMATRA/$ARCH/jdk.1.0.2"
-#%#% would like to use toba, but need a DEC Alpha version
-#%#% JAVAC="$SUMATRA/$ARCH/toba/bin/toba -K -w"
+JDK="$PROJHOME/$ARCH/jdk1.1"
 JAVAC="$JDK/bin/javac -nowarn"
 JAVA="$JDK/bin/java -verify"
-CLASSPATH="$JRTS:$JDK/lib/classes.zip"
 
 # estimate the needed header size
-HBASE=500	# approximate size of fixed text, plus a little slop
-(( HDRSIZE = $HBASE + ${#SYSEXPORT} + ${#CMDLINE} + ${#ROOTS} ))  # est. total
+HBASE=500		# approximate size of fixed text, plus a little slop
+(( HDRSIZE = $HBASE + ${#CMDLINE} + ${#ROOTS} ))	# estimate total
 (( HDRSIZE = (HDRSIZE + 15) & ~15 ))			# round to mult of 16
 
 # conditionalize "Translating:" announcement
@@ -171,8 +168,7 @@ $NODELETE trap "rm -rf $TDIR" 0 1 2 15
 #  now, finally, do some work
 set -e
 $CMDTRACE
-export CLASSPATH=$CLASSPATH
-$SYSEXPORT
+export CLASSPATH="$JRTS"
 
 # create temporary directory
 if [ -d $TDIR ]; then
@@ -237,8 +233,7 @@ esac
 TZIP=/tmp/jcon\$\$.zip
 dd bs=$HDRSIZE skip=1 <\$THISFILE >\$TZIP 2>/dev/null
 
-$SYSEXPORT
-export CLASSPATH="\$TZIP:$CLASSPATH"
+export CLASSPATH="\$TZIP:$JRTS"
 
 trap "rm -rf \$TZIP" 0 1 2 15
 $JAVA rts.Main $ROOTS -- "\$0" "\$@"

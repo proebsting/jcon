@@ -2,14 +2,7 @@
 #
 #  upclass file.java -- update .class files that are out of date
 
-JAVAC="toba -K"
-
-if [ `uname` = OSF1 ]; then
-    JAVAC="/cs/sumatra/digital/jdk.1.0.2/bin/javac"
-    export SYSNAME=alpha_osf32c
-fi
-
-
+JAVAC="javac -nowarn"
 FILES=
 
 for FNAME; do

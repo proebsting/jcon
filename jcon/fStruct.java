@@ -52,7 +52,7 @@ class f$delete extends iFunctionClosure {			// delete(X,x)
 
 
 class f$key extends iClosure {					//  key(T)
-	void nextval() {
+	public void nextval() {
 		if (arguments.length == 0) {
 			iRuntime.error(124);
 		}

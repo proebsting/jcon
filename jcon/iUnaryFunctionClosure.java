@@ -7,7 +7,7 @@ public abstract class iUnaryFunctionClosure extends iClosure {
 
 	vDescriptor argument;
 
-	void nextval() {
+	public void nextval() {
 		if (PC == 1) {
 			argument = argument.deref();
 			retvalue = function(argument);

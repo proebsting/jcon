@@ -3,6 +3,7 @@
 package rts;
 
 import java.io.*;
+import java.text.*;
 import java.util.*;
 
 
@@ -22,7 +23,7 @@ public class iKeywords extends iFile {
 		iEnv.declareKey("phi", iNew.Real((1.0 + Math.sqrt(5.0)) / 2.0));
 		iEnv.declareKey("pi", iNew.Real(Math.PI));
 		iEnv.declareKey("version", 
-			    iNew.String("Jcon Version 0.0, Spring, 1997"));
+			    iNew.String("Jcon Version 0.3, Summer, 1997"));
 
 	    	// cset constants
 		vCset lcase, ucase;
@@ -101,7 +102,7 @@ class k$features extends iClosure {		// &features
 
 	int posn = 0;
 
-	void nextval() {
+	public void nextval() {
 		if (posn < flist.length) {
 			retvalue = iNew.String(flist[posn++]);
 		} else {
@@ -150,8 +151,13 @@ class k$source extends k$Value {		// &source
 
 class k$clock extends k$Value {			// &clock
 
+	static SimpleDateFormat formatter =
+		new SimpleDateFormat("HH:mm:ss");
+
 	public vValue deref() {
-		return iNew.String((new Date()).toString().substring(11,19));
+		Date d = new Date();
+		String s = formatter.format(d);
+		return iNew.String(s);
 	}
 }
 
@@ -159,21 +165,13 @@ class k$clock extends k$Value {			// &clock
 
 class k$date extends k$Value {			// &date
 
+	static SimpleDateFormat formatter =
+		new SimpleDateFormat("yyyy/MM/dd");
+
 	public vValue deref() {
 		Date d = new Date();
-		StringBuffer b = new StringBuffer(10);
-		b.append(d.getYear() + 1900);
-		b.append('/');
-		if (d.getMonth() < 9) {		// getMonth returns 0 - 11
-		    b.append('0');
-		}
-		b.append(d.getMonth() + 1);
-		b.append('/');
-		if (d.getDate() < 10) {		// but getDate returns 1 - 31
-		    b.append('0');
-		}
-		b.append(d.getDate());
-		return iNew.String(b.toString());
+		String s = formatter.format(d);
+		return iNew.String(s);
 	}
 }
 
@@ -181,25 +179,15 @@ class k$date extends k$Value {			// &date
 
 class k$dateline extends k$Value {		// &dateline
 
-	static String[] wkdays = { "Sunday, ", "Monday, ", "Tuesday, ",
-		"Wednesday, ", "Thursday, ", "Friday, ", "Saturday, " };
-	static String[] months = { "January ", "February ", "March ",
-		"April ", "May ", "June ", "July ", "August ",
-		"September ", "October ", "November ", "December " };
+	static SimpleDateFormat formatter =
+		new SimpleDateFormat("EEEEEE, MMMM d, yyyy  h:mm aa");
 
 	public vValue deref() {
 		Date d = new Date();
-		StringBuffer b = new StringBuffer(10);
-		b.append(wkdays[d.getDay()]);
-		b.append(months[d.getMonth()]);
-		b.append(d.getDate());
-		b.append(", ");
-		b.append(d.getYear() + 1900);
-		b.append("  ");
-		b.append(((d.getHours() + 11) % 12) + 1);  // 12, 1, 2, .. 11
-		b.append(d.toString().substring(13, 16));  // :mm
-		b.append((d.getHours() >= 12) ? " pm" : " am");
-		return iNew.String(b.toString());
+		String s = formatter.format(d);
+		int n = s.length() - 2;		// beginning of AM/PM
+		s = s.substring(0, n) + s.substring(n).toLowerCase();
+		return iNew.String(s);
 	}
 }
 
@@ -428,7 +416,7 @@ class k$level extends iFunctionClosure {	// &level
 
 class k$gen4zeros extends iClosure {		// &allocated, &collections
 	int i;
-	void nextval() {
+	public void nextval() {
 		if (i < 4) {
 			i++;
 			retvalue = iNew.Integer(0);
@@ -442,7 +430,7 @@ class k$gen4zeros extends iClosure {		// &allocated, &collections
 
 class k$gen3zeros extends iClosure {		// &regions, &storage
 	int i;
-	void nextval() {
+	public void nextval() {
 		if (i < 3) {
 			i++;
 			retvalue = iNew.Integer(0);

@@ -25,12 +25,13 @@ procedure main()
    write()
 
    "123456" ? write(move(1), " ", move(2))
-   "123456" ? { write(move(1)); write(move(2)); write(move(3)); }
+   "123456" ? { write(move(1)); write(move(2)); write(move(3));
+		write(move(4)); write(move(-4))}
    write()
 
    "123456" ? write(tab(1), " ", tab(2))
    "123456" ? { write(tab(2)); write(tab(4)); write(tab(-1)); write(tab(0)); }
-   "123456" ? { write(tab(4)); tab(1); write(tab(3)); }
+   "123456" ? { write(tab(4)); write(tab(1)); write(tab(3)); }
    write()
 
    every write("-35" ? bal('-'))

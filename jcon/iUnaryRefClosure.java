@@ -7,7 +7,7 @@ public abstract class iUnaryRefClosure extends iClosure {
 
 	vDescriptor argument;
 
-	void nextval() {
+	public void nextval() {
 		if (PC == 1) {
 			retvalue = function(argument);
 			returned = true;

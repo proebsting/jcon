@@ -61,6 +61,8 @@ public class iEnv {
 		try {
 			declareGlobalInit(name, iNew.SimpleVar(name, iNew.Proc(Class.forName(classname), arity)));
 		} catch (ClassNotFoundException e) {
+			System.err.println(name + ": procedure not found");
+			System.exit(1);
 		}
 	}
 

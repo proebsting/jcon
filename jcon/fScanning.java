@@ -82,7 +82,7 @@ class f$find extends iClosure {				// find(s1,s2,i1,i2)
     int i1;
     int i2;
 
-    void nextval() {
+    public void nextval() {
 
         if (s1 == null) {
 	    for (int i = 0; i < arguments.length; i++) {
@@ -117,7 +117,7 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
     int i1;
     int i2;
 
-    void nextval() {
+    public void nextval() {
 
         if (c == null) {
 	    for (int i = 0; i < arguments.length; i++) {
@@ -149,7 +149,7 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
     int i1;
     int i2;
 
-    void nextval() {
+    public void nextval() {
 
         if (c1 == null) {
 	    for (int i = 0; i < arguments.length; i++) {
@@ -186,21 +186,27 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
     }
 }
 
-class f$move extends iClosure {				// move(i)
+class f$move extends iClosure {				// move(j)
 
     vInteger oldpos;
 
-    void nextval() {
+    public void nextval() {
 
         if (oldpos == null) {
 	    oldpos = (vInteger) k$pos.self.deref();
-	    long i = vInteger.argVal(arguments, 0);
+	    int i = (int) oldpos.value;
+	    int j = (int) vInteger.argVal(arguments, 0);
+	    int k = i + j - 1;
 	    vString s = (vString) k$subject.self.deref();
-	    if (oldpos.value + i - 1 > s.value.length()) {
+	    if (k < 0 || k > s.value.length()) {
 		retvalue = null;
 	    } else {
-	        k$pos.self.Assign(iNew.Integer(oldpos.value+i));
-		retvalue = iNew.String(s.value.substring((int)oldpos.value-1, (int)oldpos.value+(int)i-1));
+	        k$pos.self.Assign(iNew.Integer(i+j));
+		if (j >= 0) {
+		    retvalue = iNew.String(s.value.substring(i - 1, k));
+		} else {
+		    retvalue = iNew.String(s.value.substring(k, i - 1));
+		}
 	    }
 	} else {
 	    k$pos.self.Assign(oldpos);
@@ -209,22 +215,26 @@ class f$move extends iClosure {				// move(i)
     }
 }
 
-class f$tab extends iClosure {				// tab(i)
+class f$tab extends iClosure {				// tab(j)
 
     vInteger oldpos;
 
-    void nextval() {
+    public void nextval() {
 
         if (oldpos == null) {
 	    oldpos = (vInteger) k$pos.self.deref();
-	    long i = vInteger.argVal(arguments, 0);
 	    vString s = (vString) k$subject.self.deref();
-	    i = s.posEq(i);
-	    if (i == 0) {
+	    int i = (int) oldpos.value;
+	    int j = (int) s.posEq(vInteger.argVal(arguments, 0));
+	    if (j == 0) {
 		retvalue = null;
 	    } else {
-	        k$pos.self.Assign(iNew.Integer(i));
-		retvalue = iNew.String(s.value.substring((int)oldpos.value-1, (int)i-1));
+	        k$pos.self.Assign(iNew.Integer(j));
+		if (i < j) {
+		    retvalue = iNew.String(s.value.substring(i - 1, j - 1));
+		} else {
+		    retvalue = iNew.String(s.value.substring(j - 1, i - 1));
+		}
 	    }
 	} else {
 	    k$pos.self.Assign(oldpos);

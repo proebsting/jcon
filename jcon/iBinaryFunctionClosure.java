@@ -7,7 +7,7 @@ public abstract class iBinaryFunctionClosure extends iClosure {
 
 	vDescriptor argument0, argument1;
 
-	void nextval() {
+	public void nextval() {
 		if (PC == 1) {
 			argument0 = argument0.deref();
 			argument1 = argument1.deref();

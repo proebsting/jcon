@@ -77,12 +77,20 @@ procedure bitcombo(i, j)
    return
 end
 
-procedure wr5(n)
+procedure wr5(n)			# write in 5 chars
    local s
-   s := n
+   if type(n) == "real" then n := r1(n)
+   s := string(n)
    if *s < 4 then s := right(s, 4)
    writes(s, " ")
    return
+end
+
+procedure r1(v)				# round real to 1 digit after decimal
+   if v >= 0 then
+      return integer(v * 10 + 0.5) / 10.0
+   else
+      return integer(v * 10 - 0.5) / 10.0
 end
 
 
