@@ -37,6 +37,7 @@ public final class fGraphics extends iInstantiate {
         if (name.equals("f$WAttrib")) return new f$WAttrib();
         if (name.equals("f$WDefault")) return new f$WDefault();
         if (name.equals("f$WFlush")) return new f$WFlush();
+        if (name.equals("f$WriteImage")) return new f$WriteImage();
         if (name.equals("f$WSync")) return new f$WSync();
         return null;
     }
@@ -340,6 +341,25 @@ final class f$ReadImage extends vProc4 {	// ReadImage(W,s,x,y)  [no ,s2]
 	im.flush();
 	win.getCanvas().imgfile = fname;
 	return vNull.New();	// note: returns null, not window
+    }
+}
+
+
+
+final class f$WriteImage extends vProc6 {	// WriteImage(W,s,x,y,w,h)
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
+				vDescriptor d, vDescriptor e, vDescriptor f) {
+	if (!a.iswin()) {
+	    return Call(iKeyword.window.getWindow(), a, b, c, d, e);
+	}
+	vWindow win = (vWindow)(a.Deref());
+	Dimension wd = win.getCanvas().getSize();
+	vString fname = b.mkString();
+	int x = c.isnull() ? -win.dx : ((int) c.mkInteger().value);
+	int y = d.isnull() ? -win.dy : ((int) d.mkInteger().value);
+	int w = e.isnull() ? (wd.width-x+win.dx) : ((int) e.mkInteger().value);
+	int h = f.isnull() ? (wd.height-y+win.dy) : ((int) f.mkInteger().value);
+	return wImage.Write(win, fname, x, y, w, h);
     }
 }
 

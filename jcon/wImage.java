@@ -4,6 +4,7 @@ package rts;
 
 import java.awt.*;
 import java.awt.image.*;
+import java.io.*;
 
 
 
@@ -239,7 +240,36 @@ private static int hexdigit(int c)
 
 
 
-//  wImage.Pixels(window, x, y, w, h) -- generate pixels for Pixel()
+//  wImage.Write(window, fname, x, y, w, h) -- write image to file
+
+public static vDescriptor Write(vWindow win, vString s,
+				int x, int y, int w, int h) {
+
+    final int[] data = Grab(win, x, y, w, h);
+    if (data == null) {
+    	return null; /*FAIL*/
+    }
+    Quantize.toNcolors(data, 256);	// reduce to max 256 colors for GIF
+
+    // AFTER grabbing, convert w & h to positive
+    if (w < 0) { w = -w; }
+    if (h < 0) { h = -h; }
+
+    ImageProducer p = new MemoryImageSource(w, h, data, 0, w);
+    try {
+	OutputStream o = new BufferedOutputStream(
+			    new FileOutputStream(s.toString()));
+	new GifEncoder(p, o).encode();
+	o.close();
+	return win;
+    } catch (IOException iox) {
+	return null; /*FAIL*/
+    }
+}
+
+
+
+//  wImage.Pixel(window, x, y, w, h) -- generate pixels for Pixel()
 
 public static vDescriptor Pixel(vWindow win, int x, int y, int w, int h) {
     final double gamma = win.gamma;
