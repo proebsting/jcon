@@ -1,8 +1,12 @@
 #  Makefile for jcon/tran
+#
+#  To build translator and linker:	make
+#  To build them using Jcon:		make jj
+#  To benchmark the two versions:	make bmark
 
 
 ICONT = icont -u -s
-JCONT = ../bin/jcont -fa -s
+JCONT = ../bin/jcont -s
 
 .SUFFIXES: .icn .u2 .zip
 .icn.u2:	; $(ICONT) -c $<
@@ -79,6 +83,22 @@ jjlink:	$(LINKZIP)
 	cp jjlink ../bin
 
 
+# benchmarking
+
+BSRC = irgen.icn
+ARGS = preproc $(BSRC) : yylex : parse : ast2ir : \
+	bc_File -O -class:'l$$$(BSRC:.icn=)' -dir:./tmp/
+
+bmark:	jtran jjtran
+	test -d tmp || mkdir tmp
+	rm -rf tmp/*
+	BLKSIZE=6000000 STRSIZE=1000000 COEXPSIZE=50000 time ./jtran $(ARGS)
+	rm -rf tmp/*
+	time ./jjtran $(ARGS)
+	
+
+# programs that build programs
+
 oplexgen: oplexgen.icn
 	$(ICONT) -o oplexgen oplexgen.icn
 
@@ -92,6 +112,8 @@ do_ops.icn: oplexgen
 	./oplexgen > do_ops.icn
 
 
+#  cleanup
+
 clean:
-	rm -f *.u[12] *.zip do_ops.icn interface.icn 
-	rm -f jtran jjtran jlink jjlink interfacegen oplexgen
+	rm -rf *.u[12] *.zip tmp do_ops.icn interface.icn 
+	rm -rf jtran jjtran jlink jjlink interfacegen oplexgen
