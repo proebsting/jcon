@@ -227,8 +227,8 @@ procedure ir_Case(p, st, target)
 	ir(p.expr, st, e)
 	tmp2 := copy(st)
 	every i := 1 to *p.clauseList do {
+		ir(p.clauseList[i].expr, copy(st), v)
 		tmp1 := copy(st)
-		ir(p.clauseList[i].expr, tmp1, v)
 		ir(p.clauseList[i].body, tmp1, target)
 		max_st(tmp2, tmp1)
 	}
