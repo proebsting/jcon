@@ -2,9 +2,13 @@
 <P> The capabilities of Icon can be extended through the use of
 dynamic loading at execution time.
 The built-in function <CODE>loadfunc(libname,procname)</CODE>
-loads the compiled procedure <CODE>procname</CODE>
+loads the compiled Icon or Java procedure <CODE>procname</CODE>
 from the Zip archive <CODE>libname</CODE> and returns a procedure value.
 This value can be called just like any other procedure.
+
+<P> If <CODE>libname</CODE> is null, the procedure must be a Java procedure,
+and it is loaded from the same file as the current executable.
+(Icon procedures linked into the executable are not dynamically loadable.)
 
 <P> While the library archive can be built ahead of time, it is
 also possible for the running program to generate code and then

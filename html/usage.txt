@@ -25,6 +25,8 @@ and arguments can be passed as usual.
 	Previously compiled file to link
 	<BR>(Must be local: <I>jcont</I> does not search $IPATH
 	    for <VAR>file</VAR><CODE>.zip</CODE>)
+<TR><TD WIDTH=50 VALIGN=TOP><VAR>file</VAR><CODE>.class</CODE></TD><TD>
+	Java bytecode file (for dynamic loading) to include in output file
 	</TD></TR>
 </TABLE></BLOCKQUOTE>
 
