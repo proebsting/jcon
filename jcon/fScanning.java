@@ -106,7 +106,7 @@ class f$find extends iClosure {				// find(s1,s2,i1,i2)
     int i1;
     int i2;
 
-    public void nextval() {
+    public vDescriptor nextval() {
 
         if (s1 == null) {
 	    for (int i = 0; i < arguments.length; i++) {
@@ -117,8 +117,7 @@ class f$find extends iClosure {				// find(s1,s2,i1,i2)
 	    i1 = s2.posEq(iRuntime.argPos(arguments, 2));
 	    i2 = s2.posEq(vInteger.argVal(arguments, 3, 0));
 	    if (i1 == 0 || i2 == 0) {
-	        retvalue = null;
-		return;
+		return null;
 	    }
 	    if (i1 > i2) {
 		int tmp = i1;
@@ -128,21 +127,17 @@ class f$find extends iClosure {				// find(s1,s2,i1,i2)
 	}
 
 	if (i1 > i2) {
-	    retvalue = null;
-	    return;
+	    return null;
 	}
 	if (s2.value.length() < i1+s1.length()-1) {
-	    retvalue = null;
-	    return;
+	    return null;
 	}
 	int i = s2.value.indexOf(s1, i1-1);
 	if (i >= 0 && i+s1.length() < i2) {
 	    i1 = i+2;
-	    retvalue = iNew.Integer(i+1);
-	    return;
+	    return iNew.Integer(i+1);
 	} else {
-	    retvalue = null;
-	    return;
+	    return null;
 	}
     }
 }
@@ -154,7 +149,7 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
     int i1;
     int i2;
 
-    public void nextval() {
+    public vDescriptor nextval() {
 
         if (c == null) {
 	    for (int i = 0; i < arguments.length; i++) {
@@ -165,8 +160,7 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
 	    i1 = s.posEq(iRuntime.argPos(arguments, 2));
 	    i2 = s.posEq(vInteger.argVal(arguments, 3, 0));
 	    if (i1 == 0 || i2 == 0) {
-	        retvalue = null;
-		return;
+	        return null;
 	    }
 	    if (i1 > i2) {
 	        int tmp = i1;
@@ -178,11 +172,10 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
 	for (; i1 < i2; i1++) {
 	    if (c.member(s.value.charAt(i1-1))) {
 		i1 = i1+1;
-	        retvalue = iNew.Integer(i1-1);
-		return;
+	        return iNew.Integer(i1-1);
 	    }
 	}
-	retvalue = null;
+	return null;
     }
 }
 
@@ -195,7 +188,7 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
     int i1;
     int i2;
 
-    public void nextval() {
+    public vDescriptor nextval() {
 
         if (c1 == null) {
 	    for (int i = 0; i < arguments.length; i++) {
@@ -209,8 +202,7 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 	    i1 = s.posEq(iRuntime.argPos(arguments, 4));
 	    i2 = s.posEq(vInteger.argVal(arguments, 5, 0));
 	    if (i1 == 0 || i2 == 0) {
-	        retvalue = null;
-		return;
+	        return null;
 	    }
 	    if (i1 > i2) {
 		int tmp = i1;
@@ -223,20 +215,18 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 	for (; i1 < i2; i1++) {
 	    if (balance == 0 && c1.member(s.value.charAt(i1-1))) {
 		i1 = i1+1;
-	        retvalue = iNew.Integer(i1-1);
-		return;
+	        return iNew.Integer(i1-1);
 	    }
 	    if (c2.member(s.value.charAt(i1-1))) {
 		balance++;
 	    } else if (c3.member(s.value.charAt(i1-1))) {
 		balance--;
 		if (balance < 0) {
-		    retvalue = null;
-		    return;
+		    return null;
 		}
 	    }
 	}
-	retvalue = null;
+	return null;
     }
 }
 
@@ -244,7 +234,7 @@ class f$move extends iClosure {				// move(j)
 
     vInteger oldpos;
 
-    public void nextval() {
+    public vDescriptor nextval() {
 
         if (oldpos == null) {
 	    oldpos = (vInteger) k$pos.self.deref();
@@ -253,18 +243,18 @@ class f$move extends iClosure {				// move(j)
 	    int k = i + j - 1;
 	    vString s = (vString) k$subject.self.deref();
 	    if (k < 0 || k > s.value.length()) {
-		retvalue = null;
+		return null;
 	    } else {
 	        k$pos.self.Assign(iNew.Integer(i+j));
 		if (j >= 0) {
-		    retvalue = iNew.String(s.value.substring(i - 1, k));
+		    return iNew.String(s.value.substring(i - 1, k));
 		} else {
-		    retvalue = iNew.String(s.value.substring(k, i - 1));
+		    return iNew.String(s.value.substring(k, i - 1));
 		}
 	    }
 	} else {
 	    k$pos.self.Assign(oldpos);
-	    retvalue = null;
+	    return null;
 	}
     }
 }
@@ -273,7 +263,7 @@ class f$tab extends iClosure {				// tab(j)
 
     vInteger oldpos;
 
-    public void nextval() {
+    public vDescriptor nextval() {
 
         if (oldpos == null) {
 	    oldpos = (vInteger) k$pos.self.deref();
@@ -281,18 +271,18 @@ class f$tab extends iClosure {				// tab(j)
 	    int i = (int) oldpos.value;
 	    int j = (int) s.posEq(vInteger.argVal(arguments, 0));
 	    if (j == 0) {
-		retvalue = null;
+		return null;
 	    } else {
 	        k$pos.self.Assign(iNew.Integer(j));
 		if (i < j) {
-		    retvalue = iNew.String(s.value.substring(i - 1, j - 1));
+		    return iNew.String(s.value.substring(i - 1, j - 1));
 		} else {
-		    retvalue = iNew.String(s.value.substring(j - 1, i - 1));
+		    return iNew.String(s.value.substring(j - 1, i - 1));
 		}
 	    }
 	} else {
 	    k$pos.self.Assign(oldpos);
-	    retvalue = null;
+	    return null;
 	}
     }
 }

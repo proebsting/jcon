@@ -328,14 +328,14 @@ class f$exit extends iValueClosure {				// exit(n)
 class f$function extends iClosure {				// function()
 	java.util.Enumeration e;
 
-	public void nextval() {
+	public vDescriptor nextval() {
 		if (e == null) {
 			e = iEnv.builtintab.keys();
 		}
 		if (e.hasMoreElements()) {
-			retvalue = iNew.String((String) e.nextElement());
+			return iNew.String((String) e.nextElement());
 		} else {
-			retvalue = null;
+			return null;
 		}
 	}
 }
@@ -343,7 +343,7 @@ class f$function extends iClosure {				// function()
 class f$seq extends iClosure {					// seq(i1,i2)
 	long i1, i2;
 
-	public void nextval() {
+	public vDescriptor nextval() {
 		if (PC == 1) {
 			PC = 2;
 			i1 = vInteger.argVal(arguments, 0, 1);
@@ -351,7 +351,7 @@ class f$seq extends iClosure {					// seq(i1,i2)
 		} else {
 			i1 += i2;
 		}
-		retvalue = iNew.Integer(i1);
+		return iNew.Integer(i1);
 	}
 }
 

@@ -5,16 +5,17 @@ public abstract class iValueClosure extends iFunctionClosure {
 	// Class for simple functions that return at most one value.
 	// Arguments are dereferenced.
 
-	public void nextval() {
+	public vDescriptor nextval() {
 		if (PC == 1) {
 			for (int i = 0; i < arguments.length; i++) {
 				arguments[i] = arguments[i].deref();
 			}
-			retvalue = function(arguments);
+			vDescriptor v = function(arguments);
 			returned = true;
 			PC = 0;
+			return v;
 		} else {
-			retvalue = null;
+			return null;
 		}
 	}
 

@@ -137,11 +137,11 @@ class k$features extends iClosure {		// &features
 
 	int posn = 0;
 
-	public void nextval() {
+	public vDescriptor nextval() {
 		if (posn < flist.length) {
-			retvalue = iNew.String(flist[posn++]);
+			return iNew.String(flist[posn++]);
 		} else {
-			retvalue = null;
+			return null;
 		}
 	}
 	String tfmt() { return "&features"; }
@@ -605,12 +605,12 @@ class k$level extends iValueClosure {	// &level
 
 class k$gen4zeros extends iClosure {		// &allocated, &collections
 	int i;
-	public void nextval() {
+	public vDescriptor nextval() {
 		if (i < 4) {
 			i++;
-			retvalue = iNew.Integer(0);
+			return iNew.Integer(0);
 		} else {
-			retvalue = null;
+			return null;
 		}
 	}
 
@@ -619,12 +619,12 @@ class k$gen4zeros extends iClosure {		// &allocated, &collections
 
 class k$gen3zeros extends iClosure {		// &regions, &storage
 	int i;
-	public void nextval() {
+	public vDescriptor nextval() {
 		if (i < 3) {
 			i++;
-			retvalue = iNew.Integer(0);
+			return iNew.Integer(0);
 		} else {
-			retvalue = null;
+			return null;
 		}
 	}
 	String tfmt() { return "&..."; }

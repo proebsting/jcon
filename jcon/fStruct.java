@@ -52,10 +52,10 @@ class f$delete extends iValueClosure {			// delete(X,x)
 
 
 class f$key extends iClosure {					//  key(T)
-	public void nextval() {
+	public vDescriptor nextval() {
 		if (arguments.length == 0) {
 			iRuntime.error(124);
 		}
-		retvalue = arguments[0].Key(this);
+		return arguments[0].Key(this);
 	}
 }

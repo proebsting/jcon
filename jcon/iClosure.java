@@ -8,7 +8,6 @@ public vDescriptor[] arguments;	// argument list
 
 public int PC;			// "program counter" (initially = 1)
 
-public vDescriptor retvalue;	// value returned/suspended, or null for failure
 public boolean returned;	// flag to indicate resumption unnecessary
 
 public Object o;		// arbitrary storage for RTS methods
@@ -53,7 +52,8 @@ String trace_coordinate() {
     return file + " : " + line + " ";
 }
 
-public final void resume() {
+public vDescriptor resume() {
+    vDescriptor ret;
     try {
         try {
             if (k$trace.trace != 0) {
@@ -64,7 +64,7 @@ public final void resume() {
                 }
                 System.err.println(this.trace_prototype());
             }
-            nextval();
+            ret = nextval();
             if (k$trace.trace != 0) {
 		System.err.print(trace_coordinate());
                 for (iClosure p=this.parent; p != null; p=p.parent) {
@@ -72,27 +72,29 @@ public final void resume() {
                 }
                 String p = this.trace_prototype().toString();
                 k$trace.trace--;
-                if (retvalue == null) {
+                if (ret == null) {
                     p += " failed";
                 } else if (returned) {
-                    p += " returned " + retvalue.report();
+                    p += " returned " + ret.report();
                 } else {
-                    p += " suspended " + retvalue.report();
+                    p += " suspended " + ret.report();
                 }
                 System.err.println(p);
             }
         } catch (OutOfMemoryError e) {
             iRuntime.error(307);	// #%#%# really out of memory.
+	    ret = null;
         }
     } catch (iError e) {
 	//  e.printStackTrace();  //#%#%#% TEMP: enable for debugging
 	//#%#%# check &error here and fail or:
 	e.report(this);  // returns only on error->failure conversion.
-	this.retvalue = null;
+	ret = null;
     }
+    return ret;
 }
 
-public abstract void nextval();
+public abstract vDescriptor nextval();
 
 // copy() is used to return a "refreshed" copy of the closure.
 public iClosure copy(int PC) { iRuntime.error(901); return null; }

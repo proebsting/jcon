@@ -8,8 +8,7 @@ public abstract class iUnaryClosure extends iClosure {
 
 	public vDescriptor call(vDescriptor arg, iClosure parent) {
 		closure(arg, parent);
-		resume();
-		return retvalue;
+		return resume();
 	}
 
 	public void closure(vDescriptor[] args, iClosure parent) {

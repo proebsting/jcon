@@ -91,7 +91,7 @@ class f$WAttrib extends iClosure {		// WAttrib(W,attribs,...)
 	wAttrib alist[];
 	int next;
 
-	public void nextval() {
+	public vDescriptor nextval() {
 		if (win == null) {
 			for (int i = 0; i < arguments.length; i++) {
 				arguments[i] = arguments[i].deref();
@@ -109,16 +109,17 @@ class f$WAttrib extends iClosure {		// WAttrib(W,attribs,...)
 			}
 			next = 0;
 		}
-		retvalue = null;
+		vDescriptor v = null;
 		while (next < alist.length) {
 			wAttrib a = alist[next++];
 			if (a != null) {
-				retvalue = a.get(win);
-				if (retvalue != null) {
+				v = a.get(win);
+				if (v != null) {
 					break;	// generate value
 				}
 			}
 		}
+		return v;
 	}
 }
 

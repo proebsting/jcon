@@ -8,8 +8,7 @@ public abstract class iBinaryClosure extends iClosure {
 
 	public vDescriptor call(vDescriptor arg0, vDescriptor arg1, iClosure parent) {
 		closure(arg0, arg1, parent);
-		resume();
-		return retvalue;
+		return resume();
 	}
 
 	public void closure(vDescriptor[] args, iClosure parent) {

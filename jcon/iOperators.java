@@ -125,13 +125,13 @@ public class oSwap extends iBinaryRefClosure {			// x1 :=: x2
 public class oRevAssign extends iClosure {			// x1 <- x2
 	vValue old;
 
-	public void nextval() {
+	public vDescriptor nextval() {
 		if (old == null) {
 			old = arguments[0].deref();
-			retvalue = arguments[0].Assign(arguments[1].deref());
+			return arguments[0].Assign(arguments[1].deref());
 		} else {
 			arguments[0].Assign(old);
-			retvalue = null;
+			return null;
 		}
 	}
 	String tfmt() { return "{$1 <- $2}"; }
@@ -141,16 +141,16 @@ public class oRevSwap extends iClosure {			// x1 <-> x2
 	vValue oldleft;
 	vValue oldright;
 
-	public void nextval() {
+	public vDescriptor nextval() {
 		if (oldleft == null) {
 			oldleft = arguments[0].deref();
 			oldright = arguments[1].deref();
 			arguments[1].Assign(oldleft);
-			retvalue = arguments[0].Assign(oldright);
+			return arguments[0].Assign(oldright);
 		} else {
 			arguments[0].Assign(oldleft);
 			arguments[1].Assign(oldright);
-			retvalue = null;
+			return null;
 		}
 	}
 	String tfmt() { return "{$1 <-> $2}"; }
@@ -187,7 +187,7 @@ public class oToBy extends iClosure {				// i1 to i2 by i3
 
 	long i2, i3, ivar;
 
-	public void nextval() {
+	public vDescriptor nextval() {
 		long i1, iprev;
 
 		if (PC == 1) {
@@ -208,18 +208,18 @@ public class oToBy extends iClosure {				// i1 to i2 by i3
 
 		    // test for end of loop and for overflow
 		    if (ivar > i2 || ivar < iprev) {
-			    retvalue = null;
+			    return null;
 		    } else {
-			    retvalue = iNew.Integer(ivar);
+			    return iNew.Integer(ivar);
 		    }
 
 		} else {			// descending loop
 
 		    // test for end of loop and for overflow
 		    if (ivar < i2 || ivar > iprev) {
-			    retvalue = null;
+			    return null;
 		    } else {
-			    retvalue = iNew.Integer(ivar);
+			    return iNew.Integer(ivar);
 		    }
 
 		}
@@ -318,8 +318,8 @@ public class oSelect extends iUnaryRefClosure {			//  ?x
 }
 
 public class oBang extends iClosure {				//  !x
-	public void nextval() {
-		retvalue = arguments[0].Bang(this);
+	public vDescriptor nextval() {
+		return arguments[0].Bang(this);
 	}
 	String tfmt() { return "{!$1}"; }
 }
@@ -620,36 +620,34 @@ public class oActivate extends iBinaryValueClosure {		//  x @ C
 public class oTabMatch extends iClosure {			// =s
     iClosure tab;
 
-    public void nextval() {
+    public vDescriptor nextval() {
 	if (tab == null) {
 	    iClosure match = new f$match();
 	    vDescriptor[] args = { arguments[0].mkString() };
 	    match.closure(args, this);
-	    match.resume();
-	    if (match.retvalue == null) {
-		this.retvalue = null;
-		return;
+	    vDescriptor v = match.resume();
+	    if (v == null) {
+		return null;
 	    }
-	    args[0] = match.retvalue;
+	    args[0] = v;
 	    tab = new f$tab();
 	    tab.closure(args, this);
 	}
-	tab.resume();
-	this.retvalue = tab.retvalue;
+	return tab.resume();
     }
 }
 
 public class oProcessArgs extends iClosure {			//  x ! y
     iClosure func;
-    public void nextval() {
+    public vDescriptor nextval() {
         if (func == null) {
             arguments[0] = arguments[0].deref();
             vDescriptor[] a = arguments[1].mkArgs();
             func = iInterface.Instantiate(arguments[0], a, parent);
         }
-        func.resume();
-        this.retvalue = func.retvalue;
+        vDescriptor v = func.resume();
         this.returned = func.returned;
+        return v;
     }
     String tfmt() { return "{$1 ! $2}"; }
 }

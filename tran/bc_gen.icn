@@ -70,10 +70,6 @@ procedure returned_fieldref(c)
 	return create_fieldref(c, "returned", "Z", "rts/iClosure")
 end
 
-procedure retvalue_fieldref(c)
-	return create_fieldref(c, "retvalue", "Lrts/vDescriptor;", "rts/iClosure")
-end
-
 procedure transfer_to(s, p)
 	case type(p) of {
 	default: {
@@ -339,7 +335,7 @@ end
 
 # record irSucceed( expr continuation )
 procedure gen_bc_irSucceed(s, p)
-	local r, e, PC, returned, retvalue, k, a
+	local r, e, PC, returned, k, a
 
 	PC := PC_fieldref(bc_proc_classptr)
 	put(s, aload_0())
@@ -396,21 +392,14 @@ procedure gen_bc_irSucceed(s, p)
 		put(s, putfield(returned))
 	}
 	gen_bc(s, p.expr)
-	retvalue := retvalue_fieldref(bc_proc_classptr)
-	put(s, putfield(retvalue))
-	put(s, vreturn())
+	put(s, areturn())
 	return s
 end
 
 # record irFail( )
 procedure gen_bc_irFail(s, p)
-	local retvalue
-
-	put(s, aload_0())
 	put(s, aconst_null())
-	retvalue := retvalue_fieldref(bc_proc_classptr)
-	put(s, putfield(retvalue))
-	put(s, vreturn())
+	put(s, areturn())
 	return s
 end
 
@@ -426,11 +415,10 @@ end
 
 # record irResume( closure failLabel retValue )
 procedure gen_bc_irResume(s, p)
-	local c, returned, retvalue, target, resume
+	local c, returned, target, resume
 
 	returned := returned_fieldref(bc_proc_classptr)
-	retvalue := retvalue_fieldref(bc_proc_classptr)
-	resume := create_methodref(bc_proc_classptr, "resume", "()V", "rts/iClosure")
+	resume := create_methodref(bc_proc_classptr, "resume", "()Lrts/vDescriptor;", "rts/iClosure")
 	gen_bc(s, p.closure)
 	put(s, dup())
 	put(s, getfield(returned))
@@ -439,9 +427,7 @@ procedure gen_bc_irResume(s, p)
 	put(s, Pop())
 	transfer_to(s, p.failLabel)
 	put(s, target)
-	put(s, dup())
 	put(s, invokevirtual(resume))
-	put(s, getfield(retvalue))
 	if \p.retValue then {
 		put(s, dup())
 		target := label()
@@ -912,7 +898,7 @@ procedure bc_create_nextval(c, start)
 	local runtimeerror, r
 	local a, s, tmplab, prologue, var_load_label
 
-	nextval := create_method(c, 0, "nextval", "()V")
+	nextval := create_method(c, 0, "nextval", "()Lrts/vDescriptor;")
 	nextvalcode := create_code(c, 10, 10)
 	put(nextval.attributes, nextvalcode)
 
@@ -1035,7 +1021,8 @@ procedure bc_create_nextval(c, start)
 	put(nextvalcode.code, ipush(902) )
 	put(nextvalcode.code, invokestatic(runtimeerror) )
 
-	put(nextvalcode.code, vreturn())
+	put(nextvalcode.code, aconst_null())
+	put(nextvalcode.code, areturn())
 end
 
 global bc_emitted

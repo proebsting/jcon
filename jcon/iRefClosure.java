@@ -5,13 +5,16 @@ public abstract class iRefClosure extends iFunctionClosure {
 	// Class for simple operations that return at most one value
 	// but do not want their arguments dereferenced
 
-	public void nextval() {
+	public vDescriptor nextval() {
+		vDescriptor v;
+
 		if (PC == 1) {
-			retvalue = function(arguments);
+			v = function(arguments);
 			returned = true;
 			PC = 0;
+			return v;
 		} else {
-			retvalue = null;
+			return null;
 		}
 	}
 
