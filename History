@@ -1,5 +1,10 @@
 Version History
 
+0.5.2
+	clean up Makefile a little
+	more NT portability tweaks
+	fix broken handling of "link" directives
+
 0.5.1	July 22, 1997
 	use "jar" tool instead of Zip and UnZip
 	support translated mode I/O
