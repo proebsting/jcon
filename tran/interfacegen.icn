@@ -46,6 +46,7 @@ procedure methodrefs()
             ["resolveProc", "(Ljava/lang/String;I)Lrts/vDescriptor;",
              "rts/iEnv"],
             ["resume", "()Lrts/vDescriptor;", "rts/iClosure"],
+            ["nextval", "()Lrts/vDescriptor;", "rts/iClosure"],
             ["undeclared", "(Ljava/lang/String;)V", "rts/iEnv"]
         ]
     def := [ "name", "type", "class" ]
