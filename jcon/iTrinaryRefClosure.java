@@ -31,7 +31,7 @@ public vDescriptor call(
 	try {
 	    return function();
 	} catch (OutOfMemoryError e) {
-	    iRuntime.error(307);	// #%#%# really out of memory.
+	    iRuntime.error(307);	// #%#% really out of memory.
 	    return null;
 	}
     } catch (iError e) {

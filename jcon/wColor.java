@@ -99,9 +99,9 @@ private static int parseInts(String s) {
 	int r = Integer.parseInt(tkr.nextToken());
 	int g = Integer.parseInt(tkr.nextToken());
 	int b = Integer.parseInt(tkr.nextToken());
-	if (tkr.hasMoreTokens() || r < 0 || r > 65535 ||
-		g < 0 || g > 65535 || b < 0 || b > 65535) {
-	    return -1;
+	if (tkr.hasMoreTokens() || r < 0 || g < 0 || b < 0
+	    || r > 65535 || g > 65535 || b > 65535) {
+		return -1;
 	    }
 	return ((r & 0xFF00) << 8) | (g & 0xFF00) | (b >> 8);
     } catch (Exception e) {

@@ -83,7 +83,7 @@ public vDescriptor resume() {
 		System.err.println(p);
 	    }
 	} catch (OutOfMemoryError e) {
-	    iRuntime.error(307);	// #%#%# really out of memory.
+	    iRuntime.error(307);	// #%#% really out of memory.
 	    ret = null;
 	}
     } catch (iError e) {
@@ -107,7 +107,7 @@ public void Free() {
 public abstract vDescriptor nextval();
 
 // copy() is used to return a "refreshed" copy of the closure.
-public iClosure copy(int PC) { iRuntime.error(901); return null; }
+public iClosure copy(int PC) { iRuntime.error(901); return null; } //#%#% NYI?
 
 public void closure(vDescriptor[] a, iClosure parent) {
     init();

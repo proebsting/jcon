@@ -89,7 +89,7 @@ static vValue dequeue(vList evq) {
     vValue a, xv, yv;
 
     a = evq.Get();
-    while (a == null) {		//#%#%# is polling really the way to do this?
+    while (a == null) {		//#%#% is polling really the way to do this?
 	try {
 	    Thread.sleep(iConfig.PollDelay);
 	} catch (InterruptedException e) {

@@ -24,18 +24,18 @@ public vDescriptor call(vDescriptor arg0, vDescriptor arg1, iClosure parent) {
     argument1 = arg1.deref();
     this.parent = parent;
     try {
-    try {
-	return function();
-    } catch (OutOfMemoryError e) {
-	iRuntime.error(307);	// #%#%# really out of memory.
-	return null;
-    }
+	try {
+	    return function();
+	} catch (OutOfMemoryError e) {
+	    iRuntime.error(307);	// #%#% really out of memory.
+	    return null;
+	}
     } catch (iError e) {
-    e.report(this);  // returns only on error->failure conversion.
-    return null;
+	e.report(this);  // returns only on error->failure conversion.
+	return null;
     }
 }
 
 
 
-}  // class iBinaryValueClosure
+} // class iBinaryValueClosure

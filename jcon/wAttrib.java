@@ -269,17 +269,17 @@ class aCol extends wAttrib {
 
 class aWidth extends wAttrib {
 
-vValue get(vWindow win) {
-    return iNew.Integer(win.getCanvas().getSize().width);
-}
-
-vValue set(vWindow win) {
-    if (win.getCanvas().config(win, 1, null, null, val, null)) {
-	return get(win);
-    } else {
-	return null; /*FAIL*/
+    vValue get(vWindow win) {
+	return iNew.Integer(win.getCanvas().getSize().width);
     }
-}
+
+    vValue set(vWindow win) {
+	if (win.getCanvas().config(win, 1, null, null, val, null)) {
+	    return get(win);
+	} else {
+	    return null; /*FAIL*/
+	}
+    }
 
 }
 
@@ -287,17 +287,17 @@ vValue set(vWindow win) {
 
 class aHeight extends wAttrib {
 
-vValue get(vWindow win) {
-    return iNew.Integer(win.getCanvas().getSize().height);
-}
-
-vValue set(vWindow win) {
-    if (win.getCanvas().config(win, 1, null, null, null, val)) {
-	return get(win);
-    } else {
-	return null; /*FAIL*/
+    vValue get(vWindow win) {
+	return iNew.Integer(win.getCanvas().getSize().height);
     }
-}
+
+    vValue set(vWindow win) {
+	if (win.getCanvas().config(win, 1, null, null, null, val)) {
+	    return get(win);
+	} else {
+	    return null; /*FAIL*/
+	}
+    }
 
 }
 
@@ -305,24 +305,24 @@ vValue set(vWindow win) {
 
 class aSize extends wAttrib {
 
-vValue get(vWindow win) {
-    Dimension d = win.getCanvas().getSize();
-    return iNew.String(d.width + "," + d.height);
-}
+    vValue get(vWindow win) {
+	Dimension d = win.getCanvas().getSize();
+	return iNew.String(d.width + "," + d.height);
+    }
 
-vValue set(vWindow win) {
-    int j = val.indexOf(',');
-    if (j < 0) {
-	return null;
+    vValue set(vWindow win) {
+	int j = val.indexOf(',');
+	if (j < 0) {
+	    return null;
+	}
+	String w = val.substring(0, j);
+	String h = val.substring(j + 1);
+	if (win.getCanvas().config(win, 1, null, null, w, h)) {
+	    return get(win);
+	} else {
+	    return null; /*FAIL*/
+	}
     }
-    String w = val.substring(0, j);
-    String h = val.substring(j + 1);
-    if (win.getCanvas().config(win, 1, null, null, w, h)) {
-	return get(win);
-    } else {
-	return null; /*FAIL*/
-    }
-}
 
 }
 
@@ -330,21 +330,21 @@ vValue set(vWindow win) {
 
 class aRows extends wAttrib {
 
-vValue get(vWindow win) {
-    int l = win.Leading();
-    if (l == 0) {
-	iRuntime.error(204);	// this is what v9 does: real division by 0
+    vValue get(vWindow win) {
+	int l = win.Leading();
+	if (l == 0) {
+	    iRuntime.error(204);  // this is what v9 does: real division by 0
+	}
+	return iNew.Integer(win.getCanvas().getSize().height / l);
     }
-    return iNew.Integer(win.getCanvas().getSize().height / l);
-}
 
-vValue set(vWindow win) {
-    if (win.getCanvas().config(win, win.Leading(), null, null, null, val)) {
-	return get(win);
-    } else {
-	return null; /*FAIL*/
+    vValue set(vWindow win) {
+	if (win.getCanvas().config(win, win.Leading(), null, null, null, val)) {
+	    return get(win);
+	} else {
+	    return null; /*FAIL*/
+	}
     }
-}
 
 }
 
@@ -352,16 +352,16 @@ vValue set(vWindow win) {
 
 class aColumns extends wAttrib {
 
-vValue get(vWindow win) {
-    return iNew.Integer(win.getCanvas().getSize().width / win.Fwidth());
-}
-
-vValue set(vWindow win) {
-    if (win.getCanvas().config(win, win.Fwidth(), null, null, val, null)) {
-	return get(win);
-    } else {
-	return null; /*FAIL*/
+    vValue get(vWindow win) {
+	return iNew.Integer(win.getCanvas().getSize().width / win.Fwidth());
     }
-}
+
+    vValue set(vWindow win) {
+	if (win.getCanvas().config(win, win.Fwidth(), null, null, val, null)) {
+	    return get(win);
+	} else {
+	    return null; /*FAIL*/
+	}
+    }
 
 }

@@ -11,6 +11,8 @@ abstract vDescriptor function();
 abstract public vDescriptor call(
     vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosure parent);
 
+
+
 public void closure(vDescriptor[] args, iClosure parent) {
     init();
     argument0 = args[0];
@@ -31,13 +33,13 @@ public void closure(
 
 vString getarg(int n) {
     switch (n) {
-    default: return iNew.String("???");
-    case 0 : return argument0.report();
-    case 1 : return argument1.report();
-    case 2 : return argument2.report();
+	default: return iNew.String("???");
+	case 0 : return argument0.report();
+	case 1 : return argument1.report();
+	case 2 : return argument2.report();
     }
 }
 
 
 
-}  // class iTrinaryClosure
+} // class iTrinaryClosure

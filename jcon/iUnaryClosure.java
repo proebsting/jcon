@@ -14,7 +14,7 @@ public vDescriptor call(vDescriptor arg, iClosure parent) {
 	try {
 	    return nextval();
 	} catch (OutOfMemoryError e) {
-	    iRuntime.error(307);	// #%#%# really out of memory.
+	    iRuntime.error(307);	// #%#% really out of memory.
 	    return null;
 	}
     } catch (iError e) {
@@ -43,4 +43,4 @@ vString getarg(int n) {
 }
 
 
-}  // class iUnaryClosure
+} // class iUnaryClosure

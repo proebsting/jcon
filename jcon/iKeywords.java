@@ -273,19 +273,19 @@ class k$host extends k$Value {					// &host
 
     static void inithost() {
 	try {
-	Process p = Runtime.getRuntime().exec("uname -n");
-	hostname = iNew.String(
-	    new BufferedReader(
-	    new InputStreamReader(p.getInputStream()))
-	    .readLine().trim());
-	p.destroy();
-	hostname.charAt(0);		// ensure not empty
+	    Process p = Runtime.getRuntime().exec("uname -n");
+	    hostname = iNew.String(
+		new BufferedReader(
+		new InputStreamReader(p.getInputStream()))
+		.readLine().trim());
+	    p.destroy();
+	    hostname.charAt(0);		// ensure not empty
 	} catch (Exception e1) {
-	try {
-	    hostname = iNew.String(System.getProperty("os.name"));
-	} catch (Exception e2) {
-	    hostname = iNew.String("Jcon");
-	}
+	    try {
+		hostname = iNew.String(System.getProperty("os.name"));
+	    } catch (Exception e2) {
+		hostname = iNew.String("Jcon");
+	    }
 	}
     }
 
@@ -349,7 +349,6 @@ class k$subject extends vSimpleVar {				// &subject
 	pos.SafeAssign(iNew.Integer(1));	// &pos := 1
 	return this;
     }
-
 }
 
 

@@ -156,6 +156,7 @@ int compareTo(vValue v) {
 	return 1;		// v is empty
 
     } else {			// first bit found in v
+
 	while (++i <= vCset.MAX_VALUE) {
 	    if (this.member(i)) {
 		return 1;	// this is not empty

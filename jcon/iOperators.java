@@ -263,16 +263,16 @@ public class oField extends iBinaryRefClosure {			// R . s
 	argument1 = null;
 	this.parent = parent;
 	try {
-	try {
-	    return arg0.field(s = arg1);
-	} catch (OutOfMemoryError e) {
-	    iRuntime.error(307);	// #%#%# really out of memory.
+	    try {
+		return arg0.field(s = arg1);
+	    } catch (OutOfMemoryError e) {
+		iRuntime.error(307);	// #%#%# really out of memory.
+		return null;
+	    }
+	} catch (iError e) {
+	    e.report(this);  // returns only on error->failure conversion.
 	    return null;
 	}
-    } catch (iError e) {
-	e.report(this);  // returns only on error->failure conversion.
-	return null;
-    }
     }
     String tfmt() { return "{$1 . " + s + "}"; }
 }

@@ -205,7 +205,7 @@ class f$system extends iValueClosure {				// system(s)
 	} catch (Throwable e) {
 	    status = -1;
 	}
-    return iNew.Integer(status);
+	return iNew.Integer(status);
     }
 }
 

@@ -22,7 +22,7 @@ public class vRecordProc extends vValue {
 
     public iClosure instantiate(vDescriptor[] args, iClosure parent) {
 	if (cachedclosure == null) {
-	cachedclosure = new iRecordClosure();
+	    cachedclosure = new iRecordClosure();
 	}
 	cachedclosure.init(this, args, parent);
 	return cachedclosure;

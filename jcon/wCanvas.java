@@ -169,9 +169,9 @@ vString Canvas(vWindow win, String s) {
 	    f.hide();
 	} else if (s.equals("normal")) {
 	    f.show();
-	//#%#%#%#% still need to handle "maximal" and "iconic"
 	} else {
 	    return null; /*FAIL*/
+	    //#%#% still need to handle "maximal" and "iconic"
 	}
 	visibility = s;
     }
