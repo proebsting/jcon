@@ -49,6 +49,7 @@ record fconst_2()
 record dconst_0()
 record dconst_1()
 record iload(index)
+record iload_w(index)
 record iload_0()
 record iload_1()
 record iload_2()
@@ -69,11 +70,13 @@ record dload_1()
 record dload_2()
 record dload_3()
 record aload(index)
+record aload_w(index)
 record aload_0()
 record aload_1()
 record aload_2()
 record aload_3()
 record istore(index)
+record istore_w(index)
 record istore_0()
 record istore_1()
 record istore_2()
@@ -94,6 +97,7 @@ record dstore_1()
 record dstore_2()
 record dstore_3()
 record astore(index)
+record astore_w(index)
 record astore_0()
 record astore_1()
 record astore_2()
@@ -509,6 +513,7 @@ procedure writer_opcodes(writer, p)
 		opcode_table["dconst_0"] := 14
 		opcode_table["dconst_1"] := 15
 		opcode_table["iload"] := 21
+		opcode_table["iload_w"] := 196
 		opcode_table["iload_0"] := 26
 		opcode_table["iload_1"] := 27
 		opcode_table["iload_2"] := 28
@@ -529,11 +534,13 @@ procedure writer_opcodes(writer, p)
 		opcode_table["dload_2"] := 40
 		opcode_table["dload_3"] := 41
 		opcode_table["aload"] := 25
+		opcode_table["aload_w"] := 196
 		opcode_table["aload_0"] := 42
 		opcode_table["aload_1"] := 43
 		opcode_table["aload_2"] := 44
 		opcode_table["aload_3"] := 45
 		opcode_table["istore"] := 54
+		opcode_table["istore_w"] := 196
 		opcode_table["istore_0"] := 59
 		opcode_table["istore_1"] := 60
 		opcode_table["istore_2"] := 61
@@ -554,6 +561,7 @@ procedure writer_opcodes(writer, p)
 		opcode_table["dstore_2"] := 73
 		opcode_table["dstore_3"] := 74
 		opcode_table["astore"] := 58
+		opcode_table["astore_w"] := 196
 		opcode_table["astore_0"] := 75
 		opcode_table["astore_1"] := 76
 		opcode_table["astore_2"] := 77
@@ -845,24 +853,47 @@ insert(opcode_leaf, "label")
 
 	t := type(p)
 
-	#%#% kludge for >256 locals
-	case (t) of {
-	"istore" |
-	"astore" |
-	"aload" |
-	"iload": {
-		writer_u1(writer, opcode_table["wide"])
-		writer_u1(writer, opcode_table[t])
-		writer_u2(writer, p.index)
-		return
-	}
-	}
-
 	writer_u1(writer, \opcode_table[t])
 
 	if member(opcode_leaf, t) then return
 
 	case (t) of {
+	"iload": {
+		writer_u1(writer, p.index)
+		return
+	}
+	"iload_w": {
+		writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+		writer_u2(writer, p.index)
+		return
+	}
+	"aload": {
+		writer_u1(writer, p.index)
+		return
+	}
+	"aload_w": {
+		writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+		writer_u2(writer, p.index)
+		return
+	}
+	"istore": {
+		writer_u1(writer, p.index)
+		return
+	}
+	"istore_w": {
+		writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+		writer_u2(writer, p.index)
+		return
+	}
+	"astore": {
+		writer_u1(writer, p.index)
+		return
+	}
+	"astore_w": {
+		writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+		writer_u2(writer, p.index)
+		return
+	}
 	"putfield": {
 		writer_u2(writer, p.index)
 	}
@@ -1069,7 +1100,8 @@ procedure offset_opcodes(p, offset, locations)
 		offset_table["fconst_2"] := 0
 		offset_table["dconst_0"] := 0
 		offset_table["dconst_1"] := 0
-		offset_table["iload"] := 3	#%#% kludge!
+		offset_table["iload"] := 1
+		offset_table["iload_w"] := 3
 		offset_table["iload_0"] := 0
 		offset_table["iload_1"] := 0
 		offset_table["iload_2"] := 0
@@ -1089,12 +1121,14 @@ procedure offset_opcodes(p, offset, locations)
 		offset_table["dload_1"] := 0
 		offset_table["dload_2"] := 0
 		offset_table["dload_3"] := 0
-		offset_table["aload"] := 3	#%#% kludge!
+		offset_table["aload"] := 1
+		offset_table["aload_w"] := 3
 		offset_table["aload_0"] := 0
 		offset_table["aload_1"] := 0
 		offset_table["aload_2"] := 0
 		offset_table["aload_3"] := 0
-		offset_table["istore"] := 3	#%#% kludge!
+		offset_table["istore"] := 1
+		offset_table["istore_w"] := 3
 		offset_table["istore_0"] := 0
 		offset_table["istore_1"] := 0
 		offset_table["istore_2"] := 0
@@ -1114,7 +1148,8 @@ procedure offset_opcodes(p, offset, locations)
 		offset_table["dstore_1"] := 0
 		offset_table["dstore_2"] := 0
 		offset_table["dstore_3"] := 0
-		offset_table["astore"] := 3	#%#% kludge!
+		offset_table["astore"] := 1
+		offset_table["astore_w"] := 3
 		offset_table["astore_0"] := 0
 		offset_table["astore_1"] := 0
 		offset_table["astore_2"] := 0
@@ -1637,7 +1672,7 @@ procedure offset_align4(offset, x)
 	return offset + k
 end
 
-procedure ipush(x)
+procedure ipush(x, classptr)
 	case x of {
 	-1 :	return iconst_m1()
 	0 :	return iconst_0()
@@ -1648,5 +1683,55 @@ procedure ipush(x)
 	5 :	return iconst_5()
 	}
 	if -128 <= x <= 127 then return bipush(x)
-	return sipush(x) # #%#%#%# what about bigger?
+	if -32768 <= x <= 32767 then return sipush(x)
+	return ldc_w(cp_Integer(classptr, x))
+end
+
+procedure Iload(x)
+	case x of {
+	0 : return iload_0()
+	1 : return iload_1()
+	2 : return iload_2()
+	3 : return iload_3()
+	}
+	if x < 256 then {
+		return iload(x)
+	} 
+	return iload_w(x)
+end
+procedure Istore(x)
+	case x of {
+	0 : return istore_0()
+	1 : return istore_1()
+	2 : return istore_2()
+	3 : return istore_3()
+	}
+	if x < 256 then {
+		return istore(x)
+	} 
+	return istore_w(x)
+end
+procedure Aload(x)
+	case x of {
+	0 : return aload_0()
+	1 : return aload_1()
+	2 : return aload_2()
+	3 : return aload_3()
+	}
+	if x < 256 then {
+		return aload(x)
+	} 
+	return aload_w(x)
+end
+procedure Astore(x)
+	case x of {
+	0 : return astore_0()
+	1 : return astore_1()
+	2 : return astore_2()
+	3 : return astore_3()
+	}
+	if x < 256 then {
+		return astore(x)
+	} 
+	return astore_w(x)
 end

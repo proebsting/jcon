@@ -123,10 +123,10 @@ procedure gen_bc_irCoord(s, p)
 		put(s, ldc_w(f))
 		put(s, putfield(field))
 	}
-	if line := cp_Integer(bc_proc_classptr, \(\p.coord).line) then {
+	if line := \(\p.coord).line then {
 		field := create_fieldref(bc_proc_classptr, "line", "I", "rts/iClosure")
 		put(s, aload_0())
-		put(s, ldc_w(line))
+		put(s, ipush(line, bc_proc_classptr))
 		put(s, putfield(field))
 	}
 #	if column := cp_Integer(bc_proc_classptr, \(\p.coord).column) then {
@@ -153,11 +153,11 @@ procedure gen_bc_irTmp_register(p)
 	/bc_tmp_table[p.name] := *bc_tmp_table;
 end
 procedure gen_bc_irTmp_rval(s, p)
-	put(s, aload(bc_tmp_table[p.name] + bc_tmp_offset))
+	put(s, Aload(bc_tmp_table[p.name] + bc_tmp_offset))
 	return s
 end
 procedure gen_bc_irTmp_assign(s, p)
-	put(s, astore(bc_tmp_table[p.name] + bc_tmp_offset))
+	put(s, Astore(bc_tmp_table[p.name] + bc_tmp_offset))
 	return s
 end
 
@@ -166,11 +166,11 @@ procedure gen_bc_irTmpLabel_register(p)
 	/bc_tmplabel_table[p.name] := *bc_tmplabel_table
 end
 procedure gen_bc_irTmpLabel_rval(s, p)
-	put(s, iload(bc_tmplabel_table[p.name] + bc_tmplabel_offset))
+	put(s, Iload(bc_tmplabel_table[p.name] + bc_tmplabel_offset))
 	return s
 end
 procedure gen_bc_irTmpLabel_assign(s, p)
-	put(s, istore(bc_tmplabel_table[p.name] + bc_tmplabel_offset))
+	put(s, Istore(bc_tmplabel_table[p.name] + bc_tmplabel_offset))
 	return s
 end
 
@@ -180,18 +180,18 @@ procedure gen_bc_irTmpClosure_register(p)
 end
 
 procedure gen_bc_irTmpClosure_rval(s, p)
-	put(s, aload(bc_tmpclosure_table[p.name] + bc_tmpclosure_offset))
+	put(s, Aload(bc_tmpclosure_table[p.name] + bc_tmpclosure_offset))
 	return s
 end
 procedure gen_bc_irTmpClosure_assign(s, p)
-	put(s, astore(bc_tmpclosure_table[p.name] + bc_tmpclosure_offset))
+	put(s, Astore(bc_tmpclosure_table[p.name] + bc_tmpclosure_offset))
 	return s
 end
 
 # record irLabel( value )
 procedure gen_bc_irLabel_rval(s, p)
 	\bc_labels[p] | stop("ERROR: ", image(&file), " ", &line)
-	put(s, ipush(bc_labels[p]) )
+	put(s, ipush(bc_labels[p], bc_proc_classptr) )
 	return s
 end
 
@@ -362,7 +362,7 @@ procedure gen_bc_irSucceed(s, p)
 		every k := key(bc_tmp_table) do {
 			put(s, dup())
 			put(s, ipush(bc_tmp_table[k]))
-			put(s, aload(bc_tmp_table[k] + bc_tmp_offset))
+			put(s, Aload(bc_tmp_table[k] + bc_tmp_offset))
 			put(s, aastore())
 		}
 		put(s, Pop())
@@ -376,7 +376,7 @@ procedure gen_bc_irSucceed(s, p)
 		every k := key(bc_tmplabel_table) do {
 			put(s, dup())
 			put(s, ipush(bc_tmplabel_table[k]))
-			put(s, iload(bc_tmplabel_table[k] + bc_tmplabel_offset))
+			put(s, Iload(bc_tmplabel_table[k] + bc_tmplabel_offset))
 			put(s, iastore())
 		}
 		put(s, Pop())
@@ -390,7 +390,7 @@ procedure gen_bc_irSucceed(s, p)
 		every k := key(bc_tmpclosure_table) do {
 			put(s, dup())
 			put(s, ipush(bc_tmpclosure_table[k]))
-			put(s, aload(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
+			put(s, Aload(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
 			put(s, aastore())
 		}
 		put(s, Pop())
@@ -937,15 +937,15 @@ procedure bc_create_nextval(c, start)
 
 	every k := key(bc_tmp_table) do {
 		put(s, aconst_null())
-		put(s, astore(bc_tmp_table[k] + bc_tmp_offset))
+		put(s, Astore(bc_tmp_table[k] + bc_tmp_offset))
 	}
 	every k := key(bc_tmpclosure_table) do {
 		put(s, aconst_null())
-		put(s, astore(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
+		put(s, Astore(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
 	}
 	every k := key(bc_tmplabel_table) do {
 		put(s, iconst_0())
-		put(s, istore(bc_tmplabel_table[k] + bc_tmplabel_offset))
+		put(s, Istore(bc_tmplabel_table[k] + bc_tmplabel_offset))
 	}
 
 	#%#% this use of flag causes spurious verification errors.
@@ -962,7 +962,7 @@ procedure bc_create_nextval(c, start)
 			put(s, dup())
 			put(s, ipush(bc_tmp_table[k]))
 			put(s, aaload())
-			put(s, astore(bc_tmp_table[k] + bc_tmp_offset))
+			put(s, Astore(bc_tmp_table[k] + bc_tmp_offset))
 		}
 		put(s, Pop())
 
@@ -976,7 +976,7 @@ procedure bc_create_nextval(c, start)
 			put(s, dup())
 			put(s, ipush(bc_tmpclosure_table[k]))
 			put(s, aaload())
-			put(s, astore(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
+			put(s, Astore(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
 		}
 		put(s, Pop())
 
@@ -990,7 +990,7 @@ procedure bc_create_nextval(c, start)
 			put(s, dup())
 			put(s, ipush(bc_tmplabel_table[k]))
 			put(s, iaload())
-			put(s, istore(bc_tmplabel_table[k] + bc_tmplabel_offset))
+			put(s, Istore(bc_tmplabel_table[k] + bc_tmplabel_offset))
 		}
 		put(s, Pop())
 	}
