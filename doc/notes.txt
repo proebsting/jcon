@@ -61,6 +61,7 @@ extensions:
 compatible, although the book is unclear or wrong:
 -- procedures, functions, and record constructors all sort together, by name
 -- records sort first by type and then by serial number
+-- args() uses same rules for builtin and declared varargs procedures
 
 known bugs:
 -- e[e+:e] and e[e-:e] function identically to v9, which is wrong
