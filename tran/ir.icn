@@ -5,7 +5,7 @@ record ir_Link(nameList)
 record ir_Record(name, fieldList)
 record ir_Global(nameList)
 record ir_Function(name, paramList, accumulate, localList, staticList, codeList,
-                  codeStart)
+                  codeStart, lvalset)
 record ir_Chunk(label, insnList)
  
 record ir_Free(v)

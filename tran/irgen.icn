@@ -1,7 +1,10 @@
 #  irgen.icn -- translate abstract syntax trees to intermediate representation.
 
+global ir_noOpInvoke
 global ir_noerror2failure
 global ir_createflag
+
+global ir_LvalSet
 
 global ir_declare_set
 
@@ -371,7 +374,8 @@ procedure ir_a_Call(p, st, inuse, target, bounded, rval)
 
     suspend ir(p.fn, st, inuse, fn, &null, "rval")
     every i := 1 to *p.args.exprList do {
-        suspend ir(p.args.exprList[i], st, inuse, args[i], &null, &null)
+        suspend ir(p.args.exprList[i], st, inuse, args[i], &null,
+		   if \ir_noOpInvoke then "rval" else &null)
     }
 
     L := [p.fn] ||| p.args.exprList
@@ -752,6 +756,8 @@ procedure ir_a_ProcDecl(p, st, inuse, target, bounded, rval)
 		       p.ident.coord)
     }
     insert(ir_declare_set, p.ident.id)
+
+    ir_LvalSet := set([])
 
     locals := []
     statics := []
@@ -1532,9 +1538,26 @@ procedure ir_copy_inuse(x)
     return ir_stacks(copy(x.tmp), copy(x.lab))
 end
 
-procedure ast2ir(parse, flags)
-    local p
+procedure ast2ir(parse, flagList)
+    local p, k
 
+    #ir_noerror2failure := 1
+    ir_noOpInvoke := 1
+    every k := !flagList do {
+        k ? {
+            if ="-f" then {
+                if find("e") | find("a") then {
+                    #ir_noerror2failure := &null
+                }
+                if find("n") | find("a") then {
+                    #ir_noerror2failure := &null
+                }
+                if find("o") | find("a") then {
+                    ir_noOpInvoke := &null
+                }
+            }
+        }
+    }
     ir_declare_set := set([])
     while p := @parse do {
         suspend ir(p)
