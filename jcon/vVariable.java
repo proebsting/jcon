@@ -50,12 +50,12 @@ public abstract class vVariable extends vDescriptor {
     vInteger Serial()			{ return this.deref().Serial(); }
     vValue Copy()			{ return this.deref().Copy(); }
 
-    vValue Power(vDescriptor v)		{ return this.deref().Power(v); }
     vValue Add(vDescriptor v)		{ return this.deref().Add(v); }
     vValue Sub(vDescriptor v)		{ return this.deref().Sub(v); }
     vValue Mul(vDescriptor v)		{ return this.deref().Mul(v); }
     vValue Div(vDescriptor v)		{ return this.deref().Div(v); }
     vValue Mod(vDescriptor v)		{ return this.deref().Mod(v); }
+    vValue Power(vDescriptor v)		{ return this.deref().Power(v); }
 
     vValue NLess(vDescriptor v)		{ return this.deref().NLess(v); }
     vValue NLessEq(vDescriptor v)	{ return this.deref().NLessEq(v); }

@@ -22,8 +22,8 @@ vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }
 
 abstract vValue Abs();
 
+vValue getproc()		{ return this.mkInteger().getproc(); }
 
-vValue getproc()	{ return this.mkInteger().getproc(); }
 
 
 //  Coerce(BinaryFunctionClosure) -- coerce two args to be both integer or both real

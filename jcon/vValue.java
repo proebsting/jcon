@@ -68,12 +68,12 @@ public abstract class vValue extends vDescriptor {
 				{ return this.deref().Section(i,j); }
 
     // simple binary operators
-    vValue Power(vDescriptor v)	{ iRuntime.error(102, this); return null; }
     vValue Add(vDescriptor v)	{ iRuntime.error(102, this); return null; }
     vValue Sub(vDescriptor v)	{ iRuntime.error(102, this); return null; }
     vValue Mul(vDescriptor v)	{ iRuntime.error(102, this); return null; }
     vValue Div(vDescriptor v)	{ iRuntime.error(102, this); return null; }
     vValue Mod(vDescriptor v)	{ iRuntime.error(102, this); return null; }
+    vValue Power(vDescriptor v)	{ iRuntime.error(102, this); return null; }
 
     vValue NLess(vDescriptor v)      { iRuntime.error(102, this); return null; }
     vValue NLessEq(vDescriptor v)    { iRuntime.error(102, this); return null; }

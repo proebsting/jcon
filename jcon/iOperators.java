@@ -94,14 +94,14 @@ static void declare(String opr, int args, String name)
 
 
 
-class oAssign extends iBinaryRefClosure {		// x1 := x2
+class oAssign extends iBinaryRefClosure {			// x1 := x2
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
 		return arg0.Assign(arg1.deref());
 	}
 	String tfmt() { return "{$1 := $2}"; }
 }
 
-class oSwap extends iBinaryRefClosure {			// x1 :=: x2
+class oSwap extends iBinaryRefClosure {				// x1 :=: x2
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
 		vValue tmp = arg1.deref();
 		arg1.Assign(arg0.deref());
@@ -110,7 +110,7 @@ class oSwap extends iBinaryRefClosure {			// x1 :=: x2
 	String tfmt() { return "{$1 :=: $2}"; }
 }
 
-class oRevAssign extends iClosure {			// x1 <- x2
+class oRevAssign extends iClosure {				// x1 <- x2
 	vValue old;
 
 	public void nextval() {
@@ -125,7 +125,7 @@ class oRevAssign extends iClosure {			// x1 <- x2
 	String tfmt() { return "{$1 <- $2}"; }
 }
 
-class oRevSwap extends iClosure {			// x1 <-> x2
+class oRevSwap extends iClosure {				// x1 <-> x2
 	vValue oldleft;
 	vValue oldright;
 
@@ -148,7 +148,7 @@ class oRevSwap extends iClosure {			// x1 <-> x2
 //  special assignment operator used to assign &subject for string scanning
 //  (exactly the same as := except for the error message)
 
-class oSubjAssign extends iBinaryRefClosure {			// s ? e assignment
+class oSubjAssign extends iBinaryRefClosure {			// s ? e assign
 
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
 		return arg0.Assign(arg1.deref());
@@ -158,10 +158,10 @@ class oSubjAssign extends iBinaryRefClosure {			// s ? e assignment
 
 
 
-class oConjunction extends iBinaryRefClosure {		// x1 & x2
+class oConjunction extends iBinaryRefClosure {			// x1 & x2
 
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		arg0.deref(); //#%#% is this correct??
+		arg0.deref();
 		return arg1;
 	}
 	String tfmt() { return "{$1 & $2}"; }
@@ -219,7 +219,7 @@ class oToBy extends iClosure {				// i1 to i2 by i3
 
 
 
-class oField extends iBinaryRefClosure {		// R . s
+class oField extends iBinaryRefClosure {			// R . s
 	String s;
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
 	    return arg0.field(s = arg1.mkString().value);
@@ -227,21 +227,21 @@ class oField extends iBinaryRefClosure {		// R . s
 	String tfmt() { return "{$1 . " + s + "}"; }
 }
 
-class oIndex extends iBinaryRefClosure {		//  x1[x2]
+class oIndex extends iBinaryRefClosure {			//  x1[x2]
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
 		return arg0.Index(arg1.deref());
 	}
 	String tfmt() { return "{$1[$2]}"; }
 }
 
-class oSection extends iRefClosure {			//  x1[x2:x3]
+class oSection extends iRefClosure {				//  x1[x2:x3]
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].Section(args[1].deref(), args[2].deref());
 	}
 	String tfmt() { return "{$1[$2:$3]}"; }
 }
 
-class oSectPlus extends iRefClosure {			//  x1[x2+:x3]
+class oSectPlus extends iRefClosure {				//  x1[x2+:x3]
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].Section(args[1].deref(),
 			args[1].mkInteger().Add(args[2].mkInteger()));
@@ -249,7 +249,7 @@ class oSectPlus extends iRefClosure {			//  x1[x2+:x3]
 	String tfmt() { return "{$1[$2+:$3]}"; }
 }
 
-class oSectMinus extends iRefClosure {			//  x1[x2-:x3]
+class oSectMinus extends iRefClosure {				//  x1[x2-:x3]
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].Section(args[1].deref(),
 			args[1].mkInteger().Sub(args[2].mkInteger()));
@@ -297,7 +297,7 @@ class oSelect extends iUnaryRefClosure {			//  ?x
 	String tfmt() { return "{?$1}"; }
 }
 
-class oBang extends iClosure {				//  !x
+class oBang extends iClosure {					//  !x
 	public void nextval() {
 		retvalue = arguments[0].Bang(this);
 	}
@@ -308,26 +308,18 @@ class oBang extends iClosure {				//  !x
 
 //  arithmetic operators
 
-class oNumerate extends iUnaryFunctionClosure {		//  +n
+class oNumerate extends iUnaryFunctionClosure {			//  +n
 	vDescriptor function(vDescriptor arg) {
 		return arg.mkNumeric();
 	}
 	String tfmt() { return "{+$1}"; }
 }
 
-class oNegate extends iUnaryFunctionClosure {		//  -n
+class oNegate extends iUnaryFunctionClosure {			//  -n
 	vDescriptor function(vDescriptor arg) {
 		return arg.Negate();
 	}
 	String tfmt() { return "{-$1}"; }
-}
-
-class oPower extends iBinaryFunctionClosure {			//  n1 ^ n2
-	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		vNumeric.Coerce(this);
-		return argument0.Power(argument1);
-	}
-	String tfmt() { return "{$1 ^ $2}"; }
 }
 
 class oAdd extends iBinaryFunctionClosure {			//  n1 + n2
@@ -370,7 +362,18 @@ class oMod extends iBinaryFunctionClosure {			//  n1 % n2
 	String tfmt() { return "{$1 % $2}"; }
 }
 
+class oPower extends iBinaryFunctionClosure {			//  n1 ^ n2
+	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
+		vNumeric.Coerce(this);
+		return argument0.Power(argument1);
+	}
+	String tfmt() { return "{$1 ^ $2}"; }
+}
+
+
+
 // set operations
+
 class oComplement extends iUnaryFunctionClosure {		//  ~n
 	vDescriptor function(vDescriptor arg) {
 		return arg.Complement();
@@ -411,7 +414,7 @@ class oNLess extends iBinaryFunctionClosure {			//  n1 < n2
 	String tfmt() { return "{$1 < $2}"; }
 }
 
-class oNLessEq extends iBinaryFunctionClosure {		//  n1 <= n2
+class oNLessEq extends iBinaryFunctionClosure {			//  n1 <= n2
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
 		vNumeric.Coerce(this);
 		return argument0.NLessEq(argument1);
@@ -419,7 +422,7 @@ class oNLessEq extends iBinaryFunctionClosure {		//  n1 <= n2
 	String tfmt() { return "{$1 <= $2}"; }
 }
 
-class oNEqual extends iBinaryFunctionClosure {		//  n1 = n2
+class oNEqual extends iBinaryFunctionClosure {			//  n1 = n2
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
 		vNumeric.Coerce(this);
 		return argument0.NEqual(argument1);
@@ -451,6 +454,8 @@ class oNGreater extends iBinaryFunctionClosure {		//  n1 > n2
 	String tfmt() { return "{$1 > $2}"; }
 }
 
+
+
 //  lexical comparison
 
 class oLLess extends iBinaryFunctionClosure {			//  n1 << n2
@@ -462,7 +467,7 @@ class oLLess extends iBinaryFunctionClosure {			//  n1 << n2
 	String tfmt() { return "{$1 << $2}"; }
 }
 
-class oLLessEq extends iBinaryFunctionClosure {		//  n1 <<= n2
+class oLLessEq extends iBinaryFunctionClosure {			//  n1 <<= n2
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
 		arg0 = arg0.mkString();
 		arg1 = arg1.mkString();
@@ -471,7 +476,7 @@ class oLLessEq extends iBinaryFunctionClosure {		//  n1 <<= n2
 	String tfmt() { return "{$1 <<= $2}"; }
 }
 
-class oLEqual extends iBinaryFunctionClosure {		//  n1 == n2
+class oLEqual extends iBinaryFunctionClosure {			//  n1 == n2
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
 		arg0 = arg0.mkString();
 		arg1 = arg1.mkString();
@@ -507,20 +512,24 @@ class oLGreater extends iBinaryFunctionClosure {		//  n1 >> n2
 	String tfmt() { return "{$1 >> $2}"; }
 }
 
+
+
 // value comparison
-class oVEqual extends iBinaryFunctionClosure {		//  n1 === n2
+
+class oVEqual extends iBinaryFunctionClosure {			//  n1 === n2
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		return (arg0.equals(arg1.deref())) ? arg1 : null;
+		return (arg0.equals(arg1)) ? arg1 : null;
 	}
 	String tfmt() { return "{$1 === $2}"; }
 }
 
 class oVUnequal extends iBinaryFunctionClosure {		//  n1 ~=== n2
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		return (arg0.equals(arg1.deref())) ? null : arg1;
+		return (arg0.equals(arg1)) ? null : arg1;
 	}
 	String tfmt() { return "{$1 ~=== $2}"; }
 }
+
 
 
 //  miscellaneous binary operators
@@ -532,14 +541,14 @@ class oListConcat extends iBinaryFunctionClosure {		//  L1 ||| L2
 	String tfmt() { return "{$1 ||| $2}"; }
 }
 
-class oConcat extends iBinaryFunctionClosure {		//  s1 || s2
+class oConcat extends iBinaryFunctionClosure {			//  s1 || s2
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
 		return arg0.mkString().Concat(arg1.mkString());
 	}
 	String tfmt() { return "{$1 || $2}"; }
 }
 
-class oRefresh extends iUnaryFunctionClosure {		//  ^x
+class oRefresh extends iUnaryFunctionClosure {			//  ^x
 	vDescriptor function(vDescriptor arg) {
 		return arg.Refresh();
 	}
@@ -556,7 +565,7 @@ class oActivate extends iBinaryFunctionClosure {		//  x @ C
 	String tfmt() { return "{$1 @ $2}"; }
 }
 
-class oTabMatch extends iClosure {			// =s
+class oTabMatch extends iClosure {				// =s
     iClosure tab;
 
     public void nextval() {
@@ -578,7 +587,7 @@ class oTabMatch extends iClosure {			// =s
     }
 }
 
-class oProcessArgs extends iClosure {			//  x ! y
+class oProcessArgs extends iClosure {				//  x ! y
     iClosure func;
     public void nextval() {
         if (func == null) {
