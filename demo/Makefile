@@ -1,4 +1,5 @@
-#  Makefile for graphics tests
+#  Makefile for graphics demos -- just rebuilds them all when invoked
+
 
 all:
 	set -x; for i in *.icn; do LPATH=../bin ../bin/jcont -us $$i; done

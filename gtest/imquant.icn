@@ -1,0 +1,42 @@
+#  imquant.icn -- test GIF quantization code in Jcon
+#  13-aug-98/gmt
+#
+#  usage:  imquant {[n] filename}...
+#  (works best on a true-color display)
+#
+#  in the window,
+#	press [ or ] to toggle between original and quantized images
+#	press space bar or Enter to advance to next image
+#	press "q" to quit
+
+$define TEMPFILE "temp.gif"
+
+link graphics
+
+procedure main(args)
+   local ncolors, s
+
+   ncolors := 256
+   every s := !args do {
+      if not (ncolors := integer(s)) then {
+         WOpen("image=" || s) | { write(&errout, "can't load ", s); next }
+	 WriteImage(TEMPFILE, , , , , ncolors)	| stop("can't write ", TEMPFILE)
+	 load(TEMPFILE, ncolors)
+	 repeat case Event() of {
+	    !" \r\n":	break
+	    "[":	load(s, "original")
+	    "]":	load(TEMPFILE, ncolors)
+	    "q":	break break
+	    }
+	 WClose()
+	 }
+      }
+   remove(TEMPFILE)
+end
+
+procedure load(filename, label)
+   ReadImage(filename) | stop("can't load ", filename)
+   GotoRC(1,1)
+   WWrites(filename, ": ", label)
+   return
+end
