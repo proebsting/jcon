@@ -23,10 +23,9 @@ strings and csets:
 -- image(c) doesn't recognize &digits, &lcase, etc.
 
 numerics:
--- overflow and underflow are not detected
--- conversion of radix integers to strings does not work
--- conversion of reals to strings may not match v9 exactly
--- conversion of strings to reals and integers probably follows different rules
+-- arithmetic overflow and underflow are not detected
+-- conversion of reals to strings does not match results from v9
+-- conversion of strings to reals and integers follows slightly different rules
 
 files:
 -- no "translated mode" code for Mac or Windows
