@@ -251,6 +251,10 @@ vValue Proc(long i) {
     if (v != null) {
 	return v.deref().getproc();
     }
+    v = (vDescriptor) iEnv.builtintab.get(this.value);
+    if (v != null) {
+	return v.deref();
+    }
     try {
 	return this.mkInteger().getproc();
     } catch (iError e) {
