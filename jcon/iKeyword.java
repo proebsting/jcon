@@ -266,10 +266,17 @@ final class k$level extends vProc0 {				// &level
 	String s;
 	int n = 0;
 	try {
+	    String prev = "";
+	    int i;
 	    while ((s = r.readLine()) != null) {
-		if (s.indexOf("p_l$") >= 0) {
+		// Determine if a generated routine has been found.
+		// Exclude those routines that are simply trampolines into
+		// closures.
+		if ((s.indexOf("c_l$") >= 0) ||
+		   (((i = s.indexOf("p_l$")) >= 0) && ((prev.indexOf("c_l$") < 0) || !s.regionMatches(i+4,prev,i+4,s.indexOf(".")-4-i)))) {
 		    n++;
 		}
+		prev = s;
 	    }
 	} catch (IOException e) {
 	}
