@@ -44,12 +44,13 @@ error reporting:
 
 miscellaneous:
 -- commands run by system(s) do not inherit stdin/stdout/error 
+-- getenv(s) on the Alpha sees a truncated environment [Java problem?]
 -- random selection from sets and tables differs from v9
 -- display() ignores its arguments (and displays everything)
 -- display() prints globals in an unsorted order
 -- function() generates names in an unsorted order
 -- allocation-related keywords (&allocated, &collections, &storage, &regions)
-   produce only 0's.
+   produce only 0's
 
 arguably correct differences:
 -- tables sort after sets, as per the Icon book but contrary to v9
