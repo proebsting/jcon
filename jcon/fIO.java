@@ -4,6 +4,8 @@ package rts;
 
 import java.io.*;
 
+class fIO {} // dummy
+
 
 
 class f$read extends iFunctionClosure {				// read()

@@ -2,6 +2,8 @@
 
 package rts;
 
+class fString {} // dummy
+
 
 
 class f$char extends iFunctionClosure {				// char()

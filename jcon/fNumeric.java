@@ -2,6 +2,8 @@
 
 package rts;
 
+class fNumeric {} // dummy
+
 
 
 class f$abs extends iFunctionClosure {				// abs(n)

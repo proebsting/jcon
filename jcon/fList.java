@@ -2,6 +2,8 @@
 
 package rts;
 
+class fList {} //dummy
+
 
 
 class f$list extends iFunctionClosure {				// list(i, x)

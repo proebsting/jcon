@@ -2,6 +2,8 @@
 
 package rts;
 
+class fStruct {} // dummy
+
 
 
 class f$set extends iFunctionClosure {				// set(x)
