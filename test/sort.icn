@@ -28,8 +28,6 @@ procedure listtest()
       L2 := sort(L1)
       L3 := sort(set(L1))
 
-#wlist(L2)
-#wlist(L3)
       check(L2, L3)
 
       L2 := sort(copy(L1))
@@ -201,15 +199,34 @@ procedure messtest()
    L1 := [
       '', '0cs', 4.4, set(), 2.2, "a", &null, integer, wlist, "epsilons",
       r0, "delta", push, "beta", table(5), [], write, '123cs', [3,4],
-      image, insert(table(3),4,7), 3.3, reverse, r1(1), [], table(4),
+      image, insert(table(3),4,7), &input, 3.3, reverse, r1(1), [], table(4),
       r5, r5(1,23), &null, create 1 | 2, 5.5, set([5,6]), "", r2(5,6),
-      "epsilon", [1,2,3], r5(7,8,9), r2, 4, , set([0,1,2]), 1,
+      "epsilon", [1,2,3], r5(7,8,9), r2, &output, 4, , set([0,1,2]), 1,
       r5(1,2,3), r1, check, create 3 | 4, serial, 'XYZcs', 1.1, r1(5),
       '1234cs', 5, r0(), read, "gamma", r5(4,5,6,7,8), 2, create 5 to 7,
-      table, r2(1,2), right, r0(), "alpha", messtest,
+      table, r2(1,2), right, r0(), "alpha", messtest, &errout,
       listtest, "gamma", main, 3]
    put(L1, L1)
    L2 := copy(L1)
    every put(L1, copy(!L2))
+
+   write()
    every write(image(!sort(L1)))
+
+   wsortf(L1, 2)
+   wsortf(L1, -1)
+   return
+end
+
+procedure wsortf(L, n)
+   local e, s
+
+   write()
+   every e := !sortf(L,n) do {
+      s := image(e)
+      if (s ? =("list" | "record")) & not (s ?= "record constructor") then
+         writes("key=", image(e[n]), " ")	# may fail
+      write(s)
+      }
+   return
 end
