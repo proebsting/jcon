@@ -1,11 +1,12 @@
 JCON v0.5 README
-July 14, 1997
+July 15, 1997
 
-
-Gregg Townsend		gmt@cs.arizona.edu
-Todd Proebsting		todd@cs.arizona.edu
+Gregg Townsend
+Todd Proebsting
 
 http://www.cs.arizona.edu/jcon/
+jcon@cs.arizona.edu
+
 
 
 This is an initial, limited release of Jcon.
@@ -62,6 +63,17 @@ The rest of the Jcon distribution can be deleted if no longer wanted.
 
 
 
+TESTING JCON
+
+The Jcon test suite includes new tests written for Jcon, old tests
+from the Icon v9.3 distribution, and a few Icon applications.  The
+tests are run by typing "make test".  A successful run produces the
+names of the tests, one at a time, as they run.  (On SGI systems,
+there may also be a few messages from the Java system about "JIT
+translation failed".)
+
+
+
 DOCUMENTATION
 
 The file doc/Article contains an overview of Jcon written for the
@@ -83,4 +95,4 @@ There is no other documentation at this time.
 
 PROBLEMS AND BUG REPORTS
 
-Please send mail to:  ???
+Please send all comments to:  jcon@cs.arizona.edu
