@@ -26,6 +26,7 @@ general:
 -- random selection uses Java's RNG, presumably generating different sequences
 -- write() is simplified, e.g. doesn't accept file arguments
 -- structures don't have serial numbers yet
+-- crude tracing can be enabled by setting &trace
 
 strings:
 -- image(s) doesn't escape special characters

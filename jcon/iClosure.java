@@ -106,7 +106,7 @@ String trace() {
 		b.append(getarg((int)c - '1'));
 
 	    } else if (c == '*') {		// $*: all ags, comma-separated
-		if (arguments.length > 0) {
+		if (arguments != null && arguments.length > 0) {
 		    b.append(getarg(0));
 		    for (int j = 1; j < arguments.length; j++) {
 			b.append(',').append(getarg(j));
