@@ -232,6 +232,8 @@ public vDescriptor RevAssign(vDescriptor v) {
 //  Wraparound occurs when (i) and (i +/- j) are of opposite type.  It is
 //  checked by negating the two values, which makes the sign bit serve as
 //  a classifier, and then checking for sign bit differences.
+//
+//  #%#% Should still give error (not failure) if object is not subscriptable.
 
 public vDescriptor SectPlus(vDescriptor a, vDescriptor b) {	// s[i+:j]
     vInteger ai = a.mkInteger();

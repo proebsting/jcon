@@ -314,13 +314,16 @@ vNumeric PowerOf(vReal r) {			// r ^ i
 	x = 1.0 / x;
 	y = -y;
     }
-    // #%#% need to add overflow check
-    // #%#% could do this more efficiently, too
-    double p = 1.0;
-    for (long j = 0; j < y; j++) {
-	p *= x;
+
+    double v = 1.0;
+    while (y > 0) {
+	if ((y & 1) != 0) {
+	    v *= x;
+	}
+	y >>= 1;
+	x *= x;
     }
-    return vReal.New(p);
+    return vReal.New(v);
 }
 
 vNumeric PowerOf(vInteger i) {			// i ^ i
@@ -338,13 +341,19 @@ vNumeric PowerOf(vInteger i) {			// i ^ i
 	    return New(0);
 	}
     }
-    // #%#% need to add overflow check
-    // #%#% could do this more efficiently, too
-    long p = 1L;
-    for (long j = 0; j < y; j++) {
-	p *= x;
+
+    long v = 1L;
+    while (y > 0) {
+	if ((y & 1) != 0) {
+	    v *= x;
+	}
+	y >>= 1;
+	if (x > Integer.MAX_VALUE && y > 0) {
+	    iRuntime.error(203);
+	}
+	x *= x;
     }
-    return New(p);
+    return New(v);
 }
 
 
