@@ -59,6 +59,7 @@ class iRecordClosure extends iFunctionClosure {
 
 iRecordClosure(vRecordProc constr, vDescriptor[] args, iClosure parent) {
     super();
+    init();
     this.constr = constr;
     this.parent = parent;
     arguments = args;

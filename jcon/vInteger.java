@@ -282,6 +282,7 @@ class iIntegerClosure extends iRefClosure {
 	vInteger value;
 
     iIntegerClosure(vInteger value, vDescriptor[] args, iClosure parent) {
+	init();
         this.value = value;
 	arguments = args;
 	this.parent = parent;

@@ -26,7 +26,6 @@ void init() {
 }
 
 public iClosure() {		// constructor
-    init();
 }
 
 public void locals()	{}	// initializes name/variable arrays.

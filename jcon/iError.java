@@ -80,6 +80,7 @@ class iErrorClosure extends iFunctionClosure {
     vValue value;
 
     iErrorClosure(vValue value, vDescriptor[] args, iClosure parent) {
+	init();
         this.value = value;
 	this.arguments = args;
 	this.parent = parent;
