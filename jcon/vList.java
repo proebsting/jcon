@@ -170,9 +170,10 @@ vDescriptor Select() {					//  ?L
 
 
 vDescriptor Bang(iClosure c) {				//  !L
-    if (c.o == null) {
+    if (c.PC == 1) {
 	c.o = c;
 	c.oint = 0;
+	c.PC = 2;
     } else {
 	c.oint++;
     }

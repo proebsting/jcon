@@ -136,8 +136,9 @@ vDescriptor Select() {				// ?s
 
 vDescriptor Bang(iClosure c) {			// !s
     int n;
-    if (c.o == null) {
+    if (c.PC == 1) {
 	c.o = new Integer(n = start);
+	c.PC = 2;
     } else {
 	c.o = new Integer(n = ((Integer)c.o).intValue() + 1);
     }

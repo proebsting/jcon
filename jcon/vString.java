@@ -267,9 +267,10 @@ vDescriptor SelectVar(vVariable v) {
 }
 
 vDescriptor Bang(iClosure c) {
-    if (c.o == null) {
+    if (c.PC == 1) {
 	c.o = c;
 	c.oint = 0;
+	c.PC = 2;
     } else {
 	c.oint++;
     }
@@ -282,8 +283,9 @@ vDescriptor Bang(iClosure c) {
 
 vDescriptor BangVar(iClosure c, vVariable v) {
     int i;
-    if (c.o == null) {
+    if (c.PC == 1) {
 	c.o = new Integer(i = 1);
+	c.PC = 2;
     } else {
 	c.o = new Integer(i = ((Integer)c.o).intValue() + 1);
     }

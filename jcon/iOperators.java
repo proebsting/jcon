@@ -132,8 +132,9 @@ public class oRevAssign extends iClosure {			// x1 <- x2
 	vValue old;
 
 	public vDescriptor nextval() {
-		if (old == null) {
+		if (PC == 1) {
 			old = arguments[0].deref();
+			PC = 2;
 			return arguments[0].Assign(arguments[1].deref());
 		} else {
 			arguments[0].Assign(old);
@@ -148,9 +149,10 @@ public class oRevSwap extends iClosure {			// x1 <-> x2
 	vValue oldright;
 
 	public vDescriptor nextval() {
-		if (oldleft == null) {
+		if (PC == 1) {
 			oldleft = arguments[0].deref();
 			oldright = arguments[1].deref();
+			PC = 2;
 			// must check for failure because &pos:=K can fail.
 			// the order of the assignments matters, too.
 			if (arguments[0].Assign(oldright) == null) {
@@ -641,7 +643,7 @@ public class oTabMatch extends iClosure {			// =s
     iClosure tab;
 
     public vDescriptor nextval() {
-	if (tab == null) {
+	if (PC == 1) {
 	    iClosure match = new f$match();
 	    vDescriptor[] args = { arguments[0].mkString() };
 	    match.closure(args, this);
@@ -652,6 +654,7 @@ public class oTabMatch extends iClosure {			// =s
 	    args[0] = v;
 	    tab = new f$tab();
 	    tab.closure(args, this);
+	    PC = 2;
 	}
 	return tab.resume();
     }
@@ -660,10 +663,11 @@ public class oTabMatch extends iClosure {			// =s
 public class oProcessArgs extends iClosure {			//  x ! y
     iClosure func;
     public vDescriptor nextval() {
-        if (func == null) {
+        if (PC == 1) {
             arguments[0] = arguments[0].deref();
             vDescriptor[] a = arguments[1].mkArgs();
             func = iInterface.Instantiate(arguments[0], a, parent);
+	    PC = 2;
         }
         vDescriptor v = func.resume();
         this.PC = func.PC;

@@ -441,7 +441,7 @@ end
 
 # record irResume( closure failLabel retValue )
 procedure gen_bc_irResume(s, p)
-	local c, PC, target, resume
+	local c, PC, target, resume, free
 
 	PC := PC_fieldref(bc_proc_classptr)
 	resume := create_methodref(bc_proc_classptr, "resume", "()Lrts/vDescriptor;", "rts/iClosure")
@@ -450,20 +450,30 @@ procedure gen_bc_irResume(s, p)
 	put(s, getfield(PC))
 	target := label()
 	put(s, ifne(target))
-	put(s, Pop())
+	free := create_methodref(bc_proc_classptr, "Free", "()V", "rts/iClosure")
+	put(s, invokevirtual(free))
 	transfer_to(s, p.failLabel)
 	put(s, target)
+	put(s, dup())
 	put(s, invokevirtual(resume))
 	if \p.retValue then {
 		put(s, dup())
 		target := label()
 		put(s, ifnonnull(target))
 		put(s, Pop())
+		put(s, invokevirtual(free))
 		transfer_to(s, p.failLabel)
 		put(s, target)
+		put(s, swap())
+		put(s, Pop())
 		gen_bc_assign_to(s, p.retValue)
 	} else {
-		conditional_transfer_to(s, p.failLabel, ifnull, ifnonnull)
+		target := label()
+		put(s, ifnonnull(target))
+		put(s, invokevirtual(free))
+		transfer_to(s, p.failLabel)
+		put(s, target)
+		put(s, Pop())
 	}
 	return s
 end

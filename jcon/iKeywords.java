@@ -138,6 +138,10 @@ class k$features extends iClosure {		// &features
 	int posn = 0;
 
 	public vDescriptor nextval() {
+		if (PC == 1) {
+			posn = 0;
+			PC = 2;
+		}
 		if (posn < flist.length) {
 			return iNew.String(flist[posn++]);
 		} else {
@@ -611,6 +615,10 @@ class k$level extends iValueClosure {	// &level
 class k$gen4zeros extends iClosure {		// &allocated, &collections
 	int i;
 	public vDescriptor nextval() {
+		if (PC == 1) {
+			i = 0;
+			PC = 2;
+		}
 		if (i < 4) {
 			i++;
 			return iNew.Integer(0);
@@ -625,6 +633,10 @@ class k$gen4zeros extends iClosure {		// &allocated, &collections
 class k$gen3zeros extends iClosure {		// &regions, &storage
 	int i;
 	public vDescriptor nextval() {
+		if (PC == 1) {
+			i = 0;
+			PC = 2;
+		}
 		if (i < 3) {
 			i++;
 			return iNew.Integer(0);

@@ -6,6 +6,8 @@ public abstract class iClosure {
 public iClosure parent;		// enclosing closure
 public vDescriptor[] arguments;	// argument list
 
+public vProc vproc;		// "creator" object;
+
 public int PC;			// "program counter" (initially = 1)
 
 public Object o;		// arbitrary storage for RTS methods
@@ -18,7 +20,7 @@ public int column;
 public String[] names;		// arrays created by locals() for returning
 public vVariable[] variables;	//	contents of active closure.
 
-final void init() {
+public final void init() {
     PC = 1;
 }
 
@@ -63,10 +65,6 @@ public vDescriptor resume() {
                 System.err.println(this.trace_prototype());
             }
             ret = nextval();
-	    if (ret == null || PC == 0) {
-		iNew.FreeArgs(arguments);
-		arguments = null;
-	    }
             if (k$trace.trace != 0) {
 		System.err.print(trace_coordinate());
                 for (iClosure p=this.parent; p != null; p=p.parent) {
@@ -92,7 +90,19 @@ public vDescriptor resume() {
 	e.report(this);  // returns only on error->failure conversion.
 	ret = null;
     }
+    if (PC == 0) {
+	iNew.FreeArgs(arguments);
+	arguments = null;
+    }
     return ret;
+}
+
+public void Free() {
+	iNew.FreeArgs(arguments);
+	arguments = null;
+	if (vproc != null) {
+		vproc.cachedclosure = this;
+	}
 }
 
 public abstract vDescriptor nextval();

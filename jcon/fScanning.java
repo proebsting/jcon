@@ -108,7 +108,7 @@ class f$find extends iClosure {				// find(s1,s2,i1,i2)
 
     public vDescriptor nextval() {
 
-        if (s1 == null) {
+        if (PC == 1) {
 	    for (int i = 0; i < arguments.length; i++) {
 		arguments[i] = arguments[i].deref();
 	    }
@@ -124,6 +124,7 @@ class f$find extends iClosure {				// find(s1,s2,i1,i2)
 		i1 = i2;
 		i2 = tmp;
 	    }
+	    PC = 2;
 	}
 
 	if (i1 > i2) {
@@ -151,7 +152,7 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
 
     public vDescriptor nextval() {
 
-        if (c == null) {
+        if (PC == 1) {
 	    for (int i = 0; i < arguments.length; i++) {
 		arguments[i] = arguments[i].deref();
 	    }
@@ -167,6 +168,7 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
 	        i1 = i2;
 	        i2 = tmp;
 	    }
+	    PC = 2;
 	}
 
 	for (; i1 < i2; i1++) {
@@ -190,7 +192,7 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 
     public vDescriptor nextval() {
 
-        if (c1 == null) {
+        if (PC == 1) {
 	    for (int i = 0; i < arguments.length; i++) {
 		arguments[i] = arguments[i].deref();
 	    }
@@ -209,6 +211,7 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 		i1 = i2;
 		i2 = tmp;
 	    }
+	    PC = 2;
 	}
 
 	int balance = 0;
@@ -236,12 +239,13 @@ class f$move extends iClosure {				// move(j)
 
     public vDescriptor nextval() {
 
-        if (oldpos == null) {
+        if (PC == 1) {
 	    oldpos = (vInteger) k$pos.self.deref();
 	    int i = (int) oldpos.value;
 	    int j = (int) vInteger.argVal(arguments, 0);
 	    int k = i + j - 1;
 	    vString s = (vString) k$subject.self.deref();
+	    PC = 2;
 	    if (k < 0 || k > s.value.length()) {
 		return null;
 	    } else {
@@ -265,11 +269,12 @@ class f$tab extends iClosure {				// tab(j)
 
     public vDescriptor nextval() {
 
-        if (oldpos == null) {
+        if (PC == 1) {
 	    oldpos = (vInteger) k$pos.self.deref();
 	    vString s = (vString) k$subject.self.deref();
 	    int i = (int) oldpos.value;
 	    int j = (int) s.posEq(vInteger.argVal(arguments, 0));
+	    PC = 2;
 	    if (j == 0) {
 		return null;
 	    } else {

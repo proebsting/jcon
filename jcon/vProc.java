@@ -8,6 +8,7 @@ public class vProc extends vValue {
 	int args;	// number of args
 
 	iFunctionClosure functionclosure;	// cached closure for pure functions.
+	iClosure cachedclosure;			// cached closure;
 
 	vProc(String img, String classname, int args) {
 		this.img = img;
@@ -39,6 +40,11 @@ public class vProc extends vValue {
 		if (functionclosure != null) {
 			return functionclosure;
 		}
+		if (cachedclosure != null) {
+			iClosure tmp = cachedclosure;
+			cachedclosure = null;
+			return tmp;
+		}
 		try {
 			try {
 				c = (iClosure) proc.newInstance();
@@ -58,6 +64,7 @@ public class vProc extends vValue {
 		} catch (IllegalAccessException e) {
 			iRuntime.bomb(e);
 		}
+		c.vproc = this;
 		return c;
 	}
 

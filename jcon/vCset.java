@@ -152,9 +152,10 @@ vDescriptor Select() {
 }
 
 vDescriptor Bang(iClosure c) {
-    if (c.o == null) {
+    if (c.PC == 1) {
         c.o = c;
 	c.oint = 0;
+	c.PC = 2;
     }
     for (int k = c.oint; k < t.size(); k++) {
 	if (t.get(k)) {

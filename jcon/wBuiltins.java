@@ -92,7 +92,7 @@ class f$WAttrib extends iClosure {		// WAttrib(W,attribs,...)
 	int next;
 
 	public vDescriptor nextval() {
-		if (win == null) {
+		if (PC == 1) {
 			for (int i = 0; i < arguments.length; i++) {
 				arguments[i] = arguments[i].deref();
 			}
@@ -108,6 +108,7 @@ class f$WAttrib extends iClosure {		// WAttrib(W,attribs,...)
 				}
 			}
 			next = 0;
+			PC = 2;
 		}
 		vDescriptor v = null;
 		while (next < alist.length) {

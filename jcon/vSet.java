@@ -60,7 +60,7 @@ vDescriptor Select() {
 }
 
 vDescriptor Bang(iClosure c) {
-    if (c.o == null) {
+    if (c.PC == 1) {
 	vValue a[] = new vValue[t.size()];
 	int i = 0;
 	java.util.Enumeration e = (java.util.Enumeration) t.keys();

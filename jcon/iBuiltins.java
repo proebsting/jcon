@@ -329,8 +329,9 @@ class f$function extends iClosure {				// function()
 	java.util.Enumeration e;
 
 	public vDescriptor nextval() {
-		if (e == null) {
+		if (PC == 1) {
 			e = iEnv.builtintab.keys();
+			PC = 2;
 		}
 		if (e.hasMoreElements()) {
 			return iNew.String((String) e.nextElement());
