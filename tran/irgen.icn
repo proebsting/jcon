@@ -568,11 +568,15 @@ procedure ir_Link(p, st, target, bounded)
 end
 
 procedure ir_value0(p)
+	local x
+
 	case type(p) of {
 	"Intlit" : return irIntLit(p.int)
 	"Reallit" : return irRealLit(p.real)
 	"Stringlit": return irStrLit(p.str)
 	"Csetlit" : return irCsetLit(p.str)
+	"Key" : x := ir_key0(p) & return x
+	"Ident" : return ir_ident(p.id)
 	}
 end
 
@@ -874,6 +878,8 @@ end
 procedure ir_Ident(p, st, target, bounded)
 	local v
 
+	if type(target) ~== "irTmp" then target := &null
+
 	init4ir(p)
 
 	v := ir_ident(p.id)
@@ -1012,9 +1018,21 @@ procedure ir_Compound(p, st, target, bounded)
 
 end
 
+
+procedure ir_key0(p)
+	case (p.id) of {
+	"fail" : fail
+	"line" : { return irIntLit(p.coord.line) }
+	"file" : { return irStrLit(p.coord.file) }
+	default: { return ir_key(p.id) }
+	}
+end
+
 # record Key( id )
 procedure ir_Key(p, st, target, bounded)
 	local k
+
+	if type(target) ~== "irTmp" then target := &null
 
 	init4ir(p)
 
@@ -1023,22 +1041,8 @@ procedure ir_Key(p, st, target, bounded)
 		CG.emit(p.ir.start, [ irGoto(p.ir.failure) ])
 		/bounded & CG.emit(p.ir.resume, [ irRunTimeError() ])
 		}
-	"line" : {
-		CG.emit(p.ir.start, [
-			irMove(target, irIntLit(p.coord.line)),
-			irGoto(p.ir.success)
-			])
-		/bounded & CG.emit(p.ir.resume, [ irGoto(p.ir.failure) ])
-		}
-	"file" : {
-		CG.emit(p.ir.start, [
-			irMove(target, irStrLit(p.coord.file)),
-			irGoto(p.ir.success)
-			])
-		/bounded & CG.emit(p.ir.resume, [ irGoto(p.ir.failure) ])
-		}
 	default: {
-		k := ir_key(p.id)
+		k := ir_key0(p)
 		CG.emit(p.ir.start, [
 			irMove(target, k),
 			irGoto(p.ir.success)
