@@ -9,7 +9,7 @@ public class iInterface {
 		(new iOperators()).announce();
 	}
 
-	public static vDescriptor marshal( vDescriptor[] args, int len) {
+	public static vList marshal( vDescriptor[] args, int len) {
 		vDescriptor[] a = new vDescriptor[len];
 
 		int varlen = args.length - len + 1;
