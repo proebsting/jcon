@@ -126,5 +126,6 @@ $ZIP -0 -j -q $OFILE $TDIR/*.class
 
 # execute, or don't
 $NOEXECUTE
+rm -rf $TDIR
 export CLASSPATH=$OFILE:$CLASSPATH
 exec $JAVA a_out "$@"

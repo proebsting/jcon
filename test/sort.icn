@@ -14,9 +14,10 @@ procedure main()
       every put (L1, !S)
 
       L2 := sort(L1)
-      #wlist(L2)
-
       L3 := sort(set(L1))
+
+#wlist(L2)
+#wlist(L3)
       check(L2, L3)
 
    }
@@ -24,13 +25,14 @@ end
 
 
 
-#  randval() -- return random integer, real, or string value
+#  randval() -- return random integer, real, string, or cset value
 
 procedure randval()
-   return case ?3 of {
-      1:  ?999
-      2:  ?99 / 10.0
-      3:  ?&letters || ?&letters || ?&letters
+   return case ?4 of {
+      1:  ?999					# 000 - 999
+      2:  ?99 / 10.0				# 0.0 - 9.9
+      3:  ?&letters || ?&letters || ?&letters	# "AAA" - "ZZZ"
+      4:  ?&digits ++ ?&letters ++ ?&letters	# '0AA' - '9ZZ'
       }
 end
 
