@@ -97,8 +97,9 @@ procedure tmul(x)			# test multiply, divide, real(I)
       p *:= x
       d := p / q
       e := real(p) / real(q)
-      if not (d = x & (abs(e / x - 1) < 1.0e-15)) then
-         write(x, " ^ ", n, " = ", p, "\td=", d, "\te=", e)
+      err := abs(e / x - 1)
+      if not (d = x & err < 1.0e-14) then	# 1e-15 for most, 1e-14 for IBM
+         write(x, " ^ ", n, " = ", p, "\td=", d, "\te=", e, "\terr=", err)
    }
    write(x, " ^ ", n, " = ", p)
    return
@@ -117,7 +118,7 @@ procedure conv(n)			# test conversion to/from real & string
    in := integer(rn)
    d := n - in
    r := d / rn
-   if abs(r) > 1.0e-15 then
+   if abs(r) > 1.0e-14 then		# 1e-15 works for most, need -14 for IBM
       write("real conv err: n=", n, " rn=", rn, " in=", in, " d=", d, " r=", r)
    else
       write("conv ok: ", n)
