@@ -190,27 +190,24 @@ vNumeric PowerOf(vReal r)	{ iRuntime.error(101, this); return null; }
 vNumeric PowerOf(vInteger i)	{ iRuntime.error(101, this); return null; }
 
 //  v.toPower(i) -- called from vInteger, which doesn't do large arithmetic
+
 vNumeric ToPower(vInteger i) {
     BigInteger x = this.value;
-    long y = i.value;
+    int y = (int) i.value;
 
     if (x.signum() == 0 && y <= 0) {
 	iRuntime.error(204);
+	return null;
     } else if (y < 0) {
 	return vInteger.New(0);
     } else if (y == 0) {
 	return vInteger.New(1);
+    } else if (y < Integer.MAX_VALUE) {
+	return Result(x.pow(y));
+    } else {
+	iRuntime.error(101, i);
+	return null;
     }
-
-    BigInteger v = BigInteger.valueOf(1);
-    while (y > 0) {
-	if ((y & 1) != 0) {
-	    v = v.multiply(x);
-	}
-	y >>= 1;
-	x = x.multiply(x);
-    }
-    return Result(v);
 }
 
 
@@ -274,6 +271,58 @@ vNumeric BkwGreater(vBigInt a)
     { return a.value.compareTo(this.value) > 0 ? this : null; }
 vNumeric BkwGreaterEq(vBigInt a)
     { return a.value.compareTo(this.value) >= 0 ? this : null; }
+
+
+
+//  bitwise operations
+
+vNumeric And(vInteger j)	{ return this.And(New(j.value)); }
+vNumeric Or(vInteger j)		{ return this.Or(New(j.value)); }
+vNumeric Xor(vInteger j)	{ return this.Xor(New(j.value)); }
+
+vNumeric Compl()		{ return New(this.value.not()); }
+
+vNumeric And(vNumeric j) {
+    BigInteger b;
+    if (j instanceof vBigInt) {
+	b = ((vBigInt)j).value;
+    } else {
+	b = BigInteger.valueOf(((vInteger)j).value);
+    }
+    return Result(this.value.and(b));
+}
+
+vNumeric Or(vNumeric j) {
+    BigInteger b;
+    if (j instanceof vBigInt) {
+	b = ((vBigInt)j).value;
+    } else {
+	b = BigInteger.valueOf(((vInteger)j).value);
+    }
+    return Result(this.value.or(b));
+}
+
+vNumeric Xor(vNumeric j) {
+    BigInteger b;
+    if (j instanceof vBigInt) {
+	b = ((vBigInt)j).value;
+    } else {
+	b = BigInteger.valueOf(((vInteger)j).value);
+    }
+    return Result(this.value.xor(b));
+}
+
+vNumeric Shift(vInteger j) {
+    long n = j.value;
+    if (n > Integer.MAX_VALUE) {
+	iRuntime.error(101, j);
+	return null;
+    } else if (n < Integer.MIN_VALUE) {
+	return vInteger.New(0);
+    } else {
+	return Result(this.value.shiftLeft((int)n));
+    }
+}
 
 
 

@@ -352,6 +352,39 @@ vNumeric BkwGreaterEq(vBigInt a)	{ return Big(this).BkwGreaterEq(a); }
 
 
 
+//  bitwise operations
+
+vNumeric And(vNumeric j)	{ return j.And(this); }
+vNumeric Or(vNumeric j)		{ return j.Or(this); }
+vNumeric Xor(vNumeric j)	{ return j.Xor(this); }
+
+vNumeric Compl()		{ return New(~this.value); }
+vNumeric And(vInteger j)	{ return New(this.value & j.value); }
+vNumeric Or(vInteger j)		{ return New(this.value | j.value); }
+vNumeric Xor(vInteger j)	{ return New(this.value ^ j.value); }
+
+vNumeric Shift(vInteger j) {
+    long n = j.value;
+    long v = this.value;
+    if (n > 0) {		// shift left
+	if (v == (short)v && n <= 32) {
+	    return vInteger.New(v << n);	// safe to do this
+	} else {
+	    return Big(this).Shift(j);		// no, use large-integer code
+	}
+    } else if (n == 0) {	// no shift
+	return this;
+    } else {			// shift right
+	if (n > -64) {
+	    return vInteger.New(v >> -n);	// shift with with sign extend
+	} else {
+	    return vInteger.New(v >> 63);	// fill with sign
+	}
+    }
+}
+
+
+
 //  i to j by k   (i.ToBy(j,k))
 
 public vDescriptor ToBy(vDescriptor v2, vDescriptor v3) {

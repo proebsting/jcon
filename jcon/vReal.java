@@ -219,6 +219,18 @@ public vNumeric Abs() {
 
 
 
+vNumeric And(vNumeric j)	{ return vBigInt.New(value).And(j); }
+vNumeric Or(vNumeric j)		{ return vBigInt.New(value).Or(j); }
+vNumeric Xor(vNumeric j)	{ return vBigInt.New(value).Xor(j); }
+
+vNumeric Compl()		{ return vBigInt.New(value).Compl(); }
+vNumeric And(vInteger j)	{ return vBigInt.New(value).And(j); }
+vNumeric Or(vInteger j)		{ return vBigInt.New(value).Or(j); }
+vNumeric Xor(vInteger j)	{ return vBigInt.New(value).Xor(j); }
+vNumeric Shift(vInteger j)	{ return vBigInt.New(value).Shift(j); }
+
+
+
 //  numeric comparisons
 
 public vNumeric NLess(vDescriptor v)		{ return v.BkwLess(this); }

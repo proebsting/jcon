@@ -33,5 +33,18 @@ public vValue Union(vDescriptor x)	{ return this.mkCset().Union(x); }
 public vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }
 
 
+// bitwise ops are called after conversion to Numeric (vInteger or vBigInt)
+
+abstract vNumeric And(vNumeric j);	// iand(i, j)
+abstract vNumeric Or(vNumeric j);	// ior(i, j)
+abstract vNumeric Xor(vNumeric j);	// ixor(i, j)
+
+abstract vNumeric Compl();		// icompl(i)
+abstract vNumeric And(vInteger j);	// iand(i, j)
+abstract vNumeric Or(vInteger j);	// ior(i, j)
+abstract vNumeric Xor(vInteger j);	// ixor(i, j)
+abstract vNumeric Shift(vInteger j);	// ishift(i, j)
+
+
 
 } // class vNumeric

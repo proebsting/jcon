@@ -34,7 +34,7 @@ final class f$seq extends vProc2 {				// seq(i1,i2)
 
 final class f$icom extends vProc1 {				// icom(n)
     public vDescriptor Call(vDescriptor a) {
-	return vInteger.New(~a.mkInteger().value);
+	return a.mkFixed().Compl();
     }
 }
 
@@ -42,7 +42,7 @@ final class f$icom extends vProc1 {				// icom(n)
 
 final class f$iand extends vProc2 {				// iand(m, n)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
-	return vInteger.New(a.mkInteger().value & b.mkInteger().value);
+	return a.mkFixed().And(b.mkFixed());
     }
 }
 
@@ -50,7 +50,7 @@ final class f$iand extends vProc2 {				// iand(m, n)
 
 final class f$ior extends vProc2 {				// ior(m, n)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
-	return vInteger.New(a.mkInteger().value | b.mkInteger().value);
+	return a.mkFixed().Or(b.mkFixed());
     }
 }
 
@@ -58,7 +58,7 @@ final class f$ior extends vProc2 {				// ior(m, n)
 
 final class f$ixor extends vProc2 {				// ixor(m, n)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
-	return vInteger.New(a.mkInteger().value ^ b.mkInteger().value);
+	return a.mkFixed().Xor(b.mkFixed());
     }
 }
 
@@ -66,17 +66,7 @@ final class f$ixor extends vProc2 {				// ixor(m, n)
 
 final class f$ishift extends vProc2 {				// ishift(m, n)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
-	long v = a.mkInteger().value;
-	long n = b.mkInteger().value;
-	if (n >= 64) {
-	    return vInteger.New(0);		// no error 203; same as v9
-	} else if (n >= 0) {
-	    return vInteger.New(v << n);	// no error 203; same as v9
-	} else if (n > -64) {
-	    return vInteger.New(v >> -n);
-	} else {
-	    return vInteger.New(v >> 63);	// fill with sign
-	}
+	return a.mkFixed().Shift(b.mkInteger());
     }
 }
 
