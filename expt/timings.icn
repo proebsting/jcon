@@ -1,6 +1,7 @@
 #  timings.icn -- microbenchmark timings of Icon operations
 #  14-feb-98/gmt
 #  13-mar-98/gmt
+#  25-mar-98/gmt
 #
 #  usage:  timings interval
 #
@@ -152,17 +153,26 @@ procedure measure(proc, looptime)
 
    proc(1)	# prime the pump -- load classes etc.
    n := 1
+   t2 := &time
+
    repeat {
-      t1 := &time			# get initial &time value
+      n *:= 10
+      t1 := t2
       proc(n)				# call proc n times
       t2 := &time			# get ending time
       dt := integer(mult * (t2 - t1))
-      if dt >= looptime then break
-      if dt < looptime / 20 then
-         n *:= 10
-      else
-         n := integer(1.1 * n * looptime / real(dt))
+      if dt >= looptime / 20 then	# if close enough to estimate
+         break
       }
+
+   n := integer(1.1 * n * looptime / real(dt))	# calc final loop count
+   collect()				# clean up accumulated garbage
+
+   t1 := &time
+   until t1 ~=:= &time			# await next tick
+   proc(n)				# run timing loop for real
+   t2 := &time				# calculate elapsed time
+   dt := integer(mult * (t2 - t1))
 
    t1 := dt / real(n)
    nsec := integer(t1 * 1000000 + 0.5)
