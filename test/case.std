@@ -9,6 +9,10 @@
    default : "0"
        "1" : "1"
    default : "2"
+   default : ''
+   default : '0'
+       '1' : '1'
+   default : '2'
        rec : record constructor rec
       main : procedure main
    default : procedure foo

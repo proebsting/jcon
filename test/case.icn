@@ -3,7 +3,7 @@ record rec(a)
 procedure main()
    local L, s, x
 
-   L := [&null, 0, 1, 2, 0.0, 1.0, 2.0, "", "0", "1", "2",
+   L := [&null, 0, 1, 2, 0.0, 1.0, 2.0, "", "0", "1", "2", '', '0', '1', '2',
       rec, main, foo ]
    #%#% removed from list, because no serial numbers yet:  rec(), rec(1), []
    #%#% also removed:  put(L, L)
@@ -11,6 +11,7 @@ procedure main()
    every x := !L do {
       s := case x of {
         1:        "1"
+	'1':      "'1'"
         1.0:      "1.0"
         "1":      "\"1\""
         &null:    "null"
