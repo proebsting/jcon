@@ -53,7 +53,7 @@
 
 # command names
 JAVAC="javac -nowarn"
-JAVA="java -verify"
+JAVA="java -noverify"
 JAR="jar"
 TRAN="jtran"
 LINK="jlink"
@@ -292,6 +292,16 @@ done
 
 # create $MAIN class
 (cd $TDIR; $JLINK $MAIN $ROOTS)
+
+# disassemble $MAIN class, if requested
+if [ "$JVMDUMP" != "" ]; then (
+    cd $TDIR
+    JVM=../$MAIN.jvm
+    echo "======================================" $MAIN >>$JVM
+    echo "" >>$JVM
+    CLASSPATH=$JRTS:. $JVMDUMP $MAIN >>../$MAIN.jvm
+    )
+fi
 
 # combine the class files to make a new .zip file
 (cd $TDIR; $JAR cfM combined.zip $MAIN.class [lpc]*.class)
