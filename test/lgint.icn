@@ -7,6 +7,7 @@ procedure main()
    primes := [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37,
       41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
 
+   write(); compiler()
    write(); boundaries()
    write(); every fact(1 to 55 by 11)
    write(); every fib(35 to 341 by 34)
@@ -19,13 +20,27 @@ procedure main()
    write(); every tmul(3 ^ (2 to 50))
    write(); every conv(787 ^ (1 to 24) | -5781 ^ (1 to 18))
    write(); radix()
-   write(); over();
+   write(); over()
 
    # test unary and binary operations, including mixed-mode operations
    a := [37, 5.0, 2 ^ 63, 11 ^ 19, 5 ^ 28]
    b := [73, 9.0, -7 ^ 23, -(3 ^ 40), 17 ^ 16]
    write(); every unops(!a | !b)
    write(); every binops(!a, !b)
+end
+
+procedure compiler()			# test compiler handling of lg constants
+   local a, b, c
+   a :=  1618033988749894848204586834365638117720309
+   b := -2718281828459045235360287471352662497757247
+   c := +3141592653589793238462643383279502884197169
+   write("    a =  ", a)
+   write("    b = ", b)
+   write("    c =  ", c)
+   write("a + b = ", a + b)
+   write("b + c =   ", b + c)
+   write("c + a =  ", c + a)
+   return
 end
 
 procedure boundaries()			# test boundary cases
