@@ -18,9 +18,8 @@ end
 # record Field( expr field )
 procedure ir_Field(p, st, target)
 	local t
-
 	init4ir(p)
-	t := ir_tmp(st)
+	t := (\target | ir_tmp(st))
 	ir(p.expr, st, t)
 
 	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
@@ -39,7 +38,7 @@ procedure ir_Scan(p, st, target)
 
 	init4ir(p)
 	lv := ir_tmp(st)
-	rv := ir_tmp(st)
+	rv := (\target | ir_tmp(st))
 
 	p.ir.x := ir_scaninfo()
 	p.ir.x.oldpos := ir_tmp(st)
@@ -222,7 +221,7 @@ procedure ir_Case(p, st, target)
 	init4ir(p)
 	t := ir_tmploc(st)
 	e := ir_tmp(st)
-	v := ir_tmp(st)
+	v := (\target | ir_tmp(st))
 
 	ir(p.expr, st, e)
 	tmp2 := copy(st)
@@ -294,7 +293,7 @@ procedure ir_Sectionop(p, st, target)
 	init4ir(p)
 	vv := ir_tmp(st)
 	lv := ir_tmp(st)
-	rv := ir_tmp(st)
+	rv := (\target | ir_tmp(st))
 
 	ir(p.val, st, vv)
 	ir(p.left, st, lv)
@@ -398,9 +397,9 @@ procedure ir_Binop(p, st, target)
 
 	init4ir(p)
 	closure := ir_tmp_closure(st)
-	tmp := ir_tmp(st)
 	lv := ir_tmp(st)
-	rv := ir_tmp(st)
+	tmp := (\target | ir_tmp(st))
+	rv := tmp
 
 	ir(p.left, st, lv)
 	ir(p.right, st, rv)
@@ -466,7 +465,7 @@ procedure ir_Unop(p, st, target)
 
 	init4ir(p)
 	closure := ir_tmp_closure(st)
-	v := ir_tmp(st)
+	v := (\target | ir_tmp(st))
 
 	ir(p.operand, st, v)
 
@@ -803,13 +802,10 @@ end
 
 # record Until( expr body )
 procedure ir_Until(p, st, target)
-	local tmp
-
 	init4ir_loop(p, st, target)
 	put(loops, p)
-	tmp := copy(st)
-	ir(p.expr, tmp, &null)
-	ir(p.body, tmp, &null)
+	ir(p.expr, copy(st), &null)
+	ir(p.body, copy(st), &null)
 	pull(loops)
 
 	CG.emit(p.ir.x.nextlabel, [ irGoto(p.expr.ir.start) ])
@@ -823,13 +819,10 @@ end
 
 # record While( expr body )
 procedure ir_While(p, st, target)
-	local tmp
-
 	init4ir_loop(p, st, target)
 	put(loops, p)
-	tmp := copy(st)
-	ir(p.expr, tmp, &null)
-	ir(p.body, tmp, &null)
+	ir(p.expr, copy(st), &null)
+	ir(p.body, copy(st), &null)
 	pull(loops)
 
 	CG.emit(p.ir.x.nextlabel, [ irGoto(p.expr.ir.start) ])
@@ -846,7 +839,7 @@ procedure ir_Create(p, st, target)
 	local t
 
 	init4ir(p)
-	t := ir_tmp(st)
+	t := (\target | ir_tmp(st))
 
 	ir(p.expr, st, t)
 
@@ -928,7 +921,7 @@ procedure ir_ToBy(p, st, target)
 	closure := ir_tmp_closure(st)
 	fv := ir_tmp(st)
 	tv := ir_tmp(st)
-	bv := ir_tmp(st)
+	bv := (\target | ir_tmp(st))
 
 	ir(p.fromexpr, st, fv)
 	ir(p.toexpr, st, tv)
