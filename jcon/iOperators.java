@@ -347,7 +347,7 @@ public class oNegate extends iUnaryValueClosure {		//  -n
 public class oAdd extends iBinaryValueClosure {			//  n1 + n2
 	public static iBinaryClosure instance = new oAdd();
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		vNumeric.Coerce(this, arg0, arg1);
+		vNumeric.Coerce(this);
 		return argument0.Add(argument1);
 	}
 	String tfmt() { return "{$1 + $2}"; }
@@ -356,7 +356,7 @@ public class oAdd extends iBinaryValueClosure {			//  n1 + n2
 public class oSub extends iBinaryValueClosure {			//  n1 - n2
 	public static iBinaryClosure instance = new oSub();
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		vNumeric.Coerce(this, arg0, arg1);
+		vNumeric.Coerce(this);
 		return argument0.Sub(argument1);
 	}
 	String tfmt() { return "{$1 - $2}"; }
@@ -365,7 +365,7 @@ public class oSub extends iBinaryValueClosure {			//  n1 - n2
 public class oMul extends iBinaryValueClosure {			//  n1 * n2
 	public static iBinaryClosure instance = new oMul();
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		vNumeric.Coerce(this, arg0, arg1);
+		vNumeric.Coerce(this);
 		return argument0.Mul(argument1);
 	}
 	String tfmt() { return "{$1 * $2}"; }
@@ -374,7 +374,7 @@ public class oMul extends iBinaryValueClosure {			//  n1 * n2
 public class oDiv extends iBinaryValueClosure {			//  n1 / n2
 	public static iBinaryClosure instance = new oDiv();
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		vNumeric.Coerce(this, arg0, arg1);
+		vNumeric.Coerce(this);
 		return argument0.Div(argument1);
 	}
 	String tfmt() { return "{$1 / $2}"; }
@@ -383,7 +383,7 @@ public class oDiv extends iBinaryValueClosure {			//  n1 / n2
 public class oMod extends iBinaryValueClosure {			//  n1 % n2
 	public static iBinaryClosure instance = new oMod();
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		vNumeric.Coerce(this, arg0, arg1);
+		vNumeric.Coerce(this);
 		return argument0.Mod(argument1);
 	}
 	String tfmt() { return "{$1 % $2}"; }
@@ -443,7 +443,7 @@ public class oDiff extends iBinaryValueClosure {		//  n1 -- n2
 public class oNLess extends iBinaryValueClosure {		//  n1 < n2
 	public static iBinaryClosure instance = new oNLess();
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		vNumeric.Coerce(this, arg0, arg1);
+		vNumeric.Coerce(this);
 		return argument0.NLess(argument1);
 	}
 	String tfmt() { return "{$1 < $2}"; }
@@ -452,7 +452,7 @@ public class oNLess extends iBinaryValueClosure {		//  n1 < n2
 public class oNLessEq extends iBinaryValueClosure {		//  n1 <= n2
 	public static iBinaryClosure instance = new oNLessEq();
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		vNumeric.Coerce(this, arg0, arg1);
+		vNumeric.Coerce(this);
 		return argument0.NLessEq(argument1);
 	}
 	String tfmt() { return "{$1 <= $2}"; }
@@ -461,7 +461,7 @@ public class oNLessEq extends iBinaryValueClosure {		//  n1 <= n2
 public class oNEqual extends iBinaryValueClosure {		//  n1 = n2
 	public static iBinaryClosure instance = new oNEqual();
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		vNumeric.Coerce(this, arg0, arg1);
+		vNumeric.Coerce(this);
 		return argument0.NEqual(argument1);
 	}
 	String tfmt() { return "{$1 = $2}"; }
@@ -470,7 +470,7 @@ public class oNEqual extends iBinaryValueClosure {		//  n1 = n2
 public class oNUnequal extends iBinaryValueClosure {		//  n1 ~= n2
 	public static iBinaryClosure instance = new oNUnequal();
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		vNumeric.Coerce(this, arg0, arg1);
+		vNumeric.Coerce(this);
 		return argument0.NUnequal(argument1);
 	}
 	String tfmt() { return "{$1 ~= $2}"; }
@@ -479,7 +479,7 @@ public class oNUnequal extends iBinaryValueClosure {		//  n1 ~= n2
 public class oNGreaterEq extends iBinaryValueClosure {		//  n1 >= n2
 	public static iBinaryClosure instance = new oNGreaterEq();
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		vNumeric.Coerce(this, arg0, arg1);
+		vNumeric.Coerce(this);
 		return argument0.NGreaterEq(argument1);
 	}
 	String tfmt() { return "{$1 >= $2}"; }
@@ -488,7 +488,7 @@ public class oNGreaterEq extends iBinaryValueClosure {		//  n1 >= n2
 public class oNGreater extends iBinaryValueClosure {		//  n1 > n2
 	public static iBinaryClosure instance = new oNGreater();
 	vDescriptor function(vDescriptor arg0, vDescriptor arg1) {
-		vNumeric.Coerce(this, arg0, arg1);
+		vNumeric.Coerce(this);
 		return argument0.NGreater(argument1);
 	}
 	String tfmt() { return "{$1 > $2}"; }
