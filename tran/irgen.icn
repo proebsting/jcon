@@ -301,18 +301,14 @@ procedure ir_Sectionop(p, st, target)
 	ir(p.right, st, rv)
 
 	CG.emit(p.ir.start, [ irGoto(p.val.ir.start) ])
-	CG.emit(p.ir.resume, [
-		irGoto(p.right.ir.resume)
-		])
+	CG.emit(p.ir.resume, [ irGoto(p.right.ir.resume) ])
 	CG.emit(p.val.ir.success, [ irGoto(p.left.ir.start) ])
 	CG.emit(p.val.ir.failure, [ irGoto(p.ir.failure) ])
 	CG.emit(p.left.ir.success, [ irGoto(p.right.ir.start) ])
 	CG.emit(p.left.ir.failure, [ irGoto(p.val.ir.resume) ])
 	CG.emit(p.right.ir.success, [
 		irCoord(p.coord),
-
 		ir_opfn(target, irOperator(p.op, 3), [ vv, lv, rv ], p.right.ir.resume),
-
 		irGoto(p.ir.success)
 		])
 	CG.emit(p.right.ir.failure, [ irGoto(p.left.ir.resume) ])
