@@ -256,4 +256,24 @@ vValue Intersect(vDescriptor x)	{ return this.mkCset().Intersect(x); }
 vValue Union(vDescriptor x)	{ return this.mkCset().Union(x); }
 vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }
 
+
+vValue Proc(vInteger i) {
+    if (i.value < 0 || i.value > 3) {
+	iRuntime.error(205, i);
+    }
+    vDescriptor v = (vDescriptor) iEnv.symtab.get(this.value);
+    if (v != null) {
+	v = v.deref();
+	if (v instanceof vProc) {
+	    return (vValue) v;
+	}
+	return null;
+    }
+    v = (vDescriptor) iEnv.proctab[(int)i.value].get(this.value);
+    if (v != null) {
+	return (vValue) v;
+    }
+    return null;
+}
+
 } // class vString

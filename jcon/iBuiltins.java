@@ -43,6 +43,7 @@ void announce() {
 	declare("numeric", 1);
 	declare("ord", 1);
 	declare("pop", 1);
+	declare("proc", 2);
 	declare("pull", 1);
 	declare("push", -2);
 	declare("put", -2);
@@ -158,6 +159,19 @@ class f$variable extends iFunctionClosure {			// variable(x)
 class f$args extends iFunctionClosure {				// args(x)
 	vDescriptor function(vDescriptor[] args) {
 		return iRuntime.argVal(args, 0).Args();
+	}
+}
+
+class f$proc extends iFunctionClosure {				// proc(s, i)
+	vDescriptor function(vDescriptor[] args) {
+		vValue v = iRuntime.argVal(args, 0);
+		vInteger i;
+		if (args.length < 2) {
+			i = iNew.Integer(1);
+		} else {
+			i = args[1].mkInteger();
+		}
+		return v.Proc(i);
 	}
 }
 

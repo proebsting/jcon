@@ -59,4 +59,6 @@ public class vProc extends vValue {
 
 	vInteger Args()		{ return iNew.Integer(args); }
 
+	vValue Proc(vInteger i)	{ return this; }
+
 }

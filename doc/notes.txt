@@ -40,6 +40,8 @@ miscellaneous:
 -- read() and write() don't accept file arguments
 -- display() ignores its arguments (and displays everything)
 -- display() prints globals in an unsorted order
+-- proc() does not work for operators yet.
+-- proc(x,0) does not find builtins that have been over-ridden.
 -- jcon always allocates a list even if main() declares no arguments
 -- compiler silently ignores illegal multiply-defined names
    (e.g., record foo(a,a,a), procedure foo(a,a,a), etc.)

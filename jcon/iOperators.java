@@ -9,74 +9,74 @@ public class iOperators extends iFile {
 
 void announce() {
 
-    declare(":=,2", 2, "oAssign");
-    declare("<-,2", 2, "oRevAssign");
-    declare("<->,2", 2, "oRevSwap");
-    declare(":=:,2", 2, "oSwap");
-    declare(":?,2", 2, "oSubjAssign");	// assign for `s ? e'
+    declare(":=", 2, "oAssign");
+    declare("<-", 2, "oRevAssign");
+    declare("<->", 2, "oRevSwap");
+    declare(":=:", 2, "oSwap");
+    declare(":?", 2, "oSubjAssign");	// assign for `s ? e'
 
-    declare("...,3", 3, "oToBy");
+    declare("...", 3, "oToBy");
 
-    declare(".,2", 2, "oField");
-    declare("[],2", 2, "oIndex");
-    declare("[:],3", 3, "oSection");
-    declare("[+:],3", 3, "oSectPlus");
-    declare("[-:],3", 3, "oSectMinus");
+    declare(".", 2, "oField");
+    declare("[]", 2, "oIndex");
+    declare("[:]", 3, "oSection");
+    declare("[+:]", 3, "oSectPlus");
+    declare("[-:]", 3, "oSectMinus");
 
-    declare(".,1", 1, "oDeref");
-    declare("/,1", 1, "oIsNull");
-    declare("\\,1", 1, "oIsntNull");
-    declare("*,1", 1, "oSize");
-    declare("?,1", 1, "oSelect");
-    declare("!,1", 1, "oBang");
+    declare(".", 1, "oDeref");
+    declare("/", 1, "oIsNull");
+    declare("\\", 1, "oIsntNull");
+    declare("*", 1, "oSize");
+    declare("?", 1, "oSelect");
+    declare("!", 1, "oBang");
 
-    declare("+,1", 1, "oNumerate");
-    declare("-,1", 1, "oNegate");
+    declare("+", 1, "oNumerate");
+    declare("-", 1, "oNegate");
 
-    declare("&,2", 2, "oConjunction");
+    declare("&", 2, "oConjunction");
 
-    declare("^,2", 2, "oPower");
-    declare("+,2", 2, "oAdd");
-    declare("-,2", 2, "oSub");
-    declare("*,2", 2, "oMul");
-    declare("/,2", 2, "oDiv");
-    declare("%,2", 2, "oMod");
+    declare("^", 2, "oPower");
+    declare("+", 2, "oAdd");
+    declare("-", 2, "oSub");
+    declare("*", 2, "oMul");
+    declare("/", 2, "oDiv");
+    declare("%", 2, "oMod");
 
-    declare("~,1", 1,  "oComplement");
-    declare("**,2", 2, "oIntersect");
-    declare("++,2", 2, "oUnion");
-    declare("--,2", 2, "oDiff");
+    declare("~", 1,  "oComplement");
+    declare("**", 2, "oIntersect");
+    declare("++", 2, "oUnion");
+    declare("--", 2, "oDiff");
 
-    declare("<,2", 2, "oNLess");
-    declare("<=,2", 2, "oNLessEq");
-    declare("=,2", 2, "oNEqual");
-    declare("~=,2", 2, "oNUnequal");
-    declare(">=,2", 2, "oNGreaterEq");
-    declare(">,2", 2, "oNGreater");
+    declare("<", 2, "oNLess");
+    declare("<=", 2, "oNLessEq");
+    declare("=", 2, "oNEqual");
+    declare("~=", 2, "oNUnequal");
+    declare(">=", 2, "oNGreaterEq");
+    declare(">", 2, "oNGreater");
 
-    declare("<<,2", 2, "oLLess");
-    declare("<<=,2", 2, "oLLessEq");
-    declare("==,2", 2, "oLEqual");
-    declare("~==,2", 2, "oLUnequal");
-    declare(">>=,2", 2, "oLGreaterEq");
-    declare(">>,2", 2, "oLGreater");
+    declare("<<", 2, "oLLess");
+    declare("<<=", 2, "oLLessEq");
+    declare("==", 2, "oLEqual");
+    declare("~==", 2, "oLUnequal");
+    declare(">>=", 2, "oLGreaterEq");
+    declare(">>", 2, "oLGreater");
 
-    declare("===,2", 2, "oVEqual");
-    declare("~===,2", 2, "oVUnequal");
+    declare("===", 2, "oVEqual");
+    declare("~===", 2, "oVUnequal");
 
-    declare("||,2", 2, "oConcat");
+    declare("||", 2, "oConcat");
 
-    declare("@,2", 2, "oActivate");
-    declare("^,1", 1, "oRefresh");
+    declare("@", 2, "oActivate");
+    declare("^", 1, "oRefresh");
 
-    declare("!,2", 2, "oProcessArgs");
+    declare("!", 2, "oProcessArgs");
 }
 
 
 static void declare(String opr, int args, String name)
 {
     try {
-	iEnv.declareProc(opr, iNew.Proc(Class.forName("rts." + name), args));
+	iEnv.declareProc(opr, args, iNew.Proc(Class.forName("rts." + name), args));
     } catch (ClassNotFoundException e) {
 	iRuntime.bomb("cannot declare opr " + opr + " using class " + name);
     }
