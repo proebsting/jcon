@@ -122,7 +122,6 @@ text:
 -- read(), write(), etc. work with windows
 -- \r and \t are not handled correctly on output
 -- some Java font metrics are bogus, leading to various problems
--- the initial cursor position is GotoXY(0,20) instead of GotoRC(1,1)
 -- the visible text cursor, when enabled, is a solid, nonblinking underbar
 
 ------------------------------------------------------------------------------
