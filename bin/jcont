@@ -34,7 +34,7 @@ UNZIP="unzip"
 JAVAC="javac -nowarn"
 JAVA="java -verify"
 
-export BLKSIZE=2000000
+export BLKSIZE=4000000
 export STRSIZE=500000
 
 #  save command line and user IPATH
