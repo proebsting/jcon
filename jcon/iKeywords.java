@@ -23,7 +23,7 @@ import java.util.*;
 public class iKeywords extends iFile {
 
     void announce() {
-	
+
 	// constants
 	iEnv.declareKey("null", iNew.Null());
 	iEnv.declareKey("e", iNew.Real(Math.E));
@@ -31,7 +31,7 @@ public class iKeywords extends iFile {
 	iEnv.declareKey("pi", iNew.Real(Math.PI));
 	iEnv.declareKey("version", iNew.String(iConfig.Version));
 
-        	// cset constants
+	// cset constants
 	vCset lcase, ucase;
 	iEnv.declareKey("digits", iNew.Cset('0', '9'));
 	iEnv.declareKey("lcase", lcase = iNew.Cset('a','z'));
@@ -131,7 +131,7 @@ class k$features extends iClosure {				// &features
     //#%#%  The features list is hard-wired for now.
     //#%#%  It's not completely clear what we should report.
 
-    static String[] flist = { 
+    static String[] flist = {
 	"Java", "ASCII", "co-expressions",
 	"environment variables", "pipes", "system function" };
 
@@ -158,7 +158,7 @@ abstract class k$Value extends vIndirect {	// super of read-only keywords
     public abstract vValue deref();		// must implement deref()
 
     public vVariable Assign(vValue x)
-	    { iRuntime.error(111, this.deref()); return null;}
+	{ iRuntime.error(111, this.deref()); return null;}
 
     vString Name()	{ iRuntime.error(111, this.deref()); return null; }
 }
@@ -272,7 +272,7 @@ class k$host extends k$Value {					// &host
     //#%#% warning: ugly unixisms follow
 
     static void inithost() {
-        try {
+	try {
 	Process p = Runtime.getRuntime().exec("uname -n");
 	hostname = iNew.String(
 	    new BufferedReader(
@@ -280,13 +280,13 @@ class k$host extends k$Value {					// &host
 	    .readLine().trim());
 	p.destroy();
 	hostname.charAt(0);		// ensure not empty
-        } catch (Exception e1) {
+	} catch (Exception e1) {
 	try {
 	    hostname = iNew.String(System.getProperty("os.name"));
 	} catch (Exception e2) {
 	    hostname = iNew.String("Jcon");
 	}
-        }
+	}
     }
 
 }
@@ -319,7 +319,7 @@ class k$output extends k$Value {				// &output
 
     k$output() {
 	file = iNew.File("&output", null,
-	        new DataOutputStream(new BufferedOutputStream(System.out)));
+	    new DataOutputStream(new BufferedOutputStream(System.out)));
     }
 
     public vValue deref()	{ return file; }
@@ -338,7 +338,7 @@ class k$errout extends k$Value {				// &errout
 
 
 class k$subject extends vSimpleVar {				// &subject
-    
+
     k$pos pos;		// associated &pos variable
     static k$subject self;
 
@@ -453,7 +453,7 @@ class k$window extends vSimpleVar {				// &window
     public static vWindow getWindow() {	// get &window, must be !null
 	if (! (value instanceof vWindow)) {
 	    iRuntime.error(140);
-	} 
+	}
 	return (vWindow) value;
     }
 }
@@ -501,14 +501,13 @@ abstract class k$intWatcher extends vVariable { // super for "watched" int kwds
 
     vString Name()		{ return iNew.String(name); }
 
-    vString report()	{ return iNew.String(
-		    "(" + name + " = " + value + ")"); }
+    vString report()	{ return iNew.String("(" + name + " = " + value + ")");}
 }
 
 class k$interval extends k$intWatcher {				// &interval
     static k$interval self;
     k$interval()		{ super("k$interval"); self = this; }
-    void newValue(long i) {} // no side effects 
+    void newValue(long i) {}		// no side effects
 }
 
 class k$x extends k$intWatcher {				// &x

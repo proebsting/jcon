@@ -10,7 +10,7 @@ public class iRuntime {
 
 static boolean upto(String c, String s) {
     for (int i = 0; i < c.length(); i++) {
-    	if (s.indexOf(c.charAt(i)) >= 0) {
+	if (s.indexOf(c.charAt(i)) >= 0) {
 	    return true;
 	}
     }
@@ -64,17 +64,17 @@ public static vValue argVal(vDescriptor[] args, int index)
     if (args.length <= index) {
 	return iNew.Null();
     } else {
-    	return (vValue) args[index];
+	return (vValue) args[index];
     }
 }
 
 public static vValue argVal(vDescriptor[] args, int index, int errcode)
 {
     if (args.length <= index) {
-    	iRuntime.error(errcode);
+	iRuntime.error(errcode);
 	return null;
     } else {
-    	return (vValue) args[index];
+	return (vValue) args[index];
     }
 }
 
@@ -84,7 +84,7 @@ public static vValue argVal(vDescriptor[] args, int index, int errcode)
 
 public static vString argSubject(vDescriptor[] args, int index) {
     if (index >= args.length || args[index].deref() instanceof vNull) {
-        return (vString) k$subject.self.deref();
+	return (vString) k$subject.self.deref();
     }
     return args[index].mkString();
 }
@@ -95,14 +95,15 @@ public static vString argSubject(vDescriptor[] args, int index) {
 // o/w returns argument's integer value.
 
 public static long argPos(vDescriptor[] args, int index) {
-    if ((index - args.length > 0) // both defaulted
-       || ((index - args.length == 0) && (args[index-1].deref() instanceof vNull))
-       || ((args[index-1].deref() instanceof vNull) && (args[index].deref() instanceof vNull))
-       ) {
-        return ((vInteger)k$pos.self.deref()).value;
+    if ((index - args.length > 0)	// both defaulted
+	|| ((index-args.length==0) && (args[index-1].deref() instanceof vNull))
+	|| ((args[index-1].deref() instanceof vNull)
+	    && (args[index].deref() instanceof vNull))
+    ) {
+	return ((vInteger)k$pos.self.deref()).value;
     }
     if ((index - args.length == 0) || (args[index].deref() instanceof vNull)) {
-        return 1;
+	return 1;
     }
     return args[index].mkInteger().value;
 }
@@ -113,7 +114,7 @@ public static void display(iClosure parent) {
     for (iClosure p = parent; p != null; p = p.parent) {
 	String s = p.getClass().getName();
 	int j = s.lastIndexOf('$');
-	if (j >= 0) {                   // xxx$file$yyyyy format
+	if (j >= 0) {				// xxx$file$yyyyy format
 	    s = s.substring(j+1);
 	}
 	System.out.println(s + " local identifiers:");
@@ -145,7 +146,7 @@ public static void display(iClosure parent) {
 
 public static void exit(int status, iClosure parent) {
     if (k$dump.dump != 0) {
-	    iRuntime.display(parent);	// honor &dump
+	iRuntime.display(parent);	// honor &dump
     }
     vFile.shutdown();			// flush output files etc.
     System.exit(status);		// shut down

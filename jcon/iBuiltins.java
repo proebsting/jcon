@@ -101,7 +101,7 @@ void announce() {
 static void declare(String name, int args)
 {
     iEnv.declareBuiltin(name, iNew.Proc(
-        "function " + name, iConfig.FuncPrefix + name, args));
+	"function " + name, iConfig.FuncPrefix + name, args));
 }
 
 

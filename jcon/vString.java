@@ -203,7 +203,7 @@ private void flatten1() {
     while (i > 0) {
 	int j = s.data.length;
 	while (j > 0) {
-	   d[--i] = s.data[--j];	//#%#% is arraycopy faster? or slower?
+	    d[--i] = s.data[--j];
 	}
 	s = s.prefix;
     }
@@ -222,7 +222,7 @@ public int hashCode() {	 // hashcode, consistent whether flattened or not
     int n = 0;
     while (s != null) {
 	for (int i = s.data.length; i > 0; ) {
-	   n = 37 * n + s.data[--i];
+	    n = 37 * n + s.data[--i];
 	}
 	s = s.prefix;
     }
@@ -258,7 +258,7 @@ vString image(int maxlen) {		// make image, up to maxlen chars
 	    b.append('\"');
 	} else {
 	    appendEscaped(b, c);
-        }
+	}
     }
     if (i < tlength) {
 	b.append('.');
@@ -302,7 +302,7 @@ vNumeric mkNumeric()	{
 
     String s = this.toString().trim(); //#%#% too liberal: trims not just spaces
 
-    if (s.length() > 0 && s.charAt(0) == '+') {	// allow leading +, by trimming 
+    if (s.length() > 0 && s.charAt(0) == '+') {	// allow leading +, by trimming
 	s = s.substring(1);
     }
 
@@ -332,7 +332,7 @@ vInteger mkInteger()	{
     try {
 	return this.mkNumeric().mkInteger();	// allows integer("3e6")
     } catch (iError e) {
-    	iRuntime.error(101, this);
+	iRuntime.error(101, this);
 	return null;
     }
 }
@@ -409,12 +409,12 @@ static void appendEscaped(vByteBuffer b, char c)
 int posEq(long n)
 {
     if (n <= 0) {
-    	n += tlength + 1;
+	n += tlength + 1;
     }
     if (n > 0 && n <= tlength + 1) {
-    	return (int)n;
+	return (int)n;
     } else {
-    	return 0;
+	return 0;
     }
 }
 
@@ -439,7 +439,7 @@ vValue Concat(vDescriptor v) {
 vDescriptor Index(vValue i) {
     int m = this.posEq(i.mkInteger().value);
     if (m == 0 || m > tlength) {
-    	return null; /*FAIL*/
+	return null; /*FAIL*/
     }
     return iNew.String(this, m, m + 1);
 }
@@ -447,7 +447,7 @@ vDescriptor Index(vValue i) {
 vDescriptor IndexVar(vVariable v, vValue i) {
     int m = this.posEq(i.mkInteger().value);
     if (m == 0 || m > tlength) {
-    	return null; /*FAIL*/
+	return null; /*FAIL*/
     }
     return iNew.Substring(v, m, m + 1);
 }
@@ -456,7 +456,7 @@ vDescriptor Section(int i, int j) {
     int m = this.posEq(i);
     int n = this.posEq(j);
     if (m == 0 || n == 0) {
-    	return null; /*FAIL*/
+	return null; /*FAIL*/
     }
     if (m > n) {
 	return iNew.String(this, n, m);
@@ -469,7 +469,7 @@ vDescriptor SectionVar(vVariable v, int i, int j) {
     int m = this.posEq(i);
     int n = this.posEq(j);
     if (m == 0 || n == 0) {
-    	return null; /*FAIL*/
+	return null; /*FAIL*/
     }
     if (m > n) {
 	return iNew.Substring(v, n, m);

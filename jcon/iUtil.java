@@ -22,7 +22,7 @@ static int compare(vValue x, vValue y)
     if (d == 0) {
 	return x.compareTo(y);
     } else {
-    	return d;
+	return d;
     }
 }
 
@@ -38,7 +38,7 @@ private static void qsort(vValue x[], int l, int u)
     vValue t, v;
 
     if (l >= u) {
-    	return;
+	return;
     }
 
     r = l + (int) ((u - l) * Math.random());	// don't perturb &random
@@ -49,7 +49,7 @@ private static void qsort(vValue x[], int l, int u)
     for (i = l + 1; i <= u; i++) {
 	v = x[i];
 	d = compare(v, t);
-    	if (d < 0) {
+	if (d < 0) {
 	    llow++;
 	    swap(x, llow, i);
 	}
@@ -68,5 +68,6 @@ private static void swap(vValue x[], int i, int j)
     x[i] = x[j];
     x[j] = o;
 }
-    
+
+
 } // class iUtil

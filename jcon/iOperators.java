@@ -81,7 +81,7 @@ void announce() {
 static void declare(String opr, int args, String name)
 {
     iEnv.declareProc(opr, args,
-        iNew.Proc("function " + opr, "rts." + name, args));
+	iNew.Proc("function " + opr, "rts." + name, args));
 }
 
 
@@ -221,24 +221,24 @@ public class oToBy extends iClosure {				// i1 to i2 by i3
 	} else {
 	    iprev = ivar;
 	    ivar += i3;
-	}	
+	}
 
 	if (i3 > 0) {		// ascending loop
 
 	    // test for end of loop and for overflow
 	    if (ivar > i2 || ivar < iprev) {
-	        return null;
+		return null;
 	    } else {
-	        return iNew.Integer(ivar);
+		return iNew.Integer(ivar);
 	    }
 
 	} else {			// descending loop
 
 	    // test for end of loop and for overflow
 	    if (ivar < i2 || ivar > iprev) {
-	        return null;
+		return null;
 	    } else {
-	        return iNew.Integer(ivar);
+		return iNew.Integer(ivar);
 	    }
 
 	}
@@ -256,22 +256,22 @@ public class oField extends iBinaryRefClosure {			// R . s
     public static oField field = new oField();
     String s;
     vDescriptor function() {
-        return argument0.field(s = argument1.mkString().toString());
+	return argument0.field(s = argument1.mkString().toString());
     }
     public vDescriptor call(vDescriptor arg0, String arg1, iClosure parent) {
-        argument0 = arg0;
-        argument1 = null;
-        this.parent = parent;
-        try {
+	argument0 = arg0;
+	argument1 = null;
+	this.parent = parent;
+	try {
 	try {
 	    return arg0.field(s = arg1);
 	} catch (OutOfMemoryError e) {
 	    iRuntime.error(307);	// #%#%# really out of memory.
 	    return null;
-        }
+	}
     } catch (iError e) {
-        e.report(this);  // returns only on error->failure conversion.
-        return null;
+	e.report(this);  // returns only on error->failure conversion.
+	return null;
     }
     }
     String tfmt() { return "{$1 . " + s + "}"; }

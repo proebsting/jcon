@@ -5,14 +5,14 @@ public class vSimpleVar extends vVariable {
     vValue value;	// value of variable
     String name;
 
-    
+
     vSimpleVar(String name, vValue x) {
-        value = x;
-        this.name = name;
+	value = x;
+	this.name = name;
     }
     vSimpleVar(String name) {
-        value = iNew.Null();
-        this.name = name;
+	value = iNew.Null();
+	this.name = name;
     }
 
 

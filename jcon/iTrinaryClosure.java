@@ -9,7 +9,7 @@ public abstract class iTrinaryClosure extends iClosure {
 abstract vDescriptor function();
 
 abstract public vDescriptor call(
-    vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosure parent); 
+    vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosure parent);
 
 public void closure(vDescriptor[] args, iClosure parent) {
     init();

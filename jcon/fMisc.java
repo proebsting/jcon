@@ -116,14 +116,14 @@ class f$collect extends iValueClosure {				// collect(i,j)
 	    }
 	    System.gc();
 	    if (ii2 > 0) {
-	        try {
+		try {
 		    byte[] dummy = new byte[ii2];
 		    // the following (not the preceding) line
 		    // actually triggers the out of memory error.
 		    dummy[0] = dummy[ii2-1] = 1;
-	        } catch (OutOfMemoryError e) {
+		} catch (OutOfMemoryError e) {
 		    return null;
-	        }
+		}
 	    }
 	    return n;
 	} else {
@@ -200,8 +200,8 @@ class f$system extends iValueClosure {				// system(s)
 	    Process p = Runtime.getRuntime().exec(argv); // start process
 	    p.getOutputStream().close();		 // close its stdin
 	    status = p.waitFor();			 // wait for completion
-	    vFile.copy(p.getInputStream(),k$output.file);// copy stdout 
-	    vFile.copy(p.getErrorStream(),k$errout.file);// copy stderr 
+	    vFile.copy(p.getInputStream(),k$output.file);// copy stdout
+	    vFile.copy(p.getErrorStream(),k$errout.file);// copy stderr
 	} catch (Throwable e) {
 	    status = -1;
 	}

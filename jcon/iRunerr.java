@@ -9,7 +9,7 @@ public class iRunerr {
 
 //  text(n) -- return text for error number n
 
-static String text(int n) {		
+static String text(int n) {
     if (n > 0 && n < tlist.length && tlist[n] != null) {
 	return tlist[n];
     } else {

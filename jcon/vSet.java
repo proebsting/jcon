@@ -22,12 +22,12 @@ vSet(vValue x) {
     super(nextsn++);
     t = new java.util.Hashtable();
     if (x != null && !(x instanceof vNull)) {
-        if (!(x instanceof vList)) {
+	if (!(x instanceof vList)) {
 	    iRuntime.error(108, x);
 	}
 	vList list = (vList) x;
 	java.util.Enumeration i = list.elements();
-        while (i.hasMoreElements()) {
+	while (i.hasMoreElements()) {
 	    vDescriptor v = (vDescriptor) i.nextElement();
 	    v = v.deref();
 	    t.put(v, v);
@@ -49,12 +49,12 @@ vValue Copy()		{ return new vSet(this.t); }
 
 vDescriptor Select() {
     if (t.size() == 0) {
-        return null;
+	return null;
     }
     int index = (int) k$random.choose(t.size());
     java.util.Enumeration e = t.keys();
     for (int k = 0; k < index; k++) {
-        e.nextElement();
+	e.nextElement();
     }
     return (vDescriptor)e.nextElement();
 }
@@ -86,7 +86,7 @@ vValue[] mkArray() {
     vValue a[] = new vValue[t.size()];
     int i = 0;
     for (Enumeration e = t.keys(); e.hasMoreElements(); ) {
-    	a[i++] = (vValue)e.nextElement();
+	a[i++] = (vValue)e.nextElement();
     }
     return a;
 }
@@ -107,7 +107,7 @@ vValue Insert(vDescriptor i, vDescriptor val) {
 
 vValue Intersect(vDescriptor x) {
     if (!(x instanceof vSet)) {
-        iRuntime.error(120, x);
+	iRuntime.error(120, x);
     }
     vSet rhs = (vSet) x;
     vSet result = new vSet((vValue)null);
@@ -115,8 +115,8 @@ vValue Intersect(vDescriptor x) {
     java.util.Hashtable y = rhs.t;
     i = this.t.keys();
     while (i.hasMoreElements()) {
-        Object o = i.nextElement();
-        if (y.containsKey(o)) {
+	Object o = i.nextElement();
+	if (y.containsKey(o)) {
 	    result.t.put(o, o);
 	}
     }
@@ -125,22 +125,22 @@ vValue Intersect(vDescriptor x) {
 
 vValue Union(vDescriptor x) {
     if (!(x instanceof vSet)) {
-        iRuntime.error(120, x);
+	iRuntime.error(120, x);
     }
     vSet rhs = (vSet) x;
     vSet result = new vSet(rhs.t);
     java.util.Enumeration i;
     i = this.t.keys();
     while (i.hasMoreElements()) {
-        Object o = i.nextElement();
-        result.t.put(o, o);
+	Object o = i.nextElement();
+	result.t.put(o, o);
     }
     return result;
 }
 
 vValue Diff(vDescriptor x) {
     if (!(x instanceof vSet)) {
-        iRuntime.error(120, x);
+	iRuntime.error(120, x);
     }
     vSet rhs = (vSet)x;
     vSet result = new vSet(this.t);
@@ -148,8 +148,8 @@ vValue Diff(vDescriptor x) {
     java.util.Hashtable y = rhs.t;
     i = y.keys();
     while (i.hasMoreElements()) {
-        Object o = i.nextElement();
-        if (y.containsKey(o)) {
+	Object o = i.nextElement();
+	if (y.containsKey(o)) {
 	    result.t.remove(o);
 	}
     }

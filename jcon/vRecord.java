@@ -38,7 +38,7 @@ int compareTo(vValue v) {
     if (this.constr != r.constr) {
 	return this.constr.name.compareTo(r.constr.name);
     } else {
-    	return this.snum - r.snum;
+	return this.snum - r.snum;
     }
 }
 
@@ -59,21 +59,21 @@ vVariable field(String s) {
 
 vDescriptor Index(vValue i) {
     try {
-        long m = i.mkInteger().value;
-        if (m <= 0) {
+	long m = i.mkInteger().value;
+	if (m <= 0) {
 	    m += constr.fieldnames.length + 1;
-        }
-        if (m < 1 || m > constr.fieldnames.length) {
+	}
+	if (m < 1 || m > constr.fieldnames.length) {
 	    return null; /* FAIL */
-        }
-        return values[(int)m-1];
+	}
+	return values[(int)m-1];
     } catch (iError e) {
     }
     try {
-        int k = constr.find(i.mkString().toString());
-        if (k >= 0) {
-    	    return values[k];
-        }
+	int k = constr.find(i.mkString().toString());
+	if (k >= 0) {
+	    return values[k];
+	}
     } catch (iError e) {
     }
     return null;

@@ -8,7 +8,7 @@ import java.util.*;
 
 
 abstract class wAttrib implements Cloneable {
-    
+
     String name;			// attribute name
     String val;				// value; null if none specified
 
@@ -55,7 +55,7 @@ static {
     // given below, which is the default value and has no effect.
     // Other attempts to set the attribute fail.
 
-    //     att name	           default	retval 
+    //     att name		   default	retval
     newatt("dx",	new aDummy("0",		iNew.Integer(0)));
     newatt("dy",	new aDummy("0",		iNew.Integer(0)));
     newatt("reverse",	new aDummy("off",	iNew.String("off")));
@@ -142,7 +142,7 @@ class aDummy extends wAttrib {
     String accept;
     vValue attval;
 
-    aDummy(String s, vValue v) 		{ accept = s; attval = v; }
+    aDummy(String s, vValue v)		{ accept = s; attval = v; }
     vValue get(vWindow win)		{ return attval; }
     vValue set(vWindow win) {
 	if (val.equals(accept)) {
@@ -157,7 +157,7 @@ class aDummy extends wAttrib {
 
 class aCanvas extends wAttrib {
     vValue get(vWindow win)	{ return win.getCanvas().Canvas(win, null); }
-    vValue set(vWindow win)	{ return win.getCanvas().Canvas(win, val); }	
+    vValue set(vWindow win)	{ return win.getCanvas().Canvas(win, val); }
 }
 
 
@@ -172,7 +172,7 @@ class aDepth extends wAttrib {
 
 class aLabel extends wAttrib {
     vValue get(vWindow win)	{ return win.getCanvas().Label(win, null); }
-    vValue set(vWindow win)	{ return win.getCanvas().Label(win, val); }	
+    vValue set(vWindow win)	{ return win.getCanvas().Label(win, val); }
 }
 
 
@@ -197,7 +197,7 @@ class aFont extends wAttrib {
 class aLeading extends wAttrib {
     vValue get(vWindow win)	 { return iNew.Integer(win.Leading()); }
     vValue set(vWindow win)	 {
-    	try {
+	try {
 	    return iNew.Integer(win.Leading(Integer.parseInt(val)));
 	} catch (Exception e) {
 	    return null; /*FAIL*/
@@ -220,7 +220,7 @@ class aDescent extends wAttrib {
 }
 
 class aFheight extends wAttrib {
-    vValue get(vWindow win) {	 
+    vValue get(vWindow win) {
 	FontMetrics m = win.getFontMetrics();
 	return iNew.Integer(m.getMaxAscent() + m.getMaxDescent());
     }
@@ -305,7 +305,7 @@ vValue set(vWindow win) {
 
 class aSize extends wAttrib {
 
-vValue get(vWindow win) { 
+vValue get(vWindow win) {
     Dimension d = win.getCanvas().getSize();
     return iNew.String(d.width + "," + d.height);
 }
@@ -330,7 +330,7 @@ vValue set(vWindow win) {
 
 class aRows extends wAttrib {
 
-vValue get(vWindow win) { 
+vValue get(vWindow win) {
     int l = win.Leading();
     if (l == 0) {
 	iRuntime.error(204);	// this is what v9 does: real division by 0
@@ -352,7 +352,7 @@ vValue set(vWindow win) {
 
 class aColumns extends wAttrib {
 
-vValue get(vWindow win) { 
+vValue get(vWindow win) {
     return iNew.Integer(win.getCanvas().getSize().width / win.Fwidth());
 }
 

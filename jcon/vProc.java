@@ -1,7 +1,7 @@
 package rts;
 
 public class vProc extends vValue {
-    
+
     vString img;	// image for printing
     Class proc;	// class that implements proc
     String classname;

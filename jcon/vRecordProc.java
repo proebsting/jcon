@@ -21,11 +21,11 @@ public class vRecordProc extends vValue {
     }
 
     public iClosure instantiate(vDescriptor[] args, iClosure parent) {
-        if (cachedclosure == null) {
+	if (cachedclosure == null) {
 	cachedclosure = new iRecordClosure();
-        }
-        cachedclosure.init(this, args, parent);
-        return cachedclosure;
+	}
+	cachedclosure.init(this, args, parent);
+	return cachedclosure;
     }
 
     vValue getproc()	{ return this; }
@@ -37,7 +37,7 @@ public class vRecordProc extends vValue {
 
     int rank()	{ return 80; }	// record constructors sort with procs
     int compareTo(vValue v) {
-	    return vProc.compareLastWord(name, v.image());
+	return vProc.compareLastWord(name, v.image());
     }
 
     vInteger Args()	{ return iNew.Integer(fieldnames.length); }

@@ -232,11 +232,11 @@ char rchar() throws IOException, EOFException {
 
 
 
-vFile flush() { 					// flush()
+vFile flush() {					// flush()
 
     if (outstream != null && outstream instanceof OutputStream) {
-    	try {
-    	    ((OutputStream)outstream).flush();
+	try {
+	    ((OutputStream)outstream).flush();
 	} catch (IOException e) {
 	    iRuntime.error(214, this);	// I/O error
 	}
@@ -250,7 +250,7 @@ vFile flush() { 					// flush()
 vFile close() {						// close()
 
     if (! openfiles.containsKey(this)) {
-    	return this;				// already closed
+	return this;				// already closed
     }
 
     this.flush();				// flush pending output
@@ -317,7 +317,7 @@ static void copy(InputStream ifile, vFile ofile) throws IOException {
 
 vFile seek(long n) {					// seek(n)
     if (randfile == null) {		// if not seekable
-    	return null; /*FAIL*/
+	return null; /*FAIL*/
     }
     try {
 	long len;
@@ -328,7 +328,7 @@ vFile seek(long n) {					// seek(n)
 	    len = randfile.length();	// otherwise can change; must ask
 	}
 
-    	if (n > 0) {
+	if (n > 0) {
 	    n--;			// remove Icon bias from seek address
 	} else {
 	    n = len + n;		// distance from end
@@ -338,7 +338,7 @@ vFile seek(long n) {					// seek(n)
 	    return null; /*FAIL*/
 	}
 
-	if (ibuf != null) { 			// if buffered, we know position
+	if (ibuf != null) {			// if buffered, we know position
 	    int bdata = inext + icount;		// valid data in buffer
 	    long off = bdata - ifpos + n;	// offset to new posn in buffer
 	    if (off >= 0 && off <= bdata) {
@@ -364,15 +364,15 @@ vFile seek(long n) {					// seek(n)
 
 vInteger where() {					// where()
     if (randfile == null) {
-    	return null; /*FAIL*/
-    } 
+	return null; /*FAIL*/
+    }
     if (ibuf != null) {		// if read-only & buffered, we know position
 	return iNew.Integer(1 + ifpos - icount);
     }
     try {
 	return iNew.Integer(1 + randfile.getFilePointer() - icount);
     } catch (IOException e) {
-    	return null; /*FAIL*/
+	return null; /*FAIL*/
     }
 }
 
@@ -399,7 +399,7 @@ vString read() {					// read()
 	    b.append(c);
 	}
     } catch (EOFException e) {
-    	if (b.length() == 0)
+	if (b.length() == 0)
 	    return null; /*FAIL*/
     } catch (IOException e) {
 	iRuntime.error(214, this);	// I/O error

@@ -109,7 +109,7 @@ vString image() {				// image(cs)
 	}
     }
 
-    // not a predefined cset  
+    // not a predefined cset
     vByteBuffer b = new vByteBuffer(this.size + 10);  // arbitrary size guess
     b.append('\'');
     for (char c = 0; c <= MAX_VALUE; c++) {
@@ -135,7 +135,7 @@ vString type()		{ return typestring;}
 
 int rank()		{ return 40; }		// csets sort after strings
 
-int compareTo(vValue v) { 
+int compareTo(vValue v) {
     vCset vset = (vCset) v;
     int i;
     for (i = 0; i <= vCset.MAX_VALUE; i++) {
@@ -149,17 +149,17 @@ int compareTo(vValue v) {
 
     if (this.member(i)) {	// first bit found in this
 	while (++i <= vCset.MAX_VALUE) {
-	   if (vset.member(i)) {
+	    if (vset.member(i)) {
 		return -1;	// v is not empty
-	   }
+	    }
 	}
 	return 1;		// v is empty
 
     } else {			// first bit found in v
 	while (++i <= vCset.MAX_VALUE) {
-	   if (this.member(i)) {
+	    if (this.member(i)) {
 		return 1;	// this is not empty
-	   }
+	    }
 	}
 	return -1;		// this is empty
     }
@@ -230,7 +230,7 @@ vString mkString() {			// string(c)
     } else if (size > 0) {
 	b = new vByteBuffer(size);	// known size
     } else {
-    	b = new vByteBuffer(64);	// arbitrary guess;
+	b = new vByteBuffer(64);	// arbitrary guess;
     }
 
     if (w1 != 0) {
@@ -300,7 +300,7 @@ vDescriptor Select() {			// ?c
 
 vDescriptor Bang(iClosure c) {		// !c
     if (c.PC == 1) {
-        c.o = c;
+	c.o = c;
 	c.oint = 0;
 	c.PC = 2;
     }
@@ -401,7 +401,7 @@ static vCset argVal(vDescriptor[] args, int index, vCset dflt)	// optional arg
 	return args[index].mkCset();
     }
 }
- 
+
 
 
 } // class vCset

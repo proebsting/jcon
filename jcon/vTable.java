@@ -32,7 +32,7 @@ void put(vValue key, vValue val) {
 
 
 static vString typestring = iNew.String("table");
-vString type()		{ return typestring; } 
+vString type()		{ return typestring; }
 int rank()		{ return 110; }		// tables rank after sets
 
 vInteger Size() {
@@ -49,12 +49,12 @@ vDescriptor Index(vValue i) {
 
 vDescriptor Select() {
     if (t.size() == 0) {
-        return null;
+	return null;
     }
     int index = (int) k$random.choose(t.size());
     java.util.Enumeration e = t.keys();
     for (int k = 0; k < index; k++) {
-        e.nextElement();
+	e.nextElement();
     }
     return new vTrappedTable(this, (vValue)e.nextElement());
 }
@@ -117,7 +117,7 @@ vValue Sort(int n) {
 
     int i = 0;
     for (Enumeration e = t.keys(); e.hasMoreElements(); ) {
-        vValue key = (vValue)e.nextElement();
+	vValue key = (vValue)e.nextElement();
 	vValue val = (vValue)t.get(key);
 	if ((n & 1) != 0) {
 	    a[i++] = new vTableElem(key, val);	// sort by key
@@ -130,7 +130,7 @@ vValue Sort(int n) {
     vValue b[];
     if (n <= 2) {				// return list of lists
 	b = new vValue[t.size()];
-    	vValue pair[] = new vValue[2];
+	vValue pair[] = new vValue[2];
 	for (i = 0; i < t.size(); i++) {
 	    if ((n & 1) != 0) {			// sorted by key
 		pair[0] = a[i].sortkey;
@@ -142,18 +142,18 @@ vValue Sort(int n) {
 	    b[i] = iNew.List(pair);
 	}
 
-    } else { 					// return 2x-long list
-    	b = new vValue[2 * t.size()];
+    } else {					// return 2x-long list
+	b = new vValue[2 * t.size()];
 	int j = 0;
 	for (i = 0; i < t.size(); i++) {
 	    if ((n & 1) != 0) {			// sorted by key
-	    	b[j++] = a[i].sortkey;
-	    	b[j++] = a[i].other;
+		b[j++] = a[i].sortkey;
+		b[j++] = a[i].other;
 	    } else {				// sorted by value
-	    	b[j++] = a[i].other;
-	    	b[j++] = a[i].sortkey;
+		b[j++] = a[i].other;
+		b[j++] = a[i].sortkey;
 	    }
-    	}
+	}
     }
 
     return iNew.List(b);			// turn results into Icon list
@@ -170,7 +170,7 @@ class vTrappedTable extends vVariable {
 
 vString report()	{
     return iNew.String(
-    	"(variable = " + this.table.report() + "[" + this.key.report() + "])");
+	"(variable = " + this.table.report() + "[" + this.key.report() + "])");
 }
 
 vTrappedTable(vTable table, vValue key) {
@@ -196,7 +196,7 @@ vString Name() {
 
 
 
-class vTableElem extends vValue {	// key/value pair for sorting 
+class vTableElem extends vValue {	// key/value pair for sorting
 
     vValue sortkey;	// value used for sorting (table key or value)
     vValue other;	// the other half of the pair

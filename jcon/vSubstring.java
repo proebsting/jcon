@@ -26,15 +26,15 @@ vString Name() {
 //  Verifies that the underlying variable is still a string
 //  and that the indices are still in range, and return String.
 
-vString strval() 
+vString strval()
 {
     vDescriptor v = var.deref();
     if (! (v instanceof vString)) {
-    	iRuntime.error(205);
+	iRuntime.error(205);
     }
     vString s = (vString) v;
     if (end > s.length() + 1)  {
-    	iRuntime.error(103, var);
+	iRuntime.error(103, var);
     }
     return s;
 }
@@ -48,12 +48,12 @@ int posEq(long n)
 {
     int len = end - start;
     if (n <= 0) {
-    	n += len + 1;
+	n += len + 1;
     }
     if (n > 0 && n <= len + 1) {
-    	return (int)(start + n - 1);
+	return (int)(start + n - 1);
     } else {
-    	return 0;
+	return 0;
     }
 }
 
@@ -96,7 +96,7 @@ vDescriptor Index(vValue i) {			// s[i]
     this.strval();	// validate
     int m = this.posEq(i.mkInteger().value);
     if (m == 0) {
-    	return null; /*FAIL*/
+	return null; /*FAIL*/
     }
     return iNew.Substring(var, m, m+1);
 }
@@ -106,7 +106,7 @@ vDescriptor Section(int i, int j) {		// s[i:j]
     int m = this.posEq(i);
     int n = this.posEq(j);
     if (m == 0 || n == 0) {
-    	return null; /*FAIL*/
+	return null; /*FAIL*/
     }
     if (m > n) {
 	return iNew.Substring(var, n, m);

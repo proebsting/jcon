@@ -38,7 +38,7 @@ static wFont parse(vString spec) {
     // set up string scanner
     StringTokenizer tkr = new StringTokenizer(s);
     if (! tkr.hasMoreTokens()) {
-    	return null;
+	return null;
     }
 
     // get family name (case sensitive)
@@ -52,7 +52,7 @@ static wFont parse(vString spec) {
 
     // process characteristics
     while (tkr.hasMoreTokens()) {
-    	String tk = tkr.nextToken(", ").toLowerCase();
+	String tk = tkr.nextToken(", ").toLowerCase();
 	try {
 	    // if numeric, it's a font size
 	    size = Integer.parseInt(tk);
@@ -70,7 +70,7 @@ static wFont parse(vString spec) {
 
     // set size if none was specified
     if (size == 0) {
-    	size = iConfig.FontSize;
+	size = iConfig.FontSize;
     }
 
     //#%#%#% convert pixels to points here

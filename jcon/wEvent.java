@@ -44,7 +44,7 @@ wEvent(wCanvas cv) {				// new wEvent(w)
 
 
 static void register(wCanvas cv) {		// register event handlers
-    
+
     wEvent handler = new wEvent(cv);
     cv.f.addWindowListener(handler);
     cv.addKeyListener(handler);
@@ -102,14 +102,12 @@ static vValue dequeue(vList evq) {
     yv = evq.Get();
     if (xv == null || !(xv instanceof vInteger)
     ||  yv == null || !(yv instanceof vInteger)) {
-System.err.println("EVQ ERR 1: xv=" + xv + ", yv=" + yv); //#%#%#% DEBUGGING
 	iRuntime.error(143);		// malformed queue
     }
 
     long x = ((vInteger)xv).value;
     long y = ((vInteger)yv).value;
     if (x < 0 || x >= (LeftmostFlag << 1) || y < 0) {
-System.err.println("EVQ ERR 2: x=" + x + ", y=" + y);	//#%#%#% DEBUGGING
 	iRuntime.error(143);		// malformed queue
     }
 

@@ -35,7 +35,7 @@ class f$seq extends iClosure {					// seq(i1,i2)
 
 class f$icom extends iValueClosure {				// icom(n)
     vDescriptor function(vDescriptor[] args) {
-	return iNew.Integer(~vInteger.argVal(args, 0)); 
+	return iNew.Integer(~vInteger.argVal(args, 0));
     }
 }
 
@@ -44,7 +44,7 @@ class f$icom extends iValueClosure {				// icom(n)
 class f$iand extends iValueClosure {				// iand(n)
     vDescriptor function(vDescriptor[] args) {
 	return iNew.Integer(
-	    vInteger.argVal(args, 0) & vInteger.argVal(args, 1)); 
+	    vInteger.argVal(args, 0) & vInteger.argVal(args, 1));
     }
 }
 
@@ -53,7 +53,7 @@ class f$iand extends iValueClosure {				// iand(n)
 class f$ior extends iValueClosure {				// ior(n)
     vDescriptor function(vDescriptor[] args) {
 	return iNew.Integer(
-	    vInteger.argVal(args, 0) | vInteger.argVal(args, 1)); 
+	    vInteger.argVal(args, 0) | vInteger.argVal(args, 1));
     }
 }
 
@@ -62,7 +62,7 @@ class f$ior extends iValueClosure {				// ior(n)
 class f$ixor extends iValueClosure {				// ixor(n)
     vDescriptor function(vDescriptor[] args) {
 	return iNew.Integer(
-	    vInteger.argVal(args, 0) ^ vInteger.argVal(args, 1)); 
+	    vInteger.argVal(args, 0) ^ vInteger.argVal(args, 1));
     }
 }
 
@@ -81,7 +81,7 @@ class f$ishift extends iValueClosure {				// ishift(n)
 	} else {
 	    return iNew.Integer(v >> 63);	// fill with sign
 	}
-    } 
+    }
 }
 
 
@@ -120,13 +120,13 @@ class f$log extends iValueClosure {				// log(r,b)
 
 class f$dtor extends iValueClosure {				// dtor(r)
     vDescriptor function(vDescriptor[] args) {
-	return iNew.Real(vReal.argVal(args, 0) * Math.PI / 180.0); 
+	return iNew.Real(vReal.argVal(args, 0) * Math.PI / 180.0);
     }
 }
 
 class f$rtod extends iValueClosure {				// rtod(r)
     vDescriptor function(vDescriptor[] args) {
-	return iNew.Real(vReal.argVal(args, 0) * 180.0 / Math.PI); 
+	return iNew.Real(vReal.argVal(args, 0) * 180.0 / Math.PI);
     }
 }
 

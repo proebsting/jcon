@@ -20,9 +20,9 @@ class wTTY {
 
 //  new wTTY() -- create new tty structure
 
-wTTY() {		
+wTTY() {
     xloc = 0;
-    yloc = 20;	//#%#%#%#%#%#%#%#%#%##%#%# should depend on font 
+    yloc = 20;	//#%#%#%#%#%#%#%#%#%##%#%# should depend on font
 }
 
 
@@ -70,7 +70,7 @@ private char rchar(vWindow win, StringBuffer b) {
     FontMetrics m = win.getFontMetrics();
 
     if (cursor) {				// display cursor
-    	win.FillRectangle(xloc, yloc, m.charWidth('W'), m.getDescent());
+	win.FillRectangle(xloc, yloc, m.charWidth('W'), m.getDescent());
     }
 
     do {
@@ -78,7 +78,7 @@ private char rchar(vWindow win, StringBuffer b) {
     } while (! (e instanceof vString));		// wait for character event
 
     if (cursor) {				// hide cursor
-    	win.EraseArea(xloc, yloc, m.charWidth('W'), m.getDescent());
+	win.EraseArea(xloc, yloc, m.charWidth('W'), m.getDescent());
     }
 
     char c = ((vString) e).charAt(0);
@@ -101,7 +101,7 @@ private char rchar(vWindow win, StringBuffer b) {
 	    c = '\n';
 	}
 	b.append(c);				// add to buffer
-        if (echo) {
+	if (echo) {
 	    writes(win, iNew.String(c));	// echo to screen
 	}
     }
@@ -154,7 +154,7 @@ void newline(vWindow win) {
 
     int leading = win.Leading();
     int limit = d.height - m.getMaxDescent() - m.getLeading();
-	// shouldn't need getLeading, but even MaxDescent() sometimes lies 
+	// shouldn't need getLeading, but even MaxDescent() sometimes lies
 
     xloc = 0;			// set new text position
     yloc += leading;
@@ -162,8 +162,8 @@ void newline(vWindow win) {
     if (yloc > limit) {
 	// need to scroll upward
 	int shift = yloc - limit;
-        win.CopyArea(0, shift, d.width, d.height, 0, 0);
-    	yloc = limit;
+	win.CopyArea(0, shift, d.width, d.height, 0, 0);
+	yloc = limit;
     }
 }
 
@@ -224,7 +224,7 @@ vValue Row(vWindow win, String v) {
 	return null; /*FAIL*/
     }
     if (leading == 0) {
-    	iRuntime.error(204);	// this is what v9 does: real division by 0
+	iRuntime.error(204);	// this is what v9 does: real division by 0
     }
     return iNew.Integer((yloc - a) / leading + 1);
 }

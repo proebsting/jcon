@@ -49,12 +49,12 @@ vString reads(long n) {
 	    lastCharRead = c;
 	}
     } catch (EOFException e) {
-    	if (b.length() == 0)
+	if (b.length() == 0)
 	    return null; /*FAIL*/
     } catch (IOException e) {
 	iRuntime.error(214, this);	// I/O error
 	return null;
-    } 
+    }
     return b.mkString();
 }
 

@@ -32,13 +32,13 @@ void report(iClosure c) {		// print message and abort
     System.err.println("Run-time error " + num);
     if (c.parent != null) {
 	if (c.parent.file != null) {
-            System.err.println("File " + c.parent.file + 
-			       "; Line " + c.parent.line);
+	    System.err.println(
+		"File " + c.parent.file + "; Line " + c.parent.line);
 	}
     }
     System.err.println(iRunerr.text(num));
     if (desc != null) {
-        System.err.println("offending value: " + desc.report());
+	System.err.println("offending value: " + desc.report());
     }
     System.err.println("Traceback:");
 
@@ -56,11 +56,11 @@ void report(iClosure c) {		// print message and abort
 static void traceback(iClosure c, int n) {
 
     if (c == null) {			// if end of the line
-    	return;
+	return;
     }
 
     if (n == 0) {			// if recursion limit reached
-    	System.err.println("   ...");
+	System.err.println("   ...");
 	return;
     }
 
@@ -84,13 +84,13 @@ class iErrorClosure extends iValueClosure {
 
     iErrorClosure(vValue value, vDescriptor[] args, iClosure parent) {
 	init();
-        this.value = value;
+	this.value = value;
 	this.arguments = args;
 	this.parent = parent;
     }
 
     vDescriptor function(vDescriptor[] args) {
-    	iRuntime.error(106, value);	// procedure or integer expected
+	iRuntime.error(106, value);	// procedure or integer expected
 	return null;
     }
 

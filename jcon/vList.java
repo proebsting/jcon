@@ -19,7 +19,7 @@ vList(int n, vValue x) {			// new Vlist(n, x)
     super(nextsn++);
     v = new Vector(n);
     for (int i = 0; i < n; i++) {
-    	v.addElement(new vListVar(this, x));
+	v.addElement(new vListVar(this, x));
     }
 }
 
@@ -27,7 +27,7 @@ vList(vDescriptor[] elements) {			// new Vlist(elements[])
     super(nextsn++);
     v = new Vector(elements.length);
     for (int i = 0; i < elements.length; i++) {
-    	v.addElement(new vListVar(this, elements[i].deref()));
+	v.addElement(new vListVar(this, elements[i].deref()));
     }
 }
 
@@ -57,12 +57,12 @@ int posEq(long n)
 {
     long len = v.size();
     if (n <= 0) {
-    	n += len + 1;
+	n += len + 1;
     }
     if (n > 0 && n <= len + 1) {
-    	return (int)n;
+	return (int)n;
     } else {
-    	return 0;
+	return 0;
     }
 }
 
@@ -98,7 +98,7 @@ vValue Push(vDescriptor x) {				// push(L, x)
 
 vValue Pull() {						// pull(L)
     if (v.size() == 0) {
-    	return null; /*FAIL*/
+	return null; /*FAIL*/
     }
     vDescriptor x = (vDescriptor) v.lastElement();
     v.removeElementAt(v.size()-1);
@@ -107,7 +107,7 @@ vValue Pull() {						// pull(L)
 
 vValue Pop() {						// pop(L)
     if (v.size() == 0) {
-    	return null; /*FAIL*/
+	return null; /*FAIL*/
     }
     vDescriptor x = (vDescriptor) v.firstElement();
     v.removeElementAt(0);
@@ -116,7 +116,7 @@ vValue Pop() {						// pop(L)
 
 vValue Get() {						// get(L)
     if (v.size() == 0) {
-    	return null; /*FAIL*/
+	return null; /*FAIL*/
     }
     vDescriptor x = (vDescriptor) v.firstElement();
     v.removeElementAt(0);
@@ -133,7 +133,7 @@ vValue Put(vDescriptor x) {				// put(L, x)
 vDescriptor Index(vValue i) {				//  L[i]
     int m = this.posEq(i.mkInteger().value);
     if (m == 0 || m > v.size()) {
-    	return null; /*FAIL*/
+	return null; /*FAIL*/
     }
     return (vDescriptor) v.elementAt(m - 1);		// return as variable
 }
@@ -144,16 +144,16 @@ vDescriptor Section(int i, int j) {			//  L[i:j]
     int m = this.posEq(i);
     int n = this.posEq(j);
     if (m == 0 || n == 0) {
-    	return null; /*FAIL*/
+	return null; /*FAIL*/
     }
     if (m > n) {
-    	int t = m;
+	int t = m;
 	m = n;
 	n = t;
     }
     vDescriptor a[] = new vDescriptor[n-m];
     for (int k = 0; k < a.length; k++) {
-    	a[k] = (vDescriptor) v.elementAt(k + m - 1);
+	a[k] = (vDescriptor) v.elementAt(k + m - 1);
     }
     return iNew.List(a);
 }
@@ -165,7 +165,7 @@ vDescriptor Select() {					//  ?L
 	return null; /*FAIL*/
     }
     return (vDescriptor) v.elementAt((int)k$random.choose(v.size()));
-    							// return as variable
+							// return as variable
 }
 
 
@@ -204,7 +204,7 @@ vValue Sort(int i) {					// sort(L)
 vValue[] mkArray() {
     vValue a[] = new vValue[v.size()];
     for (int i = 0; i < a.length; i++) {
-    	a[i] = ((vDescriptor)v.elementAt(i)).deref();
+	a[i] = ((vDescriptor)v.elementAt(i)).deref();
     }
     return a;
 }

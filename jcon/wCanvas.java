@@ -28,7 +28,7 @@ class wCanvas extends Canvas {
 //
 //  (canvas is created but not made visible)
 
-wCanvas(vWindow win, String label, int w, int h) {		
+wCanvas(vWindow win, String label, int w, int h) {
 
     wlist = new Vector();
     wlist.addElement(win);
@@ -63,18 +63,18 @@ boolean config(vWindow win, int m, String x, String y, String w, String h) {
     Rectangle r = this.getBounds();
 
     try {
-    	if (x != null) { r.x = m * Integer.parseInt(x); }
-      	if (y != null) { r.y = m * Integer.parseInt(y); }
-    	if (w != null) { r.width = m * Integer.parseInt(w); }
-    	if (h != null) { r.height = m * Integer.parseInt(h); }
+	if (x != null) { r.x = m * Integer.parseInt(x); }
+	if (y != null) { r.y = m * Integer.parseInt(y); }
+	if (w != null) { r.width = m * Integer.parseInt(w); }
+	if (h != null) { r.height = m * Integer.parseInt(h); }
 	// do the following only after we know both values parsed okay
-    	if (w != null) { have_set_width = true; }
-    	if (h != null) { have_set_height = true; }
+	if (w != null) { have_set_width = true; }
+	if (h != null) { have_set_height = true; }
     } catch (Exception e) {
-    	return false;
+	return false;
     }
     resize(win, r.width, r.height);
-    return true; 
+    return true;
 }
 
 
@@ -107,7 +107,7 @@ void resize(vWindow win, int w, int h) {
 
     Dimension d = this.getSize();		// get current size
     if (d.width == w && d.height == h) {
-    	return;					// nothing to do
+	return;					// nothing to do
     }
     this.setSize(w, h);				// alter size
     f.pack();					// alter size of enclosing frame
@@ -116,7 +116,7 @@ void resize(vWindow win, int w, int h) {
     int ih = i.getHeight(null);
 
     if (iw >= w && ih >= h) {
-    	return;					// image is large enough
+	return;					// image is large enough
     }
 
     if (iw < w) { iw = w; }
@@ -127,7 +127,7 @@ void resize(vWindow win, int w, int h) {
 
     // install new graphics context in each associated window
     for (int j = 0; j < wlist.size(); j++) {
-        ((vWindow) wlist.elementAt(j)).newgcb(g);
+	((vWindow) wlist.elementAt(j)).newgcb(g);
     }
 
     // g has been cloned for use with each window
@@ -154,9 +154,9 @@ public void paint(Graphics g) {
 //  enqueue(a, b, c) -- enqueue three event values (synchronized)
 
 synchronized void enqueue(vValue a, vValue b, vValue c) {
-   evq.Put(a);
-   evq.Put(b);
-   evq.Put(c);
+    evq.Put(a);
+    evq.Put(b);
+    evq.Put(c);
 }
 
 

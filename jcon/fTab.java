@@ -142,7 +142,7 @@ vDescriptor function(vDescriptor[] args) {
 		    col++;
 		}
 		break;
-	 }
+	}
     }
     return b.mkString();
 }

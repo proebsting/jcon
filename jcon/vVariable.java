@@ -2,7 +2,7 @@
 //
 //  Variables represent assignable expressions in Icon.
 //
-//  The subclass vSimpleVar is used for Icon global and local variables 
+//  The subclass vSimpleVar is used for Icon global and local variables
 //  and, when further subclassed, for certain keywords such as &subject.
 //
 //  The abstract subclass vVarExpr represents a variable expression such
@@ -28,8 +28,8 @@ public abstract class vVariable extends vIndirect {
     vDescriptor Bang(iClosure c)  { return this.deref().BangVar(c, this); }
 
     vDescriptor Index(vValue i)
-    				{ return this.deref().IndexVar(this, i); }
+				{ return this.deref().IndexVar(this, i); }
     vDescriptor Section(int i, int j)
-    				{ return this.deref().SectionVar(this, i, j); }
+				{ return this.deref().SectionVar(this, i, j); }
 
 }

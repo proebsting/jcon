@@ -46,7 +46,7 @@ private static int gcount = 0;	// count of graphics contexts allocated
 static vString typestring = iNew.String("window");
 vString type()			{ return typestring; }
 vString image()			{ return iNew.String("window_" + wnum + ":" +
-				    gnum + "(" + c.f.getTitle() + ")"); } 
+				    gnum + "(" + c.f.getTitle() + ")"); }
 
 int rank()			{ return 50; }	// windows sort after csets
 int compareTo(vValue v)
@@ -90,9 +90,9 @@ static vWindow open(String name, String mode, vDescriptor args[]) {
 }
 
 vWindow(String title) {				// new vWindow(s)
-    
-    int w = 480;	// default width	// #%#%#%#???
-    int h = 156;	// default height	// #%#%#%#???
+
+    int w = 480;	// default width	// #%#% should depend on font
+    int h = 156;	// default height	// #%#% should depend on font
 
     c = new wCanvas(this, title, w, h);
     wnum = ++wcount;
@@ -108,7 +108,7 @@ vWindow(String title) {				// new vWindow(s)
 }
 
 vWindow(vWindow w) {				// new vWindow(w)  [a Clone()]
-			//#%#%#% really clone, to ensure it gets all attribs??
+    //#%#% really clone it, to ensure it gets all attribs??
     c = w.c;
     wnum = w.wnum;
 
@@ -136,9 +136,9 @@ vWindow(vWindow w) {				// new vWindow(w)  [a Clone()]
 //  (called by the Canvas code if the underlying image has changed)
 
 void newgcb(Graphics g) {
-   b = g.create();
-   b.setColor(fg);
-   b.setFont(font);
+    b = g.create();
+    b.setColor(fg);
+    b.setFont(font);
 }
 
 
@@ -265,7 +265,7 @@ vString Font(vString s) {
     }
     wFont f = wFont.parse(s);
     if (f == null) {
-    	return null;
+	return null;
     } else {
 	font = f;
 	this.b.setFont(f);
@@ -404,25 +404,25 @@ void DrawLine(int x1, int y1, int x2, int y2) {
 }
 
 void DrawLine(wCoords c) {
-   b.drawPolyline(c.xPoints, c.yPoints, c.nPoints);
-   a.drawPolyline(c.xPoints, c.yPoints, c.nPoints);
+    b.drawPolyline(c.xPoints, c.yPoints, c.nPoints);
+    a.drawPolyline(c.xPoints, c.yPoints, c.nPoints);
 }
 
 void DrawPolygon(wCoords c) {
-   b.drawPolygon(c.xPoints, c.yPoints, c.nPoints);
-   a.drawPolygon(c.xPoints, c.yPoints, c.nPoints);
+    b.drawPolygon(c.xPoints, c.yPoints, c.nPoints);
+    a.drawPolygon(c.xPoints, c.yPoints, c.nPoints);
 }
 
 void FillPolygon(wCoords c) {
-   b.fillPolygon(c.xPoints, c.yPoints, c.nPoints);
-   a.fillPolygon(c.xPoints, c.yPoints, c.nPoints);
+    b.fillPolygon(c.xPoints, c.yPoints, c.nPoints);
+    a.fillPolygon(c.xPoints, c.yPoints, c.nPoints);
 }
 
 
 
 void DrawString(int x, int y, String s) {
-   b.drawString(s, x, y);
-   a.drawString(s, x, y);
+    b.drawString(s, x, y);
+    a.drawString(s, x, y);
 }
 
 

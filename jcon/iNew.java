@@ -16,10 +16,10 @@ public class iNew {
 // for construction of Icon types
 
 private static vNull TheNull = new vNull();
-public static vNull Null() 			{ return TheNull; }	// reuse
+public static vNull Null()			{ return TheNull; }	// reuse
 
-public static vReal Real(double x) 		{ return new vReal(x); }
-public static vReal Real(String x) 		{ return new vReal(x); }
+public static vReal Real(double x)		{ return new vReal(x); }
+public static vReal Real(String x)		{ return new vReal(x); }
 
 public static vList List(int n, vValue x)	{ return new vList(n, x); }
 public static vList List(vDescriptor[] elements){ return new vList(elements); }
@@ -40,7 +40,7 @@ public static vRecordProc RecordProc(String name, String[] fields)
 
 //  for integers, cache some values
 
-private static vInteger intlist[] = 
+private static vInteger intlist[] =
     new vInteger[iConfig.MaxCachedInt + 1 - iConfig.MinCachedInt];
 
 public static vInteger Integer(double x) {	// int from real
@@ -48,7 +48,7 @@ public static vInteger Integer(double x) {	// int from real
 }
 
 public static vInteger Integer(String x) {	// int from string
-    return Integer(Long.parseLong(x)); 		// can throw exception
+    return Integer(Long.parseLong(x));		// can throw exception
 }
 
 public static vInteger Integer(long x) {
@@ -70,7 +70,7 @@ public static vInteger Integer(long x) {
 
 private static vString nullstring = new vString();
 private static vString strlist[] = new vString[vCset.MAX_VALUE + 1];
-private static vString intstrs[] = 
+private static vString intstrs[] =
     new vString[iConfig.MaxCachedIntStr + 1 - iConfig.MinCachedIntStr];
 
 static {
@@ -204,7 +204,7 @@ public static vFile File(String filename, String mode) {
 	    return new vTFile(filename, mode);	// text (translated) file
 	}
     } catch (IOException e) {
-    	return null; /*FAIL*/
+	return null; /*FAIL*/
     }
 }
 

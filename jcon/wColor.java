@@ -14,11 +14,11 @@ class wHue {		// table entry for named colors
     float h, s, b;
 
     wHue(String name, String ish, int h, int s, int b) {
-        this.name = name;
-        this.ish = ish;
-        this.h = (float)(h / 360.0);
-        this.s = (float)(s / 100.0);
-        this.b = (float)(b / 100.0);
+	this.name = name;
+	this.ish = ish;
+	this.h = (float)(h / 360.0);
+	this.s = (float)(s / 100.0);
+	this.b = (float)(b / 100.0);
     }
 }
 
@@ -32,7 +32,7 @@ class wColor extends Color {
 static Hashtable hueTable = new Hashtable();
 
 static {
-    //                color       ish-form     hue  sat  brt 
+    //		      color       ish-form     hue  sat  brt
     install(new wHue("black",    "blackish",     0,   0,   0));
     install(new wHue("blue",     "bluish",     240, 100, 100));
     install(new wHue("brown",    "brownish",    30, 100,  50));
@@ -79,7 +79,7 @@ static wColor parse(vString s) {
     String js = s.toString();	//#%#% unnecessary?
     int rgb = parseInts(js);
     if (rgb < 0) {
-    	rgb = parseName(js);
+	rgb = parseName(js);
 	if (rgb < 0) {
 	    return null; /*FAIL*/
 	}
@@ -120,20 +120,20 @@ private static int parseName(String k) {
     StringTokenizer tkr = new StringTokenizer(k, " -");
 
     try {
-    	String t = tkr.nextToken();
+	String t = tkr.nextToken();
 
 	double lgtAdjust = parseLightness(t);	// lightness adjustment
 	if (Double.isNaN(lgtAdjust)) {
 	    lgtAdjust = 0.0;
 	} else {
-    	    t = tkr.nextToken();
+	    t = tkr.nextToken();
 	}
 
 	double satAdjust = parseSaturation(t);	// saturation adjustment
 	if (Double.isNaN(satAdjust)) {
 	    satAdjust = 1.0;
 	} else {
-    	    t = tkr.nextToken();
+	    t = tkr.nextToken();
 	}
 
 	wHue h1, h2;		// two (or possibly just one) named hues
@@ -146,23 +146,23 @@ private static int parseName(String k) {
 	    t = tkr.nextToken();	// had an ish form
 	    h2 = parseHue(t);		// must have a second hue
 	    weight = 0.25;
-	   
+
 	} else {
 
 	    h1 = parseHue(t);		// must have a first hue
 	    if (h1 == null) {
-	        return -1;
+		return -1;
 	    }
 
 	    if (tkr.hasMoreTokens()) {
-	        t = tkr.nextToken();
-	        h2 = parseHue(t);	// two equally weighted hues
+		t = tkr.nextToken();
+		h2 = parseHue(t);	// two equally weighted hues
 		if (h2 == null) {
 		    return -1;
 		}
 		weight = 0.50;
 	    } else {
-	    	h2 = nohue;		// only one hue counts
+		h2 = nohue;		// only one hue counts
 		weight = 1.00;
 	    }
 	}
@@ -196,7 +196,7 @@ private static int parseName(String k) {
 	    b = (1.0 + lgtAdjust) * b;
 	    s = (1.0 - lgtAdjust) * s;
 	    if (b > 1.0) {
-	    	b = 1.0;
+		b = 1.0;
 	    }
 	} else /* lgtAdjust <= 0.0 */ {
 	    b = (1.0 + lgtAdjust) * b;
@@ -208,7 +208,7 @@ private static int parseName(String k) {
 	return Color.HSBtoRGB((float)h, (float)s, (float)b) & 0xFFFFFF;
 
     } catch (Exception e) {
-        return -1;
+	return -1;
     }
 }
 
@@ -245,9 +245,9 @@ private static double parseSaturation(String s) {
 
 private static wHue parseIsh(String s) {
     if (s.endsWith("ish")) {
-    	return (wHue) hueTable.get(s);
+	return (wHue) hueTable.get(s);
     } else {
-   	return null;
+	return null;
     }
 }
 
@@ -255,9 +255,9 @@ private static wHue parseIsh(String s) {
 
 private static wHue parseHue(String s) {
     if (s.endsWith("ish")) {
-   	return null;
+	return null;
     } else {
-    	return (wHue) hueTable.get(s);
+	return (wHue) hueTable.get(s);
     }
 }
 

@@ -91,10 +91,10 @@ class f$left extends iValueClosure {				// left(s,i,s)
     int padlen = pad.length;
 
     for (int i = padlen - 1; i >= 0; i--) {
-       byte c = pad[i];
-       for (int k = dstlen - padlen + i; k >= srclen; k -= padlen) {
-	  dst[k] = c;
-       }
+	byte c = pad[i];
+	for (int k = dstlen - padlen + i; k >= srclen; k -= padlen) {
+	    dst[k] = c;
+	}
     }
 
     System.arraycopy(src, 0, dst, 0, src.length);
@@ -180,10 +180,10 @@ class f$center extends iValueClosure {				// center(s,i,s)
     // pad on right
     int rmar = dstlen - srclen - offset;
     for (int i = padlen - 1; i >= 0; i--) {
-       byte c = pad[i];
-       for (int k = dstlen - padlen + i; k >= rmar; k -= padlen) {
-	  dst[k] = c;
-       }
+	byte c = pad[i];
+	for (int k = dstlen - padlen + i; k >= rmar; k -= padlen) {
+	    dst[k] = c;
+	}
     }
 
     // finally, copy string

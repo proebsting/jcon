@@ -11,7 +11,7 @@ public class vBFile extends vFile {
 
 
 vBFile(String name, String mode)		 // new vBFile(name, mode)
-	throws IOException
+    throws IOException
 {
     super(name, mode);
 }
@@ -43,12 +43,12 @@ vString reads(long n) {
 	    b.append(this.rchar());
 	}
     } catch (EOFException e) {
-    	if (b.length() == 0)
+	if (b.length() == 0)
 	    return null; /*FAIL*/
     } catch (IOException e) {
 	iRuntime.error(214, this);	// I/O error
 	return null;
-    } 
+    }
 
     lastCharRead = '\0';		// reset in case read() follows
 

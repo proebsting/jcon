@@ -123,7 +123,7 @@ class f$find extends iClosure {				// find(s1,s2,i1,i2)
 
     public vDescriptor nextval() {
 
-        if (PC == 1) {
+	if (PC == 1) {
 	    for (int i = 0; i < arguments.length; i++) {
 		arguments[i] = arguments[i].deref();
 	    }
@@ -166,7 +166,7 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
 
     public vDescriptor nextval() {
 
-        if (PC == 1) {
+	if (PC == 1) {
 	    for (int i = 0; i < arguments.length; i++) {
 		arguments[i] = arguments[i].deref();
 	    }
@@ -175,12 +175,12 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
 	    i1 = s.posEq(iRuntime.argPos(arguments, 2));
 	    i2 = s.posEq(vInteger.argVal(arguments, 3, 0));
 	    if (i1 == 0 || i2 == 0) {
-	        return null;
+		return null;
 	    }
 	    if (i1 > i2) {
-	        int tmp = i1;
-	        i1 = i2;
-	        i2 = tmp;
+		int tmp = i1;
+		i1 = i2;
+		i2 = tmp;
 	    }
 	    b = s.getBytes();
 	    PC = 2;
@@ -189,7 +189,7 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
 	for (; i1 < i2; i1++) {
 	    if (c.member((char) b[i1-1])) {
 		i1 = i1+1;
-	        return iNew.Integer(i1-1);
+		return iNew.Integer(i1-1);
 	    }
 	}
 	return null;
@@ -214,7 +214,7 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 
     public vDescriptor nextval() {
 
-        if (PC == 1) {
+	if (PC == 1) {
 	    for (int i = 0; i < arguments.length; i++) {
 		arguments[i] = arguments[i].deref();
 	    }
@@ -225,7 +225,7 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 	    i1 = s.posEq(iRuntime.argPos(arguments, 4));
 	    i2 = s.posEq(vInteger.argVal(arguments, 5, 0));
 	    if (i1 == 0 || i2 == 0) {
-	        return null;
+		return null;
 	    }
 	    if (i1 > i2) {
 		int tmp = i1;
@@ -240,7 +240,7 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 	for (; i1 < i2; i1++) {
 	    if (balance == 0 && c1.member((char) b[i1-1])) {
 		i1 = i1+1;
-	        return iNew.Integer(i1-1);
+		return iNew.Integer(i1-1);
 	    }
 	    if (c2.member(s.charAt(i1-1))) {
 		balance++;
@@ -263,7 +263,7 @@ class f$move extends iClosure {				// move(j)
 
     public vDescriptor nextval() {
 
-        if (PC == 1) {
+	if (PC == 1) {
 	    oldpos = (vInteger) k$pos.self.deref();
 	    int i = (int) oldpos.value;
 	    int j = (int) vInteger.argVal(arguments, 0);
@@ -273,7 +273,7 @@ class f$move extends iClosure {				// move(j)
 	    if (k < 0 || k > s.length()) {
 		return null;
 	    } else {
-	        k$pos.self.SafeAssign(iNew.Integer(i + j));
+		k$pos.self.SafeAssign(iNew.Integer(i + j));
 		if (j >= 0) {
 		    return iNew.String(s, i, i + j);
 		} else {
@@ -295,7 +295,7 @@ class f$tab extends iClosure {				// tab(j)
 
     public vDescriptor nextval() {
 
-        if (PC == 1) {
+	if (PC == 1) {
 	    oldpos = (vInteger) k$pos.self.deref();
 	    vString s = (vString) k$subject.self.deref();
 	    int i = (int) oldpos.value;
@@ -304,7 +304,7 @@ class f$tab extends iClosure {				// tab(j)
 	    if (j == 0) {
 		return null;
 	    } else {
-	        k$pos.self.SafeAssign(iNew.Integer(j));
+		k$pos.self.SafeAssign(iNew.Integer(j));
 		if (i < j) {
 		    return iNew.String(s, i, j);
 		} else {

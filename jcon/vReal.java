@@ -36,9 +36,9 @@ vInteger mkInteger()	{
 vString write()		{ return this.mkString(); }
 vString image()		{ return this.mkString(); }
 
-vString mkString()		{	//#%#%# differs from v9 formatting 
+vString mkString()		{	//#%#%# differs from v9 formatting
     if (cachedString != null) {
-        return cachedString;
+	return cachedString;
     }
     String s = Double.toString(value + 0.0);	 // +0.0 eliminates "-0"
     if (s.indexOf('E') >= 0) {
@@ -60,7 +60,6 @@ int compareTo(vValue v) {
     } else {
 	return 0;
     }
-		
 }
 
 
@@ -113,26 +112,26 @@ vValue Power(vDescriptor v) {
 	iRuntime.error(204);
     }
     return iNew.Real(Math.pow(this.value, y.value));
-} 
+}
 
 vValue Add(vDescriptor v) {
     return iNew.Real(this.value + ((vReal)v).value);
-} 
+}
 
 vValue Sub(vDescriptor v) {
     return iNew.Real(this.value - ((vReal)v).value);
-} 
+}
 
 vValue Mul(vDescriptor v) {
     return iNew.Real(this.value * ((vReal)v).value);
-} 
+}
 
 vValue Div(vDescriptor v) {
     if (((vReal)v).value == 0) {
 	iRuntime.error(204);
     }
     return iNew.Real(this.value / ((vReal)v).value);
-} 
+}
 
 vValue Mod(vDescriptor v) {
     if (((vReal)v).value == 0) {
@@ -140,13 +139,13 @@ vValue Mod(vDescriptor v) {
     }
     return iNew.Real(this.value % ((vReal)v).value);
 	//#%#% is that the correct definition of % for Icon?
-} 
+}
 
 vValue Abs() {
     if (this.value >= 0 ) {
-    	return this;
+	return this;
     } else {
-    	return iNew.Real(-this.value);
+	return iNew.Real(-this.value);
     }
 }
 

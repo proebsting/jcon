@@ -49,7 +49,7 @@ void announce() {
     iBuiltins.declare("WSync", 1);
 
     // #%#%#%#%#%# IMPLEMENTED AS NO-OPS
-    // close(win) 	(see wTTY.java)
+    // close(win)	(see wTTY.java)
 
     // #%#%#%#%#%# NOT YET IMPLEMENTED:
     //
@@ -126,7 +126,7 @@ class f$WAttrib extends iClosure {		// WAttrib(W,attribs,...)
 
 
 
-class f$Clone extends iValueClosure {		// Clone(W,attribs...) 
+class f$Clone extends iValueClosure {		// Clone(W,attribs...)
     vDescriptor function(vDescriptor[] args) {
 	vWindow win = vWindow.winArg(arguments);
 	int b = vWindow.argBase(arguments);
@@ -188,7 +188,7 @@ class f$ColorValue extends iValueClosure {	// ColorValue(W, s)
 	    return null;
 	} else {
 	    return iNew.String(257 * k.getRed() + "," +
-			257 * k.getGreen() + "," + 257 * k.getBlue()); 
+			257 * k.getGreen() + "," + 257 * k.getBlue());
 	}
     }
 }
@@ -346,7 +346,7 @@ class f$CopyArea extends iValueClosure {	// CopyArea(W,x1,y1,w,h,x2,y2)
 class f$DrawArc extends iValueClosure {		// DrawArc(W,x,y,w,h,t,a,...)
     vDescriptor function(vDescriptor[] args) {
 	vWindow win = vWindow.winArg(args);
-        	int b = vWindow.argBase(args);
+	int b = vWindow.argBase(args);
 
 	int[] r = wCoords.rectArgs(args, 6);
 	for (int i = 0; i < r.length; i += 4) {

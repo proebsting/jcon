@@ -16,7 +16,7 @@ static final int GrowthSize = 16;	// size of chunk allocated when growing
 
 //  new vByteBuffer(n) -- make bytebuffer with room for n bytes
 
-vByteBuffer(int n) {	
+vByteBuffer(int n) {
     data = new byte[n];
 }
 

@@ -34,7 +34,7 @@ vString image()		{ return iNew.String(this.value); }
 
 static vString typestring = iNew.String("integer");
 vString type()		{ return typestring; }
-int rank()		{ return 10; } 	// integers sort right after &null
+int rank()		{ return 10; }	// integers sort right after &null
 
 int compareTo(vValue v) {
     long x = ((vInteger) v).value;
@@ -45,7 +45,6 @@ int compareTo(vValue v) {
     } else {
 	return 0;
     }
-		
 }
 
 vValue getproc() {
@@ -109,7 +108,7 @@ static vInteger radixParse(String s)
 
     int i = s.indexOf('r');
     if (i == -1) {
-    	i = s.indexOf('R');
+	i = s.indexOf('R');
     }
     if (i < 1 || i > s.length() - 2) {
 	return null;
@@ -117,7 +116,7 @@ static vInteger radixParse(String s)
 
     long base = 0;
     try {
-	base = Long.parseLong(s.substring(0,i)); 
+	base = Long.parseLong(s.substring(0,i));
     } catch (NumberFormatException e) {
     }
     if (base < 0) {
@@ -199,19 +198,19 @@ vValue Power(vDescriptor v) {
 	p *= x;		//#%#%# totally ignoring overflow.
     }
     return iNew.Integer(p);
-} 
+}
 
 vValue Add(vDescriptor v) {
     return iNew.Integer(this.value + ((vInteger)v).value);
-} 
+}
 
 vValue Sub(vDescriptor v) {
     return iNew.Integer(this.value - ((vInteger)v).value);
-} 
+}
 
 vValue Mul(vDescriptor v) {
     return iNew.Integer(this.value * ((vInteger)v).value);
-} 
+}
 
 vValue Div(vDescriptor v) {
     try {
@@ -220,7 +219,7 @@ vValue Div(vDescriptor v) {
 	iRuntime.error(201);
     }
     return null;
-} 
+}
 
 vValue Mod(vDescriptor v) {
     try {
@@ -229,13 +228,13 @@ vValue Mod(vDescriptor v) {
 	iRuntime.error(202);
     }
     return null;
-} 
+}
 
 vValue Abs() {
     if (this.value >= 0 ) {
-    	return this;
+	return this;
     } else {
-    	return iNew.Integer(-this.value);
+	return iNew.Integer(-this.value);
     }
 }
 
@@ -282,7 +281,7 @@ vValue NGreater(vDescriptor v) {
 
 class vIntegerProc extends vValue {
     vInteger value;
-	
+
     vIntegerProc(vInteger value) {
 	this.value = value;
     }
@@ -311,7 +310,7 @@ class iIntegerClosure extends iRefClosure {
 
     iIntegerClosure(vInteger value, vDescriptor[] args, iClosure parent) {
 	init();
-        this.value = value;
+	this.value = value;
 	arguments = args;
 	this.parent = parent;
     }

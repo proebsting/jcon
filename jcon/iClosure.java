@@ -38,16 +38,16 @@ String trace_coordinate() {
 	line = parent.line +"";
     }
     while (file.length() < 12) {
-        file += " ";
+	file += " ";
     }
     if (file.length() > 12) {
-        file = file.substring(file.length()-12);
+	file = file.substring(file.length()-12);
     }
     while (line.length() < 4) {
-        line = " " + line;
+	line = " " + line;
     }
     if (line.length() > 4) {
-        line = line.substring(line.length()-4);
+	line = line.substring(line.length()-4);
     }
     return file + " : " + line + " ";
 }
@@ -56,36 +56,36 @@ public vDescriptor resume() {
     vDescriptor ret;
 
     try {
-        try {
-            if (k$trace.trace != 0) {
-                k$trace.trace--;
+	try {
+	    if (k$trace.trace != 0) {
+		k$trace.trace--;
 		System.err.print(trace_coordinate());
-                for (iClosure p=this.parent; p != null; p=p.parent) {
-                    System.err.print("| ");
-                }
-                System.err.println(this.trace_prototype());
-            }
-            ret = nextval();
-            if (k$trace.trace != 0) {
+		for (iClosure p=this.parent; p != null; p=p.parent) {
+		    System.err.print("| ");
+		}
+		System.err.println(this.trace_prototype());
+	    }
+	    ret = nextval();
+	    if (k$trace.trace != 0) {
 		System.err.print(trace_coordinate());
-                for (iClosure p=this.parent; p != null; p=p.parent) {
-                    System.err.print("| ");
-                }
-                String p = this.trace_prototype().toString();
-                k$trace.trace--;
-                if (ret == null) {
-                    p += " failed";
-                } else if (PC==0) {
-                    p += " returned " + ret.report();
-                } else {
-                    p += " suspended " + ret.report();
-                }
-                System.err.println(p);
-            }
-        } catch (OutOfMemoryError e) {
-            iRuntime.error(307);	// #%#%# really out of memory.
+		for (iClosure p=this.parent; p != null; p=p.parent) {
+		    System.err.print("| ");
+		}
+		String p = this.trace_prototype().toString();
+		k$trace.trace--;
+		if (ret == null) {
+		    p += " failed";
+		} else if (PC==0) {
+		    p += " returned " + ret.report();
+		} else {
+		    p += " suspended " + ret.report();
+		}
+		System.err.println(p);
+	    }
+	} catch (OutOfMemoryError e) {
+	    iRuntime.error(307);	// #%#%# really out of memory.
 	    ret = null;
-        }
+	}
     } catch (iError e) {
 	e.report(this);  // returns only on error->failure conversion.
 	ret = null;
@@ -97,11 +97,11 @@ public vDescriptor resume() {
 }
 
 public void Free() {
-	iNew.FreeArgs(arguments);
-	arguments = null;
-	if (vproc != null) {
-		vproc.cachedclosure = this;
-	}
+    iNew.FreeArgs(arguments);
+    arguments = null;
+    if (vproc != null) {
+	vproc.cachedclosure = this;
+    }
 }
 
 public abstract vDescriptor nextval();
@@ -143,7 +143,7 @@ public void closure(vDescriptor arg0, iClosure parent) {
 String tfmt() {
     return "$0($*)";
 }
-   
+
 
 
 // trace_prototype -- format this call for traceback purposes
@@ -159,37 +159,37 @@ StringBuffer trace_prototype() {
     StringBuffer b = new StringBuffer();	// output buffer
 
     for (int i = 0; i < f.length(); i++) {	// scan format
-        char c = f.charAt(i);
-        if (c == '$') {				// if $x
-            c = f.charAt(++i);			// get x
-    
-            if (c == '0') {			// $0: proc/func name
-                String s = this.getClass().getName();
+	char c = f.charAt(i);
+	if (c == '$') {				// if $x
+	    c = f.charAt(++i);			// get x
+
+	    if (c == '0') {			// $0: proc/func name
+		String s = this.getClass().getName();
 		int j = s.lastIndexOf('$');
 		if (j >= 0) {			// xxx$file$yyyyy format
-                    b.append(s.substring(j+1));
-                } else {			// no, use full class name
-                    b.append(s);
-                }
-    
-            } else if (c > '0' && c <= '9') {	// $n: one arg
-                b.append(getarg((int)c - '1').toString());
-    
-            } else if (c == '*') {		// $*: all ags, comma-separated
-                if (arguments != null && arguments.length > 0) {
-                    b.append(getarg(0).toString());
-                    for (int j = 1; j < arguments.length; j++) {
-                        b.append(',').append(getarg(j).toString());
-                    }
-                }
-    
-            } else {
-                b.append(c);			// $<unknown>: just copy
-            }
-    
-        } else {
-            b.append(c);			// not $; use as is
-        }
+		    b.append(s.substring(j+1));
+		} else {			// no, use full class name
+		    b.append(s);
+		}
+
+	    } else if (c > '0' && c <= '9') {	// $n: one arg
+		b.append(getarg((int)c - '1').toString());
+
+	    } else if (c == '*') {		// $*: all ags, comma-separated
+		if (arguments != null && arguments.length > 0) {
+		    b.append(getarg(0).toString());
+		    for (int j = 1; j < arguments.length; j++) {
+			b.append(',').append(getarg(j).toString());
+		    }
+		}
+
+	    } else {
+		b.append(c);			// $<unknown>: just copy
+	    }
+
+	} else {
+	    b.append(c);			// not $; use as is
+	}
     }
     return b;
 }
@@ -198,7 +198,7 @@ StringBuffer trace_prototype() {
 String trace() {
     StringBuffer b = this.trace_prototype();
     if (parent != null && parent.file != null) {
-        b.append(" from line " + parent.line + " in " + parent.file);
+	b.append(" from line " + parent.line + " in " + parent.file);
     }
     return b.toString();
 }
@@ -208,9 +208,9 @@ String trace() {
 
 vString getarg(int n) {
     if (arguments[n] == null || arguments.length <= n) {
-        return iNew.String("???");	// shouldn't happen, but handle it
+	return iNew.String("???");	// shouldn't happen, but handle it
     } else {
-        return arguments[n].report();
+	return arguments[n].report();
     }
 }
 

@@ -104,11 +104,11 @@ class vSortElem extends vValue {		// key/value pair for sortf()
     vValue value;	// value x used if x[i] did not exist
 
     vSortElem(vValue x, vInteger i) {		// constructor
-    	value = x;
+	value = x;
 	if (x instanceof vList || x instanceof vRecord) {
 	    vDescriptor d = value.Index(i);	// null on failure
 	    if (d == null) {
-	    	key = null;
+		key = null;
 	    } else {
 		key = d.deref();
 	    }
@@ -124,7 +124,7 @@ class vSortElem extends vValue {		// key/value pair for sortf()
 	    if (e.key == null) {
 		return iUtil.compare(this.value, e.value);
 	    } else {
-	    	return -1;
+		return -1;
 	    }
 	} else /* this.key != null */ {
 	    if (e.key == null) {

@@ -88,7 +88,7 @@ public abstract class vIndirect extends vDescriptor {
     vValue Member(vDescriptor i)	{ return this.deref().Member(i); }
     vValue Delete(vDescriptor i)	{ return this.deref().Delete(i); }
     vValue Insert(vDescriptor i, vDescriptor val)
-    					{ return this.deref().Insert(i, val); }
+					{ return this.deref().Insert(i, val); }
 
     // set operations
     vValue Complement()			{ return this.deref().Complement(); }
@@ -100,18 +100,18 @@ public abstract class vIndirect extends vDescriptor {
     vValue Proc(long i)			{ return this.deref().Proc(i); }
 
     vDescriptor isNull()	{
-    	if (this.deref() instanceof vNull) {
-	    return this;	// return variable 
+	if (this.deref() instanceof vNull) {
+	    return this;	// return variable
 	} else {
 	    return null;	// fail
 	}
     }
 
-    vDescriptor isntNull()	{ 
-    	if (this.deref() instanceof vNull) {
+    vDescriptor isntNull()	{
+	if (this.deref() instanceof vNull) {
 	    return null;	// fail
 	} else {
-	    return this;	// return variable 
+	    return this;	// return variable
 	}
     }
 

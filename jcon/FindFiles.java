@@ -44,14 +44,14 @@ public static void main(String a[]) {
     //  process -t option
 
     if (a.length > nextarg && a[nextarg].equals("-t")) {
-    	nextarg++;
+	nextarg++;
 	tracing = true;
     }
 
     //  two or more positional arguments are required
 
     if (a.length < nextarg + 2) {
-    	System.err.println(Usage);
+	System.err.println(Usage);
 	System.exit(1);
     }
 
@@ -68,19 +68,19 @@ public static void main(String a[]) {
     //  process named files
 
     for (; nextarg < a.length; nextarg++) {
-    	addfile(a[nextarg]);
+	addfile(a[nextarg]);
     }
 
     //  find needed link files
     while (! needed.empty()) {		// while more to do on list
-        String s = (String) needed.pop();
+	String s = (String) needed.pop();
 	if (! found.contains(s)) {
 	    found.put(s, s);		// in case of problems, try only once
 	    String fname = findfile(s);	// find .zip file
 	    if (fname == null) {
-	    	error("cannot find \"" + s + "\" for linking");
+		error("cannot find \"" + s + "\" for linking");
 	    } else {
-	    	addfile(fname);		// add to list and scan for more links
+		addfile(fname);		// add to list and scan for more links
 	    }
 	}
     }
@@ -88,13 +88,13 @@ public static void main(String a[]) {
     //  output the list of files
 
     for (int i = 0; i < files.size(); i++) {
-    	System.out.println((String) files.elementAt(i));
+	System.out.println((String) files.elementAt(i));
     }
 
     //  check for error exit
 
     if (errorcount > 0) {
-    	System.exit(1);
+	System.exit(1);
     }
 }
 
@@ -105,7 +105,7 @@ public static void main(String a[]) {
 static void trace(String s)
 {
     if (tracing) {
-    	System.err.println(s);
+	System.err.println(s);
     }
 }
 
@@ -157,9 +157,10 @@ static String[] crackpath(String s)
 static String findfile(String name)
 {
     for (int i = 0; i < ipath.length; i++) {
-    	File f = new File(ipath[i], name + ".zip");
-	if (f.canRead())
+	File f = new File(ipath[i], name + ".zip");
+	if (f.canRead()) {
 	    return f.getPath();
+	}
     }
     return null;
 }
@@ -182,7 +183,7 @@ static void addfile(String fname)
     int i = fname.lastIndexOf(File.separatorChar) + 1;
     int j = fname.lastIndexOf('.');
     if (j == -1) {
-    	j = fname.length();
+	j = fname.length();
     }
     String s = fname.substring(i, j);
     found.put(s, s);
