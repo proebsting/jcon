@@ -46,7 +46,7 @@ public vString Type()		{ return typestring; }
 
 int rank()		{ return 110; }		// tables rank after sets
 
-public vInteger Size() {
+public vInteger Size() {				// *T
     return vInteger.New(t.size());
 }
 
@@ -54,11 +54,21 @@ public vValue Copy() {					// copy(T)
     return new vTable(this);
 }
 
-public vDescriptor Index(vDescriptor i) {
+
+
+public vDescriptor Index(vDescriptor i) {		// T[x]
     return new vTrappedTable(this, i.Deref());
 }
 
-public vDescriptor Select() {
+public vValue IndexVal(vDescriptor i) {			// .T[x]
+    vValue key = i.Deref();
+    vValue val = (vValue) t.get(key);
+    return (val == null) ? this.dflt : val;
+}
+
+
+
+public vDescriptor Select() {				// ?T
     if (t.size() == 0) {
 	return null;
     }
@@ -72,7 +82,7 @@ public vDescriptor Select() {
 
 
 
-public vDescriptor Bang() {
+public vDescriptor Bang() {				// !T
     final vTrappedTable a[] = new vTrappedTable[t.size()];
     java.util.Enumeration e = (java.util.Enumeration) t.keys();
     int i = 0;

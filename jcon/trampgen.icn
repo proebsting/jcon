@@ -48,12 +48,18 @@ procedure operators()
 	[ 1,     "/", "IsNull",       "vDescriptor" ],
 	[ 1,    "\\", "IsntNull",     "vDescriptor" ],
 	[ 1,     "?", "Select",       "vDescriptor" ],
+	[ 1,     "?", "SelectVal",    "vDescriptor" ],
+	[ 1,     "!", "BangVal",      "vDescriptor" ],
 	[ 1,     "!", "Bang",         "vDescriptor" ],
 
 	[ 2,    "[]", "Index",        "vDescriptor" ],
+	[ 2,    "[]", "IndexVal",     "vDescriptor" ],
 	[ 3,   "[:]", "Section",      "vDescriptor" ],
+	[ 3,   "[:]", "SectionVal",   "vDescriptor" ],
 	[ 3,  "[+:]", "SectPlus",     "vDescriptor" ],
+	[ 3,  "[+:]", "SectPlusVal",  "vDescriptor" ],
 	[ 3,  "[-:]", "SectMinus",    "vDescriptor" ],
+	[ 3,  "[-:]", "SectMinusVal", "vDescriptor" ],
 
 	[ 2,     "+", "Add",          "vNumeric"    ],
 	[ 2,     "-", "Sub",          "vNumeric"    ],

@@ -193,11 +193,11 @@ public vDescriptor Resume()			{ return null; /*FAIL*/ }
 
 // special methods called when result is known to be used only as a value
 
-public vDescriptor SelectVal()			{ return Select(); }	// .?x
-public vDescriptor BangVal()			{ return Bang(); }	// .!x
-public vDescriptor IndexVal(vDescriptor v)	{ return Index(v); }	// .x[i]
-public vDescriptor SectionVal(vDescriptor i, vDescriptor j)	      // .x[i:j]
-						{ return Section(i, j);}
+public vValue SelectVal()		{ return Select().Deref(); }	// .?x
+public vValue BangVal()			{ return Bang().Deref(); }	// .!x
+public vValue IndexVal(vDescriptor v)	{ return Index(v).Deref(); }	// .x[i]
+public vValue SectionVal(vDescriptor i, vDescriptor j)		      // .x[i:j]
+					{ return Section(i, j).Deref(); }
 
 
 
@@ -283,7 +283,7 @@ public vDescriptor SectMinus(vDescriptor a, vDescriptor b) {	// x[i-:j]
     return Section(ai, vInteger.New(j));
 }
 
-public vDescriptor SectPlusVal(vDescriptor a, vDescriptor b) {	// .x[i+:j]
+public vValue SectPlusVal(vDescriptor a, vDescriptor b) {	// .x[i+:j]
     vInteger ai = a.mkInteger();
     long i = ai.value;
     long j = i + b.mkInteger().value;
@@ -293,7 +293,7 @@ public vDescriptor SectPlusVal(vDescriptor a, vDescriptor b) {	// .x[i+:j]
     return SectionVal(ai, vInteger.New(j));
 }
 
-public vDescriptor SectMinusVal(vDescriptor a, vDescriptor b) {	// .x[i-:j]
+public vValue SectMinusVal(vDescriptor a, vDescriptor b) {	// .x[i-:j]
     vInteger ai = a.mkInteger();
     long i = ai.value;
     long j = i - b.mkInteger().value;
