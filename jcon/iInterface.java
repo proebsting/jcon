@@ -36,7 +36,7 @@ public class iInterface {
 	}
 
 	static java.util.Hashtable fileTable = new java.util.Hashtable();
-	public static void announce(String name) {
+	public static void link(String name) {
 		if (fileTable.containsKey(name)) {
 			return;
 		}
@@ -44,7 +44,7 @@ public class iInterface {
 			Class c = Class.forName(name);
 			Object o = c.newInstance();
 			iFile file = (iFile) o;
-			file.announce();
+			file.link();
 			fileTable.put(name, file);
 		} catch (ClassNotFoundException e) {
 			System.err.println();
@@ -65,15 +65,30 @@ public class iInterface {
 	}
 
 	public static void start(String[] filenames, String[] args, String name) {
+		java.util.Enumeration e;
+
 		for (int i = 0; i < filenames.length; i++) {
-			announce(filenames[i]);
+			link(filenames[i]);
 		}
-		iInterface.init();
-		java.util.Enumeration e = fileTable.elements();
+		e = fileTable.elements();
 		while (e.hasMoreElements()) {
 			iFile file = (iFile) e.nextElement();
-			file.link();
+			file.unresolved();
 		}
+		iEnv.declareInvoke("main");
+
+		iInterface.init();
+		e = fileTable.elements();
+		while (e.hasMoreElements()) {
+			iFile file = (iFile) e.nextElement();
+			file.declare();
+		}
+		e = fileTable.elements();
+		while (e.hasMoreElements()) {
+			iFile file = (iFile) e.nextElement();
+			file.resolve();
+		}
+
 		k$progname.name = name;
 		vDescriptor m = iEnv.resolve("main");
 		if (m == null || !(m.deref() instanceof vProc)) {

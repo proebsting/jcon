@@ -3,6 +3,8 @@ package rts;
 import java.util.Hashtable;
 
 public class iEnv {
+	static boolean invokeAll = false;
+	static Hashtable invoke = new Hashtable();
 	static Hashtable symtab = new Hashtable();
 	static Hashtable keytab = new Hashtable();
 	static Hashtable builtintab = new Hashtable();
@@ -16,14 +18,32 @@ public class iEnv {
 	public static vCoexp main;
 	public static vCoexp cur_coexp;
 
+	public static void declareInvoke(String s) {
+		invoke.put(s,s);
+	}
+
+	public static void declareInvokeAll() {
+		invokeAll = true;
+	}
+
+	public static void undeclared(String s) {
+		invoke.put(s,s);
+	}
+
 	public static vVariable resolve(String s) {
 		vVariable v = (vVariable) symtab.get(s);
 		return v;
 	}
 
+	static void global(String s, vVariable x) {
+		if (invokeAll || invoke.containsKey(s)) {
+			symtab.put(s, x);
+		}
+	}
+
 	public static void declareGlobal(String s) {
 		if (!symtab.containsKey(s)) {
-			symtab.put(s, iNew.SimpleVar(s));
+			global(s, iNew.SimpleVar(s));
 		}
 	}
 
@@ -34,7 +54,7 @@ public class iEnv {
 				System.exit(1);
 			}
 		}
-		symtab.put(s, x);
+		global(s,x);
 	}
 
 	public static void declareProcedure(String name, String classname, int arity) {

@@ -1,6 +1,8 @@
 package rts;
 
 public abstract class iFile {
-	abstract void announce();	// announce global declarations
-	void link() {}			// resolve  global declarations
+	void link() {}			// follow embedded links 
+	void unresolved() {}		// announce unresolved references
+	void declare() {}		// announce global declarations
+	void resolve() {}		// resolve references
 }
