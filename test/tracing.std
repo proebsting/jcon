@@ -1,0 +1,61 @@
+tracing.icn  :    8  | recurse(0)
+tracing.icn  :   14  | | failer()
+                     | | failer failed
+tracing.icn  :   15  | | genr(5,12,4)
+                     | | genr suspended 5
+tracing.icn  :   15  | | genr resumed
+                     | | genr suspended 9
+tracing.icn  :   15  | | genr resumed
+                     | | genr failed
+tracing.icn  :   16  | | func(3,4)
+                     | | func returned 13
+                     | recurse returned 13
+tracing.icn  :    8  | recurse(1)
+tracing.icn  :   13  | | recurse(0)
+tracing.icn  :   14  | | | failer()
+                     | | | failer failed
+tracing.icn  :   15  | | | genr(5,12,4)
+                     | | | genr suspended 5
+tracing.icn  :   15  | | | genr resumed
+                     | | | genr suspended 9
+tracing.icn  :   15  | | | genr resumed
+                     | | | genr failed
+tracing.icn  :   16  | | | func(3,4)
+                     | | | func returned 13
+                     | | recurse returned 13
+                     | recurse returned 14
+tracing.icn  :    8  | recurse(2)
+tracing.icn  :   13  | | recurse(1)
+tracing.icn  :   13  | | | recurse(0)
+tracing.icn  :   14  | | | | failer()
+                     | | | | failer failed
+tracing.icn  :   15  | | | | genr(5,12,4)
+                     | | | | genr suspended 5
+tracing.icn  :   15  | | | | genr resumed
+                     | | | | genr suspended 9
+tracing.icn  :   15  | | | | genr resumed
+                     | | | | genr failed
+tracing.icn  :   16  | | | | func(3,4)
+                     | | | | func returned 13
+                     | | | recurse returned 13
+                     | | recurse returned 14
+                     | recurse returned 15
+tracing.icn  :    8  | recurse(3)
+tracing.icn  :   13  | | recurse(2)
+tracing.icn  :   13  | | | recurse(1)
+tracing.icn  :   13  | | | | recurse(0)
+tracing.icn  :   14  | | | | | failer()
+                     | | | | | failer failed
+tracing.icn  :   15  | | | | | genr(5,12,4)
+                     | | | | | genr suspended 5
+tracing.icn  :   15  | | | | | genr resumed
+                     | | | | | genr suspended 9
+tracing.icn  :   15  | | | | | genr resumed
+                     | | | | | genr failed
+tracing.icn  :   16  | | | | | func(3,4)
+                     | | | | | func returned 13
+                     | | | | recurse returned 13
+                     | | | recurse returned 14
+                     | | recurse returned 15
+                     | recurse returned 16
+                     main failed

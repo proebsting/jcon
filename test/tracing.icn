@@ -1,0 +1,29 @@
+#SRC: JCON
+#OPTS: -n
+
+#  test tracing of procedure calls
+
+procedure main()
+   &trace := -1
+   every recurse(0 to 3)
+end
+
+procedure recurse(n)
+   if n > 0 then
+      return recurse(n - 1) + 1
+   failer()
+   every genr(5, 12, 4)
+   return func(3, 4)
+end
+
+procedure failer()
+   fail
+end
+
+procedure func(a, b)
+   return 3 * abs(a) + b
+end
+
+procedure genr(i, j, k)
+   suspend i to j by k
+end

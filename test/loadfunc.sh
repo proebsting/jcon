@@ -36,4 +36,4 @@ jar cfM myfunc.zip myfunc*.class
 $JCONT -s loadfunc.icn
 ./loadfunc >loadfunc.out
 cmp loadfunc.std loadfunc.out
-rm myfunc.zip myfunc.java myfunc.class
+rm myfunc.zip myfunc.java myfunc*.class
