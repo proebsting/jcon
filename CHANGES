@@ -1,4 +1,6 @@
 Important (externally visible) changes since 2.0 release:
+<<ARIZONA-ONLY>>
+
 
 From todd Sat Aug 29 10:36:25 1998
 seq() cannot have a zero increment value.
@@ -17,10 +19,25 @@ From gmt Wed Dec  9 09:48:20 1998
 I've updated jcon to support writing JPEG images when run by a
 sufficiently recent version of JDK (1.2beta4 or newer).
 
+From gmt 1999/02/18 22:43:41
+Fix defaulting of w & h when dx/dy are set.
+Fix WriteImage to write valid images when w/h extend beyond window.
+
 From gmt Tue Mar 23 15:44:22 1999
 Changed package name "rts" to "jcon", necessitating
 a corresponding change in subdirectory name (ugh).
 
+From gmt 1999/05/06 18:25:43
+"jcont -r" bundles the runtime system into the output file, making it
+self-contained.
+
 From gmt Mon May 17 10:55:33 1999
 Icon v9.3.2 is adding the ability to read a directory by
 opening it as a file.  I've added corresponding code to Jcon.
+
+From gmt Thu May 27 17:10:15 1999
+You can now say
+    jcont ... file.class ...
+to bundle a Java classfile with a program, and use
+    p := loadfunc(,name)
+to load it.

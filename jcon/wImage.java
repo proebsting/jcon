@@ -251,7 +251,17 @@ private static int hexdigit(int c)
 //
 //  If 0.0 <= q <= 1.0, quality is interpreted on a floating scale.
 //  For JPEG files, the given value is passed to the encoder.
-//  For GIF files, q >= 0.9 produces a 256-color GIF file.
+//  For GIF files, q >= 0.9 produces a 256-color GIF file:
+//	q=.00   2 colors     q=.50   74 colors
+//	q=.05   6 colors     q=.55   89 colors
+//	q=.10  10 colors     q=.60  105 colors
+//	q=.15  14 colors     q=.65  123 colors
+//	q=.20  19 colors     q=.70  144 colors
+//	q=.25  25 colors     q=.75  168 colors
+//	q=.30  32 colors     q=.80  194 colors
+//	q=.35  41 colors     q=.85  224 colors
+//	q=.40  50 colors     q=.90  256 colors
+//	q=.45  61 colors     q=.95  256 colors
 //
 //  If q > 1, quality is interpreted on an integer scale.  For GIF files,
 //  q specifies the number of colors to be output, limited to 256.
