@@ -534,7 +534,7 @@ procedure gen_bc_irMakeList(s, p)
               cp_Utf8(bc_proc_classptr, "rts/vDescriptor"))
 
     method := create_methodref(bc_proc_classptr, "ArgArray",
-                   "(I)[Lrts/vDescriptor;", "rts/iNew")
+                   "(I)[Lrts/vDescriptor;", "rts/iClosure")
     put(s, invokestatic(method))
 
     every i := 1 to *p.valueList do {
@@ -543,8 +543,8 @@ procedure gen_bc_irMakeList(s, p)
         gen_bc(s, p.valueList[i])
         put(s, aastore())
     }
-    method := create_methodref(bc_proc_classptr, "List",
-                   "([Lrts/vDescriptor;)Lrts/vList;", "rts/iNew")
+    method := create_methodref(bc_proc_classptr, "New",
+                   "([Lrts/vDescriptor;)Lrts/vList;", "rts/vList")
     put(s, invokestatic(method))
     gen_bc_assign_to(s, p.lhs)
     return s
@@ -691,7 +691,7 @@ procedure gen_bc_irMakeClosure(s, p)
               cp_Utf8(bc_proc_classptr, "rts/vDescriptor"))
 
     method := create_methodref(bc_proc_classptr, "ArgArray",
-                   "(I)[Lrts/vDescriptor;", "rts/iNew")
+                   "(I)[Lrts/vDescriptor;", "rts/iClosure")
     put(s, invokestatic(method))
 
     every i := 1 to *p.argList do {
@@ -945,9 +945,9 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
     clinitcode := create_code(c, 10, 10)
     put(clinit.attributes, clinitcode)
 
-    newsimplevar := create_methodref(c, "SimpleVar",
+    newsimplevar := create_methodref(c, "New",
                      "(Ljava/lang/String;)Lrts/vSimpleVar;",
-                     "rts/iNew")
+                     "rts/vSimpleVar")
     every k := !statics do {
         create_field(c, 8, "v$" || k, "Lrts/vVariable;")
         f := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
@@ -1335,8 +1335,8 @@ procedure bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
     local null, lab1, linkvalue
 
 
-    null := create_methodref(bc_proc_classptr, "Null", "()Lrts/vNull;",
-                 "rts/iNew")
+    null := create_methodref(bc_proc_classptr, "New", "()Lrts/vNull;",
+                 "rts/vNull")
     arguments := create_fieldref(c, "arguments", "[Lrts/vDescriptor;",
                  "rts/iClosure")
     deref := deref_methodref(c)
@@ -1410,9 +1410,9 @@ procedure bc_createvars(s, c, params, locals, undeclared)
     local newsimplevar, k, field, v
     local linkvalue, lab1
 
-    newsimplevar := create_methodref(c, "SimpleVar",
+    newsimplevar := create_methodref(c, "New",
                      "(Ljava/lang/String;)Lrts/vSimpleVar;",
-                     "rts/iNew")
+                     "rts/vSimpleVar")
     every k := !params | !locals do {
         v := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
         field := create_fieldref(c, "v$" || k, "Lrts/vVariable;",
@@ -1428,7 +1428,6 @@ procedure bc_createvars(s, c, params, locals, undeclared)
                      bc_link_classname)
         lab1 := label()
         v := cp_String(c, cp_Utf8(c, k)) | runerr(1000)
-        # v$k = link.v$k$ == null ? iNew.SimpleVar("k") : link.v$k$
         field := create_fieldref(c, "v$" || k, "Lrts/vVariable;",
                  bc_proc_classname)
         put(s, aload_0() )
@@ -1796,8 +1795,8 @@ procedure bc_create_linkinit(c)
     clinitcode := create_code(c, 10, 10)
     put(clinit.attributes, clinitcode)
 
-    newmethod := create_methodref(c, "Real", "(Ljava/lang/String;)Lrts/vReal;",
-                  "rts/iNew")
+    newmethod := create_methodref(c, "New", "(Ljava/lang/String;)Lrts/vReal;",
+                  "rts/vReal")
     every k := key(bc_real_table) do {
         create_field(c, 8, bc_real_table[k], "Lrts/vReal;")
         f := create_fieldref(c, bc_real_table[k], "Lrts/vReal;",
@@ -1808,7 +1807,7 @@ procedure bc_create_linkinit(c)
         put(clinitcode.code, putstatic(f) )
     }
 
-    newmethod := create_methodref(c, "Integer", "(J)Lrts/vInteger;", "rts/iNew")
+    newmethod := create_methodref(c, "New", "(J)Lrts/vInteger;", "rts/vInteger")
     every k := key(bc_integer_table) do {
         create_field(c, 8, bc_integer_table[k], "Lrts/vInteger;")
         f := create_fieldref(c, bc_integer_table[k], "Lrts/vInteger;",
@@ -1819,9 +1818,9 @@ procedure bc_create_linkinit(c)
         put(clinitcode.code, putstatic(f) )
     }
 
-    newmethod := create_methodref(c, "String",
+    newmethod := create_methodref(c, "New",
                   "(Ljava/lang/String;)Lrts/vString;",
-                  "rts/iNew")
+                  "rts/vString")
     every k := key(bc_string_table) do {
         create_field(c, 8, bc_string_table[k], "Lrts/vString;")
         f := create_fieldref(c, bc_string_table[k], "Lrts/vString;",
@@ -1832,8 +1831,8 @@ procedure bc_create_linkinit(c)
         put(clinitcode.code, putstatic(f) )
     }
 
-    newmethod := create_methodref(c, "Cset", "(Ljava/lang/String;)Lrts/vCset;",
-                  "rts/iNew")
+    newmethod := create_methodref(c, "New", "(Ljava/lang/String;)Lrts/vCset;",
+                  "rts/vCset")
     every k := key(bc_cset_table) do {
         create_field(c, 8, bc_cset_table[k], "Lrts/vCset;")
         f := create_fieldref(c, bc_cset_table[k], "Lrts/vCset;",
