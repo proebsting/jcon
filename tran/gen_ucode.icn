@@ -685,7 +685,7 @@ end
 procedure u_gen_a_Return(s, p)
     local lab
 
-    /u_createflag | semantic_error("invalid context for return", p.coord)
+    /u_createflag | semantic_error("invalid context for return or fail",p.coord)
     lab := @u_nextlab
     put(s, u_mark(lab))
     if \p.expr then {
@@ -704,6 +704,7 @@ end
 
 # record a_Fail( )
 procedure u_gen_a_Fail(s, p)
+    /u_createflag | semantic_error("invalid context for return or fail",p.coord)
     u_coord(s, p)
     put(s, u_pfail())
 end
