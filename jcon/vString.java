@@ -620,27 +620,27 @@ public vDescriptor BangVar(final vVariable v) {
 
 
 public vString LLess(vDescriptor v) {
-    vString s = (vString) v;
+    vString s = v.mkString();
     return this.compareTo(s) < 0 ? s : null;
 }
 public vString LLessEq(vDescriptor v) {
-    vString s = (vString) v;
+    vString s = v.mkString();
     return this.compareTo(s) <= 0 ? s : null;
 }
 public vString LEqual(vDescriptor v) {
-    vString s = (vString) v;
+    vString s = v.mkString();
     return this.compareTo(s) == 0 ? s : null;
 }
 public vString LUnequal(vDescriptor v) {
-    vString s = (vString) v;
+    vString s = v.mkString();
     return this.compareTo(s) != 0 ? s : null;
 }
 public vString LGreaterEq(vDescriptor v) {
-    vString s = (vString) v;
+    vString s = v.mkString();
     return this.compareTo(s) >= 0 ? s : null;
 }
 public vString LGreater(vDescriptor v) {
-    vString s = (vString) v;
+    vString s = v.mkString();
     return this.compareTo(s) > 0 ? s : null;
 }
 
