@@ -9,6 +9,9 @@ procedure key_functions()
 		"storage",
 		"allocated",
 		"collections",
-		"features"
+		"features",
+		"control",
+		"meta",
+		"shift"
 	])
 end
