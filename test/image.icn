@@ -13,9 +13,30 @@ procedure main()
 #%#% the following don't work because the images are incomplete
 #%#%   dump(point(1,2))
 #%#%   dump(create 1 to 5)
+
+   write()
+   write("          x     integer(x)      real(x)   numeric(x)",
+   	"    string(x)      cset(x)")
+   every convert(0 | 0.0 | "0" | '0' | 7 | 7.315 | "7.315" | '7.315' | 
+   	"25e-2" | "25e-1" | " 4e+3 " | " 3.8e3  " |
+   	"" | " " | "  9  " |  "  4.7  ")
+
 end
+
 
 procedure dump(x)
    write(type(x), " : ", image(x))
    return
+end
+
+
+procedure convert(x)
+   write(pad(x), pad(integer(x) | &null), pad(real(x) | &null),
+      pad(numeric(x) | &null), pad(string(x) | &null), pad(cset(x) | &null))
+   return
+end
+
+
+procedure pad(x)
+   return right(image(\x) | "---", 13)
 end
