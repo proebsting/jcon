@@ -7,10 +7,12 @@
 
 global x, y
 
+$define XAdvance 200
+
 procedure main()
    local line
 
-   &window := open("window", "g", "size=500,300")
+   &window := open("window", "g", "size=600,400")
    x := 10
    y := 0
 
@@ -46,8 +48,8 @@ procedure show(s)
 
    if y >= WAttrib("height") then {
       y := WAttrib("leading")
-      x +:= 180
-      if x > 420 then {
+      x +:= 200
+      if x > WAttrib("width") then {
 	 EraseArea()
 	 x := 10
 	 }
