@@ -232,10 +232,18 @@ public vProcClosure(vDescriptor vproc, vDescriptor[] args) {
 
 public vDescriptor Resume() {
     if (closure == null) {
-	closure = vproc.Call(args);
+	if (iEnv.debugging) {
+	    closure = iTrampoline.Call(null, 0, vproc, args);
+	} else {
+	    closure = vproc.Call(args);
+	}
 	return closure;
     } else {
-	return closure.Resume();
+	if (iEnv.debugging) {
+	    return iTrampoline.Resume(null, 0, closure);
+	} else {
+	    return closure.Resume();
+	}
     }
 }
 

@@ -143,6 +143,15 @@ procedure operators()
         write("}")
     }
 
+    write("public static vVariable Field(String fname, int lineno, vDescriptor record, String field) {")
+    write("\ttry {")
+    write("\t\treturn record.Field(field);")
+    write("\t} catch (iError e) {")
+    write("\t\te.propagate(fname, lineno, record, field);")
+    write("\t\treturn null;")
+    write("\t}")
+    write("}")
+
     write("public static vDescriptor Call(String fname, int lineno, vDescriptor a, vDescriptor[] args) {")
     write("\ttry {")
     write("\t\treturn vTracedClosure.New(a, args, a.Call(args));")

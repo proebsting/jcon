@@ -176,12 +176,20 @@ end
 procedure bc_gen_ir_Field(s, p)
     local lab, method, fieldname, field, d
 
+    if /bc_nodebuginfo then {
+	bc_push_coordinate(s, p.coord)
+    }
     bc_gen_rval(s, p.expr)
     d := j_cp_String(bc_current_classptr,
                    j_cp_Utf8(bc_current_classptr, p.field)) | runerr(500)
     put(s, j_ldc_w(d) )
-    method := bc_Field_methodref(bc_current_classptr)
-    put(s, j_invokevirtual(method))
+    if \bc_nodebuginfo then {
+        method := bc_Field_methodref(bc_current_classptr)
+        put(s, j_invokevirtual(method))
+    } else {
+        method := bc_trampoline_Field_methodref(bc_current_classptr)
+        put(s, j_invokestatic(method))
+    }
     if \p.lhs then {
         put(s, j_dup() )
         lab := j_label()
@@ -1695,6 +1703,7 @@ end
 procedure bc_create_declare(c)
     local declare, declarecode, declareGlobal, k, s, declareProcedure
     local declareRecord, stringclass, i, f, declareNoErrorConversion
+    local declareDebugging
 
     declare := j_create_method(c, 0, "declare", "()V")
     declarecode := j_create_code(c, 10, 10)
@@ -1703,6 +1712,10 @@ procedure bc_create_declare(c)
     if \ir_noerror2failure then {
         declareNoErrorConversion := bc_declareNoErrorConversion_methodref(c)
         put(declarecode.code, j_invokestatic(declareNoErrorConversion) )
+    }
+    if /bc_nodebuginfo then {
+        declareDebugging := bc_declareDebugging_methodref(c)
+        put(declarecode.code, j_invokestatic(declareDebugging) )
     }
     declareGlobal := bc_declareGlobal_methodref(c)
     every k := !bc_global_set do {

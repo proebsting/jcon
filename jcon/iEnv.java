@@ -8,6 +8,7 @@ public class iEnv {
 
 static boolean invokeAll = false;
 static boolean error_conversion = true;
+static boolean debugging = false;
 static Hashtable invoke = new Hashtable();
 static Hashtable symtab = new Hashtable();
 
@@ -27,6 +28,10 @@ static Object instantiate(String classname) {
 }
 
 
+
+public static void declareDebugging() {
+    debugging = true;
+}
 
 public static void declareNoErrorConversion() {
     error_conversion = false;

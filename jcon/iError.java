@@ -41,6 +41,16 @@ void report() {				// print message and abort
     iRuntime.exit(1);
 }
 
+public void propagate(String fname, int lineno, vDescriptor record,
+		             String field) {
+    String call;
+    call = "{"
+	   + record.Deref().report()
+	   + "."
+	   + field
+	   + "}";
+    propagate(fname, lineno, call);
+}
 public void propagate(String fname, int lineno, String template,
 		             vDescriptor a1) {
     String call;
