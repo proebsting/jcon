@@ -10,7 +10,7 @@
 #   to clean up: make clean
 
 
-BUILT = jtran rts.zip jcon.txt
+BUILT = jtran jlink rts.zip jcon.txt
 INSTALL = jcont $(BUILT)
 
 DEST = /must/specify/DEST/to/install

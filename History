@@ -1,9 +1,10 @@
 Version History
 
-0.5.2
+0.5.2	July 28, 1997
+	incorporate new preprocessor
+	use Icon program for linking
 	clean up Makefile a little
 	more NT portability tweaks
-	use Icon program for linking
 	fix working paths for non-local "link" directives
 	don't use absolute path when spawning "uname" or "env"
 
