@@ -1,3 +1,5 @@
+#SRC: JCON
+
 record simple(f)
 record rec(f1, f2)
 

@@ -1,3 +1,5 @@
+#SRC: JCON
+
 #  check coercion of operator arguments
 #  uses string invocation of operations
 

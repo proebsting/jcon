@@ -1,3 +1,5 @@
+#SRC: JCON
+
 # a simple and slow prime number generator
 
 procedure main()

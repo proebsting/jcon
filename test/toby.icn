@@ -1,3 +1,5 @@
+#SRC: JCON
+
 #  only for Jcon; does not work under Icon v9
 
 procedure main()

@@ -1,3 +1,5 @@
+#SRC: JCON
+
 procedure main()
     write(center("12345",3, ""))
     write(center("1",3, ""))

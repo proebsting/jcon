@@ -1,3 +1,5 @@
+#SRC: APP
+
 #  profsum -- read and summarize profiling data from "java -prof"
 #
 #  usage:  profsum [file]	-- typically: profsum java.prof

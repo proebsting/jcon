@@ -1,3 +1,5 @@
+#SRC: JCON
+
 #  test math functions including argument coercion
 
 procedure main()

@@ -1,3 +1,5 @@
+#SRC: JCON
+
 #  This program prints keyword and environment values.  Run it by hand.
 #  It's nonportable and irreproducible, so there's no corresponding
 #  .std file of expected output, and consequently it's not run with

@@ -1,3 +1,5 @@
+#SRC: JCON
+
 #  prime number generation using co-expressions
 
 procedure main()

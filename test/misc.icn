@@ -1,3 +1,5 @@
+#SRC: JCON
+
 record message(who,gap,what)
 
 procedure main()

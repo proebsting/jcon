@@ -1,3 +1,5 @@
+#SRC: JCON
+
 # test maintenance of scanning environments.
 
 procedure main()

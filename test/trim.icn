@@ -1,3 +1,5 @@
+#SRC: JCON
+
 procedure main()
     write(trim("abc  "))
     write(trim("abc  ", ' '))

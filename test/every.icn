@@ -1,3 +1,5 @@
+#SRC: JCON
+
 procedure main()
    local s
 

@@ -1,3 +1,5 @@
+#SRC: JCON
+
 # string test -- including operations on string *constants*
 
 procedure main()

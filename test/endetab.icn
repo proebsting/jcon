@@ -1,3 +1,5 @@
+#SRC: V9GEN
+
 # test type conversion and error handling in entab/detab
 
 procedure main ()

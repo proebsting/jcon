@@ -1,3 +1,5 @@
+#SRC: JCON
+
 # test sorting and copying
 
 procedure main(args)

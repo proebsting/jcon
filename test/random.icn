@@ -1,3 +1,5 @@
+#SRC: JCON
+
 #  test of random selection
 #  (sets and tables are commented out because
 #   v9 and jcon select different elements)

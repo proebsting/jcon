@@ -1,3 +1,5 @@
+#SRC: JCON
+
 record rec(a)
 
 procedure main(args)

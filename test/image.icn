@@ -1,3 +1,5 @@
+#SRC: JCON
+
 #  test image(), serial(), *x, and explicit conversion functions
 
 record point(x,y)

@@ -1,3 +1,5 @@
+#SRC: JCON
+
 procedure main()
     write(map("aBcDeF"))
     write(map("AbCdEf"))

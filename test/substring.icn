@@ -1,3 +1,5 @@
+#SRC: JCON
+
 # string subscripting test
 
 procedure main()
