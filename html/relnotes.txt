@@ -18,11 +18,11 @@ Changes include the following:
 
 <P> Jcon has been successfully tested on:
 <BLOCKQUOTE>
-	SGI Indigo2 / Irix 6.2 / SGI Java 3.1.1 (JDK 1.1.6N)
-	<BR> Sun Sparc / Solaris 2.6 (SunOS 5.6) / Sun Java 1.1.6N
-	<BR> IBM RS6000 / AIX 4.1.5 / IBM Java 1.1.4-19980430
-	<BR> DEC Alpha / Digital Unix 4.0B / Digital Java 1.1.6-2
-	<BR> Intel / Linux v2 (Red Hat 5.0) / Blackdown Java 1.1.5v7
+	Sun Sparc / Solaris 2.6 (SunOS 5.6) / Sun Java 1.2
+	<BR> SGI Indigo2 / Irix 6.5 / SGI Java 3.1.1 (JDK 1.1.6N)
+	<BR> IBM RS6000 / AIX 4.3 / IBM Java 1.1.6-19990401
+	<BR> DEC Alpha / Digital Unix 4.0D / Digital Java 1.1.7B-2
+	<BR> Intel / Linux v2 (Red Hat 5.2) / Blackdown Java 1.1.7Bv3
 </BLOCKQUOTE>
 
 <P> We also tested Jcon using the JDK 1.2beta4 release for Solaris 2.6.
@@ -34,31 +34,48 @@ on other platforms.
 
 <H3>Known problems (nongraphical)</H3>
 <UL>
-    <LI>The <CODE>-S</CODE> of <CODE>jcont</CODE> does not work
+    <LI>Some JIT compilers fail to execute Jcon programs correctly.
+	Disabling the JIT compiler produces correct execution.
+	<!-- Sun JDK1.2, Sun HotSpot, IBM Java -->
+    <LI>The <CODE>-S</CODE> option of <CODE>jcont</CODE> does not work
     	for programs that link other files.
     <LI><CODE>&amp;clock</CODE> and <CODE>&amp;dateline</CODE>
-	may be off by one hour (Java bug #4059431)
+	may be off by one hour (Java bug #4059431).
     <LI>On Solaris systems, <CODE>&amp;host</CODE>
-	may return "localhost" (Java bug #4073539)
+	may return "localhost" (Java bug #4073539).
     <LI>Extremely large procedures (thousands of lines long)
-	can generate code that is too large for Java to handle
+	can generate code that is too large for Java to handle.
 </UL>
 
 <H3>Known graphics problems</H3>
 
+<P> Some problems are universal:
 <UL>
     <LI>When an obscured part of a window is exposed,
 	it may not be repaired (redrawn) until the program
-	pauses to await an event
-    <LI>Some Java implementations create a window that is one pixel wider
-	than requested
-    <LI>DEC Java 1.1.6 sometimes writes different fonts to the window
-	and its backup image, leading to bizarre effects from
-	<CODE>CopyArea()</CODE> and window repair
-    <LI>The <CODE>mono</CODE> font is unpredictable for Solaris Java
-	displaying on a non-Solaris X server
+	pauses to await an event.
     <LI><CODE>WOpen("image=file.gif")</CODE> does not load an image
-   	if presented with a multi-part (animated) GIF image
-    <LI><CODE>drawop=reverse</CODE> draws the wrong color under rare
-	conditions that are not understood
+   	if presented with a multi-part (animated) GIF image.
+</UL>
+<P> Other problems are seen only on some platforms and are
+attributed to Java bugs:
+<UL>
+    <LI>Fonts can be poor when one vendor's Java system displays
+    	on another vendor's X server. <!--esp. Sun Java-->
+    <LI>Different fonts may be written to the window and to
+	and its backup image, leading to bizarre effects from
+	<CODE>CopyArea()</CODE> and window repair. <!--Dec 1.1.6, Sun 1.2-->
+    <LI>On one older system, nothing appears in a window
+	until it is dragged to a different location. <!--Linux 1.1.7a-->
+    <LI>The initial window size may not be as specified:
+    	<UL>
+	    <LI> It is one pixel too wide, or	<!--DEC-->
+	    <LI> It is always the default size, or 
+	    <LI> Its height is correct but its width is the default.
+	    	<!--Linux 1.1.7a-->
+	</UL>
+    <LI>Intermittently, <CODE>drawop=reverse</CODE> draws the wrong color.
+    <LI>GIF images have a yellowish tint. <!--IBM Java 1.1.6-19990401-->
+    <LI>The <CODE>CopyArea()</CODE> section of the <CODE>gpxtest</CODE>
+    	program shows a minor glitch. <!--Sun1.2Ref+hotspot-->
 </UL>
