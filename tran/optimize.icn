@@ -12,12 +12,6 @@ procedure optim_optimize(t, start)
         new := optim_goto_elimination(new, start)
         new := optim_copy_propagation(new, start)
     }
-    if i := new[start] &
-       type(i[1]) == "ir_EnterInit" &
-       type(i[2]) == "ir_Goto" &
-       i[1].startlabel === i[2].location then {
-        new[start] := [ i[2] ]
-    }
     return new
 end
 
@@ -218,11 +212,17 @@ procedure optim_rewrite(p, rename)
 end
 
 procedure optim_goto_elimination(t, start)
-    local new
+    local new, i
 
     new := table()
     optim_goto_transitive(t, new, start)
     optim_test_elimination(new, start)
+    if i := new[start] &
+       type(i[1]) == "ir_EnterInit" &
+       type(i[2]) == "ir_Goto" &
+       i[1].startlabel === i[2].location then {
+        new[start] := [ i[2] ]
+    }
     optim_fallthrough(new)
     return new
 end
