@@ -43,14 +43,12 @@ public static vRecordProc RecordProc(String name, String[] fields)
 
 //  for integers, preallocate some static values
 
-private static final int MIN_PREBUILT_INT = -1000;
-private static final int MAX_PREBUILT_INT =  1000;
 private static vInteger intlist[] = 
-    new vInteger[MAX_PREBUILT_INT + 1 - MIN_PREBUILT_INT];
+    new vInteger[iConfig.MaxPrebuiltInt + 1 - iConfig.MinPrebuiltInt];
 
 static {
-    for (int i = MIN_PREBUILT_INT; i <= MAX_PREBUILT_INT; i++) {
-	intlist[i - MIN_PREBUILT_INT] = new vInteger(i);
+    for (int i = iConfig.MinPrebuiltInt; i <= iConfig.MaxPrebuiltInt; i++) {
+	intlist[i - iConfig.MinPrebuiltInt] = new vInteger(i);
     }
 }
 
@@ -63,8 +61,8 @@ public static vInteger Integer(String x) {	// int from string
 }
 
 public static vInteger Integer(long x) {
-    if (x <= MAX_PREBUILT_INT && x >= MIN_PREBUILT_INT) {
-	return intlist[(int) x - MIN_PREBUILT_INT];
+    if (x <= iConfig.MaxPrebuiltInt && x >= iConfig.MinPrebuiltInt) {
+	return intlist[(int) x - iConfig.MinPrebuiltInt];
     } else {
 	return new vInteger(x);
     }

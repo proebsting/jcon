@@ -92,7 +92,7 @@ private char rchar(vWindow win, StringBuffer b) {
 	    if (echo) {
 		int w = m.charWidth(c);
 		xloc -= w;			// backspace text cursor
-		win.EraseArea(xloc, yloc - m.getAscent(), w, m.getHeight());
+		win.EraseArea(xloc, yloc - m.getMaxAscent(), w, m.getHeight());
 	    }
 	}
 
@@ -139,8 +139,8 @@ void writes(vWindow win, String s) {
 private void wstring(vWindow win, String s) {
     FontMetrics m = win.getFontMetrics();
     int w = m.stringWidth(s);
-    int a = m.getAscent();
-    win.EraseArea(xloc, yloc - a, w, a + m.getDescent());
+    int a = m.getMaxAscent();
+    win.EraseArea(xloc, yloc - a, w, a + m.getMaxDescent());
     win.DrawString(xloc, yloc, s);
     xloc += w;
 }
@@ -153,7 +153,7 @@ void newline(vWindow win) {
     Dimension d = win.getCanvas().getSize();
     FontMetrics m = win.getFontMetrics();
 
-    int leading = m.getHeight();	//#%#% should be from WAttrib(leading)
+    int leading = win.Leading();
     int limit = d.height - m.getMaxDescent() - m.getLeading();
 	// shouldn't need getLeading, but even MaxDescent() sometimes lies 
 
@@ -215,14 +215,17 @@ vValue Y(String v) {
 
 vValue Row(vWindow win, String v) {
     FontMetrics m = win.getFontMetrics();
-    int leading = m.getHeight();	//#%#% should use WAttrib(leading)
-    int a = m.getAscent();
+    int leading = win.Leading();
+    int a = m.getMaxAscent();
 
     if (v != null) try {
 	yloc = Integer.parseInt(v);
 	yloc = (yloc - 1) * leading + a;
     } catch (Exception e) {
 	return null; /*FAIL*/
+    }
+    if (leading == 0) {
+    	iRuntime.error(204);	// this is what v9 does
     }
     return iNew.Integer((yloc - a) / leading + 1);
 }

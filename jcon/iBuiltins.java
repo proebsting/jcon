@@ -9,8 +9,6 @@ import java.util.*;
 
 public class iBuiltins extends iFile {
 
-static final String PREFIX = "rts.f$";	// classname prefix for built-in funcs
-
 
 
 void announce() {
@@ -106,7 +104,7 @@ void announce() {
 static void declare(String name, int args)
 {
 	iEnv.declareBuiltin(name, iNew.Proc(
-	    "function " + name, PREFIX + name, args));
+	    "function " + name, iConfig.FuncPrefix + name, args));
 }
 
 

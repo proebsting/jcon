@@ -24,13 +24,21 @@ private static Hashtable attlist = new Hashtable();
 static {
     newatt("bg", new aBg());
     newatt("fg", new aFg());
+
     newatt("font", new aFont());
+    newatt("fheight", new aFheight());
+    newatt("fwidth", new aFwidth());
+    newatt("ascent", new aAscent());
+    newatt("descent", new aDescent());
+    newatt("leading", new aLeading());
+
     newatt("width", new aWidth());
     newatt("height", new aHeight());
     newatt("size", new aSize());
 
     newatt("echo", new aEcho());
-    newatt("cursor", new aCursor());	//#%#%#% attrib is impl but cursor isn't
+    newatt("cursor", new aCursor());
+
     newatt("x", new aX());
     newatt("y", new aY());
     newatt("row", new aRow());
@@ -110,6 +118,51 @@ class aBg extends wAttrib {
 class aFont extends wAttrib {
     vValue get(vWindow win)	 { return win.Font(null); }
     vValue set(vWindow win)	 { return win.Font(iNew.String(val)); }
+}
+
+class aLeading extends wAttrib {
+    vValue get(vWindow win)	 { return iNew.Integer(win.Leading()); }
+    vValue set(vWindow win)	 {
+    	try {
+	    return iNew.Integer(win.Leading(Integer.parseInt(val)));
+	} catch (Exception e) {
+	    return null; /*FAIL*/
+	}
+    }
+}
+
+class aAscent extends wAttrib {
+    vValue get(vWindow win)	{ 
+	return iNew.Integer(win.getFontMetrics().getMaxAscent());
+    }
+    vValue set(vWindow win)	{ iRuntime.error(145); return null; }
+}
+
+class aDescent extends wAttrib {
+    vValue get(vWindow win)	{ 
+	return iNew.Integer(win.getFontMetrics().getMaxDescent());
+    }
+    vValue set(vWindow win)	{ iRuntime.error(145); return null; }
+}
+
+class aFheight extends wAttrib {
+    vValue get(vWindow win) {	 
+	FontMetrics m = win.getFontMetrics();
+	return iNew.Integer(m.getMaxAscent() + m.getMaxDescent());
+    }
+    vValue set(vWindow win)	{ iRuntime.error(145); return null; }
+}
+
+class aFwidth extends wAttrib {
+    vValue get(vWindow win) {	 
+	FontMetrics m = win.getFontMetrics();
+	int a = m.getMaxAdvance();
+	if (a <= 0) {
+	    a = m.charWidth('W');
+	}
+	return iNew.Integer(a);
+    }
+    vValue set(vWindow win)	{ iRuntime.error(145); return null; }
 }
 
 

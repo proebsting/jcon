@@ -8,8 +8,6 @@ import java.awt.*;
 
 public class wBuiltins extends iFile {
 
-static final String PREFIX = "rts.f$";	// classname prefix for built-in funcs
-
 
 
 void announce() {

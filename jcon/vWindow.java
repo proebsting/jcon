@@ -24,6 +24,7 @@ public class vWindow extends vFile {
     private wColor bg;		// current background color
     private wColor fg;		// current foreground color
     private wFont font;		// current text font
+    private int leading;	// current leading value
 
 
 
@@ -93,7 +94,7 @@ vWindow(String title) {				// new vWindow(s)
     // set the usual defaults
     fg = wColor.Black;
     bg = wColor.White;
-    Font(iNew.String(wFont.DEFAULT_FONT));
+    Font(iNew.String(iConfig.FontName));
 }
 
 vWindow(vWindow w) {				// new vWindow(w)  [a Clone()]
@@ -114,6 +115,8 @@ vWindow(vWindow w) {				// new vWindow(w)  [a Clone()]
     this.font = w.font;
     b.setFont(font);
     a.setFont(font);
+
+    this.leading = w.leading;
 }
 
 
@@ -235,7 +238,6 @@ vString Fg(vString s) {
     }
 }
 
-
 vString Bg(vString s) {
     if (s == null) {
 	return this.bg.spec;
@@ -250,6 +252,7 @@ vString Bg(vString s) {
 }
 
 
+
 vString Font(vString s) {
     if (s == null) {
 	return this.font.spec;
@@ -261,9 +264,13 @@ vString Font(vString s) {
 	font = f;
 	this.b.setFont(f);
 	this.a.setFont(f);
+	leading = c.getFontMetrics(font).getHeight(); // java calls it "height"
 	return s;
     }
 }
+
+int Leading()		{ return leading; }
+int Leading(int n)	{ return leading = n; }
 
 
 

@@ -29,8 +29,7 @@ public class iKeywords extends iFile {
 		iEnv.declareKey("e", iNew.Real(Math.E));
 		iEnv.declareKey("phi", iNew.Real((1.0 + Math.sqrt(5.0)) / 2.0));
 		iEnv.declareKey("pi", iNew.Real(Math.PI));
-		iEnv.declareKey("version", 
-			iNew.String("Jcon Version 0.6.0, December 5, 1997"));
+		iEnv.declareKey("version", iNew.String(iConfig.Version));
 
 		// constant for lack of a better solution
 		iEnv.declareKey("time", iNew.Integer(0));

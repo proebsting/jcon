@@ -12,10 +12,6 @@ class wFont extends Font {
 
     vString spec;		// original spcification string
 
-static final String DEFAULT_FONT = "fixed";	// initial font specification
-static final int DEFAULT_SIZE = 14;		// default font size
-
-
 
 
 //  new wFont(name, style, ptsize, spec) -- create new Icon font
@@ -36,7 +32,7 @@ static wFont parse(vString spec) {
 
     // check for special-cased X name, and model (imperfectly)
     if (s.equals("fixed")) {
-	s = "mono,10";
+	s = iConfig.FixedFont;
     }
 
     // set up string scanner
@@ -49,10 +45,10 @@ static wFont parse(vString spec) {
     // map Icon standard names (recognized insensitively)
     String family = tkr.nextToken(",");
     String f = family.toLowerCase();
-    if (f.equals("mono"))		family = "DialogInput";
-    else if (f.equals("typewriter"))	family = "Monospaced";
-    else if (f.equals("sans"))		family = "SansSerif";
-    else if (f.equals("serif"))		family = "Serif";
+    if (f.equals("mono"))		family = iConfig.MonoFont;
+    else if (f.equals("typewriter"))	family = iConfig.TypewriterFont;
+    else if (f.equals("sans"))		family = iConfig.SansFont;
+    else if (f.equals("serif"))		family = iConfig.SerifFont;
 
     // process characteristics
     while (tkr.hasMoreTokens()) {
@@ -74,7 +70,7 @@ static wFont parse(vString spec) {
 
     // set size if none was specified
     if (size == 0) {
-    	size = DEFAULT_SIZE;
+    	size = iConfig.FontSize;
     }
 
     //#%#%#% convert pixels to points here

@@ -17,11 +17,6 @@ class wEvent implements WindowListener,  //#%#%# ComponentListener,
 
 
 
-//  internal configuration
-
-static final int SLEEPTIME = 10;  // msec to sleep when polling event queue
-
-
 //  the following definitions are consistent with Icon v9
 
 static final int ShiftFlag   = 4 << 16;
@@ -96,7 +91,7 @@ static vValue dequeue(vList evq) {
     a = evq.Get();
     while (a == null) {		//#%#%# is polling really the way to do this?
 	try {
-	    Thread.sleep(SLEEPTIME);
+	    Thread.sleep(iConfig.PollDelay);
 	} catch (InterruptedException e) {
 	}
 	a = evq.Get();
