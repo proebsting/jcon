@@ -158,15 +158,46 @@ abstract vNumeric RevGreater(vReal a);		// a >= b ==> b.RevGreaterEq(a)
 public vVariable Swap(vDescriptor v) {		// a :=: b
     vValue a = this.Deref();
     vValue b = v.Deref();
-    vVariable retval;
-    if ((retval = this.Assign(b)) == null || v.Assign(a) == null) {
+    vVariable rv;
+    if ((rv = this.Assign(b)) == null || v.Assign(a) == null) {
 	return null; /*FAIL*/
     }
-    return retval;
+    return rv;
 }
 
-public vDescriptor RevAssign(vDescriptor x) {iRuntime.bomb("RevAsg");return null;}
-public vDescriptor RevSwap(vDescriptor x){iRuntime.bomb("RevSwap");return null;}
+public vDescriptor RevSwap(final vDescriptor v) {
+    final vValue a = this.Deref();
+    final vValue b = v.Deref();
+    final vVariable rv;
+    // must check for failure; order matters, too
+    if ((rv = this.Assign(b)) == null || v.Assign(a) == null) {
+	return null; /*FAIL*/
+    }
+    return new vClosure() {
+	{ retval = rv; }
+	public vDescriptor resume() {
+	    if (rv.Assign(a) != null) {
+		v.Assign(b);
+	    }
+	    return null;
+	}
+    };
+}
+
+public vDescriptor RevAssign(vDescriptor v) {
+    final vValue oldval = this.Deref();
+    final vVariable rv = this.Assign(v.Deref());
+    if (rv == null) {
+	return null; /*FAIL*/
+    }
+    return new vClosure() {
+	{ retval = rv; }
+	public vDescriptor resume() {
+	    rv.Assign(oldval);
+	    return null;
+	}
+    };
+}
 
 
 
