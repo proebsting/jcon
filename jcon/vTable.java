@@ -1,5 +1,7 @@
 package rts;
 
+import java.util.*;
+
 public class vTable extends vValue {
 
     java.util.Hashtable t;
@@ -69,7 +71,59 @@ vValue Insert(vDescriptor i, vDescriptor val) {
     return this;
 }
 
+vValue Sort(vDescriptor n) {
+
+    long flag = n.mkInteger().value;
+
+    vTableElem a[] = new vTableElem[t.size()];	// make array of key/val pairs
+
+    int i = 0;
+    for (Enumeration e = t.keys(); e.hasMoreElements(); ) {
+        vValue key = (vValue)e.nextElement();
+	vValue val = (vValue)t.get(key);
+	if ((flag & 1) != 0) {
+	    a[i++] = new vTableElem(key, val);	// sort by key
+	} else {
+	    a[i++] = new vTableElem(val, key);	// sort by value
+	}
+    }
+    iUtil.sort(a);				// sort array of pairs
+
+    vValue b[];
+    if (flag <= 2) {				// return list of lists
+	b = new vValue[t.size()];
+    	vValue pair[] = new vValue[2];
+	for (i = 0; i < t.size(); i++) {
+	    if ((flag & 1) != 0) {		// sorted by key
+		pair[0] = a[i].sortkey;
+		pair[1] = a[i].other;
+	    } else {				// sorted by value
+		pair[0] = a[i].other;
+		pair[1] = a[i].sortkey;
+	    }
+	    b[i] = iNew.List(pair);
+	}
+
+    } else { 					// return 2x-long list
+    	b = new vValue[2 * t.size()];
+	int j = 0;
+	for (i = 0; i < t.size(); i++) {
+	    if ((flag & 1) != 0) {		// sorted by key
+	    	b[j++] = a[i].sortkey;
+	    	b[j++] = a[i].other;
+	    } else {				// sorted by value
+	    	b[j++] = a[i].other;
+	    	b[j++] = a[i].sortkey;
+	    }
+    	}
+    }
+
+    return iNew.List(b);			// turn results into Icon list
+}
+
 } // class vTable
+
+
 
 class vTrappedTable extends vVariable {
 
@@ -97,3 +151,25 @@ public vVariable Assign(vValue v) {
 }
 
 } // class vTrappedTable
+
+
+
+class vTableElem extends vValue {	// key/value pair for sorting 
+
+    vValue sortkey;	// value used for sorting (table key or value)
+    vValue other;	// the other half of the pair
+
+    vTableElem(vValue sortkey, vValue other) {	// constructor
+	this.sortkey = sortkey;
+	this.other = other;
+    }
+
+    int compareTo(vValue v)	{
+    	return sortkey.compareTo(((vTableElem)v).sortkey);
+    }
+
+    String image()  { return "(" + sortkey.image() + "," + other.image() + ")";}
+    String type()   { return "telem"; }
+    int rank()      { return -1; }		// never compared to other types
+
+} // class vTableElem
