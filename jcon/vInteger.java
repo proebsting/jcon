@@ -79,9 +79,9 @@ vNumeric Negate()	{ return iNew.Integer(-value); }
 
 vDescriptor Select() {
     if (value > 0) {
-	return iNew.Integer(1 + iRuntime.random(value));
+	return iNew.Integer(1 + k$random.random(value));
     } else if (value == 0) {
-	return iNew.Real(iRuntime.random());
+	return iNew.Real(k$random.random());
     } else {
 	iRuntime.error(205, this);
 	return null;

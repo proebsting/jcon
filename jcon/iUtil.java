@@ -26,7 +26,7 @@ private static void qsort(vValue x[], int l, int u)
     	return;
     }
 
-    r = l + (int) ((u - l) * Math.random());
+    r = l + (int) ((u - l) * Math.random());	// don't perturb &random
     swap(x, l, r);
     t = x[l];
     tr = t.rank();

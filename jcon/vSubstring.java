@@ -130,7 +130,7 @@ vDescriptor Select() {				// ?s
     if (start == end) {
 	return null; /*FAIL*/
     }
-    int offset = (int) iRuntime.random(end - start) + 1;
+    int offset = (int) k$random.random(end - start) + 1;
     return iNew.Substring(this, offset, offset + 1);
 }
 

@@ -174,7 +174,7 @@ vDescriptor Select() {
     if (value.length() == 0) {
 	return null; /*FAIL*/
     }
-    int i = (int) iRuntime.random(value.length());
+    int i = (int) k$random.random(value.length());
     return iNew.String(value.substring(i, i+1));
 }
 
@@ -182,7 +182,7 @@ vDescriptor SelectVar(vVariable v) {
     if (value.length() == 0) {
 	return null; /*FAIL*/
     }
-    int i = (int) iRuntime.random(value.length());
+    int i = (int) k$random.random(value.length());
     return iNew.Substring(v, i+1, i+2);
 }
 

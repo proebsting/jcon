@@ -44,7 +44,7 @@ vDescriptor Select() {
     if (t.size() == 0) {
         return null;
     }
-    int index = (int) iRuntime.random(t.size());
+    int index = (int) k$random.random(t.size());
     java.util.Enumeration e = t.keys();
     for (int k = 0; k < index; k++) {
         e.nextElement();

@@ -95,23 +95,6 @@ public static long argPos(vDescriptor[] args, int index) {
 }
 
 
-// #%#%#% redo later to use Icon's &random etc.
-
-static final long RandA = 1103515245;
-static final long RandC = 453816694;
-static final double RanScale = 4.65661286e-10;
-
-public static double random() {		// return double value "between 0 and 1"
-    k$random.random = (RandA * k$random.random + RandC) & 0x7fffffff;
-    return RanScale * k$random.random;
-}
-
-
-public static long random(long limit) {	// return long value in [0, limit)
-    return (long) (limit * Math.random());
-}
-
-
 public static void display(iClosure parent) {
 	// do the call chain.
 	for (iClosure p = parent; p != null; p = p.parent) {

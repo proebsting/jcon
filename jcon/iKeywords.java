@@ -253,22 +253,39 @@ class k$trace extends vSimpleVar {		// &trace
 	}
 }
 
+
+
 class k$random extends vSimpleVar {		// &random
 
-	public static long random;	// #%#%#% referenced externally
+private static long random;			// current value
 
-	k$random() { super("&random"); }
+private static final long RandA = 1103515245;
+private static final long RandC = 453816694;
+private static final double RanScale = 4.65661286e-10;
 
-	public vVariable Assign(vValue i) {
+	k$random() { super("&random"); }		// constructor
+
+	public vVariable Assign(vValue i) {		// assign
 		value = i.mkInteger();
 		random = ((vInteger)value).value;
 		return this;
 	}
 
-	public vValue deref() {
+	public vValue deref() {				// dereference
 		return value = iNew.Integer(random);
 	}
+
+	public static double random() {		// return value in [0.0,1.0)
+	    k$random.random = (RandA * k$random.random + RandC) & 0x7fffffff;
+	    return RanScale * k$random.random;
+	}
+
+	public static long random(long limit) {	// return value in [0, limit)
+	    return (long) (limit * random());
+	}
 }
+
+
 
 class k$dump extends vSimpleVar {		// &dump
 
