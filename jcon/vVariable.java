@@ -22,7 +22,9 @@ abstract class vVariable extends vDescriptor {
 
     // for many operations on variables, default action is to deref and retry
 
+    // these two must be public because they override java.lang.object
     public boolean equals(Object o)	{ return this.deref().equals(o); }
+    public int hashCode()		{ return this.deref().hashCode(); }
 
     iClosure instantiate(vDescriptor[] args, iClosure parent)
 			{ return this.deref().instantiate(args, parent); }
