@@ -6,9 +6,9 @@ public final class Semaphore {
 
 
 
-Semaphore()			{value = 0;}		// new Semaphore()
+Semaphore()			{ value = 0; }		// new Semaphore()
 
-Semaphore(int initial)		{value = initial;}	// new Semaphore(n)
+Semaphore(int initial)		{ value = initial; }	// new Semaphore(n)
 
 public synchronized void P() throws InterruptedException {
     value--;
