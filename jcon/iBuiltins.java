@@ -409,7 +409,7 @@ class f$getenv extends iFunctionClosure {			// getenv(s)
 	static {				// initialization on first call
 		try {
 			Process p =
-				Runtime.getRuntime().exec("/usr/bin/printenv");
+				Runtime.getRuntime().exec("/usr/bin/env");
 			DataInputStream d =
 				new DataInputStream(p.getInputStream());
 			String s;
