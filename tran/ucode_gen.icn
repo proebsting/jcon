@@ -21,6 +21,7 @@ record u_eret()
 record u_escan()
 record u_esusp()
 record u_field(n)
+record u_filen(n)
 record u_global(n)
 record u_goto(n)
 record u_init(n)
@@ -109,16 +110,30 @@ procedure u_emit(i)
 	}
 end
 
-record u_loopinfo(nextlab, breaklab, markcount)
+record u_loopinfo(nextlab, breaklab, markcount, everyflag)
 global u_loops, u_nextlab
 global u_createflag
 global u_constants, u_constList
 global u_variables
 global u_u1, u_u2
+global u_lastline, u_lastfile, u_lastcolm
 
+procedure reset_coord()
+	u_lastline := u_lastfile := u_lastcolm := &null
+end
 procedure u_coord(s, p)
-	put(s, u_line((\p.coord).line))
-	put(s, u_colm((\p.coord).column))
+	\p.coord | return
+
+	if not (\u_lastfile == p.coord.file) then {
+		put(s, u_filen(p.coord.file))
+		u_lastfile := p.coord.file
+	}
+	if (not (\u_lastline == p.coord.line)) | (not (\u_lastcolm == p.coord.column)) then {
+		put(s, u_line(p.coord.line))
+		u_lastline := p.coord.line
+		put(s, u_colm(p.coord.column))
+		u_lastcolm := p.coord.column
+	}
 end
 
 # record NoOp( )
@@ -213,7 +228,11 @@ procedure ucode_Call(s, p)
 	ucode(s, p.fn)
 	ucode(s, p.args)
 	u_coord(s, p)
-	put(s, u_invoke(*p.args.exprList))
+	if type(p.args) == "CoexpList" then {
+		put(s, u_invoke(1))
+	} else {
+		put(s, u_invoke(*p.args.exprList))
+	}
 end
 
 # record ExclAlt( e1 e2 )
@@ -230,7 +249,9 @@ end
 # 	every i := 1 to *p.eList-1 do {
 # 		nextlab := @u_nextlab
 # 		put(s, u_mark(nextlab))
+#		u_loops[1].ir.markcount +:= 1
 # 		ucode(s, p.eList[i])
+#		u_loops[1].ir.markcount -:= 1
 # 		put(s, u_esusp())
 # 		put(s, u_goto(endlab))
 # 		put(s, u_lab(nextlab))
@@ -304,13 +325,14 @@ end
 
 # record Every( expr body )
 procedure ucode_Every(s, p)
-	p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1)
+	p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1, "every")
 	push(u_loops, p)
 	put(s, u_mark0())
 	ucode(s, p.expr)
 	put(s, u_pop())
 	if \p.body then {
 		put(s, u_mark0())
+		p.ir.everyflag := &null
 		u_loops[1].ir.markcount +:= 1
 		ucode(s, p.body)
 		u_loops[1].ir.markcount -:= 1
@@ -391,13 +413,19 @@ procedure ucode_Binop(s, p)
 		fn["++"] := u_unions
 	}
 
-	/p.right := Key("null")
-
 	if p.op == "@" then {
 		ucode(s, p.left)
 		ucode(s, p.right)
 		u_coord(s, p)
 		put(s, u_coact())
+	} else if p.op == "@:=" then {
+		put(s, u_pnull())
+		ucode(s, p.left)
+		put(s, u_sdup())
+		ucode(s, p.right)
+		put(s, u_coact())
+		u_coord(s, p)
+		put(s, u_asgn())
 	} else if p.op == "&" then {
 		ucode(s, p.left)
 		put(s, u_pop())
@@ -418,7 +446,7 @@ procedure ucode_Binop(s, p)
 	} else {
 		put(s, u_pnull())
 		ucode(s, p.left)
-		ucode(s, p.right)
+		ucode(s, p.right) 
 		u_coord(s, p)
 		put(s, (\fn[p.op])()) | runerr(1000, p)
 	}
@@ -444,8 +472,10 @@ procedure ucode_Unop(s, p)
 	}
 
 	if p.op == "@" then {
-		p := Binop("@", Key("null"), p.operand, p.coord)
-		ucode(s, p)
+		put(s, u_pnull())
+		ucode(s, p.operand)
+		u_coord(s, p)
+		put(s, u_coact())
 		return
 	}
 	put(s, u_pnull())
@@ -696,7 +726,7 @@ end
 # record Suspend( expr body )
 procedure ucode_Suspend(s, p)
 	/u_createflag | semantic_error("invalid context for suspend", p.coord)
-	p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1)
+	p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1, "every")
 	push(u_loops, p)
 	put(s, u_mark0())
 	ucode(s, p.expr)
@@ -706,6 +736,7 @@ procedure ucode_Suspend(s, p)
 	if \p.body then {
 		put(s, u_mark0())
 		u_loops[1].ir.markcount +:= 1
+		p.ir.everyflag := &null
 		ucode(s, p.body)
 		u_loops[1].ir.markcount -:= 1
 		put(s, u_unmark())
@@ -720,10 +751,9 @@ end
 procedure ucode_Until(s, p)
 	local exprlab, bodylab
 
-	/p.body := Key("null")
 	exprlab := @u_nextlab
 	bodylab := @u_nextlab
-	p.ir := u_loopinfo(exprlab, @u_nextlab, 1)
+	p.ir := u_loopinfo(@u_nextlab, @u_nextlab, 1)
 	push(u_loops, p)
 	put(s, u_lab(exprlab))
 	put(s, u_mark(bodylab))
@@ -796,7 +826,7 @@ end
 # record Next( )
 procedure ucode_Next(s, p)
 	*u_loops > 0 | semantic_error("invalid context for next", p.coord)
-	if type(u_loops[1]) == ("Suspend" | "Return") then {
+	if /u_loops[1].ir.everyflag then {
 		every 1 to u_loops[1].ir.markcount-1 do {
 			put(s, u_unmark())
 		}
@@ -808,7 +838,6 @@ end
 procedure ucode_Break(s, p)
 	local tmp
 
-	/p.expr := Key("null")
 	*u_loops > 0 | semantic_error("invalid context for break", p.coord)
 	every 1 to u_loops[1].ir.markcount do {
 		put(s, u_unmark())
@@ -835,7 +864,6 @@ end
 
 # record Mutual( exprList )
 procedure ucode_Mutual(s, p)
-	every /(!p.exprList) := Key("null")
 	if *p.exprList = 0 then {
 		put(s, u_pnull())
 	} else if *p.exprList = 1 then {
@@ -851,7 +879,6 @@ end
 procedure ucode_CoexpList(s, p)
 	local L
 
-	every /(!p.exprList) := Key("null")
 	L := []
 	every put(L, Create(!p.exprList))
 	p := Arglist([ListConstructor(L)])
@@ -860,7 +887,6 @@ end
 
 # record Arglist( exprList )
 procedure ucode_Arglist(s, p)
-	every /(!p.exprList) := Key("null")
 	every ucode(s, !p.exprList)
 end
 
@@ -868,7 +894,6 @@ end
 procedure ucode_Compound(s, p)
 	local i, lab
 
-	every /(!p.exprList) := Key("null")
 	every i := 1 to *p.exprList-1 do {
 		lab := @u_nextlab
 		put(s, u_mark(lab))
@@ -883,7 +908,6 @@ end
 
 # record ListConstructor( exprList )
 procedure ucode_ListConstructor(s, p)
-	every /(!p.exprList) := Key("null")
 	put(s, u_pnull())
 	every ucode(s, !p.exprList)
 	put(s, u_llist(*p.exprList))
@@ -892,14 +916,14 @@ end
 # record Key( id )
 procedure ucode_Key(s, p)
 	u_coord(s, p)
-	case p.id of {
-	"null":		put(s, u_pnull())
-	default:	put(s, u_keywd(p.id))
-	}
+	put(s, u_keywd(p.id))
 end
 
 procedure ucode(s, p)
 	case type(p) of {
+
+	"null" : return put(s, u_pnull())
+
 	"Alt" : return ucode_Alt(s, p)
 	"ExclAlt" : return ucode_ExclAlt(s, p)
 	"Call" : return ucode_Call(s, p)
