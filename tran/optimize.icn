@@ -7,7 +7,7 @@ procedure optimize(t, start)
 	new := t
 	if \optimize_flag then {
 		new := goto_elimination(t, start)
-		# new := copy_propagation(new, start)
+		new := copy_propagation(new, start)
 		new := coord_optimize(new, start)
 	}
 	return new
@@ -84,15 +84,6 @@ procedure copy_propagation(t, start)
 			}
 		}
 	}
-	rename := table()
-	every k := key(defs) & uses[k] = 0 & type(k) == "irTmp" do {
-		rename[k] := &null;
-	}
-	every chunk := !t do {
-		every i := 1 to *chunk do {
-			chunk[i] := opt_rewrite(chunk[i], rename)
-		}
-	}
 	return t
 end
 
@@ -109,7 +100,7 @@ procedure def_use(p, this, uses, defs)
 			def_use(p.subject, uses, uses, defs);
 			def_use(p.pos, defs, uses, defs);
 			def_use(p.pos, uses, uses, defs); }
-	"irGoto" :	{ }
+	"irGoto" :	{ def_use(p.location, uses, uses, defs); }
 	"irVar" :	{ this[p]+:=1 }
 	"irKey" :	{ this[p]+:=1 }
 	"irIntLit" :	{ this[p]+:=1 }
@@ -144,7 +135,7 @@ procedure opt_rewrite(p, rename)
 	local i
 
 	if member(rename, p) then {
-		return rename[p]
+		return opt_rewrite(rename[p], rename)
 	}
 	case type(p) of {
 	"irDeref" :	{ p.value := opt_rewrite(p.value, rename); }
