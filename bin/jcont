@@ -238,7 +238,7 @@ for FNAME in $IFILES; do
 	    $JTRAN preproc $FNAME.icn : stdout
 	    ;;
 	ucode)
-	    $JTRAN preproc $FNAME.icn : yylex : parse : ucode_File -out:$FNAME
+	    $JTRAN preproc $FNAME.icn : yylex : parse : u_gen_File -out:$FNAME
 	    ;;
 	bytecode)
 	    if $JTRAN preproc $FNAME.icn : yylex : parse : ast2ir : \
