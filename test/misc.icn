@@ -5,4 +5,6 @@ procedure main()
    write(!"f")
    write(\&null | "g")
    write(/&null & "h")
+   write("i" || "jk")
+   write(23 || "skidoo")
 end
