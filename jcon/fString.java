@@ -170,6 +170,17 @@ class f$trim extends iFunctionClosure {				// trim(s,c)
 }
 
 class f$map extends iFunctionClosure {				// map(s1,s2,s3)
+
+	static char[] map, initmap;
+	static String s1prev, s2prev;
+
+	static {
+		initmap = new char[(int) Character.MAX_VALUE];
+		for (char i = 0; i < Character.MAX_VALUE; i++) {
+			initmap[i] = i;
+		}
+	}
+
 	vDescriptor function(vDescriptor[] args) {
 		String s1 = vString.argVal(args, 0);
 		String s2 = vString.argVal(args, 1, "ABCDEFGHIJKLMNOPQRSTUVWXYZ");
@@ -178,13 +189,17 @@ class f$map extends iFunctionClosure {				// map(s1,s2,s3)
 		if (s2.length() != s3.length()) {
 			iRuntime.error(208);
 		}
-		char[] map = new char[(int)Character.MAX_VALUE];
-		for (char i = 0; i < Character.MAX_VALUE; i++) {
-			map[i] = i;
+
+		if (s1 != s1prev || s2 != s2prev) {
+			map = new char[(int) Character.MAX_VALUE];
+			System.arraycopy(initmap, 0, map, 0, map.length);
+			for (int i = 0; i < s2.length(); i++) {
+				map[s2.charAt(i)] = s3.charAt(i);
+			}
+			s1prev = s1;
+			s2prev = s2;
 		}
-		for (int i = 0; i < s2.length(); i++) {
-			map[s2.charAt(i)] = s3.charAt(i);
-		}
+
 		char[] s = new char[s1.length()];
 		for (int i = 0; i < s1.length(); i++) {
 			s[i] = map[s1.charAt(i)];
