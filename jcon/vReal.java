@@ -67,6 +67,16 @@ int compareTo(vValue v) {
 
 
 
+//  c.argument0.NumBoth(c) -- tandem coercion to numeric
+//
+//  given that arg0 (== this) is Real, always convert arg1 to Real
+
+void NumBoth(iBinaryValueClosure c) {
+    c.argument1 = c.argument1.mkReal();
+}
+
+
+
 //  static methods for argument processing and defaulting
 
 static double argVal(vDescriptor[] args, int index)		// required arg

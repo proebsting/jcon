@@ -48,6 +48,27 @@ vValue getproc() {
 
 
 
+//  c.argument0.NumBoth(c) -- tandem coercion to numeric
+//
+//  converts c.argument0 & c.argument1 to both Integer or both Real
+//  assumes that c.argument0 == this
+
+void NumBoth(iBinaryValueClosure c) {
+    vDescriptor a1 = c.argument1;
+
+    if (a1 instanceof vInteger) {
+	return;
+    }
+    if (!(a1 instanceof vReal)) {
+	if ((c.argument1 = a1.mkNumeric()) instanceof vInteger) {
+	    return;
+	}
+    }
+    c.argument0 = this.mkReal();
+}
+
+
+
 //  static methods for argument processing and defaulting
 
 static long argVal(vDescriptor[] args, int index)		// required arg

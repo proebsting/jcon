@@ -33,6 +33,11 @@ public abstract class vDescriptor {
     abstract vDescriptor[] mkArgs();		// convert to Icon argument list
     abstract vValue[] mkArray();		// convert to array for sorting
 
+    // tandem numeric conversion: overridden in vReal and vInteger
+    void NumBoth(iBinaryValueClosure c) {
+	(c.argument0 = this.mkNumeric()).NumBoth(c);
+    }
+
     // conversion to (Java) string for special purposes
     abstract String write();			// convert for use in write()
     abstract String image();			// convert for use in image()

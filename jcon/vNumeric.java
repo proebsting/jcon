@@ -29,41 +29,4 @@ vValue getproc()		{ return this.mkInteger().getproc(); }
 
 
 
-//  Coerce(iBinaryValueClosure) -- coerce two args to be both integer or both real
-
-static void Coerce(iBinaryValueClosure c) {
-    vDescriptor arg0, arg1;
-    arg0 = c.argument0;
-    arg1 = c.argument1;
-
-    for (;;) {		// repeats at most once
-
-	if (arg0 instanceof vInteger) {
-
-	    if (arg1 instanceof vInteger) {
-		return;
-	    } else if (arg1 instanceof vReal) {
-		c.argument0 = arg0.mkReal();
-		return;
-	    } else {
-		if ((c.argument1 = arg1.mkNumeric()) instanceof vReal) {
-		    c.argument0 = arg0.mkReal();
-	        }
-		return;
-	    }
-
-	} else if (arg0 instanceof vReal) {
-	    c.argument1 = arg1.mkReal();
-	    return;
-
-	} else {
-	    arg0 = c.argument0 = arg0.mkNumeric();
-	    // and repeat
-	}
-
-    }
-}
-
-
-
 } // class vNumeric
