@@ -72,7 +72,44 @@ final boolean member(int c) {			// cs.member(c)
 
 
 
-vString image() {	//#%#% should recognize keyword csets & treat specially
+private static final vString csdigits = iNew.String("&digits");
+private static final vString csletters = iNew.String("&letters");
+private static final vString cslcase = iNew.String("&lcase");
+private static final vString csucase = iNew.String("&ucase");
+private static final vString csascii = iNew.String("&ascii");
+private static final vString cscset = iNew.String("&cset");
+
+vString image() {				// image(cs)
+
+    // check for predefined cset using a hardwired decision tree
+    if (size < 0) {
+	this.Size();			// must know size
+    }
+    if (size == 52) {
+	if (w2 == 0x07FFFFFE07FFFFFEL) {
+	    return csletters;
+	}
+    } else if (size < 52) {
+	if (size == 10) {
+	    if (w1 == 0x03FF000000000000L) {
+		return csdigits;
+	    }
+	} else if (size == 26) {
+	    if (w2 == 0x07FFFFFE00000000L) {
+		return cslcase;
+	    } else if (w2 == 0x0000000007FFFFFEL) {
+		return csucase;
+	    }
+	}
+    } else { // size > 52
+	if (size == 256) {
+	    return cscset;
+	} else if (size == 128 && (w3 | w4) == 0) {
+	    return csascii;
+	}
+    }
+
+    // not a predefined cset  
     vByteBuffer b = new vByteBuffer(this.size + 10);  // arbitrary size guess
     b.append('\'');
     for (char c = 0; c <= MAX_VALUE; c++) {
@@ -151,30 +188,30 @@ vCset mkCset()		{ return this; }
 // the catch clauses in these conversions ensure correct "offending values"
 
 vNumeric mkNumeric()	{
-	try {
-		return this.mkString().mkNumeric();
-	} catch (iError e) {
-		iRuntime.error(102, this);
-		return null;
-	}
+    try {
+	return this.mkString().mkNumeric();
+    } catch (iError e) {
+	iRuntime.error(102, this);
+	return null;
+    }
 }
 
 vInteger mkInteger() {
-	try {
-		return this.mkString().mkInteger();
-	} catch (iError e) {
-		iRuntime.error(101, this);
-		return null;
-	}
+    try {
+	return this.mkString().mkInteger();
+    } catch (iError e) {
+	iRuntime.error(101, this);
+	return null;
+    }
 }
 
 vReal mkReal() {
-	try {
-		return this.mkString().mkReal();
-	} catch (iError e) {
-		iRuntime.error(102, this);
-		return null;
-	}
+    try {
+	return this.mkString().mkReal();
+    } catch (iError e) {
+	iRuntime.error(102, this);
+	return null;
+    }
 }
 
 
