@@ -57,6 +57,7 @@ static {
     tlist[144] = "window system error";
     tlist[145] = "bad window attribute";
     tlist[146] = "incorrect number of arguments to drawing function";
+    tlist[147] = "window attribute cannot be read or written as requested";
 
     tlist[201] = "division by zero";
     tlist[202] = "remaindering by zero";

@@ -41,12 +41,14 @@ void announce() {
 	iBuiltins.declare("NewColor", 2);
 	iBuiltins.declare("Pending", 1);
 	iBuiltins.declare("TextWidth", 2);
+	iBuiltins.declare("Uncouple", 1);	// calls close(), a no-op so far
 	iBuiltins.declare("WAttrib", -1);
+	iBuiltins.declare("WDefault", 3);	// always fails
 	iBuiltins.declare("WFlush", 1);
 	iBuiltins.declare("WSync", 1);
 
 	// #%#%#%#%#%# IMPLEMENTED AS NO-OPS
-	// close(win) (see wTTY.java)
+	// close(win) 	(see wTTY.java)
 
 	// #%#%#%#%#%# NOT YET IMPLEMENTED:
 	//
@@ -71,9 +73,6 @@ void announce() {
 	// iBuiltins.declare("Raise", 1);
 	//
 	// iBuiltins.declare("Couple", 2);
-	// iBuiltins.declare("Uncouple", 1);
-	//
-	// iBuiltins.declare("WDefault", 3); (might check properties?)
 }
 
 
@@ -474,11 +473,18 @@ class f$Alert extends iValueClosure {		// Alert(W) sends a beep
 	}
 }
 
-class f$WFlush extends iValueClosure {		// WFlush(W) syncs w/ toolkit
+class f$Uncouple extends iValueClosure {	// Uncouple(W) calls close(W)
+	vDescriptor function(vDescriptor[] args) {
+		vWindow win = vWindow.winArg(args);
+		win.close();
+		return win;
+	}
+}
+
+class f$WDefault extends iValueClosure {	// WDefault(W,s1,s2) just fails
 	vDescriptor function(vDescriptor[] args) {
 		vWindow win = vWindow.winArg(args);	// validate arg
-		vWindow.sync();
-		return win;
+		return null; /*FAIL*/
 	}
 }
 

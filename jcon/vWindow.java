@@ -72,14 +72,19 @@ static vWindow open(String name, String mode, vDescriptor args[]) {
 	}
     }
 
-    // clear window and backing store, including out-of-bounds area, with new bg
-    win.EraseArea(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
-
     win.c.defconfig(win);	// set window size, if not set by attributes
     win.c.tty.Row(win, "1");	// set text cursor position
     win.c.tty.Col(win, "1");
 
-    setCurrent(win);
+    // unless canvas attribute was specified, make visible now
+    if (win.c.Canvas(win, null) == null) {
+	win.c.Canvas(win, "normal");
+    }
+
+    // clear window and backing store, including out-of-bounds area, with new bg
+    win.EraseArea(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
+
+    setCurrent(win);		// remember as "current" window
     return win;
 }
 

@@ -17,12 +17,16 @@ class wCanvas extends Canvas {
 
     Vector wlist;	// list of associated vWindows
 
-    private boolean have_set_width;		// was width set explicitly?
-    private boolean have_set_height;		// was height set explicitly?
+    String visibility;	// value of "canvas" (visibility) attribute
+
+    boolean have_set_width;		// was width set explicitly?
+    boolean have_set_height;		// was height set explicitly?
 
 
 
 //  new wCanvas(win, label, w, h) -- create new canvas
+//
+//  (canvas is created but not made visible)
 
 wCanvas(vWindow win, String label, int w, int h) {		
 
@@ -32,6 +36,7 @@ wCanvas(vWindow win, String label, int w, int h) {
     this.setSize(w, h);
 
     f = new Frame(label);
+    f.setTitle("");
     f.add(this, "North");
     f.pack();
 
@@ -41,8 +46,6 @@ wCanvas(vWindow win, String label, int w, int h) {
     tty = new wTTY();				// create TTY instance
 
     wEvent.register(this);			// register event handlers
-
-    f.show();
 }
 
 
@@ -154,6 +157,39 @@ synchronized void enqueue(vValue a, vValue b, vValue c) {
    evq.Put(a);
    evq.Put(b);
    evq.Put(c);
+}
+
+
+
+//  Canvas(win, s) -- set "canvas" (visibility) attribute
+
+vString Canvas(vWindow win, String s) {
+    if (s != null) {
+	if (s.equals("hidden")) {
+	    f.hide();
+	} else if (s.equals("normal")) {
+	    f.show();
+	//#%#%#%#% still need to handle "maximal" and "iconic"
+	} else {
+	    return null; /*FAIL*/
+	}
+	visibility = s;
+    }
+    if (visibility == null) {
+	return null;
+    } else {
+	return iNew.String(visibility);
+    }
+}
+
+
+//  Label(win, s) -- set "label" attribute
+
+vString Label(vWindow win, String s) {
+    if (s != null) {
+	f.setTitle(s);
+    }
+    return iNew.String(f.getTitle());
 }
 
 

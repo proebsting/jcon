@@ -8,7 +8,7 @@ class iConfig {
 
 // the following constants are peculiar to the Jcon implementation
 
-static final String Version = "Jcon Version 0.6.1, December 13, 1997";
+static final String Version = "Jcon Version 0.6.1, December 15, 1997";
 
 static final String MonoFont = "DialogInput";		// "mono" font
 static final String TypewriterFont = "Monospaced";	// "typewriter" font

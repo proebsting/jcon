@@ -22,6 +22,9 @@ abstract vValue get(vWindow win);	// get current value, set s, return val
 private static Hashtable attlist = new Hashtable();
 
 static {
+    newatt("canvas", new aCanvas());	//#%#% only normal and hidden, for now
+    newatt("label", new aLabel());
+
     newatt("bg", new aBg());
     newatt("fg", new aFg());
 
@@ -105,6 +108,20 @@ static wAttrib[] parseAtts(vDescriptor[] args, int n) {
 
 
 
+class aCanvas extends wAttrib {
+    vValue get(vWindow win)	{ return win.getCanvas().Canvas(win, null); }
+    vValue set(vWindow win)	{ return win.getCanvas().Canvas(win, val); }	
+}
+
+
+
+class aLabel extends wAttrib {
+    vValue get(vWindow win)	{ return win.getCanvas().Label(win, null); }
+    vValue set(vWindow win)	{ return win.getCanvas().Label(win, val); }	
+}
+
+
+
 class aFg extends wAttrib {
     vValue get(vWindow win)	{ return win.Fg(null); }
     vValue set(vWindow win)	{ return win.Fg(iNew.String(val)); }
@@ -137,14 +154,20 @@ class aAscent extends wAttrib {
     vValue get(vWindow win)	{ 
 	return iNew.Integer(win.getFontMetrics().getMaxAscent());
     }
-    vValue set(vWindow win)	{ iRuntime.error(145); return null; }
+    vValue set(vWindow win) {
+	iRuntime.error(147, iNew.String("ascent="));
+	return null;
+    }
 }
 
 class aDescent extends wAttrib {
     vValue get(vWindow win)	{ 
 	return iNew.Integer(win.getFontMetrics().getMaxDescent());
     }
-    vValue set(vWindow win)	{ iRuntime.error(145); return null; }
+    vValue set(vWindow win) {
+	iRuntime.error(147, iNew.String("descent="));
+	return null;
+    }
 }
 
 class aFheight extends wAttrib {
@@ -152,12 +175,18 @@ class aFheight extends wAttrib {
 	FontMetrics m = win.getFontMetrics();
 	return iNew.Integer(m.getMaxAscent() + m.getMaxDescent());
     }
-    vValue set(vWindow win)	{ iRuntime.error(145); return null; }
+    vValue set(vWindow win) {
+	iRuntime.error(147, iNew.String("fheight="));
+	return null;
+    }
 }
 
 class aFwidth extends wAttrib {
     vValue get(vWindow win)	{ return iNew.Integer(win.Fwidth()); }
-    vValue set(vWindow win)	{ iRuntime.error(145); return null; }
+    vValue set(vWindow win) {
+	iRuntime.error(147, iNew.String("fwidth="));
+	return null;
+    }
 }
 
 
