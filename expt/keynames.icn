@@ -2,7 +2,7 @@
 
 #  keynames.icn -- interactive test for verifying symbols in keysyms.icn
 
-$include "keysyms.icn"
+$include "../bin/keysyms.icn"
 
 procedure main()
    &window := open(&progname, "g")
