@@ -47,52 +47,66 @@ public void propagate(String fname, int lineno, vDescriptor record,
     propagate(fname, lineno, call);
 }
 
+private String expand(String template, vDescriptor[] v) {
+    int si = 0;
+    String s = "";
+    for (int vi = 0; vi < v.length; vi++) {
+	int i = template.indexOf('$', si);
+	if (i < 0) {
+	    break;
+	}
+	s += template.substring(si, i);
+	s += v[vi].Deref().report();
+	si = i+1;
+    }
+    s += template.substring(si);
+    s += "";
+    return s;
+}
+
 public void propagate(String fname, int lineno, String template,
 		             vDescriptor a1) {
-    String call;
-    call = "{"
-	   + template
-	   + " "
-	   + a1.Deref().report()
-	   + "}";
+    vDescriptor[] args = { a1 };
+    String call = expand(template, args);
     propagate(fname, lineno, call);
 }
 
 public void propagate(String fname, int lineno, String template,
 		             vDescriptor a1, vDescriptor a2) {
-    String call;
-    call = "{"
-	   + a1.Deref().report()
-	   + " "
-	   + template
-	   + " "
-	   + a2.Deref().report()
-	   + "}";
+    vDescriptor[] args = { a1, a2 };
+    String call = expand(template, args);
     propagate(fname, lineno, call);
 }
 
 public void propagate(String fname, int lineno, String template,
 		             vDescriptor a1, vDescriptor a2, vDescriptor a3) {
-    String call;
-    call = "{"
-	   + template
-	   + " "
-	   + a1.Deref().report()
-	   + ", "
-	   + a2.Deref().report()
-	   + ", "
-	   + a3.Deref().report()
-	   + "}";
+    vDescriptor[] args = { a1, a2, a3 };
+    String call = expand(template, args);
+    propagate(fname, lineno, call);
+}
+
+public void propagate(String fname, int lineno, 
+		             vDescriptor a, vDescriptor arglist) {
+    String call = stripped(a)
+		  + " ! "
+		  + arglist.Deref().report().toString()
+		  ;
     propagate(fname, lineno, call);
 }
 
 public void propagate(String fname, int lineno,
 		      vDescriptor a, vDescriptor[] args) {
-    String arg0 = a.Deref().report().toString();
-    if (arg0.startsWith("procedure ")) {
-	arg0 = arg0.substring(10);
+    propagate(fname, lineno, stripped(a) + args2string(args));
+}
+
+String stripped(vDescriptor x) {
+    String s = x.Deref().report().toString();
+    if (s.startsWith("procedure ")) {
+	s = s.substring(10);
+    } else if (s.startsWith("function ")) {
+	s = s.substring(9);
     }
-    propagate(fname, lineno, arg0 + args2string(args));
+    return s;
 }
 
 String args2string(vDescriptor[] args) {

@@ -9,7 +9,7 @@ procedure main()
 end
 
 procedure operators()
-    local i, o, ops, signature
+    local i, o, ops, signature, format
 
     ops := [
 
@@ -29,14 +29,14 @@ procedure operators()
 	[ 1,     ".", "Deref",        "vValue"      ],
 	[ 2,    ":=", "Assign",       "vVariable"   ],
 	[ 2,   ":=:", "Swap",         "vVariable"   ],
-	[ 2,    ":?", "SubjAssign",   "vVariable"   ],
+	[ 2,    ":?", "SubjAssign",   "vVariable",  "{$ ? ..}"   ],
 	[ 2,    "<-", "RevAssign",    "vDescriptor" ],
 	[ 2,   "<->", "RevSwap",      "vDescriptor" ],
 
-	[ 1,     "#", "Limit",        "vInteger"    ],
+	[ 1,     "#", "Limit",        "vInteger",   "limit counter: $"    ],
 	[ 2,     "&", "Conjunction",  "vDescriptor" ],
 	[ 2,     "@", "Activate",     "vDescriptor" ],
-	[ 3,   "...", "ToBy",         "vDescriptor" ],
+	[ 3,   "...", "ToBy",         "vDescriptor", "{$ to $ by $}" ],
 
 	[ 1,     "+", "Numerate",     "vNumeric"    ],
 	[ 1,     "-", "Negate",       "vNumeric"    ],
@@ -48,13 +48,13 @@ procedure operators()
 	[ 1,     "/", "IsNull",       "vDescriptor" ],
 	[ 1,    "\\", "IsntNull",     "vDescriptor" ],
 
-	[ 1,     "?", "Select",       "vDescriptor", ["Val", "vValue"] ],
-	[ 1,     "!", "Bang",         "vDescriptor", ["Val", "vDescriptor"] ],
+	[ 1,     "?", "Select",       "vDescriptor", &null, ["Val", "vValue"] ],
+	[ 1,     "!", "Bang",         "vDescriptor", &null, ["Val", "vDescriptor"] ],
 
-	[ 2,    "[]", "Index",        "vDescriptor", ["Val", "vValue"] ],
-	[ 3,   "[:]", "Section",      "vDescriptor", ["Val", "vValue"] ],
-	[ 3,  "[+:]", "SectPlus",     "vDescriptor", ["Val", "vValue"] ],
-	[ 3,  "[-:]", "SectMinus",    "vDescriptor", ["Val", "vValue"] ],
+	[ 2,    "[]", "Index",        "vDescriptor", "{$[$]}", ["Val", "vValue"] ],
+	[ 3,   "[:]", "Section",      "vDescriptor", "{$[$:$]}", ["Val", "vValue"] ],
+	[ 3,  "[+:]", "SectPlus",     "vDescriptor", "{$[$+:$]}", ["Val", "vValue"] ],
+	[ 3,  "[-:]", "SectMinus",    "vDescriptor", "{$[$-:$]}", ["Val", "vValue"] ],
 
 	[ 2,     "+", "Add",          "vNumeric"    ],
 	[ 2,     "-", "Sub",          "vNumeric"    ],
@@ -90,12 +90,20 @@ procedure operators()
 
     write("public final class iTrampoline {")
     every o := !ops do {
-	op_trampoline(o[1], o[2], o[3], o[4])
-	op_trampoline(o[1], o[2], o[3] || (\o[5])[1], o[5][2])
+	format := &null
+	if \o[2] then {
+	    case o[1] of {
+	    1:       format := "{" || o[2] || " $}"
+	    2:       format := "{" || "$ " || o[2] || " $}"
+	    }
+	    format := \o[5]
+	}
+	op_trampoline(o[1], o[2], o[3], o[4], format)
+	op_trampoline(o[1], o[2], o[3] || (\o[6])[1], o[6][2], format)
     }
 end
 
-procedure op_trampoline(arity, op, name, type)
+procedure op_trampoline(arity, op, name, type, format)
     local i
 
     write()
@@ -106,6 +114,8 @@ procedure op_trampoline(arity, op, name, type)
     write(") {")
 
     if \op then {
+
+        \format | runerr(500)
 
 	write("\ttry {")
 	writes("\t\t", type, " retval = a1.", name, "(")
@@ -118,7 +128,7 @@ procedure op_trampoline(arity, op, name, type)
 	write(");")
         write("\t\treturn retval;")
 	write("\t} catch (iError e) {")
-        writes("\t\te.propagate(fname, lineno, ", image(op))
+        writes("\t\te.propagate(fname, lineno, ", image(format))
         every i := 1 to arity do {
             writes(", a", i)
         }
@@ -180,7 +190,7 @@ procedure boilerplate()
 "		return retval;",
 "	} catch (iError e) {",
 "		iEnv.cur_coexp.depth--;",
-"		e.propagate(fname, lineno, \"!\", a1, a2);",
+"		e.propagate(fname, lineno, a1, a2);",
 "		return null;",
 "	}",
 "}",
