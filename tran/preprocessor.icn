@@ -1,9 +1,0 @@
-# phony preprocessor
-procedure preprocessor(fname)
-	local f
-
-	f := open(fname) | stop("ERROR:  Could not open file ", image(fname))
-
-	suspend "#line 0 " || image(fname)
-	suspend !f
-end
