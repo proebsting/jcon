@@ -163,7 +163,7 @@ procedure methodrefs()
             ["marshal", "([Lrts/vDescriptor;I)Lrts/vList;", "rts/iInterface"],
             ["propagate", "(Ljava/lang/String;[Lrts/vDescriptor;)V", "rts/iError"],
             ["resolve", "(Ljava/lang/String;)Lrts/vVariable;", "rts/iEnv"],
-            ["resolveKey", "(Ljava/lang/String;)Lrts/vDescriptor;", "rts/iEnv"],
+            ["resolveKey", "(Ljava/lang/String;)Lrts/vProc;", "rts/iEnv"],
             ["resolveProc", "(Ljava/lang/String;I)Lrts/vDescriptor;",
              "rts/iEnv"],
             ["Resume", "()Lrts/vDescriptor;", "rts/vDescriptor"],
