@@ -30,6 +30,7 @@ procedure main()
 
    "123456" ? write(tab(1), " ", tab(2))
    "123456" ? { write(tab(2)); write(tab(4)); write(tab(-1)); write(tab(0)); }
+   "123456" ? { write(tab(4)); tab(1); write(tab(3)); }
    write()
 
    every write("-35" ? bal('-'))

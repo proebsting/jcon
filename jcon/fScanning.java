@@ -220,7 +220,7 @@ class f$tab extends iClosure {				// tab(i)
 	    long i = vInteger.argVal(arguments, 0);
 	    vString s = (vString) k$subject.self.deref();
 	    i = s.posEq(i);
-	    if (i == 0 || i < oldpos.value) {
+	    if (i == 0) {
 		retvalue = null;
 	    } else {
 	        k$pos.self.Assign(iNew.Integer(i));
