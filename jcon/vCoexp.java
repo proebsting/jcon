@@ -15,8 +15,6 @@ public class vCoexp extends vValue implements Runnable {
 
 	static int nextsn = 1;		// next serial number
 
-	int rank()	{ return 70; }	// co-expressions sort after files
-
 	//#%#% incorp. into first constructor, call that from other one?
 	void setup(Thread thread, iClosure closure) {
 		this.closure = closure;
@@ -91,7 +89,13 @@ public class vCoexp extends vValue implements Runnable {
 
 	String type()	{ return "co-expression";}
 
-	String image()  {			//#%#% count is bogus in image
-		return "co-expression_" + snum + "(" + "0" + ")";
+	String image()  {
+		return "co-expression_" + snum + "(" + resultCount + ")";
 	}
+
+	vInteger Serial() { return iNew.Integer(snum); }
+
+	int rank()	{ return 70; }	// co-expressions sort after files
+
+	int compareTo(vValue v) { return this.snum - ((vCoexp)v).snum; }
 }
