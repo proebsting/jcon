@@ -384,7 +384,7 @@ class k$error extends vSimpleVar {		// &trace
 	}
 }
 
-class k$errornumber extends iFunctionClosure {
+class k$errornumber extends iValueClosure {
 	static vInteger number;
 
 	vDescriptor function(vDescriptor args[]) {
@@ -392,7 +392,7 @@ class k$errornumber extends iFunctionClosure {
 	}
 }
 
-class k$errortext extends iFunctionClosure {
+class k$errortext extends iValueClosure {
 	static vString text;
 
 	vDescriptor function(vDescriptor args[]) {
@@ -400,7 +400,7 @@ class k$errortext extends iFunctionClosure {
 	}
 }
 
-class k$errorvalue extends iFunctionClosure {
+class k$errorvalue extends iValueClosure {
 	static vValue value;
 
 	vDescriptor function(vDescriptor args[]) {
@@ -408,7 +408,7 @@ class k$errorvalue extends iFunctionClosure {
 	}
 }
 
-class k$level extends iFunctionClosure {	// &level
+class k$level extends iValueClosure {	// &level
 	vDescriptor function(vDescriptor args[]) {
 		int i = 0;
 		for (iClosure p = this.parent; p != null; p = p.parent) {

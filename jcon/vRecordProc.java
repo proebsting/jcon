@@ -53,7 +53,7 @@ public class vRecordProc extends vValue {
 
 
 
-class iRecordClosure extends iFunctionClosure {
+class iRecordClosure extends iValueClosure {
 
     vRecordProc constr;
 

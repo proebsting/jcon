@@ -6,7 +6,7 @@ class fStruct {} // dummy
 
 
 
-class f$set extends iFunctionClosure {				// set(x)
+class f$set extends iValueClosure {				// set(x)
 	vDescriptor function(vDescriptor[] args) {
 		return iNew.Set(iRuntime.argVal(args, 0));
 	}
@@ -14,7 +14,7 @@ class f$set extends iFunctionClosure {				// set(x)
 
 
 
-class f$table extends iFunctionClosure {			// table(x)
+class f$table extends iValueClosure {			// table(x)
 	vDescriptor function(vDescriptor[] args) {
 		return iNew.Table(iRuntime.argVal(args, 0));
 	}
@@ -22,7 +22,7 @@ class f$table extends iFunctionClosure {			// table(x)
 
 
 
-class f$insert extends iFunctionClosure {			// insert(X,x,y)
+class f$insert extends iValueClosure {			// insert(X,x,y)
 	vDescriptor function(vDescriptor[] args) {
 		vValue X = iRuntime.argVal(args, 0, 122);
 		vValue x = iRuntime.argVal(args, 1);
@@ -33,7 +33,7 @@ class f$insert extends iFunctionClosure {			// insert(X,x,y)
 
 
 
-class f$member extends iFunctionClosure {			// member(X,x)
+class f$member extends iValueClosure {			// member(X,x)
 	vDescriptor function(vDescriptor[] args) {
 		vValue X = iRuntime.argVal(args, 0, 122);
 		return X.Member(iRuntime.argVal(args, 1));
@@ -42,7 +42,7 @@ class f$member extends iFunctionClosure {			// member(X,x)
 
 
 
-class f$delete extends iFunctionClosure {			// delete(X,x)
+class f$delete extends iValueClosure {			// delete(X,x)
 	vDescriptor function(vDescriptor[] args) {
 		vValue X = iRuntime.argVal(args, 0, 122);
 		return X.Delete(iRuntime.argVal(args, 1));

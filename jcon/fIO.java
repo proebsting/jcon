@@ -32,7 +32,7 @@ class fIO {
 
 
 
-class f$open extends iFunctionClosure {				// open(s1,s2)
+class f$open extends iValueClosure {				// open(s1,s2)
 	vDescriptor function(vDescriptor[] args) {
 		String fname = vString.argVal(args, 0);
 		String mode = vString.argVal(args, 1, "r");
@@ -42,7 +42,7 @@ class f$open extends iFunctionClosure {				// open(s1,s2)
 
 
 
-class f$flush extends iFunctionClosure {			// flush(f)
+class f$flush extends iValueClosure {			// flush(f)
 	vDescriptor function(vDescriptor[] args) {
 		return(vFile.argVal(args, 0).flush());
 	}
@@ -50,7 +50,7 @@ class f$flush extends iFunctionClosure {			// flush(f)
 
 
 
-class f$close extends iFunctionClosure {			// close(f)
+class f$close extends iValueClosure {			// close(f)
 	vDescriptor function(vDescriptor[] args) {
 		return(vFile.argVal(args, 0).close());
 	}
@@ -58,7 +58,7 @@ class f$close extends iFunctionClosure {			// close(f)
 
 
 
-class f$read extends iFunctionClosure {				// read(f)
+class f$read extends iValueClosure {				// read(f)
 	vDescriptor function(vDescriptor[] args) {
 		return(vFile.argVal(args, 0, k$input.file).read());
 	}
@@ -66,7 +66,7 @@ class f$read extends iFunctionClosure {				// read(f)
 
 
 
-class f$reads extends iFunctionClosure {			// reads(f,n)
+class f$reads extends iValueClosure {			// reads(f,n)
 	vDescriptor function(vDescriptor[] args) {
 		vFile f = vFile.argVal(args, 0, k$input.file);
 		long n = vInteger.argVal(args, 1, 1);
@@ -76,7 +76,7 @@ class f$reads extends iFunctionClosure {			// reads(f,n)
 
 
 
-class f$write extends iFunctionClosure {			// write(...)
+class f$write extends iValueClosure {			// write(...)
 	vDescriptor function(vDescriptor[] args) {
 		return fIO.print(k$output.file, args, true);
 	}
@@ -84,7 +84,7 @@ class f$write extends iFunctionClosure {			// write(...)
 
 
 
-class f$writes extends iFunctionClosure {			// writes(...)
+class f$writes extends iValueClosure {			// writes(...)
 	vDescriptor function(vDescriptor[] args) {
 		return fIO.print(k$output.file, args, false);
 	}
@@ -92,7 +92,7 @@ class f$writes extends iFunctionClosure {			// writes(...)
 
 
 
-class f$stop extends iFunctionClosure {				// stop(...)
+class f$stop extends iValueClosure {				// stop(...)
 	vDescriptor function(vDescriptor[] args) {
 		k$output.file.flush();				// flush stdout
 		fIO.print(k$errout.file, args, true);		// write msg
@@ -103,7 +103,7 @@ class f$stop extends iFunctionClosure {				// stop(...)
 
 
 
-class f$seek extends iFunctionClosure {				// seek(f,i)
+class f$seek extends iValueClosure {				// seek(f,i)
 	vDescriptor function(vDescriptor[] args) {
 		vFile f = vFile.argVal(args, 0);
 		long n = vInteger.argVal(args, 1);
@@ -113,7 +113,7 @@ class f$seek extends iFunctionClosure {				// seek(f,i)
 
 
 
-class f$where extends iFunctionClosure {			// where(f)
+class f$where extends iValueClosure {			// where(f)
 	vDescriptor function(vDescriptor[] args) {
 		return(vFile.argVal(args, 0).where());
 	}

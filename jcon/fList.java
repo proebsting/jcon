@@ -6,7 +6,7 @@ class fList {} //dummy
 
 
 
-class f$list extends iFunctionClosure {				// list(i, x)
+class f$list extends iValueClosure {				// list(i, x)
 	vDescriptor function(vDescriptor[] args) {
 		int i = (int) vInteger.argVal(args, 0, 0);
 		vValue x = iRuntime.argVal(args, 1);
@@ -16,7 +16,7 @@ class f$list extends iFunctionClosure {				// list(i, x)
 
 
 
-class f$push extends iFunctionClosure {				// push(L, x...)
+class f$push extends iValueClosure {				// push(L, x...)
 	vDescriptor function(vDescriptor[] args) {
 		vValue L = iRuntime.argVal(args, 0, 108);
 		L.Push(iRuntime.argVal(args, 1));		// at least one
@@ -29,7 +29,7 @@ class f$push extends iFunctionClosure {				// push(L, x...)
 
 
 
-class f$pull extends iFunctionClosure {				// pull(L)
+class f$pull extends iValueClosure {				// pull(L)
 	vDescriptor function(vDescriptor[] args) {
 		return iRuntime.argVal(args, 0, 108).Pull();
 	}
@@ -37,7 +37,7 @@ class f$pull extends iFunctionClosure {				// pull(L)
 
 
 
-class f$pop extends iFunctionClosure {				// pop(L)
+class f$pop extends iValueClosure {				// pop(L)
 	vDescriptor function(vDescriptor[] args) {
 		return iRuntime.argVal(args, 0, 108).Pop();
 	}
@@ -45,7 +45,7 @@ class f$pop extends iFunctionClosure {				// pop(L)
 
 
 
-class f$get extends iFunctionClosure {				// get(L)
+class f$get extends iValueClosure {				// get(L)
 	vDescriptor function(vDescriptor[] args) {
 		return iRuntime.argVal(args, 0, 108).Get();
 	}
@@ -53,7 +53,7 @@ class f$get extends iFunctionClosure {				// get(L)
 
 
 
-class f$put extends iFunctionClosure {				// put(L, x...)
+class f$put extends iValueClosure {				// put(L, x...)
 	vDescriptor function(vDescriptor[] args) {
 		vValue L = iRuntime.argVal(args, 0, 108);
 		L.Put(iRuntime.argVal(args, 1));		// at least one
@@ -68,7 +68,7 @@ class f$put extends iFunctionClosure {				// put(L, x...)
 
 //  sort() and sortf() process several datatypes but always produce a list
 
-class f$sort extends iFunctionClosure {				// sort(X,i)
+class f$sort extends iValueClosure {				// sort(X,i)
 	vDescriptor function(vDescriptor[] args) {
 		vValue x = iRuntime.argVal(args, 0, 115);
 		long i = vInteger.argVal(args, 1, 1);
@@ -79,7 +79,7 @@ class f$sort extends iFunctionClosure {				// sort(X,i)
 	}
 }
 
-class f$sortf extends iFunctionClosure {			// sortf(X,i)
+class f$sortf extends iValueClosure {			// sortf(X,i)
 	vDescriptor function(vDescriptor[] args) {
 		vValue[] a = iRuntime.argVal(args, 0, 125).mkArray();
 		vInteger i = iNew.Integer(vInteger.argVal(args, 1, 1));

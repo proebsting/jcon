@@ -1,6 +1,6 @@
 package rts;
 
-public abstract class iFunctionClosure extends iClosure {
+public abstract class iValueClosure extends iFunctionClosure {
 
 	// Class for simple functions that return at most one value.
 	// Arguments are dereferenced.

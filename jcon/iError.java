@@ -75,7 +75,7 @@ static void traceback(iClosure c, int n) {
 
 //  iErrorClosure exists just to raise instantiation errors
 
-class iErrorClosure extends iFunctionClosure {
+class iErrorClosure extends iValueClosure {
 
     vValue value;
 

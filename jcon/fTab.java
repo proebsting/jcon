@@ -40,7 +40,7 @@ static int nextTab(int[] stops, int col) {
 
 // detab(s,i,...) - replace tabs with spaces, with stops at columns indicated
 
-class f$detab extends iFunctionClosure {
+class f$detab extends iValueClosure {
 
 vDescriptor function(vDescriptor[] args) {
 
@@ -86,7 +86,7 @@ vDescriptor function(vDescriptor[] args) {
 
 // entab(s,i,...) - replace spaces with tabs, with stops at columns indicated
 
-class f$entab extends iFunctionClosure {
+class f$entab extends iValueClosure {
 
 vDescriptor function(vDescriptor[] args) {
 

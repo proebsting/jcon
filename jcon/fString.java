@@ -6,7 +6,7 @@ class fString {} // dummy
 
 
 
-class f$char extends iFunctionClosure {				// char()
+class f$char extends iValueClosure {				// char()
 	vDescriptor function(vDescriptor[] args) {
 		long i = vInteger.argVal(args, 0);
 		if (i < 0 || i > vCset.MAX_VALUE) {
@@ -18,7 +18,7 @@ class f$char extends iFunctionClosure {				// char()
 
 
 
-class f$ord extends iFunctionClosure {				// ord()
+class f$ord extends iValueClosure {				// ord()
 	vDescriptor function(vDescriptor[] args) {
 		String s = vString.argVal(args, 0);
 		if (s.length() != 1) {
@@ -30,7 +30,7 @@ class f$ord extends iFunctionClosure {				// ord()
 
 
 
-class f$repl extends iFunctionClosure {				// repl()
+class f$repl extends iValueClosure {				// repl()
 	vDescriptor function(vDescriptor[] args) {
 		String s = vString.argVal(args, 0);
 		long i = vInteger.argVal(args, 1);
@@ -47,7 +47,7 @@ class f$repl extends iFunctionClosure {				// repl()
 
 
 
-class f$reverse extends iFunctionClosure {			// reverse()
+class f$reverse extends iValueClosure {			// reverse()
 	vDescriptor function(vDescriptor[] args) {
 		String s = vString.argVal(args, 0);
 		StringBuffer b = new StringBuffer(s.length());
@@ -60,7 +60,7 @@ class f$reverse extends iFunctionClosure {			// reverse()
 
 
 
-class f$left extends iFunctionClosure {			// left(s,i,s)
+class f$left extends iValueClosure {			// left(s,i,s)
 	vDescriptor function(vDescriptor[] args) {
 		String s = vString.argVal(args, 0);
 		long llen = vInteger.argVal(args, 1, 1);
@@ -89,7 +89,7 @@ class f$left extends iFunctionClosure {			// left(s,i,s)
 	}
 }
 
-class f$right extends iFunctionClosure {			// right(s,i,s)
+class f$right extends iValueClosure {			// right(s,i,s)
 	vDescriptor function(vDescriptor[] args) {
 		String s = vString.argVal(args, 0);
 		long llen = vInteger.argVal(args, 1, 1);
@@ -119,7 +119,7 @@ class f$right extends iFunctionClosure {			// right(s,i,s)
 	}
 }
 
-class f$center extends iFunctionClosure {			// right(s,i,s)
+class f$center extends iValueClosure {			// right(s,i,s)
 	vDescriptor function(vDescriptor[] args) {
 		String s = vString.argVal(args, 0);
 		long llen = vInteger.argVal(args, 1, 1);
@@ -154,7 +154,7 @@ class f$center extends iFunctionClosure {			// right(s,i,s)
 	}
 }
 
-class f$trim extends iFunctionClosure {				// trim(s,c)
+class f$trim extends iValueClosure {				// trim(s,c)
 	vDescriptor function(vDescriptor[] args) {
 		String s = vString.argVal(args, 0);
 		vCset c = vCset.argVal(args, 1, ' ', ' ');
@@ -169,7 +169,7 @@ class f$trim extends iFunctionClosure {				// trim(s,c)
 	}
 }
 
-class f$map extends iFunctionClosure {				// map(s1,s2,s3)
+class f$map extends iValueClosure {				// map(s1,s2,s3)
 
 	static char[] map, initmap;
 	static String s2prev, s3prev;

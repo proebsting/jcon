@@ -4,7 +4,7 @@ package rts;
 
 class fScanning {} // dummy
 
-class f$pos extends iFunctionClosure {			// pos(i)
+class f$pos extends iValueClosure {			// pos(i)
     vDescriptor function(vDescriptor[] args) {
 	long i = vInteger.argVal(args, 0);
 	vString s = (vString) k$subject.self.deref();
@@ -16,7 +16,7 @@ class f$pos extends iFunctionClosure {			// pos(i)
     }
 }
 
-class f$any extends iFunctionClosure {			// any(c,s,i1,i2)
+class f$any extends iValueClosure {			// any(c,s,i1,i2)
     vDescriptor function(vDescriptor[] args) {
 	vCset c = vCset.argVal(args, 0);
 	vString s = iRuntime.argSubject(args, 1);
@@ -35,7 +35,7 @@ class f$any extends iFunctionClosure {			// any(c,s,i1,i2)
     }
 }
 
-class f$many extends iFunctionClosure {			// many(c,s,i1,i2)
+class f$many extends iValueClosure {			// many(c,s,i1,i2)
     vDescriptor function(vDescriptor[] args) {
 	vCset c = vCset.argVal(args, 0);
 	vString s = iRuntime.argSubject(args, 1);
@@ -64,7 +64,7 @@ class f$many extends iFunctionClosure {			// many(c,s,i1,i2)
     }
 }
 
-class f$match extends iFunctionClosure {		// match(s1,s2,i1,i2)
+class f$match extends iValueClosure {		// match(s1,s2,i1,i2)
     vDescriptor function(vDescriptor[] args) {
 	String s1 = vString.argVal(args, 0);
 	vString s2 = iRuntime.argSubject(args, 1);
