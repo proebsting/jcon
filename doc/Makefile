@@ -1,11 +1,11 @@
 #  Makefile for rough jcon documentation
 
-OUT = ../bin/jcon.doc
+OUT = ../bin/jcon.txt
 
 DASHES = -------------------------------------
 
-$(OUT):	sep.t hdr.t jcont.t kwds.t funcs.t notes.txt
-	cat hdr.t sep.t jcont.t sep.t kwds.t sep.t \
+$(OUT):	sep.t hdr.t jcont.t funcs.t notes.txt
+	cat hdr.t sep.t jcont.t sep.t \
 	    funcs.t sep.t notes.txt >$(OUT)
 sep.t:
 	echo ""						> sep.t

@@ -1,6 +1,6 @@
 what's implemented:
 -- all datatypes (but only 64-bit integers; no large integers)
--- most keywords;  missing &time
+-- all keywords, although resource keywords produce zeroes
 -- most functions; missing chdir(), loadfunc(), getch()/getche()/kbhit()
 -- no graphics
 -- "icont -E" is used for preprocessing
@@ -47,8 +47,8 @@ miscellaneous:
 -- display() ignores its arguments (and displays everything)
 -- display() prints globals in an unsorted order
 -- function() generates names in an unsorted order
--- allocation-related keywords (&allocated, &collections, &storage, &regions)
-   produce only 0's
+-- resource-related keywords (&time, &allocated, &collections, &storage,
+   &regions) produce only 0's
 
 arguably correct differences:
 -- tables sort after sets, and co-expressions after files, as per the Icon book
