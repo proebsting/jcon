@@ -28,7 +28,7 @@
 #     -S	also generate .jvm file listing generated Java code
 #
 #  Jcont translates Icon source files into .zip files, and links .zip
-#  files to make an excutable program.  Jcont is similar to icont in
+#  files to make an executable program.  Jcont is similar to icont in
 #  concept and behavior; think of a .zip file as analogous to a .u1/.u2
 #  pair from icont.
 #
