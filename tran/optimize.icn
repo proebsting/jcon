@@ -12,7 +12,7 @@ procedure optim_optimize(t, start)
         new := optim_dead_assignment(new, start)
         new := optim_goto_elimination(new, start)
         new := optim_copy_propagation(new, start)
-        new := optim_coord_elimination(new, start)
+        # new := optim_coord_elimination(new, start)
     }
     if i := new[start] &
        type(i[1]) == "ir_EnterInit" &
@@ -144,7 +144,6 @@ procedure optim_def_use(p, this, uses, defs)
     "ir_Deref" : { optim_def_use(p.value, uses, uses, defs) }
     "ir_Tmp" :   { this[p]+:=1 }
     "ir_TmpLabel" :  { this[p]+:=1 }
-    "ir_TmpClosure": { this[p]+:=1 }
     "ir_Label" : { this[p]+:=1 }
     "ir_Field" : { optim_def_use(\p.lhs, defs, uses, defs);
             optim_def_use(p.expr, uses, uses, defs) }
@@ -199,7 +198,6 @@ procedure optim_rewrite(p, rename)
     "ir_Free" :  { }
     "ir_Tmp" :   { }
     "ir_TmpLabel" :  { }
-    "ir_TmpClosure": { }
     "ir_Label" : { }
     "ir_Move" :  { p.lhs := optim_rewrite(\p.lhs, rename);
             p.rhs := optim_rewrite(p.rhs, rename) }

@@ -411,6 +411,8 @@ procedure j_writer_attribute_info(writer, p)
         every code_length := j_offset_opcodes(!p.code, code_length, locations)
         every j_relocate(!p.code, locations)
 
+	j_relocate_exceptions(p.exception_table, locations)
+
         attribute_length := 0
         every attribute_length := j_offset_attribute_info(!p.attributes,
                             attribute_length)
@@ -1492,6 +1494,16 @@ end
 procedure j_offset_j_local_variable_table_info(offset, p)
     offset +:= 10
     return offset
+end
+
+procedure j_relocate_exceptions(eList, locations)
+    local e
+
+    every e := !eList do {
+        e.start_pc :=   \locations[e.start_pc]   | runerr(500, e.start_pc)
+        e.end_pc :=     \locations[e.end_pc]     | runerr(500, e.end_pc)
+        e.handler_pc := \locations[e.handler_pc] | runerr(500, e.handler_pc)
+    }
 end
 
 procedure j_relocate(insn, locations)

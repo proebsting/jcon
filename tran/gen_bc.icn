@@ -1,5 +1,8 @@
 #  gen_bc.icn -- filter to create class files from intermediate representation
 
+global bc_coordinate_table
+global bc_coordinate_list
+
 global bc_nodebuginfo
 
 global bc_java_classname
@@ -125,8 +128,14 @@ end
 
 # record ir_Coord( coord )
 procedure bc_gen_ir_Coord(s, p)
-    local f, line, column, field
+    local f, line, column, field, lab
 
+    if \p.coord then {
+        lab := j_label()
+        put(s, lab)
+        bc_coordinate_table[lab] := p.coord
+        put(bc_coordinate_list, lab)
+    }
     return s
 end
 
@@ -768,6 +777,8 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     bc_emit_table := table()
     bc_create_exists := &null
     bc_key_table := table()
+    bc_coordinate_table := table()
+    bc_coordinate_list := []
 
     every i := !code do {
         bc_emit_table[i.label] := i.insnList
@@ -1145,6 +1156,7 @@ procedure bc_nextval_code(nextvalcode, c, start, params, locals, undeclared, acc
     local k, lab, switch, insns, deflab
     local runtimeerror, r, s, PC
     local a, tmplab, prologue, var_load_label, t, tmpset
+    local last_label, i, endlab
 
     nextvalcode.max_locals := bc_var_offset + *bc_var_table
     s := nextvalcode.code
@@ -1192,6 +1204,36 @@ procedure bc_nextval_code(nextvalcode, c, start, params, locals, undeclared, acc
     } else {
         /bc_save_restore_flag | runerr(500)
     }
+    endlab := j_label()
+    put(s, endlab)
+
+    last_label := &null
+    every i := !bc_coordinate_list do {
+	if \last_label then {
+	    bc_emit_exception(c, s, nextvalcode.exception_table, last_label, i)
+	}
+	last_label := i
+    }
+    bc_emit_exception(c, s, nextvalcode.exception_table, \last_label, endlab)
+end
+
+procedure bc_emit_exception(c, s, etab, last_label, i)
+    local catch_type, lab, e, f, coord, propagate
+
+    catch_type := j_cp_Class(bc_current_classptr,
+                             j_cp_Utf8(bc_current_classptr, "rts/iError"))
+    lab := j_label()
+    e := j_exception_table_info(last_label, i, lab, catch_type)
+    put(etab, e)
+    put(s, lab)
+    coord := \bc_coordinate_table[last_label] | runerr(500)
+    f := j_cp_String(bc_current_classptr,
+                   j_cp_Utf8(bc_current_classptr, coord.file))
+    put(s, j_ldc_w(f) )
+    put(s, j_ipush(coord.line) )
+    propagate := bc_propagate_methodref(c)
+    put(s, j_invokevirtual(propagate) )
+    put(s, j_areturn() )
 end
 
 procedure bc_load_variables(s)
