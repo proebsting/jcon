@@ -33,15 +33,34 @@ vValue getproc()		{ return this.mkInteger().getproc(); }
 
 static void Coerce(iBinaryValueClosure c) {
     vDescriptor arg0, arg1;
-    arg0 = c.argument0.mkNumeric();
-    arg1 = c.argument1.mkNumeric();
-    if (arg0 instanceof vReal) {
-	arg1 = arg1.mkReal();
-    } else if (arg1 instanceof vReal) {
-	arg0 = arg0.mkReal();
+    arg0 = c.argument0;
+    arg1 = c.argument1;
+
+    for (;;) {		// repeats at most once
+
+	if (arg0 instanceof vInteger) {
+
+	    if (arg1 instanceof vInteger) {
+		return;
+	    } else if (arg1 instanceof vReal) {
+		c.argument0 = arg0.mkReal();
+		return;
+	    } else {
+		arg1 = c.argument1 = arg1.mkNumeric();
+		// and repeat
+	    }
+
+	} else if (arg0 instanceof vReal) {
+	    c.argument1 = arg1.mkReal();
+	    return;
+
+	} else {
+	    arg0 = c.argument0 = arg0.mkNumeric();
+	    arg1 = c.argument1 = arg1.mkNumeric();
+	    // and repeat
+	}
+
     }
-    c.argument0 = arg0;
-    c.argument1 = arg1;
 }
 
 
