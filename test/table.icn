@@ -56,6 +56,12 @@ procedure main()
    delete(delete(x, 7), 1)		| write("failed d71")
    tdump("t0d", x)
 
+   write()
+   x := table(7)
+   every x[3] <- 19
+   every write("k ", key(x))
+   every write("v ", !x)
+
 end
 
 
