@@ -118,6 +118,13 @@ fonts:
 -- Font(s) always succeeds for non-empty s (Java never rejects any name)
 -- the special X font name "fixed" is modeled imperfectly by "mono,10"
 
+text:
+-- read(), write(), etc. work with windows
+-- \r and \t are not handled correctly on output
+-- some Java font metrics are bogus, leading to various problems
+-- the initial cursor position is GotoXY(0,20) instead of GotoRC(1,1)
+-- the visible text cursor, when enabled, is a solid, nonblinking underbar
+
 ------------------------------------------------------------------------------
 
 Irix implementation note:
