@@ -33,6 +33,9 @@ class files.
 but it provides no way to link them.)
 This is somewhat smaller than the 13,000 lines of C code that
 form the translator in Version 9 of Icon.
+(The subset of the Jcon translator that only produces <CODE>.u1/.u2</CODE>
+files---and, therefore, is directly comparable to Version 9's translator---is
+only 4,000 lines of Icon.)
 
 <P> The Jcon runtime system comprises 18,000 lines of Java code.
 The corresponding portion of Version 9, counting only the Unix code,

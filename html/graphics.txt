@@ -127,7 +127,8 @@ For compatibility with other systems, some pointers have multiple names.
 </CENTER>
 <H3>Deprecated Features</H3>
 
-<P> Version 9 of Icon retains compatibility support for some old features
+<P> Version 9 of Icon retains compatibility support for some old graphics
+features
 that are no longer documented.
 Jcon omits most such support.
 Two examples are support for <CODE>very light</CODE> and

@@ -83,7 +83,7 @@ tests that can be run manually.
 The <CODE>demo</CODE> directory contains graphics programs that
 are interesting as demonstrations.
 The <CODE>gtest</CODE> directory contains other graphics programs
-that are less interesting and require manual visual comparison
+that are less interesting and require visual comparison
 with the displays produced by Version 9 of Icon.
 The <CODE>expt</CODE> directory contains a few additional
 nongraphical tests and experiments.

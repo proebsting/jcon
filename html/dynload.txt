@@ -52,9 +52,11 @@ An understanding of Java is assumed in what follows.
 
 <H4>Run-time system basics</H4>
 
-<P> The Jcon run-time system is contained in the source named <CODE>rts</CODE>
+<P> The Jcon run-time system is contained in the source directory 
+named <CODE>rts</CODE>
 and forms a Java package of that name.
-A loadable procedure declares <CODE>import rts.*;</CODE> to gain access
+A file containing a loadable procedure declares <CODE>import rts.*;</CODE>
+to gain access
 to the <CODE>rts</CODE> namespace.
 
 <P> Icon values of the various types are instances of classes such as
@@ -79,11 +81,12 @@ calling an operation that implicitly dereferences it, such as
 
 <H4>Procedures in Java</H4>
 
-<P> In Java, an Icon procedure is a class containing a public
-<CODE>Call()</CODE> method that returns a vDescriptor object.
+<P> In Java, an Icon procedure is a subclass of <EM>vProc</EM> that defines
+a public <CODE>Call()</CODE> method that returns a vDescriptor object.
 
 <P> A procedure that expects two arguments extends the class
-<EM>vProc2</EM> and defines a <CODE>Call</CODE> method
+<EM>vProc2</EM> (which extends <EM>vProc</EM>)
+and defines a <CODE>Call</CODE> method
 that accepts two vDescriptor arguments and returns a vDescriptor
 result.
 More generally, a procedure expecting <VAR>n</VAR> arguments, 
@@ -173,7 +176,7 @@ procedure is resumed.
 <UL>
 <LI> fail, by returning a Java null
 <LI> suspend, by returning a vDescriptor object 
-<LI> suspend, by setting <CODE>retval</CODE> and returning itself
+<LI> suspend, by setting <CODE>this.retval</CODE> and returning itself
 	("<CODE>return this;</CODE>")
 <LI> abort, by calling <CODE>iRuntime.Error()</CODE>
 </UL>
