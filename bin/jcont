@@ -26,6 +26,15 @@
 #  pair from icont.
 #
 #  "java" and "jar" must be in the search path.
+#
+#  Normally, jcont produces a directly executable Korn Shell script
+#  containing an embedded ZIP file.  However, if an output file ending
+#  in .jcz is specified (as in "jcont -o myprog.jcz myprog.icn"), the
+#  header is omitted to facilitate manipulation as a ZIP archive.
+#  Execution of a .jcz file is accomplished by placing it in the
+#  CLASSPATH with the runtime files and then running javac:
+#	setenv CLASSPATH /myhome/jcon/bin/rts.zip:myprog.zip
+#	java myprog
 
 JAVAC="javac -nowarn"
 JAVA="java"
@@ -104,10 +113,13 @@ if [ $# = 0 ]; then
     exit 1
 fi
 
-#  set script file name
+#  get name of main class from first file argument
+MAIN="${1%.icn}"
+MAIN="${MAIN%.zip}"
+
+#  set output file name, if not specified
 if [ "$XFILE" = "" ]; then
-    XFILE="${1%.icn}"
-    XFILE="${XFILE%.zip}"
+    XFILE="$MAIN"
 fi
 
 #  accumulate .icn and .zip file names
@@ -213,16 +225,26 @@ for FNAME in `<$TDIR/zip.list`; do
     (cd $TDIR; $JAR xf $FNAME)
 done
 
-# create XFILE.main
-(cd $TDIR; $JLINK $XFILE $ROOTS)
+# create $MAIN class
+(cd $TDIR; $JLINK $MAIN $ROOTS)
 
-# combine the Icon files from there
-(cd $TDIR; $JAR cfM combined.zip $XFILE.class [lp]*.class)
+# combine the class files to make a new .zip file
+(cd $TDIR; $JAR cfM combined.zip $MAIN.class [lp]*.class)
 
-# combine a header (padded via dd) with that zip file to make a script
-# (if making significant changes here, also adjust HBASE above)
-(dd bs=$HDRSIZE conv=sync 2>$NULLFILE; cat $TDIR/combined.zip) \
-    <<=====EOF===== >$XFILE
+# write the output file
+case $XFILE in
+
+    *.jcz)
+	# For a .jcz file, the output file is just a copy of the
+	# zip file and is not directly executable
+	cp $TDIR/combined.zip $XFILE
+	;;
+
+    *)
+	# combine a header (padded via dd) with that zip file to make a script
+	# (if making significant changes here, also adjust HBASE above)
+	(dd bs=$HDRSIZE conv=sync 2>$NULLFILE; cat $TDIR/combined.zip) \
+	    <<=====EOF===== >$XFILE
 #!/bin/ksh -p
 
 # built by:  $CMDLINE
@@ -239,7 +261,7 @@ trap "rm -rf \$TZIP" 0 1 2 15
 dd bs=$HDRSIZE skip=1 <\$THISFILE >\$TZIP 2>$NULLFILE
 
 export CLASSPATH="\$TZIP${PATHSEP}$JRTS${PATHSEP}\$CLASSPATH"
-$JAVA $XFILE "\$@"
+$JAVA $MAIN "\$@"
 exit
 
 [binary data follows]
@@ -247,17 +269,26 @@ exit
 %%%%
 =====EOF=====
 
-# verify that the header was big enough
-dd bs=$HDRSIZE count=1 <$XFILE 2>$NULLFILE | grep '%%%%' >$NULLFILE ||
-    (echo 1>&2 "internal error in $0: header too small" && exit 1)
+	# verify that the header was big enough
+	dd bs=$HDRSIZE count=1 <$XFILE 2>$NULLFILE | grep '%%%%' >$NULLFILE ||
+	    (echo 1>&2 "internal error in $0: header too small" && exit 1)
 
-# the process was successful
-# mark the script as executable and delete built .zip files
-chmod +x $XFILE
+	# the process was successful
+	# mark the script as executable 
+	chmod +x $XFILE
+	;;
+
+esac	# case $XFILE
+
+# delete built .zip files
 $NODELETE rm -f $ZBUILT
 
 # execute, or don't
 $NOEXECUTE
 $NODELETE rm -rf $TDIR
 $ANNOUNCE 1>&2 "Executing:"
-exec ./$XFILE "$@"
+
+case $XFILE in
+    *.jcz)	CLASSPATH=$XFILE$PATHSEP$JRTS exec java $MAIN "$@";;
+    *)		exec ./$XFILE "$@";;
+esac
