@@ -1051,8 +1051,8 @@ procedure u_global_declarations(g)
             }
         }
         "a_ProcDecl": {
-            write(u_u2, "\t", t, ",", "000005", ",",
-                  p.ident.id, ",", *p.paramList)
+            write(u_u2, "\t", t, ",", "000005", ",", p.ident.id, ",",
+                  if /p.accumulate then *p.paramList else -*p.paramList)
             t +:= 1
         }
         }
