@@ -25,8 +25,7 @@ known bugs:
 -- the preprocessor does not diagnose "$define f(a) ..."
 -- local variables are not dereferenced prior to being returned
 -- e[e+:e] and e[e-:e] function identically to v9, which is wrong in some cases
--- "invocable" procedures are computed incorrectly.  "invocable all" works.
-   Basically, too many user procedures are considered invocable.
+-- more procedures may be "invocable" than in v9
 
 ------------------------------------------------------------------------------
 
@@ -77,14 +76,6 @@ extensions:
 -- on all platforms, read() accepts CR, LF, or CRLF as line terminator
 -- proc(i) produces a procedure that returns its ith argument
 -- a[i:j,k:m] is accepted as shorthand for a[i:j][k:m]
-
-compatible, although the book is unclear or wrong:
--- procedures, functions, and record constructors all sort together, by name
--- records sort first by type and then by serial number
--- sortf() signals error 125, not 126, for wrong type
--- args() uses same rules for builtin and declared varargs procedures
--- flush(f) returns f, not null
--- any() and match() return position beyond matched string even if i2<i1
 
 ------------------------------------------------------------------------------
 
