@@ -39,6 +39,6 @@ record ir_CoFail(coord)
 
 record ir_ScanSwap(coord, subject, pos)
 
-record ir_RunTimeError(coord)
+record ir_Unreachable(coord)
 
 record ir_coordinate(file, line, column)

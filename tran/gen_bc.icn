@@ -460,8 +460,8 @@ procedure bc_emitlineinfo(s, coord, factor)
     put(s, j_putstatic(field) )
 end
 
-# record ir_RunTimeError( )
-procedure bc_gen_ir_RunTimeError(s, p)
+# record ir_Unreachable( )
+procedure bc_gen_ir_Unreachable(s, p)
     local runtimeerror
 
     runtimeerror := bc_error_methodref(bc_current_classptr)
@@ -760,7 +760,7 @@ procedure bc_gen(s, p)
     "ir_Create" : return bc_gen_ir_Create(s, p)
     "ir_CoRet" : return bc_gen_ir_CoRet(s, p)
     "ir_CoFail" : return bc_gen_ir_CoFail(s, p)
-    "ir_RunTimeError" : return bc_gen_ir_RunTimeError(s, p)
+    "ir_Unreachable" : return bc_gen_ir_Unreachable(s, p)
     "ir_EnterInit" : return bc_gen_ir_EnterInit(s, p)
     "ir_Field" : return bc_gen_ir_Field(s, p)
     "ir_Call" : return bc_gen_ir_Call(s, p)

@@ -120,7 +120,7 @@ procedure optim_def_use(p, this, uses, defs)
     "ir_CoRet" : { optim_def_use(p.value, uses, uses, defs);
             optim_def_use(p.resumeLabel, uses, uses, defs); }
     "ir_CoFail" :    { }
-    "ir_RunTimeError":{ }
+    "ir_Unreachable":{ }
     "ir_EnterInit" : { optim_def_use(p.startLabel, uses, uses, defs) }
 
     default :   { runerr(500, p); }
@@ -181,7 +181,7 @@ procedure optim_rewrite(p, rename)
     "ir_CoRet" : { p.value := optim_rewrite(p.value, rename);
             p.resumeLabel := optim_rewrite(p.resumeLabel, rename);}
     "ir_CoFail" :    { }
-    "ir_RunTimeError":{ }
+    "ir_Unreachable":{ }
     "ir_EnterInit" : { p.startLabel := optim_rewrite(p.startLabel, rename) }
 
     default :   { runerr(500,p); }
@@ -270,7 +270,7 @@ procedure optim_goto_transitive(t, new, lab)
     every p := !t[lab] do {
 	    case type(p) of {
 	    "ir_CoFail" |
-	    "ir_RunTimeError" |
+	    "ir_Unreachable" |
 	    "ir_MakeList" |
 	    "ir_operator" |
 	    "ir_Fail" |
@@ -334,7 +334,7 @@ end
 procedure optim_refcountX(refcount, p)
     case type(p) of {
     "ir_CoFail" |
-    "ir_RunTimeError" |
+    "ir_Unreachable" |
     "ir_MakeList" |
     "ir_operator" |
     "ir_Fail" |

@@ -625,7 +625,7 @@ procedure ir_a_Initial(p, st, inuse, target, bounded, rval)
     suspend ir(p.expr, st, tiu, target, "always bounded", "rval")
 
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_RunTimeError(ir_coord(p.coord)) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_Unreachable(ir_coord(p.coord)) ])
     suspend ir_chunk(p.expr.ir.success, [
         ir_Goto(ir_coord(p.coord), p.ir.success)
         ])
@@ -796,7 +796,7 @@ procedure ir_a_ProcBody(p, st, inuse, target, bounded, rval)
     }
 
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), L[1].ir.start) ])
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_RunTimeError(ir_coord(p.coord)) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_Unreachable(ir_coord(p.coord)) ])
     every i := 1 to *L-1 do {
         suspend ir_chunk(L[i].ir.success, [
             ir_Goto(ir_coord(p.coord), L[i+1].ir.start)
@@ -821,7 +821,7 @@ procedure ir_a_ProcCode(p, st, inuse, target, bounded, rval)
         ir_EnterInit(ir_coord(p.coord), p.body.ir.start),
         ir_Goto(ir_coord(p.coord), p.init.ir.start)
         ])
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_RunTimeError(ir_coord(p.coord)) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_Unreachable(ir_coord(p.coord)) ])
     suspend ir_chunk(p.init.ir.success, [ ir_Goto(ir_coord(p.coord), p.body.ir.start) ])
     suspend ir_chunk(p.init.ir.failure, [ ir_Goto(ir_coord(p.coord), p.body.ir.start) ])
     suspend ir_chunk(p.body.ir.success, [ ir_Fail(ir_coord(p.coord)) ])
@@ -1096,7 +1096,7 @@ procedure ir_a_Next(p, st, inuse, target, bounded, rval)
     } else {
         suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), curloop.ir.x.nextlabel) ])
     }
-    /bounded & suspend ir_chunk(p.ir.resume, [ ir_RunTimeError(ir_coord(p.coord)) ])
+    /bounded & suspend ir_chunk(p.ir.resume, [ ir_Unreachable(ir_coord(p.coord)) ])
 end
 
 # record a_Break( expr )
@@ -1280,7 +1280,7 @@ procedure ir_a_Key(p, st, inuse, target, bounded, rval)
     }
     "fail" : {
 	suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.ir.failure) ])
-        /bounded & suspend ir_chunk(p.ir.resume, [ ir_RunTimeError(ir_coord(p.coord)) ])
+        /bounded & suspend ir_chunk(p.ir.resume, [ ir_Unreachable(ir_coord(p.coord)) ])
     }
     default : {
         closure := ir_tmp(st, inuse)
