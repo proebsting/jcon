@@ -6,6 +6,7 @@ Version History
 	on all platforms, accept CR or LF or CRLF as line terminator on input
 	modify jcont for Windows NT
 	use ":" for option delimiters in jtran (again for Windows NT)
+	use private fields inside Icon datatypes
 
 0.5.0	July 15, 1997
 	limited distribution
