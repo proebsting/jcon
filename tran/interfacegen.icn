@@ -132,7 +132,7 @@ procedure methodrefs()
             ["declareRecord", "(Ljava/lang/String;[Ljava/lang/String;)V",
              "rts/iEnv"],
             ["Deref", "()Lrts/vValue;", "rts/vDescriptor"],
-            ["Field", "(Ljava.lang.String;)Lrts/vVariable;", "rts/vDescriptor"],
+            ["Field", "(Ljava/lang/String;)Lrts/vVariable;", "rts/vDescriptor"],
             ["error", "(I)V", "rts/iRuntime"],
             ["link", "(Ljava/lang/String;)V", "rts/iInterface"],
             ["marshal", "([Lrts/vDescriptor;I)Lrts/vList;", "rts/iInterface"],
