@@ -43,7 +43,7 @@ void report(iClosure c) {		// print message and abort
     System.err.println("Traceback:");
 
     try {
-	traceback(c, 100);		// limit to 100 levels  //#%#%# 100?
+	traceback(c, iConfig.MaxTraceback);	// traceback to limited depth
     } catch (OutOfMemoryError e) {
 	System.err.println("   [out of memory; traceback truncated]");
     }

@@ -23,6 +23,8 @@ static final String FuncPrefix = "rts.f$";	// cls prefix for built-in funcs
 static final int MinPrebuiltInt = -1000;	// range of ints to preallocate
 static final int MaxPrebuiltInt = +1000;
 
+static final int MaxTraceback = 100;		// maximum traceback depth
+
 
 
 //  the following constants are documented features of the Icon language
