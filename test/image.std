@@ -1,6 +1,7 @@
 null : &null
 integer : 47
 real : 3.14159
+cset : '127'
 string : "asparagus"
 procedure : procedure main
 procedure : function write
