@@ -22,7 +22,12 @@ public boolean equals(Object o)	{
 
 vInteger mkInteger()	{ return this; }
 vReal mkReal()		{ return iNew.Real(this.value); }
-vString mkString()	{ return iNew.String(this.value); }
+vString mkString() {
+	if (cachedString != null) {
+		return cachedString;
+	}
+	return cachedString = iNew.String(this.value);
+}
 
 vString write()		{ return iNew.String(this.value); }
 vString image()		{ return iNew.String(this.value); }

@@ -8,6 +8,8 @@ public abstract class vNumeric extends vValue {
 //  NLess, NLessEq, NEqual, NUnequal, NGreaterEq, NGreater
 
 
+protected vString cachedString;	// cached string equivalent
+
 vNumeric mkNumeric()		{ return this; }
 vCset mkCset()			{ return this.mkString().mkCset(); }
 

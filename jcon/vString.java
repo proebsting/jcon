@@ -16,6 +16,8 @@ public class vString extends vValue {
     private vString prefix;	// first part of string (optional)
     private byte[] data;	// character array
 
+    private vNumeric cachedNumeric; // cached numeric equivalent.
+
 
 
 //  constructors
@@ -286,10 +288,14 @@ int compareTo(vValue v) {		// compare strings lexicographically
 
 vNumeric mkNumeric()	{
 
+    if (cachedNumeric != null) {
+	return cachedNumeric;
+    }
+
     // first try straightforward conversion to integer
     vInteger v = this.toInteger();
     if (v != null) {
-	return v;
+	return cachedNumeric = v;
     }
 
     // nope, go the long way.  #%#% this could be improved.
@@ -301,21 +307,21 @@ vNumeric mkNumeric()	{
     }
 
     try {
-	return iNew.Integer(Long.parseLong(s));
+	return cachedNumeric = iNew.Integer(Long.parseLong(s));
     } catch (NumberFormatException e) {
     }
 
     try {
 	Double d = Double.valueOf(s);
 	if (!d.isInfinite()) {
-	    return iNew.Real(d.doubleValue());
+	    return cachedNumeric = iNew.Real(d.doubleValue());
 	}
     } catch (NumberFormatException e) {
     }
 
     v = vInteger.radixParse(s);			// try to parse as radix value
     if (v != null) {
-	return v;
+	return cachedNumeric = v;
     }
 
     iRuntime.error(102, this);

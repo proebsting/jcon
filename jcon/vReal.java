@@ -37,11 +37,14 @@ vString write()		{ return this.mkString(); }
 vString image()		{ return this.mkString(); }
 
 vString mkString()		{	//#%#%# differs from v9 formatting 
+    if (cachedString != null) {
+        return cachedString;
+    }
     String s = Double.toString(value + 0.0);	 // +0.0 eliminates "-0"
     if (s.indexOf('E') >= 0) {
 	s = s.replace('E','e');		// if E notation, change to 'e'
     }
-    return iNew.String(s);
+    return cachedString = iNew.String(s);
 }
 
 static vString typestring = iNew.String("real");
