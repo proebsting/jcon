@@ -5,9 +5,11 @@
 //  so that push() and pop() are relatively quick.
 //  (put and pull will be slow for long lists, at least with JDK 1.0.2).
 
+package rts;
+
 import java.util.*;
 
-class vList extends vValue {
+public class vList extends vValue {
 
     Vector v;
 

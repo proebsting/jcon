@@ -1,4 +1,6 @@
-class vCoexp extends vValue implements Runnable {
+package rts;
+
+public class vCoexp extends vValue implements Runnable {
 	int originalPC;
 	Thread thread;
 	iClosure closure;

@@ -1,4 +1,6 @@
-class vString extends vValue {
+package rts;
+
+public class vString extends vValue {
 
     String value;
 
@@ -189,7 +191,7 @@ vDescriptor BangVar(iClosure c, vVariable v) {
     }
 }
 
-iClosure instantiate(vDescriptor[] args, iClosure parent) {
+public iClosure instantiate(vDescriptor[] args, iClosure parent) {
     vDescriptor v;
 
     v = parent.env.resolve(this.value);

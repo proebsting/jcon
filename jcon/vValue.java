@@ -4,16 +4,18 @@
 //  Each type implements a concrete class; all records share one class.
 
 
-abstract class vValue extends vDescriptor {
+package rts;
+
+public abstract class vValue extends vDescriptor {
 
     // many of these are default methods, often overridden by individual types
 
-    iClosure instantiate(vDescriptor[] args, iClosure parent)
+    public iClosure instantiate(vDescriptor[] args, iClosure parent)
     	{ return new iErrorClosure(this, args, parent); }  // will gen err 106
 
     // dereferencing and assignment
-    vValue deref()		{ return this; }
-    vVariable Assign(vValue x)	{ iRuntime.error(111,this);return null;}
+    public vValue deref()		{ return this; }
+    public vVariable Assign(vValue x)	{ iRuntime.error(111,this);return null;}
 
     // accessing functions
     vVariable field(String s)	{ iRuntime.error(107, this); return null;}

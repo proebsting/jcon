@@ -1,4 +1,6 @@
-class vSubstring extends vVariable {
+package rts;
+
+public class vSubstring extends vVariable {
 
     vVariable var;
 
@@ -55,7 +57,7 @@ int posEq(long n)
 
 //  internal methods
 
-vValue deref() {
+public vValue deref() {
     return iNew.String(this.strval().substring(start - 1, end - 1));
 }
 
@@ -72,7 +74,7 @@ String report() {
 //  operators
 
 
-vVariable Assign(vValue x) {
+public vVariable Assign(vValue x) {
 
     String xs = x.mkString().value;		// coerce assigned value
     String s = this.strval();			// get original String

@@ -1,28 +1,30 @@
+package rts;
+
 import java.util.Hashtable;
 
-class iEnv {
+public class iEnv {
 	Hashtable symtab;
 	Hashtable keytab;
 	Hashtable proctab;
 
-	vCoexp cur_coexp;
+	public vCoexp cur_coexp;
 
-	iEnv() {
+	public iEnv() {
 		symtab = new Hashtable();
 		keytab = new Hashtable();
 		proctab = new Hashtable();
 	}
 
-	vDescriptor resolve(String s) {
+	public vDescriptor resolve(String s) {
 		vDescriptor v = (vDescriptor) symtab.get(s);
 		return v;
 	}
 
-	void declareGlobal(String s, vDescriptor x) {
+	public void declareGlobal(String s, vDescriptor x) {
 		symtab.put(s, x);
 	}
 
-	vDescriptor resolveKey(String s) {
+	public vDescriptor resolveKey(String s) {
 		vDescriptor v = (vDescriptor) keytab.get(s);
 		if (v == null) {
 			v = iNew.Null();
@@ -32,11 +34,11 @@ class iEnv {
 		return v;
 	}
 
-	void declareKey(String s, vDescriptor k) {
+	public void declareKey(String s, vDescriptor k) {
 		keytab.put(s, k);
 	}
 
-	vDescriptor resolveProc(String s) {
+	public vDescriptor resolveProc(String s) {
 		vDescriptor v = (vDescriptor) proctab.get(s);
 		if (v == null) {
 			v = iNew.Null();
@@ -50,7 +52,7 @@ class iEnv {
 		return v;
 	}
 
-	void declareProc(String s, vDescriptor k) {
+	public void declareProc(String s, vDescriptor k) {
 		proctab.put(s, k);
 	}
 }

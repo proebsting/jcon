@@ -1,6 +1,8 @@
-//#%#%#% later merge with iInterface
+//#%#%#% later merge with iInterface?
 
-class iRuntime {
+package rts;
+
+public class iRuntime {
 
 
 
@@ -9,9 +11,9 @@ class iRuntime {
 // never returns.
 // to keep Java happy, follow error() calls with "return null" in caller.
 
-static void error(int n)  { error(n, null); }
+public static void error(int n)  { error(n, null); }
 
-static void error(int n, vDescriptor d)
+public static void error(int n, vDescriptor d)
 {
     throw new iError(n,d);
 }
@@ -20,10 +22,20 @@ static void error(int n, vDescriptor d)
 
 //  bomb(s) -- abort with message due to internal error
 
-static void bomb(String s)
+public static void bomb(String s)
 {
     System.out.flush();
+    System.err.println();
     System.err.println("Runtime malfunction: " + s);
+    System.exit(1);
+}
+
+public static void bomb(Exception e)
+{
+    System.out.flush();
+    System.err.println();
+    System.err.println("Runtime malfunction: Java exception");
+    e.printStackTrace();
     System.exit(1);
 }
 
@@ -34,7 +46,7 @@ static void bomb(String s)
 //
 //  (both assume that arg arrays have already been dereferenced.)
 
-static vValue argVal(vDescriptor[] args, int index)
+public static vValue argVal(vDescriptor[] args, int index)
 {
     if (args.length <= index) {
 	return iNew.Null();
@@ -43,7 +55,7 @@ static vValue argVal(vDescriptor[] args, int index)
     }
 }
 
-static vValue argVal(vDescriptor[] args, int index, int errcode)
+public static vValue argVal(vDescriptor[] args, int index, int errcode)
 {
     if (args.length <= index) {
     	iRuntime.error(errcode);
@@ -57,12 +69,12 @@ static vValue argVal(vDescriptor[] args, int index, int errcode)
 
 // #%#%#% redo later to use Icon's &random etc.
 
-static double random() {	// return double value "between 0 and 1"
+public static double random() {		// return double value "between 0 and 1"
     return Math.random();
 }
 
 
-static long random(long limit) {	// return long value in [0, limit)
+public static long random(long limit) {	// return long value in [0, limit)
     return (long) (limit * Math.random());
 }
 

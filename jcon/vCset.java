@@ -1,4 +1,6 @@
-class vCset extends vValue {
+package rts;
+
+public class vCset extends vValue {
 
     java.util.BitSet t;
 

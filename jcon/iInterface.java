@@ -1,12 +1,14 @@
-class iInterface {
+package rts;
 
-	static void init(iEnv env) {	// general runtime initialization
+public class iInterface {
+
+	public static void init(iEnv env) {    // general runtime initialization
 		(new iBuiltins()).announce(env);
 		(new iKeywords()).announce(env);
 		(new iOperators()).announce(env);
 	}
 
-	static vDescriptor[] marshall(
+	public static vDescriptor[] marshall(
 	    vDescriptor[] args, int len, boolean varargs) {
 
 		vDescriptor[] a = new vDescriptor[len];
@@ -33,7 +35,7 @@ class iInterface {
 		return a;
 	}
 
-	static void start(iFile[] files, String[] args) {
+	public static void start(iFile[] files, String[] args) {
 		iEnv env = iNew.Env();
 		for (int i = 0; i < files.length; i++) {
 			files[i].announce(env);

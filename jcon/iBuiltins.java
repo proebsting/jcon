@@ -1,14 +1,16 @@
+package rts;
+
 //  iBuiltins.java -- built-in functions
 
 import java.io.*;
 
 
 
-class iBuiltins extends iFile {
+public class iBuiltins extends iFile {
 
 
 
-static final String PREFIX = "f$";	// classname prefix for built-in funcs
+static final String PREFIX = "rts.f$";	// classname prefix for built-in funcs
 
 
 

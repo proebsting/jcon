@@ -1,4 +1,6 @@
-class vNull extends vValue {
+package rts;
+
+public class vNull extends vValue {
 
     vDescriptor isNull()	{ return this; }
     vDescriptor isntNull()	{ return null; /*FAIL*/ }

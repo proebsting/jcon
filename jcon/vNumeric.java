@@ -1,4 +1,6 @@
-abstract class vNumeric extends vValue {
+package rts;
+
+public abstract class vNumeric extends vValue {
 
 
 // all subclasses must implement:
@@ -18,7 +20,7 @@ vValue Concat(vDescriptor v)	{ return this.mkString().Concat(v); }
 //  instantiate:  try to convert to integer
 //  if that fails, call super.instantiate() for proper error processing
 
-iClosure instantiate (vDescriptor[] args, iClosure parent) {
+public iClosure instantiate (vDescriptor[] args, iClosure parent) {
     try {
     	return this.mkInteger().instantiate(args, parent);
     } catch (iError e) {

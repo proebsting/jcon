@@ -23,13 +23,13 @@ Some areas where the implementation is known to be not-quite-right
 (as distinguished from simply being unimplemented) are as follows.
 
 general:
--- random selection uses Java's RNG, presumably generating different sequences
--- write() is simplified, e.g. doesn't accept file arguments
--- structures don't have serial numbers yet
--- crude tracing can be enabled by setting &trace
+-- scripts etc. are still somewhat primitive
+-- separate compilation is not available
+-- no optimization has been done
 
-strings:
--- image(s) doesn't escape special characters
+strings and csets:
+-- image() doesn't escape special characters
+-- image(c) doesn't recognize &digits, &lcase, etc.
 -- trapped substring derefs assume original string hasn't changed underneath
 
 numerics:
@@ -44,6 +44,13 @@ error reporting:
 -- main's argument list is shown in the traceback
 -- arg lists for functions show actual instead of expected number of arguments
    (e.g.: a call to insert() traces as insert() not insert(&null,&null,&null))
+
+miscellaneous:
+-- random selection uses Java's RNG, presumably generating different sequences
+-- structures don't have serial numbers yet
+-- crude tracing can be enabled by setting &trace
+-- write() is simplified, e.g. doesn't accept file arguments
+-- x ! R doesn't work for records (only for lists)
 
 arguably correct differences:
 -- "n to MAXINT" case works correctly in to-by

@@ -1,3 +1,5 @@
+package rts;
+
 public class Semaphore {
 
    int value = 0;

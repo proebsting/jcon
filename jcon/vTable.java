@@ -1,4 +1,6 @@
-class vTable extends vValue {
+package rts;
+
+public class vTable extends vValue {
 
     java.util.Hashtable t;
     vValue dflt;
@@ -82,12 +84,12 @@ vTrappedTable(vTable table, vDescriptor key) {
     this.key = key;
 }
 
-vValue deref() {
+public vValue deref() {
     Object v = table.t.get(key);
     return (v == null) ? table.dflt : (vValue) v;
 }
 
-vVariable Assign(vValue v) {
+public vVariable Assign(vValue v) {
     table.t.put(key, v);
     return this;
 }

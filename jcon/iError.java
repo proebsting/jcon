@@ -1,7 +1,9 @@
 //  iError -- an Icon run-time error, thrown as an exception
 
+package rts;
 
-class iError extends Error {
+
+public class iError extends Error {
 
     int num;				// error number
     vDescriptor desc;			// offending value

@@ -1,4 +1,6 @@
-class vSet extends vValue {
+package rts;
+
+public class vSet extends vValue {
 
     java.util.Hashtable t;
 

@@ -2,7 +2,9 @@
 
 //#%#% tfmt() methods need to be double-checked vs. v9 Icon
 
-class iOperators extends iFile {
+package rts;
+
+public class iOperators extends iFile {
 
 
 void announce(iEnv env) {
@@ -74,7 +76,7 @@ void announce(iEnv env) {
 static void declare(iEnv env, String opr, String name)
 {
     try {
-	env.declareProc(opr, iNew.Proc(Class.forName(name), env));
+	env.declareProc(opr, iNew.Proc(Class.forName("rts." + name), env));
     } catch (ClassNotFoundException e) {
 	iRuntime.bomb("cannot declare opr " + opr + " using class " + name);
     }

@@ -1,4 +1,6 @@
-class vInteger extends vNumeric {
+package rts;
+
+public class vInteger extends vNumeric {
 
     long value;
 
@@ -28,7 +30,7 @@ String write()		{ return String.valueOf(value); }
 String image()		{ return String.valueOf(value); }
 String type()		{ return "integer"; }
 
-iClosure instantiate (vDescriptor[] args, iClosure parent) {
+public iClosure instantiate (vDescriptor[] args, iClosure parent) {
 	return new iIntegerClosure(this, args, parent);
 }
 

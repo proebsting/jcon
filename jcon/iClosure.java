@@ -1,27 +1,33 @@
-abstract class iClosure {
+package rts;
 
-int PC;
-vDescriptor retvalue;
-boolean initialized;
-iClosure parent;
-boolean returned;		// flag to indicate resumption unnecessary
+public abstract class iClosure {
 
-iEnv env;
-vDescriptor[] arguments;
 
-Object o;			// arbitrary storage for RTS methods
+public iEnv env;		// enclosing environment
+public iClosure parent;		// enclosing closure
+public vDescriptor[] arguments;	// argument list
 
-int line;
-int column;
-String file;
+public boolean initialized;	// first-time flag
+public int PC;			// "program counter" (initially = 1)
 
-iClosure() {			// constructor
+public vDescriptor retvalue;	// value returned/suspended, or null for failure
+public boolean returned;	// flag to indicate resumption unnecessary
+
+public Object o;		// arbitrary storage for RTS methods
+
+public String file;		// location in source file
+public int line;
+public int column;
+
+
+
+public iClosure() {		// constructor
     PC = 1;
 }
 
 
 
-final void resume() {
+public final void resume() {
     try {
         try {
             if (k$trace.trace != 0) {

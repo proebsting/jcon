@@ -8,16 +8,18 @@
 //	vVariable	assignable objects such as i, a[3], &subject, etc.
 
 
-abstract class vDescriptor {
+package rts;
+
+public abstract class vDescriptor {
 
     // methods declared here must be implemented for all descriptor classes
 
-    abstract iClosure instantiate(vDescriptor[] args, iClosure parent);
+    public abstract iClosure instantiate(vDescriptor[] args, iClosure parent);
     						// instantiate proc
 
     // dereferencing and assignment
-    abstract vValue deref();			// dereference
-    abstract vVariable Assign(vValue x);	// assign
+    public abstract vValue deref();		// dereference
+    public abstract vVariable Assign(vValue x);	// assign
 
     // access functions
     abstract vVariable field(String s);		// field access

@@ -1,9 +1,11 @@
 //  iKeywords.java -- Icon keywords
 
+package rts;
+
 import java.util.*;
 
 
-class iKeywords extends iFile {
+public class iKeywords extends iFile {
 
 	void announce(iEnv env) {
 		
@@ -71,7 +73,7 @@ class k$features extends iClosure {		// &features
 
 abstract class k$Value extends vValue {		// super of read-only keywords
 
-	abstract vValue deref();		// must implement deref()
+	public abstract vValue deref();		// must implement deref()
 
 	String image()	{ return deref().image(); }
 	String type()	{ return deref().type(); }
@@ -81,7 +83,7 @@ abstract class k$Value extends vValue {		// super of read-only keywords
 
 class k$clock extends k$Value {			// &clock
 
-	vValue deref() {
+	public vValue deref() {
 		return iNew.String((new Date()).toString().substring(11,19));
 	}
 }
@@ -90,7 +92,7 @@ class k$clock extends k$Value {			// &clock
 
 class k$date extends k$Value {			// &date
 
-	vValue deref() {
+	public vValue deref() {
 		Date d = new Date();
 		StringBuffer b = new StringBuffer(10);
 		b.append(d.getYear() + 1900);
@@ -118,7 +120,7 @@ class k$dateline extends k$Value {			// &dateline
 		"April ", "May ", "June ", "July ", "August ",
 		"September ", "October ", "November ", "December " };
 
-	vValue deref() {
+	public vValue deref() {
 		Date d = new Date();
 		StringBuffer b = new StringBuffer(10);
 		b.append(wkdays[d.getDay()]);
@@ -140,7 +142,7 @@ class k$subject extends vSimpleVar {		// &subject
 	
 	k$pos pos;		// associated &pos variable
 
-	vVariable Assign(vValue s) {
+	public vVariable Assign(vValue s) {
 		value = s.mkString();			// &subject := s
 		pos.Assign(iNew.Integer(1));		// &pos := 1
 		return this;
@@ -153,7 +155,7 @@ class k$pos extends vSimpleVar {		// &pos
 
 	k$subject subject;		// associated &subject variable
 
-	vVariable Assign(vValue i) {
+	public vVariable Assign(vValue i) {
 		i = i.mkInteger();
 		int n = ((vString)subject.value).posEq(((vInteger)i).value);
 		if (n == 0)
@@ -167,13 +169,13 @@ class k$trace extends vSimpleVar {		// &trace
 
 	static long trace;		// #%#%#% referenced in iClosure
 
-	vVariable Assign(vValue i) {
+	public vVariable Assign(vValue i) {
 		value = i.mkInteger();
 		trace = ((vInteger)value).value;
 		return this;
 	}
 
-	vValue deref() {
+	public vValue deref() {
 		return value = iNew.Integer(trace);
 	}
 }

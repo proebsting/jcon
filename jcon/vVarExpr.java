@@ -4,7 +4,9 @@
 //  table element, or indexed list entry.  Every VarExpr points to 
 //  an underlying vVariable.
 
-abstract class vVarExpr extends vVariable {
+package rts;
+
+public abstract class vVarExpr extends vVariable {
 
     vVariable var;
 

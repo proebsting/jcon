@@ -1,26 +1,6 @@
-class vRecordProc extends vValue {
-	String name;
-	String[] fieldnames;
+package rts;
 
-	vRecordProc(String name, String[] fieldnames) {
-		this.name = name;
-		this.fieldnames = fieldnames;
-	}
-
-	iClosure instantiate(vDescriptor[] args, iClosure parent) {
-		return new iRecordClosure(name, fieldnames, args, parent);
-	}
-
-	String image() {
-		return "record constructor " + name;
-	}
-
-	String type() {
-		return "procedure";
-	}
-}
-
-class vRecord extends vValue {
+public class vRecord extends vValue {
 	String name;
 	String[] fieldnames;
 	vSimpleVar[] values;

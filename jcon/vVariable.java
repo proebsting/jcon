@@ -10,13 +10,15 @@
 //  an underlying SimpleVar.
 
 
-abstract class vVariable extends vDescriptor {
+package rts;
+
+public abstract class vVariable extends vDescriptor {
 
 
     // must be implemented:
 
-    abstract vValue deref();			// dereference
-    abstract vVariable Assign(vValue x);	// assign
+    public abstract vValue deref();		// dereference
+    public abstract vVariable Assign(vValue x);	// assign
     abstract String report();			// report for traceback
 
 
@@ -26,7 +28,7 @@ abstract class vVariable extends vDescriptor {
     public boolean equals(Object o)	{ return this.deref().equals(o); }
     public int hashCode()		{ return this.deref().hashCode(); }
 
-    iClosure instantiate(vDescriptor[] args, iClosure parent)
+    public iClosure instantiate(vDescriptor[] args, iClosure parent)
 			{ return this.deref().instantiate(args, parent); }
 
     vString mkString()			{ return this.deref().mkString(); }
