@@ -96,6 +96,7 @@ vWindow(String title, String mode, vDescriptor args[]) throws IOException {
 
     // clear window and backing store, including out-of-bounds area, with new bg
     EraseArea(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
+    this.flush();
 
     setCurrent(this);		// remember as "current" window
 

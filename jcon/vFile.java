@@ -401,7 +401,7 @@ vString read() {						// read()
 	iRuntime.error(212, this);	// not open for reading
     }
 
-    if (fileToSync != null && instream == System.in) {
+    if (fileToSync != null && this == k$input.file) {
 	fileToSync.flush();		// flush pending graphics output
     }
 
