@@ -1,0 +1,49 @@
+general:
+-- scripts etc. are still somewhat primitive
+-- separate compilation is not available
+-- no optimization has been done
+-- crude tracing can be enabled by setting &trace
+
+strings and csets:
+-- image() doesn't escape special characters
+-- image(c) doesn't recognize &digits, &lcase, etc.
+-- csets may be up to 2^16 characters; big ones run slowly; &cset is missing
+-- char() and ord() work in the range 0 - 65535
+
+numerics:
+-- overflow or underflow is not detected
+-- conversion of reals (& possibly integers) to strings does not match v9
+-- conversion of strings to reals and integers probably follows different rules
+-- "%" just uses the Java "%" operator, which may not be exactly right
+
+error reporting:
+-- arg lists in traceback show actual instead of expected number of arguments
+   (e.g.: a call to insert() traces as insert() not insert(&null,&null,&null))
+-- long strings are not elided, list contents are omitted, etc.
+-- error recovery is not implemented yet
+
+miscellaneous:
+-- random selection uses Java's RNG, presumably generating different sequences
+-- random sequences are different on every run
+-- read() and write() don't accept file arguments
+-- x ! R doesn't work for records (only for lists)
+-- for co-expressions, image(), *C, and serial() don't work
+-- jcon always allocates a list even if main() declares no arguments
+
+arguably correct differences:
+-- tables sort after sets, as per the Icon book but contrary to v9
+-- to-by handles overflow in "n to MAXINT" case
+-- 1 / 0 gives error 201 instead of error 204
+-- traceback is deliberately limited to the innermost 100 nested calls
+-- "R . field" errors (e.g. 107, 207) give actual field name attempted
+
+compatible, although the book is unclear or wrong:
+-- procedures, functions, and record constructors all sort together, by name
+-- records sort first by type and then by serial number
+
+known bugs:
+-- string constants containing \e aren't properly generated
+-- co-expressions can't be used as procedure or operator arguments
+-- resuming a "break" is handled improperly (program crashes with Java error)
+-- +:= and -:= function identically to v9, which is wrong
+-- on the Dec Alpha, a rightward ishift() doesn't sign extend  [Java bug]
