@@ -1,7 +1,8 @@
 record CONSTANT_Class(name_index, pool_index)
 record CONSTANT_Fieldref(class_index, name_and_type_index, pool_index)
 record CONSTANT_Methodref(class_index, name_and_type_index, pool_index)
-record CONSTANT_InterfaceMethodref(class_index, name_and_type_index, pool_index)
+record CONSTANT_InterfaceMethodref(class_index, name_and_type_index,
+				   pool_index)
 record CONSTANT_String(string_index, pool_index)
 record CONSTANT_Integer(value, pool_index)
 record CONSTANT_Float(value, pool_index)
@@ -11,12 +12,15 @@ record CONSTANT_NameAndType(name_index, signature_index, pool_index)
 record CONSTANT_Utf8(value, pool_index)
 record CONSTANT_Unicode(value, pool_index)
 
-record ClassFile(minor_version, major_version, constant_pool, constant_table, access_flags, this_class, super_class, interfaces, fields, methods, attributes)
+record ClassFile(minor_version, major_version, constant_pool, constant_table,
+		 access_flags, this_class, super_class, interfaces, fields,
+		 methods, attributes)
 record field_info(access_flags, name_index, signature_index, attributes)
 
 record SourceFile_attribute(attribute_name_index, sourcefile_index)
 record ConstantValue_attribute(attribute_name_index, constantvalue_index)
-record Code_attribute(attribute_name_index, max_stack, max_locals, code, exception_table, attributes)
+record Code_attribute(attribute_name_index, max_stack, max_locals, code,
+		      exception_table, attributes)
 record Exceptions_attribute(attribute_name_index, exception_index_table)
 record LineNumberTable_attribute(attribute_name_index, line_number_table)
 record LocalVariableTable_attribute(attribute_name_index, local_variable_table)
@@ -25,7 +29,8 @@ record GenericAttribute_info(attribute_name_index, info)
 record method_info(access_flags, name_index, signature_index, attributes)
 record exception_table_info(start_pc, end_pc, handler_pc, catch_type)
 record line_number_table_info(start_pc, line_number)
-record local_variable_table_info(start_pc, length, name_index, signature_index, slot)
+record local_variable_table_info(start_pc, length, name_index, signature_index,
+				 slot)
 
 record label(name)
 record bipush(byte)
@@ -238,467 +243,469 @@ record monitorexit()
 record match_offset_pairs(Match, offset)
 
 procedure writer_ClassFile(writer, p)
-	local i
+    local i
 
-	writer_u4(writer, 16rCAFEBABE)
-	writer_u2(writer, p.minor_version)
-	writer_u2(writer, p.major_version)
-	writer_u2(writer, *p.constant_pool)
-	every i := \!p.constant_pool do {
-		writer_cp_info(writer, i)
-	}
-	writer_u2(writer, p.access_flags)
-	writer_u2(writer, p.this_class)
-	writer_u2(writer, p.super_class)
-	writer_u2(writer, *p.interfaces)
-	every i := !p.interfaces do {
-		writer_u2(writer, i)
-	}
-	writer_u2(writer, *p.fields)
-	every i := !p.fields do {
-		writer_field_info(writer, i)
-	}
-	writer_u2(writer, *p.methods)
-	every i := !p.methods do {
-		writer_method_info(writer, i)
-	}
-	writer_u2(writer, *p.attributes)
-	every i := !p.attributes do {
-		writer_attribute_info(writer, i)
-	}
+    writer_u4(writer, 16rCAFEBABE)
+    writer_u2(writer, p.minor_version)
+    writer_u2(writer, p.major_version)
+    writer_u2(writer, *p.constant_pool)
+    every i := \!p.constant_pool do {
+        writer_cp_info(writer, i)
+    }
+    writer_u2(writer, p.access_flags)
+    writer_u2(writer, p.this_class)
+    writer_u2(writer, p.super_class)
+    writer_u2(writer, *p.interfaces)
+    every i := !p.interfaces do {
+        writer_u2(writer, i)
+    }
+    writer_u2(writer, *p.fields)
+    every i := !p.fields do {
+        writer_field_info(writer, i)
+    }
+    writer_u2(writer, *p.methods)
+    every i := !p.methods do {
+        writer_method_info(writer, i)
+    }
+    writer_u2(writer, *p.attributes)
+    every i := !p.attributes do {
+        writer_attribute_info(writer, i)
+    }
 end
 
 procedure writer_cp_info(writer, p)
-	local i, s
+    local i, s
 
-	case (type(p)) of {
-	default: {
-		runerr(1000, p)
-	}
-	"CONSTANT_Class": {
-		writer_u1(writer, 7)
-		writer_u2(writer, p.name_index)
-	}
-	"CONSTANT_Fieldref": {
-		writer_u1(writer, 9)
-		writer_u2(writer, p.class_index)
-		writer_u2(writer, p.name_and_type_index)
-	}
-	"CONSTANT_Methodref": {
-		writer_u1(writer, 10)
-		writer_u2(writer, p.class_index)
-		writer_u2(writer, p.name_and_type_index)
-	}
-	"CONSTANT_InterfaceMethodref": {
-		writer_u1(writer, 11)
-		writer_u2(writer, p.class_index)
-		writer_u2(writer, p.name_and_type_index)
-	}
-	"CONSTANT_String": {
-		writer_u1(writer, 8)
-		writer_u2(writer, p.string_index)
-	}
-	"CONSTANT_Integer": {
-		writer_u1(writer, 3)
-		writer_u4(writer, p.value)
-	}
-	"CONSTANT_Float": {
-		writer_u1(writer, 4)
-		writer_u4(writer, p.value)
-	}
-	"CONSTANT_Long": {
-		writer_u1(writer, 5)
-		writer_u4(writer, iand(ishift(p.value, -32), 16rFFFFFFFF))
-		writer_u4(writer, iand(ishift(p.value,   0), 16rFFFFFFFF))
-	}
-	"CONSTANT_Double": {
-		writer_u1(writer, 6)
-		writer_u4(writer, p.high_bytes)
-		writer_u4(writer, p.low_bytes)
-	}
-	"CONSTANT_NameAndType": {
-		writer_u1(writer, 12)
-		writer_u2(writer, p.name_index)
-		writer_u2(writer, p.signature_index)
-	}
-	"CONSTANT_Utf8": {
-		s := utf8_repr(p.value)
-		writer_u1(writer, 1)
-		writer_u2(writer, *s)
-		writes(writer, s)
-		# every i := !s do {
-		# 	writer_u1(writer, ord(i))
-		# }
-	}
-	"CONSTANT_Unicode": {
-		writer_u1(writer, 2)
-		writer_u2(writer, *p.value)
-		every i := !p.value do {
-			writer_u1(writer, i)
-		}
-	}
-	}
+    case (type(p)) of {
+    default: {
+        runerr(1000, p)
+    }
+    "CONSTANT_Class": {
+        writer_u1(writer, 7)
+        writer_u2(writer, p.name_index)
+    }
+    "CONSTANT_Fieldref": {
+        writer_u1(writer, 9)
+        writer_u2(writer, p.class_index)
+        writer_u2(writer, p.name_and_type_index)
+    }
+    "CONSTANT_Methodref": {
+        writer_u1(writer, 10)
+        writer_u2(writer, p.class_index)
+        writer_u2(writer, p.name_and_type_index)
+    }
+    "CONSTANT_InterfaceMethodref": {
+        writer_u1(writer, 11)
+        writer_u2(writer, p.class_index)
+        writer_u2(writer, p.name_and_type_index)
+    }
+    "CONSTANT_String": {
+        writer_u1(writer, 8)
+        writer_u2(writer, p.string_index)
+    }
+    "CONSTANT_Integer": {
+        writer_u1(writer, 3)
+        writer_u4(writer, p.value)
+    }
+    "CONSTANT_Float": {
+        writer_u1(writer, 4)
+        writer_u4(writer, p.value)
+    }
+    "CONSTANT_Long": {
+        writer_u1(writer, 5)
+        writer_u4(writer, iand(ishift(p.value, -32), 16rFFFFFFFF))
+        writer_u4(writer, iand(ishift(p.value,   0), 16rFFFFFFFF))
+    }
+    "CONSTANT_Double": {
+        writer_u1(writer, 6)
+        writer_u4(writer, p.high_bytes)
+        writer_u4(writer, p.low_bytes)
+    }
+    "CONSTANT_NameAndType": {
+        writer_u1(writer, 12)
+        writer_u2(writer, p.name_index)
+        writer_u2(writer, p.signature_index)
+    }
+    "CONSTANT_Utf8": {
+        s := utf8_repr(p.value)
+        writer_u1(writer, 1)
+        writer_u2(writer, *s)
+        writes(writer, s)
+        # every i := !s do {
+        #   writer_u1(writer, ord(i))
+        # }
+    }
+    "CONSTANT_Unicode": {
+        writer_u1(writer, 2)
+        writer_u2(writer, *p.value)
+        every i := !p.value do {
+            writer_u1(writer, i)
+        }
+    }
+    }
 end
 
 procedure utf8_repr(s)
-	local t, c
-	static hard
-	initial hard := '\x00' ++ &cset[129:0]
+    local t, c
+    static hard
+    initial hard := '\x00' ++ &cset[129:0]
 
-	s ? {
-		t := tab(upto(hard)) | return s
-		while not pos(0) do {
-			if c := ord(tab(any(hard))) then {
-				if (c < 16r0800) then {
-					t ||:= char(16rC0 + ishift(c, -6))
-					t ||:= char(16r80 + iand(c, 16r3F))
-				} else {
-					t ||:= char(16rE0 + ishift(c, -12))
-					t ||:= char(16r80 +
-						iand(ishift(c, -6), 16r3F))
-					t ||:= char(16r80 + iand(c, 16r3F))
-				}
-			}
-			t ||:= tab(upto(hard) | 0)
-		}
-	}
-	return t
+    s ? {
+        t := tab(upto(hard)) | return s
+        while not pos(0) do {
+            if c := ord(tab(any(hard))) then {
+                if (c < 16r0800) then {
+                    t ||:= char(16rC0 + ishift(c, -6))
+                    t ||:= char(16r80 + iand(c, 16r3F))
+                } else {
+                    t ||:= char(16rE0 + ishift(c, -12))
+                    t ||:= char(16r80 +
+                        iand(ishift(c, -6), 16r3F))
+                    t ||:= char(16r80 + iand(c, 16r3F))
+                }
+            }
+            t ||:= tab(upto(hard) | 0)
+        }
+    }
+    return t
 end
 
 procedure writer_field_info(writer, p)
-	local i
+    local i
 
-	writer_u2(writer, p.access_flags)
-	writer_u2(writer, p.name_index)
-	writer_u2(writer, p.signature_index)
-	writer_u2(writer, *p.attributes)
-	every i := !p.attributes do {
-		writer_attribute_info(writer, i)
-	}
+    writer_u2(writer, p.access_flags)
+    writer_u2(writer, p.name_index)
+    writer_u2(writer, p.signature_index)
+    writer_u2(writer, *p.attributes)
+    every i := !p.attributes do {
+        writer_attribute_info(writer, i)
+    }
 end
 
 procedure writer_attribute_info(writer, p)
-	local i, locations, code_length, attribute_length
+    local i, locations, code_length, attribute_length
 
-	case (type(p)) of {
-	default: {
-		runerr(1000, p)
-	}
-	"SourceFile_attribute": {
-		writer_u2(writer, p.attribute_name_index)
-		writer_u4(writer, 2)
-		writer_u2(writer, p.sourcefile_index)
-	}
-	"ConstantValue_attribute": {
-		writer_u2(writer, p.attribute_name_index)
-		writer_u4(writer, 2)
-		writer_u2(writer, p.constantvalue_index)
-	}
-	"Code_attribute": {
-		writer_u2(writer, p.attribute_name_index)
+    case (type(p)) of {
+    default: {
+        runerr(1000, p)
+    }
+    "SourceFile_attribute": {
+        writer_u2(writer, p.attribute_name_index)
+        writer_u4(writer, 2)
+        writer_u2(writer, p.sourcefile_index)
+    }
+    "ConstantValue_attribute": {
+        writer_u2(writer, p.attribute_name_index)
+        writer_u4(writer, 2)
+        writer_u2(writer, p.constantvalue_index)
+    }
+    "Code_attribute": {
+        writer_u2(writer, p.attribute_name_index)
 
-		locations := table()
-		code_length := 0
-		every code_length := offset_opcodes(!p.code, code_length, locations)
-		every relocate(!p.code, locations)
+        locations := table()
+        code_length := 0
+        every code_length := offset_opcodes(!p.code, code_length, locations)
+        every relocate(!p.code, locations)
 
-		attribute_length := 0
-		every attribute_length := offset_attribute_info(!p.attributes, attribute_length)
+        attribute_length := 0
+        every attribute_length := offset_attribute_info(!p.attributes,
+							attribute_length)
 
-		writer_u4(writer, 2+2+4+code_length+2+8* *p.exception_table+2+attribute_length)
-		writer_u2(writer, p.max_stack)
-		writer_u2(writer, p.max_locals)
-		writer_u4(writer, code_length)
-		every i := !p.code do {
-			writer_opcodes(writer, i)
-		}
-		writer_u2(writer, *p.exception_table)
-		every i := !p.exception_table do {
-			writer_exception_table_info(writer, i)
-		}
-		writer_u2(writer, *p.attributes)
-		every i := !p.attributes do {
-			writer_attribute_info(writer, i)
-		}
-	}
-	"Exceptions_attribute": {
-		writer_u2(writer, p.attribute_name_index)
-		writer_u4(writer, 2+2* *p.exception_index_table)
-		writer_u2(writer, *p.exception_index_table)
-		every i := !p.exception_index_table do {
-			writer_u2(writer, i)
-		}
-	}
-	"LineNumberTable_attribute": {
-		writer_u2(writer, p.attribute_name_index)
-		writer_u4(writer, 2+4* *p.line_number_table)
-		writer_u2(writer, *p.line_number_table)
-		every i := !p.line_number_table do {
-			writer_line_number_table_info(writer, i)
-		}
-	}
-	"LocalVariableTable_attribute": {
-		writer_u2(writer, p.attribute_name_index)
-		writer_u4(writer, 2+10* *p.local_variable_table)
-		writer_u2(writer, *p.local_variable_table)
-		every i := !p.local_variable_table do {
-			writer_local_variable_table_info(writer, i)
-		}
-	}
-	"GenericAttribute_info": {
-		writer_u2(writer, p.attribute_name_index)
-		writer_u4(writer, *p.info)
-		every i := !p.info do {
-			writer_u1(writer, i)
-		}
-	}
-	}
+        writer_u4(writer,
+		  2+2+4+code_length+2+8* *p.exception_table+2+attribute_length)
+        writer_u2(writer, p.max_stack)
+        writer_u2(writer, p.max_locals)
+        writer_u4(writer, code_length)
+        every i := !p.code do {
+            writer_opcodes(writer, i)
+        }
+        writer_u2(writer, *p.exception_table)
+        every i := !p.exception_table do {
+            writer_exception_table_info(writer, i)
+        }
+        writer_u2(writer, *p.attributes)
+        every i := !p.attributes do {
+            writer_attribute_info(writer, i)
+        }
+    }
+    "Exceptions_attribute": {
+        writer_u2(writer, p.attribute_name_index)
+        writer_u4(writer, 2+2* *p.exception_index_table)
+        writer_u2(writer, *p.exception_index_table)
+        every i := !p.exception_index_table do {
+            writer_u2(writer, i)
+        }
+    }
+    "LineNumberTable_attribute": {
+        writer_u2(writer, p.attribute_name_index)
+        writer_u4(writer, 2+4* *p.line_number_table)
+        writer_u2(writer, *p.line_number_table)
+        every i := !p.line_number_table do {
+            writer_line_number_table_info(writer, i)
+        }
+    }
+    "LocalVariableTable_attribute": {
+        writer_u2(writer, p.attribute_name_index)
+        writer_u4(writer, 2+10* *p.local_variable_table)
+        writer_u2(writer, *p.local_variable_table)
+        every i := !p.local_variable_table do {
+            writer_local_variable_table_info(writer, i)
+        }
+    }
+    "GenericAttribute_info": {
+        writer_u2(writer, p.attribute_name_index)
+        writer_u4(writer, *p.info)
+        every i := !p.info do {
+            writer_u1(writer, i)
+        }
+    }
+    }
 end
 
 procedure writer_method_info(writer, p)
-	local i
+    local i
 
-	writer_u2(writer, p.access_flags)
-	writer_u2(writer, p.name_index)
-	writer_u2(writer, p.signature_index)
-	writer_u2(writer, *p.attributes)
-	every i := !p.attributes do {
-		writer_attribute_info(writer, i)
-	}
+    writer_u2(writer, p.access_flags)
+    writer_u2(writer, p.name_index)
+    writer_u2(writer, p.signature_index)
+    writer_u2(writer, *p.attributes)
+    every i := !p.attributes do {
+        writer_attribute_info(writer, i)
+    }
 end
 
 procedure writer_exception_table_info(writer, p)
-	writer_u2(writer, p.start_pc)
-	writer_u2(writer, p.end_pc)
-	writer_u2(writer, p.handler_pc)
-	writer_u2(writer, p.catch_type)
+    writer_u2(writer, p.start_pc)
+    writer_u2(writer, p.end_pc)
+    writer_u2(writer, p.handler_pc)
+    writer_u2(writer, p.catch_type)
 end
 
 procedure writer_line_number_table_info(writer, p)
-	writer_u2(writer, p.start_pc)
-	writer_u2(writer, p.line_number)
+    writer_u2(writer, p.start_pc)
+    writer_u2(writer, p.line_number)
 end
 
 procedure writer_local_variable_table_info(writer, p)
-	writer_u2(writer, p.start_pc)
-	writer_u2(writer, p.length)
-	writer_u2(writer, p.name_index)
-	writer_u2(writer, p.signature_index)
-	writer_u2(writer, p.slot)
+    writer_u2(writer, p.start_pc)
+    writer_u2(writer, p.length)
+    writer_u2(writer, p.name_index)
+    writer_u2(writer, p.signature_index)
+    writer_u2(writer, p.slot)
 end
 
 procedure writer_opcodes(writer, p)
-	local i, high, low, npairs, t
-	static opcode_table, opcode_leaf
-	initial {
-		opcode_table := table()
-		opcode_table["bipush"] := 16
-		opcode_table["sipush"] := 17
-		opcode_table["ldc"] := 18
-		opcode_table["ldc_w"] := 19
-		opcode_table["ldc2_w"] := 20
-		opcode_table["aconst_null"] := 1
-		opcode_table["iconst_m1"] := 2
-		opcode_table["iconst_0"] := 3
-		opcode_table["iconst_1"] := 4
-		opcode_table["iconst_2"] := 5
-		opcode_table["iconst_3"] := 6
-		opcode_table["iconst_4"] := 7
-		opcode_table["iconst_5"] := 8
-		opcode_table["lconst_0"] := 9
-		opcode_table["lconst_1"] := 10
-		opcode_table["fconst_0"] := 11
-		opcode_table["fconst_1"] := 12
-		opcode_table["fconst_2"] := 13
-		opcode_table["dconst_0"] := 14
-		opcode_table["dconst_1"] := 15
-		opcode_table["iload"] := 21
-		opcode_table["iload_w"] := 196
-		opcode_table["iload_0"] := 26
-		opcode_table["iload_1"] := 27
-		opcode_table["iload_2"] := 28
-		opcode_table["iload_3"] := 29
-		opcode_table["lload"] := 22
-		opcode_table["lload_0"] := 30
-		opcode_table["lload_1"] := 31
-		opcode_table["lload_2"] := 32
-		opcode_table["lload_3"] := 33
-		opcode_table["fload"] := 23
-		opcode_table["fload_0"] := 34
-		opcode_table["fload_1"] := 35
-		opcode_table["fload_2"] := 36
-		opcode_table["fload_3"] := 37
-		opcode_table["dload"] := 24
-		opcode_table["dload_0"] := 38
-		opcode_table["dload_1"] := 39
-		opcode_table["dload_2"] := 40
-		opcode_table["dload_3"] := 41
-		opcode_table["aload"] := 25
-		opcode_table["aload_w"] := 196
-		opcode_table["aload_0"] := 42
-		opcode_table["aload_1"] := 43
-		opcode_table["aload_2"] := 44
-		opcode_table["aload_3"] := 45
-		opcode_table["istore"] := 54
-		opcode_table["istore_w"] := 196
-		opcode_table["istore_0"] := 59
-		opcode_table["istore_1"] := 60
-		opcode_table["istore_2"] := 61
-		opcode_table["istore_3"] := 62
-		opcode_table["lstore"] := 55
-		opcode_table["lstore_0"] := 63
-		opcode_table["lstore_1"] := 64
-		opcode_table["lstore_2"] := 65
-		opcode_table["lstore_3"] := 66
-		opcode_table["fstore"] := 56
-		opcode_table["fstore_0"] := 67
-		opcode_table["fstore_1"] := 68
-		opcode_table["fstore_2"] := 69
-		opcode_table["fstore_3"] := 70
-		opcode_table["dstore"] := 57
-		opcode_table["dstore_0"] := 71
-		opcode_table["dstore_1"] := 72
-		opcode_table["dstore_2"] := 73
-		opcode_table["dstore_3"] := 74
-		opcode_table["astore"] := 58
-		opcode_table["astore_w"] := 196
-		opcode_table["astore_0"] := 75
-		opcode_table["astore_1"] := 76
-		opcode_table["astore_2"] := 77
-		opcode_table["astore_3"] := 78
-		opcode_table["iinc"] := 132
-		opcode_table["wide"] := 196
-		opcode_table["newarray"] := 188
-		opcode_table["anewarray"] := 189
-		opcode_table["multinewarray"] := 197
-		opcode_table["arraylength"] := 190
-		opcode_table["iaload"] := 46
-		opcode_table["laload"] := 47
-		opcode_table["faload"] := 48
-		opcode_table["daload"] := 49
-		opcode_table["aaload"] := 50
-		opcode_table["baload"] := 51
-		opcode_table["caload"] := 52
-		opcode_table["saload"] := 53
-		opcode_table["iastore"] := 79
-		opcode_table["lastore"] := 80
-		opcode_table["fastore"] := 81
-		opcode_table["dastore"] := 82
-		opcode_table["aastore"] := 83
-		opcode_table["bastore"] := 84
-		opcode_table["castore"] := 85
-		opcode_table["sastore"] := 86
-		opcode_table["nop"] := 0
-		opcode_table["Pop"] := 87
-		opcode_table["pop2"] := 88
-		opcode_table["dup"] := 89
-		opcode_table["dup2"] := 92
-		opcode_table["dup_x1"] := 90
-		opcode_table["dup2_x1"] := 93
-		opcode_table["dup_x2"] := 91
-		opcode_table["dup2_x2"] := 94
-		opcode_table["swap"] := 95
-		opcode_table["iadd"] := 96
-		opcode_table["ladd"] := 97
-		opcode_table["fadd"] := 98
-		opcode_table["dadd"] := 99
-		opcode_table["isub"] := 100
-		opcode_table["lsub"] := 101
-		opcode_table["fsub"] := 102
-		opcode_table["dsub"] := 103
-		opcode_table["imul"] := 104
-		opcode_table["lmul"] := 105
-		opcode_table["fmul"] := 106
-		opcode_table["dmul"] := 107
-		opcode_table["idiv"] := 108
-		opcode_table["ldiv"] := 109
-		opcode_table["fdiv"] := 110
-		opcode_table["ddiv"] := 111
-		opcode_table["irem"] := 112
-		opcode_table["lrem"] := 113
-		opcode_table["frem"] := 114
-		opcode_table["drem"] := 115
-		opcode_table["ineg"] := 116
-		opcode_table["lneg"] := 117
-		opcode_table["fneg"] := 118
-		opcode_table["dneg"] := 119
-		opcode_table["ishl"] := 120
-		opcode_table["ishr"] := 122
-		opcode_table["iushr"] := 124
-		opcode_table["lshl"] := 121
-		opcode_table["lshr"] := 123
-		opcode_table["lushr"] := 125
-		opcode_table["Iand"] := 126
-		opcode_table["land"] := 127
-		opcode_table["ior"] := 128
-		opcode_table["lor"] := 129
-		opcode_table["ixor"] := 130
-		opcode_table["lxor"] := 131
-		opcode_table["i2l"] := 133
-		opcode_table["i2f"] := 134
-		opcode_table["i2d"] := 135
-		opcode_table["l2i"] := 136
-		opcode_table["l2f"] := 137
-		opcode_table["l2d"] := 138
-		opcode_table["f2i"] := 139
-		opcode_table["f2l"] := 140
-		opcode_table["f2d"] := 141
-		opcode_table["d2i"] := 142
-		opcode_table["d2l"] := 143
-		opcode_table["d2f"] := 144
-		opcode_table["int2byte"] := 145
-		opcode_table["int2char"] := 146
-		opcode_table["int2short"] := 147
-		opcode_table["ifeq"] := 153
-		opcode_table["ifnull"] := 198
-		opcode_table["iflt"] := 155
-		opcode_table["ifle"] := 158
-		opcode_table["ifne"] := 154
-		opcode_table["ifnonnull"] := 199
-		opcode_table["ifgt"] := 157
-		opcode_table["ifge"] := 156
-		opcode_table["if_icmpeq"] := 159
-		opcode_table["if_icmpne"] := 160
-		opcode_table["if_icmplt"] := 161
-		opcode_table["if_icmpgt"] := 163
-		opcode_table["if_icmple"] := 164
-		opcode_table["if_icmpge"] := 162
-		opcode_table["lcmp"] := 148
-		opcode_table["fcmpl"] := 149
-		opcode_table["fcmpg"] := 150
-		opcode_table["dcmpl"] := 151
-		opcode_table["dcmpg"] := 152
-		opcode_table["if_acmpeq"] := 165
-		opcode_table["if_acmpne"] := 166
-		opcode_table["goto"] := 167
-		opcode_table["goto_w"] := 200
-		opcode_table["jsr"] := 168
-		opcode_table["jsr_w"] := 201
-		opcode_table["ret"] := 169
-		opcode_table["ret_w"] := 209
-		opcode_table["ireturn"] := 172
-		opcode_table["lreturn"] := 173
-		opcode_table["freturn"] := 174
-		opcode_table["dreturn"] := 175
-		opcode_table["areturn"] := 176
-		opcode_table["vreturn"] := 177
-		opcode_table["breakpoint"] := 202
-		opcode_table["tableswitch"] := 170
-		opcode_table["lookupswitch"] := 171
-		opcode_table["putfield"] := 181
-		opcode_table["getfield"] := 180
-		opcode_table["putstatic"] := 179
-		opcode_table["getstatic"] := 178
-		opcode_table["invokevirtual"] := 182
-		opcode_table["invokenonvirtual"] := 183
-		opcode_table["invokestatic"] := 184
-		opcode_table["invokeinterface"] := 185
-		opcode_table["athrow"] := 191
-		opcode_table["new"] := 187
-		opcode_table["checkcast"] := 192
-		opcode_table["instanceof"] := 193
-		opcode_table["monitorenter"] := 194
-		opcode_table["monitorexit"] := 195
+    local i, high, low, npairs, t
+    static opcode_table, opcode_leaf
+    initial {
+        opcode_table := table()
+        opcode_table["bipush"] := 16
+        opcode_table["sipush"] := 17
+        opcode_table["ldc"] := 18
+        opcode_table["ldc_w"] := 19
+        opcode_table["ldc2_w"] := 20
+        opcode_table["aconst_null"] := 1
+        opcode_table["iconst_m1"] := 2
+        opcode_table["iconst_0"] := 3
+        opcode_table["iconst_1"] := 4
+        opcode_table["iconst_2"] := 5
+        opcode_table["iconst_3"] := 6
+        opcode_table["iconst_4"] := 7
+        opcode_table["iconst_5"] := 8
+        opcode_table["lconst_0"] := 9
+        opcode_table["lconst_1"] := 10
+        opcode_table["fconst_0"] := 11
+        opcode_table["fconst_1"] := 12
+        opcode_table["fconst_2"] := 13
+        opcode_table["dconst_0"] := 14
+        opcode_table["dconst_1"] := 15
+        opcode_table["iload"] := 21
+        opcode_table["iload_w"] := 196
+        opcode_table["iload_0"] := 26
+        opcode_table["iload_1"] := 27
+        opcode_table["iload_2"] := 28
+        opcode_table["iload_3"] := 29
+        opcode_table["lload"] := 22
+        opcode_table["lload_0"] := 30
+        opcode_table["lload_1"] := 31
+        opcode_table["lload_2"] := 32
+        opcode_table["lload_3"] := 33
+        opcode_table["fload"] := 23
+        opcode_table["fload_0"] := 34
+        opcode_table["fload_1"] := 35
+        opcode_table["fload_2"] := 36
+        opcode_table["fload_3"] := 37
+        opcode_table["dload"] := 24
+        opcode_table["dload_0"] := 38
+        opcode_table["dload_1"] := 39
+        opcode_table["dload_2"] := 40
+        opcode_table["dload_3"] := 41
+        opcode_table["aload"] := 25
+        opcode_table["aload_w"] := 196
+        opcode_table["aload_0"] := 42
+        opcode_table["aload_1"] := 43
+        opcode_table["aload_2"] := 44
+        opcode_table["aload_3"] := 45
+        opcode_table["istore"] := 54
+        opcode_table["istore_w"] := 196
+        opcode_table["istore_0"] := 59
+        opcode_table["istore_1"] := 60
+        opcode_table["istore_2"] := 61
+        opcode_table["istore_3"] := 62
+        opcode_table["lstore"] := 55
+        opcode_table["lstore_0"] := 63
+        opcode_table["lstore_1"] := 64
+        opcode_table["lstore_2"] := 65
+        opcode_table["lstore_3"] := 66
+        opcode_table["fstore"] := 56
+        opcode_table["fstore_0"] := 67
+        opcode_table["fstore_1"] := 68
+        opcode_table["fstore_2"] := 69
+        opcode_table["fstore_3"] := 70
+        opcode_table["dstore"] := 57
+        opcode_table["dstore_0"] := 71
+        opcode_table["dstore_1"] := 72
+        opcode_table["dstore_2"] := 73
+        opcode_table["dstore_3"] := 74
+        opcode_table["astore"] := 58
+        opcode_table["astore_w"] := 196
+        opcode_table["astore_0"] := 75
+        opcode_table["astore_1"] := 76
+        opcode_table["astore_2"] := 77
+        opcode_table["astore_3"] := 78
+        opcode_table["iinc"] := 132
+        opcode_table["wide"] := 196
+        opcode_table["newarray"] := 188
+        opcode_table["anewarray"] := 189
+        opcode_table["multinewarray"] := 197
+        opcode_table["arraylength"] := 190
+        opcode_table["iaload"] := 46
+        opcode_table["laload"] := 47
+        opcode_table["faload"] := 48
+        opcode_table["daload"] := 49
+        opcode_table["aaload"] := 50
+        opcode_table["baload"] := 51
+        opcode_table["caload"] := 52
+        opcode_table["saload"] := 53
+        opcode_table["iastore"] := 79
+        opcode_table["lastore"] := 80
+        opcode_table["fastore"] := 81
+        opcode_table["dastore"] := 82
+        opcode_table["aastore"] := 83
+        opcode_table["bastore"] := 84
+        opcode_table["castore"] := 85
+        opcode_table["sastore"] := 86
+        opcode_table["nop"] := 0
+        opcode_table["Pop"] := 87
+        opcode_table["pop2"] := 88
+        opcode_table["dup"] := 89
+        opcode_table["dup2"] := 92
+        opcode_table["dup_x1"] := 90
+        opcode_table["dup2_x1"] := 93
+        opcode_table["dup_x2"] := 91
+        opcode_table["dup2_x2"] := 94
+        opcode_table["swap"] := 95
+        opcode_table["iadd"] := 96
+        opcode_table["ladd"] := 97
+        opcode_table["fadd"] := 98
+        opcode_table["dadd"] := 99
+        opcode_table["isub"] := 100
+        opcode_table["lsub"] := 101
+        opcode_table["fsub"] := 102
+        opcode_table["dsub"] := 103
+        opcode_table["imul"] := 104
+        opcode_table["lmul"] := 105
+        opcode_table["fmul"] := 106
+        opcode_table["dmul"] := 107
+        opcode_table["idiv"] := 108
+        opcode_table["ldiv"] := 109
+        opcode_table["fdiv"] := 110
+        opcode_table["ddiv"] := 111
+        opcode_table["irem"] := 112
+        opcode_table["lrem"] := 113
+        opcode_table["frem"] := 114
+        opcode_table["drem"] := 115
+        opcode_table["ineg"] := 116
+        opcode_table["lneg"] := 117
+        opcode_table["fneg"] := 118
+        opcode_table["dneg"] := 119
+        opcode_table["ishl"] := 120
+        opcode_table["ishr"] := 122
+        opcode_table["iushr"] := 124
+        opcode_table["lshl"] := 121
+        opcode_table["lshr"] := 123
+        opcode_table["lushr"] := 125
+        opcode_table["Iand"] := 126
+        opcode_table["land"] := 127
+        opcode_table["ior"] := 128
+        opcode_table["lor"] := 129
+        opcode_table["ixor"] := 130
+        opcode_table["lxor"] := 131
+        opcode_table["i2l"] := 133
+        opcode_table["i2f"] := 134
+        opcode_table["i2d"] := 135
+        opcode_table["l2i"] := 136
+        opcode_table["l2f"] := 137
+        opcode_table["l2d"] := 138
+        opcode_table["f2i"] := 139
+        opcode_table["f2l"] := 140
+        opcode_table["f2d"] := 141
+        opcode_table["d2i"] := 142
+        opcode_table["d2l"] := 143
+        opcode_table["d2f"] := 144
+        opcode_table["int2byte"] := 145
+        opcode_table["int2char"] := 146
+        opcode_table["int2short"] := 147
+        opcode_table["ifeq"] := 153
+        opcode_table["ifnull"] := 198
+        opcode_table["iflt"] := 155
+        opcode_table["ifle"] := 158
+        opcode_table["ifne"] := 154
+        opcode_table["ifnonnull"] := 199
+        opcode_table["ifgt"] := 157
+        opcode_table["ifge"] := 156
+        opcode_table["if_icmpeq"] := 159
+        opcode_table["if_icmpne"] := 160
+        opcode_table["if_icmplt"] := 161
+        opcode_table["if_icmpgt"] := 163
+        opcode_table["if_icmple"] := 164
+        opcode_table["if_icmpge"] := 162
+        opcode_table["lcmp"] := 148
+        opcode_table["fcmpl"] := 149
+        opcode_table["fcmpg"] := 150
+        opcode_table["dcmpl"] := 151
+        opcode_table["dcmpg"] := 152
+        opcode_table["if_acmpeq"] := 165
+        opcode_table["if_acmpne"] := 166
+        opcode_table["goto"] := 167
+        opcode_table["goto_w"] := 200
+        opcode_table["jsr"] := 168
+        opcode_table["jsr_w"] := 201
+        opcode_table["ret"] := 169
+        opcode_table["ret_w"] := 209
+        opcode_table["ireturn"] := 172
+        opcode_table["lreturn"] := 173
+        opcode_table["freturn"] := 174
+        opcode_table["dreturn"] := 175
+        opcode_table["areturn"] := 176
+        opcode_table["vreturn"] := 177
+        opcode_table["breakpoint"] := 202
+        opcode_table["tableswitch"] := 170
+        opcode_table["lookupswitch"] := 171
+        opcode_table["putfield"] := 181
+        opcode_table["getfield"] := 180
+        opcode_table["putstatic"] := 179
+        opcode_table["getstatic"] := 178
+        opcode_table["invokevirtual"] := 182
+        opcode_table["invokenonvirtual"] := 183
+        opcode_table["invokestatic"] := 184
+        opcode_table["invokeinterface"] := 185
+        opcode_table["athrow"] := 191
+        opcode_table["new"] := 187
+        opcode_table["checkcast"] := 192
+        opcode_table["instanceof"] := 193
+        opcode_table["monitorenter"] := 194
+        opcode_table["monitorexit"] := 195
 opcode_leaf := set([])
 insert(opcode_leaf, "aconst_null")
 insert(opcode_leaf, "iconst_m1")
@@ -849,889 +856,907 @@ insert(opcode_leaf, "athrow")
 insert(opcode_leaf, "monitorenter")
 insert(opcode_leaf, "monitorexit")
 insert(opcode_leaf, "label")
-	}
+    }
 
-	t := type(p)
+    t := type(p)
 
-	writer_u1(writer, \opcode_table[t])
+    writer_u1(writer, \opcode_table[t])
 
-	if member(opcode_leaf, t) then return
+    if member(opcode_leaf, t) then return
 
-	case (t) of {
-	"iload": {
-		writer_u1(writer, p.index)
-		return
-	}
-	"iload_w": {
-		writer_u1(writer, opcode_table[t ? tab(upto('_'))])
-		writer_u2(writer, p.index)
-		return
-	}
-	"aload": {
-		writer_u1(writer, p.index)
-		return
-	}
-	"aload_w": {
-		writer_u1(writer, opcode_table[t ? tab(upto('_'))])
-		writer_u2(writer, p.index)
-		return
-	}
-	"istore": {
-		writer_u1(writer, p.index)
-		return
-	}
-	"istore_w": {
-		writer_u1(writer, opcode_table[t ? tab(upto('_'))])
-		writer_u2(writer, p.index)
-		return
-	}
-	"astore": {
-		writer_u1(writer, p.index)
-		return
-	}
-	"astore_w": {
-		writer_u1(writer, opcode_table[t ? tab(upto('_'))])
-		writer_u2(writer, p.index)
-		return
-	}
-	"putfield": {
-		writer_u2(writer, p.index)
-	}
-	"getfield": {
-		writer_u2(writer, p.index)
-	}
-	"putstatic": {
-		writer_u2(writer, p.index)
-	}
-	"getstatic": {
-		writer_u2(writer, p.index)
-	}
-	"goto": {
-		writer_s2(writer, p.branch)
-	}
-	"goto_w": {
-		writer_s4(writer, p.branch)
-	}
-	"invokevirtual": {
-		writer_u2(writer, p.index)
-	}
-	"invokenonvirtual": {
-		writer_u2(writer, p.index)
-	}
-	"invokestatic": {
-		writer_u2(writer, p.index)
-	}
-	"invokeinterface": {
-		writer_u2(writer, p.index)
-	}
-	"bipush": {
-		writer_s1(writer, p.byte)
-	}
-	"sipush": {
-		writer_s2(writer, p.byte)
-	}
-	"ldc": {
-		writer_u1(writer, p.index)
-	}
-	"ldc_w": {
-		writer_u2(writer, p.index)
-	}
-	"ldc2_w": {
-		writer_u2(writer, p.index)
-	}
-	"tableswitch": {
-		writer_align4(writer, p.pad)
-		writer_s4(writer, p.default_offset)
-		writer_s4(writer, p.low)
-		writer_s4(writer, p.high)
-		p.high - p.low +1 = *p.offsets | runerr(1000, p)
-		every i := !p.offsets do {
-			writer_s4(writer, i)
-		}
-	}
-	"lload": {
-		writer_u1(writer, p.index)
-	}
-	"fload": {
-		writer_u1(writer, p.index)
-	}
-	"dload": {
-		writer_u1(writer, p.index)
-	}
-	"lstore": {
-		writer_u1(writer, p.index)
-	}
-	"fstore": {
-		writer_u1(writer, p.index)
-	}
-	"dstore": {
-		writer_u1(writer, p.index)
-	}
-	"iinc": {
-		writer_u1(writer, p.index)
-		writer_s1(writer, p.const)
-	}
-	"newarray": {
-		writer_u1(writer, p.atype)
-	}
-	"anewarray": {
-		writer_s2(writer, p.index)
-	}
-	"multinewarray": {
-		writer_s2(writer, p.index)
-	}
-	"ifeq": {
-		writer_s2(writer, p.branch)
-	}
-	"ifnull": {
-		writer_s2(writer, p.branch)
-	}
-	"iflt": {
-		writer_s2(writer, p.branch)
-	}
-	"ifle": {
-		writer_s2(writer, p.branch)
-	}
-	"ifne": {
-		writer_s2(writer, p.branch)
-	}
-	"ifnonnull": {
-		writer_s2(writer, p.branch)
-	}
-	"ifgt": {
-		writer_s2(writer, p.branch)
-	}
-	"ifge": {
-		writer_s2(writer, p.branch)
-	}
-	"if_icmpeq": {
-		writer_s2(writer, p.branch)
-	}
-	"if_icmpne": {
-		writer_s2(writer, p.branch)
-	}
-	"if_icmplt": {
-		writer_s2(writer, p.branch)
-	}
-	"if_icmpgt": {
-		writer_s2(writer, p.branch)
-	}
-	"if_icmple": {
-		writer_s2(writer, p.branch)
-	}
-	"if_icmpge": {
-		writer_s2(writer, p.branch)
-	}
-	"if_acmpeq": {
-		writer_s2(writer, p.branch)
-	}
-	"if_acmpne": {
-		writer_s2(writer, p.branch)
-	}
-	"jsr": {
-		writer_s2(writer, p.branch)
-	}
-	"jsr_w": {
-		writer_s4(writer, p.branch)
-	}
-	"ret": {
-		writer_u1(writer, p.index)
-	}
-	"ret_w": {
-		writer_u2(writer, p.index)
-	}
-	"lookupswitch": {
-		writer_align4(writer, p.pad)
-		writer_s4(writer, p.default_offset)
-		writer_s4(writer, p.npairs)
-		every i := !p.offsets do {
-			writer_match_offset_pairs(writer, i)
-		}
-	}
-	"new": {
-		writer_u2(writer, p.index)
-	}
-	"checkcast": {
-		writer_u2(writer, p.index)
-	}
-	"instanceof": {
-		writer_u2(writer, p.index)
-	}
-	}
+    case (t) of {
+    "iload": {
+        writer_u1(writer, p.index)
+        return
+    }
+    "iload_w": {
+        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        writer_u2(writer, p.index)
+        return
+    }
+    "aload": {
+        writer_u1(writer, p.index)
+        return
+    }
+    "aload_w": {
+        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        writer_u2(writer, p.index)
+        return
+    }
+    "istore": {
+        writer_u1(writer, p.index)
+        return
+    }
+    "istore_w": {
+        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        writer_u2(writer, p.index)
+        return
+    }
+    "astore": {
+        writer_u1(writer, p.index)
+        return
+    }
+    "astore_w": {
+        writer_u1(writer, opcode_table[t ? tab(upto('_'))])
+        writer_u2(writer, p.index)
+        return
+    }
+    "putfield": {
+        writer_u2(writer, p.index)
+    }
+    "getfield": {
+        writer_u2(writer, p.index)
+    }
+    "putstatic": {
+        writer_u2(writer, p.index)
+    }
+    "getstatic": {
+        writer_u2(writer, p.index)
+    }
+    "goto": {
+        writer_s2(writer, p.branch)
+    }
+    "goto_w": {
+        writer_s4(writer, p.branch)
+    }
+    "invokevirtual": {
+        writer_u2(writer, p.index)
+    }
+    "invokenonvirtual": {
+        writer_u2(writer, p.index)
+    }
+    "invokestatic": {
+        writer_u2(writer, p.index)
+    }
+    "invokeinterface": {
+        writer_u2(writer, p.index)
+    }
+    "bipush": {
+        writer_s1(writer, p.byte)
+    }
+    "sipush": {
+        writer_s2(writer, p.byte)
+    }
+    "ldc": {
+        writer_u1(writer, p.index)
+    }
+    "ldc_w": {
+        writer_u2(writer, p.index)
+    }
+    "ldc2_w": {
+        writer_u2(writer, p.index)
+    }
+    "tableswitch": {
+        writer_align4(writer, p.pad)
+        writer_s4(writer, p.default_offset)
+        writer_s4(writer, p.low)
+        writer_s4(writer, p.high)
+        p.high - p.low +1 = *p.offsets | runerr(1000, p)
+        every i := !p.offsets do {
+            writer_s4(writer, i)
+        }
+    }
+    "lload": {
+        writer_u1(writer, p.index)
+    }
+    "fload": {
+        writer_u1(writer, p.index)
+    }
+    "dload": {
+        writer_u1(writer, p.index)
+    }
+    "lstore": {
+        writer_u1(writer, p.index)
+    }
+    "fstore": {
+        writer_u1(writer, p.index)
+    }
+    "dstore": {
+        writer_u1(writer, p.index)
+    }
+    "iinc": {
+        writer_u1(writer, p.index)
+        writer_s1(writer, p.const)
+    }
+    "newarray": {
+        writer_u1(writer, p.atype)
+    }
+    "anewarray": {
+        writer_s2(writer, p.index)
+    }
+    "multinewarray": {
+        writer_s2(writer, p.index)
+    }
+    "ifeq": {
+        writer_s2(writer, p.branch)
+    }
+    "ifnull": {
+        writer_s2(writer, p.branch)
+    }
+    "iflt": {
+        writer_s2(writer, p.branch)
+    }
+    "ifle": {
+        writer_s2(writer, p.branch)
+    }
+    "ifne": {
+        writer_s2(writer, p.branch)
+    }
+    "ifnonnull": {
+        writer_s2(writer, p.branch)
+    }
+    "ifgt": {
+        writer_s2(writer, p.branch)
+    }
+    "ifge": {
+        writer_s2(writer, p.branch)
+    }
+    "if_icmpeq": {
+        writer_s2(writer, p.branch)
+    }
+    "if_icmpne": {
+        writer_s2(writer, p.branch)
+    }
+    "if_icmplt": {
+        writer_s2(writer, p.branch)
+    }
+    "if_icmpgt": {
+        writer_s2(writer, p.branch)
+    }
+    "if_icmple": {
+        writer_s2(writer, p.branch)
+    }
+    "if_icmpge": {
+        writer_s2(writer, p.branch)
+    }
+    "if_acmpeq": {
+        writer_s2(writer, p.branch)
+    }
+    "if_acmpne": {
+        writer_s2(writer, p.branch)
+    }
+    "jsr": {
+        writer_s2(writer, p.branch)
+    }
+    "jsr_w": {
+        writer_s4(writer, p.branch)
+    }
+    "ret": {
+        writer_u1(writer, p.index)
+    }
+    "ret_w": {
+        writer_u2(writer, p.index)
+    }
+    "lookupswitch": {
+        writer_align4(writer, p.pad)
+        writer_s4(writer, p.default_offset)
+        writer_s4(writer, p.npairs)
+        every i := !p.offsets do {
+            writer_match_offset_pairs(writer, i)
+        }
+    }
+    "new": {
+        writer_u2(writer, p.index)
+    }
+    "checkcast": {
+        writer_u2(writer, p.index)
+    }
+    "instanceof": {
+        writer_u2(writer, p.index)
+    }
+    }
 end
 
 procedure writer_match_offset_pairs(writer, p)
-	writer_s4(writer, p.Match)
-	writer_s4(writer, p.offset)
+    writer_s4(writer, p.Match)
+    writer_s4(writer, p.offset)
 end
 
 
 procedure offset_opcodes(p, offset, locations)
-	local i, high, low, npairs
-	static offset_table
-	initial {
-		offset_table := table()
-		offset_table["label"] := -1
-		offset_table["putfield"] := 2
-		offset_table["getfield"] := 2
-		offset_table["putstatic"] := 2
-		offset_table["getstatic"] := 2
-		offset_table["invokevirtual"] := 2
-		offset_table["invokenonvirtual"] := 2
-		offset_table["invokestatic"] := 2
-		offset_table["invokeinterface"] := 2
-		offset_table["sipush"] := 2
-		offset_table["bipush"] := 1
-		offset_table["ldc"] := 1
-		offset_table["ldc_w"] := 2
-		offset_table["ldc2_w"] := 2
-		offset_table["aconst_null"] := 0
-		offset_table["iconst_m1"] := 0
-		offset_table["iconst_0"] := 0
-		offset_table["iconst_1"] := 0
-		offset_table["iconst_2"] := 0
-		offset_table["iconst_3"] := 0
-		offset_table["iconst_4"] := 0
-		offset_table["iconst_5"] := 0
-		offset_table["lconst_0"] := 0
-		offset_table["lconst_1"] := 0
-		offset_table["fconst_0"] := 0
-		offset_table["fconst_1"] := 0
-		offset_table["fconst_2"] := 0
-		offset_table["dconst_0"] := 0
-		offset_table["dconst_1"] := 0
-		offset_table["iload"] := 1
-		offset_table["iload_w"] := 3
-		offset_table["iload_0"] := 0
-		offset_table["iload_1"] := 0
-		offset_table["iload_2"] := 0
-		offset_table["iload_3"] := 0
-		offset_table["lload"] := 1
-		offset_table["lload_0"] := 0
-		offset_table["lload_1"] := 0
-		offset_table["lload_2"] := 0
-		offset_table["lload_3"] := 0
-		offset_table["fload"] := 1
-		offset_table["fload_0"] := 0
-		offset_table["fload_1"] := 0
-		offset_table["fload_2"] := 0
-		offset_table["fload_3"] := 0
-		offset_table["dload"] := 1
-		offset_table["dload_0"] := 0
-		offset_table["dload_1"] := 0
-		offset_table["dload_2"] := 0
-		offset_table["dload_3"] := 0
-		offset_table["aload"] := 1
-		offset_table["aload_w"] := 3
-		offset_table["aload_0"] := 0
-		offset_table["aload_1"] := 0
-		offset_table["aload_2"] := 0
-		offset_table["aload_3"] := 0
-		offset_table["istore"] := 1
-		offset_table["istore_w"] := 3
-		offset_table["istore_0"] := 0
-		offset_table["istore_1"] := 0
-		offset_table["istore_2"] := 0
-		offset_table["istore_3"] := 0
-		offset_table["lstore"] := 1
-		offset_table["lstore_0"] := 0
-		offset_table["lstore_1"] := 0
-		offset_table["lstore_2"] := 0
-		offset_table["lstore_3"] := 0
-		offset_table["fstore"] := 1
-		offset_table["fstore_0"] := 0
-		offset_table["fstore_1"] := 0
-		offset_table["fstore_2"] := 0
-		offset_table["fstore_3"] := 0
-		offset_table["dstore"] := 1
-		offset_table["dstore_0"] := 0
-		offset_table["dstore_1"] := 0
-		offset_table["dstore_2"] := 0
-		offset_table["dstore_3"] := 0
-		offset_table["astore"] := 1
-		offset_table["astore_w"] := 3
-		offset_table["astore_0"] := 0
-		offset_table["astore_1"] := 0
-		offset_table["astore_2"] := 0
-		offset_table["astore_3"] := 0
-		offset_table["iinc"] := 2
-		offset_table["newarray"] := 1
-		offset_table["anewarray"] := 2
-		offset_table["multinewarray"] := 3
-		offset_table["arraylength"] := 0
-		offset_table["iaload"] := 0
-		offset_table["laload"] := 0
-		offset_table["faload"] := 0
-		offset_table["daload"] := 0
-		offset_table["aaload"] := 0
-		offset_table["baload"] := 0
-		offset_table["caload"] := 0
-		offset_table["saload"] := 0
-		offset_table["iastore"] := 0
-		offset_table["lastore"] := 0
-		offset_table["fastore"] := 0
-		offset_table["dastore"] := 0
-		offset_table["aastore"] := 0
-		offset_table["bastore"] := 0
-		offset_table["castore"] := 0
-		offset_table["sastore"] := 0
-		offset_table["nop"] := 0
-		offset_table["Pop"] := 0
-		offset_table["pop2"] := 0
-		offset_table["dup"] := 0
-		offset_table["dup2"] := 0
-		offset_table["dup_x1"] := 0
-		offset_table["dup2_x1"] := 0
-		offset_table["dup_x2"] := 0
-		offset_table["dup2_x2"] := 0
-		offset_table["swap"] := 0
-		offset_table["iadd"] := 0
-		offset_table["ladd"] := 0
-		offset_table["fadd"] := 0
-		offset_table["dadd"] := 0
-		offset_table["isub"] := 0
-		offset_table["lsub"] := 0
-		offset_table["fsub"] := 0
-		offset_table["dsub"] := 0
-		offset_table["imul"] := 0
-		offset_table["lmul"] := 0
-		offset_table["fmul"] := 0
-		offset_table["dmul"] := 0
-		offset_table["idiv"] := 0
-		offset_table["ldiv"] := 0
-		offset_table["fdiv"] := 0
-		offset_table["ddiv"] := 0
-		offset_table["irem"] := 0
-		offset_table["lrem"] := 0
-		offset_table["frem"] := 0
-		offset_table["drem"] := 0
-		offset_table["ineg"] := 0
-		offset_table["lneg"] := 0
-		offset_table["fneg"] := 0
-		offset_table["dneg"] := 0
-		offset_table["ishl"] := 0
-		offset_table["ishr"] := 0
-		offset_table["iushr"] := 0
-		offset_table["lshl"] := 0
-		offset_table["lshr"] := 0
-		offset_table["lushr"] := 0
-		offset_table["Iand"] := 0
-		offset_table["land"] := 0
-		offset_table["ior"] := 0
-		offset_table["lor"] := 0
-		offset_table["ixor"] := 0
-		offset_table["lxor"] := 0
-		offset_table["i2l"] := 0
-		offset_table["i2f"] := 0
-		offset_table["i2d"] := 0
-		offset_table["l2i"] := 0
-		offset_table["l2f"] := 0
-		offset_table["l2d"] := 0
-		offset_table["f2i"] := 0
-		offset_table["f2l"] := 0
-		offset_table["f2d"] := 0
-		offset_table["d2i"] := 0
-		offset_table["d2l"] := 0
-		offset_table["d2f"] := 0
-		offset_table["int2byte"] := 0
-		offset_table["int2char"] := 0
-		offset_table["int2short"] := 0
-		offset_table["ifeq"] := 2
-		offset_table["ifne"] := 2
-		offset_table["ifle"] := 2
-		offset_table["iflt"] := 2
-		offset_table["ifge"] := 2
-		offset_table["ifgt"] := 2
-		offset_table["ifnull"] := 2
-		offset_table["ifnonnull"] := 2
-		offset_table["if_icmpeq"] := 2
-		offset_table["if_icmpne"] := 2
-		offset_table["if_icmplt"] := 2
-		offset_table["if_icmple"] := 2
-		offset_table["if_icmpge"] := 2
-		offset_table["if_icmpgt"] := 2
-		offset_table["lcmp"] := 0
-		offset_table["fcmpl"] := 0
-		offset_table["fcmpg"] := 0
-		offset_table["dcmpl"] := 0
-		offset_table["dcmpg"] := 0
-		offset_table["if_acmpeq"] := 2
-		offset_table["if_acmpne"] := 2
-		offset_table["goto"] := 2
-		offset_table["goto_w"] := 4
-		offset_table["jsr"] := 2
-		offset_table["jsr_w"] := 4
-		offset_table["ret"] := 1
-		offset_table["ret_w"] := 2
-		offset_table["ireturn"] := 0
-		offset_table["lreturn"] := 0
-		offset_table["freturn"] := 0
-		offset_table["dreturn"] := 0
-		offset_table["areturn"] := 0
-		offset_table["vreturn"] := 0
-		offset_table["breakpoint"] := 0
-		offset_table["athrow"] := 0
-		offset_table["new"] := 2
-		offset_table["checkcast"] := 2
-		offset_table["instanceof"] := 2
-		offset_table["monitorenter"] := 0
-		offset_table["monitorexit"] := 0
-	}
+    local i, high, low, npairs
+    static offset_table
+    initial {
+        offset_table := table()
+        offset_table["label"] := -1
+        offset_table["putfield"] := 2
+        offset_table["getfield"] := 2
+        offset_table["putstatic"] := 2
+        offset_table["getstatic"] := 2
+        offset_table["invokevirtual"] := 2
+        offset_table["invokenonvirtual"] := 2
+        offset_table["invokestatic"] := 2
+        offset_table["invokeinterface"] := 2
+        offset_table["sipush"] := 2
+        offset_table["bipush"] := 1
+        offset_table["ldc"] := 1
+        offset_table["ldc_w"] := 2
+        offset_table["ldc2_w"] := 2
+        offset_table["aconst_null"] := 0
+        offset_table["iconst_m1"] := 0
+        offset_table["iconst_0"] := 0
+        offset_table["iconst_1"] := 0
+        offset_table["iconst_2"] := 0
+        offset_table["iconst_3"] := 0
+        offset_table["iconst_4"] := 0
+        offset_table["iconst_5"] := 0
+        offset_table["lconst_0"] := 0
+        offset_table["lconst_1"] := 0
+        offset_table["fconst_0"] := 0
+        offset_table["fconst_1"] := 0
+        offset_table["fconst_2"] := 0
+        offset_table["dconst_0"] := 0
+        offset_table["dconst_1"] := 0
+        offset_table["iload"] := 1
+        offset_table["iload_w"] := 3
+        offset_table["iload_0"] := 0
+        offset_table["iload_1"] := 0
+        offset_table["iload_2"] := 0
+        offset_table["iload_3"] := 0
+        offset_table["lload"] := 1
+        offset_table["lload_0"] := 0
+        offset_table["lload_1"] := 0
+        offset_table["lload_2"] := 0
+        offset_table["lload_3"] := 0
+        offset_table["fload"] := 1
+        offset_table["fload_0"] := 0
+        offset_table["fload_1"] := 0
+        offset_table["fload_2"] := 0
+        offset_table["fload_3"] := 0
+        offset_table["dload"] := 1
+        offset_table["dload_0"] := 0
+        offset_table["dload_1"] := 0
+        offset_table["dload_2"] := 0
+        offset_table["dload_3"] := 0
+        offset_table["aload"] := 1
+        offset_table["aload_w"] := 3
+        offset_table["aload_0"] := 0
+        offset_table["aload_1"] := 0
+        offset_table["aload_2"] := 0
+        offset_table["aload_3"] := 0
+        offset_table["istore"] := 1
+        offset_table["istore_w"] := 3
+        offset_table["istore_0"] := 0
+        offset_table["istore_1"] := 0
+        offset_table["istore_2"] := 0
+        offset_table["istore_3"] := 0
+        offset_table["lstore"] := 1
+        offset_table["lstore_0"] := 0
+        offset_table["lstore_1"] := 0
+        offset_table["lstore_2"] := 0
+        offset_table["lstore_3"] := 0
+        offset_table["fstore"] := 1
+        offset_table["fstore_0"] := 0
+        offset_table["fstore_1"] := 0
+        offset_table["fstore_2"] := 0
+        offset_table["fstore_3"] := 0
+        offset_table["dstore"] := 1
+        offset_table["dstore_0"] := 0
+        offset_table["dstore_1"] := 0
+        offset_table["dstore_2"] := 0
+        offset_table["dstore_3"] := 0
+        offset_table["astore"] := 1
+        offset_table["astore_w"] := 3
+        offset_table["astore_0"] := 0
+        offset_table["astore_1"] := 0
+        offset_table["astore_2"] := 0
+        offset_table["astore_3"] := 0
+        offset_table["iinc"] := 2
+        offset_table["newarray"] := 1
+        offset_table["anewarray"] := 2
+        offset_table["multinewarray"] := 3
+        offset_table["arraylength"] := 0
+        offset_table["iaload"] := 0
+        offset_table["laload"] := 0
+        offset_table["faload"] := 0
+        offset_table["daload"] := 0
+        offset_table["aaload"] := 0
+        offset_table["baload"] := 0
+        offset_table["caload"] := 0
+        offset_table["saload"] := 0
+        offset_table["iastore"] := 0
+        offset_table["lastore"] := 0
+        offset_table["fastore"] := 0
+        offset_table["dastore"] := 0
+        offset_table["aastore"] := 0
+        offset_table["bastore"] := 0
+        offset_table["castore"] := 0
+        offset_table["sastore"] := 0
+        offset_table["nop"] := 0
+        offset_table["Pop"] := 0
+        offset_table["pop2"] := 0
+        offset_table["dup"] := 0
+        offset_table["dup2"] := 0
+        offset_table["dup_x1"] := 0
+        offset_table["dup2_x1"] := 0
+        offset_table["dup_x2"] := 0
+        offset_table["dup2_x2"] := 0
+        offset_table["swap"] := 0
+        offset_table["iadd"] := 0
+        offset_table["ladd"] := 0
+        offset_table["fadd"] := 0
+        offset_table["dadd"] := 0
+        offset_table["isub"] := 0
+        offset_table["lsub"] := 0
+        offset_table["fsub"] := 0
+        offset_table["dsub"] := 0
+        offset_table["imul"] := 0
+        offset_table["lmul"] := 0
+        offset_table["fmul"] := 0
+        offset_table["dmul"] := 0
+        offset_table["idiv"] := 0
+        offset_table["ldiv"] := 0
+        offset_table["fdiv"] := 0
+        offset_table["ddiv"] := 0
+        offset_table["irem"] := 0
+        offset_table["lrem"] := 0
+        offset_table["frem"] := 0
+        offset_table["drem"] := 0
+        offset_table["ineg"] := 0
+        offset_table["lneg"] := 0
+        offset_table["fneg"] := 0
+        offset_table["dneg"] := 0
+        offset_table["ishl"] := 0
+        offset_table["ishr"] := 0
+        offset_table["iushr"] := 0
+        offset_table["lshl"] := 0
+        offset_table["lshr"] := 0
+        offset_table["lushr"] := 0
+        offset_table["Iand"] := 0
+        offset_table["land"] := 0
+        offset_table["ior"] := 0
+        offset_table["lor"] := 0
+        offset_table["ixor"] := 0
+        offset_table["lxor"] := 0
+        offset_table["i2l"] := 0
+        offset_table["i2f"] := 0
+        offset_table["i2d"] := 0
+        offset_table["l2i"] := 0
+        offset_table["l2f"] := 0
+        offset_table["l2d"] := 0
+        offset_table["f2i"] := 0
+        offset_table["f2l"] := 0
+        offset_table["f2d"] := 0
+        offset_table["d2i"] := 0
+        offset_table["d2l"] := 0
+        offset_table["d2f"] := 0
+        offset_table["int2byte"] := 0
+        offset_table["int2char"] := 0
+        offset_table["int2short"] := 0
+        offset_table["ifeq"] := 2
+        offset_table["ifne"] := 2
+        offset_table["ifle"] := 2
+        offset_table["iflt"] := 2
+        offset_table["ifge"] := 2
+        offset_table["ifgt"] := 2
+        offset_table["ifnull"] := 2
+        offset_table["ifnonnull"] := 2
+        offset_table["if_icmpeq"] := 2
+        offset_table["if_icmpne"] := 2
+        offset_table["if_icmplt"] := 2
+        offset_table["if_icmple"] := 2
+        offset_table["if_icmpge"] := 2
+        offset_table["if_icmpgt"] := 2
+        offset_table["lcmp"] := 0
+        offset_table["fcmpl"] := 0
+        offset_table["fcmpg"] := 0
+        offset_table["dcmpl"] := 0
+        offset_table["dcmpg"] := 0
+        offset_table["if_acmpeq"] := 2
+        offset_table["if_acmpne"] := 2
+        offset_table["goto"] := 2
+        offset_table["goto_w"] := 4
+        offset_table["jsr"] := 2
+        offset_table["jsr_w"] := 4
+        offset_table["ret"] := 1
+        offset_table["ret_w"] := 2
+        offset_table["ireturn"] := 0
+        offset_table["lreturn"] := 0
+        offset_table["freturn"] := 0
+        offset_table["dreturn"] := 0
+        offset_table["areturn"] := 0
+        offset_table["vreturn"] := 0
+        offset_table["breakpoint"] := 0
+        offset_table["athrow"] := 0
+        offset_table["new"] := 2
+        offset_table["checkcast"] := 2
+        offset_table["instanceof"] := 2
+        offset_table["monitorenter"] := 0
+        offset_table["monitorexit"] := 0
+    }
 
 
-	locations[p] := offset
+    locations[p] := offset
 
-	offset +:= 1	# p.opcode
+    offset +:= 1    # p.opcode
 
-	if offset +:= \offset_table[type(p)] then return offset
+    if offset +:= \offset_table[type(p)] then return offset
 
-	case (type(p)) of {
-	default: {
-		runerr(1000, p)
-	}
-	"tableswitch": {
-		p.pad := offset
-		offset := offset_align4(offset, p.pad)
-		p.pad := offset - p.pad
-		offset +:= 4
-		offset +:= 4
-		offset +:= 4
-		offset +:= 4* *p.offsets
-	}
-	"lookupswitch": {
-		p.pad := offset
-		offset := offset_align4(offset, p.pad)
-		p.pad := offset - p.pad
-		offset +:= 4
-		offset +:= 4
-		every i := !p.offsets do {
-			offset := offset_match_offset_pairs(offset, i)
-		}
-	}
-	}
-	return offset
+    case (type(p)) of {
+    default: {
+        runerr(1000, p)
+    }
+    "tableswitch": {
+        p.pad := offset
+        offset := offset_align4(offset, p.pad)
+        p.pad := offset - p.pad
+        offset +:= 4
+        offset +:= 4
+        offset +:= 4
+        offset +:= 4* *p.offsets
+    }
+    "lookupswitch": {
+        p.pad := offset
+        offset := offset_align4(offset, p.pad)
+        p.pad := offset - p.pad
+        offset +:= 4
+        offset +:= 4
+        every i := !p.offsets do {
+            offset := offset_match_offset_pairs(offset, i)
+        }
+    }
+    }
+    return offset
 end
 
 procedure offset_match_offset_pairs(offset, p)
-	offset +:= 8
-	return offset
+    offset +:= 8
+    return offset
 end
 
 procedure cp_Class(c, name_index)
-	local s
+    local s
 
-	s := "CONSTANT_Class" || "," || name_index
-	if /c.constant_table[s] then {
-		put(c.constant_pool, c.constant_table[s] := CONSTANT_Class(name_index, *c.constant_pool))
-	}
-	return c.constant_table[s].pool_index
+    s := "CONSTANT_Class" || "," || name_index
+    if /c.constant_table[s] then {
+        put(c.constant_pool,
+	    c.constant_table[s]:= CONSTANT_Class(name_index, *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
 end
 
 procedure cp_Fieldref(c, class_index, name_and_type_index)
-	local s
+    local s
 
-	s := "CONSTANT_Fieldref" || "," || class_index || "," || name_and_type_index
-	if /c.constant_table[s] then {
-		put(c.constant_pool, c.constant_table[s] := CONSTANT_Fieldref(class_index, name_and_type_index, *c.constant_pool))
-	}
-	return c.constant_table[s].pool_index
+    s:= "CONSTANT_Fieldref" || "," || class_index || "," || name_and_type_index
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+	  CONSTANT_Fieldref(class_index, name_and_type_index, *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
 end
 
 procedure cp_Methodref(c, class_index, name_and_type_index)
-	local s
+    local s
 
-	s := "CONSTANT_Methodref" || "," || class_index || "," || name_and_type_index
-	if /c.constant_table[s] then {
-		put(c.constant_pool, c.constant_table[s] := CONSTANT_Methodref(class_index, name_and_type_index, *c.constant_pool))
-	}
-	return c.constant_table[s].pool_index
+    s:= "CONSTANT_Methodref" || "," || class_index || "," || name_and_type_index
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+	 CONSTANT_Methodref(class_index, name_and_type_index, *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
 end
 
 procedure cp_InterfaceMethodref(c, class_index, name_and_type_index)
-	local s
+    local s
 
-	s := "CONSTANT_InterfaceMethodref" || "," || class_index || "," || name_and_type_index
-	if /c.constant_table[s] then {
-		put(c.constant_pool, c.constant_table[s] := CONSTANT_InterfaceMethodref(class_index, name_and_type_index, *c.constant_pool))
-	}
-	return c.constant_table[s].pool_index
+    s := "CONSTANT_InterfaceMethodref" ||
+	 "," || class_index || "," || name_and_type_index
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+	  CONSTANT_InterfaceMethodref(class_index, name_and_type_index,
+				      *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
 end
 
 procedure cp_String(c, string_index)
-	local s
+    local s
 
-	s := "CONSTANT_String" || "," || string_index
-	if /c.constant_table[s] then {
-		put(c.constant_pool, c.constant_table[s] := CONSTANT_String(string_index, *c.constant_pool))
-	}
-	return c.constant_table[s].pool_index
+    s := "CONSTANT_String" || "," || string_index
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+	  CONSTANT_String(string_index, *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
 end
 
 procedure cp_Integer(c, value)
-	local s
+    local s
 
-	s := "CONSTANT_Integer" || "," || value
-	if /c.constant_table[s] then {
-		put(c.constant_pool, c.constant_table[s] := CONSTANT_Integer(value, *c.constant_pool))
-	}
-	return c.constant_table[s].pool_index
+    s := "CONSTANT_Integer" || "," || value
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+	  CONSTANT_Integer(value, *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
 end
 
 procedure cp_Float(c, value)
-	local s
+    local s
 
-	s := "CONSTANT_Float" || "," || value
-	if /c.constant_table[s] then {
-		put(c.constant_pool, c.constant_table[s] := CONSTANT_Float(value, *c.constant_pool))
-	}
-	return c.constant_table[s].pool_index
+    s := "CONSTANT_Float" || "," || value
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+	  CONSTANT_Float(value, *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
 end
 
 procedure cp_Long(c, value)
-	local s
+    local s
 
-	s := "CONSTANT_Long" || "," || value
-	if /c.constant_table[s] then {
-		put(c.constant_pool, c.constant_table[s] := CONSTANT_Long(value, *c.constant_pool))
-	}
-	put(c.constant_pool, &null)	# Sun JVM stupidity
-	return c.constant_table[s].pool_index
+    s := "CONSTANT_Long" || "," || value
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+	  CONSTANT_Long(value, *c.constant_pool))
+    }
+    put(c.constant_pool, &null) # Sun JVM stupidity
+    return c.constant_table[s].pool_index
 end
 
 procedure cp_Double(c, value)
-	local s
+    local s
 
-	s := "CONSTANT_Double" || "," || value
-	if /c.constant_table[s] then {
-		put(c.constant_pool, c.constant_table[s] := CONSTANT_Double(value, *c.constant_pool))
-	}
-	put(c.constant_pool, &null)	# Sun JVM stupidity
-	return c.constant_table[s].pool_index
+    s := "CONSTANT_Double" || "," || value
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+	  CONSTANT_Double(value, *c.constant_pool))
+    }
+    put(c.constant_pool, &null) # Sun JVM stupidity
+    return c.constant_table[s].pool_index
 end
 
 procedure cp_NameAndType(c, name_index, signature_index)
-	local s
+    local s
 
-	s := "CONSTANT_NameAndType" || "," || name_index || "," || signature_index
-	if /c.constant_table[s] then {
-		put(c.constant_pool, c.constant_table[s] := CONSTANT_NameAndType(name_index, signature_index, *c.constant_pool))
-	}
-	return c.constant_table[s].pool_index
+    s := "CONSTANT_NameAndType" || "," || name_index || "," || signature_index
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+	  CONSTANT_NameAndType(name_index, signature_index, *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
 end
 
 procedure cp_Utf8(c, value)
-	local s, t
+    local s, t
 
-	s := "CONSTANT_Utf8" || "," || value
-	if /(t := c.constant_table[s]) then {
-		put(c.constant_pool, t := c.constant_table[s] := CONSTANT_Utf8(value, *c.constant_pool))
-	}
-	return t.pool_index
+    s := "CONSTANT_Utf8" || "," || value
+    if /(t := c.constant_table[s]) then {
+        put(c.constant_pool, t := c.constant_table[s] :=
+	  CONSTANT_Utf8(value, *c.constant_pool))
+    }
+    return t.pool_index
 end
 
 procedure cp_Unicode(c, value)
-	local s
+    local s
 
-	s := "CONSTANT_Unicode" || "," || value
-	if /c.constant_table[s] then {
-		put(c.constant_pool, c.constant_table[s] := CONSTANT_Unicode(value, *c.constant_pool))
-	}
-	return c.constant_table[s].pool_index
+    s := "CONSTANT_Unicode" || "," || value
+    if /c.constant_table[s] then {
+        put(c.constant_pool, c.constant_table[s] :=
+	  CONSTANT_Unicode(value, *c.constant_pool))
+    }
+    return c.constant_table[s].pool_index
 end
 
 
 procedure offset_attribute_info(offset)
-	local code_length, i, p
+    local code_length, i, p
 
-	offset +:= 6
-	case (type(p)) of {
-	default: {
-		runerr(1000, p)
-	}
-	"SourceFile_attribute": {
-		offset +:= 2
-	}
-	"ConstantValue_attribute": {
-		offset +:= 2
-	}
-	"Code_attribute": {
-		offset +:= 4
+    offset +:= 6
+    case (type(p)) of {
+    default: {
+        runerr(1000, p)
+    }
+    "SourceFile_attribute": {
+        offset +:= 2
+    }
+    "ConstantValue_attribute": {
+        offset +:= 2
+    }
+    "Code_attribute": {
+        offset +:= 4
 
-		code_length := 0
-		every code_length := offset_opcodes(!p.code, code_length)
+        code_length := 0
+        every code_length := offset_opcodes(!p.code, code_length)
 
-		offset +:= 4
+        offset +:= 4
 
-		offset +:= code_length
+        offset +:= code_length
 
-		offset +:= 2
-		every i := !p.exception_table do {
-			offset := offset_exception_table_info(offset, i)
-		}
-		offset +:= 2
-		every i := !p.attributes do {
-			offset := offset_attribute_info(offset, i)
-		}
-	}
-	"Exceptions_attribute": {
-		offset +:= 2
-		every i := !p.exception_index_table do {
-			offset +:= 2
-		}
-	}
-	"LineNumberTable_attribute": {
-		offset +:= 2
-		every i := !p.line_number_table do {
-			offset := offset_line_number_table_info(offset, i)
-		}
-	}
-	"LocalVariableTable_attribute": {
-		offset +:= 2
-		every i := !p.local_variable_table do {
-			offset := offset_local_variable_table_info(offset, i)
-		}
-	}
-	"GenericAttribute_info": {
-		every i := !p.info do {
-			offset +:= 1
-		}
-	}
-	}
-	return offset
+        offset +:= 2
+        every i := !p.exception_table do {
+            offset := offset_exception_table_info(offset, i)
+        }
+        offset +:= 2
+        every i := !p.attributes do {
+            offset := offset_attribute_info(offset, i)
+        }
+    }
+    "Exceptions_attribute": {
+        offset +:= 2
+        every i := !p.exception_index_table do {
+            offset +:= 2
+        }
+    }
+    "LineNumberTable_attribute": {
+        offset +:= 2
+        every i := !p.line_number_table do {
+            offset := offset_line_number_table_info(offset, i)
+        }
+    }
+    "LocalVariableTable_attribute": {
+        offset +:= 2
+        every i := !p.local_variable_table do {
+            offset := offset_local_variable_table_info(offset, i)
+        }
+    }
+    "GenericAttribute_info": {
+        every i := !p.info do {
+            offset +:= 1
+        }
+    }
+    }
+    return offset
 end
 
 procedure offset_exception_table_info(offset, p)
-	offset +:= 8
-	return offset
+    offset +:= 8
+    return offset
 end
 procedure offset_line_number_table_info(offset, p)
-	offset +:= 4
-	return offset
+    offset +:= 4
+    return offset
 end
 procedure offset_local_variable_table_info(offset, p)
-	offset +:= 10
-	return offset
+    offset +:= 10
+    return offset
 end
 
 procedure relocate(insn, locations)
-	local i
-	static branching
-	initial {
-		branching := set([
-			"ifeq", "ifnull", "iflt", "ifle", "ifne", "ifnonnull", "ifgt", "ifge",
-			"if_icmpeq", "if_icmpne",
-			"if_icmplt", "if_icmpgt",
-			"if_icmple", "if_icmpge",
-			"if_acmpeq", "if_acmpne",
-			"goto", "goto_w", "jsr", "jsr_w"
-		])
-	}
+    local i
+    static branching
+    initial {
+        branching := set([
+	    "ifnull", "ifnonnull",
+            "ifeq", "iflt", "ifle", "ifne", "ifgt", "ifge",
+            "if_icmpeq", "if_icmpne",
+            "if_icmplt", "if_icmpgt",
+            "if_icmple", "if_icmpge",
+            "if_acmpeq", "if_acmpne",
+            "goto", "goto_w", "jsr", "jsr_w"
+        ])
+    }
 
-	if member(branching, type(insn)) & type(insn.branch) == "label" then {
-		insn.branch := locations[insn.branch] - locations[insn]
-	}
-	if type(insn) == "tableswitch" then {
-		if type(insn.default_offset) == "label" then {
-			insn.default_offset := locations[insn.default_offset] - locations[insn]
-		}
-		every i := 1 to *insn.offsets do {
-			if type(insn.offsets[i]) == "label" then {
-				insn.offsets[i] := locations[insn.offsets[i]] - locations[insn]
-			}
-		}
-	}
-	if type(insn) == "lookupswitch" then {
-		if type(insn.default_offset) == "label" then {
-			insn.default_offset := locations[insn.default_offset] - locations[insn]
-		}
-		every i := 1 to *insn.offsets do {
-			if type(insn.offsets[i].offset) == "label" then {
-				insn.offsets[i].offset := locations[insn.offsets[i].offset] - locations[insn]
-			}
-		}
-	}
+    if member(branching, type(insn)) & type(insn.branch) == "label" then {
+        insn.branch := locations[insn.branch] - locations[insn]
+    }
+    if type(insn) == "tableswitch" then {
+        if type(insn.default_offset) == "label" then {
+            insn.default_offset :=
+	      locations[insn.default_offset] - locations[insn]
+        }
+        every i := 1 to *insn.offsets do {
+            if type(insn.offsets[i]) == "label" then {
+                insn.offsets[i] := locations[insn.offsets[i]] - locations[insn]
+            }
+        }
+    }
+    if type(insn) == "lookupswitch" then {
+        if type(insn.default_offset) == "label" then {
+            insn.default_offset :=
+	      locations[insn.default_offset] - locations[insn]
+        }
+        every i := 1 to *insn.offsets do {
+            if type(insn.offsets[i].offset) == "label" then {
+                insn.offsets[i].offset :=
+		  locations[insn.offsets[i].offset] - locations[insn]
+            }
+        }
+    }
 end
 
 procedure create_fieldref(classfile, name, Type, class)
-	local name_index, type_index, class_index, nat_index, field_index
+    local name_index, type_index, class_index, nat_index, field_index
 
-	type(classfile) == "ClassFile" | runerr(1000, classfile)
-	type(name) == "string" | runerr(1000, name)
-	type(Type) == "string" | runerr(1000, Type)
-	type(class) == "string" | runerr(1000, class)
+    type(classfile) == "ClassFile" | runerr(1000, classfile)
+    type(name) == "string" | runerr(1000, name)
+    type(Type) == "string" | runerr(1000, Type)
+    type(class) == "string" | runerr(1000, class)
 
-	name_index := cp_Utf8(classfile, name)
-	type_index := cp_Utf8(classfile, Type)
-	class_index := cp_Class(classfile, cp_Utf8(classfile, class))
-	nat_index := cp_NameAndType(classfile, name_index, type_index)
-	field_index := cp_Fieldref(classfile, class_index, nat_index)
-	return field_index
+    name_index := cp_Utf8(classfile, name)
+    type_index := cp_Utf8(classfile, Type)
+    class_index := cp_Class(classfile, cp_Utf8(classfile, class))
+    nat_index := cp_NameAndType(classfile, name_index, type_index)
+    field_index := cp_Fieldref(classfile, class_index, nat_index)
+    return field_index
 end
 
 procedure create_field(classfile, access, name, Type)
-	local name_index, type_index, field
+    local name_index, type_index, field
 
-	type(classfile) == "ClassFile" | runerr(1000, classfile)
-	type(name) == "string" | runerr(1000, name)
-	type(Type) == "string" | runerr(1000, Type)
-	type(access) == "integer" | runerr(1000, access)
+    type(classfile) == "ClassFile" | runerr(1000, classfile)
+    type(name) == "string" | runerr(1000, name)
+    type(Type) == "string" | runerr(1000, Type)
+    type(access) == "integer" | runerr(1000, access)
 
-	name_index := cp_Utf8(classfile, name)
-	type_index := cp_Utf8(classfile, Type)
-	field := field_info(access, name_index, type_index, [])
-	put(classfile.fields, field)
-	return field
+    name_index := cp_Utf8(classfile, name)
+    type_index := cp_Utf8(classfile, Type)
+    field := field_info(access, name_index, type_index, [])
+    put(classfile.fields, field)
+    return field
 end
 
 procedure create_methodref(classfile, name, Type, class)
-	local name_index, type_index, class_index, nat_index, method_index
+    local name_index, type_index, class_index, nat_index, method_index
 
-	type(classfile) == "ClassFile" | stop("assertion failed: ", image(&file), " ", &line)
-	type(name) == "string" | stop("assertion failed: ", image(&file), " ", &line)
-	type(Type) == "string" | stop("assertion failed: ", image(&file), " ", &line)
-	type(class) == "string" | stop("assertion failed: ", image(&file), " ", &line)
+    type(classfile) == "ClassFile" | runerr(1000, classfile)
+    type(name) == "string" | runerr(1000, name)
+    type(Type) == "string" | runerr(1000, Type)
+    type(class) == "string" | runerr(1000, class)
 
-	name_index := cp_Utf8(classfile, name)
-	type_index := cp_Utf8(classfile, Type)
-	class_index := cp_Class(classfile, cp_Utf8(classfile, class))
-	nat_index := cp_NameAndType(classfile, name_index, type_index)
-	method_index := cp_Methodref(classfile, class_index, nat_index)
-	return method_index
+    name_index := cp_Utf8(classfile, name)
+    type_index := cp_Utf8(classfile, Type)
+    class_index := cp_Class(classfile, cp_Utf8(classfile, class))
+    nat_index := cp_NameAndType(classfile, name_index, type_index)
+    method_index := cp_Methodref(classfile, class_index, nat_index)
+    return method_index
 end
 
 procedure create_method(classfile, access, name, Type)
-	local name_index, type_index, method
+    local name_index, type_index, method
 
-	type(classfile) == "ClassFile" | stop("assertion failed: ", image(&file), " ", &line)
-	type(name) == "string" | stop("assertion failed: ", image(&file), " ", &line)
-	type(Type) == "string" | stop("assertion failed: ", image(&file), " ", &line)
-	type(access) == "integer" | stop("assertion failed: ", image(&file), " ", &line)
+    type(classfile) == "ClassFile" | runerr(1000, classfile)
+    type(name) == "string" | runerr(1000, name)
+    type(Type) == "string" | runerr(1000, Type)
+    type(access) == "integer" | runerr(1000, access)
 
-	name_index := cp_Utf8(classfile, name)
-	type_index := cp_Utf8(classfile, Type)
-	method := method_info(access, name_index, type_index, [])
-	put(classfile.methods, method)
-	return method
+    name_index := cp_Utf8(classfile, name)
+    type_index := cp_Utf8(classfile, Type)
+    method := method_info(access, name_index, type_index, [])
+    put(classfile.methods, method)
+    return method
 end
 
 procedure create_code(classfile, stacksize, localsize)
-	local code, cp_index
+    local code, cp_index
 
-	type(classfile) == "ClassFile" | stop("assertion failed: ", image(&file), " ", &line)
-	type(stacksize) == "integer" | stop("assertion failed: ", image(&file), " ", &line)
-	type(localsize) == "integer" | stop("assertion failed: ", image(&file), " ", &line)
+    type(classfile) == "ClassFile" | runerr(1000, classfile)
+    type(stacksize) == "integer" | runerr(1000, stacksize)
+    type(localsize) == "integer" | runerr(1000, localsize)
 
-	cp_index := cp_Utf8(classfile, "Code")
-	code := Code_attribute(cp_index, stacksize, localsize, [], [], [])
-	return code
+    cp_index := cp_Utf8(classfile, "Code")
+    code := Code_attribute(cp_index, stacksize, localsize, [], [], [])
+    return code
 end
 
 procedure writer_align4(writer, pad)
-	every 1 to pad do {
-		writes(writer, char(0))
-	}
+    every 1 to pad do {
+        writes(writer, char(0))
+    }
 end
 
 procedure writer_u1(writer, u1)
-	(0 <= u1 < 256) | runerr(1000, u1)
-	writes(writer, char(iand(u1, 255)))
+    (0 <= u1 < 256) | runerr(1000, u1)
+    writes(writer, char(iand(u1, 255)))
 end
 
 procedure writer_u2(writer, u2)
-	(0 <= u2 < 65536) | runerr(1000, u2)
-	writes(writer, char(iand(ishift(u2, - 8), 255)),
-	               char(iand(u2, 255)))
+    (0 <= u2 < 65536) | runerr(1000, u2)
+    writes(writer, char(iand(ishift(u2, - 8), 255)),
+                   char(iand(u2, 255)))
 end
 
 procedure writer_u4(writer, u4)
-	writes(writer, char(iand(ishift(u4, -24), 255)),
-	               char(iand(ishift(u4, -16), 255)),
-	               char(iand(ishift(u4, - 8), 255)),
-	               char(iand(u4, 255)))
+    writes(writer, char(iand(ishift(u4, -24), 255)),
+                   char(iand(ishift(u4, -16), 255)),
+                   char(iand(ishift(u4, - 8), 255)),
+                   char(iand(u4, 255)))
 end
 
 procedure writer_s1(writer, s1)
-	(-128 <= s1 <= 127) | runerr(1000, s1)
-	writes(writer, char(iand(s1, 255)))
+    (-128 <= s1 <= 127) | runerr(1000, s1)
+    writes(writer, char(iand(s1, 255)))
 end
 
 procedure writer_s2(writer, s2)
-	(-32768 <= s2 <= 32767) | runerr(1000, s2)
-	writes(writer, char(iand(ishift(s2, - 8), 255)),
-	               char(iand(s2, 255)))
+    (-32768 <= s2 <= 32767) | runerr(1000, s2)
+    writes(writer, char(iand(ishift(s2, - 8), 255)),
+                   char(iand(s2, 255)))
 end
 
 procedure writer_s4(writer, s4)
-	writer_u4(writer, s4)
+    writer_u4(writer, s4)
 end
 
 procedure offset_align4(offset, x)
-	local k
+    local k
 
-	k := (4 - offset % 4) % 4
-	return offset + k
+    k := (4 - offset % 4) % 4
+    return offset + k
 end
 
 procedure ipush(x, classptr)
-	case x of {
-	-1 :	return iconst_m1()
-	0 :	return iconst_0()
-	1 :	return iconst_1()
-	2 :	return iconst_2()
-	3 :	return iconst_3()
-	4 :	return iconst_4()
-	5 :	return iconst_5()
-	}
-	if -128 <= x <= 127 then return bipush(x)
-	if -32768 <= x <= 32767 then return sipush(x)
-	return ldc_w(cp_Integer(classptr, x))
+    case x of {
+    -1 :    return iconst_m1()
+    0 : return iconst_0()
+    1 : return iconst_1()
+    2 : return iconst_2()
+    3 : return iconst_3()
+    4 : return iconst_4()
+    5 : return iconst_5()
+    }
+    if -128 <= x <= 127 then return bipush(x)
+    if -32768 <= x <= 32767 then return sipush(x)
+    return ldc_w(cp_Integer(classptr, x))
 end
 
 procedure Iload(x)
-	case x of {
-	0 : return iload_0()
-	1 : return iload_1()
-	2 : return iload_2()
-	3 : return iload_3()
-	}
-	if x < 256 then {
-		return iload(x)
-	} 
-	return iload_w(x)
+    case x of {
+    0 : return iload_0()
+    1 : return iload_1()
+    2 : return iload_2()
+    3 : return iload_3()
+    }
+    if x < 256 then {
+        return iload(x)
+    } 
+    return iload_w(x)
 end
 procedure Istore(x)
-	case x of {
-	0 : return istore_0()
-	1 : return istore_1()
-	2 : return istore_2()
-	3 : return istore_3()
-	}
-	if x < 256 then {
-		return istore(x)
-	} 
-	return istore_w(x)
+    case x of {
+    0 : return istore_0()
+    1 : return istore_1()
+    2 : return istore_2()
+    3 : return istore_3()
+    }
+    if x < 256 then {
+        return istore(x)
+    } 
+    return istore_w(x)
 end
 procedure Aload(x)
-	case x of {
-	0 : return aload_0()
-	1 : return aload_1()
-	2 : return aload_2()
-	3 : return aload_3()
-	}
-	if x < 256 then {
-		return aload(x)
-	} 
-	return aload_w(x)
+    case x of {
+    0 : return aload_0()
+    1 : return aload_1()
+    2 : return aload_2()
+    3 : return aload_3()
+    }
+    if x < 256 then {
+        return aload(x)
+    } 
+    return aload_w(x)
 end
 procedure Astore(x)
-	case x of {
-	0 : return astore_0()
-	1 : return astore_1()
-	2 : return astore_2()
-	3 : return astore_3()
-	}
-	if x < 256 then {
-		return astore(x)
-	} 
-	return astore_w(x)
+    case x of {
+    0 : return astore_0()
+    1 : return astore_1()
+    2 : return astore_2()
+    3 : return astore_3()
+    }
+    if x < 256 then {
+        return astore(x)
+    } 
+    return astore_w(x)
 end
