@@ -841,7 +841,15 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	bc_params_set := set(params)
 	bc_statics_set := set(statics)
 
-	bc_create_nextval(c, code.ir.start, params, accumulate)
+	bc_register(bc_emit_table)
+
+	undeclared := bc_var_set -- bc_params_set -- bc_locals_set -- bc_statics_set
+	every k := !params | !locals | !undeclared do {
+		create_field(c, 0, "v$" || k, "Lrts/vVariable;")
+	}
+
+
+	bc_create_nextval(c, code.ir.start, params, locals, undeclared, accumulate)
 
 	init := create_method(c, 1, "<init>", "()V")
 	initcode := create_code(c, 10, 10)
@@ -898,12 +906,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	}
 	put(initcode.code, vreturn() )
 
-	undeclared := bc_var_set -- bc_params_set -- bc_locals_set -- bc_statics_set
 	every insert(bc_undeclared_set, !undeclared)
-
-	every k := !params | !locals | !undeclared do {
-		create_field(c, 0, "v$" || k, "Lrts/vVariable;")
-	}
 
 	sortedvars := 
 		sort(bc_var_set ++ set(params) ++ set(locals) ++ set(statics))
@@ -946,7 +949,7 @@ procedure bc_register0(op)
 	}
 end
 
-procedure bc_create_nextval(c, start, params, accumulate)
+procedure bc_create_nextval(c, start, params, locals, undeclared, accumulate)
 	local PC, nextval, nextvalcode, k, lab, switch, insns, deflab
 	local runtimeerror, r
 	local a, s, tmplab, prologue, var_load_label, t
@@ -955,7 +958,6 @@ procedure bc_create_nextval(c, start, params, accumulate)
 	nextvalcode := create_code(c, 10, 10)
 	put(nextval.attributes, nextvalcode)
 
-	bc_register(bc_emit_table)
 	bc_tmp_offset := 10
 	bc_tmplabel_offset := bc_tmp_offset + *bc_tmp_table
 	bc_tmpclosure_offset := bc_tmplabel_offset + *bc_tmplabel_table
@@ -986,7 +988,7 @@ procedure bc_create_nextval(c, start, params, accumulate)
 		put(nextvalcode.code, if_icmpne(tmplab))
 	}
 
-	bc_emit_prologue(s, c, params, accumulate)
+	bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
 
 	every k := key(bc_tmp_table) do {
 		put(s, aconst_null())
@@ -1193,14 +1195,19 @@ procedure bc_create_locals(c, undeclared, statics, sortedvars)
 	put(localscode.code, vreturn() )
 end
 
-procedure bc_emit_prologue(s, c, params, accumulate)
+procedure bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
 	local createvars, arguments, marshal
 	local deref, assign, i, k, field
 	local elselab, endlab
 
 	createvars := create_methodref(c, "createVars", "()V", bc_proc_classname)
-	put(s, aload_0() )
-	put(s, invokevirtual(createvars) )
+
+	if \bc_create_exists then {
+		put(s, aload_0() )
+		put(s, invokevirtual(createvars) )
+	} else {
+		bc_createvars(s, c, params, locals, undeclared)
+	}
 
 	arguments := create_fieldref(c, "arguments", "[Lrts/vDescriptor;", "rts/iClosure")
 	deref := deref_methodref(c)
@@ -1241,22 +1248,18 @@ procedure bc_emit_prologue(s, c, params, accumulate)
 	}
 end
 
-procedure bc_create_createvars(c, params, locals, undeclared)
-	local createvars, createvarscode, newsimplevar, k, field, v
+procedure bc_createvars(s, c, params, locals, undeclared)
+	local newsimplevar, k, field, v
 	local linkvalue, lab1
-
-	createvars := create_method(c, 0, "createVars", "()V")
-	createvarscode := create_code(c, 10, 10)
-	put(createvars.attributes, createvarscode)
 
 	newsimplevar := create_methodref(c, "SimpleVar", "(Ljava/lang/String;)Lrts/vSimpleVar;", "rts/iNew")
 	every k := !params | !locals do {
 		field := create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
 		v := cp_String(c, cp_Utf8(c, k)) | stop("ERROR ", &file, " ", &line)
-		put(createvarscode.code, aload_0() )
-		put(createvarscode.code, ldc_w(v) )
-		put(createvarscode.code, invokestatic(newsimplevar) )
-		put(createvarscode.code, putfield(field) )
+		put(s, aload_0() )
+		put(s, ldc_w(v) )
+		put(s, invokestatic(newsimplevar) )
+		put(s, putfield(field) )
 	}
 
 	every k := !undeclared do {
@@ -1265,16 +1268,29 @@ procedure bc_create_createvars(c, params, locals, undeclared)
 		linkvalue := create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;", bc_link_classname)
 		v := cp_String(c, cp_Utf8(c, k)) | stop("ERROR ", &file, " ", &line)
 		lab1 := label()
-		put(createvarscode.code, aload_0() )
-		put(createvarscode.code, getstatic(linkvalue) )
-		put(createvarscode.code, dup() )
-		put(createvarscode.code, ifnonnull(lab1) )
-		put(createvarscode.code, Pop() )
-		put(createvarscode.code, ldc_w(v) )
-		put(createvarscode.code, invokestatic(newsimplevar) )
-		put(createvarscode.code, lab1 )
-		put(createvarscode.code, putfield(field) )
+		put(s, aload_0() )
+		put(s, getstatic(linkvalue) )
+		put(s, dup() )
+		put(s, ifnonnull(lab1) )
+		put(s, Pop() )
+		put(s, ldc_w(v) )
+		put(s, invokestatic(newsimplevar) )
+		put(s, lab1 )
+		put(s, putfield(field) )
 	}
+end
+
+procedure bc_create_createvars(c, params, locals, undeclared)
+	local createvars, createvarscode
+
+	\bc_create_exists | return
+
+	createvars := create_method(c, 0, "createVars", "()V")
+	createvarscode := create_code(c, 10, 10)
+	put(createvars.attributes, createvarscode)
+
+	bc_createvars(createvarscode.code, c, params, locals, undeclared)
+
 	put(createvarscode.code, vreturn() )
 end
 
