@@ -6,6 +6,7 @@
 #
 #     -c	compile only: don't produce an executable
 #     -s	silent: suppress commentary
+#     -j	produce .jar file instead of executable script
 #     -o exe	specify output file for executable
 #
 #     -x	execute after compilation
@@ -28,12 +29,12 @@
 #  "java" and "jar" must be in the search path.
 #
 #  Normally, jcont produces a directly executable Korn Shell script
-#  containing an embedded ZIP file.  However, if an output file ending
-#  in .jcz is specified (as in "jcont -o myprog.jcz myprog.icn"), the
-#  header is omitted to facilitate manipulation as a ZIP archive.
-#  Execution of a .jcz file is accomplished by placing it in the
-#  CLASSPATH with the runtime files and then running javac:
-#	setenv CLASSPATH /myhome/jcon/bin/rts.zip:myprog.zip
+#  containing an embedded ZIP file.  However, if -j is specified, the
+#  file is written with a .jar extension and the header is omitted to
+#  facilitate manipulation as a ZIP archive.  Execution is accomplished
+#  by naming the file in the CLASSPATH (with the runtime files) and
+#  then running java:
+#	setenv CLASSPATH myprog.jar:/myhome/jcon/bin/rts.zip
 #	java myprog
 
 JAVAC="javac -nowarn"
@@ -83,6 +84,7 @@ TDIR=./jcon$$
 NODELETE=
 
 #  assume an executable script is created
+XTYPE=.ksh
 XFILE=
 NOLINK=
 
@@ -93,10 +95,11 @@ NOEXECUTE=exit
 
 USAGE="usage: $0 [-cdsvP] [-o exe] file[.icn]... [file.zip...] [-x [arguments]]"
 
-while getopts "cdsvJPo:" c 2>$NULLFILE; do
+while getopts "cdjsvJPo:" c 2>$NULLFILE; do
     case $c in
 	c)	NOLINK="exit";;
 	d)	TDIR=./jtmp; NODELETE=":";;
+	j)	XTYPE=.jar;;
 	s)	ANNOUNCE=":";;
 	v)	CMDTRACE="set -x"; LINKTRACE="-t";;
 	J)	TARGET="java";;
@@ -119,7 +122,7 @@ MAIN="${MAIN%.zip}"
 
 #  set output file name, if not specified
 if [ "$XFILE" = "" ]; then
-    XFILE="$MAIN"
+    XFILE="$MAIN${XTYPE%.ksh}"
 fi
 
 #  accumulate .icn and .zip file names
@@ -232,15 +235,15 @@ done
 (cd $TDIR; $JAR cfM combined.zip $MAIN.class [lp]*.class)
 
 # write the output file
-case $XFILE in
+case $XTYPE in
 
-    *.jcz)
-	# For a .jcz file, the output file is just a copy of the
+    *.jar)
+	# For a .jar file, the output file is just a copy of the
 	# zip file and is not directly executable
 	cp $TDIR/combined.zip $XFILE
 	;;
 
-    *)
+    *.ksh)
 	# combine a header (padded via dd) with that zip file to make a script
 	# (if making significant changes here, also adjust HBASE above)
 	(dd bs=$HDRSIZE conv=sync 2>$NULLFILE; cat $TDIR/combined.zip) \
@@ -278,7 +281,7 @@ exit
 	chmod +x $XFILE
 	;;
 
-esac	# case $XFILE
+esac	# case $XTYPE
 
 # delete built .zip files
 $NODELETE rm -f $ZBUILT
@@ -288,7 +291,7 @@ $NOEXECUTE
 $NODELETE rm -rf $TDIR
 $ANNOUNCE 1>&2 "Executing:"
 
-case $XFILE in
-    *.jcz)	CLASSPATH=$XFILE$PATHSEP$JRTS exec java $MAIN "$@";;
-    *)		exec ./$XFILE "$@";;
+case $XTYPE in
+    *.jar)	CLASSPATH=$XFILE$PATHSEP$JRTS exec java $MAIN "$@";;
+    *.ksh)	exec ./$XFILE "$@";;
 esac
