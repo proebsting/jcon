@@ -1,66 +1,63 @@
-//  vProc2 -- parent class for procedures declared with 2 arguments
+//  vProcV -- parent class for procedures declared with variable arglists
+//	      or with more than nine fixed arguments
 
 package rts;
 
-public abstract class vProc2 extends vProc {
-
-static vNull vnull = vNull.New();
+public abstract class vProcV extends vProc {
 
 
 
-public abstract vDescriptor Call(vDescriptor a, vDescriptor b);
+public abstract vDescriptor Call(vDescriptor v[]);   // implemented by subclass
 
 
-
-public vDescriptor Call(vDescriptor v[]) {
-	vDescriptor a = (v.length > 0) ? v[0] : vnull;
-	vDescriptor b = (v.length > 1) ? v[1] : vnull;
-	return Call(a, b);
-}
 
 public vDescriptor Call() {
-	return Call(vnull, vnull);
+	return Call(new vDescriptor[] {});
 }
 
 public vDescriptor Call(vDescriptor a) {
-	return Call(a, vnull);
+	return Call(new vDescriptor[] {a});
+}
+
+public vDescriptor Call(vDescriptor a, vDescriptor b) {
+	return Call(new vDescriptor[] {a, b});
 }
 
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
-	return Call(a, b);
+	return Call(new vDescriptor[] {a, b, c});
 }
 
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d) {
-	return Call(a, b);
+	return Call(new vDescriptor[] {a, b, c, d});
 }
 
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e) {
-	return Call(a, b);
+	return Call(new vDescriptor[] {a, b, c, d, e});
 }
 
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f) {
-	return Call(a, b);
+	return Call(new vDescriptor[] {a, b, c, d, e, f});
 }
 
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g) {
-	return Call(a, b);
+	return Call(new vDescriptor[] {a, b, c, d, e, f, g});
 }
 
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h) {
-	return Call(a, b);
+	return Call(new vDescriptor[] {a, b, c, d, e, f, g, h});
 }
 
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h,
     vDescriptor i) {
-	return Call(a, b);
+	return Call(new vDescriptor[] {a, b, c, d, e, f, g, h, i});
 }
 
 
 
-} // class vProc2
+} // class vProcV
