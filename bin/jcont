@@ -2,7 +2,7 @@
 #
 #  jcont -- compile Icon program
 #
-#  usage:  jcont [-bcdhjsvEJPS] [-f flags] [-o exe] file... [-x [args]]
+#  usage:  jcont [-bcdhjstuvEJPS] [-f flags] [-o exe] file... [-x [args]]
 #
 #     file:	filename.icn (Icon source) or filename.zip (translated code)
 #
@@ -15,6 +15,8 @@
 #     -j	produce .jar file instead of executable script
 #     -o exe	specify output file for executable
 #     -s	silent: suppress commentary
+#     -t	compile with -fe (to allow tracing) and init &trace to -1
+#     -u	presently ignored
 #     -x	execute after compilation
 #     -E	preprocess only
 #
@@ -118,6 +120,7 @@ LINKTRACE=
 OFLAG=-O
 JVMDUMP=
 TFLAGS=
+INITTRACE="\$TRACE"
 
 # set temporary directory name, and assume its deletion
 TDIR=./jcon$$
@@ -133,7 +136,7 @@ NOEXECUTE=exit
 
 # process options, changing default values set above
 
-while getopts "bcdjsvEJPSo:f:" c 2>$NULLFILE; do
+while getopts "bcdjsvtuEJPSo:f:" c 2>$NULLFILE; do
     case $c in
 	b)	TARGET="ucode"; NOLINK="exit";;
 	c)	NOLINK="exit";;
@@ -141,6 +144,8 @@ while getopts "bcdjsvEJPSo:f:" c 2>$NULLFILE; do
 	f)	TFLAGS="$TFLAGS -f$OPTARG";;
 	j)	XTYPE=.jar;;
 	s)	ANNOUNCE=":";;
+	t)	INITTRACE="\${TRACE-\"-1\"}"; TFLAGS="$TFLAGS -fe";;
+	u)	;;	#%#%#%#% should diagnose undeclared identifiers
 	v)	CMDTRACE="set -x"; LINKTRACE="-t";;
 	E)	TARGET="ppsrc"; NOLINK="exit";;
 	J)	TRAN="jjtran"; LINK="jjlink";;
@@ -321,7 +326,7 @@ trap "rm -rf \$TZIP" 0 1 2 15
 dd bs=$HDRSIZE skip=1 <\$THISFILE >\$TZIP 2>$NULLFILE
 
 export CLASSPATH="\$TZIP${PATHSEP}$JRTS${PATHSEP}\$CLASSPATH"
-$JAVA -DTRACE="\$TRACE" \$JXOPTS $MAIN "\$@"
+$JAVA -DTRACE=$INITTRACE \$JXOPTS $MAIN "\$@"
 exit
 
 [binary data follows]
