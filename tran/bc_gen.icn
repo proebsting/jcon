@@ -738,10 +738,7 @@ procedure gen_bc(s, p)
 	"irCoFail" : return gen_bc_irCoFail(s, p)
 	"irRunTimeError" : return gen_bc_irRunTimeError(s, p)
 	"irEnterInit" : return gen_bc_irEnterInit(s, p)
-	default : {
-		write(&errout, "ERROR in gen_bc: ", image(p))
-		runerr(1000);
-		}
+	default : { runerr(1000, p); }
 	}
 end
 

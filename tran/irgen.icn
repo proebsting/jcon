@@ -141,8 +141,8 @@ procedure ir_ExclAlt(p, st, target, bounded)
 	local X, Y, tmp
 
 	init4ir(p)
-	/bounded & X := ir_tmploc(p, "gate")
-	/bounded & Y := ir_tmploc(p, "gate")
+	/bounded & (X := ir_tmploc(p, "gate"))
+	Y := ir_tmploc(p, "gate")
 
 	tmp := copy(st)
 	ir(p.e1, tmp, target, bounded)
@@ -172,7 +172,7 @@ procedure ir_Alt(p, st, target, bounded)
 	local t, tmpst
 	
 	init4ir(p)
-	/bounded & t := ir_tmploc(st)
+	/bounded & (t := ir_tmploc(st))
 
 	tmpst := copy(st)
 
@@ -199,7 +199,7 @@ procedure ir_RepAlt(p, st, target, bounded)
 	local t
 
 	init4ir(p)
-	/bounded & t := ir_tmploc(st)
+	/bounded & (t := ir_tmploc(st))
 	ir(p.expr, st, target, bounded)
 
 	CG.emit(p.ir.start, [
@@ -219,7 +219,7 @@ procedure ir_Case(p, st, target, bounded)
 	local t, L, i, tmp1, tmp2, e, v
 
 	init4ir(p)
-	/bounded & t := ir_tmploc(st)
+	/bounded & (t := ir_tmploc(st))
 	e := ir_tmp(st)
 	v := (\target | ir_tmp(st))
 
@@ -508,7 +508,7 @@ procedure ir_If(p, st, target, bounded)
 	local t, tmp
 
 	init4ir(p)
-	/bounded & t := ir_tmploc(st)
+	/bounded & (t := ir_tmploc(st))
 
 	ir(p.expr, copy(st), &null, "always bounded")
 	tmp := copy(st)
@@ -662,7 +662,7 @@ procedure ir_ProcBody(p, st, target, bounded)
 	init4ir(p)
 
 	L := make_sentinel(p.nexprList)
-	every ir(!p.nexprList, ir_stacks(0,0,0), &null)
+	every ir(!p.nexprList, ir_stacks(0,0,0), &null, "always bounded")
 
 	CG.emit(p.ir.start, [ irGoto(L[1].ir.start) ])
 	/bounded & CG.emit(p.ir.resume, [ irRunTimeError() ])
@@ -1163,7 +1163,7 @@ end
 procedure init4ir_loop(p, st, target, bounded)
 	init4ir(p)
 	p.ir.x := ir_loopinfo()
-	/bounded & p.ir.x.continue := ir_tmploc(st)
+	/bounded & (p.ir.x.continue := ir_tmploc(st))
 	p.ir.x.nextlabel := ir_label(p, "next")
 	p.ir.x.scanlevel := *scans
 	p.ir.x.in_st := copy(st)
