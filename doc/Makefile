@@ -29,7 +29,7 @@ funcs.t:  ../rts/iBuiltins.java funcs.sed
 	echo "Functions implemented:"			> funcs.t
 	echo ""						>>funcs.t
 	sed -f funcs.sed ../rts/iBuiltins.java | sort | \
-	    pr -5 -t -w 60 -l 18 | sed 's/^/	/'	>>funcs.t
+	    pr -5 -t -w 60 -l 19 | sed 's/^/	/'	>>funcs.t
 
 FORCE:
 
