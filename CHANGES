@@ -19,8 +19,8 @@ From gmt  Dec 10 1998
 In translator, change confusing name ir_RunTimeError to ir_Unreachable
 in response to referee comments on SP&E paper.
 
-From todd  Feb 15 1998
-Make token names consistent with Icon V9.
+From gmt  Mon Jul 31 14:18:21 MST 2000
+Bump COEXPSIZE up to 1 MB for biggest procedures in ipl/procs.
 
 ------------------------------------------------------------------------------
 
