@@ -27,15 +27,13 @@ substituting for <CODE>.u1/.u2</CODE> file pairs.
 
 <H3>Implementation</H3>
 
-<P> The Jcon translator is a 10,000-line Icon program that produces Java
-class files.
-(It can also produce <CODE>.u1/.u2</CODE> files,
-but it provides no way to link them.)
+<P> The Jcon translator is a 10,000-line Icon program that produces
+either Java class files or <EM>ucode</EM> (<CODE>.u1/.u2</CODE>) files.
 This is somewhat smaller than the 13,000 lines of C code that
-form the translator in Version 9 of Icon.
-(The subset of the Jcon translator that only produces <CODE>.u1/.u2</CODE>
-files---and, therefore, is directly comparable to Version 9's translator---is
-only 4,000 lines of Icon.)
+form the translator in Version 9 of Icon, but the two totals are not
+directly comparable because the two programs have different capabilities.
+The common function of generating ucode files from Icon source code
+accounts for about 3500 lines in Jcon and about 9000 lines in Version 9.
 
 <P> The Jcon runtime system comprises 18,000 lines of Java code.
 The corresponding portion of Version 9, counting only the Unix code,

@@ -52,9 +52,9 @@ not the dominating factor.
 	<TH WIDTH=32>jtran</TH></TR>
 <TR ALIGN=RIGHT>
 	<TD ALIGN=LEFT>SGI Irix 6.2</TD>
-	<TD ALIGN=LEFT>JDK 1.1.5</TD>
-	<TD>3.6</TD><TD>8.8</TD><TD>2.8</TD><TD>1.7</TD><TD>3.2</TD>
-	<TD>3.3</TD><TD>2.2</TD><TD>4.6</TD></TR>
+	<TD ALIGN=LEFT>JDK 1.1.6</TD>
+	<TD>3.6</TD><TD>9.2</TD><TD>2.7</TD><TD>1.5</TD><TD>3.2</TD>
+	<TD>3.2</TD><TD>2.2</TD><TD>3.4</TD></TR>
 <TR ALIGN=RIGHT>
 	<TD ALIGN=LEFT>Sun Solaris 5.5.1</TD>
 	<TD ALIGN=LEFT>JDK 1.1.6</TD>
@@ -67,7 +67,7 @@ not the dominating factor.
 	<TD>3.5</TD><TD>3.6</TD><TD>N/A</TD></TR>
 <TR ALIGN=RIGHT>	
 	<TD ALIGN=LEFT>Digital Unix 4.0B</TD>
-	<TD ALIGN=LEFT>JDK 1.1.6</TD>
-	<TD>14.0</TD><TD>17.6</TD><TD>9.7</TD><TD>6.3</TD><TD>15.5</TD>
-	<TD>8.7</TD><TD>7.9</TD><TD>7.3</TD></TR>
+	<TD ALIGN=LEFT>Fast JVM b1</TD>
+	<TD>6.3</TD><TD>10.1</TD><TD>8.7</TD><TD>3.4</TD><TD>6.6</TD>
+	<TD>3.6</TD><TD>6.7</TD><TD>5.4</TD></TR>
 </TABLE>

@@ -85,7 +85,7 @@ calling an operation that implicitly dereferences it, such as
 a public <CODE>Call()</CODE> method that returns a vDescriptor object.
 
 <P> A procedure that expects two arguments extends the class
-<EM>vProc2</EM> (which extends <EM>vProc</EM>)
+<EM>vProc2</EM> (which extends vProc)
 and defines a <CODE>Call</CODE> method
 that accepts two vDescriptor arguments and returns a vDescriptor
 result.
@@ -217,10 +217,10 @@ public class factors extends vProc1 {
 <P> The vClosure object is created, called, and returned by the
 large <CODE>return</CODE> expression,
 <BLOCKQUOTE><PRE>
-<CODE>return new vClosure() { ... }.Resume();</CODE>
+<CODE>return new vClosure() { </CODE>...<CODE> }.Resume();</CODE>
 </PRE></BLOCKQUOTE>
 which encompasses the entire definition of the anonymous subclass
 of vClosure.
 
-<P> It is very important that the <CODE>retval</CODE> field 
-be set before returning a vClosure object; a null retval is illegal.
+<P> It is very important that the <CODE>retval</CODE> field be set
+before returning a vClosure object; a null <CODE>retval</CODE> is illegal.
