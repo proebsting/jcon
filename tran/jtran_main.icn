@@ -4,6 +4,7 @@ procedure predefs()
     local t
 
     t := table()
+    t["_UNIX"] := "1"
     t["_JAVA"] := "1"
     t["_ASCII"] := "1"
     t["_CO_EXPRESSIONS"] := "1"
