@@ -70,7 +70,7 @@ procedure fieldrefs()
 end
 
 procedure gen_procedure(i, def, suffix)
-    writes("procedure ", i[4] | i[1], "_", suffix, "(c")
+    writes("procedure bc_", i[4] | i[1], "_", suffix, "(c")
     if /i[2] then writes(", ", def[2])
     if /i[3] then writes(", ", def[3])
     write(")")

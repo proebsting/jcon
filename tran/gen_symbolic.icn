@@ -1,35 +1,35 @@
-global dump_emit_table
+global symbolic_emit_table
 
-procedure dump_emit(label, code)
-    dump_emit_table[label] := code
+procedure symbolic_emit(label, code)
+    symbolic_emit_table[label] := code
 end
 
-procedure dump_invocables(all, L)
+procedure symbolic_invocables(all, L)
     writes("invocable")
     writes(\all & " all")
     every writes(" ", image(!L))
     write()
 end
 
-procedure dump_links(L)
+procedure symbolic_links(L)
     writes("link ")
     every writes(" ", !L)
     write()
 end
 
-procedure dump_records(name, fields, coord)
+procedure symbolic_records(name, fields, coord)
     writes("record ", name, "(")
     every writes(" ", !fields)
     write(")")
 end
 
-procedure dump_globals(L)
+procedure symbolic_globals(L)
     writes("global ")
     every writes(" ", !L)
     write()
 end
 
-procedure dump_function(name, params, accumulate, locals, statics, code,
+procedure symbolic_function(name, params, accumulate, locals, statics, code,
                         codestart, coord)
     local i
 
@@ -44,16 +44,16 @@ procedure dump_function(name, params, accumulate, locals, statics, code,
     writes("static")
     every writes(" ", !statics)
     write()
-    dump_emit_table := table()
+    symbolic_emit_table := table()
     every i := !code do {
-        dump_emit_table[i.label] := i.insnList
+        symbolic_emit_table[i.label] := i.insnList
     }
-    dump_emit_table := optim_optimize(dump_emit_table, codestart)
-    dump_table(&output, dump_emit_table)
+    symbolic_emit_table := optim_optimize(symbolic_emit_table, codestart)
+    symbolic_table(&output, symbolic_emit_table)
     write("end ", name)
 end
 
-procedure dump_table(p, t)
+procedure symbolic_table(p, t)
     local lab, c
 
     every lab := key(t) & c := t[lab] do {
@@ -62,7 +62,7 @@ procedure dump_table(p, t)
     }
 end
 
-procedure dump_File(irgen, flagList)
+procedure symbolic_File(irgen, flagList)
     local p
 
     if match("-O", !flagList) then {
@@ -71,20 +71,20 @@ procedure dump_File(irgen, flagList)
     while p := @irgen do {
         case type(p) of {
         "ir_Global" : {
-            dump_globals(p.nameList)
+            symbolic_globals(p.nameList)
         }
         "ir_Record" : {
-            dump_records(p.name, p.fieldList)
+            symbolic_records(p.name, p.fieldList)
         }
         "ir_Invocable" : {
-            dump_invocables(p.all, p.nameList)
+            symbolic_invocables(p.all, p.nameList)
         }
         "ir_Function" : {
-            dump_function(p.name, p.paramList, p.accumulate, p.localList,
+            symbolic_function(p.name, p.paramList, p.accumulate, p.localList,
                         p.staticList, p.codeList, p.codeStart)
         }
         "ir_Link" : {
-            dump_links(p.nameList)
+            symbolic_links(p.nameList)
         }
         default: runerr(500, p)
         }

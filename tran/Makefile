@@ -28,7 +28,7 @@ IRGENSRC = \
 
 CODEGENSRC = \
 	gen_bc.icn \
-	gen_dump.icn \
+	gen_symbolic.icn \
 	gen_dot.icn \
 	gen_ucode.icn \
 	optimize.icn \

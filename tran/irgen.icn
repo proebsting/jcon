@@ -1380,7 +1380,7 @@ procedure ir_naming(p, suffix)
 end
 
 procedure ir_dump(insn)
-    return dump(insn, set(["x"]))
+    return dump_simple(insn, set(["x"]))
 end
 
 procedure ir_ident(str)

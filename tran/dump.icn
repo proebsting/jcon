@@ -2,14 +2,14 @@ procedure echo(c, flags)
     local p
     while p := @\c do {
         if "-verbose" == !\flags then {
-            write(verbose(p, "", ""))
+            write(dump_verbose(p, "", ""))
         } else {
-            write(dump(p))
+            write(dump_simple(p))
         }
     }
 end
 
-procedure get_names(x)
+procedure dump_get_names(x)
     local L
 
     static tab
@@ -24,7 +24,7 @@ procedure get_names(x)
     return L
 end
 
-procedure verbose(x, nm,  indent)
+procedure dump_verbose(x, nm,  indent)
     local s, i, n, v, names
 
     s := image(x)
@@ -32,26 +32,26 @@ procedure verbose(x, nm,  indent)
         every i := 1 to *x do {
             n := "L[" || i || "]"
             v := x[i]
-            s ||:= "\n" || indent || n || " = " || verbose(v, n, indent || "| ")
+            s ||:= "\n" || indent || n || " = " || dump_verbose(v, n, indent || "| ")
         }
     } else if match("record", image(x)) then {
-        names := get_names(x)
+        names := dump_get_names(x)
         every i := 1 to *x do {
             n := names[i]
             v := x[i]
-            s ||:= "\n" || indent || n || " = " || verbose(v, n, indent || "| ")
+            s ||:= "\n" || indent || n || " = " || dump_verbose(v, n, indent || "| ")
         }
     }
     return s
 end
 
-procedure dump(x, excl)
+procedure dump_simple(x, excl)
     local s, i, n, names
 
     if type(x) == "list" then {
         s := "["
         every i := 1 to *x do {
-            s ||:= dump(x[i], excl)
+            s ||:= dump_simple(x[i], excl)
             if x[i+1] then {
                 s ||:= ", "
             }
@@ -63,18 +63,18 @@ procedure dump(x, excl)
             if *s > 1 then {
                 s ||:= ", "
             }
-            s ||:= dump(i, excl)
+            s ||:= dump_simple(i, excl)
         }
         s ||:= "}"
     } else if match("record", image(x)) then {
         s := type(x) || "("
-        names := get_names(x)
+        names := dump_get_names(x)
         every i := 1 to *x do {
             n := names[i]
             if member(\excl, n ? (tab(upto('.')) & move(1) & tab(0))) then {
                 s ||:= "..."
             } else {
-                s ||:= dump(x[i])
+                s ||:= dump_simple(x[i])
             }
             if x[i+1] then {
                 s ||:= ", "
