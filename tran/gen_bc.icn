@@ -492,13 +492,13 @@ procedure bc_gen_ir_OpFunction(s, p)
 
     p.fn.arity = *p.argList | runerr(500, p)
     if \bc_nodebuginfo then {
-        method := bc_op_methodref(bc_current_classptr, p.fn.name, p.fn.arity)
+        method := bc_op_methodref(bc_current_classptr, p.fn.name, p.fn.arity, p.fn.rval)
         \method | runerr(500)
         every bc_gen(s, !p.argList)
         put(s, j_invokevirtual(method))
     } else {
 	bc_push_coordinate(s, p.coord)
-        method := bc_trampoline_op_methodref(bc_current_classptr, p.fn.name, p.fn.arity)
+        method := bc_trampoline_op_methodref(bc_current_classptr, p.fn.name, p.fn.arity, p.fn.rval)
         \method | runerr(500)
         every bc_gen(s, !p.argList)
         put(s, j_invokestatic(method))

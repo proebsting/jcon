@@ -114,13 +114,14 @@ procedure operators()
 
 	[ 1,     "/", "IsNull",       "rts.vDescriptor" ],
 	[ 1,    "\\", "IsntNull",     "rts.vDescriptor" ],
-	[ 1,     "?", "Select",       "rts.vDescriptor" ],
-	[ 1,     "!", "Bang",         "rts.vDescriptor" ],
 
-	[ 2,    "[]", "Index",        "rts.vDescriptor" ],
-	[ 3,   "[:]", "Section",      "rts.vDescriptor" ],
-	[ 3,  "[+:]", "SectPlus",     "rts.vDescriptor" ],
-	[ 3,  "[-:]", "SectMinus",    "rts.vDescriptor" ],
+	[ 1,     "?", "Select",       "rts.vDescriptor", ["Val", "rts.vValue"] ],
+	[ 1,     "!", "Bang",         "rts.vDescriptor", ["Val", "rts.vDescriptor"] ],
+
+	[ 2,    "[]", "Index",        "rts.vDescriptor", ["Val", "rts.vValue"] ],
+	[ 3,   "[:]", "Section",      "rts.vDescriptor", ["Val", "rts.vValue"] ],
+	[ 3,  "[+:]", "SectPlus",     "rts.vDescriptor", ["Val", "rts.vValue"] ],
+	[ 3,  "[-:]", "SectMinus",    "rts.vDescriptor", ["Val", "rts.vValue"] ],
 
 	[ 2,     "+", "Add",          "rts.vNumeric"    ],
 	[ 2,     "-", "Sub",          "rts.vNumeric"    ],
@@ -154,45 +155,57 @@ procedure operators()
 	[ 2,    "--", "Diff",         "rts.vValue"      ]
     ]
 
-    write("procedure bc_op_methodref(c, name, arity)")
-    every o := !ops do {
-	signature := "("
-	every 1 to o[1]-1 do {
-	    signature ||:= "Lrts/vDescriptor;"
-	}
-	signature ||:= ")"
-	signature ||:= "L" || map(o[4], ".", "/") || ";"
-	write("\tif ",
-	      "arity = ", o[1], " & ",
-	      "name == ", image(o[2]), " then ",
-	      "return j_create_methodref(c, ",
-	      image(o[3]), ", ",
-	      image(signature), ", ",
-	      image("rts/vDescriptor"), ")"
-	      )
-    }
-    write("\trunerr(500, name || arity)")
-    write("end")
+    op_methodrefs(ops, "op_methodref", "", "rts/vDescriptor")
+    op_methodrefs(ops, "trampoline_op_methodref",
+                       "Ljava/lang/String;ILrts/vDescriptor;",
+		       "rts/iTrampoline")
+end
 
-    write("procedure bc_trampoline_op_methodref(c, name, arity)")
+procedure op_methodrefs(ops, fn, prefix, ty)
+    local o
+
+    write("procedure bc_", fn, "(c, name, arity, rval)")
     every o := !ops do {
-	signature := "(Ljava/lang/String;ILrts/vDescriptor;"
+	op_select(o, prefix, ty)
+    }
+    write("\trunerr(500, name || arity)")
+    write("end")
+end
+
+procedure op_select(o, prefix, ty)
+    local signature
+
+	writes("\tif ",
+	      "arity = ", o[1], " & ",
+	      "name == ", image(o[2]),
+	      " then return ")
+        if \o[5] then {
+	    signature := "(" || prefix
+	    every 1 to o[1]-1 do {
+	        signature ||:= "Lrts/vDescriptor;"
+	    }
+	    signature ||:= ")"
+	    signature ||:= "L" || map(o[5][2], ".", "/") || ";"
+	    writes("if \\rval then ")
+	    writes("j_create_methodref(c, ",
+	           image(o[3] || o[5][1]), ", ",
+	           image(signature), ", ",
+	           image(ty), ")"
+	           )
+	    writes(" else ")
+	}
+	signature := "(" || prefix
 	every 1 to o[1]-1 do {
 	    signature ||:= "Lrts/vDescriptor;"
 	}
 	signature ||:= ")"
 	signature ||:= "L" || map(o[4], ".", "/") || ";"
-	write("\tif ",
-	      "arity = ", o[1], " & ",
-	      "name == ", image(o[2]), " then ",
-	      "return j_create_methodref(c, ",
-	      image(o[3]), ", ",
-	      image(signature), ", ",
-	      image("rts/iTrampoline"), ")"
-	      )
-    }
-    write("\trunerr(500, name || arity)")
-    write("end")
+	writes("j_create_methodref(c, ",
+	       image(o[3]), ", ",
+	       image(signature), ", ",
+	       image(ty), ")"
+	       )
+	write()
 end
 
 procedure methodrefs()

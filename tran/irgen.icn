@@ -7,7 +7,7 @@ global ir_declare_set
 
 record ir_info(start, resume, failure, success, x)
 record ir_loopinfo(scanlevel, nextlabel, continue, in_st, out_st, value,
-                   bounded, inuse)
+                   bounded, inuse, rval)
 record ir_scaninfo(oldsubject, oldpos)
 record ir_stacks(tmp, lab)
 
@@ -17,7 +17,7 @@ global ir_tmptable, ir_loctable
 global ir_start
 
 # record a_NoOp( )
-procedure ir_a_NoOp(p, st, inuse, target, bounded)
+procedure ir_a_NoOp(p, st, inuse, target, bounded, rval)
     ir_init(p)
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.ir.success) ])
@@ -25,11 +25,11 @@ procedure ir_a_NoOp(p, st, inuse, target, bounded)
 end
 
 # record a_Field( expr field )
-procedure ir_a_Field(p, st, inuse, target, bounded)
+procedure ir_a_Field(p, st, inuse, target, bounded, rval)
     local t
     ir_init(p)
     t := ir_value(p, st, inuse, target)
-    suspend ir(p.expr, st, inuse, t, &null)
+    suspend ir(p.expr, st, inuse, t, &null, rval)
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.expr.ir.start) ])
     suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.expr.ir.resume) ])
@@ -41,7 +41,7 @@ procedure ir_a_Field(p, st, inuse, target, bounded)
 end
 
 # record a_Scan( op expr body )       op == "?" or "?:="
-procedure ir_a_Scan(p, st, inuse, target, bounded)
+procedure ir_a_Scan(p, st, inuse, target, bounded, rval)
     local lv, rv, tmp
 
     ir_init(p)
@@ -57,9 +57,9 @@ procedure ir_a_Scan(p, st, inuse, target, bounded)
     p.ir.x.oldpos := ir_tmp(st, inuse)
     p.ir.x.oldsubject := ir_tmp(st, inuse)
 
-    suspend ir(p.expr, st, inuse, lv, &null)
+    suspend ir(p.expr, st, inuse, lv, &null, if p.op == "?" then "rval" else &null)
     put(ir_scan_stack, p)
-    suspend ir(p.body, st, inuse, rv, if p.op == "?" then bounded else &null)
+    suspend ir(p.body, st, inuse, rv, if p.op == "?" then bounded else &null, rval)
     pull(ir_scan_stack)
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.expr.ir.start) ])
@@ -72,7 +72,7 @@ procedure ir_a_Scan(p, st, inuse, target, bounded)
 	ir_Move(p.ir.x.oldpos, ir_Deref(tmp)),
         ir_Call(p.coord, tmp, ir_key("subject"), [], &null),
 	ir_Move(p.ir.x.oldsubject, ir_Deref(tmp)),
-        ir_opfn(p.coord, target, ir_Operator(":?", 2), [ tmp, lv ],
+        ir_opfn(p.coord, target, ir_Operator(":?", 2, rval), [ tmp, lv ],
                 p.expr.ir.resume),
         ir_Goto(p.body.ir.start)
         ])
@@ -91,7 +91,7 @@ procedure ir_a_Scan(p, st, inuse, target, bounded)
     } else {
         # p.op == "?:="
         suspend ir_Chunk(p.body.ir.success, [
-            ir_opfn(p.coord, target, ir_Operator(":=", 2), [ lv, rv ], p.body.ir.resume),
+            ir_opfn(p.coord, target, ir_Operator(":=", 2, rval), [ lv, rv ], p.body.ir.resume),
             ir_ScanSwap( p.ir.x.oldsubject, p.ir.x.oldpos ),
             ir_Goto(p.ir.success)
             ])
@@ -99,40 +99,40 @@ procedure ir_a_Scan(p, st, inuse, target, bounded)
 end
 
 # record a_Limitation( expr limit )
-procedure ir_a_Limitation(p, st, inuse, target, bounded)
+procedure ir_a_Limitation(p, st, inuse, target, bounded, rval)
     local c, t
 
     ir_init(p)
     c := ir_tmp(st, inuse)
     t := ir_tmp(st, inuse)
 
-    suspend ir(p.limit, st, inuse, t, &null)
-    suspend ir(p.expr, st, inuse, target, bounded)
+    suspend ir(p.limit, st, inuse, t, &null, "rval")
+    suspend ir(p.expr, st, inuse, target, bounded, rval)
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.limit.ir.start) ])
     /bounded & suspend ir_Chunk(p.ir.resume, [
-        ir_opfn(p.coord, c, ir_Operator(">", 2), [ t, c ], p.limit.ir.resume),
-        ir_opfn(p.coord, c, ir_Operator("+", 2), [ c, ir_IntLit(1) ], p.expr.ir.resume),
+        ir_opfn(p.coord, c, ir_Operator(">", 2, "rval"), [ t, c ], p.limit.ir.resume),
+        ir_opfn(p.coord, c, ir_Operator("+", 2, "rval"), [ c, ir_IntLit(1) ], p.expr.ir.resume),
         ir_Goto(p.expr.ir.resume)
         ])
     suspend ir_Chunk(p.expr.ir.failure, [ ir_Goto(p.limit.ir.resume) ])
     suspend ir_Chunk(p.limit.ir.failure, [ ir_Goto(p.ir.failure) ])
     suspend ir_Chunk(p.expr.ir.success, [ ir_Goto(p.ir.success) ])
     suspend ir_Chunk(p.limit.ir.success, [
-        ir_opfn(p.coord, t, ir_Operator("#", 1), [ t ], p.limit.ir.resume),
+        ir_opfn(p.coord, t, ir_Operator("#", 1, "rval"), [ t ], p.limit.ir.resume),
         ir_Move(c, ir_IntLit(1)),
         ir_Goto(p.expr.ir.start)
         ])
 end
 
 # record a_Not( expr )
-procedure ir_a_Not(p, st, inuse, target, bounded)
+procedure ir_a_Not(p, st, inuse, target, bounded, rval)
     local tiu
 
     ir_init(p)
 
     tiu := ir_new_inuse()
-    suspend ir(p.expr, copy(st), tiu, &null, "always bounded")
+    suspend ir(p.expr, copy(st), tiu, &null, "always bounded", "rval")
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.expr.ir.start) ])
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.ir.failure) ])
@@ -147,12 +147,12 @@ procedure ir_a_Not(p, st, inuse, target, bounded)
 end
 
 # record a_CoexpList( exprList )
-procedure ir_a_CoexpList(p, st, inuse, target, bounded)
+procedure ir_a_CoexpList(p, st, inuse, target, bounded, rval)
     stop("FATAL ERROR: don't know how to do coexplist")
 end
 
 # record a_Alt( eList )
-procedure ir_a_Alt(p, st, inuse, target, bounded)
+procedure ir_a_Alt(p, st, inuse, target, bounded, rval)
     local t, tmpst, i, tiu, oiu
     
     ir_init(p)
@@ -162,7 +162,7 @@ procedure ir_a_Alt(p, st, inuse, target, bounded)
     every i := 1 to *p.eList do {
         tmpst := copy(st)
         put(tiu, ir_copy_inuse(inuse))
-        suspend ir(p.eList[i], tmpst, tiu[i], target, bounded)
+        suspend ir(p.eList[i], tmpst, tiu[i], target, bounded, rval)
         ir_max_st(st, tmpst)
     }
     ir_inter_inuse(inuse, tiu)
@@ -187,12 +187,12 @@ procedure ir_a_Alt(p, st, inuse, target, bounded)
 end
 
 # record a_RepAlt( expr )
-procedure ir_a_RepAlt(p, st, inuse, target, bounded)
+procedure ir_a_RepAlt(p, st, inuse, target, bounded, rval)
     local t
 
     ir_init(p)
     /bounded & (t := ir_tmploc(st, inuse))
-    suspend ir(p.expr, st, inuse, target, bounded)
+    suspend ir(p.expr, st, inuse, target, bounded, rval)
 
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.expr.ir.resume) ])
     if /bounded then {
@@ -217,7 +217,7 @@ procedure ir_a_RepAlt(p, st, inuse, target, bounded)
 end
 
 # record a_Case( expr clauseList dflt )
-procedure ir_a_Case(p, st, inuse, target, bounded)
+procedure ir_a_Case(p, st, inuse, target, bounded, rval)
     local t, L, i, tmp1, tmp2, e, v, x, eiu, ciu, tiu
     local oiu
 
@@ -229,21 +229,21 @@ procedure ir_a_Case(p, st, inuse, target, bounded)
     v := (\target | ir_tmp(st, inuse))
 
     eiu := ir_new_inuse()
-    suspend ir(p.expr, st, eiu, e, "always bounded")
+    suspend ir(p.expr, st, eiu, e, "always bounded", "rval")
 
     tmp2 := copy(st)
     ciu := []
     tiu := []
     every i := 1 to *p.clauseList do {
         put(ciu, ir_new_inuse())
-        suspend ir(p.clauseList[i].expr, copy(st), ciu[i], v, &null)
+        suspend ir(p.clauseList[i].expr, copy(st), ciu[i], v, &null, "rval")
         tmp1 := copy(st)
         put(tiu, ir_copy_inuse(inuse))
-        suspend ir(p.clauseList[i].body, tmp1, tiu[i], target, bounded)
+        suspend ir(p.clauseList[i].body, tmp1, tiu[i], target, bounded, rval)
         ir_max_st(tmp2, tmp1)
     }
     put(tiu, ir_copy_inuse(inuse))
-    suspend ir(p.dflt, st, tiu[-1], target, bounded)
+    suspend ir(p.dflt, st, tiu[-1], target, bounded, rval)
     ir_max_st(st, tmp2)
     ir_union_inuse(inuse, tiu)
 
@@ -265,7 +265,7 @@ procedure ir_a_Case(p, st, inuse, target, bounded)
             ])
         every i := 1 to *L do {
             suspend ir_Chunk(L[i].expr.ir.success, [
-                ir_opfn(p.coord, &null, ir_Operator("===", 2), [ e, v ],
+                ir_opfn(p.coord, &null, ir_Operator("===", 2, "rval"), [ e, v ],
                         L[i].expr.ir.resume),
                 ir_Free(ciu[i]),
                 ir_Goto(L[i].body.ir.start)
@@ -301,17 +301,17 @@ procedure ir_a_Case(p, st, inuse, target, bounded)
 end
 
 # record a_Every( expr body )
-procedure ir_a_Every(p, st, inuse, target, bounded)
+procedure ir_a_Every(p, st, inuse, target, bounded, rval)
     local tmp, tiu
 
     /p.body := a_Key("fail")
 
-    ir_init_loop(p, st, inuse, target, bounded)
+    ir_init_loop(p, st, inuse, target, bounded, rval)
     put(ir_loop_stack, p)
     tmp := copy(st)
-    suspend ir(p.expr, tmp, ir_new_inuse(), &null, &null)
+    suspend ir(p.expr, tmp, ir_new_inuse(), &null, &null, "rval")
     tiu := ir_new_inuse()
-    suspend ir(p.body, tmp, tiu, &null, "always bounded")
+    suspend ir(p.body, tmp, tiu, &null, "always bounded", "rval")
     pull(ir_loop_stack)
 
     suspend ir_Chunk(p.ir.x.nextlabel, [ ir_Goto(p.expr.ir.resume) ])
@@ -327,7 +327,7 @@ procedure ir_a_Every(p, st, inuse, target, bounded)
 end
 
 # record a_Sectionop( op val left right )
-procedure ir_a_Sectionop(p, st, inuse, target, bounded)
+procedure ir_a_Sectionop(p, st, inuse, target, bounded, rval)
     local vv, lv, rv
 
     ir_init(p)
@@ -335,9 +335,9 @@ procedure ir_a_Sectionop(p, st, inuse, target, bounded)
     lv := ir_value(p.left, st, inuse, &null)
     rv := ir_value(p.right, st, inuse, target)
 
-    suspend ir(p.val, st, inuse, vv, &null)
-    suspend ir(p.left, st, inuse, lv, &null)
-    suspend ir(p.right, st, inuse, rv, &null)
+    suspend ir(p.val, st, inuse, vv, &null, rval)
+    suspend ir(p.left, st, inuse, lv, &null, "rval")
+    suspend ir(p.right, st, inuse, rv, &null, "rval")
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.val.ir.start) ])
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.right.ir.resume) ])
@@ -346,14 +346,14 @@ procedure ir_a_Sectionop(p, st, inuse, target, bounded)
     suspend ir_Chunk(p.left.ir.success, [ ir_Goto(p.right.ir.start) ])
     suspend ir_Chunk(p.left.ir.failure, [ ir_Goto(p.val.ir.resume) ])
     suspend ir_Chunk(p.right.ir.success, [
-        ir_opfn(p.coord, target, ir_Operator(p.op, 3), [ vv, lv, rv], p.right.ir.resume),
+        ir_opfn(p.coord, target, ir_Operator(p.op, 3, rval), [ vv, lv, rv], p.right.ir.resume),
         ir_Goto(p.ir.success)
         ])
     suspend ir_Chunk(p.right.ir.failure, [ ir_Goto(p.left.ir.resume) ])
 end
 
 # record a_Call( fn args )
-procedure ir_a_Call(p, st, inuse, target, bounded)
+procedure ir_a_Call(p, st, inuse, target, bounded, rval)
     local closure, L, i, fn, args
 
     every /(!p.args.exprList) := a_Key("null")
@@ -369,9 +369,9 @@ procedure ir_a_Call(p, st, inuse, target, bounded)
     args := []
     every i := !p.args.exprList do put(args, ir_value(i, st, inuse, &null))
 
-    suspend ir(p.fn, st, inuse, fn, &null)
+    suspend ir(p.fn, st, inuse, fn, &null, "rval")
     every i := 1 to *p.args.exprList do {
-        suspend ir(p.args.exprList[i], st, inuse, args[i], &null)
+        suspend ir(p.args.exprList[i], st, inuse, args[i], &null, &null)
     }
 
     L := [p.fn] ||| p.args.exprList
@@ -394,10 +394,10 @@ procedure ir_a_Call(p, st, inuse, target, bounded)
         ])
 end
 
-procedure ir_conjunction(p, st, inuse, target, bounded)
+procedure ir_conjunction(p, st, inuse, target, bounded, rval)
     ir_init(p)
-    suspend ir(p.left, st, inuse, &null, &null)
-    suspend ir(p.right, st, inuse, target, bounded)
+    suspend ir(p.left, st, inuse, &null, &null, "rval")
+    suspend ir(p.right, st, inuse, target, bounded, rval)
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.left.ir.start) ])
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.right.ir.resume) ])
     suspend ir_Chunk(p.left.ir.success, [ ir_Goto(p.right.ir.start) ])
@@ -406,20 +406,20 @@ procedure ir_conjunction(p, st, inuse, target, bounded)
     suspend ir_Chunk(p.right.ir.failure, [ ir_Goto(p.left.ir.resume) ])
 end
 
-procedure ir_augmented_assignment(p, target, bounded, lv, rv, tmp)
+procedure ir_augmented_assignment(p, target, bounded, rval, lv, rv, tmp)
     local op
 
     op := (p.op ? tab(find(":=")))
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.right.ir.resume) ])
     suspend ir_Chunk(p.right.ir.success, [
-        ir_opfn(p.coord, tmp, ir_Operator(op, 2), [ lv, rv ], p.right.ir.resume),
-        ir_opfn(p.coord, target, ir_Operator(":=", 2), [ lv, tmp ],
+        ir_opfn(p.coord, tmp, ir_Operator(op, 2, "rval"), [ lv, rv ], p.right.ir.resume),
+        ir_opfn(p.coord, target, ir_Operator(":=", 2, rval), [ lv, tmp ],
                 p.right.ir.resume),
         ir_Goto(p.ir.success)
         ])
 end
 
-procedure ir_binary(p, target, bounded, lv, rv, closure, funcs)
+procedure ir_binary(p, target, bounded, rval, lv, rv, closure, funcs)
     local args
 
     if p.op == "@" then {
@@ -430,7 +430,7 @@ procedure ir_binary(p, target, bounded, lv, rv, closure, funcs)
     if member(funcs, p.op) then {
         /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Goto(p.right.ir.resume) ])
         suspend ir_Chunk(p.right.ir.success, [
-            ir_opfn(p.coord, target, ir_Operator(p.op, 2), args,
+            ir_opfn(p.coord, target, ir_Operator(p.op, 2, rval), args,
                     p.right.ir.resume),
             ir_Goto(p.ir.success)
             ])
@@ -440,7 +440,7 @@ procedure ir_binary(p, target, bounded, lv, rv, closure, funcs)
             ir_Goto(p.ir.success)
             ])
         suspend ir_Chunk(p.right.ir.success, [
-            ir_opfn(p.coord, closure, ir_Operator(p.op, 2), args,
+            ir_opfn(p.coord, closure, ir_Operator(p.op, 2, rval), args,
                     p.right.ir.resume),
             ir_Move(target, closure),
             ir_Goto(p.ir.success)
@@ -448,8 +448,20 @@ procedure ir_binary(p, target, bounded, lv, rv, closure, funcs)
     }
 end
 
+procedure ir_rval(op, arity, arg, parent)
+    if find(":=", op) & arg = 1 then return &null
+    else if op == "<-" & arg = 1 then return &null
+    else if op == (":=:" | "<->") then return &null
+    else if op == "[]" & arg = 1 then return parent
+    else if op == "!" & arity = 1 then return parent
+    else if op == "?" & arity = 1 then return parent
+    else if op == "/" & arity = 1 then return parent
+    else if op == "\\" & arity = 1 then return parent
+    else return "rval"
+end
+
 # record a_Binop( op left right )
-procedure ir_a_Binop(p, st, inuse, target, bounded)
+procedure ir_a_Binop(p, st, inuse, target, bounded, rval)
     local closure, tmp, op, lv, rv
     static funcs    # functions for which resumption fails immediately.
     initial {
@@ -462,7 +474,7 @@ procedure ir_a_Binop(p, st, inuse, target, bounded)
     /p.right := a_Key("null")
 
     if p.op == "&" then {
-        suspend ir_conjunction(p, st, inuse, target, bounded)
+        suspend ir_conjunction(p, st, inuse, target, bounded, rval)
         fail
     }
 
@@ -475,8 +487,8 @@ procedure ir_a_Binop(p, st, inuse, target, bounded)
     rv := ir_value(p.right, st, inuse, target)
     tmp := (\target | ir_tmp(st, inuse))
 
-    suspend ir(p.left, st, inuse, lv, &null)
-    suspend ir(p.right, st, inuse, rv, &null)
+    suspend ir(p.left,  st, inuse, lv, &null, ir_rval(p.op, 2, 1, rval))
+    suspend ir(p.right, st, inuse, rv, &null, ir_rval(p.op, 2, 2, rval))
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.left.ir.start) ])
     suspend ir_Chunk(p.left.ir.success, [ ir_Goto(p.right.ir.start) ])
@@ -484,25 +496,25 @@ procedure ir_a_Binop(p, st, inuse, target, bounded)
     suspend ir_Chunk(p.right.ir.failure, [ ir_Goto(p.left.ir.resume) ])
 
     if find(":=", p.op) > 1 then {
-        suspend ir_augmented_assignment(p, target, bounded, lv, rv, tmp)
+        suspend ir_augmented_assignment(p, target, bounded, rval, lv, rv, tmp)
     } else {
-        suspend ir_binary(p, target, bounded, lv, rv, closure, funcs)
+        suspend ir_binary(p, target, bounded, rval, lv, rv, closure, funcs)
     }
 end
 
-procedure ir_unary_coexp(p, st, inuse, target, bounded)
+procedure ir_unary_coexp(p, st, inuse, target, bounded, rval)
     local t
 
     t := a_Binop("@", a_Key("null"), p.operand, p.coord)
-    suspend ir(t, st, inuse, target, bounded)
+    suspend ir(t, st, inuse, target, bounded, rval)
     p.ir := t.ir
 end
 
-procedure ir_unary(p, target, bounded, v, closure, funcs)
+procedure ir_unary(p, target, bounded, rval, v, closure, funcs)
     if member(funcs, p.op) then {
         /bounded & suspend ir_Chunk(p.ir.resume, [ir_Goto(p.operand.ir.resume)])
         suspend ir_Chunk(p.operand.ir.success, [
-            ir_opfn(p.coord, target, ir_Operator(p.op, 1), [ v ], p.operand.ir.resume),
+            ir_opfn(p.coord, target, ir_Operator(p.op, 1, rval), [ v ], p.operand.ir.resume),
             ir_Goto(p.ir.success)
             ])
     } else {
@@ -511,7 +523,7 @@ procedure ir_unary(p, target, bounded, v, closure, funcs)
             ir_Goto(p.ir.success)
             ])
         suspend ir_Chunk(p.operand.ir.success, [
-            ir_opfn(p.coord, closure, ir_Operator(p.op, 1), [ v ], p.operand.ir.resume),
+            ir_opfn(p.coord, closure, ir_Operator(p.op, 1, rval), [ v ], p.operand.ir.resume),
             ir_Move(target, closure),
             ir_Goto(p.ir.success)
             ])
@@ -519,7 +531,7 @@ procedure ir_unary(p, target, bounded, v, closure, funcs)
 end
 
 # record a_Unop( op operand )
-procedure ir_a_Unop(p, st, inuse, target, bounded)
+procedure ir_a_Unop(p, st, inuse, target, bounded, rval)
     local closure, v, t
     static funcs    # functions for which resumption fails immediately.
     initial {
@@ -527,7 +539,7 @@ procedure ir_a_Unop(p, st, inuse, target, bounded)
     }
 
     if p.op == "@" then {
-        suspend ir_unary_coexp(p, st, inuse, target, bounded)
+        suspend ir_unary_coexp(p, st, inuse, target, bounded, rval)
         fail
     }
 
@@ -537,15 +549,15 @@ procedure ir_a_Unop(p, st, inuse, target, bounded)
     }
     v := ir_value(p.operand, st, inuse, target)
 
-    suspend ir(p.operand, st, inuse, v, &null)
+    suspend ir(p.operand, st, inuse, v, &null, ir_rval(p.op, 1, 1, rval))
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.operand.ir.start) ])
-    suspend ir_unary(p, target, bounded, v, closure, funcs)
+    suspend ir_unary(p, target, bounded, rval, v, closure, funcs)
     suspend ir_Chunk(p.operand.ir.failure, [ ir_Goto(p.ir.failure) ])
 end
 
 # record a_Global( idList )
-procedure ir_a_Global(p, st, inuse, target, bounded)
+procedure ir_a_Global(p, st, inuse, target, bounded, rval)
     local globals
 
     globals := []
@@ -554,7 +566,7 @@ procedure ir_a_Global(p, st, inuse, target, bounded)
 end
 
 # record a_If( expr thenexpr elseexpr )
-procedure ir_a_If(p, st, inuse, target, bounded)
+procedure ir_a_If(p, st, inuse, target, bounded, rval)
     local t, tmp, tiu, xiu, yiu
 
     /p.elseexpr := a_Key("fail")
@@ -563,12 +575,12 @@ procedure ir_a_If(p, st, inuse, target, bounded)
     /bounded & (t := ir_tmploc(st, inuse))
 
     tiu := ir_new_inuse()
-    suspend ir(p.expr, copy(st), tiu, &null, "always bounded")
+    suspend ir(p.expr, copy(st), tiu, &null, "always bounded", "rval")
     tmp := copy(st)
     xiu := ir_copy_inuse(inuse)
     yiu := ir_copy_inuse(inuse)
-    suspend ir(p.thenexpr, tmp, xiu, target, bounded)
-    suspend ir(p.elseexpr, st, yiu, target, bounded)
+    suspend ir(p.thenexpr, tmp, xiu, target, bounded, rval)
+    suspend ir(p.elseexpr, st, yiu, target, bounded, rval)
     ir_max_st(st, tmp)
     ir_union_inuse(inuse, [xiu,yiu])
 
@@ -600,7 +612,7 @@ procedure ir_a_If(p, st, inuse, target, bounded)
 end
 
 # record a_Initial( expr )
-procedure ir_a_Initial(p, st, inuse, target, bounded)
+procedure ir_a_Initial(p, st, inuse, target, bounded, rval)
     local tiu
 
     /p.expr := a_NoOp()
@@ -610,7 +622,7 @@ procedure ir_a_Initial(p, st, inuse, target, bounded)
 
     ir_init(p)
     tiu := ir_new_inuse()
-    suspend ir(p.expr, st, tiu, target, "always bounded")
+    suspend ir(p.expr, st, tiu, target, "always bounded", "rval")
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.expr.ir.start) ])
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_RunTimeError() ])
@@ -622,7 +634,7 @@ procedure ir_a_Initial(p, st, inuse, target, bounded)
 end
 
 # record a_Invocable( invocList )
-procedure ir_a_Invocable(p, st, inuse, target, bounded)
+procedure ir_a_Invocable(p, st, inuse, target, bounded, rval)
     local all, inv, i
 
     inv := []
@@ -642,7 +654,7 @@ procedure ir_a_Invocable(p, st, inuse, target, bounded)
 end
 
 # record a_Link( linkfileList )
-procedure ir_a_Link(p, st, inuse, target, bounded)
+procedure ir_a_Link(p, st, inuse, target, bounded, rval)
     return ir_Link(p.linkfileList)
 end
 
@@ -663,7 +675,7 @@ procedure ir_value(p, st, inuse, target)
 end
 
 # record a_Intlit( int )
-procedure ir_a_Intlit(p, st, inuse, target, bounded)
+procedure ir_a_Intlit(p, st, inuse, target, bounded, rval)
 
     if type(target) == "ir_IntLit" then target := &null
 
@@ -680,7 +692,7 @@ procedure ir_a_Intlit(p, st, inuse, target, bounded)
 end
 
 # record a_Reallit( real )
-procedure ir_a_Reallit(p, st, inuse, target, bounded)
+procedure ir_a_Reallit(p, st, inuse, target, bounded, rval)
 
     if type(target) == "ir_RealLit" then target := &null
 
@@ -697,7 +709,7 @@ procedure ir_a_Reallit(p, st, inuse, target, bounded)
 end
 
 # record a_Stringlit( str )
-procedure ir_a_Stringlit(p, st, inuse, target, bounded)
+procedure ir_a_Stringlit(p, st, inuse, target, bounded, rval)
 
     if type(target) == "ir_StrLit" then target := &null
 
@@ -711,7 +723,7 @@ procedure ir_a_Stringlit(p, st, inuse, target, bounded)
 end
 
 # record a_Csetlit( str )
-procedure ir_a_Csetlit(p, st, inuse, target, bounded)
+procedure ir_a_Csetlit(p, st, inuse, target, bounded, rval)
 
     if type(target) == "ir_CsetLit" then target := &null
 
@@ -725,7 +737,7 @@ procedure ir_a_Csetlit(p, st, inuse, target, bounded)
 end
 
 # record a_ProcDecl( ident paramList accumulate localsList code )
-procedure ir_a_ProcDecl(p, st, inuse, target, bounded)
+procedure ir_a_ProcDecl(p, st, inuse, target, bounded, rval)
     local locals, statics, params, i, v, code
 
     v := set([])
@@ -763,7 +775,7 @@ procedure ir_a_ProcDecl(p, st, inuse, target, bounded)
 end
 
 # record a_ProcBody( nexprList )
-procedure ir_a_ProcBody(p, st, inuse, target, bounded)
+procedure ir_a_ProcBody(p, st, inuse, target, bounded, rval)
     local L, i, tiu
 
     every /(!p.nexprList) := a_Key("null")
@@ -778,7 +790,7 @@ procedure ir_a_ProcBody(p, st, inuse, target, bounded)
     every i := 1 to *p.nexprList do {
         put(tiu, ir_new_inuse())
         suspend ir(p.nexprList[i], ir_stacks(0,0), tiu[i], &null,
-                 "always bounded")
+                 "always bounded", "rval")
     }
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(L[1].ir.start) ])
@@ -798,11 +810,11 @@ procedure ir_a_ProcBody(p, st, inuse, target, bounded)
 end
 
 # record a_ProcCode( init body )
-procedure ir_a_ProcCode(p, st, inuse, target, bounded)
+procedure ir_a_ProcCode(p, st, inuse, target, bounded, rval)
     ir_init(p)
 
-    suspend ir(p.init, ir_stacks(0,0), inuse, &null, "always bounded")
-    suspend ir(p.body, ir_stacks(0,0), inuse, &null, "always bounded")
+    suspend ir(p.init, ir_stacks(0,0), inuse, &null, "always bounded", "rval")
+    suspend ir(p.body, ir_stacks(0,0), inuse, &null, "always bounded", "rval")
 
     ir_start := p.ir.start
     suspend ir_Chunk(p.ir.start, [
@@ -817,7 +829,7 @@ procedure ir_a_ProcCode(p, st, inuse, target, bounded)
 end
 
 # record a_Record( ident idlist )
-procedure ir_a_Record(p, st, inuse, target, bounded)
+procedure ir_a_Record(p, st, inuse, target, bounded, rval)
     local fields, v, i
 
     if member(ir_declare_set, p.ident.id) then {
@@ -838,13 +850,13 @@ procedure ir_a_Record(p, st, inuse, target, bounded)
 end
 
 # record a_Repeat( expr )
-procedure ir_a_Repeat(p, st, inuse, target, bounded)
+procedure ir_a_Repeat(p, st, inuse, target, bounded, rval)
     local tiu
 
-    ir_init_loop(p, st, inuse, target, bounded)
+    ir_init_loop(p, st, inuse, target, bounded, rval)
     put(ir_loop_stack, p)
     tiu := ir_new_inuse()
-    suspend ir(p.expr, copy(st), tiu, &null, "always bounded")
+    suspend ir(p.expr, copy(st), tiu, &null, "always bounded", "rval")
     pull(ir_loop_stack)
 
 
@@ -859,7 +871,7 @@ procedure ir_a_Repeat(p, st, inuse, target, bounded)
 end
 
 # record a_Return( expr )
-procedure ir_a_Return(p, st, inuse, target, bounded)
+procedure ir_a_Return(p, st, inuse, target, bounded, rval)
     local t, tiu
 
     /ir_createflag |semantic_error("invalid context for return or fail",p.coord)
@@ -870,7 +882,7 @@ procedure ir_a_Return(p, st, inuse, target, bounded)
     t := ir_tmp(st, inuse)
 
     tiu := ir_new_inuse()
-    suspend ir(p.expr, copy(st), tiu, t, "always bounded")
+    suspend ir(p.expr, copy(st), tiu, t, "always bounded", &null)
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.expr.ir.start) ])
     /bounded & suspend ir_Chunk(p.ir.resume, [ ir_Fail() ])
@@ -896,7 +908,7 @@ procedure ir_a_Return(p, st, inuse, target, bounded)
 end
 
 # record a_Fail( )
-procedure ir_a_Fail(p, st, inuse, target, bounded)
+procedure ir_a_Fail(p, st, inuse, target, bounded, rval)
 
     /ir_createflag |semantic_error("invalid context for return or fail",p.coord)
 
@@ -920,22 +932,22 @@ procedure ir_a_Fail(p, st, inuse, target, bounded)
 end
 
 # record a_Suspend( expr body )
-procedure ir_a_Suspend(p, st, inuse, target, bounded)
+procedure ir_a_Suspend(p, st, inuse, target, bounded, rval)
     local t, tmp, susp, tiu
 
     /ir_createflag | semantic_error("invalid context for suspend", p.coord)
 
     /p.body := a_Key("fail") & /p.expr := a_Key("null")
 
-    ir_init_loop(p, st, inuse, target, bounded)
+    ir_init_loop(p, st, inuse, target, bounded, rval)
     t := ir_label(p, "suspend")
     susp := ir_tmp(st, inuse)
 
     put(ir_loop_stack, p)
     tmp := copy(st)
-    suspend ir(p.expr, tmp, ir_new_inuse(), susp, &null)
+    suspend ir(p.expr, tmp, ir_new_inuse(), susp, &null, "rval")
     tiu := ir_new_inuse()
-    suspend ir(p.body, tmp, tiu, &null, "always bounded")
+    suspend ir(p.body, tmp, tiu, &null, "always bounded", &null)
     pull(ir_loop_stack)
 
     suspend ir_Chunk(p.ir.x.nextlabel, [ ir_Goto(p.expr.ir.resume) ])
@@ -969,17 +981,17 @@ procedure ir_a_Suspend(p, st, inuse, target, bounded)
 end
 
 # record a_Until( expr body )
-procedure ir_a_Until(p, st, inuse, target, bounded)
+procedure ir_a_Until(p, st, inuse, target, bounded, rval)
     local eiu, biu
 
     /p.body := a_Key("fail")
 
-    ir_init_loop(p, st, inuse, target, bounded)
+    ir_init_loop(p, st, inuse, target, bounded, rval)
     put(ir_loop_stack, p)
     eiu := ir_new_inuse()
-    suspend ir(p.expr, copy(st), eiu, &null, "always bounded")
+    suspend ir(p.expr, copy(st), eiu, &null, "always bounded", "rval")
     biu := ir_new_inuse()
-    suspend ir(p.body, copy(st), biu, &null, "always bounded")
+    suspend ir(p.body, copy(st), biu, &null, "always bounded", "rval")
     pull(ir_loop_stack)
 
     suspend ir_Chunk(p.ir.x.nextlabel, [ ir_Goto(p.expr.ir.start) ])
@@ -998,17 +1010,17 @@ procedure ir_a_Until(p, st, inuse, target, bounded)
 end
 
 # record a_While( expr body )
-procedure ir_a_While(p, st, inuse, target, bounded)
+procedure ir_a_While(p, st, inuse, target, bounded, rval)
     local eiu, biu
 
     /p.body := a_Key("fail")
 
-    ir_init_loop(p, st, inuse, target, bounded)
+    ir_init_loop(p, st, inuse, target, bounded, rval)
     put(ir_loop_stack, p)
     eiu := ir_new_inuse()
-    suspend ir(p.expr, copy(st), eiu, &null, "always bounded")
+    suspend ir(p.expr, copy(st), eiu, &null, "always bounded", "rval")
     biu := ir_new_inuse()
-    suspend ir(p.body, copy(st), biu, &null, "always bounded")
+    suspend ir(p.body, copy(st), biu, &null, "always bounded", "rval")
     pull(ir_loop_stack)
 
     suspend ir_Chunk(p.ir.x.nextlabel, [ ir_Goto(p.expr.ir.start) ])
@@ -1027,14 +1039,14 @@ procedure ir_a_While(p, st, inuse, target, bounded)
 end
 
 # record a_Create( expr )
-procedure ir_a_Create(p, st, inuse, target, bounded)
+procedure ir_a_Create(p, st, inuse, target, bounded, rval)
     local t
 
     ir_init(p)
     t := (\target | ir_tmp(st, inuse))
 
     ir_createflag := 1
-    suspend ir(p.expr, st, ir_new_inuse(), t, &null)
+    suspend ir(p.expr, st, ir_new_inuse(), t, &null, &null)
     ir_createflag := &null
 
     suspend ir_Chunk(p.ir.start, [
@@ -1047,7 +1059,7 @@ procedure ir_a_Create(p, st, inuse, target, bounded)
 end
 
 # record a_Ident( id )
-procedure ir_a_Ident(p, st, inuse, target, bounded)
+procedure ir_a_Ident(p, st, inuse, target, bounded, rval)
     local v
 
     if type(\target) ~== "ir_Tmp" then {
@@ -1068,7 +1080,7 @@ procedure ir_a_Ident(p, st, inuse, target, bounded)
 end
 
 # record a_Next( )
-procedure ir_a_Next(p, st, inuse, target, bounded)
+procedure ir_a_Next(p, st, inuse, target, bounded, rval)
     local curloop, sl
 
     ir_loop_stack[1] | semantic_error("invalid context for next", p.coord)
@@ -1090,7 +1102,7 @@ procedure ir_a_Next(p, st, inuse, target, bounded)
 end
 
 # record a_Break( expr )
-procedure ir_a_Break(p, st, inuse, target, bounded)
+procedure ir_a_Break(p, st, inuse, target, bounded, rval)
     local curloop, oldloops, oldscans, tmp, clx
 
     ir_loop_stack[1] | semantic_error("invalid context for break", p.coord)
@@ -1106,7 +1118,7 @@ procedure ir_a_Break(p, st, inuse, target, bounded)
     ir_scan_stack := ir_scan_stack[1:curloop.ir.x.scanlevel] 
     tmp := copy(curloop.ir.x.in_st)
     clx := curloop.ir.x
-    suspend ir(p.expr, tmp, clx.inuse, clx.value, clx.bounded)
+    suspend ir(p.expr, tmp, clx.inuse, clx.value, clx.bounded, clx.rval)
     ir_max_st(clx.out_st, tmp)
     ir_loop_stack := oldloops
     ir_scan_stack := oldscans
@@ -1146,7 +1158,7 @@ procedure ir_a_Break(p, st, inuse, target, bounded)
 end
 
 # record a_ToBy( fromexpr toexpr byexpr )
-procedure ir_a_ToBy(p, st, inuse, target, bounded)
+procedure ir_a_ToBy(p, st, inuse, target, bounded, rval)
     local closure, fv, tv, bv
 
     /p.byexpr := a_Intlit(1)
@@ -1157,9 +1169,9 @@ procedure ir_a_ToBy(p, st, inuse, target, bounded)
     tv := ir_value(p.toexpr, st, inuse, &null)
     bv := ir_value(p.byexpr, st, inuse, target)
 
-    suspend ir(p.fromexpr, st, inuse, fv, &null)
-    suspend ir(p.toexpr, st, inuse, tv, &null)
-    suspend ir(p.byexpr, st, inuse, bv, &null)
+    suspend ir(p.fromexpr, st, inuse, fv, &null, "rval")
+    suspend ir(p.toexpr, st, inuse, tv, &null, "rval")
+    suspend ir(p.byexpr, st, inuse, bv, &null, "rval")
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.fromexpr.ir.start) ])
     suspend ir_Chunk(p.ir.resume, [
@@ -1171,7 +1183,7 @@ procedure ir_a_ToBy(p, st, inuse, target, bounded)
     suspend ir_Chunk(p.toexpr.ir.success, [ ir_Goto(p.byexpr.ir.start) ])
     suspend ir_Chunk(p.toexpr.ir.failure, [ ir_Goto(p.fromexpr.ir.resume) ])
     suspend ir_Chunk(p.byexpr.ir.success, [
-        ir_opfn(p.coord, closure, ir_Operator("...", 3), [ fv, tv, bv ], p.byexpr.ir.resume),
+        ir_opfn(p.coord, closure, ir_Operator("...", 3, "rval"), [ fv, tv, bv ], p.byexpr.ir.resume),
         ir_Move(target, closure),
         ir_Goto(p.ir.success)
         ])
@@ -1180,7 +1192,7 @@ procedure ir_a_ToBy(p, st, inuse, target, bounded)
 end
 
 # record a_Mutual( exprList )
-procedure ir_a_Mutual(p, st, inuse, target, bounded)
+procedure ir_a_Mutual(p, st, inuse, target, bounded, rval)
     local L, i
 
     if *p.exprList = 0 then {
@@ -1192,9 +1204,9 @@ procedure ir_a_Mutual(p, st, inuse, target, bounded)
     ir_init(p)
 
     every i := 1 to *p.exprList-1 do {
-        suspend ir(p.exprList[i], st, inuse, &null, &null)
+        suspend ir(p.exprList[i], st, inuse, &null, &null, "rval")
     }
-    suspend ir(p.exprList[-1], st, inuse, target, bounded)
+    suspend ir(p.exprList[-1], st, inuse, target, bounded, rval)
     L := p.exprList
 
     suspend ir_Chunk(p.ir.start, [ ir_Goto(L[1].ir.start) ])
@@ -1209,7 +1221,7 @@ procedure ir_a_Mutual(p, st, inuse, target, bounded)
 end
 
 # record a_Compound( exprList )
-procedure ir_a_Compound(p, st, inuse, target, bounded)
+procedure ir_a_Compound(p, st, inuse, target, bounded, rval)
     local L, i, tiu
 
     every /(!p.exprList) := a_Key("null")
@@ -1219,9 +1231,9 @@ procedure ir_a_Compound(p, st, inuse, target, bounded)
     tiu := []
     every i := 1 to *p.exprList-1 do {
         put(tiu, ir_new_inuse())
-        suspend ir(p.exprList[i], copy(st), tiu[i], &null, "always bounded")
+        suspend ir(p.exprList[i], copy(st), tiu[i], &null, "always bounded", "rval")
     }
-    suspend ir(p.exprList[-1], st, inuse, target, bounded)
+    suspend ir(p.exprList[-1], st, inuse, target, bounded, rval)
 
     L := p.exprList
     *L > 0 | stop("fatal error in ir_a_Compound")
@@ -1248,7 +1260,7 @@ procedure ir_key0(p)
 end
 
 # record a_Key( id )
-procedure ir_a_Key(p, st, inuse, target, bounded)
+procedure ir_a_Key(p, st, inuse, target, bounded, rval)
     local closure
 
     ir_init(p)
@@ -1287,13 +1299,13 @@ procedure ir_a_Key(p, st, inuse, target, bounded)
 end
 
 # record a_Arglist( exprList )
-procedure ir_a_Arglist(p, st, inuse, target, bounded)
+procedure ir_a_Arglist(p, st, inuse, target, bounded, rval)
     stop("FATAL ERROR: a_Arglist should be handled in ir_a_Call(), file ",
          image(&file), ", line ", image(&line))
 end
 
 # record a_ListConstructor( exprList )
-procedure ir_a_ListConstructor(p, st, inuse, target, bounded)
+procedure ir_a_ListConstructor(p, st, inuse, target, bounded, rval)
     local L, i, args
 
     every /(!p.exprList) := a_Key("null")
@@ -1308,7 +1320,7 @@ procedure ir_a_ListConstructor(p, st, inuse, target, bounded)
     }
 
     every i := 1 to *p.exprList do {
-        suspend ir(p.exprList[i], st, inuse, args[i], &null)
+        suspend ir(p.exprList[i], st, inuse, args[i], &null, "rval")
     }
 
     L := ir_make_sentinel(p.exprList)
@@ -1334,52 +1346,52 @@ procedure ir_a_ListConstructor(p, st, inuse, target, bounded)
 
 end
 
-procedure ir(p, st, inuse, target, bounded)
+procedure ir(p, st, inuse, target, bounded, rval)
     case type(p) of {
-    "a_NoOp" : suspend ir_a_NoOp(p, st, inuse, target, bounded)
-    "a_Field" : suspend ir_a_Field(p, st, inuse, target, bounded)
-    "a_Call" : suspend ir_a_Call(p, st, inuse, target, bounded)
-    "a_Scan" : suspend ir_a_Scan(p, st, inuse, target, bounded)
-    "a_Limitation" : suspend ir_a_Limitation(p, st, inuse, target, bounded)
-    "a_Not" : suspend ir_a_Not(p, st, inuse, target, bounded)
-    "a_CoexpList" : suspend ir_a_CoexpList(p, st, inuse, target, bounded)
-    "a_Alt" : suspend ir_a_Alt(p, st, inuse, target, bounded)
-    "a_RepAlt" : suspend ir_a_RepAlt(p, st, inuse, target, bounded)
-    "a_Case" : suspend ir_a_Case(p, st, inuse, target, bounded)
-    "a_Every" : suspend ir_a_Every(p, st, inuse, target, bounded)
-    "a_Sectionop" : suspend ir_a_Sectionop(p, st, inuse, target, bounded)
-    "a_Binop" : suspend ir_a_Binop(p, st, inuse, target, bounded)
-    "a_Unop" : suspend ir_a_Unop(p, st, inuse, target, bounded)
-    "a_Global" : suspend ir_a_Global(p, st, inuse, target, bounded)
-    "a_If" : suspend ir_a_If(p, st, inuse, target, bounded)
-    "a_Initial" : suspend ir_a_Initial(p, st, inuse, target, bounded)
-    "a_Invocable" : suspend ir_a_Invocable(p, st, inuse, target, bounded)
-    "a_Link" : suspend ir_a_Link(p, st, inuse, target, bounded)
-    "a_Intlit" : suspend ir_a_Intlit(p, st, inuse, target, bounded)
-    "a_Reallit" : suspend ir_a_Reallit(p, st, inuse, target, bounded)
-    "a_Stringlit" : suspend ir_a_Stringlit(p, st, inuse, target, bounded)
-    "a_Csetlit" : suspend ir_a_Csetlit(p, st, inuse, target, bounded)
-    "a_ProcDecl" : suspend ir_a_ProcDecl(p, st, inuse, target, bounded)
-    "a_ProcBody" : suspend ir_a_ProcBody(p, st, inuse, target, bounded)
-    "a_ProcCode" : suspend ir_a_ProcCode(p, st, inuse, target, bounded)
-    "a_Record" : suspend ir_a_Record(p, st, inuse, target, bounded)
-    "a_Repeat" : suspend ir_a_Repeat(p, st, inuse, target, bounded)
-    "a_Return" : suspend ir_a_Return(p, st, inuse, target, bounded)
-    "a_Fail" : suspend ir_a_Fail(p, st, inuse, target, bounded)
-    "a_Suspend" : suspend ir_a_Suspend(p, st, inuse, target, bounded)
-    "a_Until" : suspend ir_a_Until(p, st, inuse, target, bounded)
-    "a_While" : suspend ir_a_While(p, st, inuse, target, bounded)
-    "a_Create" : suspend ir_a_Create(p, st, inuse, target, bounded)
-    "a_Ident" : suspend ir_a_Ident(p, st, inuse, target, bounded)
-    "a_Next" : suspend ir_a_Next(p, st, inuse, target, bounded)
-    "a_Break" : suspend ir_a_Break(p, st, inuse, target, bounded)
-    "a_ToBy" : suspend ir_a_ToBy(p, st, inuse, target, bounded)
-    "a_Mutual" : suspend ir_a_Mutual(p, st, inuse, target, bounded)
-    "a_Compound" : suspend ir_a_Compound(p, st, inuse, target, bounded)
+    "a_NoOp" : suspend ir_a_NoOp(p, st, inuse, target, bounded, rval)
+    "a_Field" : suspend ir_a_Field(p, st, inuse, target, bounded, rval)
+    "a_Call" : suspend ir_a_Call(p, st, inuse, target, bounded, rval)
+    "a_Scan" : suspend ir_a_Scan(p, st, inuse, target, bounded, rval)
+    "a_Limitation" : suspend ir_a_Limitation(p, st, inuse, target, bounded, rval)
+    "a_Not" : suspend ir_a_Not(p, st, inuse, target, bounded, rval)
+    "a_CoexpList" : suspend ir_a_CoexpList(p, st, inuse, target, bounded, rval)
+    "a_Alt" : suspend ir_a_Alt(p, st, inuse, target, bounded, rval)
+    "a_RepAlt" : suspend ir_a_RepAlt(p, st, inuse, target, bounded, rval)
+    "a_Case" : suspend ir_a_Case(p, st, inuse, target, bounded, rval)
+    "a_Every" : suspend ir_a_Every(p, st, inuse, target, bounded, rval)
+    "a_Sectionop" : suspend ir_a_Sectionop(p, st, inuse, target, bounded, rval)
+    "a_Binop" : suspend ir_a_Binop(p, st, inuse, target, bounded, rval)
+    "a_Unop" : suspend ir_a_Unop(p, st, inuse, target, bounded, rval)
+    "a_Global" : suspend ir_a_Global(p, st, inuse, target, bounded, rval)
+    "a_If" : suspend ir_a_If(p, st, inuse, target, bounded, rval)
+    "a_Initial" : suspend ir_a_Initial(p, st, inuse, target, bounded, rval)
+    "a_Invocable" : suspend ir_a_Invocable(p, st, inuse, target, bounded, rval)
+    "a_Link" : suspend ir_a_Link(p, st, inuse, target, bounded, rval)
+    "a_Intlit" : suspend ir_a_Intlit(p, st, inuse, target, bounded, rval)
+    "a_Reallit" : suspend ir_a_Reallit(p, st, inuse, target, bounded, rval)
+    "a_Stringlit" : suspend ir_a_Stringlit(p, st, inuse, target, bounded, rval)
+    "a_Csetlit" : suspend ir_a_Csetlit(p, st, inuse, target, bounded, rval)
+    "a_ProcDecl" : suspend ir_a_ProcDecl(p, st, inuse, target, bounded, rval)
+    "a_ProcBody" : suspend ir_a_ProcBody(p, st, inuse, target, bounded, rval)
+    "a_ProcCode" : suspend ir_a_ProcCode(p, st, inuse, target, bounded, rval)
+    "a_Record" : suspend ir_a_Record(p, st, inuse, target, bounded, rval)
+    "a_Repeat" : suspend ir_a_Repeat(p, st, inuse, target, bounded, rval)
+    "a_Return" : suspend ir_a_Return(p, st, inuse, target, bounded, rval)
+    "a_Fail" : suspend ir_a_Fail(p, st, inuse, target, bounded, rval)
+    "a_Suspend" : suspend ir_a_Suspend(p, st, inuse, target, bounded, rval)
+    "a_Until" : suspend ir_a_Until(p, st, inuse, target, bounded, rval)
+    "a_While" : suspend ir_a_While(p, st, inuse, target, bounded, rval)
+    "a_Create" : suspend ir_a_Create(p, st, inuse, target, bounded, rval)
+    "a_Ident" : suspend ir_a_Ident(p, st, inuse, target, bounded, rval)
+    "a_Next" : suspend ir_a_Next(p, st, inuse, target, bounded, rval)
+    "a_Break" : suspend ir_a_Break(p, st, inuse, target, bounded, rval)
+    "a_ToBy" : suspend ir_a_ToBy(p, st, inuse, target, bounded, rval)
+    "a_Mutual" : suspend ir_a_Mutual(p, st, inuse, target, bounded, rval)
+    "a_Compound" : suspend ir_a_Compound(p, st, inuse, target, bounded, rval)
     "a_ListConstructor" : suspend ir_a_ListConstructor(p, st, inuse, target,
-                                                   bounded)
-    "a_Key" : suspend ir_a_Key(p, st, inuse, target, bounded)
-    "a_Arglist" : suspend ir_a_Arglist(p, st, inuse, target, bounded)
+                                                   bounded, rval)
+    "a_Key" : suspend ir_a_Key(p, st, inuse, target, bounded, rval)
+    "a_Arglist" : suspend ir_a_Arglist(p, st, inuse, target, bounded, rval)
     default : runerr(500, p)
     }
 end
@@ -1414,7 +1426,7 @@ procedure ir_init(p)
     return p
 end
 
-procedure ir_init_loop(p, st, inuse, target, bounded)
+procedure ir_init_loop(p, st, inuse, target, bounded, rval)
     ir_init(p)
     p.ir.x := ir_loopinfo()
     /bounded & (p.ir.x.continue := ir_tmploc(st, inuse))
@@ -1425,6 +1437,7 @@ procedure ir_init_loop(p, st, inuse, target, bounded)
     p.ir.x.value := target
     p.ir.x.bounded := bounded
     p.ir.x.inuse := inuse
+    p.ir.x.rval := rval
     return p
 end
 
