@@ -26,13 +26,13 @@ kwds.t:	  ../rts/iKeywords.java kwds.sed
 	echo "Keywords implemented:"			> kwds.t
 	echo ""						>>kwds.t
 	sed -f kwds.sed ../rts/iKeywords.java | sort | \
-	    pr -5 -t -w 60 -l 8 | sed 's/^/	/'	>>kwds.t
+	    pr -4 -t -w 60 -l 12 | sed 's/^/	/'	>>kwds.t
 
 funcs.t:  ../rts/iBuiltins.java funcs.sed
 	echo "Functions implemented:"			> funcs.t
 	echo ""						>>funcs.t
 	sed -f funcs.sed ../rts/iBuiltins.java | sort | \
-	    pr -5 -t -w 60 -l 15 | sed 's/^/	/'	>>funcs.t
+	    pr -5 -t -w 60 -l 18 | sed 's/^/	/'	>>funcs.t
 
 clean:
 	rm -f $(OUT) *.t
