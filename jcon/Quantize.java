@@ -1,4 +1,6 @@
 //  Quantize.java -- image quantization code
+//
+//  A linear algorithm based on combining octtree nodes.
 
 
 
@@ -14,6 +16,8 @@ import java.util.*;
 class onode {			// octtree node:
     onode parent;		// parent node
     onode children[];		// eight subnodes
+    onode link;			// next node in sort bin
+    int level;			// the level of this node
     int ntotal;			// total number of pixels represented
     int nhere;			// number represented here (not in children)
     long rsum, gsum, bsum;	// sums of rgb values here (not incl children)
@@ -42,7 +46,7 @@ private static final int Qshades = 1 << Qres;		// shades per primary
 private static final int Qmask = Qshades - 1;		// corresponding bitmask
 private static final int Qbins = 1 << (3 * Qres);	// number of tally bins
 
-private static final int Qclose = 10;			// thresholding slop
+private static final int Qranks = 100;			// rank bins per level
 
 
 
@@ -147,11 +151,13 @@ private static void insert(onode root, onode node,
     if (nbits == 1) {
     	o = root.children[i] = node;
 	node.parent = root;
+	node.level = root.level + 1;
     } else {
     	o = root.children[i];
 	if (o == null) {
 	    o = root.children[i] = new onode();
 	    o.parent = root;
+	    o.level = root.level + 1;
 	}
 	insert(o, node, nbits - 1, r, g, b);
     }
@@ -164,20 +170,17 @@ private static void insert(onode root, onode node,
 //  prune(root, n) -- prune n nodes to reduce number of colors
 
 private static void prune(onode root, int nprune) {
-    Vector v = new Vector();
-    int thresh = hitlist(root, v, 0) + Qclose;
+    int n = Qranks * (Qres + 1);
+    onode[] a = new onode[n];
+    double qmul = Qranks / Math.log(root.ntotal + 1);
 
-    int npasses = 0;
-    while (nprune > 0) {
-	npasses++;
-	v.removeAllElements();
-	thresh = hitlist(root, v, thresh) + Qclose;
-	Enumeration e = v.elements();
-	while (e.hasMoreElements()) {
-	    onode o = (onode) e.nextElement();
+    distrib(a, qmul, root);
+
+    for (int i = 0; i < n; i++) {
+    	for (onode o = a[i]; o != null; o = o.link) {
 	    nprune -= rmnode(o);
 	    if (nprune <= 0) {
-		break;
+	    	return;
 	    }
 	}
     }
@@ -185,30 +188,24 @@ private static void prune(onode root, int nprune) {
 
 
 
-//  hitlist(root, v, thresh) -- add nodes <= thresh to vector, return new thresh
+//  distrib(a, qmul, root) -- add nodes to sortbins based on level & population
 
-private static int hitlist(onode root, Vector v, int thresh) {
-    int t = Integer.MAX_VALUE;
-    if (root.children != null) {
-	for (int i = 0; i < 8; i++) {
-	    onode o = root.children[i];
-	    if (o != null) {
-		int t2 = hitlist(o, v, thresh);
-		if (t2 < t) {
-		    t = t2;
-		}
-	    }
-	}
+private static void distrib(onode[] a, double qmul, onode root) {
+
+    if (root == null) {
+    	return;
     }
-    if (root.ntotal == 0) {
-	return t;
-    } else if (root.ntotal <= thresh) {
-	v.addElement(root);
-	return t;
-    } else if (root.ntotal < t) {
-	return root.ntotal;
-    } else {
-       return t;
+
+    int base = Qranks * (Qres - root.level);
+    int offset = (int) (qmul * Math.log(root.ntotal));
+    int i = base + offset;
+    root.link = a[i];
+    a[i] = root;
+
+    if (root.children != null) {
+	for (i = 0; i < 8; i++) {
+	    distrib(a, qmul, root.children[i]);
+	}
     }
 }
 
