@@ -17,4 +17,21 @@ public abstract class iBinaryValueClosure extends iBinaryClosure {
 			return null;
 		}
 	}
+
+	public vDescriptor call(vDescriptor arg0, vDescriptor arg1, iClosure parent) {
+	    argument0 = arg0.deref();
+	    argument1 = arg1.deref();
+	    this.parent = parent;
+	    try {
+		try {
+		    return function(argument0, argument1);
+		} catch (OutOfMemoryError e) {
+		    iRuntime.error(307);	// #%#%# really out of memory.
+		    return null;
+		}
+	    } catch (iError e) {
+		e.report(this);  // returns only on error->failure conversion.
+		return null;
+	    }
+	}
 }
