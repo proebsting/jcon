@@ -61,38 +61,17 @@ JAVA="java -noverify"
 TRAN="jtran"
 LINK="jlink"
 
-# check OS type and set shell variables accordingly
-# WARNING: the Windows code once worked, but has not been maintained
-case `uname` in
-    Windows* | OS/2 | DOS)
-	set -K		# use "Korn shell" mode in MKS, not POSIX
-	FILESEP=\\
-	PATHSEP=\;
-	NULLFILE=NUL
-	TMPVAR='$TMP'
-	ICONX=iconx
-	;;
-    *)
-	FILESEP=/
-	PATHSEP=:
-	NULLFILE=/dev/null
-	TMPVAR='${TMPDIR:-/tmp}'
-	ICONX=
-	;;
-esac
-
 # determine installed directory
 SCRIPT=`whence $0`
 IDIR=`dirname $SCRIPT`
 IDIR="${IDIR#/tmp_mnt}"
 IDIR="${IDIR#/.automount}"
 case $IDIR in
-    /*)		;;			# Unix-style absolute path
-    ?:*)	;;			# DOS-style absolute path
+    /*)		;;			# absolute path
     *)		IDIR=`pwd`/$IDIR;;	# relative path
 esac
-JRTS="$IDIR${FILESEP}jcon.zip"
-RTSREF="$PATHSEP$JRTS"
+JRTS="$IDIR/jcon.zip"
+RTSREF=":$JRTS"
 
 # using script location, define handler for usage error
 function usage {	# usage: print header above, and exit
@@ -145,7 +124,7 @@ NOEXECUTE=exit
 
 # process options, changing default values set above
 
-while getopts "bcdjrstuvEJPSo:f:" c 2>$NULLFILE; do
+while getopts "bcdjrstuvEJPSo:f:" c 2>/dev/null; do
     case $c in
 	b)	TARGET="ucode"; NOLINK="exit";;
 	c)	NOLINK="exit";;
@@ -214,8 +193,8 @@ for FNAME; do
 done
 
 # set paths for translator
-JTRAN="$ICONX $IDIR${FILESEP}$TRAN"
-JLINK="$ICONX $IDIR${FILESEP}$LINK"
+JTRAN="$IDIR/$TRAN"
+JLINK="$IDIR/$LINK"
 
 # estimate the needed header size
 HBASE=480		# approximate size of fixed text, plus breathing room
@@ -267,7 +246,7 @@ for FNAME in $IFILES; do
 		if [ "$JVMDUMP" != "" ]; then (
 		    cd $TDIR
 		    JVM=../$FNAME.jvm
-		    cat $NULLFILE >$JVM
+		    cat /dev/null >$JVM
 		    for c in l*class [cp]_l*class; do
 			echo "======================================" $c >>$JVM
 			echo "" >>$JVM
@@ -332,7 +311,7 @@ case $XTYPE in
     *.ksh)
 	# combine a header (padded via dd) with that zip file to make a script
 	# (if making significant changes here, also adjust HBASE above)
-	(dd bs=$HDRSIZE conv=sync 2>$NULLFILE; cat $TDIR/combined.zip) \
+	(dd bs=$HDRSIZE conv=sync 2>/dev/null; cat $TDIR/combined.zip) \
 	    <<=====EOF===== >$XFILE
 #!/bin/ksh -p
 
@@ -345,11 +324,11 @@ case \$WHENCE in
     *)		THISFILE=\`pwd\`/\$WHENCE;;
 esac
 
-TZIP="$TMPVAR${FILESEP}jcon\$\$.zip"
+TZIP="${TMPDIR:-/tmp}/jcon\$\$.zip"
 trap "rm -rf \$TZIP" 0 1 2 15
-dd bs=$HDRSIZE skip=1 <\$THISFILE >\$TZIP 2>$NULLFILE
+dd bs=$HDRSIZE skip=1 <\$THISFILE >\$TZIP 2>/dev/null
 
-export CLASSPATH="\$TZIP$RTSREF$PATHSEP\$CLASSPATH"
+export CLASSPATH="\$TZIP$RTSREF:\$CLASSPATH"
 $JAVA -DTRACE=$INITTRACE \$JXOPTS $MAIN "\$@"
 exit
 
@@ -359,7 +338,7 @@ exit
 =====EOF=====
 
 	# verify that the header was big enough
-	dd bs=$HDRSIZE count=1 <$XFILE 2>$NULLFILE | grep '%%%%' >$NULLFILE ||
+	dd bs=$HDRSIZE count=1 <$XFILE 2>/dev/null | grep '%%%%' >/dev/null ||
 	    (echo 1>&2 "internal error in $0: header too small" && exit 1)
 
 	# the process was successful
@@ -375,7 +354,7 @@ $NODELETE rm -f $ZBUILT
 # diagnose undeclared variables (maybe)
 if [ "$UNDECLARED" != "" ]; then
     case $XTYPE in
-       *.jar) (CLASSPATH=$XFILE$PATHSEP$JRTS $JAVA $UNDECLARED $MAIN);;
+       *.jar) (CLASSPATH=$XFILE:$JRTS $JAVA $UNDECLARED $MAIN);;
        *.ksh) (JXOPTS=$UNDECLARED ./$XFILE);;
     esac
 fi
@@ -386,7 +365,7 @@ $NODELETE rm -rf $TDIR
 $ANNOUNCE 1>&2 "Executing:"
 
 case $XTYPE in
-   *.jar) CLASSPATH=$XFILE$PATHSEP$JRTS \
+   *.jar) CLASSPATH=$XFILE:$JRTS \
 	    exec $JAVA $JXOPTS -DTRACE="$UTRACE" $MAIN "$@";;
    *.ksh) export TRACE="$UTRACE"; exec ./$XFILE "$@";;
 esac
