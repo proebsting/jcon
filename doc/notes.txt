@@ -71,6 +71,7 @@ graphics overview:
 -- omissions include patterns and wide lines
 -- see rts/wBuiltins.java for the list of missing functions
 -- see rts/wAttrib.java for the list of missing attributes
+-- see rts/wCanvas.java for the list of recognized pointer names
 
 graphics bugs:
 -- window repair may be delayed until the program pauses for graphics input
@@ -107,3 +108,6 @@ images:
 -- ReadImage() ignores the palette argument; Java dithers if necessary
 -- ReadImage() and DrawImage() never return an integer indicating color shortage
 -- WriteImage() and Pixel() are not implemented
+
+miscellaneous:
+-- attempts to warp the mouse (pointerx attribute etc.) are silently ignored
