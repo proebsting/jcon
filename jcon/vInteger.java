@@ -123,6 +123,32 @@ vValue NGreater(vDescriptor v) {
     return (this.value > vi.value) ? vi : null;
 }
 
+iClosure instantiate (vDescriptor[] args, iClosure parent) {
+	return new iIntegerClosure(this, args, parent);
+}
+
 
 
 } // class vInteger
+
+class iIntegerClosure extends iRefClosure {
+	vInteger value;
+
+    iIntegerClosure(vInteger value, vDescriptor[] args, iClosure parent) {
+        this.value = value;
+	arguments = args;
+	this.parent = parent;
+    }
+
+    vDescriptor function(vDescriptor[] args) {
+	long i = value.value;
+	if (i <= 0) {
+	    i += args.length;
+	}
+	i -= 1;
+	if (i < 0 || i >= args.length) {
+		return null;
+	}
+	return args[(int)i];
+    }
+}
