@@ -792,7 +792,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	sortedvars := 
 		sort(bc_var_set ++ set(params) ++ set(locals) ++ set(statics))
 
-	bc_create_locals(c, undeclared, sortedvars)
+	bc_create_locals(c, undeclared, set(statics), sortedvars)
 	bc_create_prologue(c, params, accumulate)
 	bc_create_createvars(c, params, locals, undeclared)
 	bc_create_copy(c, params, locals, undeclared)
@@ -834,7 +834,7 @@ procedure bc_create_nextval(c)
 	put(nextvalcode.code, vreturn())
 end
 
-procedure bc_create_locals(c, undeclared, sortedvars)
+procedure bc_create_locals(c, undeclared, statics, sortedvars)
 	local locals, localscode, names, variables, k, lab
 	local shadow, index, class_index
 
@@ -875,8 +875,12 @@ procedure bc_create_locals(c, undeclared, sortedvars)
 		put(localscode.code, aload_0() )
 		put(localscode.code, getfield(variables) )
 		put(localscode.code, iload_1() )
-		put(localscode.code, aload_0() )
-		put(localscode.code, getfield(index) )
+		if member(statics, k) then {
+			put(localscode.code, getstatic(index) )
+		} else {
+			put(localscode.code, aload_0() )
+			put(localscode.code, getfield(index) )
+		}
 		put(localscode.code, aastore() )
 
 		put(localscode.code, iinc(1,1) )
