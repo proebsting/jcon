@@ -13,6 +13,7 @@ final class wCanvas extends Canvas {
     Image i;			// backing image for refreshing visable image
 
     int width, height;		// last known width and height
+    int xloc, yloc;		// last known mouse position
 
     vList evq;			// event queue
     wTTY tty;			// file I/O stuff

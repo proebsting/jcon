@@ -22,7 +22,7 @@ static void announce() {
     iEnv.declareBuiltin("CopyArea", 8, wFunctions.self);
     iEnv.declareBuiltin("DrawArc", -1, wFunctions.self);
     iEnv.declareBuiltin("DrawCircle", -1, wFunctions.self);
-    iEnv.declareBuiltin("DrawCurve", -1, wFunctions.self);	// not really: calls DrawLine
+    iEnv.declareBuiltin("DrawCurve", -1, wFunctions.self);	// just DrawLine
     iEnv.declareBuiltin("DrawLine", -1, wFunctions.self);
     iEnv.declareBuiltin("DrawPoint", -1, wFunctions.self);
     iEnv.declareBuiltin("DrawPolygon", -1, wFunctions.self);
@@ -40,20 +40,22 @@ static void announce() {
     iEnv.declareBuiltin("FreeColor", -1, wFunctions.self);
     iEnv.declareBuiltin("GotoRC", 3, wFunctions.self);
     iEnv.declareBuiltin("GotoXY", 3, wFunctions.self);
-    iEnv.declareBuiltin("NewColor", 2, wFunctions.self);		// always fails
+    iEnv.declareBuiltin("Lower", 1, wFunctions.self);
+    iEnv.declareBuiltin("NewColor", 2, wFunctions.self);	// always fails
     iEnv.declareBuiltin("PaletteChars", 2, wFunctions.self);
     iEnv.declareBuiltin("PaletteColor", 3, wFunctions.self);
     iEnv.declareBuiltin("PaletteKey", 3, wFunctions.self);
     iEnv.declareBuiltin("Pattern", 2, wFunctions.self);		// always fails
     iEnv.declareBuiltin("Pending", 1, wFunctions.self);
+    iEnv.declareBuiltin("Raise", 1, wFunctions.self);
     iEnv.declareBuiltin("TextWidth", 2, wFunctions.self);
     iEnv.declareBuiltin("Uncouple", 1, wFunctions.self);
     iEnv.declareBuiltin("WAttrib", -1, wFunctions.self);
-    iEnv.declareBuiltin("WDefault", 3, wFunctions.self);		// always fails
+    iEnv.declareBuiltin("WDefault", 3, wFunctions.self);	// always fails
     iEnv.declareBuiltin("WFlush", 1, wFunctions.self);
     iEnv.declareBuiltin("WSync", 1, wFunctions.self);
 
-    // #%#% NOT YET IMPLEMENTED:
+    // #%#% NOT IMPLEMENTED:
     //
     // iEnv.declareBuiltin("DrawImage", 4);
     //
@@ -62,8 +64,6 @@ static void announce() {
     // iEnv.declareBuiltin("Pixel", 5);
     //
     // iEnv.declareBuiltin("Active", 0);
-    // iEnv.declareBuiltin("Lower", 1);
-    // iEnv.declareBuiltin("Raise", 1);
     //
     // iEnv.declareBuiltin("Couple", 2);	// may not be possible
 }

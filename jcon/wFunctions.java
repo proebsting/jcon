@@ -7,52 +7,50 @@ import java.awt.*;
 public final class wFunctions extends iInstantiate {
     public static wFunctions self = new wFunctions();
     public vProc instantiate(String name) {
-        if (name.compareTo( "f$WAttrib" ) == 0) return new f$WAttrib();
-        if (name.compareTo( "f$Clone" ) == 0) return new f$Clone();
-        if (name.compareTo( "f$Pending" ) == 0) return new f$Pending();
-        if (name.compareTo( "f$Event" ) == 0) return new f$Event();
-        if (name.compareTo( "f$Clip" ) == 0) return new f$Clip();
-        if (name.compareTo( "f$Bg" ) == 0) return new f$Bg();
-        if (name.compareTo( "f$Fg" ) == 0) return new f$Fg();
-        if (name.compareTo( "f$Pattern" ) == 0) return new f$Pattern();
-        if (name.compareTo( "f$ColorValue" ) == 0) return new f$ColorValue();
-        if (name.compareTo( "f$PaletteChars" ) == 0) return new f$PaletteChars();
-        if (name.compareTo( "f$PaletteColor" ) == 0) return new f$PaletteColor();
-        if (name.compareTo( "f$PaletteKey" ) == 0) return new f$PaletteKey();
-        if (name.compareTo( "f$Font" ) == 0) return new f$Font();
-        if (name.compareTo( "f$TextWidth" ) == 0) return new f$TextWidth();
-        if (name.compareTo( "f$GotoXY" ) == 0) return new f$GotoXY();
-        if (name.compareTo( "f$GotoRC" ) == 0) return new f$GotoRC();
-        if (name.compareTo( "f$DrawPoint" ) == 0) return new f$DrawPoint();
-        if (name.compareTo( "f$DrawLine" ) == 0) return new f$DrawLine();
-        if (name.compareTo( "f$DrawCurve" ) == 0) return new f$DrawCurve();
-        if (name.compareTo( "f$DrawSegment" ) == 0) return new f$DrawSegment();
-        if (name.compareTo( "f$DrawPolygon" ) == 0) return new f$DrawPolygon();
-        if (name.compareTo( "f$FillPolygon" ) == 0) return new f$FillPolygon();
-        if (name.compareTo( "f$DrawRectangle" ) == 0) return new f$DrawRectangle();
-        if (name.compareTo( "f$EraseArea" ) == 0) return new f$EraseArea();
-        if (name.compareTo( "f$FillRectangle" ) == 0) return new f$FillRectangle();
-        if (name.compareTo( "f$CopyArea" ) == 0) return new f$CopyArea();
-        if (name.compareTo( "f$DrawArc" ) == 0) return new f$DrawArc();
-        if (name.compareTo( "f$FillArc" ) == 0) return new f$FillArc();
-        if (name.compareTo( "f$DrawCircle" ) == 0) return new f$DrawCircle();
-        if (name.compareTo( "f$FillCircle" ) == 0) return new f$FillCircle();
-        if (name.compareTo( "f$DrawString" ) == 0) return new f$DrawString();
-        if (name.compareTo( "f$NewColor" ) == 0) return new f$NewColor();
-        if (name.compareTo( "f$Color" ) == 0) return new f$Color();
-        if (name.compareTo( "f$FreeColor" ) == 0) return new f$FreeColor();
-        if (name.compareTo( "f$Alert" ) == 0) return new f$Alert();
-        if (name.compareTo( "f$Uncouple" ) == 0) return new f$Uncouple();
-        if (name.compareTo( "f$WDefault" ) == 0) return new f$WDefault();
-        if (name.compareTo( "f$WFlush" ) == 0) return new f$WFlush();
-        if (name.compareTo( "f$WSync" ) == 0) return new f$WSync();
+        if (name.equals("f$Alert")) return new f$Alert();
+        if (name.equals("f$Bg")) return new f$Bg();
+        if (name.equals("f$Clip")) return new f$Clip();
+        if (name.equals("f$Clone")) return new f$Clone();
+        if (name.equals("f$Color")) return new f$Color();
+        if (name.equals("f$ColorValue")) return new f$ColorValue();
+        if (name.equals("f$CopyArea")) return new f$CopyArea();
+        if (name.equals("f$DrawArc")) return new f$DrawArc();
+        if (name.equals("f$DrawCircle")) return new f$DrawCircle();
+        if (name.equals("f$DrawCurve")) return new f$DrawCurve();
+        if (name.equals("f$DrawLine")) return new f$DrawLine();
+        if (name.equals("f$DrawPoint")) return new f$DrawPoint();
+        if (name.equals("f$DrawPolygon")) return new f$DrawPolygon();
+        if (name.equals("f$DrawRectangle")) return new f$DrawRectangle();
+        if (name.equals("f$DrawSegment")) return new f$DrawSegment();
+        if (name.equals("f$DrawString")) return new f$DrawString();
+        if (name.equals("f$EraseArea")) return new f$EraseArea();
+        if (name.equals("f$Event")) return new f$Event();
+        if (name.equals("f$Fg")) return new f$Fg();
+        if (name.equals("f$FillArc")) return new f$FillArc();
+        if (name.equals("f$FillCircle")) return new f$FillCircle();
+        if (name.equals("f$FillPolygon")) return new f$FillPolygon();
+        if (name.equals("f$FillRectangle")) return new f$FillRectangle();
+        if (name.equals("f$Font")) return new f$Font();
+        if (name.equals("f$FreeColor")) return new f$FreeColor();
+        if (name.equals("f$GotoRC")) return new f$GotoRC();
+        if (name.equals("f$GotoXY")) return new f$GotoXY();
+        if (name.equals("f$Lower")) return new f$Lower();
+        if (name.equals("f$NewColor")) return new f$NewColor();
+        if (name.equals("f$PaletteChars")) return new f$PaletteChars();
+        if (name.equals("f$PaletteColor")) return new f$PaletteColor();
+        if (name.equals("f$PaletteKey")) return new f$PaletteKey();
+        if (name.equals("f$Pattern")) return new f$Pattern();
+        if (name.equals("f$Pending")) return new f$Pending();
+        if (name.equals("f$Raise")) return new f$Raise();
+        if (name.equals("f$TextWidth")) return new f$TextWidth();
+        if (name.equals("f$Uncouple")) return new f$Uncouple();
+        if (name.equals("f$WAttrib")) return new f$WAttrib();
+        if (name.equals("f$WDefault")) return new f$WDefault();
+        if (name.equals("f$WFlush")) return new f$WFlush();
+        if (name.equals("f$WSync")) return new f$WSync();
         return null;
     } // vProc instantiate(String)
 }
-
-
-//------------------------------------------  miscellaneous functions follow
-
 
 
 
@@ -573,12 +571,22 @@ final class f$Alert extends vProc1 {		// Alert(W) sends a beep
     }
 }
 
-final class f$Uncouple extends vProc1 {		// Uncouple(W)
+final class f$Lower extends vProc1 {		// Lower(W) moves window to back
     public vDescriptor Call(vDescriptor a) {
 	if (!a.iswin()) {
 	    return Call(iKeyword.window.getWindow());
 	}
-	((vWindow)a.Deref()).uncouple();
+	((vWindow)a.Deref()).getCanvas().f.toBack();
+	return a;
+    }
+}
+
+final class f$Raise extends vProc1 {		// Raise(W) moves win to front
+    public vDescriptor Call(vDescriptor a) {
+	if (!a.iswin()) {
+	    return Call(iKeyword.window.getWindow());
+	}
+	((vWindow)a.Deref()).getCanvas().f.toFront();
 	return a;
     }
 }
@@ -608,6 +616,16 @@ final class f$WSync extends vProc1 {		// WSync(W) syncs w/ toolkit
 	    return Call(iKeyword.window.getWindow());
 	}
 	((vWindow)a.Deref()).flush();
+	return a;
+    }
+}
+
+final class f$Uncouple extends vProc1 {		// Uncouple(W) closes gpx contxt
+    public vDescriptor Call(vDescriptor a) {
+	if (!a.iswin()) {
+	    return Call(iKeyword.window.getWindow());
+	}
+	((vWindow)a.Deref()).uncouple();
 	return a;
     }
 }

@@ -316,7 +316,12 @@ vString reads(long n)		{ return getTTY().reads(this, n); }
 void writes(vString s)		{ getTTY().writes(this, s); }
 void newline()			{ getTTY().newline(this); }
 
-vFile flush()			{ getTTY(); toolkit.sync(); return this; }
+vFile flush() {			// flush() is all-purpose window synchronizer
+    getTTY();			// ensure window is still open
+    toolkit.sync();		// flush graphics output, sync toolkit
+    Thread.yield();		// let event handlers run
+    return this;
+}
 
 
 
@@ -325,15 +330,28 @@ vWindow Clone() {
 }
 
 vList Pending() {
+    this.flush();
     return c.evq;
 }
 
 vValue Event() {
-    if (c.evq.Size().value == 0) {	// if we're going to block
-	iKeyword.output.file().flush();	// flush stdout first
-    }
-    vValue e = wEvent.dequeue(c, dx, dy);
     setCurrent(this);
+    vValue e = wEvent.dequeue(c, dx, dy);	// look for event
+    if (e == null) {				// if none available
+	iKeyword.output.file().flush();		// flush stdout
+	this.flush();				// flush & sync window
+   	e = wEvent.dequeue(c, dx, dy);		// try again
+    }
+    while (e == null) {		//#%#% is polling really the way to do this?
+	try {
+	    Thread.sleep(iConfig.PollDelay);
+	} catch (InterruptedException x) {
+	}
+	if (c.i == null) {
+	    iRuntime.error(142);	// window was closed while waiting
+	}
+	e = wEvent.dequeue(c, dx, dy);
+    }
     return e;
 }
 

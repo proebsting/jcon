@@ -5,24 +5,24 @@ package rts;
 final class fNumeric extends iInstantiate {
     public static fNumeric self = new fNumeric();
     public vProc instantiate(String name) {
-        if (name.compareTo( "f$abs" ) == 0) return new f$abs();
-        if (name.compareTo( "f$seq" ) == 0) return new f$seq();
-        if (name.compareTo( "f$icom" ) == 0) return new f$icom();
-        if (name.compareTo( "f$iand" ) == 0) return new f$iand();
-        if (name.compareTo( "f$ior" ) == 0) return new f$ior();
-        if (name.compareTo( "f$ixor" ) == 0) return new f$ixor();
-        if (name.compareTo( "f$ishift" ) == 0) return new f$ishift();
-        if (name.compareTo( "f$sqrt" ) == 0) return new f$sqrt();
-        if (name.compareTo( "f$exp" ) == 0) return new f$exp();
-        if (name.compareTo( "f$log" ) == 0) return new f$log();
-        if (name.compareTo( "f$dtor" ) == 0) return new f$dtor();
-        if (name.compareTo( "f$rtod" ) == 0) return new f$rtod();
-        if (name.compareTo( "f$sin" ) == 0) return new f$sin();
-        if (name.compareTo( "f$cos" ) == 0) return new f$cos();
-        if (name.compareTo( "f$tan" ) == 0) return new f$tan();
-        if (name.compareTo( "f$asin" ) == 0) return new f$asin();
-        if (name.compareTo( "f$acos" ) == 0) return new f$acos();
-        if (name.compareTo( "f$atan" ) == 0) return new f$atan();
+        if (name.equals("f$abs")) return new f$abs();
+        if (name.equals("f$seq")) return new f$seq();
+        if (name.equals("f$icom")) return new f$icom();
+        if (name.equals("f$iand")) return new f$iand();
+        if (name.equals("f$ior")) return new f$ior();
+        if (name.equals("f$ixor")) return new f$ixor();
+        if (name.equals("f$ishift")) return new f$ishift();
+        if (name.equals("f$sqrt")) return new f$sqrt();
+        if (name.equals("f$exp")) return new f$exp();
+        if (name.equals("f$log")) return new f$log();
+        if (name.equals("f$dtor")) return new f$dtor();
+        if (name.equals("f$rtod")) return new f$rtod();
+        if (name.equals("f$sin")) return new f$sin();
+        if (name.equals("f$cos")) return new f$cos();
+        if (name.equals("f$tan")) return new f$tan();
+        if (name.equals("f$asin")) return new f$asin();
+        if (name.equals("f$acos")) return new f$acos();
+        if (name.equals("f$atan")) return new f$atan();
         return null;
     } // vProc instantiate(String)
 }

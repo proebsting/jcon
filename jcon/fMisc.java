@@ -8,19 +8,19 @@ import java.util.*;
 final class fMisc extends iInstantiate {
     public static fMisc self = new fMisc();
     public vProc instantiate(String name) {
-        if (name.compareTo( "f$name" ) == 0) return new f$name();
-        if (name.compareTo( "f$display" ) == 0) return new f$display();
-        if (name.compareTo( "f$variable" ) == 0) return new f$variable();
-        if (name.compareTo( "f$function" ) == 0) return new f$function();
-        if (name.compareTo( "f$args" ) == 0) return new f$args();
-        if (name.compareTo( "f$proc" ) == 0) return new f$proc();
-        if (name.compareTo( "f$collect" ) == 0) return new f$collect();
-        if (name.compareTo( "f$delay" ) == 0) return new f$delay();
-        if (name.compareTo( "f$exit" ) == 0) return new f$exit();
-        if (name.compareTo( "f$getenv" ) == 0) return new f$getenv();
-        if (name.compareTo( "f$system" ) == 0) return new f$system();
-        if (name.compareTo( "f$errorclear" ) == 0) return new f$errorclear();
-        if (name.compareTo( "f$runerr" ) == 0) return new f$runerr();
+        if (name.equals("f$name")) return new f$name();
+        if (name.equals("f$display")) return new f$display();
+        if (name.equals("f$variable")) return new f$variable();
+        if (name.equals("f$function")) return new f$function();
+        if (name.equals("f$args")) return new f$args();
+        if (name.equals("f$proc")) return new f$proc();
+        if (name.equals("f$collect")) return new f$collect();
+        if (name.equals("f$delay")) return new f$delay();
+        if (name.equals("f$exit")) return new f$exit();
+        if (name.equals("f$getenv")) return new f$getenv();
+        if (name.equals("f$system")) return new f$system();
+        if (name.equals("f$errorclear")) return new f$errorclear();
+        if (name.equals("f$runerr")) return new f$runerr();
         return null;
     } // vProc instantiate(String)
 }

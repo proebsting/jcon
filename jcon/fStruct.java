@@ -5,14 +5,14 @@ package rts;
 final class fStruct extends iInstantiate {
     public static fStruct self = new fStruct();
     public vProc instantiate(String name) {
-        if (name.compareTo( "f$set" ) == 0) return new f$set();
-        if (name.compareTo( "f$table" ) == 0) return new f$table();
-        if (name.compareTo( "f$insert" ) == 0) return new f$insert();
-        if (name.compareTo( "f$member" ) == 0) return new f$member();
-        if (name.compareTo( "f$delete" ) == 0) return new f$delete();
-        if (name.compareTo( "f$key" ) == 0) return new f$key();
-        if (name.compareTo( "f$copy" ) == 0) return new f$copy();
-        if (name.compareTo( "f$serial" ) == 0) return new f$serial();
+        if (name.equals("f$set")) return new f$set();
+        if (name.equals("f$table")) return new f$table();
+        if (name.equals("f$insert")) return new f$insert();
+        if (name.equals("f$member")) return new f$member();
+        if (name.equals("f$delete")) return new f$delete();
+        if (name.equals("f$key")) return new f$key();
+        if (name.equals("f$copy")) return new f$copy();
+        if (name.equals("f$serial")) return new f$serial();
         return null;
     } // vProc instantiate(String)
 }

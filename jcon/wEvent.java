@@ -11,8 +11,6 @@ final class wEvent implements WindowListener, ComponentListener,
     KeyListener, MouseListener, MouseMotionListener
 {
     wCanvas c;		// associated canvas
-    int xloc;		// mouse x-coordinate
-    int yloc;		// mouse y-coordinate
 
 
 
@@ -90,16 +88,10 @@ void enqueue(vValue a, int x, int y, InputEvent e) {
 static vValue dequeue(wCanvas c, int dx, int dy) {
     vValue a, xv, yv;
 
+    // get first value; return null if queue is empty
     a = c.evq.Get();
-    while (a == null) {		//#%#% is polling really the way to do this?
-	try {
-	    Thread.sleep(iConfig.PollDelay);
-	} catch (InterruptedException e) {
-	}
-	if (c.i == null) {
-	    iRuntime.error(142);	// window was closed while waiting
-	}
-	a = c.evq.Get();
+    if (a == null) {
+	return null;
     }
 
     //  get two more values, which must be integers
@@ -170,14 +162,14 @@ public void keyTyped(KeyEvent e) {}
 public void keyPressed(KeyEvent e) {}
 
 public void keyReleased(KeyEvent e)	{
-    char c = e.getKeyChar();
-    if (c == '\n' && ! e.isControlDown()) {
-	c = '\r';				// v9 compatibility
+    char ch = e.getKeyChar();
+    if (ch == '\n' && ! e.isControlDown()) {	// if enter key
+	ch = '\r';				// change to \r for v9 compat
     }
-    if (c != KeyEvent.CHAR_UNDEFINED) {
-	enqueue(vString.New((char)c), xloc, yloc, e);
+    if (ch != KeyEvent.CHAR_UNDEFINED) {
+	enqueue(vString.New(ch), c.xloc, c.yloc, e);
     } else if (e.isActionKey()) {
-	enqueue(vInteger.New(e.getKeyCode()), xloc, yloc, e);
+	enqueue(vInteger.New(e.getKeyCode()), c.xloc, c.yloc, e);
     }
 }
 
@@ -185,26 +177,26 @@ public void keyReleased(KeyEvent e)	{
 
 public void mouseClicked(MouseEvent e)	{}
 
-public void mouseEntered(MouseEvent e)	{ xloc = e.getX(); yloc = e.getY(); }
-public void mouseMoved(MouseEvent e)	{ xloc = e.getX(); yloc = e.getY(); }
-public void mouseExited(MouseEvent e)	{ xloc = yloc = 0; }
+public void mouseEntered(MouseEvent e)	{ c.xloc = e.getX(); c.yloc = e.getY();}
+public void mouseMoved(MouseEvent e)	{ c.xloc = e.getX(); c.yloc = e.getY();}
+public void mouseExited(MouseEvent e)	{ c.xloc = c.yloc = 0; }
 
 public void mousePressed(MouseEvent e) {
-    xloc = e.getX();
-    yloc = e.getY();
-    enqueue(vInteger.New(LPress + mouseMod(e)), xloc, yloc, e);
+    c.xloc = e.getX();
+    c.yloc = e.getY();
+    enqueue(vInteger.New(LPress + mouseMod(e)), c.xloc, c.yloc, e);
 }
 
 public void mouseReleased(MouseEvent e) {
-    xloc = e.getX();
-    yloc = e.getY();
-    enqueue(vInteger.New(LRelease + mouseMod(e)), xloc, yloc, e);
+    c.xloc = e.getX();
+    c.yloc = e.getY();
+    enqueue(vInteger.New(LRelease + mouseMod(e)), c.xloc, c.yloc, e);
 }
 
 public void mouseDragged(MouseEvent e) {
-    xloc = e.getX();
-    yloc = e.getY();
-    enqueue(vInteger.New(LDrag + mouseMod(e)), xloc, yloc, e);
+    c.xloc = e.getX();
+    c.yloc = e.getY();
+    enqueue(vInteger.New(LDrag + mouseMod(e)), c.xloc, c.yloc, e);
 }
 
 static int mouseMod(MouseEvent e) {	// adjust event code based on modifiers

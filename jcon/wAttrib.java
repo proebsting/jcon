@@ -23,28 +23,46 @@ private static Hashtable attlist = new Hashtable();
 
 static {
 
-    // The following attributes are implemented:
+    // The following canvas attributes are implemented:
 
-    newatt("canvas", new aCanvas());	//#%#% only normal and hidden, for now
-    newatt("resize", new aResize());
     newatt("label", new aLabel());
+    newatt("pos", new aPos());
+    newatt("posx", new aPosX());
+    newatt("posy", new aPosY());
+
+    newatt("resize", new aResize());
+    newatt("size", new aSize());
+    newatt("height", new aHeight());
+    newatt("width", new aWidth());
+    newatt("rows", new aRows());
+    newatt("columns", new aColumns());
+
+    newatt("canvas", new aCanvas());		// only "normal" and "hidden"
+
+    newatt("echo", new aEcho());
+    newatt("cursor", new aCursor());
+    newatt("x", new aX());
+    newatt("y", new aY());
+    newatt("row", new aRow());
+    newatt("col", new aCol());
+
     newatt("pointer", new aPointer());
+    newatt("pointerx",	new aPointerX());		// read-only
+    newatt("pointery",	new aPointerY());		// read-only
+    newatt("pointerrow", new aPointerRow());		// read-only
+    newatt("pointercol", new aPointerCol());		// read-only
+
     newatt("depth", new aDepth());
     newatt("displayheight", new aDisplayheight());
     newatt("displaywidth", new aDisplaywidth());
 
-    newatt("dx", new aDx());
-    newatt("dy", new aDy());
-    newatt("clipx", new aClipx());
-    newatt("clipy", new aClipy());
-    newatt("clipw", new aClipw());
-    newatt("cliph", new aCliph());
+    // The following graphics context attributes are implemented:
 
-    newatt("gamma", new aGamma());
-    newatt("bg", new aBg());
     newatt("fg", new aFg());
-    newatt("drawop", new aDrawop());
+    newatt("bg", new aBg());
     newatt("reverse", new aReverse());
+    newatt("drawop", new aDrawop());
+    newatt("gamma", new aGamma());
 
     newatt("font", new aFont());
     newatt("fheight", new aFheight());
@@ -53,38 +71,25 @@ static {
     newatt("descent", new aDescent());
     newatt("leading", new aLeading());
 
-    newatt("width", new aWidth());
-    newatt("height", new aHeight());
-    newatt("size", new aSize());
-    newatt("rows", new aRows());
-    newatt("columns", new aColumns());
+    newatt("clipx", new aClipx());
+    newatt("clipy", new aClipy());
+    newatt("clipw", new aClipw());
+    newatt("cliph", new aCliph());
+    newatt("dx", new aDx());
+    newatt("dy", new aDy());
 
-    newatt("echo", new aEcho());
-    newatt("cursor", new aCursor());
-
-    newatt("x", new aX());
-    newatt("y", new aY());
-    newatt("row", new aRow());
-    newatt("col", new aCol());
-
-    // The following attributes are incompletely implemented:
-    // they are recognized as legal, but changes are ignored
+    // The following canvas attributes are not implemented.
+    // They are recognized as legal, but changes are ignored.
 
     newatt("display",	new aDummy(vString.New(":0.0")));
-    newatt("pos",	new aDummy(vString.New("0,0")));
-    newatt("posx",	new aDummy(vString.New("0")));
-    newatt("posy",	new aDummy(vString.New("0")));
-    newatt("pointerx",	new aDummy(vInteger.New(0)));
-    newatt("pointery",	new aDummy(vInteger.New(0)));
-    newatt("pointerrow", new aDummy(vInteger.New(1)));
-    newatt("pointercol", new aDummy(vInteger.New(1)));
     newatt("image",	new aDummy(vString.New("")));
     newatt("iconpos",	new aDummy(vString.New("0,0")));
     newatt("iconlabel",	new aDummy(vString.New("")));
     newatt("iconimage",	new aDummy(vString.New("")));
 
-    // The following attributes are incompletely implemented for now
-    // but will be possible when Java 1.2 becomes universally available
+    // The following graphics context attributes are not implemented.
+    // They are recognized as legal, but changes are ignored.
+    // They will be easier to support under Java 1.2.
 
     newatt("linewidth",	new aDummy(vInteger.New(1)));
     newatt("linestyle",	new aDummy(vString.New("solid")));
@@ -159,7 +164,7 @@ static vValue unsettable(String name, String value) {
 
 
 
-// dummy attribute class: for attributes not yet implemented
+// dummy attribute class: for attributes not implemented
 
 final class aDummy extends wAttrib {
     vValue attval;
@@ -396,6 +401,28 @@ final class aCol extends wAttrib {
 
 
 
+final class aPointerX extends wAttrib {
+    vValue get(vWindow win)	{ return vInteger.New(win.getCanvas().xloc); }
+    vValue set(vWindow win)	{ return wAttrib.unsettable("pointerx", val); }
+}
+
+final class aPointerY extends wAttrib {
+    vValue get(vWindow win)	{ return vInteger.New(win.getCanvas().yloc); }
+    vValue set(vWindow win)	{ return wAttrib.unsettable("pointery", val); }
+}
+
+final class aPointerRow extends wAttrib {
+    vValue get(vWindow win)	{ return win.getTTY().PointerRow(win); }
+    vValue set(vWindow win)	{ return wAttrib.unsettable("pointerrow",val); }
+}
+
+final class aPointerCol extends wAttrib {
+    vValue get(vWindow win)	{ return win.getTTY().PointerCol(win); }
+    vValue set(vWindow win)	{ return wAttrib.unsettable("pointercol",val); }
+}
+
+
+
 final class aWidth extends wAttrib {
 
     vValue get(vWindow win) {
@@ -491,6 +518,73 @@ final class aColumns extends wAttrib {
 	} else {
 	    return null; /*FAIL*/
 	}
+    }
+
+}
+
+
+
+final class aPos extends wAttrib {
+
+    vValue get(vWindow win) {
+	Point p = win.getCanvas().f.getLocation();
+	return vString.New(p.x + "," + p.y);
+    }
+
+    vValue set(vWindow win) {
+	int x, y;
+	int j = val.indexOf(',');
+	if (j < 0) {
+	    return null;
+	}
+	try {
+	    x = Integer.parseInt(val.substring(0, j));
+	    y = Integer.parseInt(val.substring(j + 1));
+	} catch (Exception e) {
+	    return null; /*FAIL*/
+	}
+	win.getCanvas().f.setLocation(x, y);
+	return vString.New(x + "," + y);
+    }
+
+}
+
+final class aPosX extends wAttrib {
+
+    vValue get(vWindow win) {
+	return vInteger.New(win.getCanvas().f.getLocation().x);
+    }
+
+    vValue set(vWindow win) {
+	Frame f = win.getCanvas().f;
+	Point p = f.getLocation();
+	try {
+	    p.x = Integer.parseInt(val);
+	} catch (Exception e) {
+	    return null; /*FAIL*/
+	}
+	f.setLocation(p);
+	return vInteger.New(p.x);
+    }
+
+}
+
+final class aPosY extends wAttrib {
+
+    vValue get(vWindow win) {
+	return vInteger.New(win.getCanvas().f.getLocation().y);
+    }
+
+    vValue set(vWindow win) {
+	Frame f = win.getCanvas().f;
+	Point p = f.getLocation();
+	try {
+	    p.y = Integer.parseInt(val);
+	} catch (Exception e) {
+	    return null; /*FAIL*/
+	}
+	f.setLocation(p);
+	return vInteger.New(p.y);
     }
 
 }

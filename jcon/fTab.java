@@ -7,8 +7,8 @@ package rts;
 final class fTab extends iInstantiate {
     public static fTab self = new fTab();
     public vProc instantiate(String name) {
-        if (name.compareTo( "f$detab" ) == 0) return new f$detab();
-        if (name.compareTo( "f$entab" ) == 0) return new f$entab();
+        if (name.equals("f$detab")) return new f$detab();
+        if (name.equals("f$entab")) return new f$entab();
         return null;
     } // vProc instantiate(String)
 

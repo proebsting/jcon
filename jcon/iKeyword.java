@@ -226,6 +226,7 @@ final class k$features extends vProc0 {				// &features
 	vString.New("large integers"),
 	vString.New("pipes"),
 	vString.New("system function"),
+	vString.New("graphics"),
     };
 
     public vDescriptor Call() {

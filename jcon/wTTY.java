@@ -246,4 +246,21 @@ vValue Col(vWindow win, String v) {
 
 
 
+vValue PointerRow(vWindow win) {	// return row number of mouse
+    FontMetrics m = win.getFontMetrics();
+    int leading = win.Leading();
+    int a = m.getMaxAscent();
+
+    if (leading == 0) {
+	iRuntime.error(204);	// this is what v9 does: real division by 0
+    }
+    return vInteger.New((win.getCanvas().yloc - a) / leading + 1);
+}
+
+vValue PointerCol(vWindow win) {	// return column number of mouse
+    return vInteger.New(win.getCanvas().xloc / win.Fwidth() + 1);
+}
+
+
+
 } // wTTY

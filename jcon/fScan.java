@@ -7,15 +7,15 @@ package rts;
 final class fScan extends iInstantiate {
     public static fScan self = new fScan();
     public vProc instantiate(String name) {
-        if (name.compareTo( "f$pos" ) == 0) return new f$pos();
-        if (name.compareTo( "f$any" ) == 0) return new f$any();
-        if (name.compareTo( "f$many" ) == 0) return new f$many();
-        if (name.compareTo( "f$match" ) == 0) return new f$match();
-        if (name.compareTo( "f$find" ) == 0) return new f$find();
-        if (name.compareTo( "f$upto" ) == 0) return new f$upto();
-        if (name.compareTo( "f$bal" ) == 0) return new f$bal();
-        if (name.compareTo( "f$move" ) == 0) return new f$move();
-        if (name.compareTo( "f$tab" ) == 0) return new f$tab();
+        if (name.equals("f$pos")) return new f$pos();
+        if (name.equals("f$any")) return new f$any();
+        if (name.equals("f$many")) return new f$many();
+        if (name.equals("f$match")) return new f$match();
+        if (name.equals("f$find")) return new f$find();
+        if (name.equals("f$upto")) return new f$upto();
+        if (name.equals("f$bal")) return new f$bal();
+        if (name.equals("f$move")) return new f$move();
+        if (name.equals("f$tab")) return new f$tab();
         return null;
     } // vProc instantiate(String)
 

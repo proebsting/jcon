@@ -5,15 +5,15 @@ package rts;
 final class fString extends iInstantiate {
     public static fString self = new fString();
     public vProc instantiate(String name) {
-        if (name.compareTo( "f$char" ) == 0) return new f$char();
-        if (name.compareTo( "f$ord" ) == 0) return new f$ord();
-        if (name.compareTo( "f$repl" ) == 0) return new f$repl();
-        if (name.compareTo( "f$reverse" ) == 0) return new f$reverse();
-        if (name.compareTo( "f$left" ) == 0) return new f$left();
-        if (name.compareTo( "f$right" ) == 0) return new f$right();
-        if (name.compareTo( "f$center" ) == 0) return new f$center();
-        if (name.compareTo( "f$trim" ) == 0) return new f$trim();
-        if (name.compareTo( "f$map" ) == 0) return new f$map();
+        if (name.equals("f$char")) return new f$char();
+        if (name.equals("f$ord")) return new f$ord();
+        if (name.equals("f$repl")) return new f$repl();
+        if (name.equals("f$reverse")) return new f$reverse();
+        if (name.equals("f$left")) return new f$left();
+        if (name.equals("f$right")) return new f$right();
+        if (name.equals("f$center")) return new f$center();
+        if (name.equals("f$trim")) return new f$trim();
+        if (name.equals("f$map")) return new f$map();
         return null;
     } // vProc instantiate(String)
 }
