@@ -7,7 +7,7 @@ package rts;
 
 public abstract class vClosure extends vDescriptor {
 
-    vDescriptor retval;		// suspended value
+    public vDescriptor retval;		// suspended value
 
 
 
