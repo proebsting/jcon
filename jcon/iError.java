@@ -31,7 +31,10 @@ void report(iClosure c) {		// print message and abort
     System.err.println();
     System.err.println("Run-time error " + num);
     if (c.parent != null) {
-        System.err.println("File " + c.parent.file + "; Line " + c.parent.line);
+	if (c.parent.file != null) {
+            System.err.println("File " + c.parent.file + 
+			       "; Line " + c.parent.line);
+	}
     }
     System.err.println(iRunerr.text(num));
     if (desc != null) {
