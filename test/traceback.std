@@ -9,7 +9,6 @@ Traceback:
    foo(2)
    foo(1)
    foo(0)
-   {1 / 0}
 -------------------------
 
 Run-time error 201
