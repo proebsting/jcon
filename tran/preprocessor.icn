@@ -191,8 +191,7 @@ procedure preproc_scan_directive()
 		}
 		"error": {
 			if /preproc_if_state then {
-				preproc_error()
-				stop("    ",&subject)
+				preproc_error(&subject)
 			}
 		}
 		default: {
