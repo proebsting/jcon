@@ -65,6 +65,7 @@ extensions:
 
 graphics overview:
 -- only some of the graphics features are present
+-- omissions include clipping, dx/dy translation, images, wide lines
 -- see rts/wBuiltins.java for the list of implemented functions
 -- see rts/wAttrib.java for the list of implemented attributes
 
@@ -86,7 +87,7 @@ events:
 colors:
 -- variants (dark, weak, ..) of unsaturated colors (brown, pink, violet) differ
 -- "light black" and "pale black" produce black, not shades of gray
--- there is no inherent limit to the number of colors in use (v9 stops at 256)
+-- there is no inherent limit to the number of colors in use
 -- on 8-bit displays, depending on the Java system, colors may be approximated
 -- mutable colors are not available
 -- gamma correction is not yet implemented; acts as if gamma=1.0
