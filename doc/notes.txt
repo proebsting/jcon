@@ -4,7 +4,7 @@ running jcont:
 
 what's implemented:
 -- all datatypes (but only 64-bit integers; no large integers)
--- most keywords;  missing &time, &cset
+-- most keywords;  missing &time
 -- most functions; missing chdir(), loadfunc(), getch()/getche()/kbhit()
 -- no graphics
 -- "icont -E" is used for preprocessing
@@ -25,8 +25,10 @@ strings and csets:
 -- characters are 16-bit Unicode, but all I/O is to/from 8-bit ASCII files
 -- image() doesn't escape special characters
 -- image(c) doesn't recognize &digits, &lcase, etc.
--- csets may be up to 2^16 characters; big ones run slowly; &cset is missing
+-- csets may be up to 2^16 characters; big ones run slowly
+-- &cset is size 256, as in v9; it's not clear that this is correct
 -- char() and ord() work in the range 0 - 65535
+-- characters above 255 cannot be specified in string/cset constants
 
 numerics:
 -- overflow or underflow is not detected
