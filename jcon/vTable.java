@@ -79,20 +79,25 @@ public vDescriptor Bang() {
     while (e.hasMoreElements()) {
 	a[i++] = new vTrappedTable(this, (vValue) e.nextElement());
     }
+    if (i == 0) { 
+	return null; /*FAIL*/
+    } else if (i == 1) {
+	return a[0];  // only one member
+    }
 
     return new vClosure() {
-	int j = 0;
+	{ retval = a[0]; }
+	int j = 1;
 	public vDescriptor resume() {
 	    while (j < a.length) {
 		vTrappedTable v = a[j++];
 		if (t.containsKey(v.key)) {	// if not stale
-		    retval = v;
-		    return this;		// suspend
+		    return v;			// suspend
 		}
 	    }
 	    return null; /*FAIL*/
 	}
-    }.resume();
+    };
 }
 
 
@@ -104,20 +109,25 @@ public vDescriptor Key() {
     while (e.hasMoreElements()) {
 	a[i++] = (vValue) e.nextElement();
     }
+    if (i == 0) {
+	return null; /*FAIL*/
+    } else if (i == 1) {
+	return a[0];  // only one member
+    }
 
     return new vClosure() {
-	int j = 0;
+	{ retval = a[0]; }
+	int j = 1;
 	public vDescriptor resume() {
 	    while (j < a.length) {
 		vValue v = a[j++];
 		if (t.containsKey(v)) {		// if not stale
-		    retval = v;
-		    return this;		// suspend
+		    return v;			// suspend
 		}
 	    }
 	    return null; /*FAIL*/
 	}
-    }.resume();
+    };
 }
 
 

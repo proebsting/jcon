@@ -605,18 +605,19 @@ public vDescriptor SelectVar(vVariable v) {
 public vDescriptor Bang() {
     if (tlength == 0) {
 	return null; /*FAIL*/
+    } else if (tlength == 1) {
+	return New(charAt(0));	// size 1 string
     }
 
     return new vClosure() {
-	int i = 0;
 	{ retval = New(charAt(0)); }
-
+	int i = 0;
 	public vDescriptor resume() {
 	    if (++i >= tlength) {
 		return null; /*FAIL*/
+	    } else {
+		return New(charAt(i));
 	    }
-	    retval = New(charAt(i));
-	    return this;
 	}
     };
 }
@@ -624,20 +625,20 @@ public vDescriptor Bang() {
 
 
 public vDescriptor BangVar(final vVariable v) {
-    if (((vString)v.Deref()).tlength == 0) {
+    final int len = ((vString)v.Deref()).tlength;
+    if (len == 0) {
 	return null; /*FAIL*/
     }
 
     return new vClosure() {
-	int i = 1;
 	{ retval = vSubstring.New(v, 1, 2); }
-
+	int i = 1;
 	public vDescriptor resume() {
-	    if (++i > ((vString)v.Deref()).tlength) {
+	    if (++i > len) {
 		return null; /*FAIL*/
+	    } else {
+		return vSubstring.New(v, i, i + 1);
 	    }
-	    retval = vSubstring.New(v, i, i + 1);
-	    return this;
 	}
     };
 }

@@ -26,7 +26,6 @@ abstract vString report();				// report for traceback
 
 
 // operations that produce vVarExprs
-//#%#%#% probably need more e.g. SectPlus
 
 public vDescriptor Select()	{ return this.Deref().SelectVar(this); }
 public vDescriptor Bang()	{ return this.Deref().BangVar(this);}

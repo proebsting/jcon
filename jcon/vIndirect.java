@@ -125,12 +125,12 @@ vNumeric DivInto(vInteger a)		{ return Deref().DivInto(a); }
 vNumeric ModInto(vInteger a)		{ return Deref().ModInto(a); }
 vNumeric PowerOf(vInteger a)		{ return Deref().PowerOf(a); }
 
-vNumeric RevLess(vInteger a)		{ return Deref().RevLess(a); }
-vNumeric RevLessEq(vInteger a)		{ return Deref().RevLessEq(a); }
-vNumeric RevEqual(vInteger a)		{ return Deref().RevEqual(a); }
-vNumeric RevUnequal(vInteger a)		{ return Deref().RevUnequal(a); }
-vNumeric RevGreaterEq(vInteger a)	{ return Deref().RevGreaterEq(a); }
-vNumeric RevGreater(vInteger a)		{ return Deref().RevGreater(a); }
+vNumeric BkwLess(vInteger a)		{ return Deref().BkwLess(a); }
+vNumeric BkwLessEq(vInteger a)		{ return Deref().BkwLessEq(a); }
+vNumeric BkwEqual(vInteger a)		{ return Deref().BkwEqual(a); }
+vNumeric BkwUnequal(vInteger a)		{ return Deref().BkwUnequal(a); }
+vNumeric BkwGreaterEq(vInteger a)	{ return Deref().BkwGreaterEq(a); }
+vNumeric BkwGreater(vInteger a)		{ return Deref().BkwGreater(a); }
 
 vNumeric AddInto(vReal a)		{ return Deref().AddInto(a); }
 vNumeric SubFrom(vReal a)		{ return Deref().SubFrom(a); }
@@ -139,12 +139,12 @@ vNumeric DivInto(vReal a)		{ return Deref().DivInto(a); }
 vNumeric ModInto(vReal a)		{ return Deref().ModInto(a); }
 vNumeric PowerOf(vReal a)		{ return Deref().PowerOf(a); }
 
-vNumeric RevLess(vReal a)		{ return Deref().RevLess(a); }
-vNumeric RevLessEq(vReal a)		{ return Deref().RevLessEq(a); }
-vNumeric RevEqual(vReal a)		{ return Deref().RevEqual(a); }
-vNumeric RevUnequal(vReal a)		{ return Deref().RevUnequal(a);}
-vNumeric RevGreaterEq(vReal a)		{ return Deref().RevGreaterEq(a) ;}
-vNumeric RevGreater(vReal a)		{ return Deref().RevGreater(a); }
+vNumeric BkwLess(vReal a)		{ return Deref().BkwLess(a); }
+vNumeric BkwLessEq(vReal a)		{ return Deref().BkwLessEq(a); }
+vNumeric BkwEqual(vReal a)		{ return Deref().BkwEqual(a); }
+vNumeric BkwUnequal(vReal a)		{ return Deref().BkwUnequal(a);}
+vNumeric BkwGreaterEq(vReal a)		{ return Deref().BkwGreaterEq(a) ;}
+vNumeric BkwGreater(vReal a)		{ return Deref().BkwGreater(a); }
 
 
 

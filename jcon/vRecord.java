@@ -90,17 +90,20 @@ public vDescriptor Select() {
 
 
 public vDescriptor Bang() {
+    if (values.length == 0) {
+	return null; /*FAIL*/
+    }
     return new vClosure() {
-	int i = 0;
+	{ retval = values[0]; }
+	int i = 1;
 	public vDescriptor resume() {
 	    if (i < values.length) {
-		retval = values[i++];
-		return this;	// suspend
+		return values[i++];
 	    } else {
 		return null; /*FAIL*/
 	    }
 	}
-    }.resume();
+    };
 }
 
 

@@ -223,8 +223,7 @@ public vDescriptor Bang() {				//  !L
 	    if (++i >= v.size()) {
 		return null; /*FAIL*/
 	    }
-	    retval = (vDescriptor) v.elementAt(i);
-	    return this;
+	    return (vDescriptor) v.elementAt(i);
 	}
     };
 }

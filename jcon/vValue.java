@@ -135,12 +135,12 @@ vNumeric DivInto(vInteger a)		{ return Numerate().DivInto(a); }
 vNumeric ModInto(vInteger a)		{ return Numerate().ModInto(a); }
 vNumeric PowerOf(vInteger a)		{ return Numerate().PowerOf(a); }
 
-vNumeric RevLess(vInteger a)		{ return Numerate().RevLess(a); }
-vNumeric RevLessEq(vInteger a)		{ return Numerate().RevLessEq(a); }
-vNumeric RevEqual(vInteger a)		{ return Numerate().RevEqual(a); }
-vNumeric RevUnequal(vInteger a)		{ return Numerate().RevUnequal(a); }
-vNumeric RevGreaterEq(vInteger a)	{ return Numerate().RevGreaterEq(a); }
-vNumeric RevGreater(vInteger a)		{ return Numerate().RevGreater(a); }
+vNumeric BkwLess(vInteger a)		{ return Numerate().BkwLess(a); }
+vNumeric BkwLessEq(vInteger a)		{ return Numerate().BkwLessEq(a); }
+vNumeric BkwEqual(vInteger a)		{ return Numerate().BkwEqual(a); }
+vNumeric BkwUnequal(vInteger a)		{ return Numerate().BkwUnequal(a); }
+vNumeric BkwGreaterEq(vInteger a)	{ return Numerate().BkwGreaterEq(a); }
+vNumeric BkwGreater(vInteger a)		{ return Numerate().BkwGreater(a); }
 
 vNumeric AddInto(vReal a)		{ return Numerate().AddInto(a); }
 vNumeric SubFrom(vReal a)		{ return Numerate().SubFrom(a); }
@@ -149,23 +149,19 @@ vNumeric DivInto(vReal a)		{ return Numerate().DivInto(a); }
 vNumeric ModInto(vReal a)		{ return Numerate().ModInto(a); }
 vNumeric PowerOf(vReal a)		{ return Numerate().PowerOf(a); }
 
-vNumeric RevLess(vReal a)		{ return Numerate().RevLess(a); }
-vNumeric RevLessEq(vReal a)		{ return Numerate().RevLessEq(a); }
-vNumeric RevEqual(vReal a)		{ return Numerate().RevEqual(a); }
-vNumeric RevUnequal(vReal a)		{ return Numerate().RevUnequal(a); }
-vNumeric RevGreaterEq(vReal a)		{ return Numerate().RevGreaterEq(a); }
-vNumeric RevGreater(vReal a)		{ return Numerate().RevGreater(a); }
+vNumeric BkwLess(vReal a)		{ return Numerate().BkwLess(a); }
+vNumeric BkwLessEq(vReal a)		{ return Numerate().BkwLessEq(a); }
+vNumeric BkwEqual(vReal a)		{ return Numerate().BkwEqual(a); }
+vNumeric BkwUnequal(vReal a)		{ return Numerate().BkwUnequal(a); }
+vNumeric BkwGreaterEq(vReal a)		{ return Numerate().BkwGreaterEq(a); }
+vNumeric BkwGreater(vReal a)		{ return Numerate().BkwGreater(a); }
 
-
-
-
-//#%#% ????
 public vDescriptor SelectVar(vVariable v) { return this.Deref().Select(); }
 public vDescriptor BangVar(vVariable v) { return this.Deref().Bang(); }
 public vDescriptor IndexVar(vVariable v, vDescriptor i)
-				{ return this.Deref().Index(i); }
+					{ return this.Deref().Index(i); }
 public vDescriptor SectionVar(vVariable v, vDescriptor i, vDescriptor j)
-				{ return this.Deref().Section(i, j); }
+					{ return this.Deref().Section(i, j); }
 
 
 

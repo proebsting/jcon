@@ -354,31 +354,31 @@ vNumeric PowerOf(vInteger i) {			// i ^ i
 
 //  numeric comparisons
 
-public vNumeric NLess(vDescriptor v)		{ return v.RevLess(this); }
-public vNumeric NLessEq(vDescriptor v)		{ return v.RevLessEq(this); }
-public vNumeric NEqual(vDescriptor v)		{ return v.RevEqual(this); }
-public vNumeric NUnequal(vDescriptor v)		{ return v.RevUnequal(this); }
-public vNumeric NGreater(vDescriptor v)		{ return v.RevGreater(this); }
-public vNumeric NGreaterEq(vDescriptor v)	{ return v.RevGreaterEq(this); }
+public vNumeric NLess(vDescriptor v)		{ return v.BkwLess(this); }
+public vNumeric NLessEq(vDescriptor v)		{ return v.BkwLessEq(this); }
+public vNumeric NEqual(vDescriptor v)		{ return v.BkwEqual(this); }
+public vNumeric NUnequal(vDescriptor v)		{ return v.BkwUnequal(this); }
+public vNumeric NGreater(vDescriptor v)		{ return v.BkwGreater(this); }
+public vNumeric NGreaterEq(vDescriptor v)	{ return v.BkwGreaterEq(this); }
 
-vNumeric RevLess(vInteger a)	{ return (a.value <  this.value) ? this : null;}
-vNumeric RevLessEq(vInteger a)	{ return (a.value <= this.value) ? this : null;}
-vNumeric RevEqual(vInteger a)	{ return (a.value == this.value) ? this : null;}
-vNumeric RevUnequal(vInteger a)	{ return (a.value != this.value) ? this : null;}
-vNumeric RevGreater(vInteger a)	{ return (a.value >  this.value) ? this : null;}
-vNumeric RevGreaterEq(vInteger a){return (a.value >= this.value) ? this : null;}
+vNumeric BkwLess(vInteger a)	{ return (a.value <  this.value) ? this : null;}
+vNumeric BkwLessEq(vInteger a)	{ return (a.value <= this.value) ? this : null;}
+vNumeric BkwEqual(vInteger a)	{ return (a.value == this.value) ? this : null;}
+vNumeric BkwUnequal(vInteger a)	{ return (a.value != this.value) ? this : null;}
+vNumeric BkwGreater(vInteger a)	{ return (a.value >  this.value) ? this : null;}
+vNumeric BkwGreaterEq(vInteger a){return (a.value >= this.value) ? this : null;}
 
-vNumeric RevLess(vReal a)
+vNumeric BkwLess(vReal a)
     { return (a.value <  this.value) ? vReal.New(this.value) : null;}
-vNumeric RevLessEq(vReal a)
+vNumeric BkwLessEq(vReal a)
     { return (a.value <= this.value) ? vReal.New(this.value) : null;}
-vNumeric RevEqual(vReal a)
+vNumeric BkwEqual(vReal a)
     { return (a.value == this.value) ? vReal.New(this.value) : null;}
-vNumeric RevUnequal(vReal a)
+vNumeric BkwUnequal(vReal a)
     { return (a.value != this.value) ? vReal.New(this.value) : null;}
-vNumeric RevGreater(vReal a)
+vNumeric BkwGreater(vReal a)
     { return (a.value >  this.value) ? vReal.New(this.value) : null;}
-vNumeric RevGreaterEq(vReal a)
+vNumeric BkwGreaterEq(vReal a)
     { return (a.value >= this.value) ? vReal.New(this.value) : null;}
 
 

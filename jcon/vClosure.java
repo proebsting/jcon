@@ -128,12 +128,12 @@ vNumeric DivInto(vInteger a)		{ return retval.DivInto(a); }
 vNumeric ModInto(vInteger a)		{ return retval.ModInto(a); }
 vNumeric PowerOf(vInteger a)		{ return retval.PowerOf(a); }
 
-vNumeric RevLess(vInteger a)		{ return retval.RevLess(a); }
-vNumeric RevLessEq(vInteger a)		{ return retval.RevLessEq(a); }
-vNumeric RevEqual(vInteger a)		{ return retval.RevEqual(a); }
-vNumeric RevUnequal(vInteger a)		{ return retval.RevUnequal(a); }
-vNumeric RevGreaterEq(vInteger a)	{ return retval.RevGreaterEq(a); }
-vNumeric RevGreater(vInteger a)		{ return retval.RevGreater(a); }
+vNumeric BkwLess(vInteger a)		{ return retval.BkwLess(a); }
+vNumeric BkwLessEq(vInteger a)		{ return retval.BkwLessEq(a); }
+vNumeric BkwEqual(vInteger a)		{ return retval.BkwEqual(a); }
+vNumeric BkwUnequal(vInteger a)		{ return retval.BkwUnequal(a); }
+vNumeric BkwGreaterEq(vInteger a)	{ return retval.BkwGreaterEq(a); }
+vNumeric BkwGreater(vInteger a)		{ return retval.BkwGreater(a); }
 
 vNumeric AddInto(vReal a)		{ return retval.AddInto(a); }
 vNumeric SubFrom(vReal a)		{ return retval.SubFrom(a); }
@@ -142,12 +142,12 @@ vNumeric DivInto(vReal a)		{ return retval.DivInto(a); }
 vNumeric ModInto(vReal a)		{ return retval.ModInto(a); }
 vNumeric PowerOf(vReal a)		{ return retval.PowerOf(a); }
 
-vNumeric RevLess(vReal a)		{ return retval.RevLess(a); }
-vNumeric RevLessEq(vReal a)		{ return retval.RevLessEq(a); }
-vNumeric RevEqual(vReal a)		{ return retval.RevEqual(a); }
-vNumeric RevUnequal(vReal a)		{ return retval.RevUnequal(a); }
-vNumeric RevGreaterEq(vReal a)		{ return retval.RevGreaterEq(a); }
-vNumeric RevGreater(vReal a)		{ return retval.RevGreater(a); }
+vNumeric BkwLess(vReal a)		{ return retval.BkwLess(a); }
+vNumeric BkwLessEq(vReal a)		{ return retval.BkwLessEq(a); }
+vNumeric BkwEqual(vReal a)		{ return retval.BkwEqual(a); }
+vNumeric BkwUnequal(vReal a)		{ return retval.BkwUnequal(a); }
+vNumeric BkwGreaterEq(vReal a)		{ return retval.BkwGreaterEq(a); }
+vNumeric BkwGreater(vReal a)		{ return retval.BkwGreater(a); }
 
 
 
