@@ -1,36 +1,36 @@
-<p><table>
+<P><TABLE>
 
-<tr><td><a href="http://www.cs.arizona.edu/icon/lb3.htm">
-    <img src="lb60.gif" width="47" height="60" alt=""></a></td>
-<td>Ralph E. Griswold and Madge T. Griswold
-    <br><a href="http://www.cs.arizona.edu/icon/lb3.htm">
-	<cite>The Icon Programming Language, Third Edition</cite></a>
-    <br><a href="http://www.peer-to-peer.com/catalog/language/icon.html">
-	Peer-to-Peer Communications</a>, 1997
-    <br>ISBN 1-57398-001-3
-</td></tr>
+<TR><TD VALIGN=TOP><A HREF="http://www.cs.arizona.edu/icon/lb3.htm">
+    <IMG SRC="lb60.gif" WIDTH="47" HEIGHT="60" ALT=""></A></TD>
+<TD VALIGN=TOP>Ralph E. Griswold and Madge T. Griswold
+    <BR><A HREF="http://www.cs.arizona.edu/icon/lb3.htm">
+	<CITE>The Icon Programming Language, Third Edition</CITE></A>
+    <BR><A HREF="http://www.peer-to-peer.com/catalog/language/icon.html">
+	Peer-to-Peer Communications</A>, 1997
+    <BR>ISBN 1-57398-001-3
+</TD></TR>
 
-<tr><td><a href="http://www.cs.arizona.edu/icon/gb/">
-    <img src="gb60.gif" width="47" height="60" alt=""></a></td>
-<td>Ralph E. Griswold, Clinton L. Jeffery, and Gregg M. Townsend
-    <br><a href="http://www.cs.arizona.edu/icon/gb/">
-	<cite>Graphics Programming in Icon</cite></a>
-    <br><a href="http://www.peer-to-peer.com/catalog/language/icong.html">
-	Peer-to-Peer Communications</a>, 1998
-    <br>ISBN 1-57398-009-9
-</td></tr>
-<tr><td><a href="http://www.cs.arizona.edu/icon/jcon/gde97.pdf">
-    <img src="paper.gif" width="47" height="60" alt=""></a></td>
-<td>Todd A. Proebsting
-    <br><A href="http://www.cs.arizona.edu/icon/jcon/gde97.pdf">
-	<cite>Simple Translation of Goal-Directed Evaluation</cite></a>
-    <br>Proceedings of the 1997 ACM SIGPLAN conference on 
+<TR><TD VALIGN=TOP><A HREF="http://www.cs.arizona.edu/icon/gb/">
+    <IMG SRC="gb60.gif" WIDTH="47" HEIGHT="60" ALT=""></A></TD>
+<TD VALIGN=TOP>Ralph E. Griswold, Clinton L. Jeffery, and Gregg M. Townsend
+    <BR><A HREF="http://www.cs.arizona.edu/icon/gb/">
+	<CITE>Graphics Programming in Icon</CITE></A>
+    <BR><A HREF="http://www.peer-to-peer.com/catalog/language/icong.html">
+	Peer-to-Peer Communications</A>, 1998
+    <BR>ISBN 1-57398-009-9
+</TD></TR>
+<TR><TD VALIGN=TOP><A HREF="http://www.cs.arizona.edu/icon/jcon/gde97.pdf">
+    <IMG SRC="paper.gif" WIDTH="47" HEIGHT="60" ALT=""></A></TD>
+<TD VALIGN=TOP>Todd A. Proebsting
+    <BR><A HREF="http://www.cs.arizona.edu/icon/jcon/gde97.pdf">
+	<CITE>Simple Translation of Goal-Directed Evaluation</CITE></A>
+    <BR>Proceedings of the 1997 ACM SIGPLAN conference on 
 	Programming Language Design and Implementation (PLDI).
-    <br>Las Vegas, 1997
-	(<a href="http://www.cs.arizona.edu/icon/jcon/gde97.zip">PostScript</a>,
-	<a href="http://www.cs.arizona.edu/icon/jcon/gde97.pdf">PDF</a>)
-</td></tr>
-</table>
+    <BR>Las Vegas, 1997
+	(<A HREF="http://www.cs.arizona.edu/icon/jcon/gde97.zip">PostScript</A>,
+	<A HREF="http://www.cs.arizona.edu/icon/jcon/gde97.pdf">PDF</A>)
+</TD></TR>
+</TABLE>
 
 <H3>Contact Information</H3>
 
@@ -43,6 +43,6 @@ Go there for the lastest versions of the implementation and documentation.
 <A HREF="mailto:jcon@cs.arizona.edu">jcon@cs.arizona.edu</A>.
 Using this alias helps us log the mail and respond more promptly.
 
-<P> The Icon home page is located at
+<P> The home page for the Icon language is located at
 <A HREF="http://www.cs.arizona.edu/icon/">
 http://www.cs.arizona.edu/icon/</A>.

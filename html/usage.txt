@@ -23,7 +23,8 @@ and arguments can be passed as usual.
 	Icon source file to compile and link</TD></TR>
 <TR><TD WIDTH=50 VALIGN=TOP><VAR>file</VAR><CODE>.zip</CODE></TD><TD>
 	Previously compiled file to link
-	<BR>(Must be local: jcont does not search $IPATH here)
+	<BR>(Must be local: jcont does not search $IPATH
+	    for <VAR>file</VAR><CODE>.zip</CODE>)
 	</TD></TR>
 </TABLE></BLOCKQUOTE>
 
@@ -88,7 +89,7 @@ and arguments can be passed as usual.
 <BLOCKQUOTE><TABLE>
 <TR><TD WIDTH=100 VALIGN=TOP><CODE>CLASSPATH</CODE></TD><TD>
 	Search path for Java libraries required at execution time.
-	This is not usually needed unless the libraries have moved
+	This is not usually needed unless the libraries have moved.
 <TR><TD WIDTH=100 VALIGN=TOP><CODE>JXOPTS</CODE></TD><TD>
 	Options passed to the Java interpreter that runs the program.
 	Depending on the implementation, JXOPTS can select options
@@ -99,16 +100,18 @@ and arguments can be passed as usual.
 </TABLE></BLOCKQUOTE>
 
 If a Jcon program runs out of memory, Java's limits can be increased
-by setting JXOPTS.  For example, <CODE>setenv JXOPTS '-mx50m'</CODE>
+by setting JXOPTS.
+For example, <CODE>setenv JXOPTS '-mx50m'</CODE>
 increases the maximum space to 50 megabytes.
+See the Java documentation for other Java options.
 
 <H3>Jar file output</H3>
 
 <P> If <CODE>-j</CODE> is passed to jcont, the final output file is given a
 <CODE>.jar</CODE> extension and the header is omitted to facilitate
 manipulation of the file as an archive.
-Execution is accomplished by naming the file in the
-CLASSPATH (with the run-time library) and then running java:
+Execution is accomplished by naming the file in the CLASSPATH,
+along with the run-time library, and then running java:
 <BLOCKQUOTE><CODE>
 	jcont -j myprog.icn
 	<BR>setenv CLASSPATH myprog.jar:/myhome/jcon/bin/rts.zip

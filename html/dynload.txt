@@ -14,7 +14,7 @@ build it by calling <CODE>system()</CODE> with the appropriate commands.
 procedures written in C.
 Jcon, in contrast, loads precompiled Java or Icon procedures.
 Although the Icon interface is similar, it is not possible to
-load one procedure with both systems.
+load the same procedure with both systems.
 
 <H3>Preparing Icon Procedures</H3>
 
@@ -62,6 +62,8 @@ to the <CODE>rts</CODE> namespace.
 Most of these classes implement a factory method such as 
 <CODE>vReal.New(3.14159)</CODE> for constructing new instances.
 All are subclasses of a parent class <EM>vValue</EM>.
+Note that Icon strings are not implemented by the Java <EM>String</EM>
+class but instead by code in the vString class.
 
 <P> The class <EM>vDescriptor</EM> is the superclass of most
 run-time classes.
@@ -73,6 +75,7 @@ A vDescriptor <CODE>d</CODE> can be dereferenced to produce a
 vValue either by calling <CODE>d.deref()</CODE> or by
 calling an operation that implicitly dereferences it, such as
 <CODE>d.Negate()</CODE>.
+
 
 <H4>Procedures in Java</H4>
 
@@ -91,7 +94,7 @@ and declares <VAR>n</VAR> vDescriptor arguments.
 by extending the class <EM>vProcN</EM> and declaring a <CODE>Call</CODE>
 method that accepts an array of vDescriptors as its single argument.
 vProcN can also be used for any other procedure when an array of arguments
-is more convenient than using a fixed argument list.)
+is more convenient than using a fixed argument list.
 
 <P> The arguments passed to the <CODE>Call</CODE> method are
 not dereferenced.
@@ -144,7 +147,7 @@ jar cf sum3.zip sum3.class
 
 <P> Many examples of procedures can be found in the <CODE>rts/f*.java</CODE>
 files in the Jcon distribution.
-These are the files that implement Icon's built-in functions.
+These files implement Icon's built-in functions.
 
 <H4>Suspension</H4>
 
@@ -217,5 +220,4 @@ which encompasses the entire definition of the anonymous subclass
 of vClosure.
 
 <P> It is very important that the <CODE>retval</CODE> field 
-be set before returning a vClosure object;
-its default value is a Java null, which is illegal in this context.
+be set before returning a vClosure object; a null retval is illegal.

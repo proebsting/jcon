@@ -12,9 +12,9 @@
 <A HREF=usage.htm>Usage</A><BR>
 <A HREF=diffs.htm>Language Differences</A><BR>
 <A HREF=graphics.htm>Graphics</A><BR>
-<A HREF=loadfunc.htm>Dynamic Loading</A><BR>
+<A HREF=dynload.htm>Dynamic Loading</A><BR>
 <A HREF=perf.htm>Performance</A><BR>
-<A HREF=releases.htm>Release Notes</A><BR>
+<A HREF=relnotes.htm>Release Notes</A><BR>
 <A HREF=install.htm>Installation</A><BR>
 <A HREF=refs.htm>References</A><BR>
 </BLOCKQUOTE>

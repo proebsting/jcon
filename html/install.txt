@@ -1,11 +1,17 @@
+<P> Building Jcon is simple if the requisite software is available.
+Automated tests are provided to validate the build.
+
 <H3>Requirements</H3>
+
+<P> Jcon is written in Icon, Java, and Korn Shell.
 
 <H4>Unix with the Korn shell</H4>
 
 <P> Building and running Jcon requires various Unix utilities including
 the Korn Shell.
-Unix systems with /bin/ksh qualify, of course.
-The ksh clone on Linux also works.
+Any system that has <CODE>/bin/ksh</CODE> will probably work.
+Most commercial Unix systems supply <CODE>ksh</CODE>,
+and the <CODE>ksh</CODE> clone on Linux also works.
 
 <H4>Installed Software</H4>
 
@@ -16,14 +22,16 @@ and proper functioning of some Java systems may require installation
 of OS patches.
 
 <P> For software see:
+<BLOCKQUOTE>
 <TABLE>
-<TR><TD>Icon 9.3</TD><TD>
-	<A HREF="http://www.cs.arizona.edu/icon/v93u.html">
-	http://www.cs.arizona.edu/icon/v93u.html</A></TD></TR>
-<TR><TD>Java 1.1</TD><TD>
+<TR><TD>Icon 9.3:</TD><TD>
+	<A HREF="http://www.cs.arizona.edu/icon/v93u.htm">
+	http://www.cs.arizona.edu/icon/v93u.htm</A></TD></TR>
+<TR><TD>Java 1.1:</TD><TD>
 	<A HREF="http://www.javasoft.com/products/jdk/1.1/">
 	http://www.javasoft.com/products/jdk/1.1/</A></TD></TR>
 </TABLE>
+</BLOCKQUOTE>
 
 <H4>Search Path</H4>
 
@@ -35,7 +43,7 @@ Only <CODE>java</CODE> is needed for execution.
 <H3>Building Jcon</H3>
 
 <P> Ensure that your search path is correct, as described above.
-Make the top level of the Jcon distribution be your current directory,
+Set your current directory to the top level of the Jcon distribution,
 and type <CODE>make</CODE>.
 There are no configuration options.
 
@@ -46,7 +54,8 @@ The <CODE>html</CODE> directory, which contains documentation,
 can also be retained.
 The rest of the Jcon distribution can be deleted if no longer wanted.
 
-<P> After building Jcon using icont, it is possible to rebuild Jcon using Jcon.
+<P> After building Jcon using <CODE>icont</CODE>,
+it is possible to rebuild Jcon using Jcon.
 This optional step is accomplished by typing <CODE>make jj</CODE>;
 it enables the use of <CODE>jcont -J</CODE>.  
 
@@ -59,15 +68,25 @@ The tests are run by typing <CODE>make test</CODE>.
 A successful run produces the names of the tests, one at a time, as they run.
 
 <P> Jcon has been tested by us on:
-<BLOCKQUOTE><PRE>
-SGI Indigo2 / Irix 6.2 / SGI Java 3.1 (JDK 1.1.5K)
-Sun Sparc / Solaris 2.5.1 (SunOS 5.5.1) / Sun Java 1.1.6N
-DEC Alpha 4/233 / Digital Unix 4.0B / Digital Java 1.1.6-2
-Intel / Linux v2 (Red Hat 5.0) / Blackdown Java 1.1.5v7
-</PRE></BLOCKQUOTE>
+<BLOCKQUOTE>
+	SGI Indigo2 / Irix 6.2 / SGI Java 3.1 (JDK 1.1.5K)
+	<BR> Sun Sparc / Solaris 2.5.1 (SunOS 5.5.1) / Sun Java 1.1.6N
+	<BR> IBM RS6000 / AIX 4.1.5 / IBM Java 1.1.4-19980430
+	<BR> DEC Alpha / Digital Unix 4.0B / Digital Java 1.1.6-2
+	<BR> Intel / Linux v2 (Red Hat 5.0) / Blackdown Java 1.1.5v7
+</BLOCKQUOTE>
 We would be interested to learn of either successes or failures
 on other platforms.
 
+<P> In addition to the automated tests, Jcon comes with additional
+tests that can be run manually.
+The <CODE>demo</CODE> directory contains graphics programs that
+are interesting as demonstrations.
+The <CODE>gtest</CODE> directory contains other graphics programs
+that are less interesting and require manual visual comparison
+with the displays produced by Version 9 of Icon.
+The <CODE>expt</CODE> directory contains a few additional
+nongraphical tests and experiments.
 
 <H3>Directory Structure</H3>
 
@@ -75,7 +94,7 @@ on other platforms.
 <BLOCKQUOTE><PRE>
 bin      target for all build products; also includes jcont script
 tran     source code for the translator
-rts      source code for the runtime system
+rts      source code for the run-time system
 html     files for building documentation pages
 test     automated test collection for validating Jcon
 gtest    manually run test collection for graphics
@@ -88,5 +107,5 @@ Each directory contains a README file with further information.
 
 <H3>Problems and Bug Reports</H3>
 
-<P> Please send all comments to: 
+<P> Please send all comments to
 <A HREF="mailto:jcon@cs.arizona.edu">jcon@cs.arizona.edu</A>

@@ -1,9 +1,10 @@
-<P> Jcon (pronounced <EM>JAY-konn</EM>)is a new Java-based implementation
+<P> Jcon (pronounced <EM>JAY-konn</EM>) is a new Java-based implementation
 of the Icon programming language.
 The Jcon translator, written in Icon, generates Java class files that
 execute in conjunction with a run-time system written in Java.
+Jcon runs on Unix systems.
 
-<P> Jcon is an essentially complete implementation of classic Icon,
+<P> Jcon is an essentially complete implementation of Icon,
 omitting only a few things such as <CODE>chdir()</CODE>
 that cannot be done in Java.
 Co-expressions, large integers, and pipes are provided,
@@ -12,10 +13,9 @@ Tracing, error recovery, and debugging functions are all included,
 although for performance reasons they are disabled by default.
 There are a few minor deficiencies due to Java limitations.
 
-<P> The graphics implementation is nearly complete, but wide lines
-and textured drawing are omitted.
-These two features will be easier to implement after version 1.2 of Java
-becomes universally available.
+<P> Jcon includes almost all of Icon's standard graphics facilities.
+Wide lines and textured drawing are lacking; these should be easier to
+implement after version 1.2 of Java becomes universally available.
 A few other features, notably mutable colors, are also unavailable.
 
 <P> The <CODE>jcont</CODE> script functions similarly to <CODE>icont</CODE>.
@@ -31,8 +31,8 @@ substituting for <CODE>.u1/.u2</CODE> file pairs.
 class files.
 (It can also produce <CODE>.u1/.u2</CODE> files,
 but it provides no way to link them.)
-This is about the same size as the translator in Version 9 of Icon,
-which is written in C.
+This is somewhat smaller than the 13,000 lines of C code that
+form the translator in Version 9 of Icon.
 
 <P> The Jcon runtime system comprises 18,000 lines of Java code.
 The corresponding portion of Version 9, counting only the Unix code,
@@ -42,7 +42,7 @@ is over 50,000 lines of C code.
 is a 400-line Korn shell script.
 While this works well for Unix, it is the single largest impediment
 to a non-Unix port.
-We believe that a replacement program would be the easiest route
+We believe that writing a replacement program would be the easiest route
 to a Windows or Macintosh port.
 
 <P> Jcon includes an automated test suite containing 8000 lines of
@@ -50,7 +50,7 @@ Icon programs.
 These are drawn from the standard Icon test suite,
 other existing Icon programs, and 3000 lines of new tests.
 Jcon also includes additional manually-run graphics tests and
-a small collection of graphics demos.
+a small collection of graphics demonstration programs.
 
 <H3>Acknowledgements</H3>
 

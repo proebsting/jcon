@@ -3,8 +3,8 @@
 
 SECTLIST = Sections
 
-SECTPAGES = intro.htm usage.htm diffs.htm graphics.htm loadfunc.htm \
-		perf.htm releases.htm install.htm refs.htm
+SECTPAGES = intro.htm usage.htm diffs.htm graphics.htm dynload.htm \
+		perf.htm relnotes.htm install.htm refs.htm
 SECTINPUT = $(SECTPAGES:.htm=.txt)
 
 HEAD1 = head1.txt

@@ -4,7 +4,7 @@ The core Icon language is defined by
 This section documents differences with respect to that book
 and to the reference implementation, Version 9 of Icon.
 Differences related to graphics are described in
-<A HREF=graphics.htm>another section</A>.
+the <A HREF=graphics.htm>Graphics</A> section.
 
 <H3>Characters and Strings</H3>
 
@@ -62,7 +62,7 @@ produce only zero values.
 <CODE>env</CODE> in the shell search path.
 
 <P> The implementation of <CODE>loadfunc()</CODE> is described
-in a <A HREF=loadfunc.htm>separate section</A>.
+in the <A HREF=dynload.htm>Dynamic Loading</A> section.
 
 <H3>Linking</H3>
 

@@ -8,7 +8,7 @@ that provide a typical performance improvement of 40%.
 <H3>Notable changes from Version 1</H3>
 <UL>
     <LI>Compilation with <CODE>-f d</CODE> is now needed for tracing,
-	detailed traceback, or error conversion (&amp;error)
+	detailed traceback, or error conversion (<CODE>&amp;error</CODE>)
     <LI><CODE>variable()</CODE>, <CODE>display()</CODE>,
 	and <CODE>&amp;dump</CODE> can access only global variables
     <LI>Command options for <CODE>jcont</CODE> are closer to those
@@ -20,7 +20,7 @@ that provide a typical performance improvement of 40%.
 <H3>Known problems (nongraphical)</H3>
 <UL>
     <LI><CODE>&amp;clock</CODE> and <CODE>&amp;dateline</CODE>
-	may be off by an hour due to Java library bugs
+	may be off by one hour due to Java library bugs
 </UL>
 
 <H3>Known graphics problems</H3>

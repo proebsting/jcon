@@ -10,6 +10,8 @@
 #
 #%#% TO DO: edit internal HTML refs
 
+$define JHOME "http://www.cs.arizona.edu/icon/jcon/"
+
 
 
 record section(
@@ -96,7 +98,7 @@ procedure wrpage(fbase, title)
    every s := !sectlist do {
       write(f2, "| <A HREF=", s.fbase, ".htm>", s.ftag, "</A>")
       }
-   write(f2, "|| <A HREF=\"http://www.cs.arizona.edu/jcon/\">home</A>\n")
+   write(f2, "|| <A HREF=\"", JHOME, "\">home</A>\n")
    write(f2, "</SMALL>")
    write(f2, "</BODY></HTML>")
    close(f2)
