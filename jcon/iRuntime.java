@@ -107,6 +107,42 @@ public static long random(long limit) {	// return long value in [0, limit)
 }
 
 
+public static void display(iClosure parent) {
+	// do the call chain.
+	for (iClosure p = parent; p != null; p = p.parent) {
+		String s = p.getClass().getName();
+		int j = s.indexOf('$');
+		if (j >= 0) {                   // xxx$yyyyy format
+		    s = s.substring(j+1);
+		}
+		System.out.println(s + " local identifiers:");
+		p.locals();
+		if (p.names == null) {
+			continue;
+		}
+		for (int i = 0; p.names[i] != null; i++) {
+			System.out.println("   " + p.names[i] + " = " + p.variables[i].image());
+		}
+	}
+
+	// do the globals
+	// #%#%# not sorted....
+	System.out.println();
+	System.out.println("global identifiers:");
+	java.util.Enumeration e = iEnv.symtab.keys();
+	while (e.hasMoreElements()) {
+		String s = (String) e.nextElement();
+		vVariable v = (vVariable) iEnv.symtab.get(s);
+		System.out.println("   " + s + " = " + v.image());
+	}
+}
+
+public static void exit(int status, iClosure parent) {
+	if (k$dump.dump != 0) {
+		iRuntime.display(parent);
+	}
+	System.exit(status);
+}
 
 
 } // class iRuntime

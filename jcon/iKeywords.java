@@ -59,6 +59,8 @@ public class iKeywords extends iFile {
 		iEnv.declareKey("errorvalue", 
 			iNew.Proc((new k$errorvalue()).getClass(), 0));
 
+		iEnv.declareKey("dump", new k$dump());
+
 		// generators
 		iEnv.declareKey("features", 
 			iNew.Proc((new k$features()).getClass(), 0));
@@ -247,6 +249,23 @@ class k$trace extends vSimpleVar {		// &trace
 
 	public vValue deref() {
 		return value = iNew.Integer(trace);
+	}
+}
+
+class k$dump extends vSimpleVar {		// &dump
+
+	public static long dump;	// #%#%#% referenced externally
+
+	k$dump() { super("&dump"); }
+
+	public vVariable Assign(vValue i) {
+		value = i.mkInteger();
+		dump = ((vInteger)value).value;
+		return this;
+	}
+
+	public vValue deref() {
+		return value = iNew.Integer(dump);
 	}
 }
 

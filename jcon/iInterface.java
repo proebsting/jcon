@@ -46,7 +46,7 @@ public class iInterface {
 		    System.err.println();
 		    System.err.println("Run-time error 117 in startup code");
 		    System.err.println("missing main procedure");
-		    System.exit(1);
+		    iRuntime.exit(1, null);
 		}
 		vDescriptor p = m.deref();
 		vDescriptor[] vargs = new vDescriptor[args.length];
@@ -60,7 +60,7 @@ public class iInterface {
 		iEnv.cur_coexp = iEnv.main;
 		iEnv.main.lock.V();
 		iEnv.main.run();
-		System.exit(0);
+		iRuntime.exit(0, null);
 	}
 
 	public static iClosure Instantiate(vDescriptor f, vDescriptor[] args, iClosure parent) {

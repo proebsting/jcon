@@ -69,7 +69,7 @@ class f$stop extends iFunctionClosure {				// stop(...)
 		System.out.flush();				// flush stdout
 		fOutput.print(System.err, args);		// write msg
 		System.err.println();
-		System.exit(1);					// exit
+		iRuntime.exit(1, parent);
 		return null;	// not reached
 	}
 }

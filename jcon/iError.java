@@ -44,7 +44,7 @@ void report(iClosure c) {		// print message and abort
     } catch (OutOfMemoryError e) {
 	System.err.println("   [out of memory; traceback truncated]");
     }
-    System.exit(1);
+    iRuntime.exit(1, c.parent);
 }
 
 
