@@ -230,10 +230,16 @@ procedure methodrefs()
              "rts/vSimpleVar", "New_vSimpleVar_Assign"],
             ["New", "(Ljava/lang/String;)Lrts/vSimpleVar;", "rts/vSimpleVar",
              "New_vSimpleVar"],
+            ["NewLocal","(Ljava/lang/String;Lrts/vDescriptor;)Lrts/vSimpleVar;",
+             "rts/vSimpleVar", "New_Local_Assign"],
+            ["NewLocal", "(Ljava/lang/String;)Lrts/vSimpleVar;",
+	     "rts/vSimpleVar", "New_Local"],
             ["New", "(Ljava/lang/String;)Lrts/vString;", "rts/vString",
              "New_vString"],
             ["New", "([Lrts/vDescriptor;)Lrts/vList;", "rts/vList",
              "New_vList"],
+            ["Free", "(Lrts/vSimpleVar;)V", "rts/vSimpleVar" ],
+            ["FreeLocals", "(Lrts/vSimpleVar;)V", "rts/vSimpleVar"],
             ["cofail", "()V", "rts/vCoexp"],
             ["copy", "(I)Lrts/vClosure;", &null],
             ["coret", "(Lrts/vDescriptor;)V", "rts/vCoexp"],
@@ -340,7 +346,9 @@ procedure fieldrefs()
         [ "retval", "Lrts/vDescriptor;", "rts/vClosure"],
         [ "refreshArray", "[Lrts/vDescriptor;", &null],
         [ "refreshPC", "I", &null],
-        [ "cur_coexp", "Lrts/vCoexp;", "rts/iEnv"]
+        [ "cur_coexp", "Lrts/vCoexp;", "rts/iEnv"],
+        [ "file", "Ljava/lang/String;", "rts/iTrace"],
+        [ "line", "I", "rts/iTrace"]
     ]
     def := [ "name", "type", "class" ]
     every gen_procedure(!f, def, "fieldref")

@@ -3,6 +3,8 @@
 global bc_lvalset
 global bc_function_name
 
+global bc_stackptr
+
 global bc_nodebuginfo
 
 global bc_java_classname
@@ -380,9 +382,10 @@ procedure bc_save_tmplabels(s)
     }
 end
 
-# record ir_Succeed( expr continuation )
+# record ir_Succeed( expr continuation coord )
 procedure bc_gen_ir_Succeed(s, p)
     local r, e, PC, k, a
+    local free, class_index
 
     PC := bc_PC_fieldref(bc_current_classptr, bc_vClosure_classname)
     if \p.continuation then {
@@ -400,12 +403,34 @@ procedure bc_gen_ir_Succeed(s, p)
         put(s, j_putfield(PC))
     }
     bc_gen(s, p.expr)
+#    if /p.continuation & \bc_stackptr then {
+#        free := bc_FreeLocals_methodref(bc_current_classptr)
+#        put(s, j_Aload(bc_stackptr + bc_var_offset))
+#	if \bc_save_restore_flag then {
+#            class_index := j_cp_Class(bc_current_classptr,
+#                              j_cp_Utf8(bc_current_classptr, "rts/vSimpleVar"))
+#	    put(s, j_checkcast(class_index))
+#	}
+#	put(s, j_invokestatic(free))
+#    }
     put(s, j_areturn())
     return s
 end
 
-# record ir_Fail( )
+# record ir_Fail( coord )
 procedure bc_gen_ir_Fail(s, p)
+    local free, class_index
+
+#    if /bc_save_restore_flag & \bc_stackptr then {
+#        free := bc_FreeLocals_methodref(bc_current_classptr)
+#        put(s, j_Aload(bc_stackptr + bc_var_offset))
+#	if \bc_save_restore_flag then {
+#            class_index := j_cp_Class(bc_current_classptr,
+#                              j_cp_Utf8(bc_current_classptr, "rts/vSimpleVar"))
+#	    put(s, j_checkcast(class_index))
+#	}
+#	put(s, j_invokestatic(free))
+#    }
     put(s, j_aconst_null())
     put(s, j_areturn())
     return s
@@ -797,6 +822,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
 
     bc_function_name := name
     bc_lvalset := lvalset
+    bc_stackptr := &null
 
     bc_statics_set := set(statics)
     insert(bc_declare_set, name)
@@ -995,6 +1021,7 @@ procedure bc_create_vClosure_copy_constructor(c, params, locals, undeclared)
     vararray := j_create_fieldref(bc_current_classptr, "tmpVarArray",
                                   "[Lrts/vDescriptor;", bc_current_classname)
     refresharray := bc_refreshArray_fieldref(bc_current_classptr, bc_current_classname)
+    #newsimplevar := bc_New_Local_Assign_methodref(c)
     newsimplevar := bc_New_vSimpleVar_Assign_methodref(c)
     class_index := j_cp_Class(bc_current_classptr,
                               j_cp_Utf8(bc_current_classptr, "rts/vDescriptor"))
@@ -1019,7 +1046,6 @@ procedure bc_create_vClosure_copy_constructor(c, params, locals, undeclared)
         put(s, j_aload_1() )
         put(s, j_ipush(bc_var_table[k]) )
         put(s, j_aaload() )
-        # put(s, j_invokevirtual(deref) )
         put(s, j_invokestatic(newsimplevar) )
         put(s, j_aastore() )
     }
@@ -1039,7 +1065,6 @@ procedure bc_create_vClosure_copy_constructor(c, params, locals, undeclared)
         put(s, j_aload_1() )
         put(s, j_ipush(bc_var_table[k]) )
         put(s, j_aaload() )
-        put(s, j_invokevirtual(deref) )
         put(s, j_invokestatic(newsimplevar) )
         put(s, lab1 )
         put(s, j_aastore() )
@@ -1398,6 +1423,7 @@ procedure bc_createvars_into_array(s, c, params, locals, undeclared, accumulate)
                               j_cp_Utf8(bc_current_classptr, "rts/vDescriptor"))
     put(s, j_anewarray(class_index) )
 
+    #newsimplevar := bc_New_Local_Assign_methodref(c)
     newsimplevar := bc_New_vSimpleVar_Assign_methodref(c)
     deref := bc_Deref_methodref(c)
     every i := 1 to *params do {
@@ -1406,6 +1432,7 @@ procedure bc_createvars_into_array(s, c, params, locals, undeclared, accumulate)
             put(s, j_dup() )
             put(s, j_ipush(bc_var_table[k]) )
 	    if member(bc_lvalset, k) then {
+	        /bc_stackptr := bc_var_table[k]
                 v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
                 put(s, j_ldc_w(v) )
                 bc_emit_param_val(s, c, params, accumulate, i)
@@ -1418,9 +1445,11 @@ procedure bc_createvars_into_array(s, c, params, locals, undeclared, accumulate)
         }
     }
 
+    #newsimplevar := bc_New_Local_methodref(c)
     newsimplevar := bc_New_vSimpleVar_methodref(c)
     every k := !locals do {
         if \bc_var_table[k] then {
+	    /bc_stackptr := bc_var_table[k]
             put(s, j_dup() )
             put(s, j_ipush(bc_var_table[k]) )
             v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
@@ -1453,12 +1482,14 @@ procedure bc_createvars(s, c, params, locals, undeclared, accumulate)
     local newsimplevar, k, field, v, i, deref
     local linkvalue, lab1
 
+    # newsimplevar := bc_New_Local_Assign_methodref(c)
     newsimplevar := bc_New_vSimpleVar_Assign_methodref(c)
     deref := bc_Deref_methodref(c)
     every i := 1 to *params do {
         k := params[i]
         if \bc_var_table[k] then {
 	    if member(bc_lvalset, k) then {
+	        /bc_stackptr := bc_var_table[k]
                 v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
                 put(s, j_ldc_w(v) )
                 bc_emit_param_val(s, c, params, accumulate, i)
@@ -1471,9 +1502,11 @@ procedure bc_createvars(s, c, params, locals, undeclared, accumulate)
         }
     }
 
+    # newsimplevar := bc_New_Local_methodref(c)
     newsimplevar := bc_New_vSimpleVar_methodref(c)
     every k := !locals do {
         if \bc_var_table[k] then {
+	    /bc_stackptr := bc_var_table[k]
             v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
             put(s, j_ldc_w(v) )
             put(s, j_invokestatic(newsimplevar) )
