@@ -24,12 +24,3 @@ a corresponding change in subdirectory name (ugh).
 From gmt Mon May 17 10:55:33 1999
 Icon v9.3.2 is adding the ability to read a directory by
 opening it as a file.  I've added corresponding code to Jcon.
-
-
-
-KNOWN BUG:
-
-From gmt Wed May 12 15:35:23 MST 1999
-"jcont -S" does not work if any other file is linked.
-(Can't find linked class; some versions of javap loop.)
-
