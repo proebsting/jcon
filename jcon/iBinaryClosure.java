@@ -7,23 +7,20 @@ public abstract class iBinaryClosure extends iClosure {
 	abstract vDescriptor function(vDescriptor arg0, vDescriptor arg1);
 
 	public vDescriptor call(vDescriptor arg0, vDescriptor arg1, iClosure parent) {
-	    vDescriptor ret;
-	    
 	    closure(arg0, arg1, parent);
 	    try {
 		try {
-		    ret = nextval();
+		    return nextval();
 		} catch (OutOfMemoryError e) {
 		    iRuntime.error(307);	// #%#%# really out of memory.
-		    ret = null;
+		    return null;
 		}
 	    } catch (iError e) {
 		//  e.printStackTrace();  //#%#%#% TEMP: enable for debugging
 		//#%#%# check &error here and fail or:
 		e.report(this);  // returns only on error->failure conversion.
-		ret = null;
+		return null;
 	    }
-	    return ret;
 	}
 
 	public void closure(vDescriptor[] args, iClosure parent) {
