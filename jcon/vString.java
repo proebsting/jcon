@@ -31,6 +31,8 @@ int rank()		{ return 30; }		// strings rank after reals
 
 int compareTo(vValue v) { return this.value.compareTo(((vString) v).value); }
 
+
+
 vNumeric mkNumeric()	{
     String s = value.trim();
     try {
@@ -44,6 +46,21 @@ vNumeric mkNumeric()	{
     iRuntime.error(102, this);
     return null;
 }
+
+vInteger mkInteger()	{
+    try {
+	return this.mkNumeric().mkInteger();	// allows integer("3e6")
+    } catch (iError e) {
+    	iRuntime.error(101, this);
+	return null;
+    }
+}
+
+vReal mkReal()		{
+    return this.mkNumeric().mkReal();
+}
+
+
 
 vCset mkCset() {
     return new vCset(this.value);
