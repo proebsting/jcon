@@ -422,7 +422,8 @@ procedure j_writer_attribute_info(writer, p)
         j_writer_u2(writer, p.ir_max_stack)
         j_writer_u2(writer, p.max_locals)
         if code_length >= 65536 then {
-            runerr(500)
+            # runerr(500)
+	    #%#%#% What is the max length for code????
         }
         j_writer_u4(writer, code_length)
         every i := !p.code do {
@@ -484,6 +485,10 @@ procedure j_writer_j_method_info(writer, p)
 end
 
 procedure j_writer_j_exception_table_info(writer, p)
+    #%#%#%# the following two lines are because the JVM is brain-damaged
+    p.start_pc >:= 65534
+    p.end_pc >:= 65534
+
     j_writer_u2(writer, p.start_pc)
     j_writer_u2(writer, p.end_pc)
     j_writer_u2(writer, p.handler_pc)

@@ -1247,6 +1247,9 @@ procedure bc_nextval_code(nextvalcode, c, start, params, locals, undeclared, acc
     var_load_label := j_label()
     tmplab := j_label()
 
+    beginlab := j_label()
+    endlab := j_label()
+
     if \bc_save_restore_flag then {
         PC := bc_PC_fieldref(c, bc_vClosure_classname)
         bc_restore_tmps(s)
@@ -1260,7 +1263,12 @@ procedure bc_nextval_code(nextvalcode, c, start, params, locals, undeclared, acc
         bc_initialize_tmps(s)
     }
 
-    beginlab := j_label()
+    if \bc_nodebuginfo then {
+	put(s, j_goto(beginlab))
+        bc_emit_exception(c, s, params, nextvalcode.exception_table, beginlab, endlab)
+    }
+
+
     put(s, beginlab)
 
     deflab := j_label()
@@ -1288,13 +1296,7 @@ procedure bc_nextval_code(nextvalcode, c, start, params, locals, undeclared, acc
     } else {
         /bc_save_restore_flag | runerr(500)
     }
-    endlab := j_label()
     put(s, endlab)
-
-    if \bc_nodebuginfo then {
-        bc_emit_exception(c, s, params, nextvalcode.exception_table, beginlab, endlab)
-    }
-
 
 end
 
