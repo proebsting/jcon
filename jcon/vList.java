@@ -188,6 +188,17 @@ public vDescriptor Section(vDescriptor i, vDescriptor j) {	//  L[i:j]
     return vList.New(a);
 }
 
+public vDescriptor SectPlus(vDescriptor i, vDescriptor j) {	// L[i+:j]
+    return Section(i, 
+	vInteger.New(i.mkInteger().value + j.mkInteger().value)); //#%#% wrong
+}
+
+public vDescriptor SectMinus(vDescriptor i, vDescriptor j) {	// L[i-:j]
+    return Section(i, 
+	vInteger.New(i.mkInteger().value - j.mkInteger().value)); //#%#% wrong
+}
+
+
 
 
 public vDescriptor Select() {				//  ?L
@@ -230,29 +241,13 @@ public vList ListConcat(vDescriptor v) {		// L1 ||| L2
     return result;
 }
 
-public vList Sort(int i) {				// sort(L)
-    return vList.New(iSort.sort(this.mkArray()));
-}
-
-vValue[] mkArray() {
+vValue[] mkArray(int errno) {		// make array for sort(L) or p ! L
     vValue a[] = new vValue[v.size()];
     for (int i = 0; i < a.length; i++) {
 	a[i] = ((vDescriptor)v.elementAt(i)).Deref();
     }
     return a;
 }
-
-vDescriptor[] mkArgs() {
-    vDescriptor[] arglist = new vDescriptor[v.size()];
-    java.util.Enumeration e = this.elements();
-    int i = 0;
-    while (e.hasMoreElements()) {
-	arglist[i] = (vDescriptor) e.nextElement();
-	i++;
-    }
-    return arglist;
-}
-
 
 } // class vList
 

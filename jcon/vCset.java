@@ -254,9 +254,9 @@ vCset mkCset()		{ return this; }
 
 // the catch clauses in these conversions ensure correct "offending values"
 
-vNumeric mkNumeric()	{
+public vNumeric Numerate()	{
     try {
-	return this.mkString().mkNumeric();
+	return this.mkString().Numerate();
     } catch (iError e) {
 	iRuntime.error(102, this);
 	return null;
@@ -283,9 +283,14 @@ vReal mkReal() {
 
 
 
-public vDescriptor Index(vDescriptor i)	{ return this.mkString().Index(i); }
+public vDescriptor Index(vDescriptor i)
+				{ return this.mkString().Index(i); }
 public vDescriptor Section(vDescriptor i, vDescriptor j)
-					{ return this.mkString().Section(i,j); }
+				{ return this.mkString().Section(i,j); }
+public vDescriptor SectPlus(vDescriptor i, vDescriptor j)
+				{ return this.mkString().SectPlus(i,j); }
+public vDescriptor SectMinus(vDescriptor i, vDescriptor j)
+				{ return this.mkString().SectMinus(i,j); }
 
 
 

@@ -353,7 +353,7 @@ int compareTo(vValue v) {		// compare strings lexicographically
 
 
 
-vNumeric mkNumeric()	{					// numeric(s)
+public vNumeric Numerate() {					// numeric(s)
 
     if (cachedNumeric != null) {
 	return cachedNumeric;
@@ -397,7 +397,7 @@ vNumeric mkNumeric()	{					// numeric(s)
 
 vInteger mkInteger()	{					// integer(s)
     try {
-	return this.mkNumeric().mkInteger();	// allows integer("3e6")
+	return this.Numerate().mkInteger();	// allows integer("3e6")
     } catch (iError e) {
 	iRuntime.error(101, this);
 	return null;
@@ -405,7 +405,7 @@ vInteger mkInteger()	{					// integer(s)
 }
 
 vReal mkReal()		{					// real(s)
-    return this.mkNumeric().mkReal();
+    return this.Numerate().mkReal();
 }
 
 vCset mkCset() {						// cset(s)
@@ -543,6 +543,18 @@ public vDescriptor Section(vDescriptor i, vDescriptor j) {
 	return vString.New(this, m, n);
     }
 }
+
+public vDescriptor SectPlus(vDescriptor i, vDescriptor j) {	// s[i+:j]
+    return Section(i, 
+	vInteger.New(i.mkInteger().value + j.mkInteger().value)); //#%#% wrong
+}
+
+public vDescriptor SectMinus(vDescriptor i, vDescriptor j) {	// s[i-:j]
+    return Section(i, 
+	vInteger.New(i.mkInteger().value - j.mkInteger().value)); //#%#% wrong
+}
+
+
 
 public vDescriptor SectionVar(vVariable v, vDescriptor i, vDescriptor j) {
     int m = this.posEq(i.mkInteger().value);

@@ -86,11 +86,10 @@ public vDescriptor Bang() {
     }.resume();
 }
 
-public vList Sort(int i) {				// sort(L)
-    return vList.New(iSort.sort(this.mkArray()));
-}
-
-vValue[] mkArray() {
+vValue[] mkArray(int errno) {	// for sort(S)
+    if (errno == 126) {		// if not allowed to participate
+	iRuntime.error(errno, this);
+    }
     vValue a[] = new vValue[t.size()];
     int i = 0;
     for (Enumeration e = t.keys(); e.hasMoreElements(); ) {
@@ -100,20 +99,24 @@ vValue[] mkArray() {
 }
 
 public vValue Member(vDescriptor i) {
-    return t.containsKey(i) ? (vValue) i : null;
+    vValue v = i.Deref();
+    return t.containsKey(v) ? v : null;
 }
 
 public vValue Delete(vDescriptor i) {
-    t.remove(i);
+    t.remove(i.Deref());
     return this;
 }
 
 public vValue Insert(vDescriptor i, vDescriptor val) {
+    // "val" is unused here; it's only for tables
+    i = i.Deref();
     t.put(i, i);
     return this;
 }
 
 public vValue Intersect(vDescriptor x) {
+    x = x.Deref();
     if (!(x instanceof vSet)) {
 	iRuntime.error(120, x);
     }
@@ -132,6 +135,7 @@ public vValue Intersect(vDescriptor x) {
 }
 
 public vValue Union(vDescriptor x) {
+    x = x.Deref();
     if (!(x instanceof vSet)) {
 	iRuntime.error(120, x);
     }
@@ -147,6 +151,7 @@ public vValue Union(vDescriptor x) {
 }
 
 public vValue Diff(vDescriptor x) {
+    x = x.Deref();
     if (!(x instanceof vSet)) {
 	iRuntime.error(120, x);
     }

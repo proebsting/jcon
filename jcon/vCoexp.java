@@ -81,12 +81,9 @@ public void create() {
     this.refreshCopy = closure.copy(this.closure.PC);
 }
 
-public vCoexp Refresh() {
-    vCoexp c = new vCoexp(refreshCopy.copy(this.originalPC));
-    c.refreshCopy = refreshCopy;
-    c.thread.start();
-    return c;
-}
+
+
+// vDescriptor methods
 
 
 
@@ -95,15 +92,25 @@ public vInteger Size()	{ return vInteger.New(resultCount); }
 static vString typestring = vString.New("co-expression");
 public vString Type()	{ return typestring;}
 
-vString image()		{ return vString.New(
-			    "co-expression_" + snum + "(" + resultCount + ")");
-}
+vString image()
+  { return vString.New("co-expression_" + snum + "(" + resultCount + ")"); }
 
 public vInteger Serial(){ return vInteger.New(snum); }
 
-int rank()		{ return 70; }	// co-expressns sort after files
-
+int rank()		{ return 70; }	// co-expressions sort after files
 int compareTo(vValue v)	{ return this.snum - ((vCoexp)v).snum; }
+
+
+public vCoexp Refresh() {
+    vCoexp c = new vCoexp(refreshCopy.copy(this.originalPC));
+    c.refreshCopy = refreshCopy;
+    c.thread.start();
+    return c;
+}
+
+public vDescriptor Activate(vDescriptor v) {
+    return iEnv.cur_coexp.activate(v.Deref(), this);
+}
 
 
 

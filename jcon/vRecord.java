@@ -104,20 +104,13 @@ public vDescriptor Bang() {
 }
 
 
-public vList Sort(int i) {				// sort(L)
-    return vList.New(iSort.sort(this.mkArray()));
-}
 
-vValue[] mkArray() {
+vValue[] mkArray(int errno) {			// for sort(R) or p ! R
     vValue a[] = new vValue[values.length];
     for (int i = 0; i < values.length; i++) {
 	a[i] = values[i].Deref();
     }
     return a;
-}
-
-vDescriptor[] mkArgs() {
-    return this.mkArray();
 }
 
 } // class vRecord

@@ -29,7 +29,7 @@ class f$integer extends iValueClosure {				// integer(x)
 class f$numeric extends iValueClosure {				// numeric(x)
     vDescriptor function(vDescriptor[] args) {
 	try {
-	    return iRuntime.argVal(args, 0).mkNumeric();
+	    return iRuntime.argVal(args, 0).Numerate();
 	} catch (iError e) {
 	    return null; /*FAIL*/
 	}

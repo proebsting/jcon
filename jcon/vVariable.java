@@ -36,6 +36,16 @@ public vDescriptor Index(vDescriptor i)
 public vDescriptor Section(vDescriptor i, vDescriptor j)
 				{ return this.Deref().SectionVar(this, i, j); }
 
+public vDescriptor SectPlus(vDescriptor i, vDescriptor j) {	// v[i+:j]
+    return Section(i, 
+	vInteger.New(i.mkInteger().value + j.mkInteger().value)); //#%#% wrong
+}
+
+public vDescriptor SectMinus(vDescriptor i, vDescriptor j) {	// v[i-:j]
+    return Section(i, 
+	vInteger.New(i.mkInteger().value - j.mkInteger().value)); //#%#% wrong
+}
+
 
 
 } // class vVariable

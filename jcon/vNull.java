@@ -12,6 +12,9 @@ private vNull()			{ }
 
 
 boolean isnull()		{ return true; }
+public vDescriptor IsNull()     { return this; }
+public vDescriptor IsntNull()   { return null; /*FAIL*/ }
+
 
 static vString emptystring = vString.New();
 vString write()			{ return emptystring; }

@@ -123,16 +123,17 @@ public vDescriptor Key() {
 
 
 public vValue Member(vDescriptor i) {
+    i = i.Deref();
     return t.containsKey(i) ? (vValue) i : null;
 }
 
 public vValue Delete(vDescriptor i) {
-    t.remove(i);
+    t.remove(i.Deref());
     return this;
 }
 
 public vValue Insert(vDescriptor i, vDescriptor val) {
-    t.put(i, val);
+    t.put(i.Deref(), val.Deref());
     return this;
 }
 

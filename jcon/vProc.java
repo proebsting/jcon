@@ -26,10 +26,6 @@ private vProc(String img, String classname, int args) {
 
 
 
-public vValue Deref() {
-    return this;
-}
-
 vString image()		{ return img; }
 
 static vString typestring = vString.New("procedure");
@@ -71,6 +67,19 @@ static int compareLastWord(vString s1, vString s2) {
 	}
     }
     return (len1 - i1) - (len2 - i2);
+}
+
+
+
+public vDescriptor ProcessArgs(vDescriptor x) {
+    final vDescriptor[] a = x.mkArray(126);
+    return new vClosure() {
+	iClosure func = iInterface.Instantiate(this, a, null);	//#%#% parent?
+	public vDescriptor resume() {
+	    this.retval = func.nextval();
+	    return this;
+	}
+    }.resume();
 }
 
 

@@ -82,7 +82,7 @@ class f$sort extends iValueClosure {				// sort(X,i)
 
 class f$sortf extends iValueClosure {				// sortf(X,i)
     vDescriptor function(vDescriptor[] args) {
-	vValue[] a = iRuntime.argVal(args, 0, 125).mkArray();
+	vValue[] a = iRuntime.argVal(args, 0).mkArray(125);
 	vInteger i = vInteger.New(vInteger.argVal(args, 1, 1));
 	if (i.value == 0) {
 	    iRuntime.error(205, i);

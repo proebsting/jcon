@@ -21,10 +21,8 @@ abstract boolean isnull();			// runtime check for null
 abstract vString mkString();			// convert to Icon string
 abstract vInteger mkInteger();			// convert to Icon integer
 abstract vReal mkReal();			// convert to Icon real
-abstract vNumeric mkNumeric();			// convert to Icon numeric
 abstract vCset mkCset();			// convert to Icon numeric
-abstract vDescriptor[] mkArgs();		// convert to Icon argument list
-abstract vValue[] mkArray();			// convert to array for sorting
+abstract vValue[] mkArray(int errno);		// convert to array of vValues
 
 // special-purpose string conversions
 abstract vString write();			// convert for use in write()

@@ -8,7 +8,7 @@ class fNumeric {} // dummy
 
 class f$abs extends iValueClosure {				// abs(n)
     vDescriptor function(vDescriptor[] args) {
-	return iRuntime.argVal(args,0).mkNumeric().Abs();
+	return iRuntime.argVal(args,0).Numerate().Abs();
     }
 }
 

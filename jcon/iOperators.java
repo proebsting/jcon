@@ -381,7 +381,7 @@ void announce() {
 //#%#%	public class oNumerate extends iUnaryValueClosure {		//  +n
 //#%#%	    public static iUnaryClosure instance = new oNumerate();
 //#%#%	    vDescriptor function(vDescriptor arg) {
-//#%#%		return arg.mkNumeric();
+//#%#%		return arg.Numerate();
 //#%#%	    }
 //#%#%	    String tfmt() { return "{+$1}"; }
 //#%#%	}
@@ -443,8 +443,8 @@ void announce() {
 //#%#%	    public static iBinaryClosure instance = new oPower();
 //#%#%	    vDescriptor function() {
 //#%#%		// NOTE: usual coercion rules do not apply to n1 ^ n2
-//#%#%		argument0 = argument0.mkNumeric();
-//#%#%		argument1 = argument1.mkNumeric();
+//#%#%		argument0 = argument0.Numerate();
+//#%#%		argument1 = argument1.Numerate();
 //#%#%		return argument0.Power(argument1);
 //#%#%	    }
 //#%#%	    String tfmt() { return "{$1 ^ $2}"; }

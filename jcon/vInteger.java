@@ -81,6 +81,16 @@ int compareTo(vValue v) {
 
 vValue getproc()	{ return new vIntegerProc(this); }
 
+public vDescriptor ProcessArgs(vDescriptor x) {			// i ! X
+    vValue[] a = x.mkArray(126);
+    long i = (value > 0) ? (value - 1) : (a.length + value);
+    if (i >= 0 && i < a.length) {
+	return a[(int) i];
+    } else {
+	return null; /*FAIL*/
+    }
+}
+
 
 
 //  static methods for argument processing and defaulting
@@ -164,10 +174,6 @@ static vInteger radixParse(String s) {
 
 
 //  unary operations
-
-public vNumeric Numerate() {
-    return this;
-}
 
 public vNumeric Negate() {
     if (value == Long.MIN_VALUE) {

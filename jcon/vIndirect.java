@@ -30,10 +30,8 @@ boolean isnull()			{ return Deref().isnull(); }
 vString mkString()			{ return Deref().mkString(); }
 vInteger mkInteger()			{ return Deref().mkInteger(); }
 vReal mkReal()				{ return Deref().mkReal(); }
-vNumeric mkNumeric()			{ return Deref().mkNumeric(); }
 vCset mkCset()				{ return Deref().mkCset(); }
-vDescriptor[] mkArgs()			{ return Deref().mkArgs(); }
-vValue[] mkArray()			{ return Deref().mkArray(); }
+vValue[] mkArray(int errno)		{ return Deref().mkArray(errno); }
 
 vString write()				{ return Deref().write(); }
 vString image()				{ return Deref().image(); }

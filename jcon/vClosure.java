@@ -26,10 +26,8 @@ boolean isnull()			{ return retval.isnull(); }
 vString mkString()			{ return retval.mkString(); }
 vInteger mkInteger()			{ return retval.mkInteger(); }
 vReal mkReal()				{ return retval.mkReal(); }
-vNumeric mkNumeric()			{ return retval.mkNumeric(); }
 vCset mkCset()				{ return retval.mkCset(); }
-vDescriptor[] mkArgs()			{ return retval.mkArgs(); }
-vValue[] mkArray()			{ return retval.mkArray(); }
+vValue[] mkArray(int errno)		{ return retval.mkArray(errno); }
 
 vString write()				{ return retval.write(); }
 vString image()				{ return retval.image(); }
