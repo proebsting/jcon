@@ -1,43 +1,246 @@
+//  vString.java -- java Strings
+//
+//  This class implements an alternative to java.lang.String that is
+//  specifically geared to Icon's needs:
+//	-- constituent characters are just eight bits wide (Java bytes)
+//	-- operations are not synchronized
+//	-- concatenation is done lazily
+
+
+
 package rts;
 
 public class vString extends vValue {
 
-    String value;
+    private int tlength;	// total string length
+    private vString prefix;	// first part of string (optional)
+    private byte[] data;	// character array
 
 
 
-vString(String s)	{ value = s; }		// constructor
+//  constructors
 
-vString mkString()	{ return this; }	// value extractor
-
-
-
-// runtime primitives
-
-public int hashCode()		{ return value.hashCode(); }
-public boolean equals(Object o)	{
-	return (o instanceof vString) && value.equals(((vString)o).value);
+vString() {					// new vString()
+    data = new byte[0];
 }
 
-String write()		{ return value; }
-String type()		{ return "string"; }
+vString(char c) {				// new vString(char)
+    tlength = 1;
+    data = new byte[1];
+    data[0] = (byte)c;
+}
 
-String image()		{ return image(value.length()); }
+vString(byte[] b) {				// new vString(b[])
+						// embeds b (does not copy it)
+    data = b;
+    tlength = data.length;
+}
+
+vString(vString s, byte b[]) {			// new vString := s || b[]
+						// embeds b (does not copy it)
+    tlength = s.tlength + b.length;
+    prefix = s;
+    data = b;
+}
+
+vString(vString s, int i, int j) {		// new vString := .s[i:j]
+    s.flatten();
+    tlength = j - i;
+    data = new byte[tlength];
+    System.arraycopy(s.data, i - 1, data, 0, tlength);
+}
+
+vString(vString s, int i, int j, vString t) {	// new vString := (s[i:j] := t)
+
+    s.flatten();
+    t.flatten();
+
+    tlength = s.tlength - (j - i) + t.tlength;
+    data = new byte[tlength];
+    int n = s.data.length - j + 1;
+
+    System.arraycopy(s.data, 0, data, 0, i - 1);
+    System.arraycopy(t.data, 0, data, i - 1, t.data.length);
+    System.arraycopy(s.data, s.data.length - n, data, tlength - n, n);
+}
+
+
+
+//  special vString primitives
+
+final int length() {			// s.length()
+    return tlength;
+}
+
+final char charAt(int i) {		// s.charAt(i)   [zero-based]
+    this.flatten();
+    return (char)((short)data[i] & 0xFF);
+}
+
+final boolean matches(vString s, int i){ // match(s, this, i)  [zero-based]
+    if (this.tlength > s.tlength - i) {
+	return false;
+    }
+    this.flatten();
+    s.flatten();
+    byte[] d = s.data;
+    for (int j = 0; j < this.tlength; j++) {
+	if (this.data[j] != d[i+j]) {
+	    return false;
+	}
+    }
+    return true;
+}
+
+final boolean identical(vString s) {	// like equals, but assumes vString
+    return this.tlength == s.tlength && this.matches(s, 0);
+}
+
+final vString concat(vString s) {	// s.concat(s)
+    if (tlength == 0) {
+	return s;
+    }
+    if (s.tlength == 0) {
+	return this;
+    }
+    s.flatten();
+    return new vString(this, s.data);
+}
+
+public final byte[] getBytes() {
+    this.flatten();
+    return data;
+}
+
+public final String toString() {	// s.toString()
+    this.flatten();
+    return new String(data);
+}
+
+final vInteger toInteger() {		// s.toInteger -- no radix or exponent
+
+    this.flatten();
+
+    int i = 0;
+    long v;
+    boolean neg = false;
+    byte c;
+
+    while (i < tlength && Character.isWhitespace((char)data[i])) {
+	i++;
+    }
+
+    if (i < tlength) {
+	c = data[i];
+	if (c == '-') {
+	    neg = true;
+	    i++;
+	} else if (c == '+') {
+	    i++;
+	}
+    }
+
+    if (i < tlength && Character.isDigit((char)(c = data[i]))) {
+	v = c - '0';
+	i++;
+    } else {
+	return null;	// failed (here; should try general converter)
+    }
+
+    while (i < tlength && Character.isDigit((char)(c = data[i]))) {
+	v = 10 * v + c - '0';		//#%#% ignores overflow
+	i++;
+	if (v > Long.MAX_VALUE / 10) {
+	    break;
+	}
+    }
+
+    while (i < tlength && Character.isWhitespace((char)data[i])) {
+	i++;
+    }
+    if (i < tlength) {
+	return null;
+    } else if (neg) {
+	return iNew.Integer(-v);
+    } else {
+	return iNew.Integer(v);
+    }
+}
+
+
+
+//  internal method to collapse a tree of lazy concatenations
+//  (broken into two parts so that the first part gets in-lined where called)
+
+private void flatten() {
+    if (this.prefix != null) {
+	this.flatten1();
+    }
+}
+
+private void flatten1() {
+    byte[] d = new byte[tlength];
+    vString s = this;
+    int i = tlength;
+    while (i > 0) {
+	int j = s.data.length;
+	while (j > 0) {
+	   d[--i] = s.data[--j];	//#%#% is arraycopy faster? or slower?
+	}
+	s = s.prefix;
+    }
+    data = d;
+    prefix = null;
+}
+
+
+
+//  general vDescriptor primitives
+
+vString mkString()	{ return this; }	// no-op coversion to vString
+
+public int hashCode() {	 // hashcode, consistent whether flattened or not
+    vString s = this;
+    int n = 0;
+    while (s != null) {
+	for (int i = s.data.length; i > 0; ) {
+	   n = 37 * n + s.data[--i];
+	}
+	s = s.prefix;
+    }
+    return n;
+}
+
+public boolean equals(Object o)	{
+    if (o == null || !(o instanceof vString))
+	return false;
+    vString s = (vString) o;
+    return this.tlength == s.tlength && this.matches(s, 0);
+}
+
+vString write()		{ return this; }
+
+static vString typestring = iNew.String("string");
+vString type()		{ return typestring; }
+int rank()		{ return 30; }		// strings rank after reals
+
+String image()		{ return image(tlength); }
 String report()		{ return image(16); }	 // limit to max of 16 chars
 
+
 String image(int maxlen) {		// make image, up to maxlen chars
-    StringBuffer b = new StringBuffer(maxlen + 5);
+    StringBuffer b = new StringBuffer(maxlen + 5);	// optimistic guess
     b.append('"');
     int i;
-    for (i = 0; i < maxlen && i < value.length(); i++) {
-	char c = value.charAt(i);
+    for (i = 0; i < maxlen && i < tlength; i++) {
+	char c = this.charAt(i);
 	if (c == '"') {
 	    b.append("\\\"");
 	} else {
 	    appendEscaped(b, c);
         }
     }
-    if (i < value.length()) {
+    if (i < tlength) {
 	b.append("...");
     }
     b.append('"');
@@ -45,15 +248,33 @@ String image(int maxlen) {		// make image, up to maxlen chars
 }
 
 
-int rank()		{ return 30; }		// strings rank after reals
-
-int compareTo(vValue v) { return this.value.compareTo(((vString) v).value); }
+int compareTo(vValue v) {		// compare strings lexicographically
+    vString s = (vString) v;
+    this.flatten();
+    s.flatten();
+    int i;
+    for (i = 0; i < this.tlength && i < s.tlength; i++) {
+	int d = this.data[i] - s.data[i];
+	if (d != 0) {
+	    return d;
+	}
+    }
+    return this.tlength - s.tlength;
+}
 
 
 
 vNumeric mkNumeric()	{
 
-    String s = value.trim();	// #%#% too liberal -- trims other than spaces
+    // first try straightforward conversion to integer
+    vInteger v = this.toInteger();
+    if (v != null) {
+	return v;
+    }
+
+    // nope, go the long way.  #%#% this could be improved.
+
+    String s = this.toString().trim(); //#%#% too liberal: trims not just spaces
 
     if (s.length() > 0 && s.charAt(0) == '+') {	// allow leading +, by trimming 
 	s = s.substring(1);
@@ -72,7 +293,7 @@ vNumeric mkNumeric()	{
     } catch (NumberFormatException e) {
     }
 
-    vInteger v = vInteger.radixParse(s);	// try to parse as radix value
+    v = vInteger.radixParse(s);			// try to parse as radix value
     if (v != null) {
 	return v;
     }
@@ -97,7 +318,7 @@ vReal mkReal()		{
 
 
 vCset mkCset() {
-    return new vCset(this.value);
+    return iNew.Cset(this);
 }
 
 
@@ -113,31 +334,12 @@ static vString argDescr(vDescriptor[] args, int index)		// required arg
     }
 }
 
-static String argVal(vDescriptor[] args, int index)		// required arg
-{
-    vString s = argDescr(args, index);
-    if (s == null) {
-    	return null;
-    } else {
-    	return s.value;
-    }
-}
-
-static vString argDescr(vDescriptor[] args, int index, vString dflt)	// opt
-{
-    if (index >= args.length) {
-	return dflt;
-    } else {
-	return args[index].mkString();
-    }
-}
-
-static String argVal(vDescriptor[] args, int index, String dflt) // optional arg
+static vString argDescr(vDescriptor[] args, int index, vString dflt) // opt arg
 {
     if (index >= args.length || args[index] instanceof vNull) {
 	return dflt;
     } else {
-	return args[index].mkString().value;
+	return args[index].mkString();
     }
 }
 
@@ -177,11 +379,10 @@ static void appendEscaped(StringBuffer b, char c)
 
 int posEq(long n)
 {
-    long len = ((String) value).length();
     if (n <= 0) {
-    	n += len + 1;
+    	n += tlength + 1;
     }
-    if (n > 0 && n <= len + 1) {
+    if (n > 0 && n <= tlength + 1) {
     	return (int)n;
     } else {
     	return 0;
@@ -195,31 +396,31 @@ int posEq(long n)
 
 
 vInteger Size()	{
-    return iNew.Integer(value.length());
+    return iNew.Integer(tlength);
 }
 
 
 
 vValue Concat(vDescriptor v) {
-    return iNew.String(this.value + v.mkString().value);
+    return this.concat(v.mkString());
 }
 
 
 
 vDescriptor Index(vValue i) {
     int m = this.posEq(i.mkInteger().value);
-    if (m == 0 || m > value.length()) {
+    if (m == 0 || m > tlength) {
     	return null; /*FAIL*/
     }
-    return iNew.String(value.substring(m-1, m));
+    return iNew.String(this, m, m + 1);
 }
 
 vDescriptor IndexVar(vVariable v, vValue i) {
     int m = this.posEq(i.mkInteger().value);
-    if (m == 0 || m > value.length()) {
+    if (m == 0 || m > tlength) {
     	return null; /*FAIL*/
     }
-    return iNew.Substring(v, m, m+1);
+    return iNew.Substring(v, m, m + 1);
 }
 
 vDescriptor Section(vValue i, vValue j) {
@@ -229,9 +430,9 @@ vDescriptor Section(vValue i, vValue j) {
     	return null; /*FAIL*/
     }
     if (m > n) {
-	return iNew.String(value.substring(n-1, m-1));
+	return iNew.String(this, n, m);
     } else {
-	return iNew.String(value.substring(m-1, n-1));
+	return iNew.String(this, m, n);
     }
 }
 
@@ -251,18 +452,18 @@ vDescriptor SectionVar(vVariable v, vValue i, vValue j) {
 
 
 vDescriptor Select() {
-    if (value.length() == 0) {
+    if (tlength == 0) {
 	return null; /*FAIL*/
     }
-    int i = (int) k$random.choose(value.length());
-    return iNew.String(value.substring(i, i+1));
+    int i = (int) k$random.choose(tlength);
+    return iNew.String(charAt(i));
 }
 
 vDescriptor SelectVar(vVariable v) {
-    if (value.length() == 0) {
+    if (tlength == 0) {
 	return null; /*FAIL*/
     }
-    int i = (int) k$random.choose(value.length());
+    int i = (int) k$random.choose(tlength);
     return iNew.Substring(v, i+1, i+2);
 }
 
@@ -274,22 +475,22 @@ vDescriptor Bang(iClosure c) {
     } else {
 	c.oint++;
     }
-    if (c.oint >= value.length()) {
+    if (c.oint >= tlength) {
 	return null; /*FAIL*/
     } else {
-	return iNew.String(value.charAt(c.oint));
+	return iNew.String(charAt(c.oint));
     }
 }
 
 vDescriptor BangVar(iClosure c, vVariable v) {
     int i;
     if (c.PC == 1) {
-	c.o = new Integer(i = 1);
+	c.o = new Integer(i = 1);	//#%#%#% use c.oint instead
 	c.PC = 2;
     } else {
 	c.o = new Integer(i = ((Integer)c.o).intValue() + 1);
     }
-    if (i > ((vString)v.deref()).value.length()) {
+    if (i > ((vString)v.deref()).tlength) {
 	return null; /*FAIL*/
     } else {
 	return iNew.Substring(v, i, i+1);
@@ -297,22 +498,22 @@ vDescriptor BangVar(iClosure c, vVariable v) {
 }
 
 vValue LLess(vDescriptor v) {
-    return this.value.compareTo(((vString)v).value) < 0 ? (vValue)v : null;
+    return this.compareTo((vString)v) < 0 ? (vValue)v : null;
 }
 vValue LLessEq(vDescriptor v) {
-    return this.value.compareTo(((vString)v).value) <= 0 ? (vValue)v : null;
+    return this.compareTo((vString)v) <= 0 ? (vValue)v : null;
 }
 vValue LEqual(vDescriptor v) {
-    return this.value.compareTo(((vString)v).value) == 0 ? (vValue)v : null;
+    return this.compareTo((vString)v) == 0 ? (vValue)v : null;
 }
 vValue LUnequal(vDescriptor v) {
-    return this.value.compareTo(((vString)v).value) != 0 ? (vValue)v : null;
+    return this.compareTo((vString)v) != 0 ? (vValue)v : null;
 }
 vValue LGreaterEq(vDescriptor v) {
-    return this.value.compareTo(((vString)v).value) >= 0 ? (vValue)v : null;
+    return this.compareTo((vString)v) >= 0 ? (vValue)v : null;
 }
 vValue LGreater(vDescriptor v) {
-    return this.value.compareTo(((vString)v).value) > 0 ? (vValue)v : null;
+    return this.compareTo((vString)v) > 0 ? (vValue)v : null;
 }
 
 vValue Complement()		{ return this.mkCset().Complement(); }
@@ -322,18 +523,19 @@ vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }
 
 
 vValue Proc(long i) {
+//#%#%#%# look at this again.  too many conversions.
     if (i == 0) {
-	vValue b = (vValue) iEnv.builtintab.get(this.value);
+	vValue b = (vValue) iEnv.builtintab.get(this.toString());
 	if (b == null) {
 	    return null;
 	}
 	return b;
     }
-    vDescriptor v = (vDescriptor) iEnv.symtab.get(this.value);
+    vDescriptor v = (vDescriptor) iEnv.symtab.get(this.toString());
     if (v != null) {
 	return v.deref().getproc();
     }
-    v = (vDescriptor) iEnv.builtintab.get(this.value);
+    v = (vDescriptor) iEnv.builtintab.get(this.toString());
     if (v != null) {
 	return v.deref();
     }
@@ -345,7 +547,7 @@ vValue Proc(long i) {
     if (i < 1 || i > 3) {
 	return null;
     }
-    v = (vDescriptor) iEnv.proctab[(int)i-1].get(this.value);
+    v = (vDescriptor) iEnv.proctab[(int)i-1].get(this.toString());
     if (v != null) {
 	return (vValue) v;
     }

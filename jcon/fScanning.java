@@ -31,7 +31,7 @@ class f$any extends iValueClosure {			// any(c,s,i1,i2)
 	    i1 = i2;
 	    i2 = tmp;
 	}
-	if (i1 < i2 && c.member(s.value.charAt(i1-1))) {
+	if (i1 < i2 && c.member(s.charAt(i1-1))) {
 	    return iNew.Integer(i1+1);
 	}
 	return null;
@@ -56,9 +56,10 @@ class f$many extends iValueClosure {			// many(c,s,i1,i2)
 	if (i1 >= i2) {
 	    return null;
 	}
+	byte b[] = s.getBytes();
 	int i;
 	for (i = i1; i < i2; i++) {
-	    if (!c.member(s.value.charAt(i-1))) {
+	    if (!c.member((char) b[i-1])) {
 		break;
 	    }
 	}
@@ -72,7 +73,7 @@ class f$many extends iValueClosure {			// many(c,s,i1,i2)
 
 class f$match extends iValueClosure {			// match(s1,s2,i1,i2)
     vDescriptor function(vDescriptor[] args) {
-	String s1 = vString.argVal(args, 0);
+	vString s1 = vString.argDescr(args, 0);
 	vString s2 = iRuntime.argSubject(args, 1);
 	int i1 = s2.posEq(iRuntime.argPos(args, 2));
 	int i2 = s2.posEq(vInteger.argVal(args, 3, 0));
@@ -85,14 +86,18 @@ class f$match extends iValueClosure {			// match(s1,s2,i1,i2)
 		i1 = i2;
 		i2 = tmp;
 	}
-	if (i1 > i2-s1.length()) {
+
+	int len1 = s1.length();
+	int len2 = s2.length();
+
+	if (i1 > i2 - len1) {
 	    return null;
 	}
-	if (s2.value.length() < i1+s1.length()-1) {
+	if (len2 < i1 + len1 - 1) {
 	    return null;
 	}
-	if (s1.equals( s2.value.substring(i1-1, i1+s1.length()-1) )) {
-	    return iNew.Integer(i1+s1.length());
+	if (s1.matches(s2, i1 - 1)) {
+	    return iNew.Integer(i1 + len1);
 	} else {
 	    return null;
 	}
@@ -101,7 +106,7 @@ class f$match extends iValueClosure {			// match(s1,s2,i1,i2)
 
 class f$find extends iClosure {				// find(s1,s2,i1,i2)
 
-    String s1;
+    vString s1;
     vString s2;
     int i1;
     int i2;
@@ -112,7 +117,7 @@ class f$find extends iClosure {				// find(s1,s2,i1,i2)
 	    for (int i = 0; i < arguments.length; i++) {
 		arguments[i] = arguments[i].deref();
 	    }
-	    s1 = vString.argVal(arguments, 0);
+	    s1 = vString.argDescr(arguments, 0);
 	    s2 = iRuntime.argSubject(arguments, 1);
 	    i1 = s2.posEq(iRuntime.argPos(arguments, 2));
 	    i2 = s2.posEq(vInteger.argVal(arguments, 3, 0));
@@ -127,19 +132,15 @@ class f$find extends iClosure {				// find(s1,s2,i1,i2)
 	    PC = 2;
 	}
 
-	if (i1 > i2) {
-	    return null;
+	int lim = i2 - s1.length();
+	while (i1 <= lim) {
+	    if (s1.matches(s2, i1 - 1)) {
+		return iNew.Integer(i1++);
+	    }
+	    i1++;
 	}
-	if (s2.value.length() < i1+s1.length()-1) {
-	    return null;
-	}
-	int i = s2.value.indexOf(s1, i1-1);
-	if (i >= 0 && i+s1.length() < i2) {
-	    i1 = i+2;
-	    return iNew.Integer(i+1);
-	} else {
-	    return null;
-	}
+
+	return null;
     }
 }
 
@@ -149,6 +150,7 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
     vString s;
     int i1;
     int i2;
+    byte[] b;
 
     public vDescriptor nextval() {
 
@@ -168,11 +170,12 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
 	        i1 = i2;
 	        i2 = tmp;
 	    }
+	    b = s.getBytes();
 	    PC = 2;
 	}
 
 	for (; i1 < i2; i1++) {
-	    if (c.member(s.value.charAt(i1-1))) {
+	    if (c.member((char) b[i1-1])) {
 		i1 = i1+1;
 	        return iNew.Integer(i1-1);
 	    }
@@ -189,6 +192,11 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
     vString s;
     int i1;
     int i2;
+    byte[] b;
+
+    static vCset c1def = iNew.Cset(0, vCset.MAX_VALUE);
+    static vCset c2def = iNew.Cset('(', '(');
+    static vCset c3def = iNew.Cset(')', ')');
 
     public vDescriptor nextval() {
 
@@ -196,10 +204,9 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 	    for (int i = 0; i < arguments.length; i++) {
 		arguments[i] = arguments[i].deref();
 	    }
-	    // %#%#%# c1 should default to &cset....
-	    c1 = vCset.argVal(arguments, 0, 0, vCset.MAX_VALUE);
-	    c2 = vCset.argVal(arguments, 1, '(', '(');
-	    c3 = vCset.argVal(arguments, 2, ')', ')');
+	    c1 = vCset.argVal(arguments, 0, c1def);
+	    c2 = vCset.argVal(arguments, 1, c2def);
+	    c3 = vCset.argVal(arguments, 2, c3def);
 	    s = iRuntime.argSubject(arguments, 3);
 	    i1 = s.posEq(iRuntime.argPos(arguments, 4));
 	    i2 = s.posEq(vInteger.argVal(arguments, 5, 0));
@@ -211,18 +218,19 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 		i1 = i2;
 		i2 = tmp;
 	    }
+	    b = s.getBytes();
 	    PC = 2;
 	}
 
 	int balance = 0;
 	for (; i1 < i2; i1++) {
-	    if (balance == 0 && c1.member(s.value.charAt(i1-1))) {
+	    if (balance == 0 && c1.member((char) b[i1-1])) {
 		i1 = i1+1;
 	        return iNew.Integer(i1-1);
 	    }
-	    if (c2.member(s.value.charAt(i1-1))) {
+	    if (c2.member(s.charAt(i1-1))) {
 		balance++;
-	    } else if (c3.member(s.value.charAt(i1-1))) {
+	    } else if (c3.member((char) b[i1-1])) {
 		balance--;
 		if (balance < 0) {
 		    return null;
@@ -246,14 +254,14 @@ class f$move extends iClosure {				// move(j)
 	    int k = i + j - 1;
 	    vString s = (vString) k$subject.self.deref();
 	    PC = 2;
-	    if (k < 0 || k > s.value.length()) {
+	    if (k < 0 || k > s.length()) {
 		return null;
 	    } else {
-	        k$pos.self.Assign(iNew.Integer(i+j));
+	        k$pos.self.Assign(iNew.Integer(i + j));
 		if (j >= 0) {
-		    return iNew.String(s.value.substring(i - 1, k));
+		    return iNew.String(s, i, i + j);
 		} else {
-		    return iNew.String(s.value.substring(k, i - 1));
+		    return iNew.String(s, i + j, i);
 		}
 	    }
 	} else {
@@ -280,9 +288,9 @@ class f$tab extends iClosure {				// tab(j)
 	    } else {
 	        k$pos.self.Assign(iNew.Integer(j));
 		if (i < j) {
-		    return iNew.String(s.value.substring(i - 1, j - 1));
+		    return iNew.String(s, i, j);
 		} else {
-		    return iNew.String(s.value.substring(j - 1, i - 1));
+		    return iNew.String(s, j, i);
 		}
 	    }
 	} else {

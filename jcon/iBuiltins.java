@@ -138,18 +138,19 @@ class f$display extends iValueClosure {			// display(x)
 class f$variable extends iValueClosure {			// variable(x)
 	vDescriptor function(vDescriptor[] args) {
 		vString s = (vString) iRuntime.argVal(args, 0, 103);
+		String sval = s.toString();
 		parent.locals();
 		for (int i = 0; parent.names[i] != null; i++) {
-			if (s.value.equals(parent.names[i])) {
+			if (sval.equals(parent.names[i])) {
 				return parent.variables[i];
 			}
 		}
-		vVariable v = (vVariable) iEnv.symtab.get(s.value);
+		vVariable v = (vVariable) iEnv.symtab.get(sval);
 		if (v != null) {
 			return v;
 		}
-		if (s.value.length() > 1 && s.value.charAt(0) == '&') {
-			String k = s.value.substring(1);
+		if (sval.length() > 1 && sval.charAt(0) == '&') {
+			String k = sval.substring(1);
 			Object o = iEnv.keytab.get(k);
 			if (o != null && o instanceof vVariable) {
 				return (vVariable) o;
@@ -221,7 +222,7 @@ class f$image extends iValueClosure {			// image(x)
 
 class f$type extends iValueClosure {				// type(x)
 	vDescriptor function(vDescriptor[] args) {
-		return iNew.String(iRuntime.argVal(args, 0).type());
+		return iRuntime.argVal(args, 0).type();
 	}
 }
 
@@ -358,7 +359,7 @@ class f$seq extends iClosure {					// seq(i1,i2)
 
 class f$remove extends iValueClosure {			// remove(s)
 	vDescriptor function(vDescriptor[] args) {
-		String s = vString.argVal(args, 0);
+		String s = vString.argDescr(args, 0).toString();
 		java.io.File f = new java.io.File(s);
 		if (f.delete()) {
 			return iNew.Null();
@@ -370,8 +371,8 @@ class f$remove extends iValueClosure {			// remove(s)
 
 class f$rename extends iValueClosure {			// rename(s1,s2)
 	vDescriptor function(vDescriptor[] args) {
-		String s1 = vString.argVal(args, 0);
-		String s2 = vString.argVal(args, 1);
+		String s1 = vString.argDescr(args, 0).toString();
+		String s2 = vString.argDescr(args, 1).toString();
 		java.io.File f1 = new java.io.File(s1);
 		java.io.File f2 = new java.io.File(s2);
 		if (f1.renameTo(f2)) {
@@ -384,7 +385,7 @@ class f$rename extends iValueClosure {			// rename(s1,s2)
 
 class f$system extends iValueClosure {			// system(s)
 	vDescriptor function(vDescriptor[] args) {
-		String s = vString.argVal(args, 0);
+		String s = vString.argDescr(args, 0).toString();
 		int status;
 		try {
 			// #%#%# new process's stdin/stdout/stderr are
@@ -426,7 +427,7 @@ class f$getenv extends iValueClosure {			// getenv(s)
 	}
 
 	vDescriptor function(vDescriptor[] args) {
-		return (vString) env.get(vString.argVal(args, 0));
+		return (vString) env.get(vString.argDescr(args, 0).toString());
 	}
 }
 

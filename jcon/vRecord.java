@@ -12,6 +12,8 @@ vRecord(vRecordProc constr, vDescriptor[] inits) {
     this.constr = constr;
     values = new vSimpleVar[constr.fieldnames.length];
     for (int i = 0; i < values.length; i++) {
+	//#%#%#%#%##% should precompute these names!!!!!
+	//#%#%#%#% also fold in initialization (below) with creation
 	values[i] = iNew.SimpleVar(constr.name + "." + constr.fieldnames[i]);
     }
     int max = values.length;
@@ -25,7 +27,7 @@ vRecord(vRecordProc constr, vDescriptor[] inits) {
 
 
 
-String type()	{ return constr.name; }
+vString type()	{ return constr.vname; }
 
 String image() {
     return "record " + constr.name + "_" + snum + "(" + values.length + ")";
@@ -72,7 +74,7 @@ vDescriptor Index(vValue i) {
     } catch (iError e) {
     }
     try {
-        int k = constr.find(i.mkString().value);
+        int k = constr.find(i.mkString().toString());
         if (k >= 0) {
     	    return values[k];
         }

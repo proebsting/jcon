@@ -3,12 +3,14 @@ package rts;
 
 
 public class vRecordProc extends vValue {
-	String name;
-	String[] fieldnames;
+	String name;		// name of record type
+	vString vname;		// name of record type, as vString
+	String[] fieldnames;	// names of fields
 	int nextsn = 1;		// next serial number
 
 	vRecordProc(String name, String[] fieldnames) {
 		this.name = name;
+		this.vname = iNew.String(name);
 		this.fieldnames = fieldnames;
 	}
 
@@ -20,8 +22,8 @@ public class vRecordProc extends vValue {
 
 	String image()	{ return "record constructor " + name; }
 
-	String type()	{ return "procedure"; }
-
+	static vString typestring = iNew.String("procedure");
+	vString type()	{ return typestring; }
 	int rank()	{ return 80; }	// record constructors sort with procs
 
 	vInteger Args()	{ return iNew.Integer(fieldnames.length); }

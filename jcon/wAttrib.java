@@ -77,7 +77,7 @@ private static void newatt(String name, wAttrib a) {
 //  parseAtts(args, n) -- parse attribute arglist beginning at position n
 //
 //  Returns a list of wAttrib objects, each of proper type and with
-//  the "name" field set.  The "val" field is set, always to a vString,
+//  the "name" field set.  The "val" field is set, always to a String,
 //  if "=value" is found in an argument.  (Note that val=null is
 //  different from val="").
 //
@@ -89,7 +89,7 @@ static wAttrib[] parseAtts(vDescriptor[] args, int n) {
 
     for (int i = n; i < args.length; i++) {
 
-	String s = vString.argVal(args, i);
+	String s = vString.argDescr(args, i).toString();
 	String name, val;
 
 	int j = s.indexOf('=');

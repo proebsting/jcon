@@ -34,8 +34,7 @@ vInteger mkInteger()	{
 }
 
 vString mkString()	{ return iNew.String(this.image()); }
-
-String write()		{ return this.image(); }
+vString write()		{ return iNew.String(this.image()); }
 
 String image()		{	//#%#%# differs from v9 formatting 
     String s = String.valueOf(value + 0.0);	 // +0.0 is to eliminate "-0"
@@ -49,8 +48,8 @@ String image()		{	//#%#%# differs from v9 formatting
     }
 }
 
-String type()		{ return "real"; }
-
+static vString typestring = iNew.String("real");
+vString type()		{ return typestring; }
 int rank()		{ return 20; }		// reals sort after integers
 
 int compareTo(vValue v) {

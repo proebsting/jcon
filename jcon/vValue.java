@@ -33,7 +33,7 @@ public abstract class vValue extends vDescriptor {
     vDescriptor[] mkArgs()	{ iRuntime.error(126, this); return null; }
     vValue[] mkArray()		{ iRuntime.error(125, this); return null; }
 
-    String write()		{ return this.mkString().write(); }
+    vString write()		{ return this.mkString(); }
     String report()		{ return this.image(); }
     abstract String image();	// required of all subclasses
 

@@ -17,22 +17,22 @@ vSubstring(vVariable v, int i1, int i2) {	// construct from String
 }
 
 vString Name() {
-    String vname = var.Name().value;
+    String vname = var.Name().toString();
     return iNew.String(vname +"[" + start + ":" + end + "]");
 }
 
-//  ss.strval() -- return underlying java.lang.String value.
+//  ss.strval() -- return underlying vString value.
 //
 //  Verifies that the underlying variable is still a string
 //  and that the indices are still in range, and return String.
 
-String strval() 
+vString strval() 
 {
     vDescriptor v = var.deref();
     if (! (v instanceof vString)) {
     	iRuntime.error(205);
     }
-    String s = ((vString)v).value;
+    vString s = (vString) v;
     if (end > s.length() + 1)  {
     	iRuntime.error(103, var);
     }
@@ -62,7 +62,7 @@ int posEq(long n)
 //  internal methods
 
 public vValue deref() {
-    return iNew.String(this.strval().substring(start - 1, end - 1));
+    return iNew.String(this.strval(), start, end);
 }
 
 String report() {
@@ -79,18 +79,9 @@ String report() {
 
 
 public vVariable Assign(vValue x) {
-
-    String xs = x.mkString().value;		// coerce assigned value
-    String s = this.strval();			// get original String
-
-    var.Assign(iNew.String(
-	new StringBuffer()
-	.append(s.substring(0, start - 1))
-	.append(xs)
-	.append(s.substring(end - 1))
-	.toString()));
-	
-    return iNew.Substring(this, start, start + xs.length());
+    vString s = x.mkString();		// coerce assigned value
+    var.Assign(iNew.String(this.strval(), start, end, s));
+    return iNew.Substring(this, start, start + s.length());
 }
 
 

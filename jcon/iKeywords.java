@@ -61,7 +61,7 @@ public class iKeywords extends iFile {
 		k$pos p = new k$pos();			// &pos
 		s.pos = p;
 		p.subject = s;
-		s.Assign(iNew.String(""));
+		s.Assign(iNew.String());
 		iEnv.declareKey("subject", s);
 		iEnv.declareKey("pos", p);
 
@@ -279,7 +279,7 @@ class k$host extends k$Value {			// &host
 		    new InputStreamReader(p.getInputStream()))
 		    .readLine().trim());
 		p.destroy();
-		hostname.value.charAt(0);	// ensure not empty
+		hostname.charAt(0);		// ensure not empty
 	    } catch (Exception e1) {
 		try {
 		    hostname = iNew.String(System.getProperty("os.name"));

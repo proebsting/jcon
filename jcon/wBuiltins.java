@@ -207,8 +207,8 @@ class f$Font extends iValueClosure {		// Font(W,s)
 class f$TextWidth extends iValueClosure {	// TextWidth(W,s)
 	vDescriptor function(vDescriptor[] args) {
 		vWindow win = vWindow.winArg(args);
-	    	String s = vString.argVal(args, vWindow.argBase(args));
-		return win.TextWidth(s);
+	    	vString s = vString.argDescr(args, vWindow.argBase(args));
+		return win.TextWidth(s.toString());
 	}
 }
 
@@ -436,7 +436,7 @@ class f$DrawString extends iValueClosure {	// DrawString(W,x,y,s,...)
 		for (int i = b; i < args.length; i += 3) {
 			int x = (int) vInteger.argVal(args, i);
 			int y = (int) vInteger.argVal(args, i + 1);
-			String s = vString.argVal(args, i + 2);
+			String s = vString.argDescr(args, i + 2).toString();
 			win.DrawString(x, y, s);
 		}
 		return null;				// fail

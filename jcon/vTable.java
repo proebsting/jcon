@@ -31,8 +31,8 @@ void put(vValue key, vValue val) {
 }
 
 
-String type()		{ return "table";}
-
+static vString typestring = iNew.String("table");
+vString type()		{ return typestring; } 
 int rank()		{ return 110; }		// tables rank after sets
 
 vInteger Size() {
@@ -217,7 +217,9 @@ class vTableElem extends vValue {	// key/value pair for sorting
     }
 
     String image()  { return "(" + sortkey.image() + "," + other.image() + ")";}
-    String type()   { return "telem"; }
+
+    static vString typestring = iNew.String("telem");
+    vString type()   { return typestring; }
     int rank()      { return -1; }		// never compared to other types
 
 } // class vTableElem

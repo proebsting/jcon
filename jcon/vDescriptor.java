@@ -39,10 +39,10 @@ public abstract class vDescriptor {
     }
 
     // conversion to (Java) string for special purposes
-    abstract String write();			// convert for use in write()
+    abstract vString write();			// convert for use in write()
     abstract String image();			// convert for use in image()
     abstract String report();			// convert for error reporting
-    abstract String type();			// return name of type
+    abstract vString type();			// return name of type
 
     // simple unary operators that always return values
     abstract vNumeric Negate();			//  -n
@@ -118,11 +118,6 @@ public abstract class vDescriptor {
     // other data-oriented operations
     abstract vValue Sort(int i);		// sort(X, i)
 
-    //#%#%#%# not-yet-implemented abort
-    void NYI(String s) {
-	System.err.println("NYI: " + this + "." + (s != null ? s : "?"));
-	System.exit(1);
-    }
 
     public iClosure instantiate(vDescriptor arg0, vDescriptor arg1, vDescriptor arg2, iClosure parent) {
 	vDescriptor[] args = { arg0, arg1, arg2};

@@ -22,6 +22,7 @@ public static vReal Real(double x) 		{ return new vReal(x); }
 public static vReal Real(String x) 		{ return new vReal(x); }
 
 public static vCset Cset(String x) 		{ return new vCset(x); }
+public static vCset Cset(vString x) 		{ return new vCset(x); }
 public static vCset Cset(int low, int high)	{ return new vCset(low, high); }
 
 public static vList List(int n, vValue x)	{ return new vList(n, x); }
@@ -68,30 +69,80 @@ public static vInteger Integer(long x) {
 
 
 
-//  for strings, preallocate empty string and one-character strings
+//  for strings, preallocate empty string and one-character strings;
+//  also cache strings corresponding to small integers
 
-private static vString nullstring = new vString("");
+private static vString nullstring = new vString();
 private static vString strlist[] = new vString[vCset.MAX_VALUE + 1];
+private static vString intstrs[] = 
+    new vString[iConfig.MaxCachedIntStr + 1 - iConfig.MinCachedIntStr];
 
 static {
     for (int i = 0; i < strlist.length; i++) {
-	strlist[i] = new vString(String.valueOf((char)i));
+	strlist[i] = new vString((char) i);
     }
+}
+
+public static vString String() {
+    return nullstring;
 }
 
 public static vString String(char c) {
     return strlist[c];
 }
 
-public static vString String(String x) {
-    int n = x.length();
-    if (n < 1) {
+public static vString String(String s) {
+    int len = s.length();
+    if (len < 1) {
 	return nullstring;
-    } else if (n == 1) {
-	return strlist[x.charAt(0)];
+    } else if (len == 1) {
+	return strlist[s.charAt(0)];
     } else {
-	return new vString(x);
+	byte[] b = new byte[len];
+	for (int i = 0; i < len; i++)
+	    b[i] = (byte) s.charAt(i);
+	return new vString(b);
     }
+}
+
+public static vString String(byte[] b) {
+    int len = b.length;
+    if (len < 1) {
+	return nullstring;
+    } else if (len == 1) {
+	return strlist[b[0]];
+    } else {
+	return new vString(b);
+    }
+}
+
+public static vString String(vString s, int i, int j) {     // s[i:j], both > 0
+    int len = j - i;
+    if (len == s.length()) {		// if extracting entire string
+	return s;			// reuse it
+    } else if (len == 0) {
+	return nullstring;
+    } else if (len == 1) {
+	return strlist[s.charAt(i - 1)];
+    } else {
+	return new vString(s, i, j);
+    }
+}
+
+public static vString String(vString s, int i, int j, vString t) {
+    return new vString(s, i, j, t);
+}
+
+public static vString String(long x) {
+    if (x > iConfig.MaxCachedIntStr || x < iConfig.MinCachedIntStr) {
+	return iNew.String(Long.toString(x));
+    }
+    int i = (int)x - iConfig.MinCachedIntStr;
+    vString v = intstrs[i];
+    if (v != null) {
+	return v;
+    }
+    return intstrs[i] = new vString(Long.toString(x).getBytes());
 }
 
 

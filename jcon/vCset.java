@@ -18,6 +18,13 @@ vCset(String s) {				// new Cset(String s)
     }
 }
 
+vCset(vString s) {				// new Cset(vString s)
+    t = new java.util.BitSet();
+    for (int i = 0; i < s.length(); i++) {
+	t.set( (int) s.charAt(i) );
+    }
+}
+
 vCset(int low, int high) {			// new Cset(int low, high)
     t = new java.util.BitSet();
     for (int i = low; i <= high; i++) {
@@ -27,25 +34,27 @@ vCset(int low, int high) {			// new Cset(int low, high)
 
 
 
-String image() {	//#%#% should keyword csets and treat specially
-    StringBuffer b = new StringBuffer();
-    b.append("'");
+String image() {	//#%#% should recognize keyword csets & treat specially
+    StringBuffer b = new StringBuffer(80);	// arbitrary size estimate
+    b.append('\'');
     for (char c = 0; c < t.size(); c++) {
 	if (t.get(c)) {
 	    if (c == '\'') {
-		b.append("\\'");
+		b.append('\\');
+		b.append('\'');
 	    } else {
 		vString.appendEscaped(b, c);
 	    }
 	}
     }
-    b.append("'");
+    b.append('\'');
     return b.toString();
 }
 
 String report()		{ return image(); }
 
-String type()		{ return "cset";}
+static vString typestring = iNew.String("cset");
+vString type()		{ return typestring;}
 
 int rank()		{ return 40; }		// csets sort after strings
 
@@ -128,13 +137,13 @@ vDescriptor Index(vValue i)		{ return this.mkString().Index(i); }
 vDescriptor Section(vValue i, vValue j)	{ return this.mkString().Section(i,j); }
 
 vString mkString() {
-    StringBuffer b = new StringBuffer();
+    vByteBuffer b = new vByteBuffer(80);	// arbitrary size estimate
     for (int i = 0; i < t.size(); i++) {
 	if (t.get(i)) {
 	    b.append((char)i);
 	}
     }
-    return iNew.String(b.toString());
+    return b.mkString();
 }
 
 vInteger Size() {
@@ -160,14 +169,14 @@ vDescriptor Bang(iClosure c) {
     for (int k = c.oint; k < t.size(); k++) {
 	if (t.get(k)) {
 	    c.oint = k+1;
-	    return iNew.String(String.valueOf((char) k));
+	    return iNew.String((char) k);
 	}
     }
     return null;
 }
 
 vValue Complement() {
-    vCset result = new vCset("");
+    vCset result = new vCset(0, -1);
     result.t = new java.util.BitSet(vCset.MAX_VALUE);
     for (int i = 0; i < result.t.size(); i++) {
 	if (!this.t.get(i)) {
@@ -239,10 +248,10 @@ static vCset argVal(vDescriptor[] args, int index)		// required arg
     }
 }
 
-static vCset argVal(vDescriptor[] args, int index, int dfltlow, int dflthigh)	// optional arg
+static vCset argVal(vDescriptor[] args, int index, vCset dflt)	// optional arg
 {
     if (index >= args.length || args[index] instanceof vNull) {
-	return iNew.Cset(dfltlow, dflthigh);
+	return dflt;
     } else {
 	return args[index].mkCset();
     }

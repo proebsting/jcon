@@ -25,12 +25,13 @@ public abstract class vFile extends vValue {
 
 
 
-abstract vString reads(long n);	// read n bytes
-abstract void writes(String s);	// write string without appending newline
-abstract void newline();	// write newline
+abstract vString reads(long n);		// read n bytes
+abstract void writes(vString s);	// write without appending newline
+abstract void newline();		// write newline
 
 
-String type()			{ return "file"; }
+static vString typestring = iNew.String("file");
+vString type()			{ return typestring; }
 String image()			{ return this.img; }
 int rank()			{ return 60; }	// files sort after windows
 int compareTo(vValue v)		{ return this.img.compareTo(((vFile) v).img); }
@@ -211,7 +212,7 @@ vString read() {					// read()
 	}
     }
 
-    StringBuffer b = new StringBuffer(100);
+    vByteBuffer b = new vByteBuffer(100);
     byte c = '\0';
     try {
 	if (lastCharRead == '\r') {
@@ -230,7 +231,7 @@ vString read() {					// read()
 	return null;
     }
     lastCharRead = c;
-    return iNew.String(b.toString());
+    return b.mkString();
 }
 
 

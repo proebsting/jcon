@@ -40,11 +40,12 @@ vList(Vector v) {				// new Vlist(Vector v)
 
 // runtime primitives
 
-int rank()		{ return 90; }		// lists sort after procedures
 
 String report()		{ return this.image(); } //#%#% redo with elem details
 
-String type()		{ return "list"; }
+static vString typestring = iNew.String("list");
+vString type()		{ return typestring; }
+int rank()		{ return 90; }		// lists sort after procedures
 
 
 

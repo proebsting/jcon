@@ -31,10 +31,10 @@ public abstract class vIndirect extends vDescriptor {
     vDescriptor[] mkArgs()		{ return this.deref().mkArgs(); }
     vValue[] mkArray()			{ return this.deref().mkArray(); }
 
-    String write()			{ return this.deref().write(); }
+    vString write()			{ return this.deref().write(); }
     String image()			{ return this.deref().image(); }
     String report()			{ return this.deref().report(); }
-    String type()			{ return this.deref().type(); }
+    vString type()			{ return this.deref().type(); }
 
     vVariable field(String s)		{ return this.deref().field(s); }
 

@@ -76,9 +76,10 @@ wColor(vString s, int rgb) {
 
 static wColor parse(vString s) {
 
-    int rgb = parseInts(s.value);
+    String js = s.toString();	//#%#% unnecessary?
+    int rgb = parseInts(js);
     if (rgb < 0) {
-    	rgb = parseName(s.value);
+    	rgb = parseName(js);
 	if (rgb < 0) {
 	    return null; /*FAIL*/
 	}

@@ -22,12 +22,13 @@ public boolean equals(Object o)	{
 
 vInteger mkInteger()	{ return this; }
 vReal mkReal()		{ return iNew.Real(this.value); }
-vString mkString()	{ return iNew.String(String.valueOf(value)); }
+vString mkString()	{ return iNew.String(this.value); }
 
-String write()		{ return String.valueOf(value); }
+vString write()		{ return this.mkString(); }
 String image()		{ return String.valueOf(value); }
-String type()		{ return "integer"; }
 
+static vString typestring = iNew.String("integer");
+vString type()		{ return typestring; }
 int rank()		{ return 10; } 	// integers sort right after &null
 
 int compareTo(vValue v) {
@@ -288,8 +289,8 @@ class vIntegerProc extends vValue {
 
 	String image()	{ return "function " + this.value.value; }
 
-	String type()	{ return "procedure"; }
-
+	static vString typestring = iNew.String("procedure");
+	vString type()	{ return typestring; }
 	int rank()	{ return 80; }	// integer "procedure"
 
 	vInteger Args()	{ return iNew.Integer(-1); }

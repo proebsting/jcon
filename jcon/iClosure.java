@@ -86,7 +86,6 @@ public vDescriptor resume() {
 	    ret = null;
         }
     } catch (iError e) {
-	//  e.printStackTrace();  //#%#%#% TEMP: enable for debugging
 	e.report(this);  // returns only on error->failure conversion.
 	ret = null;
     }

@@ -43,7 +43,8 @@ private static int gcount = 0;	// count of graphics contexts allocated
 
 
 
-String type()			{ return "window"; }
+static vString typestring = iNew.String("window");
+vString type()			{ return typestring; }
 String image()			{ return "window_" + wnum + ":" + gnum 
 				    + "(" + c.f.getTitle() + ")"; } 
 
@@ -202,7 +203,7 @@ static vWindow winArg(vDescriptor args[]) {
 
 vString read()			{ return c.tty.read(this); }
 vString reads(long n)		{ return c.tty.reads(this, n); }
-void writes(String s)		{ c.tty.writes(this, s); }
+void writes(vString s)		{ c.tty.writes(this, s); }
 void newline()			{ c.tty.newline(this); }
 
 vFile flush()			{ toolkit.sync(); return this; }

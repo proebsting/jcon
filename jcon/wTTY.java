@@ -81,8 +81,7 @@ private char rchar(vWindow win, StringBuffer b) {
     	win.EraseArea(xloc, yloc, m.charWidth('W'), m.getDescent());
     }
 
-    String s = ((vString) e).value;
-    char c = s.charAt(0);
+    char c = ((vString) e).charAt(0);
 
     if (c == '\b' || c == '\177') {		// if backspace or delete
 
@@ -98,13 +97,12 @@ private char rchar(vWindow win, StringBuffer b) {
 
     } else {
 
-	if (c == '\r') {		// turn \r into \n
+	if (c == '\r') {			// turn \r into \n
 	    c = '\n';
-	    s = "\n";
 	}
-	b.append(c);			// add to buffer
+	b.append(c);				// add to buffer
         if (echo) {
-	    writes(win, s);		// echo to screen
+	    writes(win, iNew.String(c));	// echo to screen
 	}
     }
 
@@ -117,9 +115,10 @@ private char rchar(vWindow win, StringBuffer b) {
 
 //#%#%#%##% need to handle \r and \t
 
-void writes(vWindow win, String s) {
+void writes(vWindow win, vString vs) {
     int i = 0;
     int j;
+    String s = vs.toString();
     while ((j = s.indexOf('\n', i)) >= 0) {		// find embedded '\n'
 	if (j > i) {
 	    wstring(win, s.substring(i, j));

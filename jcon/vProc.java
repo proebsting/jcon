@@ -22,8 +22,8 @@ public class vProc extends vValue {
 
 	String image()	{ return img; }
 
-	String type()	{ return "procedure"; }
-
+	static vString typestring = iNew.String("procedure");
+	vString type()	{ return typestring; }
 	int rank()	{ return 80; }	// procedures sort after co-expressions
 
 	int compareTo(vValue v) {	// must handle procs, funcs, rec constrs

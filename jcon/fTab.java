@@ -44,13 +44,13 @@ class f$detab extends iValueClosure {
 
 vDescriptor function(vDescriptor[] args) {
 
-    String s = vString.argVal(args, 0);
+    byte[] s = vString.argDescr(args, 0).getBytes();
     int stops[] = fTab.stops(args);
-    StringBuffer b = new StringBuffer(s.length() + 40);
+    vByteBuffer b = new vByteBuffer(s.length + 40);
     int col = 1;
 
-    for (int i = 0; i < s.length(); i++) {
-	char c = s.charAt(i);
+    for (int i = 0; i < s.length; i++) {
+	char c = (char)s[i];
 	switch (c) {
 	    case '\b':				// backspace
 		b.append(c);
@@ -77,7 +77,7 @@ vDescriptor function(vDescriptor[] args) {
 	}
     }
 
-    return iNew.String(b.toString());
+    return b.mkString();
 }
 
 } // class f$detab
@@ -90,13 +90,13 @@ class f$entab extends iValueClosure {
 
 vDescriptor function(vDescriptor[] args) {
 
-    String s = vString.argVal(args, 0);
+    byte[] s = vString.argDescr(args, 0).getBytes();
     int stops[] = fTab.stops(args);
-    StringBuffer b = new StringBuffer(s.length());
+    vByteBuffer b = new vByteBuffer(s.length);
     int col = 1;
 
-    for (int i = 0; i < s.length(); i++) {
-	char c = s.charAt(i);
+    for (int i = 0; i < s.length; i++) {
+	char c = (char)s[i];
 	switch (c) {
 	    case '\b':				// backspace
 		b.append(c);
@@ -113,7 +113,7 @@ vDescriptor function(vDescriptor[] args) {
 		break;
 	    case ' ':				// one or more spaces
 		int nspaces = 1;
-		while (i + 1 < s.length() && s.charAt(i + 1) == ' ') {
+		while (i + 1 < s.length && s[i+1] == ' ') {
 		    nspaces++;
 		    i++;
 		}
@@ -144,7 +144,7 @@ vDescriptor function(vDescriptor[] args) {
 		break;
 	 }
     }
-    return iNew.String(b.toString());
+    return b.mkString();
 }
 
 } // class f$entab

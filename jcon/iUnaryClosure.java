@@ -16,8 +16,6 @@ public abstract class iUnaryClosure extends iClosure {
 		    return null;
 		}
 	    } catch (iError e) {
-		//  e.printStackTrace();  //#%#%#% TEMP: enable for debugging
-		//#%#%# check &error here and fail or:
 		e.report(this);  // returns only on error->failure conversion.
 		return null;
 	    }

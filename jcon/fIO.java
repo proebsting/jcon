@@ -33,9 +33,10 @@ class fIO {
 
 
 class f$open extends iValueClosure {				// open(s1,s2)
+	static vString defmode = iNew.String("r");
 	vDescriptor function(vDescriptor[] args) {
-		String fname = vString.argVal(args, 0);
-		String mode = vString.argVal(args, 1, "r");
+		String fname = vString.argDescr(args, 0).toString();
+		String mode = vString.argDescr(args, 1, defmode).toString();
 		String validFlags = "rwabctugRWABCTUG";
 		for (int i = 0; i < mode.length(); i++) {
 		    if (validFlags.indexOf(mode.charAt(i)) < 0) {

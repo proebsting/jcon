@@ -28,7 +28,7 @@ wFont(String name, int style, int ptsize, vString spec) {
 static wFont parse(vString spec) {
     int size = 0;
     int style = 0;
-    String s = spec.value;
+    String s = spec.toString();		//#%#% unnecessary?
 
     // check for special-cased X name, and model (imperfectly)
     if (s.equals("fixed")) {

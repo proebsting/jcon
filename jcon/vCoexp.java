@@ -87,7 +87,8 @@ public class vCoexp extends vValue implements Runnable {
 
 	vInteger Size() { return iNew.Integer(resultCount); }
 
-	String type()	{ return "co-expression";}
+	static vString typestring = iNew.String("co-expression");
+	vString type()	{ return typestring;}
 
 	String image()  {
 		return "co-expression_" + snum + "(" + resultCount + ")";

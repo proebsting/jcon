@@ -9,6 +9,7 @@ import java.io.*;
 public class vTFile extends vFile {
 
 private static String nlstring = System.getProperty("line.separator");
+private static boolean nleasy = nlstring.equals("\n");
 
 
 
@@ -31,7 +32,7 @@ vTFile(String name, String mode)		// new vTFile(name, mode)
 //  translated reads() maps any line terminator sequence to "\n"
 
 vString reads(long n) {
-    StringBuffer b = new StringBuffer((int) n);
+    vByteBuffer b = new vByteBuffer((int) n);
 
     if (instream == null) {
 	iRuntime.error(212, this);	// not open for reading
@@ -62,29 +63,36 @@ vString reads(long n) {
 	iRuntime.error(214, this);	// I/O error
 	return null;
     } 
-    return iNew.String(b.toString());
+    return b.mkString();
 }
 
 
 
 //  translated writes() maps newline chars to system line terminators
 
-void writes(String s) {
+void writes(vString s) {
     if (outstream == null) {
 	iRuntime.error(213, this);	// not open for writing
     }
+    byte b[] = s.getBytes();
     try {
-	int i = 0;
-	int j;
-	while ((j = s.indexOf('\n', i)) >= 0) {		// find embedded '\n'
-	    if (j > i) {
-		outstream.writeBytes(s.substring(i, j));
+	if (nleasy) {
+	    outstream.write(b);
+	} else {
+	    int i = 0;
+	    int j = 0;
+	    for (; j < b.length; j++) {
+		if (b[j] == '\n') {
+		    if (i < j) {
+			outstream.write(b, i, j - i);
+			i = j + 1;
+		    }
+		    outstream.writeBytes(nlstring);
+		}
 	    }
-	    outstream.writeBytes(nlstring);
-	    i = j + 1;
-	}
-	if (i < s.length()) {
-	    outstream.writeBytes(s.substring(i, s.length()));
+	    if (i < j) {
+		outstream.write(b, i, j - i);
+	    }
 	}
     } catch (IOException e) {
 	iRuntime.error(214, this);	// I/O error

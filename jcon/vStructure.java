@@ -26,9 +26,11 @@ vInteger Serial()	{ return iNew.Integer(this.snum); }
 
 
 //  x.image() -- common method for lists, sets, and tables
+//  #%#% converts type to string every time
 
 String image() {
-    return this.type() + "_" + this.snum + "(" + this.Size().image() + ")";
+    return this.type().toString() + "_" + this.snum +
+	"(" + this.Size().image() + ")";
 }
 
 

@@ -37,8 +37,8 @@ vSet(vValue x) {
 
 
 
-String type()		{ return "set";}
-
+static vString typestring = iNew.String("set");
+vString type()		{ return typestring;}
 int rank()		{ return 100; }		// sets rank after lists
 
 vInteger Size()		{ return iNew.Integer(t.size()); }
