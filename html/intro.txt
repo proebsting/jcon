@@ -2,8 +2,7 @@
 The Jcon translator, written in Icon, generates Java class files that
 execute in conjunction with a run-time system written in Java.
 
-<P>
-Jcon is an essentially complete implementation of classic Icon,
+<P> Jcon is an essentially complete implementation of classic Icon,
 omitting only a few things such as <CODE>chdir()</CODE>
 that cannot be done in Java.
 Co-expressions, large integers, and pipes are provided,
@@ -12,8 +11,7 @@ Tracing, error recovery, and debugging functions are all included,
 although for performance reasons they are disabled by default.
 There are a few minor deficiencies due to Java limitations.
 
-<P>
-The graphics implementation is nearly complete, but wide lines
+<P> The graphics implementation is nearly complete, but wide lines
 and textured drawing are omitted.
 These two features will be easier to implement after version 1.2 of Java
 becomes universally available.

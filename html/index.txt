@@ -5,8 +5,7 @@
 
 <H1>Jcon: A Java-Based Implementation of Icon</H1>
 
-<P>
-These pages describe Jcon:
+<P> These pages describe Jcon:
 
 <BLOCKQUOTE>
 <A HREF=intro.htm>Introduction</A><BR>
@@ -20,8 +19,8 @@ These pages describe Jcon:
 <A HREF=refs.htm>References</A><BR>
 </BLOCKQUOTE>
 
-<P>
-They are also collected together into a 
+
+<P> They are also collected together into a 
 <A HREF=jcon.htm>single large file</A>, if you prefer that.
 
-<P>
+</BODY></HTML>

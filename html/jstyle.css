@@ -8,6 +8,10 @@ PRE, TT {
 	font-family:	LucidaTypewriter, Monaco, Courier, monospace;
 	}
 
+VAR, DFN {
+	font-style:	italic;
+	}
+
 CODE {
 	font-weight:	bold;
 	}

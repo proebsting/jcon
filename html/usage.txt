@@ -92,13 +92,13 @@ and arguments can be passed as usual.
 	Depending on the implementation, JXOPTS can select options
 	such as profiling or run-time compilation to machine code.
 <TR><TD WIDTH=100 VALIGN=TOP><CODE>TRACE</CODE></TD><TD>
-	Initial value of the Icon keyword <CODE>&AMP;TRACE</CODE>.
+	Initial value of the Icon keyword <CODE>&AMP;trace</CODE>.
 	If set, it overrides compilation with <CODE>-t</CODE>. 
 </TABLE></BLOCKQUOTE>
 
 <H3>Jar file output</H3>
-<P>
-If <CODE>-j</CODE> is passed to jcont, the final output file is given a
+
+<P> If <CODE>-j</CODE> is passed to jcont, the final output file is given a
 <CODE>.jar</CODE> extension and the header is omitted to facilitate
 manipulation of the file as an archive.
 Execution is accomplished by naming the file in the
@@ -108,8 +108,8 @@ CLASSPATH (with the run-time library) and then running java:
 	<BR>setenv CLASSPATH myprog.jar:/myhome/jcon/bin/rts.zip
 	<BR>java myprog
 </CODE></BLOCKQUOTE>
-<P>
-It is possible to transport such a Jar file for execution on another
+
+<P> It is possible to transport such a Jar file for execution on another
 machine, possibly even one of different architecture.
 The run-time library <CODE>rts.zip</CODE> must also be made available on
 the target machine.
@@ -117,8 +117,8 @@ Details will depend on the particular Java implementation
 but will be similar in concept to the Unix example give above.
 
 <H3>Caveats</H3>
-<P>
-<I>java</I> and <I>jar</I> must be in the search path,
+
+<P> <I>java</I> and <I>jar</I> must be in the search path,
 and <I>javap</I> if <CODE>-S</CODE> is used.
 
 <PRE>

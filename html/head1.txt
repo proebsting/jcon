@@ -3,8 +3,8 @@
 <LINK REL=STYLESHEET TYPE="text/css" HREF=jstyle.css>
 </HEAD><BODY>
 <H1>Jcon: A Java-Based Implementation of Icon</H1>
-<P>
-Gregg M. Townsend, The University of Arizona
+
+<P>Gregg M. Townsend, The University of Arizona
 <BR>
 Todd A. Proebsting, Microsoft Research
 
@@ -16,8 +16,8 @@ Todd A. Proebsting, Microsoft Research
 
 <P><HR>
 
-<P>
-This document collects the separate Web pages that serve as
+
+<P> This document collects the separate Web pages that serve as
 documentation for Jcon.
 The sections are:
 

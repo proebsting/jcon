@@ -16,6 +16,8 @@ graphics infelicities:
 -- window repair may be delayed until the program pauses for input
 -- "drawop=reverse" may draw wrong color under rare conditions not understood
 -- DEC Java 1.1.6 exhibits problems with fonts and font metrics
+-- WOpen("image=file.gif") does not init window contents if animated GIF
+-- some Java implementations produce an extra resize event when win first opened
 </PRE>
 
 <CODE>&amp;clock</CODE> and <CODE>&amp;dateline</CODE>

@@ -4,7 +4,7 @@ intro    / intro / Introduction / Jcon: A Java-Based Implementation of Icon
 usage	 / usage / Usage / Jcon Usage
 diffs    / differences / Language Differences / Jcon Language Differences
 graphics / graphics / Graphics / Graphics Facilities in Jcon
-loadfunc / dynamic loading / Dynamic Loading / Extending Jcon with Dynamically Loaded Code
+loadfunc / dynamic loading / Dynamic Loading / Dynamic Loading in Jcon
 perf     / performance / Performance / Jcon Performance
 releases / releases / Release Notes / Release Notes for Jcon
 install  / installation / Installation / Installing Jcon

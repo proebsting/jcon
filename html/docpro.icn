@@ -45,7 +45,7 @@ procedure main(args)
       put(sectlist, section(fbase, ftag, stitle, wtitle))
       }
 
-   write("<!-- DON'T EDIT THIS FILE -- it is created automatically -->\n")
+   dontedit(&output)
    while write(read(h1file))
    every s := !sectlist do {
       write("<A HREF=\"#", s.fbase, "\">", s.stitle, "</A><BR>")
@@ -83,7 +83,7 @@ procedure wrpage(fbase, title)
 
    f1 := open(fbase || ".txt") | stop("cannot open ", fbase, ".txt")
    f2 := open(fbase || ".htm", "w") | stop("cannot create ", fbase, ".htm")
-   write(f2, "<!-- DON'T EDIT THIS FILE -- it is created automatically -->\n")
+   dontedit(f2)
    write(f2, "<HTML><HEAD><TITLE>", title, "</TITLE>")
    write(f2, "<LINK REL=STYLESHEET TYPE=\"text/css\" HREF=jstyle.css>")
    write(f2, "</HEAD>")
@@ -100,5 +100,14 @@ procedure wrpage(fbase, title)
    write(f2, "</SMALL>")
    write(f2, "</BODY></HTML>")
    close(f2)
+   return
+end
+
+
+
+procedure dontedit(f)
+   write(f, repl("\n", 20))
+   write(f, "<!-- DON'T EDIT THIS FILE -- it is created automatically -->\n")
+   write(f, repl("\n", 20))
    return
 end

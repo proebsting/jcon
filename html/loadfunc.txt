@@ -1,0 +1,223 @@
+
+<P> The capabilities of Icon can be extended through the use of
+dynamic loading at execution time.
+The built-in function <CODE>loadfunc(libname,procname)</CODE>
+loads the compiled procedure <CODE>procname</CODE>
+from the Zip archive <CODE>libname</CODE> and returns a procedure value.
+This value can be called just like any other procedure.
+
+<P> While the library archive can be built ahead of time, it is
+also possible for the running program to generate code and then
+build it by calling <CODE>system()</CODE> with the appropriate commands.
+
+<P> In Version 9 of Icon, <CODE>loadfunc()</CODE> loads
+procedures written in C.
+Jcon, in contrast, loads precompiled Java or Icon procedures.
+Although the Icon interface is similar, it is not possible to
+load one procedure with both systems.
+
+<H3>Preparing Icon Procedures</H3>
+
+<P> An Icon procedure is prepared for dynamic loading by compiling
+it with a command such as <CODE>jcont -c file.icn</CODE>.
+This produces a <CODE>file.zip</CODE> archive suitable for use
+with <CODE>loadfunc()</CODE>.
+
+<P> A dynamically loaded Icon procedure can reference globals
+and procedures defined in the original program as well as any
+defined in its own source file (and therefore included in
+the Zip file).
+<B>#%#%#%#%(TEST THIS!)</B>
+
+<P> Dynamically loaded procedures in one file cannot reference
+those in another file regardless of the order of loading.
+<B>#%#%#%#%(TEST THIS!)</B>
+
+<H3>Preparing Java Procedures</H3>
+
+<P> Java code can be used to provide programs with additional capabilities
+not expressible in Icon.
+Compilation of Java code produces <CODE>.class</CODE> files
+which are then bundled up by the <CODE>jar</CODE> utility
+to produce libraries for dynamic loading.
+
+<P> Construction of Java procedures requires not only a knowledge
+of Java but also some understanding of Jcon's run-time system.
+A tutorial on that subject is far beyond the scope of this discussion.
+It is hoped that the key points presented here, combined with 
+inspection of the examples and the Jcon source code, will provide
+enough of a foothold to allow at least the construction of simple
+procedures.
+An understanding of Java is assumed in what follows.
+
+<H4>Run-time system basics</H4>
+
+<P> The Jcon run-time system is contained in the source named <CODE>rts</CODE>
+and forms a Java package of that name.
+A loadable procedure declares <CODE>import rts.*;</CODE> to gain access
+to the <CODE>rts</CODE> namespace.
+
+<P> Icon values of the various types are instances of classes such as
+<EM>vInteger</EM>, <EM>vString</EM>, and <EM>vList</EM>.
+Most of these classes implement a factory method such as 
+<CODE>vReal.New(3.14159)</CODE> for constructing new instances.
+All are subclasses of a parent class <EM>vValue</EM>.
+
+<P> The class <EM>vDescriptor</EM> is the superclass of most
+run-time classes.
+It encompasses vValue as well as other objects that
+represent things such as subscripted strings.
+The <CODE>vDescriptor.java</CODE> source file lists a large number of
+methods that operate on vDescriptors and vValues.
+A vDescriptor <CODE>d</CODE> can be dereferenced to produce a
+vValue either by calling <CODE>d.deref()</CODE> or by
+calling an operation that implicitly dereferences it, such as
+<CODE>d.Negate()</CODE>.
+
+<H4>Procedures in Java</H4>
+
+<P> In Java, an Icon procedure is a class containing a public
+<CODE>Call()</CODE> method that returns a vDescriptor object.
+
+<P> A procedure that expects two arguments extends the class
+<EM>vProc2</EM> and defines a <CODE>Call</CODE> method
+that accepts two vDescriptor arguments and returns a vDescriptor
+result.
+More generally, a procedure expecting <VAR>n</VAR> arguments, 
+for 0 &lt;= <VAR>n</VAR> &lt;= 9, extends vProc<VAR>n</VAR>
+and declares <VAR>n</VAR> vDescriptor arguments.
+
+<P> A procedure that expects more than nine arguments is written
+by extending the class <EM>vProcN</EM> and declaring a <CODE>Call</CODE>
+method that accepts an array of vDescriptors as its single argument.
+vProcN can also be used for any other procedure when an array of arguments
+is more convenient than using a fixed argument list.)
+
+<P> The arguments passed to the <CODE>Call</CODE> method are
+not dereferenced.
+In the Jcon implementation, this is the responsibility of the called procedure.
+Often this is done by using the vDescriptor arguments
+in operations that implicitly derefence them.
+
+<P> The <CODE>Call</CODE> method returns a Java null to fail or
+a vDescriptor, usually a vValue, to succeed.
+(An <EM>Icon</EM> null value is produced by calling <CODE>vNull.New()</CODE>
+and returning the result.)
+Suspension will be covered in the next subsection.
+
+<P> Here is a procedure that accepts three arguments,
+coerces them to integer, and returns the sum:
+<BLOCKQUOTE><PRE>
+import rts.*;
+
+public class sum3 extends vProc3 {
+
+    public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
+	vInteger i = a.mkInteger();
+	vInteger j = b.mkInteger();
+	vInteger k = c.mkInteger();
+	return vInteger.New(i.value + j.value + k.value);
+    }
+
+}
+
+</PRE></BLOCKQUOTE>
+
+<P> This procedure could be used as follows:
+<BLOCKQUOTE><PRE>
+procedure main()
+   local sum3
+   sum3 := loadfunc("sum3.zip", "sum3")
+   write(sum3(5, 8, 11))
+end
+</PRE></BLOCKQUOTE>
+
+<P> With the source code in <CODE>sum3.java</CODE> and
+<CODE>sumtest.icn</CODE>, the shell commands would be something like this:
+<BLOCKQUOTE><PRE>
+jcont -u sumtest.icn
+setenv CLASSPATH /myhome/jcon/bin/rts.zip
+javac sum3.java
+jar cf sum3.zip sum3.class
+./sumtest
+</PRE></BLOCKQUOTE>
+
+<P> Many examples of procedures can be found in the <CODE>rts/f*.java</CODE>
+files in the Jcon distribution.
+These are the files that implement Icon's built-in functions.
+
+<H4>Suspension</H4>
+
+A procedure suspends by returning an instance of class <EM>vClosure</EM>.
+This is another subclass of vDescriptor, so the declaration of the
+<CODE>Call</CODE> method does not change.
+The vClosure object encapsulates two key items:
+<UL>
+<LI> a <CODE>retval</CODE> field containing the value being suspended
+<LI> a <CODE>Resume()</CODE> method for generating subsequent values
+</UL>
+
+<P> In general, any will procedure that suspends will require
+a new subclass of vClosure to implement its particular
+<CODE>Resume()</CODE> method.
+Java's "inner classes" are useful for this.
+The usual approach is to create a new vClosure instance,
+initialize its <CODE>retval</CODE>, and return it.
+
+<P> The <CODE>Resume()</CODE> method takes no arguments and
+returns a vDescriptor.
+It is called to produce the next value when the suspended
+procedure is resumed.
+<CODE>Resume()</CODE> can do one of four things:
+<UL>
+<LI> fail, by returning a Java null
+<LI> suspend, by returning a vDescriptor object 
+<LI> suspend, by setting <CODE>retval</CODE> and returning itself
+	("<CODE>return this;</CODE>")
+<LI> abort, by calling <CODE>iRuntime.Error()</CODE>
+</UL>
+It is not possible for <CODE>Resume()</CODE> to "return" in the
+Icon sense.
+It must suspend a value and then fail if later resumed.
+
+<P> Here is an example of a procedure that generates the
+factors of an integer.
+To avoid a special case, even the first value is produced
+by the <CODE>Resume()</CODE> method.
+
+<BLOCKQUOTE><PRE>
+import rts.*;
+
+public class factors extends vProc1 {
+
+    public vDescriptor Call(vDescriptor a) {
+	final long arg = a.mkInteger().value;
+	return new vClosure() {
+	    long n = 0;
+	    public vDescriptor Resume() {
+                while (++n &lt;= arg) {
+                    if (arg % n == 0) {
+                         retval = vInteger.New(n);
+                         return this;
+                    }
+                }
+		return null; /*FAIL*/
+	    }
+	}.Resume();
+    }
+
+}
+</PRE></BLOCKQUOTE>
+
+
+<P> The vClosure object is created, called, and returned by the
+large <CODE>return</CODE> expression,
+<BLOCKQUOTE><PRE>
+<CODE>return new vClosure() { ... }.Resume();</CODE>
+</PRE></BLOCKQUOTE>
+which encompasses the entire definition of the anonymous subclass
+of vClosure.
+
+<P> It is very important that the <CODE>retval</CODE> field 
+be set before returning a vClosure object;
+its default value is a Java null, which is illegal in this context.

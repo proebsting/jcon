@@ -1,128 +1,131 @@
-<P>
-Icon's graphics facilities are defined by
+
+<P> Icon's graphics facilities are defined by
 <A HREF=refs.htm><CITE>Graphics Programming in Icon</CITE></A>
 (Griswold, Jeffery, and Townsend, 1998).
 This section documents differences from that specification,
 supplementing Appendix N ("Platform Dependencies") of the book.
-<P>
-Jcon's implementation of graphics is nearly complete.
+
+<P> Jcon's graphics implementation is nearly complete.
 The biggest omissions are wide lines, textured drawing, and mutable colors.
-When Java 1.2 becomes available, the first two will become feasible.
-Mutable remain out of reach due to lack of Java support.
-<P>
-Each graphics context is associated with a particular canvas.
-Thus <CODE>Couple()</CODE> is not implemented and
-<CODE>Clone()</CODE> accepts only a single window argument.
+Java 1.2 promises to make the first two more feasible.
+Mutable colors will remain out of reach.
 
 <H3>Graphics Attributes</H3>
-<P>
-All attributes listed in the graphics book are implemented, 
+
+<P> All attributes listed in the graphics book are implemented, 
 but some cannot be changed successfully.
 The <CODE>canvas</CODE> attribute can be set to <CODE>normal</CODE>
-or <CODE>hidden</CODE> but not <CODE>maximal</CODE> or <CODE>iconic</CODE>.
+or <CODE>hidden</CODE> but not to <CODE>maximal</CODE> or <CODE>iconic</CODE>.
 Changes to the following attributes are ignored:
 <CODE>linewidth</CODE>, <CODE>linestyle</CODE>, 
 <CODE>fillstyle</CODE>, <CODE>pattern</CODE>,
 <CODE>display</CODE>, <CODE>iconpos</CODE>,
 <CODE>iconlabel</CODE>, <CODE>iconimage</CODE>.
-<P>
-The <CODE>Pattern()</CODE> procedure always fails.
+
+<P> Because textured drawing is not available, the
+<CODE>Pattern()</CODE> procedure always fails.
+
+<P> Each graphics context is associated with a particular canvas.
+Thus <CODE>Couple()</CODE> is not implemented and
+<CODE>Clone()</CODE> accepts only a single window argument.
 
 <H3>Fonts</H3>
-<P>
-Icon generic family names, and all font characteristics, are case-insensitive;
+
+<P> Icon generic family names, and all font characteristics,
+are case-insensitive;
 depending on the Java implementation, other font family names may be 
 case-sensitive.
 Because Java never rejects any non-empty font name, 
 <CODE>Font(s)</CODE> always succeeds for any well-formed specification.
-<P>
-The generic family names <CODE>serif</CODE>, <CODE>sans</CODE>, and
+
+<P> The generic family names <CODE>serif</CODE>, <CODE>sans</CODE>, and
 <CODE>typewriter</CODE> work well, including bold and italic variants.
 The appearance of the generic family <CODE>mono</CODE> varies by platform,
 and bold and italic characteristics are not always effective.
-<P>
-The default font name <CODE>fixed</CODE> is mapped to
+
+<P> The default font name <CODE>fixed</CODE> is mapped to
 <CODE>mono,bold,14</CODE>.
 
 <H3>Colors</H3>
-<P>
-There is no inherent limit to the number of different colors that can
+
+<P> There is no inherent limit to the number of different colors that can
 be in use simultaneously.
 On 8-bit displays, Java approximates colors by selection from a limited
 palette that can vary from one run to another.
-The first image below (from Plate 8.2 of the Graphics book)
+The first image below (from Plate 8.2 of the graphics book)
 shows the surface of color space as rendered on a full-color display.
 The second image is an example of how Java renders it on an 8-bit display.
 <BR>
 <IMG WIDTH=202 HEIGHT=122 SRC=merc24.jpg ALT="full color image">
 <IMG WIDTH=202 HEIGHT=122 SRC=merc8.gif  ALT="quantized image">
-<P>
-For named colors, variants (such as <CODE>light</CODE>
+
+<P> For named colors, variants (such as <CODE>light</CODE>
 and <CODE>dark</CODE>) of the unsaturated hues (<CODE>brown</CODE>,
 <CODE>pink</CODE>, and <CODE>violet</CODE>)
 appear less saturated than in Version 9 of Icon.
 Unlike Version 9, variants of <CODE>black</CODE> remain black
 rather than producing shades of gray.
-<P>
-The default value of the <CODE>gamma</CODE> attribute is 1.5.
-<P>
-Mutable colors are not available;
+
+<P> The default value of the <CODE>gamma</CODE> attribute is 1.5.
+
+<P> Mutable colors are not available;
 <CODE>NewColor()</CODE> and <CODE>Color()</CODE> always fail.
-(As a practical matter, mutable colors only work on
-8-bit displays running X under Unix.)
+(In Version 9 of Icon, mutable colors only work on 8-bit Unix displays.)
 
 <H3>Images</H3>
-<P>
-<CODE>ReadImage()</CODE> loads images encoded in GIF or JPEG format.
-The final palette image is ignored; Java dithers the image if necessary.
-<CODE>ReadImage()</CODE> and <CODE>DrawImage()</CODE> never return
+
+<P> <CODE>ReadImage()</CODE> loads images encoded in GIF or JPEG format.
+If the <CODE>ReadImage()</CODE> call specifies a color palette, 
+it is ignored; Java dithers the image if necessary for display.
+Neither <CODE>ReadImage()</CODE> nor <CODE>DrawImage()</CODE> ever returns
 an integer indicating a color shortage.
-<P>
-The <CODE>image</CODE> attribute can be set at any time, not just initially,
-to load a GIF or JPEG image.
-The value of the <CODE>image</CODE> attribute is readable.
-<P>
-<CODE>WriteImage()</CODE> always writes a GIF file,
+
+<P> The <CODE>image</CODE> attribute can be set at any time, not just initially,
+to load a GIF or JPEG file.
+The <CODE>image</CODE> attribute is readable and returns
+the filename of the most recently loaded image.
+
+<P> <CODE>WriteImage()</CODE> always writes a GIF file,
 quantizing the image to 256 colors if necessary.
-<P>
-Image reading and writing ignores the <CODE>gamma</CODE> attribute.
+
+<P> Image reading and writing ignores the <CODE>gamma</CODE> attribute.
 
 <H3>Events</H3>
-<P>
-Java distinguishes between <CODE>alt</CODE> and <CODE>meta</CODE> keys;
-either of these sets <CODE>&amp;meta</CODE> keyword.
-<P>
-The <CODE>&amp;meta</CODE> keyword is never set in conjunction
+
+<P> Java distinguishes between ALT and META keys;
+in Jcon, either key sets the <CODE>&amp;meta</CODE> keyword.
+
+<P> The <CODE>&amp;meta</CODE> keyword is never set in conjunction
 with mouse events; for these events,
-Java uses the <CODE>alt</CODE> and <CODE>meta</CODE> flags
-to encode "which button".
-<P>
-Numeric codes for the "outboard" keys such as F1 and HOME differ
+Java uses the ALT and META flags to encode "which button",
+so they are unavailable to indicate key states.
+
+<P> Numeric codes for the "outboard" keys such as F1 and HOME differ
 from those of X and are similar to those of Windows; see the copy
 of <CODE>keysyms.icn</CODE> distributed with Jcon.
-<P>
-When a window is closed by the user, a <CODE>&amp;resize</CODE> event
-is produced with associated <CODE>&ampx</CODE> and <CODE>&ampy</CODE>
+
+<P> When a window is closed by the user, a <CODE>&amp;resize</CODE> event
+is produced with associated <CODE>&amp;x</CODE> and <CODE>&amp;y</CODE>
 values of (-1, -1).
 
 <H3>Cursors and Pointers</H3>
-<P>
-The visible text cursor, when enabled, is a solid, nonblinking underbar.
-<P>
-The mouse position can be read using the <CODE>pointerx</CODE>
+
+<P> The visible text cursor, when enabled, is a solid, nonblinking underbar.
+
+<P> The mouse position can be read using the <CODE>pointerx</CODE>
 and <CODE>pointery</CODE> attributes (or <CODE>pointerrow</CODE>
 and <CODE>pointercol</CODE>), but it cannot be set by the program.
 Attempts to alter these attribute values are ignored.
-<P>
-Acceptable values for the <CODE>pointer</CODE> attribute
+
+<P> Acceptable values for the <CODE>pointer</CODE> attribute
 are illustrated in this figure.
 For compatibility with other systems, some pointers have multiple names.
 <BR><IMG WIDTH=442 HEIGHT=302 SRC=pointers.gif ALT="pointer shapes">
 <H3>Deprecated Features</H3>
-<P>
-Version 9 of Icon retains compatibility support for some old features
+
+<P> Version 9 of Icon retains compatibility support for some old features
 that are no longer documented.
-In general, Jcon omits such support.
-Two that are known are support for <CODE>very light</CODE> and
+Jcon omits most such support.
+Two examples are support for <CODE>very light</CODE> and
 <CODE>very dark</CODE> colors and the acceptance of bi-level images
 expressed in decimal notation.
