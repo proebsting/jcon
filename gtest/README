@@ -1,0 +1,14 @@
+jcon/gtest -- graphics tests
+
+This directory contains source code for programs written to test
+the graphics features of Icon.  See the comments in the individual 
+files for more information (at least in some cases).
+
+In general, these programs must be run manually and then compared
+visually with the same programs run by Version 9 of Icon.  Some
+differences are to be expected due to differences in fonts or
+unimplemented features (especially linewidth, patterns, and mutable
+colors).
+
+The programs in the demo directory (../demo) also serve well as
+graphics tests.

@@ -1,0 +1,56 @@
+#  rowcol.icn -- show rows and columns
+#
+#  checks consistency of GotoRC with &row|&col and with WAttrib("x"|"y")
+
+link graphics
+
+procedure main(args)
+    local x, y, row, col, xlim, yval
+
+    Window("size=160,100", args)
+
+    every y := 0 to WAttrib("height") do {
+	&y := y
+	if &row % 2 = 0 then
+	    Bg("pale green")
+	else
+	    Bg("pale yellow")
+	EraseArea(0, y, 500, 1)
+    }
+
+    &col := 11
+    xlim := &x
+    &x := xlim
+    if &col ~= 11 then
+	stop("&col changed from 11 to ", &col)
+
+    every x := 0 to xlim-1 do {
+	&x := x
+	if &col % 2 = 0 then
+	    Bg("pale blue-cyan")
+	else
+	    Bg("pale magenta-red")
+	EraseArea(x, 0, 1, 300)
+    }
+
+    &row := 5
+    yval := &y
+    &y := yval
+    if &row ~= 5 then
+       stop("&row changed from 5 to ", &row)
+    DrawLine(xlim / 2, yval, xlim + TextWidth(" ") - 2, yval)
+
+    Bg("pale purple")
+    every col := 1 to 10 do {
+	GotoRC(2, col)
+	DrawString(WAttrib("x"), WAttrib("y"), col % 10)
+	GotoRC(3, col)
+	WWrites(col % 10)
+    }
+
+    every row := 1 to 20 do {
+	GotoRC(row, 12)
+	DrawString(WAttrib("x"), WAttrib("y"), "row " || row)
+    }
+    WDone()
+end

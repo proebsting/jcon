@@ -1,0 +1,64 @@
+#SRC: JCON
+
+#  wattrib.icn -- graphics attribute tests
+
+
+procedure main()
+   local clist
+
+   &window := open("window", "g", "canvas=hidden")
+
+   inqfuncs()
+
+   dump()
+
+   write()
+   write("Fg tangle test:")
+   clist := ["red", "orange", "yellow", "green", "blue"]
+   every writes("  ", WAttrib("fg","fg=pink","fg=illegal","fg=purple","fg")) do
+      write(" : ", Fg(get(clist)))
+   write(Fg())
+   write(Fg("deep blue"))
+
+   write()
+   write(Bg("pale bluish white"))
+   write(Font("sans,bold,18"))
+
+   inqfuncs()
+
+   dump()
+
+end
+
+
+
+procedure inqfuncs()		# test inquiry functions
+   write()
+   write("Fg()\t", Fg() | "[FAILED]")
+   write("Bg()\t", Bg() | "[FAILED]")
+   write("Font()\t", Font() | "[FAILED]")
+   return
+end
+
+
+
+procedure dump()		# test using WAttrib
+   local s, t
+   static atts
+   initial atts := [
+      # canvas attributes:
+      "canvas", "depth", "label",
+      "size", "height", "width", "rows", "columns",
+      "echo", "cursor", "x", "y", "row", "col",
+      # graphics context attributes:
+      "fg", "bg", 
+      "font", "fheight", "fwidth", "ascent", "descent", "leading",
+      ]
+
+   write()
+   every s := \!atts do {
+      t := left("WAttrib(" || image(s) || "):  ", 20)
+      write(t, WAttrib(s) | "[FAILED]")
+      }
+   return
+end

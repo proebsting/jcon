@@ -1,0 +1,61 @@
+#SRC: JCON
+
+#  fonts.icn -- show some fonts
+#
+#  displays a predefined list of fonts,
+#  then reads additional names from stdin
+
+global x, y
+
+procedure main()
+   local line
+
+   &window := open("window", "g", "size=500,300")
+   x := 10
+   y := 0
+
+   show()
+   show("fixed")
+   every show(("mono" | "typewriter" | "sans" | "serif") || 
+      ("" | ",italic" | ",oblique" | ",bold" | ",bold,italic"))
+
+   repeat {
+      writes("font> ")
+      flush(&output)
+      line := trim(read()) | break
+      if *line = 0 then next
+      if line == "exit" then break
+      show(line)
+      }
+end
+
+procedure show(s)
+   static prevl
+   local advance
+
+   if /s then
+      s := "[default font]"
+   else if not Font(s) then {
+      s := "FAILED: " || s
+      write("[FAILED]")
+      }
+
+   advance := \prevl | 0
+   advance <:= (prevl := WAttrib("leading"))
+   y +:= advance
+
+   if y >= WAttrib("height") then {
+      y := WAttrib("leading")
+      x +:= 180
+      if x > 420 then {
+	 EraseArea()
+	 x := 10
+	 }
+      }
+
+   DrawString(x, y, s)
+   write("w=", WAttrib("fwidth"), " h=", WAttrib("fheight"),
+      "=", WAttrib("ascent"), "+", WAttrib("descent"),
+      " l=", WAttrib("leading"), " \t", s)
+   return
+end

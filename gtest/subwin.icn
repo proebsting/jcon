@@ -1,0 +1,38 @@
+#SRC: GB
+
+
+procedure main()
+   local w1, w2, w3, w4
+
+   &window := open("subwin", "g", "size=500,300") | stop("can't open window")
+
+   fill(&window, "light yellow")
+   w1 := SubWindow(&window, 80, 50, 150, 80)
+   fill(w1, "violet")
+   w2 := SubWindow(&window, 50, 180, 150, 80)
+   fill(w2, "green")
+   w3 := SubWindow(&window, 300, 30, 150, 200)
+   fill(w3, "light gray")
+   w4 := SubWindow(w3, 50, 60, 80, 80)
+   fill(w4, "orange")
+
+   until Event() === !"qQ\n\r"
+	
+end
+
+procedure fill(win, color)
+   Bg(win, color) | stop("can't set bg to ", color)
+   EraseArea(win)
+   every DrawCircle(win, 0, 0, 10 to 50 by 10)
+   return
+end
+
+
+procedure SubWindow(win, x, y, w, h)
+   win := Clone(win,
+      "dx=" || WAttrib(win, "dx") + x,
+      "dy=" || WAttrib(win, "dy") + y)
+   Clip(win, 0, 0, w, h)
+   GotoRC(win, 1, 1)
+   return win
+end

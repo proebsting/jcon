@@ -1,0 +1,126 @@
+#SRC: JCON
+
+#  gpxmisc.icn -- a first test of miscellaneous graphics functions
+
+
+procedure main()
+   local colors, a, i, w, h, e, x, y, r, w2, w3, w4, d, star
+
+   &window := open("window", "g", "width=500", "height=300")
+   DrawRectangle(10, 10, 480, 280)	# framing rectangle
+
+   # nested squares in upper left corner
+   every i := 3 to 50 by 3 do
+      DrawRectangle(0,0,i,i)
+
+   # random points (left of center figure)
+   d := [0, 1, -1, 2, -2, 3, -3]
+   x := 110
+   y := 150
+   every 1 to 100 do
+       DrawPoint(x +:= ?d, y +:= ?d)
+
+   # random walk (right of center figure)
+   x := 375
+   y := 150
+   a := []
+   every 1 to 100 do
+      put(a, x +:= ?d, y +:= ?d)
+   DrawLine ! a
+
+   # center figure rectangles
+   every i := 5 to 360 by 10 do {
+      a := dtor(i)
+      w := 75 * cos(a)
+      h := 75 * sin(a)
+      DrawRectangle(250+w-2, 150+h-2, 4, 4)
+      DrawRectangle(250, 150, w, h)
+      DrawLine(250 + w, 150 + h, 250 + 100 * cos(a), 150 + 100 * sin(a))
+   }
+
+   # center figure rays
+   x := 95
+   y := 285
+   r := 1.0
+   while x < 400 do {
+      FillCircle(x, y - r, r)
+      DrawCircle(x, y - r, r + 2)
+      x +:= 2 * r + 6
+      r +:= 0.5
+      }
+
+   # center figure arcs
+   DrawCircle(250, 150, 105, -&pi/4, &pi/2, 250, 150, 105, 3 * &pi/4, &pi/2)
+   DrawArc(90,55,320,190, &pi/3, -2*&pi/3, 90,55,320,190, 2*&pi/3, 2*&pi/3)
+
+   # stars
+   a := -&pi / 2
+   star := []
+   every 1 to 5 do
+      put(star, 15, a +:= 4 * &pi / 5)
+   every FillPolygon ! cartes(star, 470 to 390 by -40, 35)
+   DrawPolygon ! cartes(star, 430, 265)
+
+   # color list (along right edge)
+   colors := ["black", "blue", "brown", "cyan", "gray", "green",
+      "grey", "magenta", "orange", "pink", "purple", "red",
+      "violet", "white", "yellow"]
+
+   every i := 1 to *colors do {
+      Fg(colors[i])
+      FillRectangle(485, 300 - 15 * i, -15, -15)
+   }
+
+   # color sampler ellipse
+   every i := 4 to 360 by 4 do {
+      a := dtor(i)
+      x := 250 + 180 * cos(a)
+      y := 150 + 110 * sin(a)
+      Fg(?colors)
+      FillRectangle(x - 8, y - 8, 15, 15)
+   }
+
+   # cloning test (lower left color squares)
+   Fg("magenta")
+   Bg("cyan")
+   w2 := Clone()
+   w3 := Clone("fg=blue", "bg=violet")
+   w4 := Clone()
+   Fg(&window, "red")
+   Fg(w2, "green")
+   FillRectangle(&window, 15, 270, 15, 15)
+   FillRectangle(w2, 30, 270, 15, 15)
+   FillRectangle(w3, 45, 270, 15, 15)
+   FillRectangle(w4, 60, 270, 15, 15)
+
+   Bg("black")
+   EraseArea(15, 250, 15, 15)
+   Bg(w2, "brown")
+   EraseArea(w2, 30, 250, 15, 15)
+   EraseArea(w4, 45, 250, 15, 15)
+   EraseArea(w3, 60, 250, 15, 15)
+
+   # echo events until quit signalled
+   while e := Event(&window) do {
+      write(image(e))
+      if e === "\^g" then Alert()
+      if e === !"\^c\^d\dqQ" then break
+   }
+end
+
+
+
+#  cartes(L, x, y) -- return list of cartesian coordinates centered at (x, y)
+#			corresponding to list L of polar coordinates
+
+procedure cartes(L, x, y)
+   local p, r, a, i
+   p := []
+   every i := 1 to *L by 2 do {
+      r := L[i]
+      a := L[i+1]
+      put(p, x + r * cos(a))
+      put(p, y + r * sin(a))
+      }
+   return p
+end

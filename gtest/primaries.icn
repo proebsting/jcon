@@ -1,0 +1,21 @@
+#SRC: JCON
+
+#  display bands of primary colors
+
+procedure main()
+   local i, x
+   &window := open(&progname,"g","size=500,300")
+   x := -6
+   every i := 0 to 65535 by 2048 do {
+       Fg(i || ",0,0")
+       FillRectangle(x, 0, 16, 75)
+       Fg("0," || i || ",0")
+       FillRectangle(x, 75, 16, 75)
+       Fg("0,0," || i)
+       FillRectangle(x, 150, 16, 75)
+       Fg(i || "," || i || "," || i)
+       FillRectangle(x, 225, 16, 75)
+       x +:= 15
+   }
+   Event()
+end

@@ -1,0 +1,31 @@
+#  test Active()
+#
+#  type chars into windows
+#
+#	n	create new window
+#	c	close this window
+#	q	quit entirely
+#
+#  all events are logged
+
+link graphics 
+
+procedure main(args)
+   local n, e, w
+
+   n := 0
+   Window("label=0", "size=100,100", args)
+   repeat {
+      w := Active() | stop("no more open windows")
+      e := Event(w)
+      if e === &resize & &x < 0 then
+         write("?: closed")
+      else
+         write(WAttrib(w, "label"), ": ", image(e))
+      case e of {
+	 "c":  close(w)
+	 "n":  Window("label=" || (n +:= 1), "size=100,100")
+	 "q":  break
+      }
+   }
+end

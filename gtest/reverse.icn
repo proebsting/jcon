@@ -1,0 +1,33 @@
+link graphics
+
+procedure main()
+   Window()
+   Translate(0, -50)
+   try("white", "black")
+   try("black", "white")
+   try("pale gray", "black")
+   try("orange", "black")
+   try("pale blue-cyan", "dark purple")
+   try("deep green", "pale yellow")
+   WDone()
+end
+
+procedure try(bgspec, fgspec)
+   Translate(0, 50)
+   Bg(bgspec)
+   EraseArea(0, 0, , 50)
+   GotoRC(2,1)
+   Fg(fgspec)
+   WWrite(" fg=", WAttrib("fg"))
+   WWrite(" bg=", WAttrib("bg"))
+   FillRectangle(200, 5, 40, 40)
+   WAttrib("drawop=reverse")
+   DrawLine(180, 25, 220, 25)
+   DrawRectangle(216, 21, 8, 8)
+   DrawCircle(220, 25, 15)
+   FillRectangle(250, 5, 30, 30)
+   FillRectangle(260, 15, 30, 30)
+   FillCircle(320, 20, 15)
+   FillCircle(330, 30, 15)
+   WAttrib("drawop=copy")
+end
