@@ -540,9 +540,29 @@ class oActivate extends iFunctionClosure {		//  x @ C
 	String tfmt() { return "{$1 @ $2}"; }
 }
 
-class oProcessArgs extends iFunctionClosure {		//  x ! y
-	vDescriptor function(vDescriptor[] args) {
-		iRuntime.error(901); return null;
+class oProcessArgs extends iClosure {			//  x ! y
+	iClosure func;
+	void nextval() {
+		if (func == null) {
+			arguments[0] = arguments[0].deref();
+			arguments[1] = arguments[1].deref();
+			if (!(arguments[1] instanceof vList)) {
+				iRuntime.error(108, arguments[1]);
+			}
+			vList vlist = (vList) arguments[1];
+			vDescriptor[] arglist =
+				new vDescriptor[vlist.intsize()];
+			java.util.Enumeration e = vlist.elements();
+			int i = 0;
+			while (e.hasMoreElements()) {
+				arglist[i] = (vDescriptor) e.nextElement();
+				i++;
+			}
+			func = arguments[0].instantiate(arglist, parent);
+		}
+		func.resume();
+		this.retvalue = func.retvalue;
+		this.returned = func.returned;
 	}
 	String tfmt() { return "{$1 ! $2}"; }
 }

@@ -56,11 +56,13 @@ int posEq(long n)
     }
 }
 
-// elements() is used when creating vSets.  Elements may be generated
-// in any order, and with a guarantee that the underlying list will
-// not change.
+// elements() is used when creating vSets and for the binary "!" operator.
+// Elements must be generated in order.
 java.util.Enumeration elements() {
-    return v.elements();
+    return new vListEnumeration(this.v);
+}
+int intsize() {
+    return v.size();
 }
 
 
@@ -172,3 +174,22 @@ vDescriptor Bang(iClosure c) {				//  !L
 
 
 } // class vList
+
+class vListEnumeration implements java.util.Enumeration {
+	java.util.Vector v;
+	int i;
+
+	vListEnumeration(java.util.Vector v) {
+		this.v = v;
+		this.i = 1;
+	}
+
+	public boolean hasMoreElements() {
+		return i <= v.size();
+	}
+
+	public Object nextElement() {
+		i++;
+		return v.elementAt(v.size() - i + 1);
+	}
+}
