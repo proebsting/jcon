@@ -39,6 +39,7 @@ procedure predefs()
     t["_JAVA"] := "1"
     t["_ASCII"] := "1"
     t["_CO_EXPRESSIONS"] := "1"
+    t["_DYNAMIC_LOADING"] := "1"
     t["_PIPES"] := "1"
     t["_LARGE_INTEGERS"] := "1"
     t["_SYSTEM_FUNCTION"] := "1"
