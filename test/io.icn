@@ -6,7 +6,8 @@ procedure main()
    local L, f, m, n, t1, t2
 
    L := [&input, &output, &errout,
-   	m := open("/etc/motd"), n := open("/dev/null", "w")]
+   	m := open("/etc/motd") | stop("no /etc/motd"),
+	n := open("/dev/null" | stop("no /dev/null"), "w")]
    L := sort(L)
    every f := !L do
       write(type(f), ": ", image(f))
