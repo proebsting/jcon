@@ -9,6 +9,11 @@ fi
 for FNAME; do
     BASE=${FNAME%.*}
     echo ${BASE}:
-    ./jcont -s $BASE -x >$BASE.out
+    ./jcont -s $BASE
+    if [ -r $BASE.dat ]; then
+	./$BASE <$BASE.dat >$BASE.out
+    else
+	./$BASE </dev/null >$BASE.out
+    fi
     cmp $BASE.std $BASE.out
 done
