@@ -102,7 +102,8 @@ nongraphical tests and experiments.
 <TR><TD><CODE>bmark</CODE></TD>
 	<TD>benchmark collection</TD></TR>
 </TABLE></BLOCKQUOTE>
-Each directory contains a <CODE>README</CODE> file with further information.
+
+<P> Each directory contains a <CODE>README</CODE> file with further information.
 
 <H3>Contact Information</H3>
 

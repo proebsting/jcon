@@ -5,6 +5,10 @@ Changes include the following:
 <UL>
     <LI> A directory can be read by opening it as a file.
     <LI> JPEG images can be written under Java 2 implementations.
+    <LI> Java class files can be bundled with a Jcon program for
+    	easier dynamic loading.
+    <LI> The run-time system can be bundled with a Jcon program
+    	to make it completely self-contained.
     <LI> Large integers now work with <CODE>to</CODE>-<CODE>by</CODE>,
 	 <CODE>seq()</CODE>, and limitation (<CODE>e1 \ e2</CODE>)
     <LI> A zero increment value is diagnosed by <CODE>seq()</CODE>

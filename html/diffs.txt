@@ -1,4 +1,4 @@
-The core Icon language is defined by
+<P> The core Icon language is defined by
 <A HREF=refs.htm><CITE>The Icon Programming Language, Third Edition</CITE></A>
 (Griswold and Griswold, 1996).
 This section documents differences with respect to that book

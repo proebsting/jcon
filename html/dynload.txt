@@ -161,7 +161,7 @@ These files implement Icon's built-in functions.
 
 <H4>Suspension</H4>
 
-A procedure suspends by returning an instance of class <EM>vClosure</EM>.
+<P> A procedure suspends by returning an instance of class <EM>vClosure</EM>.
 This is another subclass of vDescriptor, so the declaration of the
 <CODE>Call</CODE> method does not change.
 The vClosure object encapsulates two key items:
@@ -187,7 +187,8 @@ procedure is resumed.
 	("<CODE>return this;</CODE>")
 <LI> abort, by calling <CODE>iRuntime.Error()</CODE>
 </UL>
-It is not possible for <CODE>Resume()</CODE> to "return" in the
+
+<P> It is not possible for <CODE>Resume()</CODE> to "return" in the
 Icon sense.
 It must instead suspend a value and then fail upon later resumption.
 

@@ -19,6 +19,16 @@
 	Peer-to-Peer Communications</A>, 1998
     <BR>ISBN 1-57398-009-9
 </TD></TR>
+<TR><TD VALIGN=TOP><A HREF="http://www.cs.arizona.edu/icon/jcon/impl.pdf">
+    <IMG SRC="impl.gif" WIDTH="47" HEIGHT="60" ALT=""></A></TD>
+<TD VALIGN=TOP>Todd A. Proebsting and Gregg M. Townsend
+    <BR><A HREF="http://www.cs.arizona.edu/icon/jcon/impl.pdf">
+	<CITE>A New Implementation of the Icon Language</CITE></A>
+    <BR>Technical Report 99-13
+	(<A HREF="http://www.cs.arizona.edu/icon/jcon/impl.zip">PostScript</A>,
+	<A HREF="http://www.cs.arizona.edu/icon/jcon/impl.pdf">PDF</A>)
+    <BR>Department of Computer Science, The University of Arizona
+</TD></TR>
 <TR><TD VALIGN=TOP><A HREF="http://www.cs.arizona.edu/icon/jcon/gde97.pdf">
     <IMG SRC="paper.gif" WIDTH="47" HEIGHT="60" ALT=""></A></TD>
 <TD VALIGN=TOP>Todd A. Proebsting

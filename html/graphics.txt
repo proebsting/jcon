@@ -96,15 +96,15 @@ written contains more than 256 colors, automatic quantization occurs.
 
 <P> <CODE>WriteImage(W,s,x,y,w,h,q)</CODE> accepts a final "quality"
 parameter not present in Version 9 of Icon.
-For a GIF file, if 2&nbsp;<=&nbsp;q&nbsp;<=&nbsp;256,
-then the image is written with a maximum of <CODE>q</CODE> colors.
-For a JPEG file, if 0.0&nbsp;<=&nbsp;q&nbsp;<=&nbsp;1.0,
-then the image is written with the corresponding quality setting
-(as interpreted by the Java library).
-If a GIF setting is specified for a JPEG file, or vice versa, an attempt
-is made to approximate the requested quality.
-The default value of <CODE>q</CODE> is 256,
-which corresponds to a JPEG quality setting of 0.75.
+Its allowable range is 0.00 to 1.00, with a default value of 0.75.
+The quality value is passed directly to Java when writing a JPEG image.
+Its <EM>useful</EM> range is perhaps 0.10 to 0.90:  Smaller values produce
+images dominated by artifacts, and larger values increase file size
+without producing any visible improvement.
+
+<P> If a quality value of less than 0.90 is specified for a GIF image,
+the maximum number of output colors is reduced to produce a smaller file
+for color-rich images.
 
 <P> Image reading and writing ignores the <CODE>gamma</CODE> attribute.
 

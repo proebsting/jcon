@@ -1,6 +1,6 @@
 /* style sheet for Jcon documentation */
 
-BODY, TH, TD {		/* TH & TD because NS tables don't inherit font */
+BODY, H1, H2, H3, H4, P, TH, TD, UL, LI, BLOCKQUOTE  {
 	font-family:	Arial, Helvetica, sans-serif;
 	}
 
