@@ -51,6 +51,7 @@
 
 # command names
 JAVA="java -noverify"
+JAR="jar"
 TRAN="jtran"
 LINK="jlink"
 
@@ -244,7 +245,7 @@ for FNAME in $IFILES; do
 	    if $JTRAN preproc $FNAME.icn : yylex : parse : ast2ir $TFLAGS : \
 		bc_File $OFLAG $TFLAGS -class:l\$${FNAME##*/} -dir:$TDIR/; then
 		# bundle .class files (and linkage info) into .zip file
-		(cd $TDIR; $JAVA rts.ZipMerge ../$FNAME.zip links *.class)
+		(cd $TDIR; $JAR cfM ../$FNAME.zip links *.class)
 		# disassemble if requested
 		if [ "$JVMDUMP" != "" ]; then (
 		    cd $TDIR
@@ -282,12 +283,6 @@ $ANNOUNCE 1>&2 "Linking:"
 rm -f $TDIR/*.class
 (cd $TDIR; $JLINK $MAIN $ROOTS)
 
-# generate list of files needed for linking
-$JAVA rts.FindFiles $LINKTRACE "$UIPATH" $ZFILES >$TDIR/zip.list
-
-# unpack all the .zip files and combine the class files to make a new .zip file
-(cd $TDIR; $JAVA rts.ZipMerge combined.zip $MAIN.class `cat zip.list`)
-
 # disassemble $MAIN class, if requested
 if [ "$JVMDUMP" != "" ]; then (
     cd $TDIR
@@ -297,6 +292,12 @@ if [ "$JVMDUMP" != "" ]; then (
     CLASSPATH=$JRTS:. $JVMDUMP $MAIN >>../$MAIN.jvm
     )
 fi
+
+# generate list of files needed for linking
+$JAVA rts.FindFiles $LINKTRACE "$UIPATH" $ZFILES >$TDIR/zip.list
+
+# unpack all the .zip files and combine the class files to make a new .zip file
+(cd $TDIR; $JAVA rts.ZipMerge combined.zip $MAIN.class `cat zip.list`)
 
 # write the output file
 case $XTYPE in
