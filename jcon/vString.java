@@ -181,6 +181,22 @@ vDescriptor BangVar(iClosure c, vSimpleVar v) {
     }
 }
 
+iClosure instantiate(vDescriptor[] args, iClosure parent) {
+    vDescriptor v;
 
+    v = parent.env.resolve(this.value);
+    if (v != null) {
+        v = v.deref();
+	if (v instanceof vString || v instanceof vNumeric) {
+            return new iErrorClosure(this, args, parent);  // will gen err 106
+	}
+	return v.instantiate(args, parent);
+    }
+    v = this.mkInteger();
+    if (v != null) {
+	return v.instantiate(args, parent);
+    }
+    return new iErrorClosure(this, args, parent);  // will gen err 106
+}
 
 } // class vString
