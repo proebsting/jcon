@@ -1,7 +1,7 @@
 jcon/expt -- Jcon experimentation directory
 
 This directory contains programs not suitable for inclusion in the
-automated test suite -- including interactive, graphical, and
+automated test suite -- including interactive, irreproducible, and
 system-dependent tests, demonstrations, and experiments.
 
 See the Makefile for more information.
