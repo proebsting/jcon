@@ -1,4 +1,4 @@
-Changes since 2.0 release:
+Important (externally visible) changes since 2.0 release:
 
 From todd Sat Aug 29 10:36:25 1998
 seq() cannot have a zero increment value.
