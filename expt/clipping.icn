@@ -10,16 +10,15 @@ procedure main(args)
    local lgts, sats, cw, ch, i, j, hue, colr
 
    &window := open(&progname, "g", "width=" || WIDTH, "height=" || HEIGHT)
-   WAttrib("gamma=1.0")
    write()
 
-   report("pale orange", "initial default")
+   report("light orange", "initial default")
 
    Clip(120, 80, 90, 90)
    report("black", "clipping set")
 
    Clip()
-   report("pale blue-cyan", "clipping unset")
+   report("light blue-cyan", "clipping unset")
 
    WAttrib("clipx=450")
    report("dark green", "set clipx")
@@ -37,7 +36,7 @@ procedure main(args)
 
    Clip()
    WAttrib("cliph=30")
-   report("gray", "set cliph only") 
+   report("dark gray", "set cliph only") 
 
    Clip(300)
    report("yellow", "defaulted args")

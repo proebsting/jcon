@@ -1,0 +1,23 @@
+# test changing gamma dynamically
+
+link graphics
+
+procedure main(args)
+   local c, g
+
+   &window := open(&progname, "g", "size=500,300")
+   Bg("dark gray")
+   Fg("light gray")
+   GotoRC(5,1)
+   g := WAttrib("gamma") * 0.25
+   WAttrib("gamma=" || g)
+   WWrite("  ", WAttrib("gamma"))
+   WWrites("  ")
+   every c := !&letters do {
+      WAttrib("gamma=" || (g *:= 1.04))
+      WWrites(c)
+      }
+   WWrite()
+   WWrite("  ", WAttrib("gamma"))
+   WDone()
+end
