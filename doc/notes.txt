@@ -35,6 +35,7 @@ numerics:
 files:
 -- no "translated mode" code for Mac or Windows
 -- no buffering, except possibly on &input/&output/&errout
+-- no pipes
 -- random I/O (seek(), where()) fails for &input/&output/&errout
 
 error reporting:
