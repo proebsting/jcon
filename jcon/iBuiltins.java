@@ -318,10 +318,10 @@ class f$read extends iFunctionClosure {				// read()
 		try {
 			s = stdin.readLine();
 		} catch (IOException e) {
-			iRuntime.error(903);
+			iRuntime.error(214);
 		}
 		if (s == null) {
-			return null;
+			return null; /*FAIL*/
 		}
 		return iNew.String(s);
 	}

@@ -54,7 +54,7 @@ public final void resume() {
                 System.err.println(p);
             }
         } catch (OutOfMemoryError e) {
-            iRuntime.error(302);	// #%#%# really out of memory.
+            iRuntime.error(307);	// #%#%# really out of memory.
         }
     } catch (iError e) {
         //  e.printStackTrace();  //#%#%#% TEMP: enable for debugging
