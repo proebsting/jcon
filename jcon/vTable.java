@@ -4,7 +4,7 @@ import java.util.*;
 
 public class vTable extends vStructure {
 
-    java.util.Hashtable t;
+    private java.util.Hashtable t;
     vValue dflt;
 
 static int nextsn = 1;	// next serial number
@@ -22,6 +22,13 @@ vTable(vTable x) {
     this.t = (java.util.Hashtable) x.t.clone();
 }
 
+vValue get(vValue i) {
+    return (vValue) this.t.get(i);
+}
+
+void put(vValue key, vValue val) {
+    this.t.put(key, val);
+}
 
 
 String type()		{ return "table";}
@@ -49,7 +56,7 @@ vDescriptor Select() {
     for (int k = 0; k < index; k++) {
         e.nextElement();
     }
-    return new vTrappedTable(this, (vDescriptor)e.nextElement());
+    return new vTrappedTable(this, (vValue)e.nextElement());
 }
 
 vDescriptor Bang(iClosure c) {
@@ -58,7 +65,7 @@ vDescriptor Bang(iClosure c) {
     }
     java.util.Enumeration e = (java.util.Enumeration) c.o;
     return e.hasMoreElements() ? 
-	new vTrappedTable(this, (vDescriptor) e.nextElement()) : null;
+	new vTrappedTable(this, (vValue) e.nextElement()) : null;
 }
 
 vValue Key(iClosure c) {
@@ -138,25 +145,25 @@ vValue Sort(int n) {
 class vTrappedTable extends vVariable {
 
     vTable table;
-    vDescriptor key;
+    vValue key;
 
 String report()	{
     return
     	"(variable = " + this.table.report() + "[" + this.key.report() + "])";
 }
 
-vTrappedTable(vTable table, vDescriptor key) {
+vTrappedTable(vTable table, vValue key) {
     this.table = table;
     this.key = key;
 }
 
 public vValue deref() {
-    Object v = table.t.get(key);
-    return (v == null) ? table.dflt : (vValue) v;
+    vValue v = table.get(key);
+    return (v == null) ? table.dflt : v;
 }
 
 public vVariable Assign(vValue v) {
-    table.t.put(key, v);
+    table.put(key, v);
     return this;
 }
 

@@ -6,7 +6,7 @@ import java.util.*;
 
 public class vSet extends vStructure {
 
-    java.util.Hashtable t;
+    private java.util.Hashtable t;
 
 
 static int nextsn = 1;		// next serial number

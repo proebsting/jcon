@@ -9,7 +9,7 @@ import java.util.*;
 
 public class vList extends vStructure {
 
-    Vector v;
+    private Vector v;
 
 
 static int nextsn = 1;				// next serial number
