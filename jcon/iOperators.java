@@ -1,5 +1,7 @@
 //  iOperators.java -- Icon operators
 
+//#%#% tfmt() methods need to be double-checked vs. v9 Icon
+
 class iOperators extends iFile {
 
 
@@ -60,6 +62,7 @@ class oAssign extends iRefClosure {			// x1 := x2
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].Assign(args[1].deref());
 	}
+	String tfmt() { return "{$1 := $2}"; }
 }
 
 
@@ -70,6 +73,7 @@ class oConjunction extends iRefClosure {		// x1 & x2
 		args[0].deref(); //#%#% is this correct??
 		return args[1];
 	}
+	String tfmt() { return "{$1 & $2}"; }
 }
 
 
@@ -118,6 +122,8 @@ class oToBy extends iClosure {				// i1 to i2 by i3
 
 
 	}
+
+	String tfmt() { return "{$1 to $2 by $3}"; }
 }
 
 
@@ -128,30 +134,35 @@ class oIsNull extends iFunctionClosure {		//  /x
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].isNull();
 	}
+	String tfmt() { return "{/$1}"; }
 }
 
 class oIsntNull extends iFunctionClosure {		//  \x
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].isntNull();
 	}
+	String tfmt() { return "{\\$1}"; }
 }
 
 class oSize extends iFunctionClosure {			//  ?x
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].Size();
 	}
+	String tfmt() { return "{*$1}"; }
 }
 
 class oSelect extends iRefClosure {			//  ?x
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].Select();
 	}
+	String tfmt() { return "{?$1}"; }
 }
 
 class oBang extends iClosure {				//  !x
 	void nextval() {
 		retvalue = arguments[0].Bang(this);
 	}
+	String tfmt() { return "{!$1}"; }
 }
 
 
@@ -162,12 +173,14 @@ class oNumerate extends iFunctionClosure {		//  +n
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].mkNumeric();
 	}
+	String tfmt() { return "{+$1}"; }
 }
 
 class oNegate extends iFunctionClosure {		//  -n
 	vDescriptor function(vDescriptor[] args) {
 		return args[0].Negate();
 	}
+	String tfmt() { return "{-$1}"; }
 }
 
 class oAdd extends iFunctionClosure {			//  n1 + n2
@@ -175,6 +188,7 @@ class oAdd extends iFunctionClosure {			//  n1 + n2
 		vNumeric.Coerce(args);
 		return args[0].Add(args[1]);
 	}
+	String tfmt() { return "{$1 + $2}"; }
 }
 
 class oSub extends iFunctionClosure {			//  n1 - n2
@@ -182,6 +196,7 @@ class oSub extends iFunctionClosure {			//  n1 - n2
 		vNumeric.Coerce(args);
 		return args[0].Sub(args[1]);
 	}
+	String tfmt() { return "{$1 - $2}"; }
 }
 
 class oMul extends iFunctionClosure {			//  n1 * n2
@@ -189,6 +204,7 @@ class oMul extends iFunctionClosure {			//  n1 * n2
 		vNumeric.Coerce(args);
 		return args[0].Mul(args[1]);
 	}
+	String tfmt() { return "{$1 * $2}"; }
 }
 
 class oDiv extends iFunctionClosure {			//  n1 / n2
@@ -196,6 +212,7 @@ class oDiv extends iFunctionClosure {			//  n1 / n2
 		vNumeric.Coerce(args);
 		return args[0].Div(args[1]);
 	}
+	String tfmt() { return "{$1 / $2}"; }
 }
 
 class oMod extends iFunctionClosure {			//  n1 % n2
@@ -203,6 +220,7 @@ class oMod extends iFunctionClosure {			//  n1 % n2
 		vNumeric.Coerce(args);
 		return args[0].Mod(args[1]);
 	}
+	String tfmt() { return "{$1 % $2}"; }
 }
 
 
@@ -214,6 +232,7 @@ class oNLess extends iFunctionClosure {			//  n1 < n2
 		vNumeric.Coerce(args);
 		return args[0].NLess(args[1]);
 	}
+	String tfmt() { return "{$1 < $2}"; }
 }
 
 class oNLessEq extends iFunctionClosure {		//  n1 <= n2
@@ -221,6 +240,7 @@ class oNLessEq extends iFunctionClosure {		//  n1 <= n2
 		vNumeric.Coerce(args);
 		return args[0].NLessEq(args[1]);
 	}
+	String tfmt() { return "{$1 <= $2}"; }
 }
 
 class oNEqual extends iFunctionClosure {		//  n1 = n2
@@ -228,6 +248,7 @@ class oNEqual extends iFunctionClosure {		//  n1 = n2
 		vNumeric.Coerce(args);
 		return args[0].NEqual(args[1]);
 	}
+	String tfmt() { return "{$1 = $2}"; }
 }
 
 class oNUnequal extends iFunctionClosure {		//  n1 ~= n2
@@ -235,6 +256,7 @@ class oNUnequal extends iFunctionClosure {		//  n1 ~= n2
 		vNumeric.Coerce(args);
 		return args[0].NUnequal(args[1]);
 	}
+	String tfmt() { return "{$1 ~= $2}"; }
 }
 
 class oNGreaterEq extends iFunctionClosure {		//  n1 >= n2
@@ -242,6 +264,7 @@ class oNGreaterEq extends iFunctionClosure {		//  n1 >= n2
 		vNumeric.Coerce(args);
 		return args[0].NGreaterEq(args[1]);
 	}
+	String tfmt() { return "{$1 >= $2}"; }
 }
 
 class oNGreater extends iFunctionClosure {		//  n1 > n2
@@ -249,10 +272,12 @@ class oNGreater extends iFunctionClosure {		//  n1 > n2
 		vNumeric.Coerce(args);
 		return args[0].NGreater(args[1]);
 	}
+	String tfmt() { return "{$1 > $2}"; }
 }
 
 class oActivate extends iFunctionClosure {		//  n1 @ n2
 	vDescriptor function(vDescriptor[] args) {
 		return env.cur_coexp.activate(args[0], args[1]);
 	}
+	String tfmt() { return "{$1 @ $2}"; }
 }

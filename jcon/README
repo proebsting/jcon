@@ -36,7 +36,13 @@ numerics:
 -- "%" just uses the Java "%" operator; does that match what Icon needs?
 
 error reporting:
--- no traceback
--- no recovery
+-- traceback omits the "offending operation" for cases
+   not implemented by iClosure class (e.g. field references, scanning)
+-- no error recovery yet
 -- long strings are not elided
--- variables are dereferenced for reporting
+-- variables are dereferenced for reporting  (izzat so?)
+
+arguably correct differences:
+-- "n to MAXINT" case works correctly in to-by
+-- 1 / 0 gives error 201 instead of error 204
+-- traceback is deliberately limited to the innermost 100 nested calls
