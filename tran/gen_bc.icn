@@ -1,7 +1,6 @@
 #  gen_bc.icn -- filter to create class files from intermediate representation
 
 global bc_nodebuginfo
-global bc_nointrospection
 
 global bc_java_classname
 
@@ -275,7 +274,7 @@ end
 procedure bc_gen_ir_Key_register(p)
     bc_keys_link[p.name] := 1
     /bc_key_table[p.name] := j_create_fieldref(bc_current_classptr,
-					       "$" || p.name,
+                                               "$" || p.name,
                                                "Lrts/vDescriptor;",
                                                bc_java_classname)
 end
@@ -456,59 +455,6 @@ procedure bc_gen_ir_MakeList(s, p)
     put(s, j_invokestatic(method))
     bc_gen_assign_to(s, p.lhs)
     return s
-end
-
-procedure bc_initoptable()
-    static optable
-    initial {
-        optable := [ table(), table(), table() ]
-        optable[1]["#"] := "oLimit"
-        optable[1]["."] := "oDeref"
-        optable[1]["/"] := "oIsNull"
-        optable[1]["\\"] := "oIsntNull"
-        optable[1]["*"] := "oSize"
-        optable[1]["?"] := "oSelect"
-        optable[1]["+"] := "oNumerate"
-        optable[1]["-"] := "oNegate"
-        optable[1]["~"] := "oComplement"
-        optable[1]["^"] := "oRefresh"
-        optable[2][":="] := "oAssign"
-        optable[2][":=:"] := "oSwap"
-        optable[2]["&"] := "oConjunction"
-        optable[2]["."] := "oField"
-        optable[2]["[]"] := "oIndex"
-        optable[2]["+"] := "oAdd"
-        optable[2]["-"] := "oSub"
-        optable[2]["*"] := "oMul"
-        optable[2]["/"] := "oDiv"
-        optable[2]["%"] := "oMod"
-        optable[2]["^"] := "oPower"
-        optable[2]["**"] := "oIntersect"
-        optable[2]["++"] := "oUnion"
-        optable[2]["--"] := "oDiff"
-        optable[2]["<"] := "oNLess"
-        optable[2]["<="] := "oNLessEq"
-        optable[2]["="] := "oNEqual"
-        optable[2]["~="] := "oNUnequal"
-        optable[2][">="] := "oNGreaterEq"
-        optable[2][">"] := "oNGreater"
-        optable[2]["<<"] := "oLLess"
-        optable[2]["<<="] := "oLLessEq"
-        optable[2]["=="] := "oLEqual"
-        optable[2]["~=="] := "oLUnequal"
-        optable[2][">>="] := "oLGreaterEq"
-        optable[2][">>"] := "oLGreater"
-        optable[2]["==="] := "oVEqual"
-        optable[2]["~==="] := "oVUnequal"
-        optable[2]["|||"] := "oListConcat"
-        optable[2]["||"] := "oConcat"
-        optable[2]["@"] := "oActivate"
-        optable[2][":?"] := "oSubjAssign"
-        optable[3]["[:]"] := "oSection"
-        optable[3]["[+:]"] := "oSectPlus"
-        optable[3]["[-:]"] := "oSectMinus"
-    }
-    return optable
 end
 
 # record ir_OpFunction( lhs fn argList failLabel )
@@ -840,7 +786,6 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
 
     bc_create_nextval(c, codestart, params, locals, undeclared, accumulate)
     bc_create_constructor(c, class_index)
-    bc_create_locals(c, undeclared, set(statics))
     bc_create_createvars(c, params, locals, undeclared)
     bc_create_copy(c, params, locals, undeclared)
 
@@ -963,7 +908,7 @@ procedure bc_create_nextval(c, start, params, locals, undeclared, accumulate)
     local a, s, tmplab, prologue, var_load_label, t, tmpset
 
     nextval := j_create_method(c, 0, "Call",
-				     "([Lrts/vDescriptor;)Lrts/vDescriptor;")
+                                     "([Lrts/vDescriptor;)Lrts/vDescriptor;")
     nextvalcode := j_create_code(c, 10, 10)
     put(nextval.attributes, nextvalcode)
     s := nextvalcode.code
@@ -1082,86 +1027,6 @@ procedure bc_emit_code(s, switch, start)
     bc_emitted := set([])
     bc_emit_code0(s, switch, start)
     every bc_emit_code0(s, switch, key(bc_emit_table))
-end
-
-procedure bc_create_locals(c, undeclared, statics)
-    local locals, localscode, names, variables, k, lab
-    local shadow, index, class_index, m, s, sortedvars
-
-    sortedvars := sort(bc_var_set ++ bc_params_set ++ bc_locals_set ++
-                       bc_statics_set)
-
-    locals := j_create_method(c, 0, "locals", "()V")
-    localscode := j_create_code(c, 10, 10)
-    put(locals.attributes, localscode)
-    s := localscode.code
-
-    if \bc_nointrospection then {
-        m := bc_error_methodref(c)
-        put(s, j_ipush(905))
-        put(s, j_invokestatic(m))
-        put(s, j_vreturn() )
-        return
-    }
-    # local1 is int counter
-    put(s, j_iconst_0() )
-    put(s, j_istore_1() )
-    names := bc_names_fieldref(c)
-    class_index := j_cp_Class(c, j_cp_Utf8(c, "java/lang/String"))
-    put(s, j_aload_0() )
-    put(s, j_ipush(*sortedvars+1) )
-    put(s, j_anewarray(class_index) )
-    put(s, j_putfield(names) )
-    variables := bc_variables_fieldref(c)
-    class_index := j_cp_Class(c, j_cp_Utf8(c, "rts/vVariable"))
-    put(s, j_aload_0() )
-    put(s, j_ipush(*sortedvars+1) )
-    put(s, j_anewarray(class_index) )
-    put(s, j_putfield(variables) )
-
-    every k := !sortedvars do {
-        lab := j_label()
-        if member(undeclared, k) then {
-            shadow := j_create_fieldref(c, "v$" || k || "$", "Lrts/vVariable;",
-                                      bc_java_classname)
-            put(s, j_getstatic(shadow) )
-            put(s, j_ifnonnull(lab) )
-        }
-        index := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
-        put(s, j_aload_0() )
-        put(s, j_getfield(names) )
-        put(s, j_iload_1() )
-        put(s, j_ldc_w(index) )
-        put(s, j_aastore() )
-
-        index := j_create_fieldref(c, "v$" || k, "Lrts/vVariable;",
-                                 bc_proc_classname)
-        put(s, j_aload_0() )
-        put(s, j_getfield(variables) )
-        put(s, j_iload_1() )
-        if member(statics, k) then {
-            put(s, j_getstatic(index) )
-        } else {
-            put(s, j_aload_0() )
-            put(s, j_getfield(index) )
-        }
-        put(s, j_aastore() )
-
-        put(s, j_iinc(1,1) )
-        put(s, lab )
-    }
-    put(s, j_aload_0() )
-    put(s, j_getfield(names) )
-    put(s, j_iload_1() )
-    put(s, j_aconst_null() )
-    put(s, j_aastore() )
-
-    put(s, j_aload_0() )
-    put(s, j_getfield(variables) )
-    put(s, j_iload_1() )
-    put(s, j_aconst_null() )
-    put(s, j_aastore() )
-    put(s, j_vreturn() )
 end
 
 procedure bc_emit_prologue_params(s, c, params, accumulate)
@@ -1379,7 +1244,6 @@ procedure bc_process_flags(flagList)
     \bc_java_classname | stop("ERROR: must specify -class:<name>")
 
     bc_nodebuginfo := 1
-    bc_nointrospection := 1
     ir_noerror2failure := 1
     every k := !flagList do {
         k ? {
@@ -1389,9 +1253,6 @@ procedure bc_process_flags(flagList)
                 }
                 if find("n") | find("a") then {
                     bc_nodebuginfo := &null
-                }
-                if find("d") | find("a") then {
-                    bc_nointrospection := &null
                 }
             }
         }
