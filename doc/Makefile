@@ -1,6 +1,6 @@
 #  Makefile for rough jcon documentation
 
-OUT = jcon.txt
+OUT = ../bin/jcon.doc
 
 DASHES = -------------------------------------
 
@@ -16,8 +16,8 @@ hdr.t:	FORCE
 	echo "Jcon Usage and Status Notes"		> hdr.t
 	date						>>hdr.t
 
-jcont.t:  ../test/jcont shdoc.sed
-	sed -f shdoc.sed ../test/jcont			> jcont.t
+jcont.t:  ../bin/jcont shdoc.sed
+	sed -f shdoc.sed ../bin/jcont			> jcont.t
 
 kwds.t:	  ../rts/iKeywords.java kwds.sed
 	echo "Keywords implemented:"			> kwds.t

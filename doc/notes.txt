@@ -1,7 +1,3 @@
-running jcont:
--- add /cs/jive/<platform>/bin to your Unix search path
--- <platform> is one of {irix,solaris}
-
 what's implemented:
 -- all datatypes (but only 64-bit integers; no large integers)
 -- most keywords;  missing &time
