@@ -449,8 +449,8 @@ public vDescriptor ProcessArgs(vDescriptor v) {
 //  =s : tab(match(s))
 
 public vDescriptor TabMatch() {
-    vString subj = (vString) k$subject.self.Deref();
-    final vInteger oldpos = (vInteger) k$pos.self.Deref();
+    vString subj = k$subject.get();
+    final vInteger oldpos = k$pos.get();
     int pos = (int) oldpos.value;
     if (! matches(subj, pos - 1)) {
 	return null;
@@ -460,7 +460,7 @@ public vDescriptor TabMatch() {
     return new vClosure () {
 	{ retval = newstr; }
         public vDescriptor Resume() {
-	    k$pos.self.Assign(oldpos);
+	    k$pos.set(oldpos.value);
 	    return null;
         }
     };

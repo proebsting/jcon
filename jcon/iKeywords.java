@@ -413,7 +413,7 @@ final class k$errout extends vProc0 {				// &errout
 
 final class k$subject extends vProc0 {				// &subject
 
-    static vSimpleVar self = new vSimpleVar("&subject", vString.New()) {
+    private static vSimpleVar self = new vSimpleVar("&subject", vString.New()) {
 	public vVariable Assign(vDescriptor v) {
 	    value = v.mkString();			// &subject := s
 	    k$pos.set(1);				// &pos := 1
@@ -434,12 +434,12 @@ final class k$subject extends vProc0 {				// &subject
 
 final class k$pos extends vProc0 {				// &pos
 
-    static vSimpleVar self = new vSimpleVar("&pos", vInteger.New(1)) {
+    private static vSimpleVar self = new vSimpleVar("&pos", vInteger.New(1)) {
 	public vVariable Assign(vDescriptor v) {
 	    vInteger p = v.mkInteger();
-	    int n = ((vString)k$subject.self.value).posEq(p.value);
+	    int n = k$subject.get().posEq(p.value);
 	    if (n > 0) {	// if valid
-		value = vInteger.New(n);
+		value = vInteger.New(n);	// assign positive equivalent
 		return this;
 	    } else {
 		return null; /*FAIL*/
@@ -451,12 +451,12 @@ final class k$pos extends vProc0 {				// &pos
 	return self;
     }
 
-    public static void set(long i) {	// assign value known to be valid
-	self.value = vInteger.New(i);
+    public static vInteger get() {		// retrieve value
+	return (vInteger) self.value;
     }
 
-    public static int get() {		// retrieve value as int
-	return (int) ((vInteger)self.value).value;
+    public static void set(long i) {	// assign value known to be valid
+	self.value = vInteger.New(i);
     }
 }
 

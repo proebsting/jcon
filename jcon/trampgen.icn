@@ -1,0 +1,179 @@
+#  trampolingen.icn -- utility to create debugging trampoline routines
+
+procedure main()
+    write("//  AUTOMATICALLY GENERATED FILE -- DO NOT EDIT!")
+    write()
+    write("package rts;")
+    operators()
+end
+
+procedure operators()
+    local i, o, ops, signature
+
+    ops := [
+
+	# arity,  op, method name,    return type
+
+	[ 1,        , "Call",         "vDescriptor" ],
+	[ 2,        , "Call",         "vDescriptor" ],
+	[ 3,        , "Call",         "vDescriptor" ],
+	[ 4,        , "Call",         "vDescriptor" ],
+	[ 5,        , "Call",         "vDescriptor" ],
+	[ 6,        , "Call",         "vDescriptor" ],
+	[ 7,        , "Call",         "vDescriptor" ],
+	[ 8,        , "Call",         "vDescriptor" ],
+	[ 9,        , "Call",         "vDescriptor" ],
+	[10,        , "Call",         "vDescriptor" ],
+
+	[ 1,     ".", "Deref",        "vValue"      ],
+	[ 2,    ":=", "Assign",       "vVariable"   ],
+	[ 2,   ":=:", "Swap",         "vVariable"   ],
+	[ 2,    ":?", "SubjAssign",   "vVariable"   ],
+	[ 2,    "<-", "RevAssign",    "vDescriptor" ],
+	[ 2,   "<->", "RevSwap",      "vDescriptor" ],
+
+	[ 1,     "#", "Limit",        "vInteger"    ],
+	[ 2,     "&", "Conjunction",  "vDescriptor" ],
+	[ 2,     "!", "ProcessArgs",  "vDescriptor" ],
+	[ 2,     "@", "Activate",     "vDescriptor" ],
+	[ 3,   "...", "ToBy",         "vDescriptor" ],
+
+	[ 1,     "+", "Numerate",     "vNumeric"    ],
+	[ 1,     "-", "Negate",       "vNumeric"    ],
+	[ 1,     "*", "Size",         "vInteger"    ],
+	[ 1,     "~", "Complement",   "vValue"      ],
+	[ 1,     "^", "Refresh",      "vCoexp"      ],
+	[ 1,     "=", "TabMatch",     "vDescriptor" ],
+
+	[ 1,     "/", "IsNull",       "vDescriptor" ],
+	[ 1,    "\\", "IsntNull",     "vDescriptor" ],
+	[ 1,     "?", "Select",       "vDescriptor" ],
+	[ 1,     "!", "Bang",         "vDescriptor" ],
+
+	[ 2,    "[]", "Index",        "vDescriptor" ],
+	[ 3,   "[:]", "Section",      "vDescriptor" ],
+	[ 3,  "[+:]", "SectPlus",     "vDescriptor" ],
+	[ 3,  "[-:]", "SectMinus",    "vDescriptor" ],
+
+	[ 2,     "+", "Add",          "vNumeric"    ],
+	[ 2,     "-", "Sub",          "vNumeric"    ],
+	[ 2,     "*", "Mul",          "vNumeric"    ],
+	[ 2,     "/", "Div",          "vNumeric"    ],
+	[ 2,     "%", "Mod",          "vNumeric"    ],
+	[ 2,     "^", "Power",        "vNumeric"    ],
+
+	[ 2,     "<", "NLess",        "vNumeric"    ],
+	[ 2,    "<=", "NLessEq",      "vNumeric"    ],
+	[ 2,     "=", "NEqual",       "vNumeric"    ],
+	[ 2,    "~=", "NUnequal",     "vNumeric"    ],
+	[ 2,    ">=", "NGreaterEq",   "vNumeric"    ],
+	[ 2,     ">", "NGreater",     "vNumeric"    ],
+
+	[ 2,    "<<", "LLess",        "vString"     ],
+	[ 2,   "<<=", "LLessEq",      "vString"     ],
+	[ 2,    "==", "LEqual",       "vString"     ],
+	[ 2,   "~==", "LUnequal",     "vString"     ],
+	[ 2,   ">>=", "LGreaterEq",   "vString"     ],
+	[ 2,    ">>", "LGreater",     "vString"     ],
+
+	[ 2,   "===", "VEqual",       "vValue"      ],
+	[ 2,  "~===", "VUnequal",     "vValue"      ],
+
+	[ 2,    "||", "Concat",       "vString"     ],
+	[ 2,   "|||", "ListConcat",   "vList"       ],
+
+	[ 2,    "**", "Intersect",    "vValue"      ],
+	[ 2,    "++", "Union",        "vValue"      ],
+	[ 2,    "--", "Diff",         "vValue"      ]
+    ]
+
+    write("public final class iTrampoline {")
+    every o := !ops do {
+        writes("public static ", o[4], " ", o[3], "(String fname, int lineno")
+	every i := 1 to o[1] do {
+            writes(", vDescriptor a", i)
+	}
+	write(") {")
+	write("\ttry {")
+	writes("\t\t", o[4], " retval = a1.", o[3], "(")
+	every i := 2 to o[1] do {
+	    if i > 2 then {
+		writes(", ")
+	    }
+	    writes("a", i)
+	}
+	write(");")
+	if \o[2] then {
+	    write("\t\treturn retval;")
+	} else {
+	    write("\t\tif (retval == null) {")
+	    write("\t\t\treturn null;")
+	    write("\t\t} else {")
+	    writes("\t\t\tvDescriptor[] args = { ")
+	    every i := 2 to o[1] do {
+		if i > 2 then {
+                    writes(", ")
+		}
+                writes("a", i)
+	    }
+	    write(" };")
+	    write("\t\t\treturn vTracedClosure.New(a1, args, retval);")
+	    write("\t\t}")
+	}
+	write("\t} catch (iError e) {")
+	if \o[2] then {
+	    writes("\t\te.propagate(fname, lineno, ", image(o[2]))
+	    every i := 1 to o[1] do {
+                writes(", a", i)
+	    }
+	    write(");")
+	} else {
+	    writes("\t\tvDescriptor[] args = { ")
+	    every i := 2 to o[1] do {
+		if i > 2 then {
+                    writes(", ")
+		}
+                writes("a", i)
+	    }
+	    write(" };")
+	    write("\t\te.propagate(fname, lineno, a1, args);")
+	}
+        write("\t\treturn null;")
+        write("\t}")
+        write("}")
+    }
+
+    write("public static vVariable Field(String fname, int lineno, vDescriptor record, String field) {")
+    write("\ttry {")
+    write("\t\treturn record.Field(field);")
+    write("\t} catch (iError e) {")
+    write("\t\te.propagate(fname, lineno, record, field);")
+    write("\t\treturn null;")
+    write("\t}")
+    write("}")
+
+    write("public static vDescriptor Call(String fname, int lineno, vDescriptor a, vDescriptor[] args) {")
+    write("\ttry {")
+    write("\t\treturn vTracedClosure.New(a, args, a.Call(args));")
+    write("\t} catch (iError e) {")
+    write("\t\te.propagate(fname, lineno, a, args);")
+    write("\t\treturn null;")
+    write("\t}")
+    write("}")
+
+    write("public static vDescriptor Resume(String fname, int lineno, vDescriptor object) {")
+    write("\ttry {")
+    write("\t\treturn object.Resume();")
+    write("\t} catch (iError e) {")
+    write("\t\tif (object instanceof vTracedClosure) {")
+    write("\t\t\tvTracedClosure t = (vTracedClosure) object;")
+    write("\t\t\te.propagate(fname, lineno, t.tracedFn, t.tracedArgs);")
+    write("\t\t} else {")
+    write("\t\t\tthrow e;")
+    write("\t\t}")
+    write("\t\treturn null;")
+    write("\t}")
+    write("}")
+
+    write("} // iTrampoline")
+end

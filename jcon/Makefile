@@ -7,13 +7,10 @@
 #  When a change affects other classes, run "make clean" before rebuilding.
 
 
-build: iTrampoline.java compile
+build:	iTrampoline.java compile
 
-iTrampoline.java: trampolinegen
-	./trampolinegen > iTrampoline.java
-
-trampolinegen: ../tran/trampolinegen.icn
-	icont -o trampolinegen ../tran/trampolinegen.icn
+iTrampoline.java: trampgen.icn
+	icont -us trampgen -x >iTrampoline.java
 
 compile:
 	./upclass *.java
@@ -21,4 +18,4 @@ compile:
 
 
 clean:
-	rm -f *.class *.[cho] trampolinegen
+	rm -f *.class *.[cho] trampgen iTrampoline.java

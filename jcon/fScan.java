@@ -21,7 +21,7 @@ final class fScan {
 		vDescriptor subjarg, vString subjval, vDescriptor posarg) {
 	if (posarg.isnull()) {
 	    if (subjarg.isnull()) {
-		return k$pos.get();
+		return (int) k$pos.get().value;
 	    } else {
 		return 1;
 	    }
@@ -37,10 +37,10 @@ final class fScan {
 final class f$pos extends vProc1 {			// pos(i)
     public vDescriptor Call(vDescriptor a) {
 	long i = a.mkInteger().value;
-	vString s = (vString) k$subject.self.Deref();
-	vInteger p = (vInteger) k$pos.self.Deref();
+	vString s = k$subject.get();
+	vInteger p = k$pos.get();
 	if (s.posEq(i) == p.value) {
-	    return k$pos.self.Deref();
+	    return p;
 	}
 	return null;
     }
@@ -74,8 +74,8 @@ final class f$any extends vProc4 {			// any(c,s,i1,i2)
     // additional entry point for common case
     public vDescriptor Call(vDescriptor a) {
 	vCset cs = a.mkCset();
-	vString subj = k$subject.get();		// &subject
-	int zpos = k$pos.get() - 1;		// zero-based &pos
+	vString subj = k$subject.get();			// &subject
+	int zpos = (int) k$pos.get().value - 1;		// zero-based &pos
 	if (zpos < subj.length() && cs.member(subj.charAt(zpos))) {
 	    return vInteger.New(zpos + 2);
 	} else {
@@ -123,8 +123,8 @@ final class f$many extends vProc4 {			// many(c,s,i1,i2)
     // additional entry point for common case
     public vDescriptor Call(vDescriptor a) {
 	vCset cs = a.mkCset();
-	vString subj = k$subject.get();		// &subject
-	int zpos = k$pos.get() - 1;		// zero-based &pos
+	vString subj = k$subject.get();			// &subject
+	int zpos = (int) k$pos.get().value - 1;		// zero-based &pos
 	long zmax = subj.length();
 	byte t[] = subj.getBytes();
 	if (zpos >= zmax || !cs.member(t[zpos])) {
@@ -257,7 +257,7 @@ final class f$upto extends vProc4 {			// upto(c,s2,i1,i2)
     public vDescriptor Call(vDescriptor a) {
 	final vCset cs = a.mkCset();
 	final vString subj = k$subject.get();		// &subject
-	int zpos = k$pos.get() - 1;			// zero-based &pos
+	int zpos = (int) k$pos.get().value - 1;		// zero-based &pos
 	final byte t[] = subj.getBytes();
 
 	while (true) {
@@ -345,10 +345,10 @@ final class f$bal extends vProc6 {			// bal(c1,c2,c3,s,i1,i2)
 
 final class f$move extends vProc1 {			// move(j)
     public vDescriptor Call(vDescriptor a) {
-	final vInteger oldpos = (vInteger) k$pos.self.Deref();
+	final vInteger oldpos = k$pos.get();
 	final int i = (int) oldpos.value;
 	final int j = (int) a.mkInteger().value;
-	final vString s = (vString) k$subject.self.Deref();
+	final vString s = k$subject.get();
 	int k = i + j - 1;
 	if (k < 0 || k > s.length()) {
 	    return null;
@@ -363,7 +363,7 @@ final class f$move extends vProc1 {			// move(j)
 		}
 	    }
 	    public vDescriptor Resume() {
-		k$pos.self.Assign(oldpos);
+		k$pos.set(oldpos.value);
 		return null;
 	    }
 	};
@@ -374,8 +374,8 @@ final class f$move extends vProc1 {			// move(j)
 
 final class f$tab extends vProc1 {			// tab(j)
     public vDescriptor Call(vDescriptor a) {
-	final vInteger oldpos = (vInteger) k$pos.self.Deref();
-	final vString s = (vString) k$subject.self.Deref();
+	final vInteger oldpos = k$pos.get();
+	final vString s = k$subject.get();
 	final int i = (int) oldpos.value;
 	final int j = (int) s.posEq(a.mkInteger().value);
 	if (j == 0) {
@@ -391,7 +391,7 @@ final class f$tab extends vProc1 {			// tab(j)
 		}
 	    }
 	    public vDescriptor Resume() {
-		k$pos.self.Assign(oldpos);
+		k$pos.set(oldpos.value);
 		return null;
 	    }
 	};
