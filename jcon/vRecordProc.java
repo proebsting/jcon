@@ -22,6 +22,8 @@ public class vRecordProc extends vValue {
 
 	int rank()	{ return 80; }	// record constructors sort with procs
 
+	vInteger Args()	{ return iNew.Integer(fieldnames.length); }
+
 	int compareTo(vValue v) {	// must handle procs, funcs, rec constrs
 		String s1 = this.image();
 		String s2 = v.image();

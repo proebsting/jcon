@@ -3,9 +3,11 @@ package rts;
 public class vProc extends vValue {
 	
 	Class proc;
+	int args;
 
-	vProc(Class c) {
+	vProc(Class c, int args) {
 		proc = c;
+		this.args = args;
 	}
 
 	public vValue deref() {
@@ -54,5 +56,7 @@ public class vProc extends vValue {
 		c.closure(args, parent);
 		return c;
 	}
+
+	vInteger Args()		{ return iNew.Integer(args); }
 
 }

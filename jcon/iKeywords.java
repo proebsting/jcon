@@ -45,7 +45,7 @@ public class iKeywords extends iFile {
 
 		// generators
 		iEnv.declareKey("features", 
-			iNew.Proc((new k$features()).getClass()));
+			iNew.Proc((new k$features()).getClass(), 0));
 
 		// special behavior
 		iEnv.declareKey("trace", new k$trace());

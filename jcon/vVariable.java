@@ -92,6 +92,8 @@ public abstract class vVariable extends vDescriptor {
     vValue Intersect(vDescriptor x)	{ return this.deref().Intersect(x); }
     vValue Diff(vDescriptor x)		{ return this.deref().Diff(x); }
 
+    vInteger Args()			{ return this.deref().Args(); }
+
     vDescriptor isNull()	{
     	if (this.deref() instanceof vNull) {
 	    return this;	// return variable 

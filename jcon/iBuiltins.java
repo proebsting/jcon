@@ -11,67 +11,68 @@ static final String PREFIX = "rts.f$";	// classname prefix for built-in funcs
 
 
 void announce() {
-	declare("abs");
-	declare("acos");
-	declare("asin");
-	declare("atan");
-	declare("char");
-	declare("cos");
-	declare("copy");
-	declare("cset");
-	declare("delay");
-	declare("delete");
-	declare("display");
-	declare("dtor");
-	declare("exit");
-	declare("exp");
-	declare("get");
-	declare("iand");
-	declare("icom");
-	declare("image");
-	declare("insert");
-	declare("integer");
-	declare("ior");
-	declare("ishift");
-	declare("ixor");
-	declare("key");
-	declare("list");
-	declare("log");
-	declare("member");
-	declare("name");
-	declare("numeric");
-	declare("ord");
-	declare("pop");
-	declare("pull");
-	declare("push");
-	declare("put");
-	declare("read");
-	declare("real");
-	declare("repl");
-	declare("reverse");
-	declare("right");
-	declare("rtod");
-	declare("serial");
-	declare("set");
-	declare("sin");
-	declare("sort");
-	declare("sqrt");
-	declare("stop");
-	declare("string");
-	declare("table");
-	declare("tan");
-	declare("type");
-	declare("variable");
-	declare("write");
-	declare("writes");
+	declare("abs", 1);
+	declare("acos", 1);
+	declare("args", 1);
+	declare("asin", 1);
+	declare("atan", 2);
+	declare("char", 1);
+	declare("cos", 1);
+	declare("copy", 1);
+	declare("cset", 1);
+	declare("delay", 1);
+	declare("delete", 2);
+	declare("display", 2);
+	declare("dtor", 1);
+	declare("exit", 1);
+	declare("exp", 1);
+	declare("get", 1);
+	declare("iand", 2);
+	declare("icom", 1);
+	declare("image", 1);
+	declare("insert", 2);
+	declare("integer", 1);
+	declare("ior", 2);
+	declare("ishift", 2);
+	declare("ixor", 2);
+	declare("key", 1);
+	declare("list", 2);
+	declare("log", 2);
+	declare("member", 2);
+	declare("name", 1);
+	declare("numeric", 1);
+	declare("ord", 1);
+	declare("pop", 1);
+	declare("pull", 1);
+	declare("push", -2);
+	declare("put", -2);
+	declare("read", 1);
+	declare("real", 1);
+	declare("repl", 2);
+	declare("reverse", 1);
+	declare("right", 3);
+	declare("rtod", 1);
+	declare("serial", 1);
+	declare("set", 1);
+	declare("sin", 1);
+	declare("sort", 2);
+	declare("sqrt", 1);
+	declare("stop", -1);
+	declare("string", 1);
+	declare("table", 1);
+	declare("tan", 1);
+	declare("type", 1);
+	declare("variable", 1);
+	declare("write", -1);
+	declare("writes", -1);
 }
 
 
-static void declare(String name)
+static void declare(String name, int args)
 {
     try {
 	iEnv.declareGlobal(name,
-	    iNew.SimpleVar(name, iNew.Proc(Class.forName(PREFIX + name))));
+	    iNew.SimpleVar(name, iNew.Proc(Class.forName(PREFIX + name), args)));
     } catch (ClassNotFoundException e) {
 	iRuntime.bomb("cannot declare builtin function " + name + "()");
     }
@@ -151,6 +152,12 @@ class f$variable extends iFunctionClosure {			// variable(x)
 			}
 		}
 		return null;
+	}
+}
+
+class f$args extends iFunctionClosure {				// args(x)
+	vDescriptor function(vDescriptor[] args) {
+		return iRuntime.argVal(args, 0).Args();
 	}
 }
 

@@ -82,6 +82,7 @@ public abstract class vDescriptor {
 
     // variable operations
     abstract vString Name();
+    abstract vInteger Args();
 
     // list operations
     abstract vValue Push(vDescriptor v);
