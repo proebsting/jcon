@@ -338,11 +338,11 @@ procedure gen_bc_irSucceed(s, p)
 	local r, e, PC, returned, k, a
 
 	PC := PC_fieldref(bc_proc_classptr)
-	put(s, aload_0())
-	put(s, aload_0())
-	if gen_bc(s, \p.continuation) then {
+	if \p.continuation then {
 		\bc_suspend_flag | runerr(1000)
 
+		put(s, aload_0())
+		gen_bc(s, p.continuation)
 		put(s, putfield(PC))
 
 		a := create_fieldref(bc_proc_classptr,
@@ -387,6 +387,7 @@ procedure gen_bc_irSucceed(s, p)
 		}
 		put(s, Pop())
 	} else {
+		put(s, aload_0())
 		returned := returned_fieldref(bc_proc_classptr)
 		put(s, iconst_1())
 		put(s, putfield(returned))
