@@ -8,6 +8,9 @@ losses in v2:
 -- variable(), display(), and &dump can access only global variables
 -- compilation with "-fn" is needed for tracing or for detailed error traceback
 
+changes in v2:
+-- in graphics events, the Enter key produces '\r' (for v9 compatibility)
+
 ------------------------------------------------------------------------------
 
 what's implemented:
@@ -77,6 +80,7 @@ graphics overview:
 graphics bugs:
 -- window repair is only done when paused for event input
 -- &interval is always zero
+-- "drawop=reverse" produces the wrong color under Java 1.1; okay under 1.2
 
 graphics (general):
 -- there is no sharing of graphics contexts among windows by Couple() or Clone()
@@ -86,7 +90,6 @@ graphics (general):
 events:
 -- Java distinguishes "alt" and "meta" keys; Jcon maps both to the &meta flag
 -- &meta is never set with mouse events (Java uses it to encode "which button")
--- X returns "\r" for the Enter key but Java (and therefore Jcon) returns "\n"
 -- "outboard" keys differ from X, are similar to Windows; see bin/keysyms.icn
 -- no timing information is provided (&interval is always zero)
 -- resize events are not reported yet
