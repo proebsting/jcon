@@ -50,7 +50,6 @@
 #
 
 # command names
-JAVAC="javac -nowarn"
 JAVA="java -noverify"
 TRAN="jtran"
 LINK="jlink"
