@@ -65,10 +65,19 @@ procedure copy_propagation(t, start)
 				   uses[insn.lhs] = 0 then {
 					changes := 1
 				} else if type(insn) == "irMove" &
-				   uses[insn.rhs] = 1 &
 				   defs[insn.lhs] = 1 &
-				   type(insn.rhs) == "irTmp" &
-				   type(insn.lhs) == "irTmp" then {
+				   type(insn.lhs) == "irTmp" &
+				   (
+				   (uses[insn.rhs] = 1 &
+				   type(insn.rhs) == "irTmp") |
+				   type(insn.rhs) == ("irVar" |
+						"irKey" |
+						"irIntLit" |
+						"irRealLit" |
+						"irStrLit" |
+						"irCsetLit")
+				   )
+				   then {
 					rename[insn.lhs] := insn.rhs
 					changes := 1
 				} else {
