@@ -1,0 +1,93 @@
+#  file test -- writes tmp1, tmp2
+
+procedure main()
+   every remove("tmp1" | "tmp2")
+   every remove("tmp1" | "tmp2")
+   rfile("/dev/null")
+   wfile("tmp1", "w", "follow the yellow brick road")
+   rfile("tmp1")
+   wfile("tmp1", "w", "shorter file")
+   rfile("tmp1")
+   wfile("tmp1", "a", "gets extended")
+   rfile("tmp1")
+   wfile("tmp1", "rw", "changed")
+   rfile("tmp1")
+   wfile("tmp1", "b", "mode b ")
+   rfile("tmp1")
+   wfile("tmp1", "crw", "cleared anew")
+   rfile("tmp1")
+   rename("tmp1", "tmp2")
+   rfile("tmp2")
+   every remove("tmp1" | "tmp2")
+   every remove("tmp1" | "tmp2")
+end
+
+
+
+#  wfile(name, mode, s) -- break apart string and write file
+
+procedure wfile(name, mode, s)
+   local f
+   writes("write ", name, ",", mode, ":\t ")
+   if f := open(name, mode) then s ? {
+      writes(s)
+      tab(many(' '))
+      while not pos(0) do {
+	 write(f, tab(upto(' ') | 0))
+	 tab(many(' '))
+         }
+      write(" : ", where(f))
+      flush(f)
+      close(f)
+      }
+   else {
+      write("can't open")
+      }
+   return
+end
+
+
+
+#  rfile(name) -- read and echo file contents (several different ways)
+
+procedure rfile(name)
+   local f, i
+
+   writes("read  ", name, ":\t")
+   if not (f := open(name, "r")) then {
+      write(" can't open")
+      fail
+      }
+
+   # read()
+   while writes(" ", read(f))
+   write()
+
+   # bang
+   seek(f, 1)
+   every writes(" ", "  !f:\t\t" | !f | "\n")
+
+   # both, mixed
+   seek(f, 1)
+   writes("   read/!f:\t")
+   while writes(" ", read(f)) do writes(" ", !f)
+   write()
+
+   # reads()
+   seek(f, 1)
+   writes("   reads():\t")
+   while writes(" ", map(reads(f, 5), "\n", "."))
+   write()
+
+   # nonsequential
+   writes("   nonseq:\t ")
+   every i := 30 to -30 by -1 do
+      if seek(f, i) then
+	 writes(map(reads(f), "\n", ".") | "?")
+      else
+	 writes("-")
+   write()
+
+   close(f)
+   return
+end
