@@ -1265,6 +1265,10 @@ procedure bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
 			put(s, getfield(arguments))
 			put(s, ipush(*params))
 			put(s, invokestatic(marshal))
+			if /nointrospection | \bc_save_restore_flag | \bc_var_table[k] then {
+				put(s, invokevirtual(assign) )
+			}
+			put(s, Pop())
 		} else {
 			elselab := label()
 			endlab := label()
@@ -1275,18 +1279,18 @@ procedure bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
 			put(s, ipush(i))
 			put(s, if_icmpge(elselab))
 				put(s, Pop())
-				gen_bc_irKey_rval(s, irKey("null"))
+				put(s, Pop())
 				put(s, goto(endlab))
 			put(s, elselab)
 				put(s, ipush(i-1))
 				put(s, aaload())
+				put(s, invokevirtual(deref) )
+				if /nointrospection | \bc_save_restore_flag | \bc_var_table[k] then {
+					put(s, invokevirtual(assign) )
+				}
+				put(s, Pop())
 			put(s, endlab)
-			put(s, invokevirtual(deref) )
 		}
-		if /nointrospection | \bc_save_restore_flag | \bc_var_table[k] then {
-			put(s, invokevirtual(assign) )
-		}
-		put(s, Pop())
 	}
 end
 
