@@ -9,7 +9,6 @@
 #  To rerun with different options, run "make clean" first.
 
 # export variables for use by spawned shells
-export JTRAN="../bin/jtran"
 export JCONT="../bin/jcont"
 export JCOPT="-s"
 export JXOPTS="-verify"
@@ -66,9 +65,9 @@ for FNAME; do
 	:
     else
 
-	#compile program; abort on failure
+	# compile program; abort on failure
 	if $JCONT $JCOPT $XOPTS $BASE; then
-	   :
+	    :
 	else
 	    FAILED="$FAILED $BASE"
 	    continue
