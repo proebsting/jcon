@@ -63,5 +63,7 @@ class vCoexp extends vValue implements Runnable {
 		thread.start();
 	}
 
-	String image() { return "coexpression";}
+	String image()	{ return "co-expression";}	//#%#% incomplete image
+
+	String type()	{ return "co-expression";}
 }

@@ -20,6 +20,7 @@ vString mkString()	{ return iNew.String(String.valueOf(value)); }
 
 String write()		{ return String.valueOf(value); }
 String image()		{ return String.valueOf(value); }
+String type()		{ return "integer"; }
 
 
 

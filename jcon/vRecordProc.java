@@ -14,6 +14,10 @@ class vRecordProc extends vValue {
 	String image() {
 		return "record constructor " + name;
 	}
+
+	String type() {
+		return "procedure";
+	}
 }
 
 class vRecord extends vValue {
@@ -70,7 +74,11 @@ class vRecord extends vValue {
 	}
 
 	String image() {
-		return "record " + name + "()";
+		return "record " + name + "()";	//#%#% needs serial number etc
+	}
+
+	String type() {
+		return name;
 	}
 }
 

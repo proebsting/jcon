@@ -30,6 +30,8 @@ String image()		{
     }
 }
 
+String type()		{ return "real"; }
+
 
 
 //  static methods for argument processing and defaulting

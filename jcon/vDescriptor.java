@@ -19,7 +19,7 @@ abstract class vDescriptor {
     abstract vValue deref();			// dereference
     abstract vVariable Assign(vValue x);	// assign
 
-    // accessing functions
+    // access functions
     abstract vVariable field(String s);		// field access
 
     // type conversion
@@ -29,9 +29,10 @@ abstract class vDescriptor {
     abstract vNumeric mkNumeric();		// convert to Icon numeric
 
     // conversion to (Java) string for special purposes
-    abstract String write();			// for use in write()
-    abstract String image();			// for use in image()
-    abstract String report();			// for use in error reporting
+    abstract String write();			// convert for use in write()
+    abstract String image();			// convert for use in image()
+    abstract String report();			// convert for error reporting
+    abstract String type();			// return name of type
 
     // simple unary operators that always return values
     abstract vNumeric Negate();			//  -n

@@ -18,6 +18,7 @@ String image()		{ return "\"" + value + "\""; }
 				//#%#%#% need to escape special chars
 String report()		{ return "\"" + value + "\""; }
 				//#%#%#% trim length, besides escaping
+String type()		{ return "string"; }
 
 vNumeric mkNumeric()	{
     String s = value.trim();

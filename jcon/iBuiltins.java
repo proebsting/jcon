@@ -13,9 +13,11 @@ static final String PREFIX = "f$";	// classname prefix for built-in funcs
 
 
 void announce(iEnv env) {
+	declare(env, "exit");
 	declare(env, "image");
 	declare(env, "right");
 	declare(env, "stop");
+	declare(env, "type");
 	declare(env, "write");
 	declare(env, "writes");
 }
@@ -40,6 +42,17 @@ static void declare(iEnv env, String name)
 
 
 //------------------------------------------  individual functions follow
+
+
+class f$type extends iFunctionClosure {				// type(x)
+	vDescriptor function(vDescriptor[] args) {
+		if (args.length == 0) {
+		    return iNew.String("null");
+		} else {
+		    return iNew.String(args[0].type());
+		}
+	}
+}
 
 
 class f$image extends iFunctionClosure {			// image(x)
@@ -126,6 +139,15 @@ class f$stop extends iFunctionClosure {				// stop(...)
 		oOutput.print(System.err, args);		// write msg
 		System.err.println();
 		System.exit(1);					// exit
+		return null;	// not reached
+	}
+}
+
+
+class f$exit extends iFunctionClosure {				// exit(n)
+	vDescriptor function(vDescriptor[] args) {
+		int n = (int) vInteger.argVal(args, 0, 0);
+		System.exit(n);					// exit
 		return null;	// not reached
 	}
 }

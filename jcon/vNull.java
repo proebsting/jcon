@@ -5,5 +5,6 @@ class vNull extends vValue {
 
     String write()		{ return ""; }
     String image()		{ return "&null"; }
+    String type()		{ return "null"; }
 
 }

@@ -32,6 +32,7 @@ abstract class vVariable extends vDescriptor {
 
     String write()			{ return this.deref().write(); }
     String image()			{ return this.deref().image(); }
+    String type()			{ return this.deref().type(); }
 
     vVariable field(String s)		{ return this.deref().field(s); }
 

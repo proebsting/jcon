@@ -21,6 +21,10 @@ class vProc extends vValue {
 		}
 	}
 
+	String type() { 
+		return "procedure";
+	}
+
 	iClosure instantiate(vDescriptor[] args, iClosure parent) {
 		iClosure c = null;
 
