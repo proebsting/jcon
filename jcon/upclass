@@ -4,6 +4,12 @@
 
 JAVAC="toba -K"
 
+if [ `uname` = OSF1 ]; then
+    JAVAC="/cs/sumatra/digital/jdk.1.0.2/bin/javac"
+    export SYSNAME=alpha_osf32c
+fi
+
+
 FILES=
 
 for FNAME; do
