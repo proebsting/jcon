@@ -3,6 +3,7 @@
 
 package rts;
 
+import java.io.*;
 import java.util.*;
 
 
@@ -41,6 +42,17 @@ public static vProc Proc(Class c, int args)	{ return new vProc(c, args); }
 
 public static vRecordProc RecordProc(String name, String[] fields)
 					{ return new vRecordProc(name, fields);}
+
+public static vFile File(String kw, InputStream i) { return new vFile(kw, i); }
+public static vFile File(String kw, PrintStream p) { return new vFile(kw, p); }
+public static vFile File(String filename, String mode) {
+    try {
+    	return new vFile(filename, mode);
+    } catch (IOException e) {
+    	return null; /*FAIL*/
+    }
+}
+
 
 
 // for construction of internal types

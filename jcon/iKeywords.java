@@ -2,6 +2,7 @@
 
 package rts;
 
+import java.io.*;
 import java.util.*;
 
 
@@ -40,6 +41,11 @@ public class iKeywords extends iFile {
 		iEnv.declareKey("main", new k$main());
 		iEnv.declareKey("source", new k$source());
 		iEnv.declareKey("progname", new k$progname());
+
+		// files
+		iEnv.declareKey("input",  new k$input());
+		iEnv.declareKey("output", new k$output());
+		iEnv.declareKey("errout", new k$output());
 
 		//incestuous
 		k$subject s = new k$subject();		// &subject
@@ -169,7 +175,7 @@ class k$date extends k$Value {			// &date
 
 
 
-class k$dateline extends k$Value {			// &dateline
+class k$dateline extends k$Value {		// &dateline
 
 	static String[] wkdays = { "Sunday, ", "Monday, ", "Tuesday, ",
 		"Wednesday, ", "Thursday, ", "Friday, ", "Saturday, " };
@@ -193,12 +199,37 @@ class k$dateline extends k$Value {			// &dateline
 	}
 }
 
+
+
 class k$progname extends k$Value {		// &progname
 	static String name;
 
 	public vValue deref() {
 		return iNew.String(name);
 	}
+}
+
+
+
+class k$input extends k$Value {			// &input
+	static vFile file;	//#%#% ref'd in fIO.java
+
+	k$input()		{ file = iNew.File("&input", System.in); }
+	public vValue deref()	{ return file; }
+}
+
+class k$output extends k$Value {		// &output
+	static vFile file;	//#%#% ref'd in fIO.java
+
+	k$output()		{ file = iNew.File("&output", System.out); }
+	public vValue deref()	{ return file; }
+}
+
+class k$errout extends k$Value {		// &errout
+	static vFile file;	//#%#% ref'd in fIO.java
+
+	k$errout()		{ file = iNew.File("&errout", System.err); }
+	public vValue deref()	{ return file; }
 }
 
 

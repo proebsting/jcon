@@ -20,6 +20,7 @@ void announce() {
 	declare("bal", 6);
 	declare("center", 3);
 	declare("char", 1);
+	declare("close", 1);
 	declare("collect", 2);
 	declare("copy", 1);
 	declare("cos", 1);
@@ -32,6 +33,7 @@ void announce() {
 	declare("exit", 1);
 	declare("exp", 1);
 	declare("find", 4);
+	declare("flush", 1);
 	declare("function", 0);
 	declare("get", 1);
 	declare("iand", 2);
@@ -53,6 +55,7 @@ void announce() {
 	declare("move", 1);
 	declare("name", 1);
 	declare("numeric", 1);
+	declare("open", 2);
 	declare("ord", 1);
 	declare("pop", 1);
 	declare("pos", 1);
@@ -61,6 +64,7 @@ void announce() {
 	declare("push", -2);
 	declare("put", -2);
 	declare("read", 1);
+	declare("reads", 2);
 	declare("real", 1);
 	declare("remove", 1);
 	declare("rename", 2);
@@ -69,6 +73,7 @@ void announce() {
 	declare("right", 3);
 	declare("rtod", 1);
 	declare("runerr", 2);
+	declare("seek", 2);
 	declare("seq", 2);
 	declare("serial", 1);
 	declare("set", 1);
@@ -85,6 +90,7 @@ void announce() {
 	declare("type", 1);
 	declare("upto", 4);
 	declare("variable", 1);
+	declare("where", 1);
 	declare("write", -1);
 	declare("writes", -1);
 }
