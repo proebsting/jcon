@@ -52,7 +52,6 @@
 # command names
 JAVAC="javac -nowarn"
 JAVA="java -noverify"
-JAR="jar"
 TRAN="jtran"
 LINK="jlink"
 
