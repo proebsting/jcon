@@ -40,7 +40,6 @@ this cost is included in the measurements below but is
 not the dominating factor.
 
 <P> Here are execution time ratios measured on several platforms:
-							<B>(#%#% NEED DATA!)</B>
 <P> <TABLE BORDER=1 ALIGN=CENTER>
 <TR><TH COLSPAN=2>platform</TH>
 	<TH WIDTH=32>concord</TH>
@@ -54,26 +53,21 @@ not the dominating factor.
 <TR ALIGN=RIGHT>
 	<TD ALIGN=LEFT>SGI Irix 6.2</TD>
 	<TD ALIGN=LEFT>JDK 1.1.5</TD>
-	<TD>-</TD><TD>-</TD><TD>-</TD><TD>-</TD><TD>-</TD>
-	<TD>-</TD><TD>-</TD><TD>-</TD></TR>
+	<TD>3.6</TD><TD>8.8</TD><TD>2.8</TD><TD>1.7</TD><TD>3.2</TD>
+	<TD>3.3</TD><TD>2.2</TD><TD>4.6</TD></TR>
 <TR ALIGN=RIGHT>
 	<TD ALIGN=LEFT>Sun Solaris 5.5.1</TD>
 	<TD ALIGN=LEFT>JDK 1.1.6</TD>
-	<TD>-</TD><TD>-</TD><TD>-</TD><TD>-</TD><TD>-</TD>
-	<TD>-</TD><TD>-</TD><TD>-</TD></TR>
+	<TD>5.5</TD><TD>6.5</TD><TD>4.3</TD><TD>3.7</TD><TD>5.0</TD>
+	<TD>4.1</TD><TD>3.3</TD><TD>4.3</TD></TR>
 <TR ALIGN=RIGHT>
 	<TD ALIGN=LEFT>IBM AIX 4.1.5</TD>
 	<TD ALIGN=LEFT>JDK 1.1.4</TD>
-	<TD>-</TD><TD>-</TD><TD>-</TD><TD>-</TD><TD>-</TD>
-	<TD>-</TD><TD>-</TD><TD>-</TD></TR>
+	<TD>6.6</TD><TD>10.0</TD><TD>4.4</TD><TD>2.2</TD><TD>6.2</TD>
+	<TD>3.5</TD><TD>3.6</TD><TD>N/A</TD></TR>
 <TR ALIGN=RIGHT>	
 	<TD ALIGN=LEFT>Digital Unix 4.0B</TD>
 	<TD ALIGN=LEFT>JDK 1.1.6</TD>
-	<TD>-</TD><TD>-</TD><TD>-</TD><TD>-</TD><TD>-</TD>
-	<TD>-</TD><TD>-</TD><TD>-</TD></TR>
-<TR ALIGN=RIGHT>
-	<TD ALIGN=LEFT>Red Hat Linux 5.0</TD>
-	<TD ALIGN=LEFT>JDK 1.1.5v7</TD>
-	<TD>-</TD><TD>-</TD><TD>-</TD><TD>-</TD><TD>-</TD>
-	<TD>-</TD><TD>-</TD><TD>-</TD></TR>
+	<TD>14.0</TD><TD>17.6</TD><TD>9.7</TD><TD>6.3</TD><TD>15.5</TD>
+	<TD>8.7</TD><TD>7.9</TD><TD>7.3</TD></TR>
 </TABLE>
