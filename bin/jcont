@@ -2,7 +2,7 @@
 #
 #  jcont -- compile Icon program
 #
-#  usage:  jcont [-bcdhjsvEPSU] [-f flags] [-o exe] file... [-x [args]]
+#  usage:  jcont [-bcdhjsvEJPSU] [-f flags] [-o exe] file... [-x [args]]
 #
 #     file:	filename.icn (Icon source) or filename.zip (translated code)
 #
@@ -25,6 +25,7 @@
 #     -d	debug jcont: use ./jtmp for temp files, and don't delete
 #     -v	verbose: echo shell commands, trace linking steps
 #		    (this option is not for the squeamish)
+#     -J	use jcon-built versions of jtran and jlink, if available
 #     -P	pessimize: don't optimize the generated Java code
 #     -S	also generate .jvm file listing generated Java code
 #     -U	unsafe: allow generation of code that won't verify
@@ -55,6 +56,8 @@
 JAVAC="javac -nowarn"
 JAVA="java"
 JAR="jar"
+TRAN="jtran"
+LINK="jlink"
 
 # check OS type and set shell variables accordingly
 # WARNING: the Windows code once worked, but has not been maintained
@@ -133,7 +136,7 @@ NOEXECUTE=exit
 
 # process options, changing default values set above
 
-while getopts "bcdjsvEPSUo:f:" c 2>$NULLFILE; do
+while getopts "bcdjsvEJPSUo:f:" c 2>$NULLFILE; do
     case $c in
 	b)	TARGET="ucode"; NOLINK="exit";;
 	c)	NOLINK="exit";;
@@ -143,6 +146,7 @@ while getopts "bcdjsvEPSUo:f:" c 2>$NULLFILE; do
 	s)	ANNOUNCE=":";;
 	v)	CMDTRACE="set -x"; LINKTRACE="-t";;
 	E)	TARGET="ppsrc"; NOLINK="exit";;
+	J)	TRAN="jjtran"; LINK="jjlink";;
 	P)	OFLAG="";;
 	S)	JVMDUMP="javap -c -private -verbose";;
 	U)	TFLAGS="$TFLAGS -U";;
@@ -194,8 +198,8 @@ for FNAME; do
 done
 
 # set paths for translator and for runtime files
-JTRAN="$ICONX $IDIR${FILESEP}jtran"
-JLINK="$ICONX $IDIR${FILESEP}jlink"
+JTRAN="$ICONX $IDIR${FILESEP}$TRAN"
+JLINK="$ICONX $IDIR${FILESEP}$LINK"
 JRTS="$IDIR${FILESEP}rts.zip"
 
 # estimate the needed header size
