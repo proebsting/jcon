@@ -1,8 +1,7 @@
 #!/bin/ksh -p
 #
-#  runtest [-JP] [file...] -- run test
+#  runtest [-P] [file...] -- run test
 #
-#	-J	use Java compiler target  (icont -J)
 #	-P	disable optimizer  (icont -P)
 
 # export variables for use by spawned shells
@@ -12,10 +11,9 @@ export JCOPT="-s"
 export JXOPTS="-verify"
 
 # process options
-USAGE="$0 [-JP] [file...]"
-while getopts :JP c; do
+USAGE="$0 [-P] [file...]"
+while getopts P c; do
     case $c in
-	J)	JCOPT="$JCOPT -J";;
 	P)	JCOPT="$JCOPT -P";;
 	*)	echo "usage: $USAGE" 1>&2; exit 1;;
     esac

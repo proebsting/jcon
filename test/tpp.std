@@ -402,7 +402,7 @@ c c c c c c c c c c c c c c c c c c c c c c c c c c c
 
 # test else/endif out of place
 #line 0 "tpp5.icn"
-# tpp5.icn: test for unterminated $if
+#  tpp5.icn: test for unterminated $if
 
 
 
@@ -411,7 +411,7 @@ c c c c c c c c c c c c c c c c c c c c c c c c c c c
 #line 135 "if.tst"
 # now try again when unterminated $if succeeds
 #line 0 "tpp5.icn"
-# tpp5.icn: test for unterminated $if
+#  tpp5.icn: test for unterminated $if
 
 
 
