@@ -18,7 +18,8 @@ abstract class iClosure {
 		try {
 			nextval();
 		} catch (iError e) {
-			e.error();
+			//#%#%# check &error here and fail or:
+			e.report(this);
 		}
 	}
 
@@ -29,5 +30,30 @@ abstract class iClosure {
 		arguments = a;
 		this.parent = parent;
 	}
+
+
+	// trace -- report this call for traceback purposes
+
+	void trace() {
+	    System.err.print("   " + this.getClass().getName() + "(");
+	    if (arguments != null && arguments.length > 0) {
+		printarg(0);
+		for (int i = 1; i < arguments.length; i++) {
+		    System.err.print(",");
+		    printarg(i);
+		}
+		System.err.println(")");
+	    }
+	}
+
+	void printarg(int n) {
+	    if (arguments[n] == null) {
+	    	System.err.print("???");	//#%#%# shouldn't happen
+	    } else {
+	    	System.err.print(arguments[n].report());
+	    }
+	}
+
+
 
 } // class iClosure
