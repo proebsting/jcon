@@ -1,5 +1,6 @@
 procedure main()
-   local x
+   local i, x
+
    x := "o"
    write("a" & "b")
    write("c" | "d")
@@ -10,10 +11,18 @@ procedure main()
    write("i" || "jk")
    write(23 || "skidoo")
    write(x, .x, x := "b")
+
    every (write|"write")( (1|2)("hello", "mom"), "!")
    every (write|"write")! [ (1|2) ! ["hello", "mom"], "!"]
+
    pairs { 1 to 100, 11 to 99 by 11 }
+
    write("repl: ", repl("",5), repl("x",3), repl("foo",0), repl("xyz",4))
+   write("reverse: ", reverse(""), reverse("x"), reverse("ab"), reverse(12345));
+   every i := 0 to 255 do
+      if (ord(char(i)) ~= i) then write("char/ord oops ", i)
+   writes("char: ") 
+   every writes(char((64 to 126) | 10))
 
    exit()
    write("oops!")
