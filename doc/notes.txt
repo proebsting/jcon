@@ -53,8 +53,6 @@ error reporting:
 
 miscellaneous:
 -- no OS symbols (e.g. _UNIX) are predefined; _JAVA is predefined
--- display() ignores its arguments and displays everything
--- display() prints globals in an unsorted order
 -- function() generates names in an unsorted order
 -- &time produces elapsed wall-clock time, not CPU time, due to Java limitations
 -- &allocated, &collections, &storage, and &regions produce only zero values
