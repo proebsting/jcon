@@ -28,6 +28,8 @@ void announce(iEnv env) {
 	declare(env, "pull");
 	declare(env, "push");
 	declare(env, "put");
+	declare(env, "read");
+	declare(env, "repl");
 	declare(env, "right");
 	declare(env, "set");
 	declare(env, "stop");
@@ -306,5 +308,36 @@ class f$put extends iFunctionClosure {				// put(L, x...)
 				args[0].Put(args[i]);
 		}
 		return args[0];
+	}
+}
+
+class f$read extends iFunctionClosure {				// read()
+	static DataInputStream stdin = new DataInputStream(System.in);
+	vDescriptor function(vDescriptor[] args) {
+		String s = null;
+		try {
+			s = stdin.readLine();
+		} catch (IOException e) {
+			iRuntime.error(903);
+		}
+		if (s == null) {
+			return null;
+		}
+		return iNew.String(s);
+	}
+}
+
+class f$repl extends iFunctionClosure {				// repl()
+	vDescriptor function(vDescriptor[] args) {
+		String s = iRuntime.argVal(args, 0, 103).mkString().value;
+		long i = iRuntime.argVal(args, 1, 101).mkInteger().value;
+		if (i < 0) {
+			iRuntime.error(205, args[1]);
+		}
+		String t = "";
+		for (; i > 0; i--) {
+			t += s;
+		}
+		return iNew.String(t);
 	}
 }
