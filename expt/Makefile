@@ -29,7 +29,8 @@ profsum:  profsum.icn
 #  "make clean" removes most generated files, but not .prof files
 
 clean:
-	rm -rf jtmp *.java *.class *.out *.err *.zip *.jcz *.u[12] *.sum
+	rm -rf *.out *.err *.sum
+	rm -rf jtmp *.java *.class *.zip *.jcz *.o *.tx *.u[12]
 	grep -l '$${ICONX-/' `find . -type f -perm -100 -print` | xargs rm -f
-	grep -l '^WHENCE=`' `find . -type f -perm -100 -print` | xargs rm -f
-	grep -l '/.  created by Toba  ./' *.[ch] 2>/dev/null   | xargs rm -f
+	grep -l '^WHENCE=`' `find . -type f -perm -100 -print`  | xargs rm -f
+	grep -l '/.  created by Toba  ./' *.[ch] 2>/dev/null    | xargs rm -f
