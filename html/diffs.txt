@@ -47,9 +47,6 @@ due to Java limitations.
 <CODE>&amp;storage</CODE>, and <CODE>&amp;regions</CODE>
 produce only zero values.
 
-<P> The <CODE>&amp;hostname</CODE> keyword requires the presence of the utility
-<CODE>uname</CODE> in the shell search path.
-
 <H3>Built-in Functions</H3>
 
 <P> The functions <CODE>chdir()</CODE>, <CODE>getch()</CODE>, 
