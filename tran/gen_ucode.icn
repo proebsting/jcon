@@ -230,12 +230,6 @@ procedure ucode_Call(s, p)
     }
 end
 
-# record ExclAlt( e1 e2 )
-procedure ucode_ExclAlt(s, p)
-    ucode(s, p.e1)
-    ucode(s, p.e2)
-end
-
 # The following is used rather than a more natural solution to get
 # .u1 files that match icont.
 # record Alt( eList )
@@ -916,7 +910,6 @@ procedure ucode(s, p)
     "null" : return put(s, u_pnull())
 
     "Alt" : return ucode_Alt(s, p)
-    "ExclAlt" : return ucode_ExclAlt(s, p)
     "Call" : return ucode_Call(s, p)
     "Not" : return ucode_Not(s, p)
     "RepAlt" : return ucode_RepAlt(s, p)

@@ -140,37 +140,6 @@ procedure ir_CoexpList(p, st, inuse, target, bounded)
     stop("FATAL ERROR: don't know how to do coexplist")
 end
 
-# record ExclAlt( e1 e2 )
-procedure ir_ExclAlt(p, st, inuse, target, bounded)
-    local X, Y, tmp
-
-    init4ir(p)
-    /bounded & (X := ir_tmploc(p, inuse))
-    Y := ir_tmploc(p, inuse)
-
-    tmp := copy(st)
-    ir(p.e1, tmp, inuse, target, bounded)
-    ir(p.e2, st, inuse, target, bounded)
-    max_st(st, tmp)
-
-    CG.emit(p.ir.start, [
-        irMove(Y, p.e2.ir.start),
-        irGoto(p.e1.ir.start)
-        ])
-    /bounded & CG.emit(p.ir.resume, [ irGoto(X) ])
-    CG.emit(p.e1.ir.success, [
-        irMove(X, p.e1.ir.resume),
-        irMove(Y, p.ir.failure),
-        irGoto(p.ir.success)
-        ])
-    CG.emit(p.e1.ir.failure, [ irGoto(Y) ])
-    CG.emit(p.e2.ir.success, [
-        irMove(X, p.e2.ir.resume),
-        irGoto(p.ir.success)
-        ])
-    CG.emit(p.e2.ir.failure, [ irGoto(p.ir.failure) ])
-end
-
 # record Alt( eList )
 procedure ir_Alt(p, st, inuse, target, bounded)
     local t, tmpst, i, tiu, oiu
@@ -185,7 +154,6 @@ procedure ir_Alt(p, st, inuse, target, bounded)
         ir(p.eList[i], tmpst, tiu[i], target, bounded)
         max_st(st, tmpst)
     }
-    # inter_inuse(inuse, tiu)
     union_inuse(inuse, tiu)
 
     CG.emit(p.ir.start, [ irGoto(p.eList[1].ir.start) ])
@@ -250,15 +218,12 @@ procedure ir_Case(p, st, inuse, target, bounded)
     put(tiu, copy_inuse(inuse))
     ir(p.dflt, st, tiu[-1], target, bounded)
     max_st(st, tmp2)
-    # inter_inuse(inuse, tiu)
     union_inuse(inuse, tiu)
 
     CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
     /bounded & CG.emit(p.ir.resume, [ irGoto(t) ])
 
-    CG.emit(p.expr.ir.failure, [
-        irGoto(p.ir.failure)
-        ])
+    CG.emit(p.expr.ir.failure, [ irGoto(p.ir.failure) ])
 
     L := p.clauseList
     if *L = 0 then {
@@ -279,9 +244,7 @@ procedure ir_Case(p, st, inuse, target, bounded)
                 irFree(ciu[i]),
                 irGoto(L[i].body.ir.start)
                 ])
-            CG.emit(L[i].expr.ir.failure, [
-                irGoto(L[i+1].expr.ir.start)
-                ])
+            CG.emit(L[i].expr.ir.failure, [ irGoto(L[i+1].expr.ir.start) ])
             CG.emit(L[i].body.ir.success, [
                 irMove(t, L[i].body.ir.resume),
                 irGoto(p.ir.success)
@@ -321,9 +284,7 @@ procedure ir_Every(p, st, inuse, target, bounded)
         irFree(tiu),
         irGoto(p.expr.ir.resume)
         ])
-    CG.emit(p.body.ir.failure, [
-        irGoto(p.expr.ir.resume)
-        ])
+    CG.emit(p.body.ir.failure, [ irGoto(p.expr.ir.resume) ])
 end
 
 # record Sectionop( op val left right )
@@ -456,9 +417,7 @@ procedure ir_Binop(p, st, inuse, target, bounded)
             ])
     } else {
         if member(funcs, p.op) then {
-            /bounded & CG.emit(p.ir.resume, [
-                irGoto(p.right.ir.resume)
-                ])
+            /bounded & CG.emit(p.ir.resume, [ irGoto(p.right.ir.resume) ])
             CG.emit(p.right.ir.success, [
                 irCoord(p.coord),
                 ir_opfn(target, irOperator(p.op, 2), [ lv, rv ],
@@ -489,7 +448,6 @@ procedure ir_Unop(p, st, inuse, target, bounded)
     }
 
     if p.op == "@" then {
-        # DEFAULT
         t := Binop("@", Key("null"), p.operand, p.coord)
         ir(t, st, inuse, target, bounded)
         p.ir := t.ir
@@ -506,9 +464,7 @@ procedure ir_Unop(p, st, inuse, target, bounded)
 
     CG.emit(p.ir.start, [ irGoto(p.operand.ir.start) ])
     if member(funcs, p.op) then {
-        /bounded & CG.emit(p.ir.resume, [
-            irGoto(p.operand.ir.resume)
-            ])
+        /bounded & CG.emit(p.ir.resume, [ irGoto(p.operand.ir.resume) ])
         CG.emit(p.operand.ir.success, [
             irCoord(p.coord),
             ir_opfn(target, irOperator(p.op, 1), [ v ], p.operand.ir.resume),
@@ -555,7 +511,6 @@ procedure ir_If(p, st, inuse, target, bounded)
     ir(p.thenexpr, tmp, xiu, target, bounded)
     ir(p.elseexpr, st, yiu, target, bounded)
     max_st(st, tmp)
-    # inter_inuse(inuse, [xiu,yiu])
     union_inuse(inuse, [xiu,yiu])
 
     CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
@@ -594,9 +549,7 @@ procedure ir_Initial(p, st, inuse, target, bounded)
         irFree(tiu),
         irGoto(p.ir.success)
         ])
-    CG.emit(p.expr.ir.failure, [
-        irGoto(p.ir.success)
-        ])
+    CG.emit(p.expr.ir.failure, [ irGoto(p.ir.success) ])
 end
 
 # record Invocable( ivocopList )
@@ -771,17 +724,13 @@ procedure ir_ProcBody(p, st, inuse, target, bounded)
             irFree(tiu[i]),
             irGoto(L[i+1].ir.start)
             ])
-        CG.emit(L[i].ir.failure, [
-            irGoto(L[i+1].ir.start)
-            ])
+        CG.emit(L[i].ir.failure, [ irGoto(L[i+1].ir.start) ])
     }
     CG.emit(L[-1].ir.success, [
         irFree(tiu[-1]),
         irGoto(p.ir.success)
         ])
-    CG.emit(L[-1].ir.failure, [
-        irGoto(p.ir.failure)
-        ])
+    CG.emit(L[-1].ir.failure, [ irGoto(p.ir.failure) ])
 end
 
 # record ProcCode( init body )
@@ -836,9 +785,7 @@ procedure ir_Repeat(p, st, inuse, target, bounded)
         irFree(tiu),
         irGoto(p.ir.start)
         ])
-    CG.emit(p.expr.ir.failure, [
-        irGoto(p.ir.start)
-        ])
+    CG.emit(p.expr.ir.failure, [ irGoto(p.ir.start) ])
 end
 
 # record Return( expr )
@@ -865,9 +812,7 @@ procedure ir_Return(p, st, inuse, target, bounded)
     CG.emit(p.expr.ir.failure,
         ([ irMove(irKey("subject"), scans[1].ir.x.oldsubject),
         irMove(irKey("pos"), scans[1].ir.x.oldpos) ] | []) |||
-        [
-        irFail()
-        ])
+        [ irFail() ])
 end
 
 # record Fail( )
@@ -878,15 +823,11 @@ procedure ir_Fail(p, st, inuse, target, bounded)
     CG.emit(p.ir.start,
         ([ irMove(irKey("subject"), scans[1].ir.x.oldsubject),
         irMove(irKey("pos"), scans[1].ir.x.oldpos) ] | []) |||
-        [
-        irFail()
-        ])
+        [ irFail() ])
     /bounded & CG.emit(p.ir.resume,
         ([ irMove(irKey("subject"), scans[1].ir.x.oldsubject),
         irMove(irKey("pos"), scans[1].ir.x.oldpos) ] | []) |||
-        [
-        irFail()
-        ])
+        [ irFail() ])
 end
 
 # record Suspend( expr body )
@@ -912,24 +853,18 @@ procedure ir_Suspend(p, st, inuse, target, bounded)
     CG.emit(p.expr.ir.success,
         ([ irScanSwap( scans[1].ir.x.oldsubject, scans[1].ir.x.oldpos ) ] |
 	   []) |||
-        [
-        irSucceed(susp, t)
-        ])
+        [ irSucceed(susp, t) ])
     CG.emit(t,
         [ irRestore() ] |||
         ([ irScanSwap( scans[1].ir.x.oldsubject, scans[1].ir.x.oldpos ) ] |
 	   []) |||
-        [
-        irGoto(p.body.ir.start)
-        ])
+        [ irGoto(p.body.ir.start) ])
     CG.emit(p.expr.ir.failure, [ irGoto(p.ir.failure) ])
     CG.emit(p.body.ir.success, [
         irFree(tiu),
         irGoto(p.expr.ir.resume)
         ])
-    CG.emit(p.body.ir.failure, [
-        irGoto(p.expr.ir.resume)
-        ])
+    CG.emit(p.body.ir.failure, [ irGoto(p.expr.ir.resume) ])
 end
 
 # record Until( expr body )
@@ -953,16 +888,12 @@ procedure ir_Until(p, st, inuse, target, bounded)
         irFree(eiu),
         irGoto(p.ir.failure)
         ])
-    CG.emit(p.expr.ir.failure, [
-        irGoto(p.body.ir.start)
-        ])
+    CG.emit(p.expr.ir.failure, [ irGoto(p.body.ir.start) ])
     CG.emit(p.body.ir.success, [
         irFree(biu),
         irGoto(p.expr.ir.start)
         ])
-    CG.emit(p.body.ir.failure, [
-        irGoto(p.expr.ir.start)
-        ])
+    CG.emit(p.body.ir.failure, [ irGoto(p.expr.ir.start) ])
 end
 
 # record While( expr body )
@@ -986,15 +917,12 @@ procedure ir_While(p, st, inuse, target, bounded)
         irFree(eiu),
         irGoto(p.body.ir.start)
         ])
-    CG.emit(p.expr.ir.failure, [
-        irGoto(p.ir.failure)
-        ])
+    CG.emit(p.expr.ir.failure, [ irGoto(p.ir.failure) ])
     CG.emit(p.body.ir.success, [
         irFree(biu),
         irGoto(p.expr.ir.start)
         ])
-    CG.emit(p.body.ir.failure, [
-        irGoto(p.expr.ir.start) ])
+    CG.emit(p.body.ir.failure, [ irGoto(p.expr.ir.start) ])
 end
 
 # record Create( expr )
@@ -1044,9 +972,7 @@ procedure ir_Next(p, st, inuse, target, bounded)
     CG.emit(p.ir.start,
         ([ irMove(irKey("subject"), scans[sl+1].ir.x.oldsubject),
         irMove(irKey("pos"), scans[sl+1].ir.x.oldpos) ] | []) |||
-        [
-        irGoto(curloop.ir.x.nextlabel)
-        ])
+        [ irGoto(curloop.ir.x.nextlabel) ])
     /bounded & CG.emit(p.ir.resume, [ irRunTimeError() ])
 end
 
@@ -1172,9 +1098,7 @@ procedure ir_Compound(p, st, inuse, target, bounded)
             irFree(tiu[i]),
             irGoto(L[i+1].ir.start)
             ])
-        CG.emit(L[i].ir.failure, [
-            irGoto(L[i+1].ir.start)
-            ])
+        CG.emit(L[i].ir.failure, [ irGoto(L[i+1].ir.start) ])
     }
     CG.emit(L[-1].ir.success, [ irGoto(p.ir.success) ])
     CG.emit(L[-1].ir.failure, [ irGoto(p.ir.failure) ])
@@ -1292,7 +1216,6 @@ procedure ir(p, st, inuse, target, bounded)
     "Not" : q := ir_Not(p, st, inuse, target, bounded)
     "CoexpList" : q := ir_CoexpList(p, st, inuse, target, bounded)
     "Alt" : q := ir_Alt(p, st, inuse, target, bounded)
-    "ExclAlt" : q := ir_ExclAlt(p, st, inuse, target, bounded)
     "RepAlt" : q := ir_RepAlt(p, st, inuse, target, bounded)
     "Case" : q := ir_Case(p, st, inuse, target, bounded)
     "Every" : q := ir_Every(p, st, inuse, target, bounded)
@@ -1337,9 +1260,7 @@ procedure ir_opfn(lhs, op, args, failLabel)
     static neverfail
     initial {
         neverfail := list(3)
-        neverfail[1] := set([
-            "#", "+", "-", "~", "^", "*", "."
-        ])
+        neverfail[1] := set([ "#", "+", "-", "~", "^", "*", "." ])
         neverfail[2] := set([
             "+", "-", "*", "/", "%", "^", 
             "++", "--", "**", 
