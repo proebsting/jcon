@@ -4,6 +4,7 @@ procedure main()
     write("#  AUTOMATICALLY GENERATED FILE -- DO NOT EDIT!")
     operators()
     methodrefs()
+    methods()
     fieldrefs()
 end
 
@@ -155,6 +156,23 @@ procedure methodrefs()
 	args ||:= "Lrts/vDescriptor;"
     }
     write("\tdefault : runerr(500, N)")
+    write("\t}")
+    write("end")
+end
+
+procedure methods()
+    local i
+
+    write("procedure bc_CallN_method(c, N)")
+    write("\treturn case N of {")
+    args := ""
+    every i := 0 to 9 do {
+	write("\t", i, ": j_create_method(c, 0, \"Call\", \"(", args,
+	      ")Lrts/vDescriptor;\")")
+	args ||:= "Lrts/vDescriptor;"
+    }
+    write("\tdefault : j_create_method(c, 0, \"Call\", ",
+	  "\"([Lrts/vDescriptor;)Lrts/vDescriptor;\")")
     write("\t}")
     write("end")
 end

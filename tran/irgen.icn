@@ -1502,7 +1502,8 @@ procedure ir_make_sentinel(L)
 end
 
 procedure semantic_error(msg, coord)
-    stop("File ", coord.file, "; Line ", coord.line, " # ", msg)
+    write(&errout, "File ", (\coord).file, "; Line ", coord.line)
+    stop(" # ", msg)
 end
 
 procedure ir_max_st(st, t)
