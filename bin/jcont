@@ -33,6 +33,24 @@ JAVAC="javac -nowarn"
 JAVA="java"
 JAR="jar"
 
+case `uname` in
+    Windows* | OS/2 | DOS)
+	set -K		# use "Korn shell" mode in MKS, not POSIX
+	FILESEP=\\
+	PATHSEP=\;
+	NULLFILE=NUL
+	TMPVAR='$TMP'
+	ICONX=iconx
+	;;
+    *)
+	FILESEP=/
+	PATHSEP=:
+	NULLFILE=/dev/null
+	TMPVAR='${TMPDIR:-/tmp}'
+	ICONX=
+	;;
+esac
+
 export BLKSIZE=6000000
 export STRSIZE=500000
 
@@ -68,7 +86,7 @@ NOEXECUTE=exit
 
 USAGE="usage: $0 [-cdsvP] [-o exe] file[.icn]... [file.zip...] [-x [arguments]]"
 
-while getopts "cdsvJPo:" c 2>/dev/null; do
+while getopts "cdsvJPo:" c 2>$NULLFILE; do
     case $c in
 	c)	NOLINK="exit";;
 	d)	TDIR=./jtmp; NODELETE=":";;
@@ -124,13 +142,14 @@ done
 PRG=`whence $0`
 IDIR=`dirname $PRG`
 case $IDIR in 
-    /*)	;;
-    *)	IDIR=`pwd`;;
+    /*)		;;			# Unix-style absolute path
+    ?:*)	;;			# DOS-style absolute path
+    *)		IDIR=`pwd`;;		# relative path
 esac
 
 #  set paths for translator and for runtime files
-JTRAN="$IDIR/jtran $JCOPT -target=$TARGET"
-JRTS="$IDIR/rts.zip"
+JTRAN="$ICONX $IDIR${FILESEP}jtran $JCOPT -target=$TARGET"
+JRTS="$IDIR${FILESEP}rts.zip"
 
 
 # estimate the needed header size
@@ -201,7 +220,7 @@ done
 
 # combine a header (padded via dd) with that zip file to make a script
 # (if making significant changes here, also adjust HBASE above)
-(dd bs=$HDRSIZE conv=sync 2>/dev/null; cat $TDIR/combined.zip) \
+(dd bs=$HDRSIZE conv=sync 2>$NULLFILE; cat $TDIR/combined.zip) \
     <<=====EOF===== >$XFILE
 #!/bin/ksh
 
@@ -209,15 +228,16 @@ done
 
 WHENCE=\`whence \$0\`
 case \$WHENCE in
-    /*)	THISFILE=\$WHENCE;;
-    *)	THISFILE=\`pwd\`/\$WHENCE;;
+    /*)		THISFILE=\$WHENCE;;
+    ?:*)	THISFILE=\$WHENCE;;
+    *)		THISFILE=\`pwd\`/\$WHENCE;;
 esac
 
-TZIP=/tmp/jcon\$\$.zip
+TZIP="$TMPVAR${FILESEP}jcon\$\$.zip"
 trap "rm -rf \$TZIP" 0 1 2 15
-dd bs=$HDRSIZE skip=1 <\$THISFILE >\$TZIP 2>/dev/null
+dd bs=$HDRSIZE skip=1 <\$THISFILE >\$TZIP 2>$NULLFILE
 
-export CLASSPATH="\$TZIP:$JRTS:\$CLASSPATH"
+export CLASSPATH="\$TZIP${PATHSEP}$JRTS${PATHSEP}\$CLASSPATH"
 $JAVA rts.Main $ROOTS -- "\$0" "\$@"
 exit
 
@@ -227,7 +247,7 @@ exit
 =====EOF=====
 
 # verify that the header was big enough
-dd bs=$HDRSIZE count=1 <$XFILE 2>/dev/null | grep '%%%%' >/dev/null ||
+dd bs=$HDRSIZE count=1 <$XFILE 2>$NULLFILE | grep '%%%%' >$NULLFILE ||
     (echo 1>&2 "internal error in $0: header too small" && exit 1)
 
 # the process was successful
