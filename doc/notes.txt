@@ -55,6 +55,9 @@ arguably correct differences:
 -- traceback is deliberately limited to the innermost 100 nested calls
 -- "R . field" errors (e.g. 107, 207) give actual field name attempted
 
+extensions:
+-- proc(i) produces a procedure that returns its ith argument
+
 compatible, although the book is unclear or wrong:
 -- procedures, functions, and record constructors all sort together, by name
 -- records sort first by type and then by serial number
