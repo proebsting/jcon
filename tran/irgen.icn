@@ -392,6 +392,17 @@ procedure ir_Binop(p, st, target, bounded)
 	}
 
 	init4ir(p)
+	if p.op == "&" then {
+		ir(p.left, st, &null, &null)
+		ir(p.right, st, target, bounded)
+		CG.emit(p.ir.start, [ irGoto(p.left.ir.start) ])
+		/bounded & CG.emit(p.ir.resume, [ irGoto(p.right.ir.resume) ])
+		CG.emit(p.left.ir.success, [ irGoto(p.right.ir.start) ])
+		CG.emit(p.left.ir.failure, [ irGoto(p.ir.failure) ])
+		CG.emit(p.right.ir.success, [ irGoto(p.ir.success) ])
+		CG.emit(p.right.ir.failure, [ irGoto(p.left.ir.resume) ])
+		return
+	}
 	closure := ir_tmp_closure(st)
 	lv := ir_value(p.left, st, &null)
 	rv := ir_value(p.right, st, target)
