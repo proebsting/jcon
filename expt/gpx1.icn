@@ -6,7 +6,7 @@
 procedure main()
    local colors, a, i, w, h, e, x, y, r, w2, w3, w4, d, star
 
-   &window := open("window", "g", "size=500,300")
+   &window := open("window", "g", "width=500", "height=300")
    DrawRectangle(10, 10, 480, 280)	# framing rectangle
 
    # nested squares in upper left corner
@@ -82,13 +82,12 @@ procedure main()
 
    # cloning test (lower left color squares)
    Fg("magenta")
-   Bg("violet")
+   Bg("cyan")
    w2 := Clone()
-   w3 := Clone()
+   w3 := Clone("fg=blue", "bg=violet")
    w4 := Clone()
    Fg(&window, "red")
    Fg(w2, "green")
-   Fg(w3, "blue")
    FillRectangle(&window, 15, 270, 15, 15)
    FillRectangle(w2, 30, 270, 15, 15)
    FillRectangle(w3, 45, 270, 15, 15)
@@ -98,7 +97,8 @@ procedure main()
    EraseArea(15, 250, 15, 15)
    Bg(w2, "brown")
    EraseArea(w2, 30, 250, 15, 15)
-   EraseArea(w3, 45, 250, 15, 15)
+   EraseArea(w4, 45, 250, 15, 15)
+   EraseArea(w3, 60, 250, 15, 15)
 
    # echo events until quit signalled
    while e := Event(&window) do {
