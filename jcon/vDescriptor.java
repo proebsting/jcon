@@ -5,7 +5,7 @@
 //
 //  Descriptors come in three flavors (q.v.):
 //	vValue		simple dereferenced value such as 3, "x", list L
-//	vIndirect	active or assignable object such as &subject, s[i:j]
+//	vVariable	assignable object such as &subject, s[i:j]
 //	vClosure	suspended generator, including latest suspended value
 
 package rts;

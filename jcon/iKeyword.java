@@ -138,7 +138,11 @@ static kMirrored x = (kMirrored)
 static kMirrored y = (kMirrored)
     iEnv.declareKey("y", new k$y());
 
-static void announce() {}	// nothing to do
+static void announce() {
+    // we shouldn't have do to anything here, but under SGI JDK 1.1.6,
+    // it seems that we have to do something to run the init code above
+    y.toString();
+}
 
 } // class iKeyword
 
