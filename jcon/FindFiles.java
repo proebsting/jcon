@@ -130,7 +130,8 @@ static String[] crackpath(String s)
 {
     Vector v = new Vector();
 
-    s = s.replace(IconPathSeparator, File.pathSeparatorChar);
+    s = s.replace(IconPathSeparator, File.pathSeparatorChar)
+	+ File.pathSeparatorChar;
 
     v.addElement(System.getProperty("user.dir"));	// always first
 

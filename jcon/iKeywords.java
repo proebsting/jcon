@@ -392,28 +392,28 @@ private static final double RanScale = 4.65661286e-10;
 
 class k$window extends vSimpleVar {		// &window
 
-	private static vWindow window;		// current value
+	private static vValue value = iNew.Null();	// current value
 
-	k$window() { super("&random"); }	// constructor
+	k$window() { super("&window"); }	// constructor
 
 	public vVariable Assign(vValue w) {	// assign
-		if (w != null && !(w instanceof vWindow)) {
+		if (! (w instanceof vWindow) && ! (w instanceof vNull)) {
 			iRuntime.error(140, w);
 		}
-		window = (vWindow) w;
-		vWindow.setCurrent(window);
+		value = w;
+		vWindow.setCurrent((vWindow) value);
 		return this;
 	}
 
 	public vValue deref() {			// dereference
-		return window;
+		return value;
 	}
 
 	public static vWindow getWindow() {	// get &window, must be !null
-		if (window == null) {
+		if (! (value instanceof vWindow)) {
 			iRuntime.error(140);
 		} 
-		return window;
+		return (vWindow) value;
 	}
 }
 
