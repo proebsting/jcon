@@ -90,7 +90,7 @@ vString mkString() {
 vString write()		{ return mkString(); }
 
 vString image()	{
-    int ndigits = (int) (value.bitCount() * 0.3010299956639812 + 0.5);
+    int ndigits = (int) (value.bitLength() * 0.3010299956639812);
 					//     1 / log2(10)
     if (ndigits < iConfig.MaxIntDigits) {
 	return mkString();

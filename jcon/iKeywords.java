@@ -211,6 +211,7 @@ final class k$features extends vProc0 {				// &features
 	vString.New("ASCII"),
 	vString.New("co-expressions"),
 	vString.New("environment variables"),
+	vString.New("large integers"),
 	vString.New("pipes"),
 	vString.New("system function"),
     };
