@@ -6,6 +6,10 @@ public class vInteger extends vNumeric {
 
 
 
+//#%#% need to add overflow checking throughout
+
+
+
 private static vInteger intlist[] =		// cache for "common" integers
     new vInteger[iConfig.MaxCachedInt + 1 - iConfig.MinCachedInt];
 
@@ -60,7 +64,7 @@ vString write()		{ return mkString(); }
 vString image()		{ return mkString(); }
 
 static vString typestring = vString.New("integer");
-vString type()		{ return typestring; }
+public vString Type()	{ return typestring; }
 
 int rank()		{ return 10; }	// integers sort right after &null
 
@@ -79,27 +83,6 @@ vValue getproc()	{ return new vIntegerProc(this); }
 
 
 
-//  c.argument0.NumBoth(c) -- tandem coercion to numeric
-//
-//  converts c.argument0 & c.argument1 to both Integer or both Real
-//  assumes that c.argument0 == this
-
-void NumBoth(iBinaryValueClosure c) {
-    vDescriptor a1 = c.argument1;
-
-    if (a1 instanceof vInteger) {
-	return;
-    }
-    if (!(a1 instanceof vReal)) {
-	if ((c.argument1 = a1.mkNumeric()) instanceof vInteger) {
-	    return;
-	}
-    }
-    c.argument0 = this.mkReal();
-}
-
-
-
 //  static methods for argument processing and defaulting
 
 static long argVal(vDescriptor[] args, int index) {		// required arg
@@ -112,7 +95,7 @@ static long argVal(vDescriptor[] args, int index) {		// required arg
 }
 
 static long argVal(vDescriptor[] args, int index, int dflt) {	// optional arg
-    if (index >= args.length || args[index].isNull()) {
+    if (index >= args.length || args[index].isnull()) {
 	return dflt;
     } else {
 	return args[index].mkInteger().value;
@@ -175,20 +158,27 @@ static vInteger radixParse(String s) {
     if (negate) {
 	v = -v;
     }
-    return vInteger.New(v);
+    return New(v);
 }
 
 
 
-//  operations
-//
-//  #%#% overflow is not detected by integer operations
+//  unary operations
 
-vNumeric Negate()	{ return vInteger.New(-value); }
+public vNumeric Numerate() {
+    return this;
+}
 
-vDescriptor Select() {
+public vNumeric Negate() {
+    if (value == Long.MIN_VALUE) {
+	iRuntime.error(203);
+    }
+    return New(-value);
+}
+
+public vDescriptor Select() {
     if (value > 0) {
-	return vInteger.New(1 + k$random.choose(value));
+	return New(1 + k$random.choose(value));
     } else if (value == 0) {
 	return vReal.New(k$random.nextVal());
     } else {
@@ -197,102 +187,243 @@ vDescriptor Select() {
     }
 }
 
-vValue Add(vDescriptor v) {
-    return vInteger.New(this.value + ((vInteger)v).value);
-}
-
-vValue Sub(vDescriptor v) {
-    return vInteger.New(this.value - ((vInteger)v).value);
-}
-
-vValue Mul(vDescriptor v) {
-    return vInteger.New(this.value * ((vInteger)v).value);
-}
-
-vValue Div(vDescriptor v) {
-    try {
-	return vInteger.New(this.value / ((vInteger)v).value);
-    } catch (ArithmeticException e) {
-	iRuntime.error(201);
-    }
-    return null;
-}
-
-vValue Mod(vDescriptor v) {
-    try {
-	return vInteger.New(this.value % ((vInteger)v).value);
-    } catch (ArithmeticException e) {
-	iRuntime.error(202);
-    }
-    return null;
-}
-
-vValue Abs() {
+public vNumeric Abs() {
     if (this.value >= 0 ) {
 	return this;
+    } else if (this.value == Long.MIN_VALUE) {
+	iRuntime.error(203);
+	return null;
     } else {
-	return vInteger.New(-this.value);
+	return New(-this.value);
     }
 }
 
-vValue Power(vDescriptor v) {
-    if (! (v instanceof vInteger)) {
-	return this.mkReal().Power(v);
+public vInteger Limit() {
+    if (value > 0) {
+	return this;
+    } else {
+	return null; /*FAIL*/
     }
-    long x = this.value;
-    long y = ((vInteger)v).value;
+}
+
+
+
+// binary arithmetic operators
+
+public vNumeric Add(vDescriptor v)	{ return v.AddInto(this); }
+public vNumeric Sub(vDescriptor v)	{ return v.SubFrom(this); }
+public vNumeric Mul(vDescriptor v)	{ return v.MulInto(this); }
+public vNumeric Div(vDescriptor v)	{ return v.DivInto(this); }
+public vNumeric Mod(vDescriptor v)	{ return v.ModInto(this); }
+public vNumeric Power(vDescriptor v)	{ return v.PowerOf(this); }
+
+
+vNumeric AddInto(vReal a)	{ return vReal.New(a.value + this.value); }
+
+vNumeric AddInto(vInteger i) {
+    long a = i.value;
+    long b = this.value;
+    long t = a + b;
+    if ((~(a ^ b) & (t ^ a)) < 0) {
+	iRuntime.error(203);
+    }
+    return New(t);
+}
+
+
+vNumeric SubFrom(vReal a)	{ return vReal.New(a.value - this.value); }
+
+vNumeric SubFrom(vInteger i) {
+    long a = i.value;
+    long b = this.value;
+    long d = a - b;
+    if (((a ^ b) & (d ^ a)) < 0) {
+	iRuntime.error(203);
+    }
+    return New(d);
+}
+
+
+vNumeric MulInto(vReal a)	{ return vReal.New(a.value * this.value); }
+
+vNumeric MulInto(vInteger i) {
+    long a = i.value;
+    long b = this.value;
+    long p = a * b;
+    if ((a == (short) a) && (b == (short) b)) {
+	return New(p);			// overflow not possible
+    }
+    // the following is adapted from v9 and is taken on faith
+    if (b == 0) {
+	return New(p);
+    }
+    if ((a ^ b) >= 0) {
+	if ((a >= 0) ? (a > Long.MAX_VALUE / b) : (a < Long.MAX_VALUE / b)) {
+	    iRuntime.error(203);
+	}
+    } else if (b != -1) {
+	if ((a >= 0) ? (a > Long.MIN_VALUE / b) : (a < Long.MIN_VALUE / b)) {
+	    iRuntime.error(203);
+	}
+    }
+    return New(p);
+}
+
+
+vNumeric DivInto(vReal a)	{ return this.mkReal().DivInto(a); }
+
+vNumeric DivInto(vInteger i) {
+    long a = i.value;
+    long b = this.value;
+
+    if (b == 0) {
+	iRuntime.error(201);
+    } else if (b == -1 && a == Long.MIN_VALUE) {
+	iRuntime.error(203);
+    }
+    return New(a / b);
+}
+
+
+vNumeric ModInto(vReal a)	{ return this.mkReal().ModInto(a); }
+
+vNumeric ModInto(vInteger i) {
+    long a = i.value;
+    long b = this.value;
+
+    if (b == 0) {
+	iRuntime.error(202);
+    } else if (b == -1 && a == Long.MIN_VALUE) {
+	iRuntime.error(203);
+    }
+    return New(a % b);
+}
+
+
+vNumeric PowerOf(vReal r) {			// r ^ i
+    double x = r.value;
+    long y = this.value;
+
+    if (y <= 0) {
+	if (x == 0.0) {
+	    iRuntime.error(204);
+	}
+	x = 1.0 / x;
+	y = -y;
+    }
+    // #%#% need to add overflow check
+    // #%#% could do this more efficiently, too
+    double p = 1.0;
+    for (long j = 0; j < y; j++) {
+	p *= x;
+    }
+    return vReal.New(p);
+}
+
+vNumeric PowerOf(vInteger i) {			// i ^ i
+    long x = i.value;
+    long y = this.value;
     if (x == 0 && y <= 0) {
 	iRuntime.error(204);
     }
     if (y < 0) {
 	if (x == 1) {
-	    return vInteger.New(1);
+	    return New(1);
 	} else if (x == -1) {
 	    y = -y;
 	} else {
-	    return vInteger.New(0);
+	    return New(0);
 	}
     }
+    // #%#% need to add overflow check
+    // #%#% could do this more efficiently, too
     long p = 1L;
-    for (long i = 0; i < y; i++) {
+    for (long j = 0; j < y; j++) {
 	p *= x;
     }
-    return vInteger.New(p);
+    return New(p);
 }
-
 
 
 
 //  numeric comparisons
 
-vValue NLess(vDescriptor v) {
-    vInteger vi = (vInteger) v;
-    return (this.value < vi.value) ? vi : null;
-}
+public vNumeric NLess(vDescriptor v)		{ return v.RevLess(this); }
+public vNumeric NLessEq(vDescriptor v)		{ return v.RevLessEq(this); }
+public vNumeric NEqual(vDescriptor v)		{ return v.RevEqual(this); }
+public vNumeric NUnequal(vDescriptor v)		{ return v.RevUnequal(this); }
+public vNumeric NGreater(vDescriptor v)		{ return v.RevGreater(this); }
+public vNumeric NGreaterEq(vDescriptor v)	{ return v.RevGreaterEq(this); }
 
-vValue NLessEq(vDescriptor v) {
-    vInteger vi = (vInteger) v;
-    return (this.value <= vi.value) ? vi : null;
-}
+vNumeric RevLess(vInteger a)	{ return (a.value <  this.value) ? this : null;}
+vNumeric RevLessEq(vInteger a)	{ return (a.value <= this.value) ? this : null;}
+vNumeric RevEqual(vInteger a)	{ return (a.value == this.value) ? this : null;}
+vNumeric RevUnequal(vInteger a)	{ return (a.value != this.value) ? this : null;}
+vNumeric RevGreater(vInteger a)	{ return (a.value >  this.value) ? this : null;}
+vNumeric RevGreaterEq(vInteger a){return (a.value >= this.value) ? this : null;}
 
-vValue NEqual(vDescriptor v) {
-    vInteger vi = (vInteger) v;
-    return (this.value == vi.value) ? vi : null;
-}
+vNumeric RevLess(vReal a)
+    { return (a.value <  this.value) ? vReal.New(this.value) : null;}
+vNumeric RevLessEq(vReal a)
+    { return (a.value <= this.value) ? vReal.New(this.value) : null;}
+vNumeric RevEqual(vReal a)
+    { return (a.value == this.value) ? vReal.New(this.value) : null;}
+vNumeric RevUnequal(vReal a)
+    { return (a.value != this.value) ? vReal.New(this.value) : null;}
+vNumeric RevGreater(vReal a)
+    { return (a.value >  this.value) ? vReal.New(this.value) : null;}
+vNumeric RevGreaterEq(vReal a)
+    { return (a.value >= this.value) ? vReal.New(this.value) : null;}
 
-vValue NUnequal(vDescriptor v) {
-    vInteger vi = (vInteger) v;
-    return (this.value != vi.value) ? vi : null;
-}
 
-vValue NGreaterEq(vDescriptor v) {
-    vInteger vi = (vInteger) v;
-    return (this.value >= vi.value) ? vi : null;
-}
 
-vValue NGreater(vDescriptor v) {
-    vInteger vi = (vInteger) v;
-    return (this.value > vi.value) ? vi : null;
+//  i to j by k   (i.ToBy(j,k))
+
+public vDescriptor ToBy(vDescriptor v2, vDescriptor v3) {
+    final long i = this.value;
+    final long j = v2.mkInteger().value;
+    final long k = (v3 == null) ? 1 : v3.mkInteger().value;
+
+    if (k > 0) {			// positive increment
+	if (i > j) {
+	    return null; /*FAIL*/	// no iterations
+	} else if (i == j) {
+	    return this;		// just once
+	} else return new vClosure() {
+	    long n = i;
+	    { retval = vInteger.this; }
+
+	    public vDescriptor resume() {
+		if ((n += k) <= j) {
+		    retval = New(n);
+		    return this;
+		}
+		return null; /*FAIL*/
+	    };
+	};
+
+    } else if (k < 0) {			// negative increment
+	if (i < j) {
+	    return null; /*FAIL*/	// no iterations
+	} else if (i == j) {
+	    return this;		// just once
+	} else return new vClosure() {
+	    long n = i;
+	    { retval = vInteger.this; }
+
+	    public vDescriptor resume() {
+		if ((n -= k) >= j) {
+		    retval = New(n);
+		    return this;
+		}
+		return null; /*FAIL*/
+	    };
+	};
+
+    } else {				// increment is zero
+        iRuntime.error(211, v3);
+        return null;
+    }
 }
 
 
@@ -317,13 +448,13 @@ class vIntegerProc extends vValue {
     vString image()	{ return value.mkString().surround("function ", ""); }
 
     static vString typestring = vString.New("procedure");
-    vString type()	{ return typestring; }
+    public vString Type()	{ return typestring; }
 
-    int rank()		{ return 80; }		// integer "procedure"
+    int rank()			{ return 80; }		// integer "procedure"
     int compareTo(vValue v)
 			{ return vProc.compareLastWord(this.image(),v.image());}
 
-    vInteger Args()	{ return vInteger.New(-1); }
+    public vInteger Args()	{ return vInteger.New(-1); }
 }
 
 

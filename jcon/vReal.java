@@ -52,7 +52,7 @@ vString mkString() {	// #%#% may differ from v9 formatting
 
 
 static vString typestring = vString.New("real");
-vString type()		{ return typestring; }
+public vString Type()	{ return typestring; }
 
 int rank()		{ return 20; }		// reals sort after integers
 
@@ -69,16 +69,6 @@ int compareTo(vValue v) {
 
 
 
-//  c.argument0.NumBoth(c) -- tandem coercion to numeric
-//
-//  given that arg0 (== this) is Real, always convert arg1 to Real
-
-void NumBoth(iBinaryValueClosure c) {
-    c.argument1 = c.argument1.mkReal();
-}
-
-
-
 //  static methods for argument processing and defaulting
 
 static double argVal(vDescriptor[] args, int index) {		// required arg
@@ -91,7 +81,7 @@ static double argVal(vDescriptor[] args, int index) {		// required arg
 }
 
 static double argVal(vDescriptor[] args, int index, double dflt) { // opt arg
-    if (index >= args.length || args[index].isNull()) {
+    if (index >= args.length || args[index].isnull()) {
 	return dflt;
     } else {
 	return args[index].mkReal().value;
@@ -102,48 +92,87 @@ static double argVal(vDescriptor[] args, int index, double dflt) { // opt arg
 
 // operations
 
-vNumeric Negate()	{ return vReal.New(-value); }
+public vNumeric Negate()	{ return vReal.New(-value); }
 
-vDescriptor Select()	{ return this.mkInteger().Select(); }
+public vDescriptor Select()	{ return this.mkInteger().Select(); }
 
-vValue Power(vDescriptor v) {
-    if (this.value < 0.0 && (v instanceof vReal)) {
+
+
+public vNumeric Add(vDescriptor v)	{ return v.AddInto(this); }
+public vNumeric Sub(vDescriptor v)	{ return v.SubFrom(this); }
+public vNumeric Mul(vDescriptor v)	{ return v.MulInto(this); }
+public vNumeric Div(vDescriptor v)	{ return v.DivInto(this); }
+public vNumeric Mod(vDescriptor v)	{ return v.ModInto(this); }
+public vNumeric Power(vDescriptor v)	{ return v.PowerOf(this); }
+
+
+
+vNumeric AddInto(vReal a)	{ return New(a.value + this.value); }
+vNumeric AddInto(vInteger a)	{ return New(a.value + this.value); }
+
+vNumeric SubFrom(vReal a)	{ return New(a.value - this.value); }
+vNumeric SubFrom(vInteger a)	{ return New(a.value - this.value); }
+
+vNumeric MulInto(vReal a)	{ return New(a.value * this.value); }
+vNumeric MulInto(vInteger a)	{ return New(a.value * this.value); }
+
+
+
+vNumeric DivInto(vReal a) {
+    if (this.value == 0.0) {
+	iRuntime.error(204);
+    }
+    return New(a.value / this.value);
+}
+
+vNumeric DivInto(vInteger a) {
+    if (this.value == 0.0) {
+	iRuntime.error(204);
+    }
+    return New(a.value / this.value);
+}
+
+
+
+vNumeric ModInto(vReal a) {
+    if (this.value == 0.0) {
+	iRuntime.error(204);
+    }
+    return New(a.value % this.value);
+}
+
+vNumeric ModInto(vInteger a) {
+    if (this.value == 0.0) {
+	iRuntime.error(204);
+    }
+    return New(a.value % this.value);
+}
+
+
+
+vNumeric PowerOf(vReal a) {
+    double x = a.value;
+    double y = this.value;
+    if (x < 0.0) {
 	iRuntime.error(206);	// no offending value (v9 compatible)
-    }
-    vReal y = v.mkReal();
-    if (this.value == 0.0 && y.value <= 0.0) {
+    } else if (x == 0.0 && y <= 0.0) {
 	iRuntime.error(204);
     }
-    return vReal.New(Math.pow(this.value, y.value));
+    return New(Math.pow(x, y));
 }
 
-vValue Add(vDescriptor v) {
-    return vReal.New(this.value + ((vReal)v).value);
-}
-
-vValue Sub(vDescriptor v) {
-    return vReal.New(this.value - ((vReal)v).value);
-}
-
-vValue Mul(vDescriptor v) {
-    return vReal.New(this.value * ((vReal)v).value);
-}
-
-vValue Div(vDescriptor v) {
-    if (((vReal)v).value == 0) {
+vNumeric PowerOf(vInteger a) {
+    double x = a.value;
+    double y = this.value;
+    if (x == 0.0 && y <= 0.0) {
 	iRuntime.error(204);
     }
-    return vReal.New(this.value / ((vReal)v).value);
+    return New(Math.pow(x, y));
 }
 
-vValue Mod(vDescriptor v) {
-    if (((vReal)v).value == 0) {
-	iRuntime.error(204);
-    }
-    return vReal.New(this.value % ((vReal)v).value);
-}
 
-vValue Abs() {
+
+public vNumeric Abs() {
     if (this.value >= 0 ) {
 	return this;
     } else {
@@ -155,35 +184,26 @@ vValue Abs() {
 
 //  numeric comparisons
 
-vValue NLess(vDescriptor v) {
-    vReal vr = (vReal) v;
-    return (this.value < vr.value) ? vr : null;
-}
+public vNumeric NLess(vDescriptor v)		{ return v.RevLess(this); }
+public vNumeric NLessEq(vDescriptor v)		{ return v.RevLessEq(this); }
+public vNumeric NEqual(vDescriptor v)		{ return v.RevEqual(this); }
+public vNumeric NUnequal(vDescriptor v)		{ return v.RevUnequal(this); }
+public vNumeric NGreater(vDescriptor v)		{ return v.RevGreater(this); }
+public vNumeric NGreaterEq(vDescriptor v)	{ return v.RevGreaterEq(this); }
 
-vValue NLessEq(vDescriptor v) {
-    vReal vr = (vReal) v;
-    return (this.value <= vr.value) ? vr : null;
-}
+vNumeric RevLess(vInteger a)	{ return (a.value <  this.value) ? this : null;}
+vNumeric RevLessEq(vInteger a)	{ return (a.value <= this.value) ? this : null;}
+vNumeric RevEqual(vInteger a)	{ return (a.value == this.value) ? this : null;}
+vNumeric RevUnequal(vInteger a)	{ return (a.value != this.value) ? this : null;}
+vNumeric RevGreater(vInteger a)	{ return (a.value >  this.value) ? this : null;}
+vNumeric RevGreaterEq(vInteger a){return (a.value >= this.value) ? this : null;}
 
-vValue NEqual(vDescriptor v) {
-    vReal vr = (vReal) v;
-    return (this.value == vr.value) ? vr : null;
-}
-
-vValue NUnequal(vDescriptor v) {
-    vReal vr = (vReal) v;
-    return (this.value != vr.value) ? vr : null;
-}
-
-vValue NGreaterEq(vDescriptor v) {
-    vReal vr = (vReal) v;
-    return (this.value >= vr.value) ? vr : null;
-}
-
-vValue NGreater(vDescriptor v) {
-    vReal vr = (vReal) v;
-    return (this.value > vr.value) ? vr : null;
-}
+vNumeric RevLess(vReal a)	{ return (a.value <  this.value) ? this : null;}
+vNumeric RevLessEq(vReal a)	{ return (a.value <= this.value) ? this : null;}
+vNumeric RevEqual(vReal a)	{ return (a.value == this.value) ? this : null;}
+vNumeric RevUnequal(vReal a)	{ return (a.value != this.value) ? this : null;}
+vNumeric RevGreater(vReal a)	{ return (a.value >  this.value) ? this : null;}
+vNumeric RevGreaterEq(vReal a)	{ return (a.value >= this.value) ? this : null;}
 
 
 

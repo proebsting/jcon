@@ -195,7 +195,7 @@ private vString image(int maxlen) {
 
 
 static vString typestring = vString.New("cset");
-vString type()		{ return typestring;}
+public vString Type()	{ return typestring;}
 
 
 
@@ -283,8 +283,9 @@ vReal mkReal() {
 
 
 
-vDescriptor Index(vValue i)		{ return this.mkString().Index(i); }
-vDescriptor Section(int i, int j)	{ return this.mkString().Section(i,j); }
+public vDescriptor Index(vValue i)	{ return this.mkString().Index(i); }
+public vDescriptor Section(vDescriptor i, vDescriptor j)
+					{ return this.mkString().Section(i,j); }
 
 
 
@@ -331,7 +332,7 @@ vString mkString() {			// string(c)
     return b.mkString();
 }
 
-vInteger Size() {			// *c
+public vInteger Size() {		// *c
 
     if (size < 0) {			// if size not already known
 	size = 0;
@@ -346,7 +347,7 @@ vInteger Size() {			// *c
 
 
 
-vDescriptor Select() {			// ?c
+public vDescriptor Select() {		// ?c
     if (size < 0) {
 	this.Size();			// must know size
     }
@@ -365,23 +366,25 @@ vDescriptor Select() {			// ?c
 
 
 
-vDescriptor Bang(iClosure c) {		// !c
-    if (c.PC == 1) {
-	c.ival = 0;
-	c.PC = 2;
-    }
-    for (int k = c.ival; k <= MAX_VALUE; k++) {
-	if (this.member(k)) {
-	    c.ival = k + 1;
-	    return vString.New((char) k);
+public vDescriptor Bang() {		// !c
+    return new vClosure() {
+	int i = 0;
+	public vDescriptor resume() {
+	    while (i <= MAX_VALUE) {
+		if (member(i)) {
+		    retval = vString.New((char) i);
+		    return this;
+		}
+		i++;
+	    }
+	    return null; /*FAIL*/
 	}
-    }
-    return null;
+    }.resume();
 }
 
 
 
-vValue Complement() {			// ~c
+public vValue Complement() {		// ~c
     vCset result = new vCset();
     result.w1 = ~w1;
     result.w2 = ~w2;
@@ -397,7 +400,7 @@ vValue Complement() {			// ~c
 
 
 
-vValue Union(vDescriptor x) {		// c1 ++ c2
+public vValue Union(vDescriptor x) {	// c1 ++ c2
     vCset r = null;
     try {
 	r = x.mkCset();
@@ -413,7 +416,7 @@ vValue Union(vDescriptor x) {		// c1 ++ c2
     return result;
 }
 
-vValue Intersect(vDescriptor x) {	// c1 && c2
+public vValue Intersect(vDescriptor x) {// c1 && c2
     vCset r = null;
     try {
 	r = x.mkCset();
@@ -429,7 +432,7 @@ vValue Intersect(vDescriptor x) {	// c1 && c2
     return result;
 }
 
-vValue Diff(vDescriptor x) {		// c1 || c2
+public vValue Diff(vDescriptor x) {	// c1 || c2
     vCset r = null;
     try {
 	r = x.mkCset();
@@ -459,7 +462,7 @@ static vCset argVal(vDescriptor[] args, int index) {		// required arg
 }
 
 static vCset argVal(vDescriptor[] args, int index, vCset dflt){	// optional arg
-    if (index >= args.length || args[index].isNull()) {
+    if (index >= args.length || args[index].isnull()) {
 	return dflt;
     } else {
 	return args[index].mkCset();

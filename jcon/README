@@ -14,3 +14,8 @@ Java names are assigned as follows:
     v$.....	user variables
     v.....	implementation value and variable classes
     w.....	window (graphics) code
+
+In general (there are exceptions), method names with initial caps
+(Add, Bang, Push) correspond to Icon operators or operator-like
+built-in functions, and are declared public to allow access from
+the generated code.

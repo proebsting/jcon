@@ -1,4 +1,4 @@
-//  vWindow.java -- graphics window type
+//  vWindow.java -- graphics window Type
 //
 //  note that vWindow extends vFile to support read(), write(), etc.
 
@@ -44,7 +44,7 @@ private static int gcount = 0;	// count of graphics contexts allocated
 
 
 static vString typestring = vString.New("window");
-vString type()			{ return typestring; }
+public vString Type()		{ return typestring; }
 vString image()			{ return vString.New("window_" + wnum + ":" +
 				    gnum + "(" + c.f.getTitle() + ")"); }
 

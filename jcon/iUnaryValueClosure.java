@@ -9,7 +9,7 @@ public abstract class iUnaryValueClosure extends iUnaryClosure {
 
 public vDescriptor nextval() {
     if (PC == 1) {
-	argument = argument.deref();
+	argument = argument.Deref();
 	vDescriptor v = function(argument);
 	PC = 0;
 	return v;

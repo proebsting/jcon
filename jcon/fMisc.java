@@ -225,7 +225,7 @@ class f$runerr extends iValueClosure {				// runerr(i,x)
     vDescriptor function(vDescriptor[] args) {
 	long i = vInteger.argVal(args, 0);
 	vDescriptor x = iRuntime.argVal(args, 1);
-	if (x.isNull()) {
+	if (x.isnull()) {
 	    iRuntime.error((int) i);
 	} else {
 	    iRuntime.error((int) i, x);

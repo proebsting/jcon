@@ -24,7 +24,7 @@ void report(iClosure c) {		// print message and abort
 	k$error.error--;
 	k$errornumber.number = vInteger.New(this.num);
 	k$errortext.text = vString.New(iRunerr.text(num));
-	k$errorvalue.value = (this.desc == null) ? null : this.desc.deref();
+	k$errorvalue.value = (this.desc == null) ? null : this.desc.Deref();
 	return;
     }
 

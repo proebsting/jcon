@@ -35,7 +35,7 @@ private vList(vDescriptor[] elements) {		// new Vlist(elements[])
     super(nextsn++);
     v = new Vector(elements.length);
     for (int i = 0; i < elements.length; i++) {
-	v.addElement(new vListVar(this, elements[i].deref()));
+	v.addElement(new vListVar(this, elements[i].Deref()));
     }
 }
 
@@ -51,7 +51,7 @@ private vList(Vector v) {			// new Vlist(Vector v)
 
 
 static vString typestring = vString.New("list");
-vString type()		{ return typestring; }
+public vString Type()	{ return typestring; }
 
 int rank()		{ return 90; }		// lists sort after procedures
 
@@ -64,7 +64,7 @@ vString report() {				// image for display() & tracebk
 
     b.append("list_").append(this.snum).append(" = [");
     for (int i = 0; i < n; i++) {
-	vValue e = ((vListVar) v.elementAt(i)).deref();
+	vValue e = ((vListVar) v.elementAt(i)).Deref();
 	if (e instanceof vList && ((vList)e).v.size() > 0) {
 	    s = e.image();	// don't expand non-empty list recursively
 	} else {
@@ -111,56 +111,56 @@ java.util.Enumeration elements() {
 
 //  operations
 
-vInteger Size()	{					//  *L
+public vInteger Size()	{				//  *L
     return vInteger.New(v.size());
 }
 
-vValue Copy() {						// copy(L)
+public vValue Copy() {					// copy(L)
     return vList.New(this.v);
 }
 
 
 
-vValue Push(vDescriptor x) {				// push(L, x)
-    v.insertElementAt(new vListVar(this, x.deref()), 0);
+public vList Push(vDescriptor x) {			// push(L, x)
+    v.insertElementAt(new vListVar(this, x.Deref()), 0);
     return this;
 }
 
-vValue Pull() {						// pull(L)
+public vValue Pull() {					// pull(L)
     if (v.size() == 0) {
 	return null; /*FAIL*/
     }
     vDescriptor x = (vDescriptor) v.lastElement();
     v.removeElementAt(v.size()-1);
-    return x.deref();
+    return x.Deref();
 }
 
-vValue Pop() {						// pop(L)
+public vValue Pop() {					// pop(L)
     if (v.size() == 0) {
 	return null; /*FAIL*/
     }
     vDescriptor x = (vDescriptor) v.firstElement();
     v.removeElementAt(0);
-    return x.deref();
+    return x.Deref();
 }
 
-vValue Get() {						// get(L)
+public vValue Get() {					// get(L)
     if (v.size() == 0) {
 	return null; /*FAIL*/
     }
     vDescriptor x = (vDescriptor) v.firstElement();
     v.removeElementAt(0);
-    return x.deref();
+    return x.Deref();
 }
 
-vValue Put(vDescriptor x) {				// put(L, x)
-    v.addElement(new vListVar(this, x.deref()));
+public vList Put(vDescriptor x) {			// put(L, x)
+    v.addElement(new vListVar(this, x.Deref()));
     return this;
 }
 
 
 
-vDescriptor Index(vValue i) {				//  L[i]
+public vDescriptor Index(vDescriptor i) {		//  L[i]
     int m = this.posEq(i.mkInteger().value);
     if (m == 0 || m > v.size()) {
 	return null; /*FAIL*/
@@ -170,9 +170,9 @@ vDescriptor Index(vValue i) {				//  L[i]
 
 
 
-vDescriptor Section(int i, int j) {			//  L[i:j]
-    int m = this.posEq(i);
-    int n = this.posEq(j);
+public vDescriptor Section(vDescriptor i, vDescriptor j) {	//  L[i:j]
+    int m = this.posEq(i.mkInteger().value);
+    int n = this.posEq(j.mkInteger().value);
     if (m == 0 || n == 0) {
 	return null; /*FAIL*/
     }
@@ -190,7 +190,7 @@ vDescriptor Section(int i, int j) {			//  L[i:j]
 
 
 
-vDescriptor Select() {					//  ?L
+public vDescriptor Select() {				//  ?L
     if (v.size() == 0) {
 	return null; /*FAIL*/
     }
@@ -200,22 +200,26 @@ vDescriptor Select() {					//  ?L
 
 
 
-vDescriptor Bang(iClosure c) {				//  !L
-    if (c.PC == 1) {
-	c.ival = 0;
-	c.PC = 2;
-    } else {
-	c.ival++;
+public vDescriptor Bang() {				//  !L
+    if (v.size() == 0) {
+	return null; /*FAIL*/  // empty list
     }
-    if (c.ival >= v.size()) {
-	return null; /*FAIL*/
-    } else {
-	return (vDescriptor) v.elementAt(c.ival);	// generate as variable
-    }
+    return new vClosure() {
+	int i = 0;
+	{ retval = (vDescriptor) v.elementAt(0); }
+
+	public vDescriptor resume() {
+	    if (++i >= v.size()) {
+		return null; /*FAIL*/
+	    }
+	    retval = (vDescriptor) v.elementAt(i);
+	    return this;
+	}
+    };
 }
 
-vValue ListConcat(vDescriptor v) {			// L1 ||| L2
-    v = v.deref();
+public vList ListConcat(vDescriptor v) {		// L1 ||| L2
+    v = v.Deref();
     if (!(v instanceof vList)) {
 	iRuntime.error(108, v);
     }
@@ -226,14 +230,14 @@ vValue ListConcat(vDescriptor v) {			// L1 ||| L2
     return result;
 }
 
-vValue Sort(int i) {					// sort(L)
+public vList Sort(int i) {				// sort(L)
     return vList.New(iSort.sort(this.mkArray()));
 }
 
 vValue[] mkArray() {
     vValue a[] = new vValue[v.size()];
     for (int i = 0; i < a.length; i++) {
-	a[i] = ((vDescriptor)v.elementAt(i)).deref();
+	a[i] = ((vDescriptor)v.elementAt(i)).Deref();
     }
     return a;
 }
@@ -282,7 +286,7 @@ class vListVar extends vSimpleVar {
 	this.parent = parent;
     }
 
-    vString Name() {
+    public vString Name() {
 	java.util.Enumeration e = parent.elements();
 	int i = 1;
 	while (e.hasMoreElements()) {

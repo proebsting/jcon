@@ -11,7 +11,7 @@ private vNull()			{ }
 
 
 
-boolean isNull()		{ return true; }
+boolean isnull()		{ return true; }
 
 static vString emptystring = vString.New();
 vString write()			{ return emptystring; }
@@ -22,7 +22,7 @@ vString image()			{ return imagestring; }
 public int hashCode()		{ return 0; }
 
 static vString typestring = vString.New("null");
-vString type()			{ return typestring; }
+public vString Type()		{ return typestring; }
 
 int rank()			{ return 0; }		// nulls sort first
 int compareTo(vValue v)		{ return 0; }		// all nulls are equal

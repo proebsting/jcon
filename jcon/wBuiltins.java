@@ -94,7 +94,7 @@ class f$WAttrib extends iClosure {		// WAttrib(W,attribs,...)
     public vDescriptor nextval() {
 	if (PC == 1) {
 	    for (int i = 0; i < arguments.length; i++) {
-		arguments[i] = arguments[i].deref();
+		arguments[i] = arguments[i].Deref();
 	    }
 	    win = vWindow.winArg(arguments);
 	    int b = vWindow.argBase(arguments);

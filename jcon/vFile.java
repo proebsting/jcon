@@ -2,7 +2,7 @@
 
 //  vFile is an abstract class that is subclassed by
 //  vTFile for text files or vBFile for binary files.
-//  vFile.New() examines flags to know which type to construct.
+//  vFile.New() examines flags to know which Type to construct.
 //
 //  many common operations are implemented here, including read().
 //  reads(), writes(), and newline() are class-specific.
@@ -45,11 +45,11 @@ abstract void newline();		// write newline
 
 
 static vString typestring = vString.New("file");
-vString type()			{ return typestring; }
+public vString Type()		{ return typestring; }
 vString image()			{ return this.img; }
 int rank()			{ return 60; }	// files sort after windows
 int compareTo(vValue v)		{ return this.img.compareTo(((vFile) v).img); }
-vDescriptor Bang(iClosure c)	{ return this.read(); }
+public vDescriptor Bang()	{ return this.read(); }
 
 
 
@@ -207,7 +207,7 @@ static vFile argVal(vDescriptor[] args, int index) {	// required arg
 }
 
 static vFile argVal(vDescriptor[] args, int index, vFile dflt){	// optional arg
-    if (index >= args.length || args[index].isNull()) {
+    if (index >= args.length || args[index].isnull()) {
 	return dflt;
     } else if (args[index] instanceof vFile) {
 	return (vFile) args[index];

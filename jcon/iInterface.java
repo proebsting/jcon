@@ -78,13 +78,13 @@ public static void start(String[] filenames, String[] args, String name) {
 
     k$progname.name = name;
     vDescriptor m = iEnv.resolve("main");
-    if (m == null || !(m.deref() instanceof vProc)) {
+    if (m == null || !(m.Deref() instanceof vProc)) {
 	System.err.println();
 	System.err.println("Run-time error 117 in startup code");
 	System.err.println("missing main procedure");
 	iRuntime.exit(1, null);
     }
-    vProc p = (vProc) m.deref();
+    vProc p = (vProc) m.Deref();
     vDescriptor[] v;
     if (p.args == 0) {
 	v = new vDescriptor[0];
@@ -110,7 +110,7 @@ public static iClosure Instantiate(
     long len = args.length > 0 ? (long) args.length : 1;   // handles proc(x,0)
     vValue fn = f.Proc(len);
     if (fn == null) {
-	return new iErrorClosure(f.deref(), args, parent);
+	return new iErrorClosure(f.Deref(), args, parent);
     }
     return fn.instantiate(args, parent);
 }

@@ -276,9 +276,7 @@ private void flatten1() {
 
 
 
-//  general vDescriptor primitives
-
-vString mkString()	{ return this; }	// no-op coversion to vString
+//  overridden java.lang.Object() methods
 
 public int hashCode() {	 // hashcode, consistent whether flattened or not
     vString s = this;
@@ -299,10 +297,16 @@ public boolean equals(Object o)	{
     return this.tlength == s.tlength && this.matches(s, 0);
 }
 
+
+
+//  general vDescriptor primitives
+
+public vString mkString()	{ return this; } // no-op coversion to vString
+
 vString write()		{ return this; }
 
 static vString typestring = vString.New("string");
-vString type()		{ return typestring; }
+public vString Type()	{ return typestring; }
 int rank()		{ return 30; }		// strings rank after reals
 
 vString image()		{ return image(tlength); }
@@ -421,7 +425,7 @@ static vString argDescr(vDescriptor[] args, int index) {	// required arg
 }
 
 static vString argDescr(vDescriptor[] args, int index, vString dflt){ // opt arg
-    if (index >= args.length || args[index].isNull()) {
+    if (index >= args.length || args[index].isnull()) {
 	return dflt;
     } else {
 	return args[index].mkString();
@@ -481,19 +485,19 @@ int posEq(long n) {
 
 
 
-vInteger Size()	{
+public vInteger Size()	{
     return vInteger.New(tlength);
 }
 
 
 
-vValue Concat(vDescriptor v) {
+public vString Concat(vDescriptor v) {
     return this.concat(v.mkString());
 }
 
 
 
-vDescriptor Index(vValue i) {
+public vDescriptor Index(vDescriptor i) {
     int m = this.posEq(i.mkInteger().value);
     if (m == 0 || m > tlength) {
 	return null; /*FAIL*/
@@ -501,7 +505,7 @@ vDescriptor Index(vValue i) {
     return vString.New(this, m, m + 1);
 }
 
-vDescriptor IndexVar(vVariable v, vValue i) {
+public vDescriptor IndexVar(vVariable v, vDescriptor i) {
     int m = this.posEq(i.mkInteger().value);
     if (m == 0 || m > tlength) {
 	return null; /*FAIL*/
@@ -509,9 +513,9 @@ vDescriptor IndexVar(vVariable v, vValue i) {
     return vSubstring.New(v, m, m + 1);
 }
 
-vDescriptor Section(int i, int j) {
-    int m = this.posEq(i);
-    int n = this.posEq(j);
+public vDescriptor Section(vDescriptor i, vDescriptor j) {
+    int m = this.posEq(i.mkInteger().value);
+    int n = this.posEq(j.mkInteger().value);
     if (m == 0 || n == 0) {
 	return null; /*FAIL*/
     }
@@ -522,9 +526,9 @@ vDescriptor Section(int i, int j) {
     }
 }
 
-vDescriptor SectionVar(vVariable v, int i, int j) {
-    int m = this.posEq(i);
-    int n = this.posEq(j);
+public vDescriptor SectionVar(vVariable v, vDescriptor i, vDescriptor j) {
+    int m = this.posEq(i.mkInteger().value);
+    int n = this.posEq(j.mkInteger().value);
     if (m == 0 || n == 0) {
 	return null; /*FAIL*/
     }
@@ -537,7 +541,7 @@ vDescriptor SectionVar(vVariable v, int i, int j) {
 
 
 
-vDescriptor Select() {
+public vDescriptor Select() {
     if (tlength == 0) {
 	return null; /*FAIL*/
     }
@@ -545,7 +549,7 @@ vDescriptor Select() {
     return vString.New(charAt(i));
 }
 
-vDescriptor SelectVar(vVariable v) {
+public vDescriptor SelectVar(vVariable v) {
     if (tlength == 0) {
 	return null; /*FAIL*/
     }
@@ -553,60 +557,82 @@ vDescriptor SelectVar(vVariable v) {
     return vSubstring.New(v, i+1, i+2);
 }
 
-vDescriptor Bang(iClosure c) {
-    if (c.PC == 1) {
-	c.ival = 0;
-	c.PC = 2;
-    } else {
-	c.ival++;
-    }
-    if (c.ival >= tlength) {
+
+
+public vDescriptor Bang() {
+    if (tlength == 0) {
 	return null; /*FAIL*/
-    } else {
-	return vString.New(charAt(c.ival));
     }
+
+    return new vClosure() {
+	int i = 0;
+	{ retval = New(charAt(0)); }
+
+	public vDescriptor resume() {
+	    if (++i >= tlength) {
+		return null; /*FAIL*/
+	    }
+	    retval = New(charAt(i));
+	    return this;
+	}
+    };
 }
 
-vDescriptor BangVar(iClosure c, vVariable v) {
-    if (c.PC == 1) {
-	c.ival = 1;
-	c.PC = 2;
-    } else {
-	c.ival++;
-    }
-    if (c.ival > ((vString)v.deref()).tlength) {
+
+
+public vDescriptor BangVar(final vVariable v) {
+    if (((vString)v.Deref()).tlength == 0) {
 	return null; /*FAIL*/
-    } else {
-	return vSubstring.New(v, c.ival, c.ival + 1);
     }
+
+    return new vClosure() {
+	int i = 0;
+	{ retval = vSubstring.New(v, 0, 1); }
+
+	public vDescriptor resume() {
+	    if (++i >= ((vString)v.Deref()).tlength) {
+		return null; /*FAIL*/
+	    }
+	    retval = vSubstring.New(v, i, i + 1);
+	    return this;
+	}
+    };
 }
 
-vValue LLess(vDescriptor v) {
-    return this.compareTo((vString)v) < 0 ? (vValue)v : null;
-}
-vValue LLessEq(vDescriptor v) {
-    return this.compareTo((vString)v) <= 0 ? (vValue)v : null;
-}
-vValue LEqual(vDescriptor v) {
-    return this.compareTo((vString)v) == 0 ? (vValue)v : null;
-}
-vValue LUnequal(vDescriptor v) {
-    return this.compareTo((vString)v) != 0 ? (vValue)v : null;
-}
-vValue LGreaterEq(vDescriptor v) {
-    return this.compareTo((vString)v) >= 0 ? (vValue)v : null;
-}
-vValue LGreater(vDescriptor v) {
-    return this.compareTo((vString)v) > 0 ? (vValue)v : null;
-}
-
-vValue Complement()		{ return this.mkCset().Complement(); }
-vValue Intersect(vDescriptor x)	{ return this.mkCset().Intersect(x); }
-vValue Union(vDescriptor x)	{ return this.mkCset().Union(x); }
-vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }
 
 
-vValue Proc(long i) {
+public vString LLess(vDescriptor v) {
+    vString s = (vString) v;
+    return this.compareTo(s) < 0 ? s : null;
+}
+public vString LLessEq(vDescriptor v) {
+    vString s = (vString) v;
+    return this.compareTo(s) <= 0 ? s : null;
+}
+public vString LEqual(vDescriptor v) {
+    vString s = (vString) v;
+    return this.compareTo(s) == 0 ? s : null;
+}
+public vString LUnequal(vDescriptor v) {
+    vString s = (vString) v;
+    return this.compareTo(s) != 0 ? s : null;
+}
+public vString LGreaterEq(vDescriptor v) {
+    vString s = (vString) v;
+    return this.compareTo(s) >= 0 ? s : null;
+}
+public vString LGreater(vDescriptor v) {
+    vString s = (vString) v;
+    return this.compareTo(s) > 0 ? s : null;
+}
+
+public vValue Complement()		{ return this.mkCset().Complement(); }
+public vValue Intersect(vDescriptor x)	{ return this.mkCset().Intersect(x); }
+public vValue Union(vDescriptor x)	{ return this.mkCset().Union(x); }
+public vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }
+
+
+public vValue Proc(long i) {
     String s = this.toString();
     if (i == 0) {
 	vValue b = (vValue) iEnv.builtintab.get(s);
@@ -617,11 +643,11 @@ vValue Proc(long i) {
     }
     vDescriptor v = (vDescriptor) iEnv.symtab.get(s);
     if (v != null) {
-	return v.deref().getproc();
+	return v.Deref().getproc();
     }
     v = (vDescriptor) iEnv.builtintab.get(s);
     if (v != null) {
-	return v.deref();
+	return v.Deref();
     }
     try {
 	return this.mkInteger().getproc();

@@ -9,10 +9,10 @@ class fScanning {} // dummy
 class f$pos extends iValueClosure {			// pos(i)
     vDescriptor function(vDescriptor[] args) {
 	long i = vInteger.argVal(args, 0);
-	vString s = (vString) k$subject.self.deref();
-	vInteger p = (vInteger) k$pos.self.deref();
+	vString s = (vString) k$subject.self.Deref();
+	vInteger p = (vInteger) k$pos.self.Deref();
 	if (s.posEq(i) == p.value) {
-	    return k$pos.self.deref();
+	    return k$pos.self.Deref();
 	}
 	return null;
     }
@@ -125,7 +125,7 @@ class f$find extends iClosure {				// find(s1,s2,i1,i2)
 
 	if (PC == 1) {
 	    for (int i = 0; i < arguments.length; i++) {
-		arguments[i] = arguments[i].deref();
+		arguments[i] = arguments[i].Deref();
 	    }
 	    s1 = vString.argDescr(arguments, 0);
 	    s2 = iRuntime.argSubject(arguments, 1);
@@ -168,7 +168,7 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
 
 	if (PC == 1) {
 	    for (int i = 0; i < arguments.length; i++) {
-		arguments[i] = arguments[i].deref();
+		arguments[i] = arguments[i].Deref();
 	    }
 	    c = vCset.argVal(arguments, 0);
 	    s = iRuntime.argSubject(arguments, 1);
@@ -216,7 +216,7 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 
 	if (PC == 1) {
 	    for (int i = 0; i < arguments.length; i++) {
-		arguments[i] = arguments[i].deref();
+		arguments[i] = arguments[i].Deref();
 	    }
 	    c1 = vCset.argVal(arguments, 0, c1def);
 	    c2 = vCset.argVal(arguments, 1, c2def);
@@ -264,11 +264,11 @@ class f$move extends iClosure {				// move(j)
     public vDescriptor nextval() {
 
 	if (PC == 1) {
-	    oldpos = (vInteger) k$pos.self.deref();
+	    oldpos = (vInteger) k$pos.self.Deref();
 	    int i = (int) oldpos.value;
 	    int j = (int) vInteger.argVal(arguments, 0);
 	    int k = i + j - 1;
-	    vString s = (vString) k$subject.self.deref();
+	    vString s = (vString) k$subject.self.Deref();
 	    PC = 2;
 	    if (k < 0 || k > s.length()) {
 		return null;
@@ -296,8 +296,8 @@ class f$tab extends iClosure {				// tab(j)
     public vDescriptor nextval() {
 
 	if (PC == 1) {
-	    oldpos = (vInteger) k$pos.self.deref();
-	    vString s = (vString) k$subject.self.deref();
+	    oldpos = (vInteger) k$pos.self.Deref();
+	    vString s = (vString) k$subject.self.Deref();
 	    int i = (int) oldpos.value;
 	    int j = (int) s.posEq(vInteger.argVal(arguments, 0));
 	    PC = 2;

@@ -18,21 +18,23 @@ public abstract class vVariable extends vIndirect {
 
 // must be implemented:
 
-public abstract vValue deref();			// dereference
-public abstract vVariable Assign(vValue x);	// assign
-
-abstract vString Name();			// name
+public abstract vValue Deref();			// dereference
+public abstract vVariable Assign(vDescriptor x);// assign
+public abstract vString Name();			// return name
 abstract vString report();			// report for traceback
 
 
 
 // operations that produce vVarExprs
+//#%#%#% probably need more e.g. SectPlus
 
-vDescriptor Select()		{ return this.deref().SelectVar(this); }
-vDescriptor Bang(iClosure c)	{ return this.deref().BangVar(c, this); }
+public vDescriptor Select()	{ return this.Deref().SelectVar(this); }
+public vDescriptor Bang()	{ return this.Deref().BangVar(this);}
 
-vDescriptor Index(vValue i)	{ return this.deref().IndexVar(this, i); }
-vDescriptor Section(int i,int j){ return this.deref().SectionVar(this, i, j); }
+public vDescriptor Index(vDescriptor i)
+				{ return this.Deref().IndexVar(this, i); }
+public vDescriptor Section(vDescriptor i, vDescriptor j)
+				{ return this.Deref().SectionVar(this, i, j); }
 
 
 

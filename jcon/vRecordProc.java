@@ -3,7 +3,7 @@ package rts;
 
 
 public class vRecordProc extends vValue {
-    vString name;		// name of record type
+    vString name;		// name of record Type
     vString img;		// image: record constructor <name>
     String[] fieldnames;	// names of fields
     String[] varnames;		// variable names
@@ -44,14 +44,14 @@ vValue getproc()	{ return this; }
 vString image()		{ return img; }
 
 static vString typestring = vString.New("procedure");
-vString type()		{ return typestring; }
+public vString Type()	{ return typestring; }
 
 int rank()		{ return 80; }	// record constructors sort with procs
 int compareTo(vValue v) {
     return vProc.compareLastWord(name, v.image());
 }
 
-vInteger Args()	{ return vInteger.New(fieldnames.length); }
+public vInteger Args()	{ return vInteger.New(fieldnames.length); }
 
 int find(String s) {
     for (int i = 0; i < fieldnames.length; i++) {

@@ -21,9 +21,9 @@ private vSubstring(vVariable v, int i1, int i2) {	// construct from String
 
 
 
-boolean isNull()			{ return false; }
+boolean isnull()			{ return false; }
 
-vString Name() {
+public vString Name() {
     String vname = var.Name().toString();
     return vString.New(vname +"[" + start + ":" + end + "]");
 }
@@ -36,7 +36,7 @@ vString Name() {
 //  and that the indices are still in range, and return String.
 
 vString strval() {
-    vDescriptor v = var.deref();
+    vDescriptor v = var.Deref();
     if (! (v instanceof vString)) {
 	iRuntime.error(205);
     }
@@ -68,15 +68,15 @@ int posEq(long n) {
 
 //  internal methods
 
-public vValue deref() {
+public vValue Deref() {
     return vString.New(this.strval(), start, end);
 }
 
 vString report() {
     if (start + 1 == end) {
-	return vString.New(var.deref().report() + "[" + start + "]");
+	return vString.New(var.Deref().report() + "[" + start + "]");
     } else {
-	return vString.New(var.deref().report() + "[" + start +":"+ end + "]");
+	return vString.New(var.Deref().report() + "[" + start +":"+ end + "]");
     }
 }
 
@@ -84,13 +84,13 @@ vString report() {
 
 //  operators
 
-public vVariable Assign(vValue x) {
+public vVariable Assign(vDescriptor x) {
     vString s = x.mkString();		// coerce assigned value
     var.Assign(vString.New(this.strval(), start, end, s));
     return vSubstring.New(this, start, start + s.length());
 }
 
-vDescriptor Index(vValue i) {			// s[i]
+public vDescriptor Index(vValue i) {			// s[i]
     this.strval();	// validate
     int m = this.posEq(i.mkInteger().value);
     if (m == 0) {
@@ -99,10 +99,10 @@ vDescriptor Index(vValue i) {			// s[i]
     return vSubstring.New(var, m, m+1);
 }
 
-vDescriptor Section(int i, int j) {		// s[i:j]
+public vDescriptor Section(vDescriptor i, vDescriptor j) {	// s[i:j]
     this.strval();	// validate
-    int m = this.posEq(i);
-    int n = this.posEq(j);
+    int m = this.posEq(i.mkInteger().value);
+    int n = this.posEq(j.mkInteger().value);
     if (m == 0 || n == 0) {
 	return null; /*FAIL*/
     }
@@ -113,7 +113,7 @@ vDescriptor Section(int i, int j) {		// s[i:j]
     }
 }
 
-vDescriptor Select() {				// ?s
+public vDescriptor Select() {				// ?s
     if (start == end) {
 	return null; /*FAIL*/
     }
@@ -121,18 +121,19 @@ vDescriptor Select() {				// ?s
     return vSubstring.New(this, offset, offset + 1);
 }
 
-vDescriptor Bang(iClosure c) {			// !s
-    if (c.PC == 1) {
-	c.ival = start;
-	c.PC = 2;
-    } else {
-	c.ival++;
-    }
-    if (c.ival >= end) {
-	return null; /*FAIL*/
-    } else {
-	return vSubstring.New(this, c.ival, c.ival + 1);
-    }
+public vDescriptor Bang() {				// !s
+    return new vClosure() {
+	int i = start;
+	public vDescriptor resume() {
+	    if (i < end) {
+		retval = vSubstring.New(var, i, i+1);
+		i++;
+		return this;	// suspend
+	    } else {
+		return null; /*FAIL*/
+	    }
+	}
+    }.resume();
 }
 
 

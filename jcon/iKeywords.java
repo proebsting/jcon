@@ -148,33 +148,33 @@ class k$features extends iClosure {				// &features
 
 abstract class k$Value extends vIndirect {	// super of read-only keywords
 
-    public abstract vValue deref();		// must implement deref()
+    public abstract vValue Deref();		// must implement Deref()
 
-    public vVariable Assign(vValue x)
-	{ iRuntime.error(111, this.deref()); return null;}
+    public vVariable Assign(vDescriptor x)
+	{ iRuntime.error(111, this.Deref()); return null;}
 
-    vString Name()	{ iRuntime.error(111, this.deref()); return null; }
+    public vString Name()  { iRuntime.error(111, this.Deref()); return null; }
 }
 
 
 
 class k$current extends k$Value {				// &current
 
-    public vValue deref() {
+    public vValue Deref() {
 	return iEnv.cur_coexp;
     }
 }
 
 class k$main extends k$Value {					// &main
 
-    public vValue deref() {
+    public vValue Deref() {
 	return iEnv.main;
     }
 }
 
 class k$source extends k$Value {				// &source
 
-    public vValue deref() {
+    public vValue Deref() {
 	if (iEnv.cur_coexp.callers.empty()) {
 	    return iEnv.main;
 	}
@@ -186,7 +186,7 @@ class k$clock extends k$Value {					// &clock
 
     static SimpleDateFormat formatter;
 
-    public vValue deref() {
+    public vValue Deref() {
 	if (formatter == null) {
 	    formatter = new SimpleDateFormat("HH:mm:ss");
 	    formatter.setTimeZone(TimeZone.getDefault());
@@ -203,7 +203,7 @@ class k$date extends k$Value {					// &date
 
     static SimpleDateFormat formatter;
 
-    public vValue deref() {
+    public vValue Deref() {
 	if (formatter == null) {
 	    formatter = new SimpleDateFormat("yyyy/MM/dd");
 	    formatter.setTimeZone(TimeZone.getDefault());
@@ -224,7 +224,7 @@ class k$time extends k$Value {					// &time
 	tbase = System.currentTimeMillis();
     }
 
-    public vValue deref() {			// read value
+    public vValue Deref() {			// read value
 	return vInteger.New(System.currentTimeMillis() - tbase);
     }
 }
@@ -235,7 +235,7 @@ class k$dateline extends k$Value {				// &dateline
 
     static SimpleDateFormat formatter;
 
-    public vValue deref() {
+    public vValue Deref() {
 	if (formatter == null) {
 	    formatter =
 	    new SimpleDateFormat("EEEEEE, MMMM d, yyyy  h:mm aa");
@@ -255,7 +255,7 @@ class k$host extends k$Value {					// &host
 
     static vString hostname;
 
-    public vValue deref() {
+    public vValue Deref() {
 	if (hostname != null) {
 	    return hostname;
 	}
@@ -285,7 +285,7 @@ class k$host extends k$Value {					// &host
 class k$progname extends k$Value {				// &progname
     static String name;
 
-    public vValue deref() {
+    public vValue Deref() {
 	return vString.New(name);
     }
 }
@@ -300,7 +300,7 @@ class k$input extends k$Value {					// &input
 	    new DataInputStream(new BufferedInputStream(System.in)), null);
     }
 
-    public vValue deref()	{ return file; }
+    public vValue Deref()	{ return file; }
 }
 
 class k$output extends k$Value {				// &output
@@ -311,7 +311,7 @@ class k$output extends k$Value {				// &output
 	    new DataOutputStream(new BufferedOutputStream(System.out)));
     }
 
-    public vValue deref()	{ return file; }
+    public vValue Deref()	{ return file; }
 }
 
 class k$errout extends k$Value {				// &errout
@@ -321,7 +321,7 @@ class k$errout extends k$Value {				// &errout
 	file = vFile.New("&errout", null, new DataOutputStream(System.err));
     }
 
-    public vValue deref()	{ return file; }
+    public vValue Deref()	{ return file; }
 }
 
 
@@ -333,7 +333,7 @@ class k$subject extends vSimpleVar {				// &subject
 
     k$subject()		{ super("&subject"); self = this; }
 
-    public vVariable Assign(vValue s) {
+    public vVariable Assign(vDescriptor s) {
 	value = s.mkString();			// &subject := s
 	pos.SafeAssign(vInteger.New(1));	// &pos := 1
 	return this;
@@ -348,7 +348,7 @@ class k$pos extends vSimpleVar {				// &pos
 
     k$pos()		{ super("&pos"); self = this; }
 
-    public vVariable Assign(vValue i) {
+    public vVariable Assign(vDescriptor i) {
 	i = i.mkInteger();
 	int n = ((vString)subject.value).posEq(((vInteger)i).value);
 	if (n == 0)
@@ -378,13 +378,13 @@ class k$trace extends vSimpleVar {				// &trace
 
     k$trace() { super("&trace"); }
 
-    public vVariable Assign(vValue i) {
+    public vVariable Assign(vDescriptor i) {
 	value = i.mkInteger();
 	trace = ((vInteger)value).value;
 	return this;
     }
 
-    public vValue deref() {
+    public vValue Deref() {
 	return value = vInteger.New(trace);
     }
 }
@@ -405,13 +405,13 @@ private static final double RanScale = 4.65661286e-10;
 
     k$random() { super("&random"); }		// constructor
 
-    public vVariable Assign(vValue i) {		// assign
+    public vVariable Assign(vDescriptor i) {	// assign
 	value = i.mkInteger();
 	randval = ((vInteger)value).value;
 	return this;
     }
 
-    public vValue deref() {			// dereference
+    public vValue Deref() {			// dereference
 	return value = vInteger.New(randval);
     }
 
@@ -433,8 +433,9 @@ class k$window extends vSimpleVar {				// &window
 
     k$window() { super("&window"); }		// constructor
 
-    public vVariable Assign(vValue w) {		// assign
-	if ((w instanceof vWindow) || w.isNull()) {
+    public vVariable Assign(vDescriptor v) {	// assign
+	vValue w = v.Deref();
+	if ((w instanceof vWindow) || w.isnull()) {
 	    value = w;
 	    vWindow.setCurrent((vWindow) value);
 	    return this;
@@ -444,7 +445,7 @@ class k$window extends vSimpleVar {				// &window
 	}
     }
 
-    public vValue deref() {			// dereference
+    public vValue Deref() {			// dereference
 	return value;
     }
 
@@ -482,11 +483,11 @@ abstract class k$intWatcher extends vVariable { // super for "watched" int kwds
 	this.name = name;
     }
 
-    public vValue deref() {
-	return vInteger.New(value);		// deref just returns value
+    public vValue Deref() {
+	return vInteger.New(value);		// Deref just returns value
     }
 
-    public vVariable Assign(vValue v) {		// assignment
+    public vVariable Assign(vDescriptor v) {	// assignment
 	long i = v.mkInteger().value;		// must be integer
 	newValue(i);				// call subclass (may give err)
 	value = i;				// if no error, set value
@@ -497,7 +498,7 @@ abstract class k$intWatcher extends vVariable { // super for "watched" int kwds
 	value = i;
     }
 
-    vString Name()				{ return vString.New(name); }
+    public vString Name()			{ return vString.New(name); }
 
     vString report()	{ return vString.New("(" + name + " = " + value + ")");}
 }
@@ -556,13 +557,13 @@ class k$dump extends vSimpleVar {				// &dump
 
     k$dump() { super("&dump"); }
 
-    public vVariable Assign(vValue i) {
+    public vVariable Assign(vDescriptor i) {
 	value = i.mkInteger();
 	dump = ((vInteger)value).value;
 	return this;
     }
 
-    public vValue deref() {
+    public vValue Deref() {
 	return value = vInteger.New(dump);
     }
 }
@@ -573,7 +574,7 @@ class k$error extends vSimpleVar {				// &trace
 
     k$error() { super("&error"); }
 
-    public vVariable Assign(vValue i) {
+    public vVariable Assign(vDescriptor i) {
 	value = i.mkInteger();
 	error = ((vInteger)value).value;
 	if (error != 0 & !iEnv.error_conversion) {
@@ -584,7 +585,7 @@ class k$error extends vSimpleVar {				// &trace
 	return this;
     }
 
-    public vValue deref() {
+    public vValue Deref() {
 	return value = vInteger.New(error);
     }
 }

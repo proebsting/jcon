@@ -25,7 +25,7 @@ private vSet(java.util.Hashtable x) {
 private vSet(vValue x) {
     super(nextsn++);
     t = new java.util.Hashtable();
-    if (x != null && !x.isNull()) {
+    if (x != null && !x.isnull()) {
 	if (!(x instanceof vList)) {
 	    iRuntime.error(108, x);
 	}
@@ -33,7 +33,7 @@ private vSet(vValue x) {
 	java.util.Enumeration i = list.elements();
 	while (i.hasMoreElements()) {
 	    vDescriptor v = (vDescriptor) i.nextElement();
-	    v = v.deref();
+	    v = v.Deref();
 	    t.put(v, v);
 	}
     }
@@ -42,16 +42,16 @@ private vSet(vValue x) {
 
 
 static vString typestring = vString.New("set");
-vString type()		{ return typestring;}
-int rank()		{ return 100; }		// sets rank after lists
+public vString Type()		{ return typestring;}
+int rank()			{ return 100; }		// sets rank after lists
 
-vInteger Size()		{ return vInteger.New(t.size()); }
+public vInteger Size()		{ return vInteger.New(t.size()); }
 
-vValue Copy()		{ return new vSet(this.t); }
+public vValue Copy()		{ return new vSet(this.t); }
 
 
 
-vDescriptor Select() {
+public vDescriptor Select() {
     if (t.size() == 0) {
 	return null;
     }
@@ -63,29 +63,30 @@ vDescriptor Select() {
     return (vDescriptor)e.nextElement();
 }
 
-vDescriptor Bang(iClosure c) {
-    if (c.PC == 1) {
-	vValue a[] = new vValue[t.size()];
-	int i = 0;
-	java.util.Enumeration e = (java.util.Enumeration) t.keys();
-	while (e.hasMoreElements()) {
-	    a[i++] = (vValue) e.nextElement();
-	}
-	c.o = a;
-	c.ival = 0;
-	c.PC = 2;
+public vDescriptor Bang() {
+    final vValue a[] = new vValue[t.size()];
+    java.util.Enumeration e = (java.util.Enumeration) t.keys();
+    int i = 0;
+    while (e.hasMoreElements()) {
+	a[i++] = (vValue) e.nextElement();
     }
-    vValue a[] = (vValue[]) c.o;
-    while (c.ival < a.length) {
-	vValue v = a[c.ival++];
-	if (t.containsKey(v)) {	// if not stale
-	    return v;		// return value
+
+    return new vClosure() {
+	int j = 0;
+	public vDescriptor resume() {
+	    while (j < a.length) {
+		vValue v = a[j++];
+		if (t.containsKey(v)) {		// if not stale
+		    retval = v;
+		    return this;		// suspend
+		}
+	    }
+	    return null; /*FAIL*/
 	}
-    }
-    return null; /*FAIL*/
+    }.resume();
 }
 
-vValue Sort(int i) {					// sort(L)
+public vList Sort(int i) {				// sort(L)
     return vList.New(iSort.sort(this.mkArray()));
 }
 
@@ -98,21 +99,21 @@ vValue[] mkArray() {
     return a;
 }
 
-vValue Member(vDescriptor i) {
+public vValue Member(vDescriptor i) {
     return t.containsKey(i) ? (vValue) i : null;
 }
 
-vValue Delete(vDescriptor i) {
+public vValue Delete(vDescriptor i) {
     t.remove(i);
     return this;
 }
 
-vValue Insert(vDescriptor i, vDescriptor val) {
+public vValue Insert(vDescriptor i, vDescriptor val) {
     t.put(i, i);
     return this;
 }
 
-vValue Intersect(vDescriptor x) {
+public vValue Intersect(vDescriptor x) {
     if (!(x instanceof vSet)) {
 	iRuntime.error(120, x);
     }
@@ -130,7 +131,7 @@ vValue Intersect(vDescriptor x) {
     return result;
 }
 
-vValue Union(vDescriptor x) {
+public vValue Union(vDescriptor x) {
     if (!(x instanceof vSet)) {
 	iRuntime.error(120, x);
     }
@@ -145,7 +146,7 @@ vValue Union(vDescriptor x) {
     return result;
 }
 
-vValue Diff(vDescriptor x) {
+public vValue Diff(vDescriptor x) {
     if (!(x instanceof vSet)) {
 	iRuntime.error(120, x);
     }

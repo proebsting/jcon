@@ -83,8 +83,8 @@ public static vValue argVal(vDescriptor[] args, int index, int errcode) {
 // o/w returns vString value.
 
 public static vString argSubject(vDescriptor[] args, int index) {
-    if (index >= args.length || args[index].isNull()) {
-	return (vString) k$subject.self.deref();
+    if (index >= args.length || args[index].isnull()) {
+	return (vString) k$subject.self.Deref();
     }
     return args[index].mkString();
 }
@@ -96,12 +96,12 @@ public static vString argSubject(vDescriptor[] args, int index) {
 
 public static long argPos(vDescriptor[] args, int index) {
     if ((index - args.length > 0)	// both defaulted
-	|| ((index - args.length == 0) && args[index-1].isNull())
-	|| ((args[index-1].isNull()) && (args[index].isNull()))
+	|| ((index - args.length == 0) && args[index-1].isnull())
+	|| ((args[index-1].isnull()) && (args[index].isnull()))
     ) {
-	return ((vInteger)k$pos.self.deref()).value;
+	return ((vInteger)k$pos.self.Deref()).value;
     }
-    if ((index - args.length == 0) || args[index].isNull()) {
+    if ((index - args.length == 0) || args[index].isnull()) {
 	return 1;
     }
     return args[index].mkInteger().value;
@@ -133,7 +133,7 @@ public static void display(vFile f, iClosure parent, long ancestors) {
 	}
 	for (int i = 0; p.names[i] != null; i++) {
 	    f.println("   " + p.names[i] + " = " +
-		p.variables[i].deref().report());
+		p.variables[i].Deref().report());
 	}
     }
 
@@ -149,7 +149,7 @@ public static void display(vFile f, iClosure parent, long ancestors) {
     iSort.sort(a);
     for (i = 0; i < a.length; i++) {
 	vVariable v = (vVariable) iEnv.symtab.get(a[i].toString());
-	f.println("   " + a[i] + " = " + v.deref().report());
+	f.println("   " + a[i] + " = " + v.Deref().report());
     }
 }
 

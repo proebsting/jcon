@@ -56,7 +56,7 @@ class f$key extends iClosure {					//  key(T)
 	if (arguments.length == 0) {
 	    iRuntime.error(124);
 	}
-	return arguments[0].Key(this);
+	return arguments[0].Key();
     }
 }
 

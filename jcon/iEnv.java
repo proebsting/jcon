@@ -60,10 +60,10 @@ public static void declareGlobal(String s) {
 
 public static void declareGlobalInit(String s, vVariable x) {
     if (symtab.containsKey(s)) {
-	vValue val = ((vVariable)symtab.get(s)).deref();
-	if (!val.isNull()) {
+	vValue val = ((vVariable)symtab.get(s)).Deref();
+	if (!val.isnull()) {
 	    vDescriptor bval = (vDescriptor) builtintab.get(s);
-	    if (bval == null || bval.deref() != val) {
+	    if (bval == null || bval.Deref() != val) {
 		System.err.println("\"" + s + "\": inconsistent redeclaration");
 		System.exit(1);
 	    }

@@ -13,7 +13,7 @@ vRecord(vRecordProc constr, vDescriptor[] inits) {
     values = new vSimpleVar[constr.fieldnames.length];
     for (int i = 0; i < values.length; i++) {
 	if (i < inits.length) {
-	    values[i] = vSimpleVar.New(constr.varnames[i], inits[i].deref());
+	    values[i] = vSimpleVar.New(constr.varnames[i], inits[i].Deref());
 	} else {
 	    values[i] = vSimpleVar.New(constr.varnames[i]);
 	}
@@ -22,16 +22,16 @@ vRecord(vRecordProc constr, vDescriptor[] inits) {
 
 
 
-vString type()	{ return constr.name; }
+public vString Type()	{ return constr.name; }
 
 vString image() {
     return vString.New(
 	"record " + constr.name + "_" + snum + "(" + values.length + ")");
 }
 
-vInteger Size()	{ return vInteger.New(values.length); }
+public vInteger Size()	{ return vInteger.New(values.length); }
 
-int rank()	{ return 120; }			// records sort last
+int rank()		{ return 120; }			// records sort last
 
 int compareTo(vValue v) {
     vRecord r = (vRecord)v;
@@ -42,12 +42,12 @@ int compareTo(vValue v) {
     }
 }
 
-vValue Copy() {						// copy(R)
+public vValue Copy() {					// copy(R)
     return new vRecord(constr, values);
 }
 
 
-vVariable field(String s) {
+public vVariable Field(String s) {
     int i = constr.find(s);
     if (i >= 0) {
 	return values[i];
@@ -57,7 +57,7 @@ vVariable field(String s) {
     }
 }
 
-vDescriptor Index(vValue i) {
+public vDescriptor Index(vValue i) {
     try {
 	long m = i.mkInteger().value;
 	if (m <= 0) {
@@ -80,7 +80,7 @@ vDescriptor Index(vValue i) {
 }
 
 
-vDescriptor Select() {
+public vDescriptor Select() {
     if (values.length == 0) {
 	return null; /*FAIL*/
     }
@@ -89,29 +89,29 @@ vDescriptor Select() {
 }
 
 
-vDescriptor Bang(iClosure c) {
-    if (c.PC == 1) {
-	c.ival = 0;
-	c.PC = 2;
-    } else {
-	c.ival++;
-    }
-    if (c.ival >= values.length) {
-	return null; /*FAIL*/
-    } else {
-	return values[c.ival];
-    }
+public vDescriptor Bang() {
+    return new vClosure() {
+	int i = 0;
+	public vDescriptor resume() {
+	    if (i < values.length) {
+		retval = values[i++];
+		return this;	// suspend
+	    } else {
+		return null; /*FAIL*/
+	    }
+	}
+    }.resume();
 }
 
 
-vValue Sort(int i) {					// sort(L)
+public vList Sort(int i) {				// sort(L)
     return vList.New(iSort.sort(this.mkArray()));
 }
 
 vValue[] mkArray() {
     vValue a[] = new vValue[values.length];
     for (int i = 0; i < values.length; i++) {
-	a[i] = values[i].deref();
+	a[i] = values[i].Deref();
     }
     return a;
 }

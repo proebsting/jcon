@@ -110,7 +110,7 @@ class vSortElem extends vValue {		// key/value pair for sortf()
 	    if (d == null) {
 		key = null;
 	    } else {
-		key = d.deref();
+		key = d.Deref();
 	    }
 	}
     }
@@ -143,7 +143,7 @@ class vSortElem extends vValue {		// key/value pair for sortf()
     vString image()	{ return value.image().surround("<", ">"); }
 
     static vString typestring = vString.New("sortf");
-    vString type()	{ return typestring; }	// shouldn't ever be used
-    int rank()		{ return -1; }		// never compared to other types
+    public vString Type()	{ return typestring; }	// shouldn't be used
+    int rank()			{ return -1; }		// never compared
 
 } // class vSortElem

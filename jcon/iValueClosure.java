@@ -12,7 +12,7 @@ abstract vDescriptor function(vDescriptor[] args);
 public vDescriptor nextval() {
     if (PC == 1) {
 	for (int i = 0; i < arguments.length; i++) {
-	    arguments[i] = arguments[i].deref();
+	    arguments[i] = arguments[i].Deref();
 	}
 	vDescriptor v = function(arguments);
 	PC = 0;

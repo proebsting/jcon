@@ -81,7 +81,7 @@ public void create() {
     this.refreshCopy = closure.copy(this.closure.PC);
 }
 
-vValue Refresh() {
+public vCoexp Refresh() {
     vCoexp c = new vCoexp(refreshCopy.copy(this.originalPC));
     c.refreshCopy = refreshCopy;
     c.thread.start();
@@ -90,16 +90,16 @@ vValue Refresh() {
 
 
 
-vInteger Size()		{ return vInteger.New(resultCount); }
+public vInteger Size()	{ return vInteger.New(resultCount); }
 
 static vString typestring = vString.New("co-expression");
-vString type()		{ return typestring;}
+public vString Type()	{ return typestring;}
 
 vString image()		{ return vString.New(
 			    "co-expression_" + snum + "(" + resultCount + ")");
 }
 
-vInteger Serial()	{ return vInteger.New(snum); }
+public vInteger Serial(){ return vInteger.New(snum); }
 
 int rank()		{ return 70; }	// co-expressns sort after files
 

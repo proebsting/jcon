@@ -8,99 +8,160 @@ public abstract class vIndirect extends vDescriptor {
 
 
 
-// must be implemented:
+// must be implemented by subclasses
 
-public abstract vValue deref();			// dereference
-public abstract vVariable Assign(vValue x);	// assign
-abstract vString Name();			// name
+public abstract vValue Deref();			// dereference
+public abstract vVariable Assign(vDescriptor x);// assign
+public abstract vString Name();			// name
 
 
-// for many operations on variables, default action is to deref and retry
 
-// these two must be public because they override java.lang.object
-public boolean equals(Object o)	{ return this.deref().equals(o); }
-public int hashCode()		{ return this.deref().hashCode(); }
+// overriding java.lang.Object
 
-public iClosure instantiate(vDescriptor[] args, iClosure parent)
-				{ return this.deref().instantiate(args,parent);}
+public boolean equals(Object o)		{ return this.Deref().equals(o); }
+public int hashCode()			{ return this.Deref().hashCode(); }
 
-boolean isNull()		{ return this.deref().isNull(); }
-vString mkString()		{ return this.deref().mkString(); }
-vInteger mkInteger()		{ return this.deref().mkInteger(); }
-vReal mkReal()			{ return this.deref().mkReal(); }
-vNumeric mkNumeric()		{ return this.deref().mkNumeric(); }
-vCset mkCset()			{ return this.deref().mkCset(); }
-vDescriptor[] mkArgs()		{ return this.deref().mkArgs(); }
-vValue[] mkArray()		{ return this.deref().mkArray(); }
 
-vString write()			{ return this.deref().write(); }
-vString image()			{ return this.deref().image(); }
-vString report()		{ return this.deref().report(); }
-vString type()			{ return this.deref().type(); }
 
-vVariable field(String s)	{ return this.deref().field(s); }
+// For many operations on variables, default action is to dereference and retry.
+// (See vDescriptor.java for a commented version of this method list.)
 
-vDescriptor Select()		{ return this.deref().Select(); }
-vDescriptor Bang(iClosure c)	{ return this.deref().Bang(c); }
-vDescriptor Index(vValue i)	{ return this.deref().Index(i); }
-vDescriptor Section(int i, int j) { return this.deref().Section(i, j); }
+boolean isnull()			{ return this.Deref().isnull(); }
+vString mkString()			{ return this.Deref().mkString(); }
+vInteger mkInteger()			{ return this.Deref().mkInteger(); }
+vReal mkReal()				{ return this.Deref().mkReal(); }
+vNumeric mkNumeric()			{ return this.Deref().mkNumeric(); }
+vCset mkCset()				{ return this.Deref().mkCset(); }
+vDescriptor[] mkArgs()			{ return this.Deref().mkArgs(); }
+vValue[] mkArray()			{ return this.Deref().mkArray(); }
 
-vValue Refresh()		{ return this.deref().Refresh(); }
-vValue Sort(int i)		{ return this.deref().Sort(i); }
+vString write()				{ return this.Deref().write(); }
+vString image()				{ return this.Deref().image(); }
+vString report()			{ return this.Deref().report(); }
 
-vNumeric Negate()		{ return this.deref().Negate(); }
-vInteger Size()			{ return this.deref().Size(); }
-vInteger Serial()		{ return this.deref().Serial(); }
-vValue Copy()			{ return this.deref().Copy(); }
+public vDescriptor resume()		{ return null; /*FAIL*/ }
+public vInteger Limit()			{ return this.Deref().Limit(); }
+public vDescriptor Conjunction(vDescriptor x)
+					{ return this.Deref().Conjunction(x); }
+public vDescriptor ProcessArgs(vDescriptor x)
+					{ return this.Deref().ProcessArgs(x); }
+public vDescriptor Activate(vDescriptor x)
+					{ return this.Deref().Activate(x); }
+public vDescriptor ToBy(vDescriptor j, vDescriptor k)
+					{ return this.Deref().ToBy(j, k); }
 
-vValue Add(vDescriptor v)	{ return this.deref().Add(v); }
-vValue Sub(vDescriptor v)	{ return this.deref().Sub(v); }
-vValue Mul(vDescriptor v)	{ return this.deref().Mul(v); }
-vValue Div(vDescriptor v)	{ return this.deref().Div(v); }
-vValue Mod(vDescriptor v)	{ return this.deref().Mod(v); }
-vValue Power(vDescriptor v)	{ return this.deref().Power(v); }
+public vNumeric Negate()		{ return this.Deref().Negate(); }
+public vNumeric Numerate()		{ return this.Deref().Numerate(); }
+public vInteger Size()			{ return this.Deref().Size(); }
+public vValue Complement()		{ return this.Deref().Complement(); }
+public vCoexp Refresh()			{ return this.Deref().Refresh(); }
+public vString TabMatch()		{ return this.Deref().TabMatch(); }
+public vNumeric Abs()			{ return this.Deref().Abs(); }
+public vValue Copy()			{ return this.Deref().Copy(); }
+public vString Type()			{ return this.Deref().Type(); }
 
-vValue NLess(vDescriptor v)	{ return this.deref().NLess(v); }
-vValue NLessEq(vDescriptor v)	{ return this.deref().NLessEq(v); }
-vValue NEqual(vDescriptor v)	{ return this.deref().NEqual(v); }
-vValue NUnequal(vDescriptor v)	{ return this.deref().NUnequal(v); }
-vValue NGreaterEq(vDescriptor v){ return this.deref().NGreaterEq(v); }
-vValue NGreater(vDescriptor v)	{ return this.deref().NGreater(v); }
+public vDescriptor IsNull()		{ return this.Deref().IsNull(); }
+public vDescriptor IsntNull()		{ return this.Deref().IsntNull(); }
+public vDescriptor Select()		{ return this.Deref().Select(); }
+public vDescriptor Bang()		{ return this.Deref().Bang(); }
+public vDescriptor Key()		{ return this.Deref().Key(); }
 
-vValue LLess(vDescriptor v)	{ return this.deref().LLess(v); }
-vValue LLessEq(vDescriptor v)	{ return this.deref().LLessEq(v); }
-vValue LEqual(vDescriptor v)	{ return this.deref().LEqual(v); }
-vValue LUnequal(vDescriptor v)	{ return this.deref().LUnequal(v); }
-vValue LGreaterEq(vDescriptor v){ return this.deref().LGreaterEq(v); }
-vValue LGreater(vDescriptor v)	{ return this.deref().LGreater(v); }
+public vInteger Args()			{ return this.Deref().Args(); }
+public vValue Proc(long i)		{ return this.Deref().Proc(i); }
 
-vValue Concat(vDescriptor v)	{ return this.deref().Concat(v); }
+public vVariable Field(String s)	{ return this.Deref().Field(s); }
+public vDescriptor Index(vDescriptor i)	{ return this.Deref().Index(i); }
+public vDescriptor Section(vDescriptor i, vDescriptor j)
+					{ return this.Deref().Section(i, j); }
+public vDescriptor SectPlus(vDescriptor i, vDescriptor j)
+					{ return this.Deref().SectPlus(i, j); }
+public vDescriptor SectMinus(vDescriptor i, vDescriptor j)
+					{ return this.Deref().SectMinus(i, j); }
 
-vValue ListConcat(vDescriptor v) { return this.deref().ListConcat(v); }
+public vNumeric Add(vDescriptor v)	{ return this.Deref().Add(v); }
+public vNumeric Sub(vDescriptor v)	{ return this.Deref().Sub(v); }
+public vNumeric Mul(vDescriptor v)	{ return this.Deref().Mul(v); }
+public vNumeric Div(vDescriptor v)	{ return this.Deref().Div(v); }
+public vNumeric Mod(vDescriptor v)	{ return this.Deref().Mod(v); }
+public vNumeric Power(vDescriptor v)	{ return this.Deref().Power(v); }
 
-// list operations
-vValue Push(vDescriptor v)	{ return this.deref().Push(v); }
-vValue Pull()			{ return this.deref().Pull(); }
-vValue Pop()			{ return this.deref().Pop(); }
-vValue Get()			{ return this.deref().Get(); }
-vValue Put(vDescriptor v)	{ return this.deref().Put(v); }
+public vNumeric NLess(vDescriptor v)	{ return this.Deref().NLess(v); }
+public vNumeric NLessEq(vDescriptor v)	{ return this.Deref().NLessEq(v); }
+public vNumeric NEqual(vDescriptor v)	{ return this.Deref().NEqual(v); }
+public vNumeric NUnequal(vDescriptor v)	{ return this.Deref().NUnequal(v); }
+public vNumeric NGreaterEq(vDescriptor v){ return this.Deref().NGreaterEq(v); }
+public vNumeric NGreater(vDescriptor v)	{ return this.Deref().NGreater(v); }
 
-// table operations
-vValue Key(iClosure c)		{ return this.deref().Key(c); }
-vValue Member(vDescriptor i)	{ return this.deref().Member(i); }
-vValue Delete(vDescriptor i)	{ return this.deref().Delete(i); }
-vValue Insert(vDescriptor i, vDescriptor val)
-				{ return this.deref().Insert(i, val); }
+public vString LLess(vDescriptor v)	{ return this.Deref().LLess(v); }
+public vString LLessEq(vDescriptor v)	{ return this.Deref().LLessEq(v); }
+public vString LEqual(vDescriptor v)	{ return this.Deref().LEqual(v); }
+public vString LUnequal(vDescriptor v)	{ return this.Deref().LUnequal(v); }
+public vString LGreaterEq(vDescriptor v){ return this.Deref().LGreaterEq(v); }
+public vString LGreater(vDescriptor v)	{ return this.Deref().LGreater(v); }
 
-// set operations
-vValue Complement()		{ return this.deref().Complement(); }
-vValue Union(vDescriptor x)	{ return this.deref().Union(x); }
-vValue Intersect(vDescriptor x)	{ return this.deref().Intersect(x); }
-vValue Diff(vDescriptor x)	{ return this.deref().Diff(x); }
+public vValue VEqual(vDescriptor v)	{ return this.Deref().VEqual(v); }
+public vValue VUnequal(vDescriptor v)	{ return this.Deref().VUnequal(v); }
 
-vInteger Args()			{ return this.deref().Args(); }
-vValue Proc(long i)		{ return this.deref().Proc(i); }
+public vString Concat(vDescriptor v)	{ return this.Deref().Concat(v); }
+public vList ListConcat(vDescriptor v)	{ return this.Deref().ListConcat(v); }
 
+public vList Push(vDescriptor v)	{ return this.Deref().Push(v); }
+public vValue Pull()			{ return this.Deref().Pull(); }
+public vValue Pop()			{ return this.Deref().Pop(); }
+public vValue Get()			{ return this.Deref().Get(); }
+public vList Put(vDescriptor v)		{ return this.Deref().Put(v); }
+
+public vValue Member(vDescriptor i)	{ return this.Deref().Member(i); }
+public vValue Delete(vDescriptor i)	{ return this.Deref().Delete(i); }
+public vValue Insert(vDescriptor i, vDescriptor val)
+					{ return this.Deref().Insert(i, val); }
+
+public vValue Intersect(vDescriptor x)	{ return this.Deref().Intersect(x); }
+public vValue Union(vDescriptor x)	{ return this.Deref().Union(x); }
+public vValue Diff(vDescriptor x)	{ return this.Deref().Diff(x); }
+
+public vInteger Serial()		{ return this.Deref().Serial(); }
+public vList Sort(int i)		{ return this.Deref().Sort(i); }
+
+vNumeric AddInto(vInteger a)		{ return this.Deref().AddInto(a); }
+vNumeric SubFrom(vInteger a)		{ return this.Deref().SubFrom(a); }
+vNumeric MulInto(vInteger a)		{ return this.Deref().MulInto(a); }
+vNumeric DivInto(vInteger a)		{ return this.Deref().DivInto(a); }
+vNumeric ModInto(vInteger a)		{ return this.Deref().ModInto(a); }
+vNumeric PowerOf(vInteger a)		{ return this.Deref().PowerOf(a); }
+
+vNumeric RevLess(vInteger a)		{ return this.Deref().RevLess(a); }
+vNumeric RevLessEq(vInteger a)		{ return this.Deref().RevLessEq(a); }
+vNumeric RevEqual(vInteger a)		{ return this.Deref().RevEqual(a); }
+vNumeric RevUnequal(vInteger a)		{ return this.Deref().RevUnequal(a); }
+vNumeric RevGreaterEq(vInteger a)	{ return this.Deref().RevGreaterEq(a); }
+vNumeric RevGreater(vInteger a)		{ return this.Deref().RevGreater(a); }
+
+vNumeric AddInto(vReal a)		{ return this.Deref().AddInto(a); }
+vNumeric SubFrom(vReal a)		{ return this.Deref().SubFrom(a); }
+vNumeric MulInto(vReal a)		{ return this.Deref().MulInto(a); }
+vNumeric DivInto(vReal a)		{ return this.Deref().DivInto(a); }
+vNumeric ModInto(vReal a)		{ return this.Deref().ModInto(a); }
+vNumeric PowerOf(vReal a)		{ return this.Deref().PowerOf(a); }
+
+vNumeric RevLess(vReal a)		{ return this.Deref().RevLess(a); }
+vNumeric RevLessEq(vReal a)		{ return this.Deref().RevLessEq(a); }
+vNumeric RevEqual(vReal a)		{ return this.Deref().RevEqual(a); }
+vNumeric RevUnequal(vReal a)		{ return this.Deref().RevUnequal(a); }
+vNumeric RevGreaterEq(vReal a)		{ return this.Deref().RevGreaterEq(a); }
+vNumeric RevGreater(vReal a)		{ return this.Deref().RevGreater(a); }
+
+
+
+//#%#% to be handled:
+public vVariable Swap(vDescriptor x)      {iRuntime.bomb("Swap"); return null; }
+public vVariable SubjAssign(vDescriptor x) {iRuntime.bomb("SubjAssign");return null;}
+public vDescriptor RevAssign(vDescriptor x){iRuntime.bomb("RevAssign"); return null;}
+public vDescriptor RevSwap(vDescriptor x)  {iRuntime.bomb("RevSwap"); return null; }
+
+
+public iClosure instantiate(vDescriptor[] args, iClosure parent) //#%#%#%
+				{ return this.Deref().instantiate(args,parent);}
 
 
 

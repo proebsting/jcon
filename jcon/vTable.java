@@ -42,23 +42,23 @@ void put(vValue key, vValue val) {
 
 
 static vString typestring = vString.New("table");
-vString type()		{ return typestring; }
+public vString Type()		{ return typestring; }
 
 int rank()		{ return 110; }		// tables rank after sets
 
-vInteger Size() {
+public vInteger Size() {
     return vInteger.New(t.size());
 }
 
-vValue Copy() {						// copy(T)
+public vValue Copy() {					// copy(T)
     return new vTable(this);
 }
 
-vDescriptor Index(vValue i) {
+public vDescriptor Index(vValue i) {
     return new vTrappedTable(this, i);
 }
 
-vDescriptor Select() {
+public vDescriptor Select() {
     if (t.size() == 0) {
 	return null;
     }
@@ -70,65 +70,73 @@ vDescriptor Select() {
     return new vTrappedTable(this, (vValue)e.nextElement());
 }
 
-vDescriptor Bang(iClosure c) {
-    if (c.PC == 1) {
-	vTrappedTable a[] = new vTrappedTable[t.size()];
-	int i = 0;
-	java.util.Enumeration e = (java.util.Enumeration) t.keys();
-	while (e.hasMoreElements()) {
-	    a[i++] = new vTrappedTable(this, (vValue) e.nextElement());
-	}
-	c.o = a;
-	c.ival = 0;
-	c.PC = 2;
+
+
+public vDescriptor Bang() {
+    final vTrappedTable a[] = new vTrappedTable[t.size()];
+    java.util.Enumeration e = (java.util.Enumeration) t.keys();
+    int i = 0;
+    while (e.hasMoreElements()) {
+	a[i++] = new vTrappedTable(this, (vValue) e.nextElement());
     }
-    vTrappedTable a[] = (vTrappedTable[]) c.o;
-    while (c.ival < a.length) {
-	vTrappedTable v = a[c.ival++];
-	if (t.containsKey(v.key)) {	// if not stale
-	    return v;			// return value
+
+    return new vClosure() {
+	int j = 0;
+	public vDescriptor resume() {
+	    while (j < a.length) {
+		vTrappedTable v = a[j++];
+		if (t.containsKey(v.key)) {	// if not stale
+		    retval = v;
+		    return this;		// suspend
+		}
+	    }
+	    return null; /*FAIL*/
 	}
-    }
-    return null; /*FAIL*/
+    }.resume();
 }
 
-vValue Key(iClosure c) {
-    if (c.PC == 1) {
-	vValue a[] = new vValue[t.size()];
-	int i = 0;
-	java.util.Enumeration e = (java.util.Enumeration) t.keys();
-	while (e.hasMoreElements()) {
-	    a[i++] = (vValue) e.nextElement();
-	}
-	c.o = a;
-	c.ival = 0;
-	c.PC = 2;
+
+
+public vDescriptor Key() {
+    final vValue a[] = new vValue[t.size()];
+    java.util.Enumeration e = (java.util.Enumeration) t.keys();
+    int i = 0;
+    while (e.hasMoreElements()) {
+	a[i++] = (vValue) e.nextElement();
     }
-    vValue a[] = (vValue[]) c.o;
-    while (c.ival < a.length) {
-	vValue v = a[c.ival++];
-	if (t.containsKey(v)) {		// if not stale
-	    return v;			// return value
+
+    return new vClosure() {
+	int j = 0;
+	public vDescriptor resume() {
+	    while (j < a.length) {
+		vValue v = a[j++];
+		if (t.containsKey(v)) {		// if not stale
+		    retval = v;
+		    return this;		// suspend
+		}
+	    }
+	    return null; /*FAIL*/
 	}
-    }
-    return null; /*FAIL*/
+    }.resume();
 }
 
-vValue Member(vDescriptor i) {
+
+
+public vValue Member(vDescriptor i) {
     return t.containsKey(i) ? (vValue) i : null;
 }
 
-vValue Delete(vDescriptor i) {
+public vValue Delete(vDescriptor i) {
     t.remove(i);
     return this;
 }
 
-vValue Insert(vDescriptor i, vDescriptor val) {
+public vValue Insert(vDescriptor i, vDescriptor val) {
     t.put(i, val);
     return this;
 }
 
-vValue Sort(int n) {
+public vList Sort(int n) {
 
     vTableElem a[] = new vTableElem[t.size()];	// make array of key/val pairs
 
@@ -197,17 +205,17 @@ class vTrappedTable extends vVariable {
 	this.key = key;
     }
 
-    public vValue deref() {
+    public vValue Deref() {
 	vValue v = table.get(key);
 	return (v == null) ? table.dflt : v;
     }
 
-    public vVariable Assign(vValue v) {
-	table.put(key, v);
+    public vVariable Assign(vDescriptor v) {
+	table.put(key, v.Deref());
 	return this;
     }
 
-    vString Name() {
+    public vString Name() {
 	return key.image().surround("T[", "]");
     }
 
@@ -241,7 +249,7 @@ class vTableElem extends vValue {	// key/value pair for sorting
     }
 
     static vString typestring = vString.New("telem");
-    vString type()	{ return typestring; }
+    public vString Type()	{ return typestring; }
     int rank()		{ return -1; }		// never compared to other types
 
 } // class vTableElem

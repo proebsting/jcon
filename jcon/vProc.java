@@ -26,16 +26,16 @@ private vProc(String img, String classname, int args) {
 
 
 
-public vValue deref() {
+public vValue Deref() {
     return this;
 }
 
 vString image()		{ return img; }
 
 static vString typestring = vString.New("procedure");
-vString type()		{ return typestring; }
+public vString Type()	{ return typestring; }
 
-vInteger Args()		{ return vInteger.New(args); }
+public vInteger Args()	{ return vInteger.New(args); }
 
 vValue getproc()	{ return this; }
 

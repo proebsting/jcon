@@ -7,13 +7,13 @@ package rts;
 
 
 
-abstract public class vStructure extends vValue {
+public abstract class vStructure extends vValue {
 
     int snum;		// serial number
 
 
 
-abstract vValue Copy();			// must be implemented by subclass
+public abstract vValue Copy();		// must be implemented by subclass
 
 
 
@@ -23,7 +23,7 @@ vStructure(int snum) {			// constructor
 
 
 
-vInteger Serial()	{ return vInteger.New(this.snum); }
+public vInteger Serial()	{ return vInteger.New(this.snum); }
 
 
 
@@ -34,7 +34,7 @@ static vString lpar = vString.New('(');
 static vString rpar = vString.New(')');
 
 vString image() {			// type_snum(size)
-    return this.type().concat(uscore).concat(vInteger.New(snum).mkString())
+    return this.Type().concat(uscore).concat(vInteger.New(snum).mkString())
 	.concat(lpar).concat(this.Size().mkString()).concat(rpar);
 }
 

@@ -9,8 +9,8 @@ public abstract class iBinaryValueClosure extends iBinaryClosure {
 
 public vDescriptor nextval() {
     if (PC == 1) {
-	argument0 = argument0.deref();
-	argument1 = argument1.deref();
+	argument0 = argument0.Deref();
+	argument1 = argument1.Deref();
 	vDescriptor v = function();
 	PC = 0;
 	return v;
@@ -20,8 +20,8 @@ public vDescriptor nextval() {
 }
 
 public vDescriptor call(vDescriptor arg0, vDescriptor arg1, iClosure parent) {
-    argument0 = arg0.deref();
-    argument1 = arg1.deref();
+    argument0 = arg0.Deref();
+    argument1 = arg1.Deref();
     this.parent = parent;
     try {
 	try {

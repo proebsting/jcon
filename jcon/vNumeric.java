@@ -3,31 +3,37 @@ package rts;
 public abstract class vNumeric extends vValue {
 
 
-// all subclasses must implement:
-//  Add, Sub, Mul, Div, Mod, Abs
+// all subclasses must implement the following methods and their reversals:
+//  Add, Sub, Mul, Div, Mod, Power, Abs
 //  NLess, NLessEq, NEqual, NUnequal, NGreaterEq, NGreater
 
 
-protected vString cachedString;	// cached string equivalent
+protected vString cachedString;		// cached string equivalent
 
-vNumeric mkNumeric()		{ return this; }
-vCset mkCset()			{ return this.mkString().mkCset(); }
+vNumeric mkNumeric()			{ return this; }
+vCset mkCset()				{ return this.mkString().mkCset(); }
 
-vDescriptor Bang(iClosure c)	{ return this.mkString().Bang(c); }
-vInteger Size()			{ return this.mkString().Size(); }
-vValue Concat(vDescriptor v)	{ return this.mkString().Concat(v); }
+//#%#%#% probably need more conversions added to this list:
+//#%#%#% (Or should there be fewer... and move these to vValue?)
 
-vDescriptor Index(vValue i)	{ return this.mkString().Index(i); }
-vDescriptor Section(int i,int j){ return this.mkString().Section(i,j); }
+public vDescriptor Bang()		{ return this.mkString().Bang(); }
+public vInteger Size()			{ return this.mkString().Size(); }
+public vString Concat(vDescriptor v)	{ return this.mkString().Concat(v); }
 
-vValue Complement()		{ return this.mkCset().Complement(); }
-vValue Intersect(vDescriptor x)	{ return this.mkCset().Intersect(x); }
-vValue Union(vDescriptor x)	{ return this.mkCset().Union(x); }
-vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }
+public vDescriptor Index(vDescriptor i){ return this.mkString().Index(i); }
+public vDescriptor Section(vDescriptor i, vDescriptor j)
+					{ return this.mkString().Section(i,j); }
+public vDescriptor SectPlus(vDescriptor i, vDescriptor j)
+					{ return this.mkString().SectPlus(i,j);}
+public vDescriptor SectMinus(vDescriptor i, vDescriptor j)
+					{return this.mkString().SectMinus(i,j);}
 
-abstract vValue Abs();
+public vValue Complement()		{ return this.mkCset().Complement(); }
+public vValue Intersect(vDescriptor x)	{ return this.mkCset().Intersect(x); }
+public vValue Union(vDescriptor x)	{ return this.mkCset().Union(x); }
+public vValue Diff(vDescriptor x)	{ return this.mkCset().Diff(x); }
 
-vValue getproc()		{ return this.mkInteger().getproc(); }
+vValue getproc()			{ return this.mkInteger().getproc(); }
 
 
 
