@@ -21,9 +21,10 @@ public final class vString extends vValue {
 
 
 // preallocated empty string and one-character strings
+// (not private -- that inhibits inlining)
 
-private static vString nullstring = new vString();
-private static vString strlist[] = new vString[vCset.MAX_VALUE + 1];
+static vString nullstring = new vString();
+static vString strlist[] = new vString[vCset.MAX_VALUE + 1];
 
 static {
     for (int i = 0; i < strlist.length; i++) {

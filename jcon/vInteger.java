@@ -10,7 +10,7 @@ public final class vInteger extends vNumeric {
 
 
 
-private static vInteger intlist[] =		// cache for "common" integers
+static vInteger intlist[] =			// cache for "common" integers
     new vInteger[iConfig.MaxCachedInt + 1 - iConfig.MinCachedInt];
 
 

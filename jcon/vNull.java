@@ -4,7 +4,8 @@ public final class vNull extends vValue {
 
 
 
-private static vNull TheNull = new vNull();
+final static vNull TheNull = new vNull();    // not private: inhibits inlining
+
 public static vNull New()	{ return TheNull; }	// vNull.New()
 
 private vNull()			{ }

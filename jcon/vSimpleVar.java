@@ -10,7 +10,7 @@ public class vSimpleVar extends vVariable {
 // constructors
 
 public static vSimpleVar New(String name)
-				{ return new vSimpleVar(name); }
+				{ return new vSimpleVar(name, vNull.New()); }
 
 public static vSimpleVar New(String name, vDescriptor x)
 				{ return new vSimpleVar(name, x.Deref()); }
@@ -19,12 +19,6 @@ vSimpleVar(String name, vValue x) {	// new vSimpleVar(name, value)
     value = x;
     this.name = name;
 }
-
-vSimpleVar(String name) {		// new vSimpleVar(name)
-    value = vNull.New();
-    this.name = name;
-}
-
 
 
 

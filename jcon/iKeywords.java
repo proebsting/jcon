@@ -474,7 +474,7 @@ final class k$random extends vProc0 {				// &random
     private static final long RandC = 453816694;
     private static final double RanScale = 4.65661286e-10;
 
-    private static vSimpleVar vrandom = new vSimpleVar("&random") {
+    private static vSimpleVar vrandom = new vSimpleVar("&random", vNull.New()) {
 
 	public vVariable Assign(vDescriptor v) {	// assign
 	    randval = v.mkInteger().value;
@@ -551,7 +551,7 @@ final class k$storage extends vProc0 {				// &storage
 
 final class k$window extends vProc0 {				// &window
 
-    private static vSimpleVar kwindow = new vSimpleVar("&window") {
+    private static vSimpleVar kwindow = new vSimpleVar("&window", vNull.New()) {
 
 	public vVariable Assign(vDescriptor v) {	// assign
 	    vValue w = v.Deref();

@@ -92,10 +92,9 @@ final class f$collect extends vProc2 {				// collect(i,j)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	long i1 = a.isnull() ? 0 : a.mkInteger().value;
 	long i2 = b.isnull() ? 0 : b.mkInteger().value;
-	vNull n = vNull.New();
 	if (i1 == 0) {
 	    System.gc();
-	    return n;
+	    return vNull.New();
 	} else if (i1 > 0 && i1 < 4) {
 	    int ii2 = (int)i2;
 	    if (i2 < 0 || i2 != (long)ii2) {
@@ -112,7 +111,7 @@ final class f$collect extends vProc2 {				// collect(i,j)
 		    return null;
 		}
 	    }
-	    return n;
+	    return vNull.New();
 	} else {
 	    iRuntime.error(205, a);
 	    return null;
