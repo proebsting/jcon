@@ -7,11 +7,11 @@ record ir_info(start, resume, failure, success, x)
 record ir_loopinfo(scanlevel, nextlabel, continue, in_st, out_st, value,
                    bounded, inuse)
 record ir_scaninfo(oldsubject, oldpos)
-record ir_stacks(tmp, lab, clo)
+record ir_stacks(tmp, lab)
 
 global ir_loop_stack, ir_scan_stack
 
-global ir_tmptable, ir_loctable, ir_clotable
+global ir_tmptable, ir_loctable
 global ir_start
 
 # record a_NoOp( )
@@ -364,7 +364,7 @@ procedure ir_a_Call(p, st, inuse, target, bounded)
     }
 
     ir_init(p)
-    closure := ir_tmp_closure(st, inuse)
+    closure := ir_tmp(st, inuse)
     fn := ir_tmp(st, inuse)
     args := []
     every i := !p.args.exprList do put(args, ir_value(i, st, inuse, &null))
@@ -379,7 +379,7 @@ procedure ir_a_Call(p, st, inuse, target, bounded)
     suspend ir_Chunk(p.ir.start, [ ir_Goto(p.fn.ir.start) ])
     suspend ir_Chunk(p.ir.resume, [
         ir_Coord(p.coord),
-        ir_ResumeClosure(closure, L[-1].ir.resume, target),
+        ir_ResumeValue(closure, L[-1].ir.resume, target),
         ir_Goto(p.ir.success)
         ])
     every i := 1 to *L do {
@@ -389,8 +389,9 @@ procedure ir_a_Call(p, st, inuse, target, bounded)
     suspend ir_Chunk(L[ 1].ir.failure, [ ir_Goto(p.ir.failure) ])
     suspend ir_Chunk(L[-1].ir.success, [
         ir_Coord(p.coord),
-        ir_MakeClosure(closure, fn, args),
-        ir_Goto(p.ir.resume)
+        ir_Call(closure, fn, args, L[-1].ir.resume),
+        ir_Move(target, closure),
+        ir_Goto(p.ir.success)
         ])
 end
 
@@ -767,7 +768,6 @@ procedure ir_a_ProcDecl(p, st, inuse, target, bounded)
 
     ir_tmptable := table()
     ir_loctable := table()
-    ir_clotable := table()
 
     code := []
     every put(code, ir(p.code))
@@ -1495,13 +1495,6 @@ procedure ir_tmploc(st, inuse)
     return ir_loctable[st.lab]
 end
 
-procedure ir_tmp_closure(st, inuse)
-    st.clo +:= 1
-    /ir_clotable[st.clo] := ir_TmpClosure("clo" || st.clo)
-    insert(inuse.clo, ir_clotable[st.clo])
-    return ir_clotable[st.clo]
-end
-
 procedure ir_make_sentinel(L)
     put(L, ir_init(a_NoOp()))
     push(L, ir_init(a_NoOp()))
@@ -1515,7 +1508,6 @@ end
 procedure ir_max_st(st, t)
     st.tmp <:= t.tmp
     st.lab <:= t.lab
-    st.clo <:= t.clo
 end
 
 procedure ir_new_inuse()
@@ -1527,11 +1519,9 @@ procedure ir_union_inuse(x, L)
     t := pop(L)
     x.tmp := t.tmp
     x.lab := t.lab
-    x.clo := t.clo
     while t := pop(L) do {
         x.tmp ++:= t.tmp
         x.lab ++:= t.lab
-        x.clo ++:= t.clo
     }
 end
 procedure ir_inter_inuse(x, L)
@@ -1539,16 +1529,14 @@ procedure ir_inter_inuse(x, L)
     t := pop(L)
     x.tmp := t.tmp
     x.lab := t.lab
-    x.clo := t.clo
     while t := pop(L) do {
         x.tmp **:= t.tmp
         x.lab **:= t.lab
-        x.clo **:= t.clo
     }
 end
 
 procedure ir_copy_inuse(x)
-    return ir_stacks(copy(x.tmp), copy(x.lab), copy(x.clo))
+    return ir_stacks(copy(x.tmp), copy(x.lab))
 end
 
 procedure ast2ir(parse, flags)

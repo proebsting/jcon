@@ -478,35 +478,6 @@ procedure bc_gen_ir_ResumeValue(s, p)
     return s
 end
 
-# record ir_ResumeClosure( closure failLabel retValue )
-procedure bc_gen_ir_ResumeClosure(s, p)
-    local c, PC, target, resume, free
-
-    PC := bc_PC_fieldref(bc_proc_classptr)
-    resume := bc_resume_methodref(bc_proc_classptr)
-    bc_gen(s, p.closure)
-    put(s, j_dup())
-    put(s, j_getfield(PC))
-    target := j_label()
-    put(s, j_ifne(target))
-    put(s, j_pop())
-    bc_transfer_to(s, p.failLabel)
-    put(s, target)
-    put(s, j_invokevirtual(resume))
-    if \p.retValue then {
-        put(s, j_dup())
-        target := j_label()
-        put(s, j_ifnonnull(target))
-        put(s, j_pop())
-        bc_transfer_to(s, p.failLabel)
-        put(s, target)
-        bc_gen_assign_to(s, p.retValue)
-    } else {
-        bc_conditional_transfer_to(s, p.failLabel, j_ifnull, j_ifnonnull)
-    }
-    return s
-end
-
 # record ir_MakeList( lhs valueList )
 procedure bc_gen_ir_MakeList(s, p)
     local r, v, i, method
@@ -604,13 +575,18 @@ end
 
 # record ir_OpFunction( lhs fn argList failLabel )
 procedure bc_gen_ir_OpFunction(s, p)
-    local target, method
+    local method
 
     p.fn.arity = *p.argList | runerr(500, p)
     method := bc_op_methodref(bc_proc_classptr, p.fn.name, p.fn.arity)
     \method | runerr(500)
     every bc_gen(s, !p.argList)
     put(s, j_invokevirtual(method))
+    return ir_CallTail(s, p)
+end
+
+procedure ir_CallTail(s, p)
+    local target
 
     if \p.failLabel then {
         if \p.lhs then {
@@ -634,15 +610,12 @@ procedure bc_gen_ir_OpFunction(s, p)
     return s
 end
 
-# record ir_MakeClosure( lhs fn argList )
-procedure bc_gen_ir_MakeClosure(s, p)
+# record ir_Call( lhs fn argList failLabel )
+procedure bc_gen_ir_Call(s, p)
     local r, l, f, v, n, i, method
-
-    \p.lhs | return ""
 
     if type(p.fn) == "ir_Operator" then {
 	runerr(500, p)
-        return bc_gen_call_op(s, p)
     }
 
     bc_gen(s, p.fn)
@@ -656,11 +629,9 @@ procedure bc_gen_ir_MakeClosure(s, p)
         bc_gen(s, p.argList[i])
         put(s, j_aastore())
     }
-    put(s, j_aload_0())
-    method := bc_Instantiate_methodref(bc_proc_classptr)
-    put(s, j_invokestatic(method))
-    bc_gen_assign_to(s, p.lhs)
-    return s
+    method := bc_CallV_methodref(bc_proc_classptr)
+    put(s, j_invokevirtual(method))
+    return ir_CallTail(s, p)
 end
 
 # record ir_Operator( name arity )
@@ -760,11 +731,9 @@ procedure bc_gen(s, p)
     "ir_Restore" : return bc_gen_ir_Restore(s, p)
     "ir_Succeed" : return bc_gen_ir_Succeed(s, p)
     "ir_Fail" : return bc_gen_ir_Fail(s, p)
-    "ir_ResumeClosure" : return bc_gen_ir_ResumeClosure(s, p)
     "ir_ResumeValue" : return bc_gen_ir_ResumeValue(s, p)
     "ir_MakeList" : return bc_gen_ir_MakeList(s, p)
     "ir_OpFunction" : return bc_gen_ir_OpFunction(s, p)
-    "ir_MakeClosure" : return bc_gen_ir_MakeClosure(s, p)
     "ir_Operator" : return bc_gen_ir_Operator(s, p)
     "ir_Create" : return bc_gen_ir_Create(s, p)
     "ir_CoRet" : return bc_gen_ir_CoRet(s, p)
@@ -773,6 +742,7 @@ procedure bc_gen(s, p)
     "ir_EnterInit" : return bc_gen_ir_EnterInit(s, p)
     "ir_Free" : return bc_gen_ir_Free(s, p)
     "ir_Field" : return bc_gen_ir_Field(s, p)
+    "ir_Call" : return bc_gen_ir_Call(s, p)
     default : { runerr(500, p); }
     }
 end
