@@ -416,6 +416,9 @@ procedure writer_attribute_info(writer, p)
           2+2+4+code_length+2+8* *p.exception_table+2+attribute_length)
         writer_u2(writer, p.max_stack)
         writer_u2(writer, p.max_locals)
+	if code_length >= 65536 then {
+	    runerr(500)
+	}
         writer_u4(writer, code_length)
         every i := !p.code do {
             writer_opcodes(writer, i)
