@@ -7,7 +7,7 @@ record u_ccase()
 record u_chfail(n)
 record u_coact()
 record u_cofail()
-record u_colm()
+record u_colm(n)
 record u_compl()
 record u_coret()
 record u_create(n)
@@ -599,6 +599,7 @@ procedure ucode_ProcDecl(s, p)
 	u_nextlab := create ("L" || seq())
 	u_loops := []
 	code := []
+	reset_coord()
 	u_coord(code, p)
 	ucode(code, p.code)
 
