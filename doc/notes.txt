@@ -68,12 +68,12 @@ keywords:
 
 graphics overview:
 -- the graphics implementation is incomplete but usable
--- omissions include images, patterns, wide lines
+-- omissions include patterns and wide lines
 -- see rts/wBuiltins.java for the list of missing functions
 -- see rts/wAttrib.java for the list of missing attributes
 
 graphics bugs:
--- window repair is only done when paused for event input
+-- window repair may be delayed until the program pauses for graphics input
 -- "drawop=reverse" produces the wrong color under Java 1.1; okay under 1.2
 -- \r and \t are not handled correctly by WWrite() etc.
 
@@ -85,7 +85,7 @@ events:
 
 colors:
 -- there is no inherent limit to the number of colors in use
--- the default gamma value is 2.0
+-- the default gamma value is 1.5
 -- on 8-bit displays, depending on the Java system, colors may be approximated
 -- variants (dark, weak, ..) of unsaturated colors (brown, pink, violet) differ
 -- "light black" and "pale black" produce black, not shades of gray
@@ -97,5 +97,12 @@ text and fonts:
 -- generic names {serif, sans, typewriter} work well; bold/italic variants work
 -- generic "mono" appearance varies by platform; bold/italic don't always work
 -- Font(s) always succeeds for non-empty s (Java never rejects any name)
--- the default font name "fixed" is mapped to "mono,bold,12"
+-- the default font name "fixed" is mapped to "mono,bold,14"
 -- the visible text cursor, when enabled, is a solid, nonblinking underbar
+
+images:
+-- GIF and JPEG images can be read by ReadImage() or WAttrib("image=")
+-- the "image" attribute returns the last image filename loaded, or null if none
+-- image loading ignores the gamma attribute
+-- ReadImage() ignores the palette argument; Java dithers if necessary
+-- WriteImage(), DrawImage(), and Pixel() are not implemented
