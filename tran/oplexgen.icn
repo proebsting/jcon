@@ -156,7 +156,7 @@ procedure main(L)
         actual := elem[1]
         token := elem[2]
         if toks[token] == actual then {
-            write("\t", token, ":= TOK(", image(token), ",", image(actual), ")")
+            write("\t", token, ":= lex_TOK(", image(token), ",", image(actual), ")")
         }
     }
 

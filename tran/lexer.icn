@@ -1,6 +1,6 @@
-global j_newline, yyline, coord_pos, yyfile
-record coordinate(file, line, column)
-record TOK(sym, str, coord)
+global newline, yyline, coord_pos, yyfile
+record lex_coordinate(file, line, column)
+record lex_TOK(sym, str, coord)
 
 procedure yylex(getline)
     local last_pos, t, ptok
@@ -10,36 +10,36 @@ procedure yylex(getline)
         initialize()
     }
 
-    j_newline := &null
+    newline := &null
     yyline := 0
     yyfile := "<<stdin>>"
 
     "" ? {
-        every t := yylex0(getline) do {
-            if \j_newline then {
-                j_newline := &null
+        every t := lex_yylex0(getline) do {
+            if \newline then {
+                newline := &null
                 if member(ender_set,\last_token) &
                    member(beginner_set,\t) then {
-                    SEMICOL.coord := coordinate(yyfile, yyline-1, last_pos)
+                    SEMICOL.coord := lex_coordinate(yyfile, yyline-1, last_pos)
                     suspend SEMICOL
                     last_token := SEMICOL
                 }
             }
-            t.coord := coordinate(yyfile, yyline, coord_pos)
+            t.coord := lex_coordinate(yyfile, yyline, coord_pos)
             last_pos := &pos
             suspend t
             last_token := t
         }
         ptok := EOFX
         ptok.str := &null
-        ptok.coord := coordinate(yyfile, yyline, coord_pos)
+        ptok.coord := lex_coordinate(yyfile, yyline, coord_pos)
         last_pos := &pos
         suspend ptok
     }
 end
 
 
-procedure yylex0(getline)
+procedure lex_yylex0(getline)
     local sym, str, op, ptok
     static let_und, let_und_dig, let_dig
 
@@ -51,7 +51,7 @@ procedure yylex0(getline)
 
     repeat {
             if pos(1) then {
-            j_newline := 1
+            newline := 1
             if ="#line " then {
                 tab(upto(&digits)) &
                 yyline := integer(tab(many(&digits))) &
@@ -68,7 +68,7 @@ procedure yylex0(getline)
 
         # check if EOL
         if pos(0) then {
-            &subject := nextline(getline) | fail
+            &subject := lex_nextline(getline) | fail
             next
         }
 
@@ -143,7 +143,7 @@ procedure yylex0(getline)
         }
 
         # check if string lit
-        if str := parse_quoted("\"", getline) then {
+        if str := lex_quoted("\"", getline) then {
             ptok := STRINGLIT
             ptok.str := str
             suspend ptok
@@ -151,7 +151,7 @@ procedure yylex0(getline)
         }
 
         # check if cset
-        if str := parse_quoted("'", getline) then {
+        if str := lex_quoted("'", getline) then {
             ptok := CSETLIT
             ptok.str := str
             suspend ptok
@@ -171,7 +171,7 @@ procedure lex_error(msg)
     }
 end
 
-procedure nextline(getline)
+procedure lex_nextline(getline)
     local s
 
     s := @getline | fail
@@ -179,7 +179,7 @@ procedure nextline(getline)
     return s
 end
 
-procedure parse_quoted(delim, getline) 
+procedure lex_quoted(delim, getline) 
     local str, dset, hex, h, ch, octal, o
     static lookup
     initial {
@@ -234,7 +234,7 @@ procedure parse_quoted(delim, getline)
             } else {
                 every (str ||:= tab(upto('_'))) do {
                     if pos(-1) then {
-                        &subject := nextline(getline) | fail
+                        &subject := lex_nextline(getline) | fail
                         tab(many(' \t\f'))
                         break next
                     } else {

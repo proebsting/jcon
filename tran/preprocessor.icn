@@ -544,8 +544,8 @@ procedure preproc_istring(s)
                 "d": "\d"       # delete (rubout)
                 "e": "\e"       # escape (altmode)
                 "f": "\f"       # formfeed
-                "l": "\l"       # linefeed (j_newline)
-                "n": "\n"       # j_newline (linefeed)
+                "l": "\l"       # linefeed (newline)
+                "n": "\n"       # newline (linefeed)
                 "r": "\r"       # carriage return
                 "t": "\t"       # horizontal tab
                 "v": "\v"       # vertical tab
