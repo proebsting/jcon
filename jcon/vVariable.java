@@ -20,7 +20,7 @@ public abstract class vVariable extends vIndirect {
     public abstract vVariable Assign(vValue x);	// assign
 
     abstract vString Name();			// name
-    abstract String report();			// report for traceback
+    abstract vString report();			// report for traceback
 
     // operations that produce vVarExprs
 

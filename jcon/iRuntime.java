@@ -122,7 +122,8 @@ public static void display(iClosure parent) {
 			continue;
 		}
 		for (int i = 0; p.names[i] != null; i++) {
-			System.out.println("   " + p.names[i] + " = " + p.variables[i].image());
+			System.out.println("   " + p.names[i] + " = " +
+				p.variables[i].image());
 		}
 	}
 

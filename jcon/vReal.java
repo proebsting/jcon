@@ -33,19 +33,15 @@ vInteger mkInteger()	{
     }
 }
 
-vString mkString()	{ return iNew.String(this.image()); }
-vString write()		{ return iNew.String(this.image()); }
+vString write()		{ return this.mkString(); }
+vString image()		{ return this.mkString(); }
 
-String image()		{	//#%#%# differs from v9 formatting 
-    String s = String.valueOf(value + 0.0);	 // +0.0 is to eliminate "-0"
+vString mkString()		{	//#%#%# differs from v9 formatting 
+    String s = Double.toString(value + 0.0);	 // +0.0 eliminates "-0"
     if (s.indexOf('E') >= 0) {
-	return s.replace('E','e');	// if E notation, just change to 'e'
+	s = s.replace('E','e');		// if E notation, change to 'e'
     }
-    if (Double.isInfinite(value) || Double.isNaN(value) || s.indexOf('.')>=0) {
-	return s;		// don't edit if Inf, NaN, or if "." present
-    } else {
-	return s + ".0";	// add decimal point if missing
-    }
+    return iNew.String(s);
 }
 
 static vString typestring = iNew.String("real");

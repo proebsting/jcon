@@ -85,18 +85,19 @@ public class vCoexp extends vValue implements Runnable {
 		return c;
 	}
 
-	vInteger Size() { return iNew.Integer(resultCount); }
+	vInteger Size()		{ return iNew.Integer(resultCount); }
 
 	static vString typestring = iNew.String("co-expression");
-	vString type()	{ return typestring;}
+	vString type()		{ return typestring;}
 
-	String image()  {
-		return "co-expression_" + snum + "(" + resultCount + ")";
+	vString image() {
+		return iNew.String(
+			"co-expression_" + snum + "(" + resultCount + ")");
 	}
 
-	vInteger Serial() { return iNew.Integer(snum); }
+	vInteger Serial()	{ return iNew.Integer(snum); }
 
-	int rank()	{ return 70; }	// co-expressions sort after files
+	int rank()		{ return 70; }	// co-expressns sort after files
 
-	int compareTo(vValue v) { return this.snum - ((vCoexp)v).snum; }
+	int compareTo(vValue v)	{ return this.snum - ((vCoexp)v).snum; }
 }

@@ -34,8 +34,8 @@ vCset(int low, int high) {			// new Cset(int low, high)
 
 
 
-String image() {	//#%#% should recognize keyword csets & treat specially
-    StringBuffer b = new StringBuffer(80);	// arbitrary size estimate
+vString image() {	//#%#% should recognize keyword csets & treat specially
+    vByteBuffer b = new vByteBuffer(80);	// arbitrary size estimate
     b.append('\'');
     for (char c = 0; c < t.size(); c++) {
 	if (t.get(c)) {
@@ -48,10 +48,8 @@ String image() {	//#%#% should recognize keyword csets & treat specially
 	}
     }
     b.append('\'');
-    return b.toString();
+    return b.mkString();
 }
-
-String report()		{ return image(); }
 
 static vString typestring = iNew.String("cset");
 vString type()		{ return typestring;}

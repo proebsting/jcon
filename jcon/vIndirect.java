@@ -32,8 +32,8 @@ public abstract class vIndirect extends vDescriptor {
     vValue[] mkArray()			{ return this.deref().mkArray(); }
 
     vString write()			{ return this.deref().write(); }
-    String image()			{ return this.deref().image(); }
-    String report()			{ return this.deref().report(); }
+    vString image()			{ return this.deref().image(); }
+    vString report()			{ return this.deref().report(); }
     vString type()			{ return this.deref().type(); }
 
     vVariable field(String s)		{ return this.deref().field(s); }

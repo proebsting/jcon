@@ -170,13 +170,13 @@ StringBuffer trace_prototype() {
                 }
     
             } else if (c > '0' && c <= '9') {	// $n: one arg
-                b.append(getarg((int)c - '1'));
+                b.append(getarg((int)c - '1').toString());
     
             } else if (c == '*') {		// $*: all ags, comma-separated
                 if (arguments != null && arguments.length > 0) {
-                    b.append(getarg(0));
+                    b.append(getarg(0).toString());
                     for (int j = 1; j < arguments.length; j++) {
-                        b.append(',').append(getarg(j));
+                        b.append(',').append(getarg(j).toString());
                     }
                 }
     
@@ -203,9 +203,9 @@ String trace() {
 
 //  getarg(n) -- get the image of argument n for traceback purposes
 
-String getarg(int n) {
+vString getarg(int n) {
     if (arguments[n] == null || arguments.length <= n) {
-        return "???";		// shouldn't happen, but handle it
+        return iNew.String("???");	// shouldn't happen, but handle it
     } else {
         return arguments[n].report();
     }

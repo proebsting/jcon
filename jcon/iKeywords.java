@@ -486,7 +486,8 @@ abstract class k$intWatcher extends vVariable { // super for "watched" int kwds
 
 	vString Name()		{ return iNew.String(name); }
 
-	String report()		{ return "(" + name + " = " + value + ")"; }
+	vString report()	{ return iNew.String(
+					"(" + name + " = " + value + ")"); }
 }
 
 class k$interval extends k$intWatcher {		// &interval

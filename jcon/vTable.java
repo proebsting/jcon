@@ -168,9 +168,9 @@ class vTrappedTable extends vVariable {
     vTable table;
     vValue key;
 
-String report()	{
-    return
-    	"(variable = " + this.table.report() + "[" + this.key.report() + "])";
+vString report()	{
+    return iNew.String(
+    	"(variable = " + this.table.report() + "[" + this.key.report() + "])");
 }
 
 vTrappedTable(vTable table, vValue key) {
@@ -189,7 +189,7 @@ public vVariable Assign(vValue v) {
 }
 
 vString Name() {
-    return iNew.String("T[" + key.image() + "]");
+    return key.image().surround("T[", "]");
 }
 
 } // class vTrappedTable
@@ -216,7 +216,10 @@ class vTableElem extends vValue {	// key/value pair for sorting
 	}
     }
 
-    String image()  { return "(" + sortkey.image() + "," + other.image() + ")";}
+    vString image()  {			// not normally used
+	return iNew.String("(" + sortkey.image().mkString() + "," +
+	    other.image().mkString() + ")");
+    }
 
     static vString typestring = iNew.String("telem");
     vString type()   { return typestring; }

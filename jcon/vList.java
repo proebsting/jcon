@@ -41,7 +41,7 @@ vList(Vector v) {				// new Vlist(Vector v)
 // runtime primitives
 
 
-String report()		{ return this.image(); } //#%#% redo with elem details
+vString report()	{ return this.image(); } //#%#% redo with elem details
 
 static vString typestring = iNew.String("list");
 vString type()		{ return typestring; }

@@ -2,16 +2,16 @@ package rts;
 
 public class vProc extends vValue {
 	
-	String img;	// image for printing
+	vString img;	// image for printing
 	Class proc;	// class that implements proc
 	String classname;
 	int args;	// number of args
 
-	iFunctionClosure functionclosure;	// cached closure for pure functions.
-	iClosure cachedclosure;			// cached closure;
+	iFunctionClosure functionclosure;	// cached closure for pure funcs
+	iClosure cachedclosure;			// cached closure
 
 	vProc(String img, String classname, int args) {
-		this.img = img;
+		this.img = iNew.String(img);
 		this.classname = classname;
 		this.args = args;
 	}
@@ -20,18 +20,43 @@ public class vProc extends vValue {
 		return this;
 	}
 
-	String image()	{ return img; }
+	vString image()	{ return img; }
 
 	static vString typestring = iNew.String("procedure");
 	vString type()	{ return typestring; }
-	int rank()	{ return 80; }	// procedures sort after co-expressions
 
-	int compareTo(vValue v) {	// must handle procs, funcs, rec constrs
-		String s1 = this.image();
-		String s2 = v.image();
-		s1 = s1.substring(s1.lastIndexOf(' ') + 1);
-		s2 = s2.substring(s2.lastIndexOf(' ') + 1);
-		return s1.compareTo(s2);
+	int rank()	{ return 80; }	// procedures sort after co-expressions
+	int compareTo(vValue v) {
+		return compareLastWord(img, v.image());
+	}
+
+	//  compareLastWord(s1, s2) -- compare procedure types
+	//
+	//  compares images of procedures, functions, and record types
+	//  (which all sort together) based on the last word of each
+	//  argument, which should be the name.
+	static int compareLastWord(vString s1, vString s2) {
+		int len1 = s1.length();
+		int len2 = s2.length();
+		int i1 = 0;
+		int i2 = 0;
+		for (int j = 0; j < len1; j++) {
+			if (s1.charAt(j) == ' ') {
+				i1 = j + 1;
+			}
+		}
+		for (int j = 0; j < len2; j++) {
+			if (s2.charAt(j) == ' ') {
+				i2 = j + 1;
+			}
+		}
+		while (i1 < len1 && i2 < len2) {
+			int d = s1.charAt(i1++) - s2.charAt(i2++);
+			if (d != 0) {
+				return d;
+			}
+		}
+		return (len1 - i1) - (len2 - i2);
 	}
 
 	iClosure getClosure() {

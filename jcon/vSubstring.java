@@ -65,11 +65,11 @@ public vValue deref() {
     return iNew.String(this.strval(), start, end);
 }
 
-String report() {
+vString report() {
     if (start + 1 == end) {
-	return var.deref().report() + "[" + start + "]";
+	return iNew.String(var.deref().report() + "[" + start + "]");
     } else {
-	return var.deref().report() + "[" + start + ":" + end + "]";
+	return iNew.String(var.deref().report() + "[" + start +":"+ end + "]");
     }
 }
 

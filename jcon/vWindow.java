@@ -45,8 +45,8 @@ private static int gcount = 0;	// count of graphics contexts allocated
 
 static vString typestring = iNew.String("window");
 vString type()			{ return typestring; }
-String image()			{ return "window_" + wnum + ":" + gnum 
-				    + "(" + c.f.getTitle() + ")"; } 
+vString image()			{ return iNew.String("window_" + wnum + ":" +
+				    gnum + "(" + c.f.getTitle() + ")"); } 
 
 int rank()			{ return 50; }	// windows sort after csets
 int compareTo(vValue v)

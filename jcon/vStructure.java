@@ -26,18 +26,22 @@ vInteger Serial()	{ return iNew.Integer(this.snum); }
 
 
 //  x.image() -- common method for lists, sets, and tables
-//  #%#% converts type to string every time
 
-String image() {
-    return this.type().toString() + "_" + this.snum +
-	"(" + this.Size().image() + ")";
+static vString uscore = iNew.String('_');
+static vString lpar = iNew.String('(');
+static vString rpar = iNew.String(')');
+
+vString image() {			// type_snum(size)
+    return this.type().concat(uscore).concat(iNew.String(snum))
+	.concat(lpar).concat(this.Size().mkString()).concat(rpar);
 }
 
 
 
 //  x.compareTo(y) -- common comparison method for lists, sets, tables
 //
-//  (called only for two sets, two lists, etc.)
+//  called only for two sets, two lists, or two tables;
+//  for records, overridden by a different implementation
 
 int compareTo(vValue v)
 {

@@ -6,12 +6,15 @@ public class vNull extends vValue {
     vDescriptor isntNull()	{ return null; /*FAIL*/ }
 
     vString write()		{ return iNew.String(); }
-    String image()		{ return "&null"; }
+
+    static vString imagestring = iNew.String("&null");
+    vString image()		{ return imagestring; }
 
     public int hashCode()	{ return 0; }
 
     static vString typestring = iNew.String("null");
     vString type()		{ return typestring; }
+
     int rank()			{ return 0; }	// nulls sort first
     int compareTo(vValue v)	{ return 0; }	// all nulls are equal
 

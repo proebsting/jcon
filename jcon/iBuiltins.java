@@ -125,7 +125,7 @@ class f$name extends iRefClosure {				// name(v)
 	}
 }
 
-class f$display extends iValueClosure {			// display(x)
+class f$display extends iValueClosure {				// display(x)
 	vDescriptor function(vDescriptor[] args) {
 		//#%#%#% arguments are validated but ignored
 		long level = vInteger.argVal(args, 0, 1000000);
@@ -160,7 +160,7 @@ class f$variable extends iValueClosure {			// variable(x)
 	}
 }
 
-class f$collect extends iValueClosure {			// collect(i,j)
+class f$collect extends iValueClosure {				// collect(i,j)
 	vDescriptor function(vDescriptor[] args) {
 		long i1 = vInteger.argVal(args, 0, 0);
 		long i2 = vInteger.argVal(args, 1, 0);
@@ -212,9 +212,9 @@ class f$proc extends iValueClosure {				// proc(s, i)
 	}
 }
 
-class f$image extends iValueClosure {			// image(x)
+class f$image extends iValueClosure {				// image(x)
 	vDescriptor function(vDescriptor[] args) {
-		return iNew.String(iRuntime.argVal(args, 0).image());
+		return iRuntime.argVal(args, 0).image();
 	}
 }
 
@@ -228,7 +228,7 @@ class f$type extends iValueClosure {				// type(x)
 
 
 
-class f$serial extends iValueClosure {			// serial(x)
+class f$serial extends iValueClosure {				// serial(x)
 	vDescriptor function(vDescriptor[] args) {
 		return iRuntime.argVal(args, 0).Serial();
 	}
@@ -244,7 +244,7 @@ class f$copy extends iValueClosure {				// copy(x)
 
 
 
-class f$integer extends iValueClosure {			// integer(x)
+class f$integer extends iValueClosure {				// integer(x)
 	vDescriptor function(vDescriptor[] args) {
 		try {
 			return iRuntime.argVal(args, 0).mkInteger();
@@ -256,7 +256,7 @@ class f$integer extends iValueClosure {			// integer(x)
 
 
 
-class f$numeric extends iValueClosure {			// numeric(x)
+class f$numeric extends iValueClosure {				// numeric(x)
 	vDescriptor function(vDescriptor[] args) {
 		try {
 			return iRuntime.argVal(args, 0).mkNumeric();
@@ -280,7 +280,7 @@ class f$real extends iValueClosure {				// real(x)
 
 
 
-class f$string extends iValueClosure {			// string(x)
+class f$string extends iValueClosure {				// string(x)
 	vDescriptor function(vDescriptor[] args) {
 		try {
 			return iRuntime.argVal(args, 0).mkString();
@@ -304,7 +304,7 @@ class f$cset extends iValueClosure {				// cset(x)
 
 
 
-class f$delay extends iValueClosure {			// delay(i)
+class f$delay extends iValueClosure {				// delay(i)
 	vDescriptor function(vDescriptor[] args) {
 		int i = (int) vInteger.argVal(args, 0, 1);
 		try {
@@ -357,7 +357,7 @@ class f$seq extends iClosure {					// seq(i1,i2)
 	}
 }
 
-class f$remove extends iValueClosure {			// remove(s)
+class f$remove extends iValueClosure {				// remove(s)
 	vDescriptor function(vDescriptor[] args) {
 		String s = vString.argDescr(args, 0).toString();
 		java.io.File f = new java.io.File(s);
@@ -369,7 +369,7 @@ class f$remove extends iValueClosure {			// remove(s)
 	}
 }
 
-class f$rename extends iValueClosure {			// rename(s1,s2)
+class f$rename extends iValueClosure {				// rename(s1,s2)
 	vDescriptor function(vDescriptor[] args) {
 		String s1 = vString.argDescr(args, 0).toString();
 		String s2 = vString.argDescr(args, 1).toString();
@@ -383,7 +383,7 @@ class f$rename extends iValueClosure {			// rename(s1,s2)
 	}
 }
 
-class f$system extends iValueClosure {			// system(s)
+class f$system extends iValueClosure {				// system(s)
 	vDescriptor function(vDescriptor[] args) {
 		String s = vString.argDescr(args, 0).toString();
 		int status;
@@ -399,7 +399,7 @@ class f$system extends iValueClosure {			// system(s)
 	}
 }
 
-class f$getenv extends iValueClosure {			// getenv(s)
+class f$getenv extends iValueClosure {				// getenv(s)
 
 
 	static Hashtable env = new Hashtable();
@@ -440,7 +440,7 @@ class f$errorclear extends iValueClosure {			// errorclear()
 	}
 }
 
-class f$runerr extends iValueClosure {			// runerr(i,x)
+class f$runerr extends iValueClosure {				// runerr(i,x)
 	vDescriptor function(vDescriptor[] args) {
 		long i = vInteger.argVal(args, 0);
 		vDescriptor x = iRuntime.argVal(args, 1);

@@ -22,10 +22,11 @@ vRecord(vRecordProc constr, vDescriptor[] inits) {
 
 
 
-vString type()	{ return constr.vname; }
+vString type()	{ return constr.name; }
 
-String image() {
-    return "record " + constr.name + "_" + snum + "(" + values.length + ")";
+vString image() {
+    return iNew.String(
+	"record " + constr.name + "_" + snum + "(" + values.length + ")");
 }
 
 vInteger Size()	{ return iNew.Integer(values.length); }

@@ -140,7 +140,7 @@ class vSortElem extends vValue {		// key/value pair for sortf()
 	}
     }
 
-    String image()	{ return "<" + value.image() + ">"; }
+    vString image()	{ return value.image().surround("<", ">"); }
 
     static vString typestring = iNew.String("sortf");
     vString type()	{ return typestring; }	// shouldn't ever be used

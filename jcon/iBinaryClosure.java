@@ -21,9 +21,9 @@ public abstract class iBinaryClosure extends iClosure {
 		this.parent = parent;
 	}
 
-	String getarg(int n) {
+	vString getarg(int n) {
 		switch (n) {
-		default: return "???";
+		default: return iNew.String("???");
 		case 0 : return argument0.report();
 		case 1 : return argument1.report();
 		}

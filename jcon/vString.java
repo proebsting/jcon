@@ -107,7 +107,23 @@ final vString concat(vString s) {	// s.concat(s)
     return new vString(this, s.data);
 }
 
-public final byte[] getBytes() {
+public final vString surround(String js1, String js2) {	// s.surround(js1, js2)
+    this.flatten();
+    int len1 = js1.length();
+    int len2 = js2.length();
+    byte[] b = new byte[len1 + tlength + len2];
+    for (int i = 0; i < len1; i++) {
+	b[i] = (byte) js1.charAt(i);
+    }
+    System.arraycopy(data, 0, b, len1, tlength);
+    int o = len1 + tlength;
+    for (int i = 0; i < len2; i++) {
+	b[o + i] = (byte) js2.charAt(i);
+    }
+    return iNew.String(b);
+}
+
+public final byte[] getBytes() {	// s.getBytes() rtns data (NOT a copy)
     this.flatten();
     return data;
 }
@@ -224,27 +240,31 @@ static vString typestring = iNew.String("string");
 vString type()		{ return typestring; }
 int rank()		{ return 30; }		// strings rank after reals
 
-String image()		{ return image(tlength); }
-String report()		{ return image(16); }	 // limit to max of 16 chars
+vString image()		{ return image(tlength); }
+vString report()	{ return image(16); }	 // limit to max of 16 chars
 
 
-String image(int maxlen) {		// make image, up to maxlen chars
-    StringBuffer b = new StringBuffer(maxlen + 5);	// optimistic guess
+vString image(int maxlen) {		// make image, up to maxlen chars
+    this.flatten();
+    vByteBuffer b = new vByteBuffer(maxlen + 5);	// optimistic guess
     b.append('"');
     int i;
     for (i = 0; i < maxlen && i < tlength; i++) {
-	char c = this.charAt(i);
+	char c = (char) data[i];
 	if (c == '"') {
-	    b.append("\\\"");
+	    b.append('\\');
+	    b.append('\"');
 	} else {
 	    appendEscaped(b, c);
         }
     }
     if (i < tlength) {
-	b.append("...");
+	b.append('.');
+	b.append('.');
+	b.append('.');
     }
     b.append('"');
-    return b.toString();
+    return b.mkString();
 }
 
 
@@ -347,28 +367,31 @@ static vString argDescr(vDescriptor[] args, int index, vString dflt) // opt arg
 
 //  append escaped char to StringBuffer; also used for csets
 
-private static String[] escapes =	// escapes for chars 0x08 - 0x0D
-    { "\\b", "\\t", "\\n", "\\v", "\\f", "\\r" };
+private static char[] ecodes = { 'b', 't', 'n', 'v', 'f', 'r' };
+private static char[] xcodes =
+    { '0','1','2','3','4','5','6','7','8','9','a','b','c','d','e','f' };
 
-static void appendEscaped(StringBuffer b, char c)
+static void appendEscaped(vByteBuffer b, char c)
 {
     if (c >= ' ' && c <= '~') {		// printable range
 	if (c == '\\') {
 	    b.append('\\');
 	}
 	b.append(c);
-    } else if (c > 0xFF) {		// extended Unicode range
-	b.append("\\u");
-	b.append(Integer.toHexString(0x10000 + c).substring(1));   // 4 digits
     } else if (c >= 0x08 && c <= 0x0D) {
-	b.append(escapes[c - 0x08]);	//  \b \t \n \v \f \r
+	b.append('\\');
+	b.append(ecodes[c - 0x08]);	//  \b \t \n \v \f \r
     } else if (c == 0x1B) {
-	b.append("\\e");		//  \e
+	b.append('\\');
+	b.append('e');		//  \e
     } else if (c == 0x7F) {
-	b.append("\\d");		//  \d
+	b.append('\\');
+	b.append('d');		//  \d
     } else {
-	b.append("\\x");		//  \xnn
-	b.append(Integer.toHexString(0x100 + c).substring(1));    // 2 digits
+	b.append('\\');
+	b.append('x');		//  \xnn
+	b.append(xcodes[(c >> 4) & 0xF]);
+	b.append(xcodes[c & 0xF]);
     }
 }
 

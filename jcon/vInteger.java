@@ -24,8 +24,8 @@ vInteger mkInteger()	{ return this; }
 vReal mkReal()		{ return iNew.Real(this.value); }
 vString mkString()	{ return iNew.String(this.value); }
 
-vString write()		{ return this.mkString(); }
-String image()		{ return String.valueOf(value); }
+vString write()		{ return iNew.String(this.value); }
+vString image()		{ return iNew.String(this.value); }
 
 static vString typestring = iNew.String("integer");
 vString type()		{ return typestring; }
@@ -287,21 +287,16 @@ class vIntegerProc extends vValue {
 
 	vValue getproc()	{ return this; }
 
-	String image()	{ return "function " + this.value.value; }
+	vString image()	{ return value.mkString().surround("function ", ""); }
 
 	static vString typestring = iNew.String("procedure");
 	vString type()	{ return typestring; }
+
 	int rank()	{ return 80; }	// integer "procedure"
+	int compareTo(vValue v)
+		{ return vProc.compareLastWord(this.image(), v.image()); }
 
 	vInteger Args()	{ return iNew.Integer(-1); }
-
-	int compareTo(vValue v) {
-                String s1 = this.image();
-                String s2 = v.image();
-                s1 = s1.substring(s1.lastIndexOf(' ') + 1);
-                s2 = s2.substring(s2.lastIndexOf(' ') + 1);
-                return s1.compareTo(s2);
-	}
 }
 
 

@@ -38,10 +38,10 @@ public abstract class vDescriptor {
 	(c.argument0 = this.mkNumeric()).NumBoth(c);
     }
 
-    // conversion to (Java) string for special purposes
+    // conversion to string for special purposes
     abstract vString write();			// convert for use in write()
-    abstract String image();			// convert for use in image()
-    abstract String report();			// convert for error reporting
+    abstract vString image();			// convert for use in image()
+    abstract vString report();			// convert for error reporting
     abstract vString type();			// return name of type
 
     // simple unary operators that always return values

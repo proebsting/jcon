@@ -20,8 +20,10 @@ public class vSimpleVar extends vVariable {
 
     public vVariable Assign(vValue x)	{ value = x; return this; }
 
-    vString Name()	{ return iNew.String(name); }
+    vString Name()			{ return iNew.String(name); }
 
-    String report()	{ return "(variable = " + this.value.report() + ")"; }
+    vString report() {
+	return iNew.String("(variable = " + this.value.report() + ")");
+    }
 
 }

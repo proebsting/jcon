@@ -3,15 +3,15 @@ package rts;
 
 
 public class vRecordProc extends vValue {
-	String name;		// name of record type
-	vString vname;		// name of record type, as vString, for type()
+	vString name;		// name of record type
+	vString img;		// image: record constructor <name>
 	String[] fieldnames;	// names of fields
 	String[] varnames;	// variable names
 	int nextsn = 1;		// next serial number
 
 	vRecordProc(String name, String[] fieldnames) {
-		this.name = name;
-		this.vname = iNew.String(name);
+		this.name = iNew.String(name);
+		this.img = this.name.surround("record constructor ", "");
 		this.fieldnames = fieldnames;
 		this.varnames = new String[fieldnames.length];
 		for (int i = 0; i < varnames.length; i++) {
@@ -25,21 +25,17 @@ public class vRecordProc extends vValue {
 
 	vValue getproc()	{ return this; }
 
-	String image()	{ return "record constructor " + name; }
+	vString image()		{ return img; }
 
 	static vString typestring = iNew.String("procedure");
-	vString type()	{ return typestring; }
+	vString type()		{ return typestring; }
+
 	int rank()	{ return 80; }	// record constructors sort with procs
+	int compareTo(vValue v) {
+			return vProc.compareLastWord(name, v.image());
+	}
 
 	vInteger Args()	{ return iNew.Integer(fieldnames.length); }
-
-	int compareTo(vValue v) {	// must handle procs, funcs, rec constrs
-		String s1 = this.image();
-		String s2 = v.image();
-		s1 = s1.substring(s1.lastIndexOf(' ') + 1);
-		s2 = s2.substring(s2.lastIndexOf(' ') + 1);
-		return s1.compareTo(s2);
-	}
 
 	int find(String s) {
 		for (int i = 0; i < fieldnames.length; i++) {

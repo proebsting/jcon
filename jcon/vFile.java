@@ -15,7 +15,7 @@ import java.io.*;
 
 public abstract class vFile extends vValue {
 
-    String img;			// string for image() and for sorting
+    vString img;		// string for image() and for sorting
 
     DataInput instream;		// input stream, if readable
     DataOutput outstream;	// output stream, if writable
@@ -32,7 +32,7 @@ abstract void newline();		// write newline
 
 static vString typestring = iNew.String("file");
 vString type()			{ return typestring; }
-String image()			{ return this.img; }
+vString image()			{ return this.img; }
 int rank()			{ return 60; }	// files sort after windows
 int compareTo(vValue v)		{ return this.img.compareTo(((vFile) v).img); }
 vDescriptor Bang(iClosure c)	{ return this.read(); }
@@ -52,7 +52,7 @@ static vFile fileToSync;	// file to sync, if non-null
 // new vFile(kwname, instream, outstream) -- constructor for keyword files
 
 vFile(String kwname, DataInput i, DataOutput o) {
-    img = kwname;
+    img = iNew.String(kwname);
     instream = i;
     outstream = o;
 }
@@ -66,7 +66,7 @@ vFile(String name, String flags) throws IOException {
 
     String mode;
 
-    img = "file(" + name + ")";				// save image
+    img = iNew.String("file(" + name + ")");		// save image
 
     if (iRuntime.upto("wabcWABC", flags)) {		// planning to write?
 	mode = "rw";

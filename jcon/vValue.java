@@ -34,8 +34,8 @@ public abstract class vValue extends vDescriptor {
     vValue[] mkArray()		{ iRuntime.error(125, this); return null; }
 
     vString write()		{ return this.mkString(); }
-    String report()		{ return this.image(); }
-    abstract String image();	// required of all subclasses
+    vString report()		{ return this.image(); }
+    abstract vString image();	// required of all subclasses
 
     // simple unary operators that always return values
     vNumeric Negate()		{ return this.mkNumeric().Negate(); }
