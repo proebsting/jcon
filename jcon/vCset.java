@@ -149,4 +149,25 @@ vValue Diff(vDescriptor x) {
     return result;
 }
 
+//  static methods for argument processing and defaulting
+
+static vCset argVal(vDescriptor[] args, int index)		// required arg
+{
+    if (index >= args.length) {
+	iRuntime.error(104);
+	return null;
+    } else {
+	return args[index].mkCset();
+    }
+}
+
+static vCset argVal(vDescriptor[] args, int index, int dfltlow, int dflthigh)	// optional arg
+{
+    if (index >= args.length || args[index] instanceof vNull) {
+	return iNew.Cset(dfltlow, dflthigh);
+    } else {
+	return args[index].mkCset();
+    }
+}
+
 } // class vCset

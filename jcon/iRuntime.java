@@ -70,10 +70,10 @@ public static vValue argVal(vDescriptor[] args, int index, int errcode)
 // o/w returns vString value.
 
 public static vString argSubject(vDescriptor[] args, int index) {
-    if (index < args.length) {
-	return args[index].mkString();
+    if (index >= args.length || args[index].deref() instanceof vNull) {
+        return (vString) k$subject.self.deref();
     }
-    return (vString) k$subject.self.deref();
+    return args[index].mkString();
 }
 
 // argPos(args, index) handles defaulting of &pos in scanning functions.
@@ -82,12 +82,16 @@ public static vString argSubject(vDescriptor[] args, int index) {
 // o/w returns argument's integer value.
 
 public static long argPos(vDescriptor[] args, int index) {
-    if (index < args.length) {
-	return args[index].mkInteger().value;
-    } else if (index < args.length+1) {
+    if ((index - args.length > 0) // both defaulted
+       || ((index - args.length == 0) && (args[index-1].deref() instanceof vNull))
+       || ((args[index-1].deref() instanceof vNull) && (args[index].deref() instanceof vNull))
+       ) {
+        return ((vInteger)k$pos.self.deref()).value;
+    }
+    if ((index - args.length == 0) || (args[index].deref() instanceof vNull)) {
         return 1;
     }
-    return ((vInteger)k$pos.self.deref()).value;
+    return args[index].mkInteger().value;
 }
 
 
