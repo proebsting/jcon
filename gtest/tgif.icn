@@ -1,0 +1,56 @@
+#  tgif -- test gif writing and reading
+#
+#  use mouse to sweep out area to be dumped to "tgif.gif"
+
+link graphics, random, dialog, vsetup
+
+procedure main(args)
+   local x, y, w, h, n, e, fname, wn, bounds
+
+   Window(copy(args))
+   wn := Window(args, "posx=" || WAttrib("posx"),
+      "posy=" || WAttrib("posy") + WAttrib("height") + 20)
+
+   n := integer(args[1]) | 500
+   w := WAttrib("width")
+   h := WAttrib("height")
+
+   randomize()
+   every 1 to n do {
+      Fg(?65535 || "," || ?65535 || "," || ?65535)
+      FillCircle(?w, ?h, 5 + ?10)
+      }
+
+   WAttrib("fg=black", "drawop=reverse")
+   x := y := w := h := 1
+   DrawRectangle(x, y, w-1, h-1)
+   while e := Event() do case e of {
+      QuitEvents():
+         exit()
+      &lpress: {
+	 DrawRectangle(x, y, w-1, h-1)
+         fname := "./tgif.gif"
+         bounds := Sweep()
+	 x := get(bounds)
+	 y := get(bounds)
+	 w := get(bounds)
+	 h := get(bounds)
+         write("x,y,w,h: ", x, " ", y, " ", w, " ", h)
+	 WAttrib("drawop=copy")		# for Notice()
+         if WriteImage(fname, x, y, w, h) then {
+            EraseArea(wn)
+            if n := ReadImage(wn, fname, x, y) then {
+               if \n > 0 then
+        	  Notice(n || " colors missing")
+	       }
+            else
+               Notice("can't read " ||  fname)
+            }
+         else {
+            Notice("couldn't write" || fname)
+            }
+	 WAttrib("drawop=reverse")
+	 DrawRectangle(x, y, w-1, h-1)
+         }
+      }
+end
