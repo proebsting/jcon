@@ -1,6 +1,5 @@
 changes in v2:
 -- variable(), display(), and &dump can access only global variables.
--- &level always fails
 
 ------------------------------------------------------------------------------
 
