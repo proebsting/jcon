@@ -1,11 +1,13 @@
 Version History
 
-0.5.1
+0.5.1	July 22, 1997
 	use "jar" tool instead of Zip and UnZip
 	support translated mode I/O
 	on all platforms, accept CR or LF or CRLF as line terminator on input
+	modify jcont for Windows NT
+	use ":" for option delimiters in jtran (again for Windows NT)
 
-0.5.0	June 15, 1997
+0.5.0	July 15, 1997
 	limited distribution
 
 0.4	reuse of closures
