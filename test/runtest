@@ -5,10 +5,13 @@
 #	-J	use Java compiler target  (icont -J)
 #	-P	disable optimizer  (icont -P)
 
+# export variables for use by spawned shells
+export JTRAN="../bin/jtran"
 export JCONT="../bin/jcont"
 export JCOPT="-s"
 export JXOPTS="-verify"
 
+# process options
 USAGE="$0 [-JP] [file...]"
 while getopts :JP c; do
     case $c in
@@ -19,39 +22,68 @@ while getopts :JP c; do
 done
 shift $((OPTIND-1))
 
+# if no files specifies, use all
 if [ $# = 0 ]; then
    set *.std
 fi
 
+# initialize list of failures
 FAILED=""
 
+# process files
 for FNAME; do
     BASE=${FNAME%.*}
     echo ${BASE}:
+
+    # if $BASE.sh exists, run that instead of preprogrammed script
     if [ -r $BASE.sh ]; then
 	sh $BASE.sh || FAILED="$FAILED $BASE"
 	continue
     fi
+
+    # ensure that $BASE.icn and $BASE.std exist
     if [ ! -r $BASE.icn -o ! -r $BASE.std ]; then
 	echo "   invalid test: missing $BASE.icn or $BASE.std"
 	FAILED="$FAILED $BASE"
 	continue
     fi
+
+    # grep source for any extra compilation options needed
     XOPTS=`sed -n 's/^#OPT:  *//p' $BASE.icn`
-    if $JCONT $JCOPT $XOPTS $BASE; then
-       :
+
+    # check to see if recompilation is needed; it's not if:
+    #	an executable exists
+    #	it was built by jcon
+    #	it is newer than jcont
+    #	it is newer than jtran
+    #	it is newer than its own source code
+    F=`find . -name $BASE -type f -perm -0100 \
+	-newer $BASE.icn -newer $JCONT -newer ../bin/jtran`
+    if [ "$F" != "" ] && grep -q '^# built by.*jcon' $F; then
+	:
     else
-	FAILED="$FAILED $BASE"
-	continue
+
+	#compile program; abort on failure
+	if $JCONT $JCOPT $XOPTS $BASE; then
+	   :
+	else
+	    FAILED="$FAILED $BASE"
+	    continue
+	fi
+
     fi
+
+    # run program, with stdin from $BASE.dat if it exists
     if [ -r $BASE.dat ]; then
 	./$BASE $BASE.dat <$BASE.dat >$BASE.out
     else
 	./$BASE </dev/null >$BASE.out
     fi
+
     cmp $BASE.std $BASE.out || FAILED="$FAILED $BASE"
 done
 
+# report summary of results
 case "X$FAILED"  in
     X)  echo "Testing successful.";  exit 0;;
     *)  echo "Testing FAILED for: $FAILED"; exit 1;;
