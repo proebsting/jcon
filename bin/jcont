@@ -283,21 +283,21 @@ $ANNOUNCE 1>&2 "Linking:"
 rm -f $TDIR/*.class
 (cd $TDIR; $JLINK $MAIN $ROOTS)
 
-# disassemble $MAIN class, if requested
-if [ "$JVMDUMP" != "" ]; then (
-    cd $TDIR
-    JVM=../$MAIN.jvm
-    echo "======================================" $MAIN >>$JVM
-    echo "" >>$JVM
-    CLASSPATH=$JRTS:. $JVMDUMP $MAIN >>../$MAIN.jvm
-    )
-fi
-
 # generate list of files needed for linking
 $JAVA rts.FindFiles $LINKTRACE "$UIPATH" $ZFILES >$TDIR/zip.list
 
 # unpack all the .zip files and combine the class files to make a new .zip file
 (cd $TDIR; $JAVA rts.ZipMerge combined.zip $MAIN.class `cat zip.list`)
+
+# disassemble $MAIN class, if requested
+if [ "$JVMDUMP" != "" ]; then (
+    cd $TDIR
+    JVM=../$MAIN.jvm
+    echo "======================================" $MAIN.class >>$JVM
+    echo "" >>$JVM
+    CLASSPATH=$JRTS:combined.zip $JVMDUMP $MAIN >>../$MAIN.jvm
+    )
+fi
 
 # write the output file
 case $XTYPE in
