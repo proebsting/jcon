@@ -17,6 +17,7 @@ public final class wFunctions extends iInstantiate {
         if (name.equals("f$DrawArc")) return new f$DrawArc();
         if (name.equals("f$DrawCircle")) return new f$DrawCircle();
         if (name.equals("f$DrawCurve")) return new f$DrawCurve();
+        if (name.equals("f$DrawImage")) return new f$DrawImage();
         if (name.equals("f$DrawLine")) return new f$DrawLine();
         if (name.equals("f$DrawPoint")) return new f$DrawPoint();
         if (name.equals("f$DrawPolygon")) return new f$DrawPolygon();
@@ -408,8 +409,8 @@ final class f$CopyArea extends vProcV {	    // CopyArea(W1,W2,x1,y1,w,h,x2,y2)
 	Dimension d = win1.getCanvas().getSize();
 	int x1 = (int) vInteger.argVal(args, b + 0, -win1.dx);
 	int y1 = (int) vInteger.argVal(args, b + 1, -win1.dy);
-	int w  = (int) vInteger.argVal(args, b + 2, d.width - x1);
-	int h  = (int) vInteger.argVal(args, b + 3, d.height - y1);
+	int w  = (int) vInteger.argVal(args, b + 2, d.width - x1 + win1.dx);
+	int h  = (int) vInteger.argVal(args, b + 3, d.height - y1 + win1.dy);
 	int x2 = (int) vInteger.argVal(args, b + 4, -win2.dx);
 	int y2 = (int) vInteger.argVal(args, b + 5, -win2.dy);
 
@@ -522,6 +523,27 @@ final class f$DrawString extends vProcV {	// DrawString(W,x,y,s,...)
 
 
 
+final class f$DrawImage extends vProc4 {	// DrawImage(W,x,y,s)
+    public vDescriptor Call(
+	    vDescriptor a, vDescriptor b, vDescriptor c, vDescriptor d) {
+	if (!a.iswin()) {
+	    return Call(iKeyword.window.getWindow(), a, b, c);
+	}
+	vWindow win = (vWindow)(a.Deref());
+	int x = b.isnull() ? -win.dx : ((int) b.mkInteger().value);
+	int y = c.isnull() ? -win.dy : ((int) c.mkInteger().value);
+	Image im = wImage.decode(win, d.mkString());
+	if (im == null) {
+	    return null; /*FAIL*/
+	}
+	win.CopyImage(im, x, y);
+	im.flush();
+	return vNull.New();	// note: returns null, not window
+    }
+}
+
+
+
 final class f$ReadImage extends vProc4 {	// ReadImage(W,s,x,y)  [no ,s2]
     public vDescriptor Call(
 	    vDescriptor a, vDescriptor b, vDescriptor c, vDescriptor d) {
@@ -539,7 +561,7 @@ final class f$ReadImage extends vProc4 {	// ReadImage(W,s,x,y)  [no ,s2]
 	win.CopyImage(im, x, y);
 	im.flush();
 	win.getCanvas().image = fname;
-	return win;
+	return vNull.New();	// note: returns null, not window
     }
 }
 

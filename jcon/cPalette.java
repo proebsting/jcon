@@ -19,7 +19,7 @@ abstract vString Key(wColor k);		// PaletteKey(W, p, k)
 
 
 static Hashtable cache = new Hashtable();
-static cEntry nullentry = new cEntry(0, 0, 0, true, false);
+static cEntry nullentry = new cEntry(0, 0, 0, false, false);
 static cEntry xptentry = new cEntry(0, 0, 0, false, true);
 
 

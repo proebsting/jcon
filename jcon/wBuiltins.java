@@ -23,6 +23,7 @@ static void announce() {
     iEnv.declareBuiltin("DrawArc", -1, wFunctions.self);
     iEnv.declareBuiltin("DrawCircle", -1, wFunctions.self);
     iEnv.declareBuiltin("DrawCurve", -1, wFunctions.self);	// just DrawLine
+    iEnv.declareBuiltin("DrawImage", 4, wFunctions.self);	// no bilevels
     iEnv.declareBuiltin("DrawLine", -1, wFunctions.self);
     iEnv.declareBuiltin("DrawPoint", -1, wFunctions.self);
     iEnv.declareBuiltin("DrawPolygon", -1, wFunctions.self);
@@ -56,15 +57,10 @@ static void announce() {
     iEnv.declareBuiltin("WFlush", 1, wFunctions.self);
     iEnv.declareBuiltin("WSync", 1, wFunctions.self);
 
-    // #%#% NOT IMPLEMENTED:
-    //
-    // iEnv.declareBuiltin("DrawImage", 4);
-    //
+    //#%#% Not implemented:
     // iEnv.declareBuiltin("WriteImage", 6);
     // iEnv.declareBuiltin("Pixel", 5);
-    //
     // iEnv.declareBuiltin("Active", 0);
-    //
     // iEnv.declareBuiltin("Couple", 2);	// may not be possible
 }
 

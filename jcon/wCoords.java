@@ -61,8 +61,8 @@ static int[] rectArgs(vDescriptor args[], int step) {	// get x,y,w,h int sets
 	int x, y;
 	a[j++] = x = (int) vInteger.argVal(args, b + i, -win.dx);
 	a[j++] = y = (int) vInteger.argVal(args, b + i + 1, -win.dy);
-	a[j++] = (int) vInteger.argVal(args, b + i + 2, d.width - x);
-	a[j++] = (int) vInteger.argVal(args, b + i + 3, d.height - y);
+	a[j++] = (int) vInteger.argVal(args, b + i + 2, d.width - x + win.dx);
+	a[j++] = (int) vInteger.argVal(args, b + i + 3, d.height - y + win.dy);
     }
 
     // put in canonical form: handle negative w/h values

@@ -26,9 +26,9 @@ public final class vWindow extends vFile {
     private boolean clipping;	// is clipping enabled?
     int dx, dy;			// graphics origin
 
-    private double gamma;	// gamma correction factor
-    private wColor bg;		// background color
-    private wColor fg;		// foreground color
+    double gamma;		// gamma correction factor
+    wColor bg;			// background color
+    wColor fg;			// foreground color
     private boolean xormode;	// in "drawop=reverse" (XOR) mode?
     private vString revatt;	// value of "reverse=" attribute
 
@@ -623,6 +623,14 @@ void CopyImage(Image im, int x, int y) {
 
 void CopyArea(vWindow src, int x1, int y1, int w, int h, int x2, int y2) {
 
+    // adjust negative width and height
+    if (w < 0) {
+	x1 -= (w = -w);
+    }
+    if (h < 0) {
+	y1 -= (h = -h);
+    }
+
     // check for source portions outside window bounds
     Dimension d = src.c.getSize();
     int lmar, rmar, tmar, bmar;
@@ -667,7 +675,9 @@ void CopyArea(vWindow src, int x1, int y1, int w, int h, int x2, int y2) {
 	if (src == this) {
 	    b.copyArea(x1, y1, w, h, x2 - x1, y2 - y1);
 	} else {
-	    b.drawImage(src.c.i, x2, y2, x2+w, y2+h, x1, y1, x1+w, y1+h, null);
+	    b.drawImage(src.c.i, x2, y2, x2+w, y2+h,
+		x1 + src.dx, y1 + src.dy, x1 + src.dx + w, y1 + src.dy + h,
+		null);
 	}
 	a.drawImage(c.i, x2, y2, x2 + w, y2 + h,
 	    x2 + dx, y2 + dy, x2 + w + dx, y2 + h + dy, null);
