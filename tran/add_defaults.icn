@@ -277,6 +277,9 @@ end
 # record Mutual( exprList )
 procedure add_defaults_Mutual(p)
 	p.exprList := add_defaults(p.exprList)
+	if *p.exprList = 0 then {
+		p.exprList := [ Key("null") ]
+	}
 	every /(!p.exprList) := Key("null")
 	return p
 end
