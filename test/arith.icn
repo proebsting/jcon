@@ -40,6 +40,11 @@ procedure main()
    write()
 
    shifttest()
+   write()
+
+   every pow(-3 to 3, -3 to 3)
+   every pow(.5 | 1 | 1.5, (-3 to 3) / 2.0)
+   every pow(-1.5 | -1.0 | -.5 | 0.0, -3 to 3)
 end
 
 procedure numtest(a, b)
@@ -95,3 +100,22 @@ end
 procedure wr25(n)
    writes(right(n, 25))
 end
+
+
+
+procedure pow(m, n)
+   local v
+
+   if m = 0 & n <= 0 then
+      fail
+   v := m ^ n
+   if type(v) == "real" then {
+      if v > 0 then
+	 v := integer(v * 1000 + 0.5) / 1000.0
+      else
+	 v := integer(v * 1000 - 0.5) / 1000.0
+      }
+   write(right(m, 5), " ^ ", left(n, 5), "=", right(v, 7))
+   return
+end
+
