@@ -5,21 +5,18 @@ what's implemented:
 -- most functions; missing chdir(), loadfunc(), getch()/getche()/kbhit()
 -- only part of the graphics repertoire (see below)
 
-general:
--- crude tracing can be enabled by setting &trace
--- the TRACE environment variable is *not* honored
--- if Java runs out of memory, setenv JXOPTS='-mx50m' (e.g.) to increase max
--- out-of-memory errors say "block region"; there is no separate string region
-
-building and running programs:
+compilation and linking:
 -- jcont is a complex script that only runs on Unix
 -- "jcont foo.zip" doesn't search IPATH (only link'd files are searched for)
 -- link directives must give a simple name (not a path)
 -- compiled .zip files cannot be renamed: name must match original .icn name
    (however, executables can be renamed)
--- $PATH must include env and uname commands to use getenv() and &hostname
 
-------------------------------------------------------------------------------
+execution:
+-- if Java runs out of memory, setenv JXOPTS='-mx50m' (e.g.) to increase max
+-- out-of-memory errors say "block region"; there is no separate string region
+-- $PATH must include env and uname commands to use getenv() and &hostname
+-- tracing (set by $TRACE or &trace) includes operators and built-in functions
 
 known bugs:
 -- the preprocessor does not diagnose "$define f(a) ..."
