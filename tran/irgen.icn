@@ -67,6 +67,8 @@ procedure ir_a_Scan(p, st, inuse, target, bounded, rval)
     suspend ir(p.body, st, inuse, rv, if p.op == "?" then bounded else &null, rval)
     pull(ir_scan_stack)
 
+    \p.coord | runerr(500, p)
+
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.expr.ir.start) ])
     /bounded & suspend ir_chunk(p.ir.resume, [
         ir_ScanSwap(ir_coord(p.coord),  p.ir.x.oldsubject, p.ir.x.oldpos ),
@@ -225,7 +227,7 @@ procedure ir_a_Case(p, st, inuse, target, bounded, rval)
     local t, L, i, tmp1, tmp2, e, v, x, eiu, ciu, tiu
     local oiu
 
-    /p.dflt := a_Key("fail")
+    /p.dflt := a_Key("fail", p.coord)
 
     ir_init(p)
     /bounded & (t := ir_tmploc(st, inuse))
@@ -301,7 +303,7 @@ end
 procedure ir_a_Every(p, st, inuse, target, bounded, rval)
     local tmp, tiu
 
-    /p.body := a_Key("fail")
+    /p.body := a_Key("fail", p.coord)
 
     ir_init_loop(p, st, inuse, target, bounded, rval)
     put(ir_loop_stack, p)
@@ -352,11 +354,12 @@ end
 procedure ir_a_Call(p, st, inuse, target, bounded, rval)
     local closure, L, i, fn, args
 
-    every /(!p.args.exprList) := a_Key("null")
+    \p.coord | runerr(500, p)
+    every /(!p.args.exprList) := a_Key("null", p.coord)
     if type(p.args) == "a_CoexpList" then {
         L := []
-        every put(L, a_Create(!p.args.exprList))
-        p.args := a_Arglist([a_ListConstructor(L)])
+        every put(L, a_Create(!p.args.exprList, p.coord))
+        p.args := a_Arglist([a_ListConstructor(L, p.coord)])
     }
 
     ir_init(p)
@@ -373,6 +376,7 @@ procedure ir_a_Call(p, st, inuse, target, bounded, rval)
     }
 
     L := [p.fn] ||| p.args.exprList
+    \p.coord | runerr(500, p)
 
     suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.fn.ir.start) ])
     suspend ir_chunk(p.ir.resume, [
@@ -469,7 +473,7 @@ procedure ir_a_Binop(p, st, inuse, target, bounded, rval)
             "===", "~===", "|||", "||", "@" ])
     }
 
-    /p.right := a_Key("null")
+    /p.right := a_Key("null", p.coord)
 
     if p.op == "&" then {
         suspend ir_conjunction(p, st, inuse, target, bounded, rval)
@@ -503,7 +507,7 @@ end
 procedure ir_unary_coexp(p, st, inuse, target, bounded, rval)
     local t
 
-    t := a_Binop("@", a_Key("null"), p.operand, ir_coord(p.coord))
+    t := a_Binop("@", a_Key("null", p.coord), p.operand, ir_coord(p.coord))
     suspend ir(t, st, inuse, target, bounded, rval)
     p.ir := t.ir
 end
@@ -567,7 +571,7 @@ end
 procedure ir_a_If(p, st, inuse, target, bounded, rval)
     local t, tmp, tiu, xiu, yiu
 
-    /p.elseexpr := a_Key("fail")
+    /p.elseexpr := a_Key("fail", p.coord)
 
     ir_init(p)
     /bounded & (t := ir_tmploc(st, inuse))
@@ -776,7 +780,7 @@ end
 procedure ir_a_ProcBody(p, st, inuse, target, bounded, rval)
     local L, i, tiu
 
-    every /(!p.nexprList) := a_Key("null")
+    every /(!p.nexprList) := a_Key("null", p.coord)
 
     ir_loop_stack := []
     ir_scan_stack := []
@@ -871,7 +875,7 @@ procedure ir_a_Return(p, st, inuse, target, bounded, rval)
 
     /ir_createflag |semantic_error("invalid context for return or fail",p.coord)
 
-    /p.expr := a_Key("null")
+    /p.expr := a_Key("null", p.coord)
 
     ir_init(p)
     t := ir_tmp(st, inuse)
@@ -930,7 +934,7 @@ procedure ir_a_Suspend(p, st, inuse, target, bounded, rval)
 
     /ir_createflag | semantic_error("invalid context for suspend", p.coord)
 
-    /p.body := a_Key("fail") & /p.expr := a_Key("null")
+    /p.body := a_Key("fail", p.coord) & /p.expr := a_Key("null", p.coord)
 
     ir_init_loop(p, st, inuse, target, bounded, rval)
     t := ir_label(p, "suspend")
@@ -972,7 +976,7 @@ end
 procedure ir_a_Until(p, st, inuse, target, bounded, rval)
     local eiu, biu
 
-    /p.body := a_Key("fail")
+    /p.body := a_Key("fail", p.coord)
 
     ir_init_loop(p, st, inuse, target, bounded, rval)
     put(ir_loop_stack, p)
@@ -999,7 +1003,7 @@ end
 procedure ir_a_While(p, st, inuse, target, bounded, rval)
     local eiu, biu
 
-    /p.body := a_Key("fail")
+    /p.body := a_Key("fail", p.coord)
 
     ir_init_loop(p, st, inuse, target, bounded, rval)
     put(ir_loop_stack, p)
@@ -1026,6 +1030,7 @@ end
 procedure ir_a_Create(p, st, inuse, target, bounded, rval)
     local t
 
+    \p.coord | runerr(500, p)
     ir_init(p)
     if /target then {
         suspend ir_chunk(p.ir.start, [ ir_Goto(ir_coord(p.coord), p.ir.success) ])
@@ -1100,7 +1105,7 @@ procedure ir_a_Break(p, st, inuse, target, bounded, rval)
 
     ir_loop_stack[1] | semantic_error("invalid context for break", p.coord)
 
-    /p.expr := a_Key("null")
+    /p.expr := a_Key("null", p.coord)
 
     ir_init(p)
 
@@ -1189,9 +1194,9 @@ procedure ir_a_Mutual(p, st, inuse, target, bounded, rval)
     local L, i
 
     if *p.exprList = 0 then {
-        p.exprList := [ a_Key("null") ]
+        p.exprList := [ a_Key("null", p.coord) ]
     } else {
-        every /(!p.exprList) := a_Key("null")
+        every /(!p.exprList) := a_Key("null", p.coord)
     }
 
     ir_init(p)
@@ -1217,7 +1222,7 @@ end
 procedure ir_a_Compound(p, st, inuse, target, bounded, rval)
     local L, i, tiu
 
-    every /(!p.exprList) := a_Key("null")
+    every /(!p.exprList) := a_Key("null", p.coord)
 
     ir_init(p)
 
@@ -1256,6 +1261,7 @@ procedure ir_a_Key(p, st, inuse, target, bounded, rval)
     local closure
 
     ir_init(p)
+    \p.coord | runerr(500, p)
 
     case (p.id) of {
     "line" : {
@@ -1305,7 +1311,8 @@ end
 procedure ir_a_ListConstructor(p, st, inuse, target, bounded, rval)
     local L, i, args
 
-    every /(!p.exprList) := a_Key("null")
+    \p.coord | runerr(500, p)
+    every /(!p.exprList) := a_Key("null", p.coord)
 
     ir_init(p)
 
@@ -1331,6 +1338,7 @@ procedure ir_a_ListConstructor(p, st, inuse, target, bounded, rval)
         suspend ir_chunk(L[i].ir.success, [ ir_Goto(ir_coord(p.coord), L[i+1].ir.start) ])
         suspend ir_chunk(L[i].ir.failure, [ ir_Goto(ir_coord(p.coord), L[i-1].ir.resume) ])
     }
+    \p.coord | runerr(500, p)
     if \target then {
         suspend ir_chunk(L[-1].ir.start, [
             ir_MakeList(ir_coord(p.coord), target, args),
