@@ -7,6 +7,8 @@ what's implemented:
 -- all operators except unary "="
 -- some keywords (see list)
 -- some built-in functions (see list)
+-- no "link" declaration support
+-- no "invocable" declaration support
 -- no graphics
 -- no preprocessor
 
