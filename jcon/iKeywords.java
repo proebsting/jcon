@@ -23,7 +23,7 @@ public class iKeywords extends iFile {
 		iEnv.declareKey("phi", iNew.Real((1.0 + Math.sqrt(5.0)) / 2.0));
 		iEnv.declareKey("pi", iNew.Real(Math.PI));
 		iEnv.declareKey("version", 
-			    iNew.String("Jcon Version 0.3, Summer, 1997"));
+			    iNew.String("Jcon Version 0.4, Summer, 1997"));
 
 	    	// cset constants
 		vCset lcase, ucase;
