@@ -1,0 +1,14 @@
+      null : &null
+   default : 0
+         1 : 1
+   default : 2
+   default : 0.0
+       1.0 : 1.0
+   default : 2.0
+   default : ""
+   default : "0"
+       "1" : "1"
+   default : "2"
+       rec : record constructor rec
+      main : procedure main
+   default : procedure foo

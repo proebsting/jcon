@@ -1,0 +1,28 @@
+record rec(a)
+
+procedure main()
+   local L, s, x
+
+   L := [&null, 0, 1, 2, 0.0, 1.0, 2.0, "", "0", "1", "2",
+      rec, main, foo ]
+   #%#% removed from list, because no serial numbers yet:  rec(), rec(1), []
+   #%#% also removed:  put(L, L)
+
+   every x := !L do {
+      s := case x of {
+        1:        "1"
+        1.0:      "1.0"
+        "1":      "\"1\""
+        &null:    "null"
+        main:     "main"
+        rec:	  "rec"
+	rec():    "rec()"	# shouldn't ever match
+	L:        "L"
+        default:  "default"
+        }
+      write(right(s, 10), " : " , image(x))
+      }
+end
+
+procedure foo()
+end
