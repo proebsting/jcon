@@ -1,5 +1,8 @@
 Version History
 
+0.6
+	add initial graphics support, still very incomplete
+
 0.5.3	August 7, 1997
 	snapshot set/table at start of generation to prevent later confusion
 	fix coercion and error checking in x ^ y

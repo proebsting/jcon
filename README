@@ -1,5 +1,5 @@
-JCON 0.5.3 README
-August 7, 1997
+JCON 0.6.0 README
+September 11, 1997
 
 Gregg Townsend
 Todd Proebsting
@@ -99,12 +99,26 @@ There is no other documentation at this time.
 
 
 
+DIRECTORY STRUCTURE
+
+The subdirectories within the Jcon tree are as follows:
+	bin	target for all build products; also includes jcont script
+	tran	source code for the translator
+	rts	source code for the runtime system
+	doc	such documentation as exists; builds bin/notes.txt
+	test	automated test collection for validating Icon
+	expt	other tests, demos, and experiments to be running manually
+
+
+
 ACKNOWLEDGEMENTS
 
 Denise Todd contributed to the translator used by Jcon.
+Bob Alexander wrote the preprocessor and contributed other
+code and suggestions.
 Ralph Griswold offered useful advice and helped test early versions.
-Bob Alexander provided code and helpful suggestions.
-
+Some small portions of the runtime system are derived from Version 9
+of Icon.
 
 
 PROBLEMS AND BUG REPORTS
