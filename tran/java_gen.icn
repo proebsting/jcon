@@ -13,9 +13,9 @@ global java_global_set
 global java_record_table
 global java_proc_table
 global java_op_table
-global java_tmp_set
-global java_tmploc_set
-global java_tmpclosure_set
+global java_tmp_table
+global java_tmploc_table
+global java_tmpclosure_table
 global java_var_set
 global java_key_set
 global java_args_set
@@ -49,8 +49,8 @@ end
 procedure gen_java_irTmp(p)
 	local s
 
-	s := p.name
-	insert(java_tmp_set, s)
+	/java_tmp_table[p.name] := *java_tmp_table
+	s := "tmpArray[" || java_tmp_table[p.name] || "]"
 	return s
 end
 
@@ -58,8 +58,8 @@ end
 procedure gen_java_irTmpLabel(p)
 	local s
 
-	s := p.name
-	insert(java_tmploc_set, s)
+	/java_tmploc_table[p.name] := *java_tmploc_table
+	s := "tmpLabelArray[" || java_tmploc_table[p.name] || "]"
 	return s
 end
 
@@ -67,8 +67,8 @@ end
 procedure gen_java_irTmpClosure(p)
 	local s
 
-	s := p.name
-	insert(java_tmpclosure_set, s)
+	/java_tmpclosure_table[p.name] := *java_tmpclosure_table
+	s := "tmpClosureArray[" || java_tmpclosure_table[p.name] || "]"
 	return s
 end
 
@@ -473,17 +473,15 @@ end
 
 procedure java_gen_temporaries()
 	every write(outfile, "\tvDescriptor[] ", !java_args_set, ";")
-	every write(outfile, "\tvDescriptor ", !java_tmp_set, ";")
-	every write(outfile, "\tiClosure ", !java_tmpclosure_set, ";")
-	every write(outfile, "\tint ", !java_tmploc_set, ";")
+
+	write("\tvDescriptor[] tmpArray = new vDescriptor[", *java_tmp_table, "];")
+	write("\tiClosure[] tmpClosureArray = new iClosure[", *java_tmpclosure_table, "];")
+	write("\tint[] tmpLabelArray = new int[", *java_tmploc_table, "];")
 	write(outfile);
 end
 
 procedure java_init_temporaries()
 	every write(outfile, "\t", !java_args_set, " = null;")
-	every write(outfile, "\t", !java_tmp_set, " = null;")
-	every write(outfile, "\t", !java_tmpclosure_set, " = null;")
-	every write(outfile, "\t", !java_tmploc_set, " = 0;")
 	write(outfile);
 end
 
@@ -503,9 +501,9 @@ procedure java_function(name, params, accumulate, locals, statics, code, coord)
 
 	java_args_set := set();
 
-	java_tmp_set := set([])
-	java_tmploc_set := set([])
-	java_tmpclosure_set := set([])
+	java_tmp_table := table()
+	java_tmploc_table := table()
+	java_tmpclosure_table := table()
 	java_var_set := set([])
 	java_emit_table := table()
 	java_create_exists := &null
