@@ -30,24 +30,6 @@ public vProc mkProc(int i)	{ return this; }
 
 
 
-//  New(classname, image, nargs) -- create vProc and initialize	//#%#%REMOVE
-
-static vProc New(String classname, String img, int nargs) {
-    vProc p;
-
-    try {
-	p = (vProc) Class.forName(classname).newInstance();
-    } catch (Exception e) {
-	iRuntime.bomb("can't create instance of vProc class " + classname);
-	p = null;
-    }
-    p.img = vString.New(img);
-    p.args = nargs;
-    return p;
-}
-
-
-
 int rank()		{ return 80; }	// procedures sort after co-expressions
 int compareTo(vValue v) { return compareLastWord(img, v.image()); }
 

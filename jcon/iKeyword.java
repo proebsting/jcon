@@ -19,6 +19,9 @@ public final class iKeyword {
 static private vCset lcset = vCset.New('a', 'z');
 static private vCset ucset = vCset.New('A', 'Z');
 
+// NOTE: changing the declared type of any keyword below 
+//       also requires a corresponding change in jtran.
+
 static vProc allocated =
     iEnv.declareKey("allocated", new kZeroes(4));
 static vProc ascii =
