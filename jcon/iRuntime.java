@@ -8,14 +8,42 @@ public final class iRuntime {
 
 
 
-//  exit()-- common termination routine for all exits except internal errors.
+//  arg(args[], i)    -- return arg i, defaulting to &null
+//  arg(args[], i, e) -- return arg i, signalling error e if missing
 
-public static void exit(int status) {
-    if (iKeyword.dump.check()) {		// honor &dump
-	display(iKeyword.errout.file());
+private static vNull vnull = vNull.New();
+
+public static vDescriptor arg(vDescriptor[] args, int index) {
+    if (args.length <= index) {
+	return vnull;
+    } else {
+	return args[index];
     }
-    vFile.shutdown();				// flush output files etc.
-    System.exit(status);			// shut down
+}
+
+
+
+//  display(f) -- display global variables (only) on f
+
+public static void display(vFile f) {
+
+    // do the current coexpression
+    f.writes(iEnv.cur_coexp.report());
+    
+    // do the globals
+    f.newline();
+    f.println("global identifiers:");
+    int i = 0;
+    vString[] a = new vString[iEnv.symtab.size()];
+    java.util.Enumeration e = iEnv.symtab.keys();
+    while (e.hasMoreElements()) {
+	a[i++] = vString.New((String) e.nextElement());
+    }
+    iSort.sort(a);
+    for (i = 0; i < a.length; i++) {
+	vVariable v = (vVariable) iEnv.symtab.get(a[i].toString());
+	f.println("   " + a[i] + " = " + v.Deref().report());
+    }
 }
 
 
@@ -63,42 +91,14 @@ public static void bomb(String s, Throwable t) {
 
 
 
-//  arg(args[], i)    -- return arg i, defaulting to &null
-//  arg(args[], i, e) -- return arg i, signalling error e if missing
+//  exit()-- common termination routine for all exits except internal errors.
 
-private static vNull vnull = vNull.New();
-
-public static vDescriptor arg(vDescriptor[] args, int index) {
-    if (args.length <= index) {
-	return vnull;
-    } else {
-	return args[index];
+public static void exit(int status) {
+    if (iKeyword.dump.check()) {		// honor &dump
+	display(iKeyword.errout.file());
     }
-}
-
-
-
-//  display(f) -- display global variables (only) on f
-
-public static void display(vFile f) {
-
-    // do the current coexpression
-    f.writes(iEnv.cur_coexp.report());
-    
-    // do the globals
-    f.newline();
-    f.println("global identifiers:");
-    int i = 0;
-    vString[] a = new vString[iEnv.symtab.size()];
-    java.util.Enumeration e = iEnv.symtab.keys();
-    while (e.hasMoreElements()) {
-	a[i++] = vString.New((String) e.nextElement());
-    }
-    iSort.sort(a);
-    for (i = 0; i < a.length; i++) {
-	vVariable v = (vVariable) iEnv.symtab.get(a[i].toString());
-	f.println("   " + a[i] + " = " + v.Deref().report());
-    }
+    vFile.shutdown();				// flush output files etc.
+    System.exit(status);			// shut down
 }
 
 

@@ -1,20 +1,24 @@
 package rts;
 
 public final class vTracedClosure extends vClosure {
-    vDescriptor tracedFn;
+    vProc tracedProc;
     vDescriptor[] tracedArgs;
 
-public vTracedClosure(vDescriptor tracedFn, vDescriptor[] tracedArgs, vDescriptor tracedClosure) {
-    this.tracedFn = tracedFn;
+public vTracedClosure(vProc tracedProc, vDescriptor[] tracedArgs,
+				vDescriptor tracedClosure) {
+    this.tracedProc = tracedProc;
     this.tracedArgs = tracedArgs;
     retval = tracedClosure;
 }
 
-public static vTracedClosure New(vDescriptor tracedFn, vDescriptor[] tracedArgs, vDescriptor tracedClosure) {
-    if (tracedClosure == null) {
+public static vDescriptor New(vProc tracedProc, vDescriptor[] tracedArgs,
+				vDescriptor tracedResult) {
+    if (tracedResult == null) {
 	return null;
+    } else if (tracedResult instanceof vClosure) {
+        return new vTracedClosure(tracedProc, tracedArgs, tracedResult);
     } else {
-        return new vTracedClosure(tracedFn, tracedArgs, tracedClosure);
+	return tracedResult;
     }
 }
 

@@ -440,6 +440,13 @@ public vDescriptor ToBy(vDescriptor v2, vDescriptor v3) {
 
 //  i(a, b, c, ...)
 
+public vProc mkProc(int nargs) {
+    final vValue n = this;	// vInteger provokes JDK1.1/1.2 compiler bug
+    return new vProcV() {
+	public vDescriptor Call(vDescriptor v[]) { return n.Call(v); }
+    };
+}
+
 public vDescriptor Call(vDescriptor v[]) {
     int i;
     if (value < 0) {
@@ -448,7 +455,7 @@ public vDescriptor Call(vDescriptor v[]) {
 	i = (int) value - 1;
     }
     if (i >= 0 && i < v.length) {
-	return v[i - 1].Deref();
+	return v[i].Deref();
     } else {
 	return null; /*FAIL*/
     }

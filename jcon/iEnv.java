@@ -89,6 +89,7 @@ public static void declareGlobalInit(String s, vVariable x) {
 public static void declareProcedure(String name, vProc p, int arity) {
     p.img = vString.New("procedure " + name);
     p.args = arity;
+    p.traceable = true;
     declareGlobalInit(name, vSimpleVar.New(name, p));
 }
 

@@ -15,6 +15,7 @@ public abstract class vProc extends vValue {
 
     vString img;	// image for printing
     int args;		// number of args
+    boolean traceable;	// trace calls to this vProc?
 
 
 
