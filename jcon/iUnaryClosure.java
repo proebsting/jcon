@@ -6,12 +6,12 @@ public abstract class iUnaryClosure extends iClosure {
 
 	abstract vDescriptor function(vDescriptor arg);
 
-	void closure(vDescriptor[] args, iClosure parent) {
+	public void closure(vDescriptor[] args, iClosure parent) {
 		init();
 		argument = args[0];
 		this.parent = parent;
 	}
-	void closure(vDescriptor arg0, iClosure parent) {
+	public void closure(vDescriptor arg0, iClosure parent) {
 		init();
 		argument = arg0;
 		this.parent = parent;
