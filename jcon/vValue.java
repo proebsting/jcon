@@ -102,10 +102,10 @@ public vString LUnequal(vDescriptor v)	{ return mkString().LUnequal(v); }
 public vString LGreaterEq(vDescriptor v){ return mkString().LGreaterEq(v); }
 public vString LGreater(vDescriptor v)	{ return mkString().LGreater(v); }
 
-public vValue VEqual(vDescriptor v) {	vValue vv = (vValue) v;	//  a === b
+public vValue VEqual(vDescriptor v) {	vValue vv = v.Deref();	//  a === b
 					return this.equals(vv) ? vv : null;
 					}
-public vValue VUnequal(vDescriptor v) {	vValue vv = (vValue) v;	//  a ~=== b
+public vValue VUnequal(vDescriptor v) {	vValue vv = v.Deref();	//  a ~=== b
 					return this.equals(vv) ? null : vv;
 					}
 
