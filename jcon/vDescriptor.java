@@ -63,6 +63,8 @@ abstract class vDescriptor {
     abstract vValue NGreaterEq(vDescriptor v);	//  n1 >= n2
     abstract vValue NGreater(vDescriptor v);	//  n1 > n2
 
+    abstract vValue Concat(vDescriptor v);	//  s1 || s2
+
     //#%#%#%# not-yet-implemented abort
     void NYI(String s) {
 	System.err.println("NYI: " + this + "." + (s != null ? s : "?"));

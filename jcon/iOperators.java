@@ -39,6 +39,8 @@ void announce(iEnv env) {
     declare(env, ">=,2", "oNGreaterEq");
     declare(env, ">,2", "oNGreater");
 
+    declare(env, "||,2", "oConcat");
+
     declare(env, "@,2", "oActivate");
 }
 
@@ -312,7 +314,17 @@ class oNGreater extends iFunctionClosure {		//  n1 > n2
 	String tfmt() { return "{$1 > $2}"; }
 }
 
-class oActivate extends iFunctionClosure {		//  n1 @ n2
+
+//  miscellaneous binary operators
+
+class oConcat extends iFunctionClosure {		//  s1 || s2
+	vDescriptor function(vDescriptor[] args) {
+		return args[0].Concat(args[1]);
+	}
+	String tfmt() { return "{$1 || $2}"; }
+}
+
+class oActivate extends iFunctionClosure {		//  x @ C
 	vDescriptor function(vDescriptor[] args) {
 		return env.cur_coexp.activate(args[0], args[1]);
 	}

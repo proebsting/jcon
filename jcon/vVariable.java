@@ -50,4 +50,5 @@ abstract class vVariable extends vDescriptor {
     vValue NGreaterEq(vDescriptor v)	{ return this.deref().NGreaterEq(v); }
     vValue NGreater(vDescriptor v)	{ return this.deref().NGreater(v); }
 
+    vValue Concat(vDescriptor v)	{ return this.deref().Concat(v); }
 }

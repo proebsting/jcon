@@ -69,4 +69,6 @@ abstract class vValue extends vDescriptor {
     vValue NUnequal(vDescriptor v)   { iRuntime.error(102, this); return null; }
     vValue NGreaterEq(vDescriptor v) { iRuntime.error(102, this); return null; }
     vValue NGreater(vDescriptor v)   { iRuntime.error(102, this); return null; }
+
+    vValue Concat(vDescriptor v)     { iRuntime.error(103, this); return null; }
 }

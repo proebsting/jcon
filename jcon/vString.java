@@ -86,6 +86,12 @@ vInteger Size()	{
 
 
 
+vValue Concat(vDescriptor v) {
+    return iNew.String(this.value + v.mkString().value);
+}
+
+
+
 vDescriptor Index(vValue i) {
     int m = this.posEq(i.mkInteger().value);
     if (m == 0 || m > value.length()) {
