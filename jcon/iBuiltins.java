@@ -129,8 +129,9 @@ class f$name extends iRefClosure {				// name(v)
 
 class f$display extends iValueClosure {			// display(x)
 	vDescriptor function(vDescriptor[] args) {
-
-		// #%#%#% currently ignores arguments
+		//#%#%#% arguments are validated but ignored
+		long level = vInteger.argVal(args, 0, 1000000);
+		vFile f = vFile.argVal(args, 1, k$errout.file);
 		iRuntime.display(parent);
 		return iNew.Null();
 	}

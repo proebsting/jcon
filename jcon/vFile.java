@@ -96,8 +96,11 @@ static boolean any(String c, String s) {	// any(c,s) -- like Icon's
 
 static vFile argVal(vDescriptor[] args, int index)		// required arg
 {
-    if (index >= args.length || ! (args[index] instanceof vFile)) {
+    if (index >= args.length) {
 	iRuntime.error(105);	// file expected
+	return null;
+    } else if (! (args[index] instanceof vFile)) {
+	iRuntime.error(105, args[index]);	// file expected
 	return null;
     } else {
 	return (vFile) args[index];
@@ -111,7 +114,7 @@ static vFile argVal(vDescriptor[] args, int index, vFile dflt)	// optional arg
     } else if (args[index] instanceof vFile) {
 	return (vFile) args[index];
     } else {
-	iRuntime.error(105);	// file expected
+	iRuntime.error(105, args[index]);	// file expected
 	return null;
     }
 }

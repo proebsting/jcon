@@ -96,7 +96,7 @@ vValue Insert(vDescriptor i, vDescriptor val) {
 
 vValue Intersect(vDescriptor x) {
     if (!(x instanceof vSet)) {
-        iRuntime.error(108, x);
+        iRuntime.error(120, x);
     }
     vSet rhs = (vSet) x;
     vSet result = new vSet((vValue)null);
@@ -114,7 +114,7 @@ vValue Intersect(vDescriptor x) {
 
 vValue Union(vDescriptor x) {
     if (!(x instanceof vSet)) {
-        iRuntime.error(108, x);
+        iRuntime.error(120, x);
     }
     vSet rhs = (vSet) x;
     vSet result = new vSet(rhs.t);
@@ -129,7 +129,7 @@ vValue Union(vDescriptor x) {
 
 vValue Diff(vDescriptor x) {
     if (!(x instanceof vSet)) {
-        iRuntime.error(108, x);
+        iRuntime.error(120, x);
     }
     vSet rhs = (vSet)x;
     vSet result = new vSet(this.t);

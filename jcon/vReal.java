@@ -97,7 +97,14 @@ vNumeric Negate()	{ return iNew.Real(-value); }
 vDescriptor Select()	{ return this.mkInteger().Select(); }
 
 vValue Power(vDescriptor v) {
-    return iNew.Real(Math.pow(this.value, ((vReal)v).value));
+    if (this.value < 0.0 && (v instanceof vReal)) {
+	iRuntime.error(206);	// no offending value (v9 compatible)
+    }
+    vReal y = v.mkReal();
+    if (this.value == 0.0 && y.value <= 0.0) {
+	iRuntime.error(204);
+    }
+    return iNew.Real(Math.pow(this.value, y.value));
 } 
 
 vValue Add(vDescriptor v) {

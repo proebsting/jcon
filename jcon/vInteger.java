@@ -151,6 +151,9 @@ vDescriptor Select() {
 
 //#%#%#% need to rewrite these to handle overflow:
 vValue Power(vDescriptor v) {
+    if (! (v instanceof vInteger)) {
+	return this.mkReal().Power(v);
+    }
     long x = this.value;
     long y = ((vInteger)v).value;
     if (x == 0 && y <= 0) {

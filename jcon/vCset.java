@@ -91,9 +91,38 @@ public boolean equals(Object o) {
 public int hashCode()	{ return this.mkString().hashCode(); }
 
 vCset mkCset()		{ return this; }
-vNumeric mkNumeric()	{ return this.mkString().mkNumeric(); }
-vInteger mkInteger()	{ return this.mkString().mkInteger(); }
-vReal mkReal()		{ return this.mkString().mkReal(); }
+
+
+// the catch clauses in these conversions ensure correct "offending values"
+
+vNumeric mkNumeric()	{
+	try {
+		return this.mkString().mkNumeric();
+	} catch (iError e) {
+		iRuntime.error(102, this);
+		return null;
+	}
+}
+
+vInteger mkInteger() {
+	try {
+		return this.mkString().mkInteger();
+	} catch (iError e) {
+		iRuntime.error(101, this);
+		return null;
+	}
+}
+
+vReal mkReal() {
+	try {
+		return this.mkString().mkReal();
+	} catch (iError e) {
+		iRuntime.error(102, this);
+		return null;
+	}
+}
+
+
 
 vDescriptor Index(vValue i)		{ return this.mkString().Index(i); }
 vDescriptor Section(vValue i, vValue j)	{ return this.mkString().Section(i,j); }
@@ -148,7 +177,12 @@ vValue Complement() {
 }
 
 vValue Union(vDescriptor x) {
-    vCset right = x.mkCset();
+    vCset right = null;
+    try {
+	right = x.mkCset();
+    } catch (iError e) {
+	iRuntime.error(120, x);		// two sets or two csets expected
+    }
     // all the bigger/smaller nonsense below is due to Sun's
     // brain-damaged definition of BitSet.or().
     java.util.BitSet bigger;
@@ -166,14 +200,22 @@ vValue Union(vDescriptor x) {
 }
 
 vValue Intersect(vDescriptor x) {
-    x = x.mkCset();
+    try {
+	x = x.mkCset();
+    } catch (iError e) {
+	iRuntime.error(120, x);		// two sets or two csets expected
+    }
     vCset result = new vCset((java.util.BitSet) ((vCset)x).t);
     result.t.and(this.t);
     return result;
 }
 
 vValue Diff(vDescriptor x) {
-    x = x.mkCset();
+    try {
+	x = x.mkCset();
+    } catch (iError e) {
+	iRuntime.error(120, x);		// two sets or two csets expected
+    }
     java.util.BitSet b = ((vCset)x).t;
     vCset result = new vCset((java.util.BitSet) this.t);
     for (int i = 0; i < b.size(); i++) {
