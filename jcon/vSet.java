@@ -61,10 +61,21 @@ vDescriptor Select() {
 
 vDescriptor Bang(iClosure c) {
     if (c.o == null) {
-        c.o = t.keys();
+	vValue a[] = new vValue[t.size()];
+	int i = 0;
+	java.util.Enumeration e = (java.util.Enumeration) t.keys();
+	while (e.hasMoreElements()) {
+	    a[i++] = (vValue) e.nextElement();
+	}
+	c.o = a;
     }
-    java.util.Enumeration e = (java.util.Enumeration) c.o;
-    return e.hasMoreElements() ? (vDescriptor) e.nextElement() : null;
+    int i = c.PC++ - 1;
+    vValue a[] = (vValue[]) c.o;
+    if (i < a.length) {
+	return a[i];
+    } else {
+	return null;
+    }
 }
 
 vValue Sort(int i) {					// sort(L)

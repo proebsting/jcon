@@ -61,19 +61,40 @@ vDescriptor Select() {
 
 vDescriptor Bang(iClosure c) {
     if (c.o == null) {
-        c.o = t.keys();
+	vTrappedTable a[] = new vTrappedTable[t.size()];
+	int i = 0;
+	java.util.Enumeration e = (java.util.Enumeration) t.keys();
+	while (e.hasMoreElements()) {
+	    a[i++] = new vTrappedTable(this, (vValue) e.nextElement());
+	}
+	c.o = a;
     }
-    java.util.Enumeration e = (java.util.Enumeration) c.o;
-    return e.hasMoreElements() ? 
-	new vTrappedTable(this, (vValue) e.nextElement()) : null;
+    int i = c.PC++ - 1;
+    vTrappedTable a[] = (vTrappedTable[]) c.o;
+    if (i < a.length) {
+	return a[i];
+    } else {
+	return null;
+    }
 }
 
 vValue Key(iClosure c) {
     if (c.o == null) {
-        c.o = t.keys();
+	vValue a[] = new vValue[t.size()];
+	int i = 0;
+	java.util.Enumeration e = (java.util.Enumeration) t.keys();
+	while (e.hasMoreElements()) {
+	    a[i++] = (vValue) e.nextElement();
+	}
+	c.o = a;
     }
-    java.util.Enumeration e = (java.util.Enumeration) c.o;
-    return e.hasMoreElements() ?  (vValue) e.nextElement() : null;
+    int i = c.PC++ - 1;
+    vValue a[] = (vValue[]) c.o;
+    if (i < a.length) {
+	return a[i];
+    } else {
+	return null;
+    }
 }
 
 vValue Member(vDescriptor i) {
