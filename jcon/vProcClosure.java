@@ -30,7 +30,8 @@ public vDescriptor Resume() {
 }
 
 public vClosure refreshcopy() {
-    return new vProcClosure(this.vproc, this.args);
+    iRuntime.error(215, iKeyword.main.Call());
+    return null;
 }
 
 } // class vProcClosure
