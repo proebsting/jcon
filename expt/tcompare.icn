@@ -62,7 +62,7 @@ procedure main(args)
                   writes("  ")
                }
             else
-               writes("           ")
+               writes("          ")
             }
          }
       write()
