@@ -54,17 +54,21 @@ class f$delete extends iValueClosure {				// delete(X,x)
 class f$key extends iClosure {					//  key(T)
     vDescriptor c;
     public vDescriptor nextval() {
-	if (PC == 1) {
-	    if (arguments.length == 0) {
-		iRuntime.error(124);
-		return null;
-	    }
-	    c = arguments[0].Key();
-	    PC = 2;
-	    return c.Deref();
-	} else {
-	    return c.resume();
-	}
+        if (PC == 1) {
+            if (arguments.length == 0) {
+                iRuntime.error(124);
+                return null;
+            }
+            c = arguments[0].Key();
+            if (c != null) {
+                PC = 2;
+                return c.Deref();
+            } else {
+                return null;
+            }
+        } else {
+            return c.resume();
+        }
     }
 }
 
