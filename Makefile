@@ -14,7 +14,6 @@
 #   to build using Jcon (optional), after completing initial build:
 #			make jj
 
-
 DEST = /must/specify/DEST/to/install
 
 
@@ -38,7 +37,7 @@ install:
 
 clean:
 	rm -f */.#*
-	cd html;   $(MAKE) clean
+	cd html;  $(MAKE) clean
 	cd tran;  $(MAKE) clean
 	cd rts;   $(MAKE) clean
 	cd test;  $(MAKE) clean
@@ -54,4 +53,3 @@ clean:
 dclean:	
 	rm -f `find * -type f | xargs grep -l '<< *ARIZONA-ONLY *>>' | cat`
 	rm -rf `find * -type d -name CVS`
-
