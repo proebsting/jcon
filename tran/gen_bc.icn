@@ -126,11 +126,28 @@ procedure bc_gen_ir_Deref(s, p)
     local deref
 
     \p.lhs | return s
+    (type(p.lhs) == "ir_Tmp") | runerr(500, p)
+    (type(p.value) == "ir_Tmp") | runerr(500, p)
 
     bc_gen(s, p.value)
     deref := bc_Deref_methodref(bc_current_classptr)
     put(s, j_invokevirtual(deref))
     bc_gen_assign_to(s, p.lhs)
+    return s
+end
+
+# record ir_Assign( lhs value )
+procedure bc_gen_ir_Assign(s, p)
+    local assign
+
+    (type(p.target) == "ir_Tmp") | runerr(500, p)
+    (type(p.value) == "ir_Tmp") | runerr(500, p)
+
+    bc_gen(s, p.target)
+    bc_gen(s, p.value)
+    assign := bc_Assign_methodref(bc_current_classptr)
+    put(s, j_invokevirtual(assign))
+    put(s, j_pop() )
     return s
 end
 
@@ -168,6 +185,9 @@ end
 procedure bc_gen_ir_Field(s, p)
     local lab, method, fieldname, field, d
 
+    (/p.lhs | (type(p.lhs) == "ir_Tmp")) | runerr(500, p)
+    (type(p.expr) == "ir_Tmp") | runerr(500, p)
+    (/p.failLabel | type(p.failLabel) == "ir_Label") | runerr(500, p)
     if /bc_nodebuginfo then {
 	bc_push_coordinate(s, p.coord)
     }
@@ -201,8 +221,8 @@ procedure bc_gen_ir_Move(s, p)
     local deref, call
 
     \p.lhs | return s
-
-    type(p.lhs) ~== "ir_TmpLabel" | runerr(500, p)
+    (type(p.lhs) == "ir_Tmp") | runerr(500, p)
+    (type(p.rhs) == "ir_Tmp") | runerr(500, p)
 
     bc_gen_rval(s, p.rhs)
     if type(p.rhs) == ("ir_Key") then {
@@ -217,13 +237,15 @@ procedure bc_gen_ir_Move(s, p)
     return s
 end
 
-# record ir_MoveLabel( lhs rhs )
+# record ir_MoveLabel( lhs label )
 procedure bc_gen_ir_MoveLabel(s, p)
     local deref, call
 
+    (type(p.lhs) == "ir_TmpLabel") | runerr(500, p)
+    (type(p.label) == "ir_Label") | runerr(500, p)
     \p.lhs | return s
 
-    bc_gen_rval(s, p.rhs)
+    bc_gen_rval(s, p.label)
     bc_gen_ir_TmpLabel_assign(s, p.lhs)
     return s
 end
@@ -232,12 +254,12 @@ end
 procedure bc_gen_ir_ScanSwap(s, p)
     local subject, pos, Ksubject, Kpos, deref, assign, call
 
+    (type(p.subject) == "ir_Tmp") | runerr(500, p)
+    (type(p.pos) == "ir_Tmp") | runerr(500, p)
     call := bc_CallN_methodref(bc_current_classptr, 0)
 
-    Ksubject := bc_gen([], ir_Key("subject"))
-    put(Ksubject, j_invokevirtual(call) )
-    Kpos := bc_gen([], ir_Key("pos"))
-    put(Kpos, j_invokevirtual(call) )
+    Ksubject := bc_gen_push_Key([], "subject")
+    Kpos := bc_gen_push_Key([], "pos")
 
     subject := bc_gen([], p.subject)
     pos := bc_gen([], p.pos)
@@ -267,87 +289,119 @@ end
 
 # record ir_Goto( targetLabel )
 procedure bc_gen_ir_Goto(s, p)
+    (type(p.targetLabel) == "ir_Label") | runerr(500, p)
     bc_transfer_to(s, p.targetLabel)
     return s
 end
 
-# record ir_Var( name )
-procedure bc_gen_ir_Var_rval(s, p)
-    put(s, j_Aload(bc_var_table[p.name] + bc_var_offset))
-    return s
-
-    /bc_var_field[p.name] := j_create_fieldref(bc_current_classptr,
-                                               "v$" || p.name,
-                                               "Ljcon/vVariable;",
-                                               bc_current_classname)
-    if member(bc_statics_set, p.name) then {
-        put(s, j_getstatic(bc_var_field[p.name]))
-    } else {
-        put(s, j_aload_0() )
-        put(s, j_getfield(bc_var_field[p.name]))
-    }
+# record ir_IndirectGoto( targetTmpLabel )
+procedure bc_gen_ir_IndirectGoto(s, p)
+    (type(p.targetTmpLabel) == "ir_TmpLabel") | runerr(500, p)
+    bc_transfer_to(s, p.targetTmpLabel)
     return s
 end
 
-# record ir_Key( name )
-procedure bc_gen_ir_Key_register(p)
-    if /bc_keywords(p.name) then {
-	semantic_error("invalid keyword" || " &" || p.name)
+# record ir_Var( lhs name )
+procedure bc_gen_ir_Var_rval(s, p)
+
+    \p.lhs | return s
+    (type(p.lhs) == "ir_Tmp") | runerr(500, p)
+    (type(p.name) == "string") | runerr(500, p)
+
+    put(s, j_Aload(\bc_var_table[p.name] + bc_var_offset)) | runerr(500, p.name)
+    bc_gen_assign_to(s, p.lhs)
+    return s
+end
+
+procedure bc_gen_ir_Key_register(name)
+    if /bc_keywords(name) then {
+	semantic_error("invalid keyword" || " &" || name)
     }
-    /bc_key_table[p.name] := j_create_fieldref(bc_current_classptr,
-					       bc_keywords(p.name)[1],
-					       bc_keywords(p.name)[2],
+    /bc_key_table[name] := j_create_fieldref(bc_current_classptr,
+					       bc_keywords(name)[1],
+					       bc_keywords(name)[2],
                                                "jcon/iKeyword")
 end
-procedure bc_gen_ir_Key_rval(s, p)
-    bc_gen_ir_Key_register(p)
-    put(s, j_getstatic(bc_key_table[p.name]))
+
+procedure bc_gen_push_Key(s, name)
+    local call
+
+    (type(name) == "string") | runerr(500, name)
+    bc_gen_ir_Key_register(name)
+    put(s, j_getstatic(bc_key_table[name]))
+    call := bc_CallN_methodref(bc_current_classptr, 0)
+    put(s, j_invokevirtual(call))
     return s
 end
 
-# record ir_IntLit( val )
+# record ir_Key( lhs name failLabel )
+procedure bc_gen_ir_Key(s, p)
+    local target
+
+    \p.lhs | return s
+    (type(p.lhs) == "ir_Tmp") | runerr(500, p)
+    (type(p.name) == "string") | runerr(500, p)
+    (/p.failLabel | type(p.failLabel) == "ir_Label") | runerr(500, p)
+    bc_gen_push_Key(s, p.name)
+    ir_CallTail(s, p)
+    return s
+end
+
+# record ir_IntLit( lhs val )
 procedure bc_gen_ir_IntLit(s, p)
     local i, field
 
+    \p.lhs | return s
+    (type(p.lhs) == "ir_Tmp") | runerr(500, p)
     i := integer(p.val)
     /bc_integer_table[i] := "li$" || map(i, "-", "m")
     field := j_create_fieldref(bc_current_classptr, bc_integer_table[i],
                                "Ljcon/vNumeric;", bc_java_classname)
     put(s, j_getstatic(field))
+    bc_gen_assign_to(s, p.lhs)
     return s
 end
 
-# record ir_RealLit( val )
+# record ir_RealLit( lhs val )
 procedure bc_gen_ir_RealLit(s, p)
     local r, x, field
 
+    \p.lhs | return s
+    (type(p.lhs) == "ir_Tmp") | runerr(500, p)
     r := real(p.val)
     /bc_real_table[r] := "lr$" || map(r, ".-+", "dmp")
     field := j_create_fieldref(bc_current_classptr, bc_real_table[r],
                                "Ljcon/vReal;", bc_java_classname)
     put(s, j_getstatic(field))
+    bc_gen_assign_to(s, p.lhs)
     return s
 end
 
-# record ir_StrLit( val )
+# record ir_StrLit( lhs val )
 procedure bc_gen_ir_StrLit(s, p)
     local x, field
 
+    \p.lhs | return s
+    (type(p.lhs) == "ir_Tmp") | runerr(500, p)
     /bc_string_table[p.val] := "ls$" || *bc_string_table
     field := j_create_fieldref(bc_current_classptr, bc_string_table[p.val],
                              "Ljcon/vString;", bc_java_classname)
     put(s, j_getstatic(field))
+    bc_gen_assign_to(s, p.lhs)
     return s
 end
 
-# record ir_CsetLit( val )
+# record ir_CsetLit( lhs val )
 procedure bc_gen_ir_CsetLit(s, p)
     local v, field
 
+    \p.lhs | return s
+    (type(p.lhs) == "ir_Tmp") | runerr(500, p)
     /bc_cset_table[p.val] := "lc$" || *bc_cset_table
     field := j_create_fieldref(bc_current_classptr, bc_cset_table[p.val],
                              "Ljcon/vCset;", bc_java_classname)
     put(s, j_getstatic(field))
+    bc_gen_assign_to(s, p.lhs)
     return s
 end
 
@@ -393,6 +447,8 @@ procedure bc_gen_ir_Succeed(s, p)
     local free, class_index
     local dereflocal
 
+    (type(p.expr) == "ir_Tmp") | runerr(500, p)
+    (/p.resumeLabel | type(p.resumeLabel) == "ir_Label") | runerr(500, p)
     PC := bc_PC_fieldref(bc_current_classptr, bc_vClosure_classname)
     if \p.resumeLabel then {
         \bc_save_restore_flag | runerr(500)
@@ -409,7 +465,11 @@ procedure bc_gen_ir_Succeed(s, p)
         put(s, j_putfield(PC))
     }
     bc_gen(s, p.expr)
-    dereflocal := bc_DerefLocal_methodref(bc_current_classptr)
+    if \p.resumeLabel then {
+        dereflocal := bc_DerefLocal_methodref(bc_current_classptr)
+    } else {
+        dereflocal := bc_Return_methodref(bc_current_classptr)
+    }
     put(s, j_invokevirtual(dereflocal) )
     if /p.resumeLabel & \bc_stackptr then {
         free := bc_Free_methodref(bc_current_classptr)
@@ -491,6 +551,9 @@ end
 procedure bc_gen_ir_ResumeValue(s, p)
     local c, PC, target, resume, free
 
+    (/p.lhs | type(p.lhs) == "ir_Tmp") | runerr(500, p)
+    (type(p.value) == "ir_Tmp") | runerr(500, p)
+    (/p.failLabel | type(p.failLabel) == "ir_Label") | runerr(500, p)
     if \bc_nodebuginfo then {
         resume := bc_Resume_methodref(bc_current_classptr)
         bc_gen(s, p.value)
@@ -520,6 +583,10 @@ procedure bc_gen_ir_MakeList(s, p)
     local r, v, i, method, class_index
 
     \p.lhs | return s
+    (type(p.lhs) == "ir_Tmp") | runerr(500, p)
+    every i := !p.valueList do {
+        (type(i) == "ir_Tmp") | runerr(500, p.valueList)
+    }
 
     put(s, j_ipush(*p.valueList))
     class_index := j_cp_Class(bc_current_classptr,
@@ -540,7 +607,13 @@ end
 
 # record ir_OpFunction( coord lhs fn argList failLabel )
 procedure bc_gen_ir_OpFunction(s, p)
-    local c, method
+    local c, method, i
+
+    (/p.lhs | type(p.lhs) == "ir_Tmp") | runerr(500, p)
+    (/p.failLabel | type(p.failLabel) == "ir_Label") | runerr(500, p)
+    every i := !p.argList do {
+        (type(i) == "ir_Tmp") | runerr(500, p.argList)
+    }
 
     p.fn.arity = *p.argList | runerr(500, p)
     if \bc_nodebuginfo then {
@@ -591,7 +664,13 @@ end
 procedure bc_gen_ir_Call(s, p)
     local r, l, f, v, n, i, method, class_index
 
+    (type(p.lhs) == "ir_Tmp") | runerr(500, p)
+    (type(p.fn) == "ir_Tmp") | runerr(500, p)
+    (/p.failLabel | type(p.failLabel) == "ir_Label") | runerr(500, p)
     type(p.fn) ~== "ir_operator" | runerr(500, p)
+    every i := !p.argList do {
+        (type(i) == "ir_Tmp") | runerr(500, p.argList)
+    }
 
     if /bc_nodebuginfo then {
 	bc_push_coordinate(s, p.coord)
@@ -638,6 +717,8 @@ end
 procedure bc_gen_ir_Create(s, p)
     local class, init, newmethod, createmethod, vararray
 
+    (type(p.lhs) == "ir_Tmp") | runerr(500, p)
+    (type(p.coexpLabel) == "ir_Label") | runerr(500, p)
     bc_create_exists := 1
 
     \bc_save_restore_flag | runerr(500)
@@ -671,6 +752,8 @@ end
 procedure bc_gen_ir_CoRet(s, p)
     local c, r, coretmethod, current
 
+    (type(p.value) == "ir_Tmp") | runerr(500, p)
+    (type(p.resumeLabel) == "ir_Label") | runerr(500, p)
     if /bc_nodebuginfo then {
 	bc_push_coordinate(s, p.coord)
         c := j_cp_String(bc_current_classptr, j_cp_Utf8(bc_current_classptr, bc_function_name))
@@ -718,6 +801,7 @@ end
 procedure bc_gen_ir_EnterInit(s, p)
     local target, initialized
 
+    (type(p.startLabel) == "ir_Label") | runerr(500, p)
     j_create_field(bc_current_classptr, 8, "initialized", "Z")
     initialized := j_create_fieldref(bc_current_classptr, "initialized", "Z",
                                    bc_current_classname)
@@ -740,13 +824,15 @@ procedure bc_gen(s, p)
     "ir_Tmp" : return bc_gen_ir_Tmp_rval(s, p)
     "ir_TmpLabel" : return bc_gen_ir_TmpLabel_rval(s, p)
     "ir_Var" : return bc_gen_ir_Var_rval(s, p)
-    "ir_Key" : return bc_gen_ir_Key_rval(s, p)
+    "ir_Key" : return bc_gen_ir_Key(s, p)
     "ir_Label" : return bc_gen_ir_Label_rval(s, p)
     "ir_Deref" : return bc_gen_ir_Deref(s, p)
+    "ir_Assign" : return bc_gen_ir_Assign(s, p)
     "ir_Move" : return bc_gen_ir_Move(s, p)
     "ir_MoveLabel" : return bc_gen_ir_MoveLabel(s, p)
     "ir_ScanSwap" : return bc_gen_ir_ScanSwap(s, p)
     "ir_Goto" : return bc_gen_ir_Goto(s, p)
+    "ir_IndirectGoto" : return bc_gen_ir_IndirectGoto(s, p)
     "ir_IntLit" : return bc_gen_ir_IntLit(s, p)
     "ir_RealLit" : return bc_gen_ir_RealLit(s, p)
     "ir_StrLit" : return bc_gen_ir_StrLit(s, p)
@@ -798,7 +884,7 @@ procedure bc_target_bookkeeping()
         case type(a) of {
         "ir_CoRet":  t := a.resumeLabel
         "ir_Create": t := a.coexpLabel
-        "ir_MoveLabel":   t := a.rhs
+        "ir_MoveLabel":   t := a.label
         "ir_Succeed":    t := a.resumeLabel
         default: next
         }
@@ -1155,6 +1241,9 @@ procedure bc_register(t)
     every op := !!!t do {
         bc_register0(op)
     }
+    every op := !!t do {
+        bc_register0(op)
+    }
 end
 
 procedure bc_register0(op)
@@ -1313,7 +1402,9 @@ procedure bc_nextval_code(nextvalcode, c, start, params, locals, undeclared, acc
                    if member(bc_emitted, k) then \bc_ir2bc_labels[k] else deflab
     }
     put(s, bc_switch_label)
-    if *bc_indirect_targets > 0 then {
+    #%#% the bc_tmplabel_table test below is because dead code can contain
+    #%#% indirect jumps for which there is no corresponding tmplabel assignment
+    if (*bc_indirect_targets > 0) | (*bc_tmplabel_table > 0) then {
         put(s, switch)
         runtimeerror := bc_error_methodref(c)
         put(s, deflab)

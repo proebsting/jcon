@@ -264,6 +264,7 @@ procedure methodrefs()
              "jcon/iEnv"],
 	["Deref", "()Ljcon/vValue;", "jcon/vDescriptor"],
 	["DerefLocal", "()Ljcon/vDescriptor;", "jcon/vDescriptor"],
+	["Return", "()Ljcon/vDescriptor;", "jcon/vDescriptor"],
 	["Field", "(Ljava/lang/String;)Ljcon/vVariable;","jcon/vDescriptor"],
 	["Field",
   "(Ljava/lang/String;ILjcon/vDescriptor;Ljava/lang/String;)Ljcon/vVariable;",

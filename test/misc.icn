@@ -69,10 +69,21 @@ procedure main()
    recordAsVariable := 3
    write(image(recordAsVariable))
 
+   every write(tstreturn())
+
    write("done")
    exit()
    write("oops!")
    dummy()
+end
+
+procedure tstreturn()
+   return fn()
+end
+
+procedure fn()
+   suspend "OK to get here"
+   write("Should not get here when called from a 'return'")
 end
 
 # test Icon's (odd) two-pass argument evaluation process.
