@@ -40,3 +40,5 @@ record ir_CoFail()
 record ir_ScanSwap(subject, pos)
 
 record ir_RunTimeError()
+
+record ir_Coordinate(file, line, column)
