@@ -4,8 +4,8 @@
 //  vTFile for text files or vBFile for binary files.
 //  vFile.New() examines flags to know which Type to construct.
 //
-//  many common operations are implemented here, including read().
-//  reads(), writes(), and newline() are class-specific.
+//  many common operations are implemented here, including read() and reads().
+//  writes() and newline() are class-specific.
 
 package jcon;
 
@@ -48,7 +48,6 @@ static vFile winToSync;		// window to sync, if non-null
 
 
 
-public abstract vString reads(long n);	// read n bytes
 public abstract void writes(vString s);	// write without appending newline
 public abstract void newline();		// write newline
 
@@ -300,7 +299,7 @@ char rchar() throws IOException, EOFException {
     if (nbytes <= 0) {
 	throw new EOFException();
     }
-    ifpos += nbytes;				// update file position
+    ifpos += nbytes;			// update file position
     inext = 1;				// point to second byte
     icount = nbytes - 1;
     return (char) (ibuf[0] & 0xFF);	// return first byte
@@ -483,6 +482,41 @@ public vString read() {						// read()
     }
     lastCharRead = c;
     return b.mkString();
+}
+
+
+
+public vString reads(long n) {					// reads()
+    vByteBuffer b = new vByteBuffer((int) n);
+
+    if (instream == null) {
+	iRuntime.error(212, this);	// not open for reading
+    }
+
+    try {
+	// suppress initial LF if previous call was to read()
+	// and it consumed CR but not yet LF
+	if (lastCharRead == '\r') {
+	    char c = this.rchar();
+	    if (c != '\n') {
+		b.append(c);
+	    }
+	}
+	// now read remaining bytes
+	while (b.length() < n) {
+	    b.append(this.rchar());
+	}
+    } catch (EOFException e) {
+	if (b.length() == 0)
+	    return null; /*FAIL*/
+    } catch (IOException e) {
+	iRuntime.error(214, this);	// I/O error
+	return null;
+    }
+
+    lastCharRead = '\0';		// reset in case read() follows
+
+    return b.mkString();		// return data as a string
 }
 
 

@@ -23,39 +23,6 @@ vTFile(String name, String mode) throws IOException {	// new vTFile(name,mode)
 
 
 
-//  translated reads() maps any line terminator sequence to "\n"
-
-public vString reads(long n) {
-    vByteBuffer b = new vByteBuffer((int) n);
-
-    if (instream == null) {
-	iRuntime.error(212, this);		// not open for reading
-    }
-
-    try {
-	while (b.length() < n) {
-	    char c = this.rchar();
-	    if (lastCharRead != '\r' || c != '\n') {	// if not LF after CR
-		if (c == '\r') {			// if new CR
-		    b.append('\n');
-		} else {			// other including LF
-		    b.append(c);
-		}
-	    }
-	    lastCharRead = c;
-	}
-    } catch (EOFException e) {
-	if (b.length() == 0)
-	    return null; /*FAIL*/
-    } catch (IOException e) {
-	iRuntime.error(214, this);		// I/O error
-	return null;
-    }
-    return b.mkString();
-}
-
-
-
 //  translated writes() maps newline chars to system line terminators
 
 public void writes(vString s) {

@@ -4,6 +4,9 @@ Important (externally visible) changes since 2.0 release:
 Since release of Version 2.1 (Sept 99):
 
 
+From gmt  Wed Jan 26 2000
+Make reads() not translate line terminators, for consistency with Icon v9.
+
 From todd  Tue Jan 25 21:55:06 2000
 Prevent the resumption of a returned closure, by adding a new Return method
 to vDescriptor.  Originally discovered in ddfread() as called from dlgvu.
