@@ -1,0 +1,71 @@
+#  capture.icn -- test beyond-edge WriteImage() and Capture()
+#
+#  WriteImage should clip to window bounds.
+#  Capture should use background (dark red) for out-of-bounds pixels.
+
+
+link graphics, random
+
+$define FILE "/tmp/captest.gif"
+
+
+procedure main(args)
+   local n
+
+   Window("bg=white", "size=500,300")
+
+   n := integer(args[1]) | 1000
+   randomize()
+   every 1 to n do {
+      Fg(RandomColor("c4"))
+      FillCircle(?500, ?300, 4 + ?8)
+      }
+
+   Bg("dark gray")
+   EraseArea(30, 30, 440, 240)
+
+   Bg("dark red")
+   capt(260, 0, 40, 30, 260, 40, 260, 90)		# NNE; not clipped
+   capt(470, -30, 60, 60, 400, 40, 330, 40)		# NE
+   capt(530, 120, -60, 40, 400, 120, 330, 120)		# E
+   capt(470, 270, 60, 60, 400, 200, 330, 200)		# SE
+   capt(260, 270, 40, 30, 260, 220, 260, 170)		# SSE; not clipped
+   capt(200, 310, 40, -40, 200, 220, 200, 170)		# SSW
+   capt(30, 330, -60, -60, 40, 200, 110, 200)		# SW
+   capt(-30, 120, 60, 40, 40, 120, 110, 120)		# W
+   capt(-30, -30, 60, 60, 40, 40, 110, 40)		# NW
+   capt(200, -10, 40, 40, 200, 40, 200, 90)		# NNW
+
+   # the following small captures are all completely outside the window
+   capt(0, 170, -10, 10, 40, 170, 60, 170)
+   capt(-53, 170, -10, 10, 80, 170, 100, 170)
+   capt(500, 170, 10, 10, 450, 170, 430, 170)
+   capt(590, 170, 10, 10, 410, 170, 390, 170)
+   capt(-10, -10, 10, 10, 210, 140, 230, 140)
+   capt(260, 360, 10, 10, 260, 140, 280, 140)
+
+   remove(FILE)
+   WDone()
+end
+
+
+procedure capt(x, y, w, h, x2, y2, x3, y3)
+   local s
+
+   Fg("white")
+   DrawRectangle(x2 - 2, y2 - 2, abs(w) + 3, abs(h) + 3)
+   if WriteImage(FILE, x, y, w, h) then {
+      Fg("black")
+      FillRectangle(x2, y2, abs(w), abs(h))
+      ReadImage(FILE, x2, y2)
+      }
+
+   Fg("yellow")
+   DrawRectangle(x3 - 2, y3 - 2, abs(w) + 3, abs(h) + 3)
+   if s := Capture("c4", x, y, w, h) then {
+      Fg("black")
+      FillRectangle(x3, y3, abs(w), abs(h))
+      DrawImage(x3, y3, s)
+      }
+   return
+end
