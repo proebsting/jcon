@@ -8,14 +8,10 @@ global bc_keys_link
 
 global bc_proc_classptr
 global bc_proc_classname
-global bc_link_classname
-
 global bc_switch_label
 
 global bc_tmplabel_table
 global bc_tmplabel_offset
-
-global bc_file_name
 
 global bc_create_exists
 global bc_save_restore_flag
@@ -308,7 +304,7 @@ procedure gen_bc_irKey_register(p)
     bc_keys_link[p.name] := 1
     /bc_key_table[p.name] := create_fieldref(bc_proc_classptr, "$" || p.name,
                                              "Lrts/vDescriptor;",
-                                             bc_link_classname)
+                                             java_classname)
 end
 procedure gen_bc_irKey_rval(s, p)
     gen_bc_irKey_register(p)
@@ -323,7 +319,7 @@ procedure gen_bc_irIntLit(s, p)
     i := integer(p.val)
     /bc_integer_table[i] := "li$" || map(i, "-", "m")
     field := create_fieldref(bc_proc_classptr, bc_integer_table[i],
-                             "Lrts/vInteger;", bc_link_classname)
+                             "Lrts/vInteger;", java_classname)
     put(s, getstatic(field))
     return s
 end
@@ -335,7 +331,7 @@ procedure gen_bc_irRealLit(s, p)
     r := real(p.val)
     /bc_real_table[r] := "lr$" || map(r, ".-+", "dmp")
     field := create_fieldref(bc_proc_classptr, bc_real_table[r], "Lrts/vReal;",
-                             bc_link_classname)
+                             java_classname)
     put(s, getstatic(field))
     return s
 end
@@ -346,7 +342,7 @@ procedure gen_bc_irStrLit(s, p)
 
     /bc_string_table[p.val] := "ls$" || *bc_string_table
     field := create_fieldref(bc_proc_classptr, bc_string_table[p.val],
-                             "Lrts/vString;", bc_link_classname)
+                             "Lrts/vString;", java_classname)
     put(s, getstatic(field))
     return s
 end
@@ -357,7 +353,7 @@ procedure gen_bc_irCsetLit(s, p)
 
     /bc_cset_table[p.val] := "lc$" || *bc_cset_table
     field := create_fieldref(bc_proc_classptr, bc_cset_table[p.val],
-                             "Lrts/vCset;", bc_link_classname)
+                             "Lrts/vCset;", java_classname)
     put(s, getstatic(field))
     return s
 end
@@ -675,7 +671,7 @@ procedure gen_bc_irOperator(s, p)
     n := p.name || "," || p.arity
     /bc_op_table[n] := "proc_" || *bc_op_table
     field := create_fieldref(bc_proc_classptr, bc_op_table[n],
-                             "Lrts/vDescriptor;", bc_link_classname)
+                             "Lrts/vDescriptor;", java_classname)
     put(s, getstatic(field))
     return s
 end
@@ -899,7 +895,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     }
     insert(bc_declare_set, name)
 
-    bc_proc_classname := "p_" || bc_file_name || "$" || name
+    bc_proc_classname := "p_" || java_classname || "$" || name
     c := bc_proc_classptr := ClassFile(3, 45, [&null], table(), 1,
         &null,
         &null,
@@ -1269,7 +1265,7 @@ procedure bc_create_locals(c, undeclared, statics, sortedvars)
         lab := label()
         if member(undeclared, k) then {
             shadow := create_fieldref(c, "v$" || k || "$", "Lrts/vVariable;",
-                                      bc_link_classname)
+                                      java_classname)
             put(localscode.code, getstatic(shadow) )
             put(localscode.code, ifnonnull(lab) )
         }
@@ -1369,7 +1365,7 @@ procedure bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
     }
     every k := !undeclared do {
         linkvalue := create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
-                                     bc_link_classname)
+                                     java_classname)
         lab1 := label()
         field := create_fieldref(c, "v$" || k, "Lrts/vVariable;",
                                  bc_proc_classname)
@@ -1401,7 +1397,7 @@ procedure bc_createvars(s, c, params, locals, undeclared)
 
     every k := !undeclared do {
         linkvalue := create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
-                                     bc_link_classname)
+                                     java_classname)
         lab1 := label()
         v := cp_String(c, cp_Utf8(c, k)) | runerr(500)
         field := create_fieldref(c, "v$" || k, "Lrts/vVariable;",
@@ -1465,7 +1461,7 @@ procedure bc_create_copy(c, params, locals, undeclared)
         }
         every k := !undeclared do {
             linkvalue := create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
-                                         bc_link_classname)
+                                         java_classname)
             lab1 := label()
             put(copycode.code, getstatic(linkvalue) )
             put(copycode.code, ifnonnull(lab1) )
@@ -1529,9 +1525,6 @@ procedure bc_File(irgen, flagList)
     bc_directory := "./"
     bc_directory := (!flagList ? (="-dir:" & tab(0)))
 
-    bc_file_name := java_classname
-    bc_link_classname := bc_file_name
-
     bc_invoke_set := set([])
     bc_invoke_all := &null
     bc_link_set := set([])
@@ -1577,7 +1570,7 @@ procedure bc_File(irgen, flagList)
                                        )
 
     c.super_class := cp_Class(c, cp_Utf8(c, "rts/iFile"))
-    c.this_class := cp_Class(c, cp_Utf8(c, bc_link_classname))
+    c.this_class := cp_Class(c, cp_Utf8(c, java_classname))
 
     bc_create_declare(c)
     bc_create_unresolved(c)
@@ -1585,7 +1578,7 @@ procedure bc_File(irgen, flagList)
     bc_create_resolve(c)
     bc_create_linkinit(c)
 
-    f := open(bc_directory || bc_file_name || ".class","wu") | runerr(500)
+    f := open(bc_directory || java_classname || ".class","wu") | runerr(500)
     writer_ClassFile(f, c)
     close(f)
 end
@@ -1613,7 +1606,7 @@ procedure bc_create_declare(c)
     every k := key(bc_proc_table) do {
         s := cp_String(c, cp_Utf8(c, k)) | runerr(500)
         put(declarecode.code, ldc_w(s) )
-        s := cp_String(c, cp_Utf8(c, "p_" || bc_link_classname || "$" || k)) |
+        s := cp_String(c, cp_Utf8(c, "p_" || java_classname || "$" || k)) |
             runerr(500)
         put(declarecode.code, ldc_w(s) )
         put(declarecode.code, ipush(bc_proc_table[k]) )
@@ -1679,7 +1672,7 @@ procedure bc_create_linked(c)
         linkedcode := create_code(c, 10, 10)
         put(linked.attributes, linkedcode)
 
-        linkref := create_fieldref(c, "linked", "Z", bc_link_classname)
+        linkref := create_fieldref(c, "linked", "Z", java_classname)
         put(linkedcode.code, getstatic(linkref) )
         lab := label()
         put(linkedcode.code, ifne(lab) )
@@ -1713,7 +1706,7 @@ procedure bc_create_resolve(c)
     resolvemethod := resolve_methodref(c)
     every k := !bc_undeclared_set do {
         f := create_fieldref(c, "v$" || k || "$", "Lrts/vVariable;",
-                             bc_link_classname)
+                             java_classname)
         s := cp_String(c, cp_Utf8(c, k)) | runerr(500)
         put(resolvecode.code, ldc_w(s) )
         put(resolvecode.code, invokestatic(resolvemethod) )
@@ -1723,7 +1716,7 @@ procedure bc_create_resolve(c)
     resolvemethod := resolveKey_methodref(c)
     every k := key(bc_keys_link) do {
         f := create_fieldref(c, "$" || k, "Lrts/vDescriptor;",
-                             bc_link_classname)
+                             java_classname)
         s := cp_String(c, cp_Utf8(c, k)) | runerr(500)
         put(resolvecode.code, ldc_w(s) )
         put(resolvecode.code, invokestatic(resolvemethod) )
@@ -1738,7 +1731,7 @@ procedure bc_create_resolve(c)
             args := integer(tab(0))
         }
         f := create_fieldref(c, bc_op_table[k], "Lrts/vDescriptor;",
-                             bc_link_classname)
+                             java_classname)
         s := cp_String(c, cp_Utf8(c, op)) | runerr(500)
         put(resolvecode.code, ldc_w(s) )
         put(resolvecode.code, ipush(args) )
@@ -1774,7 +1767,7 @@ procedure bc_create_linkinit(c)
     every k := key(bc_real_table) do {
         create_field(c, 8, bc_real_table[k], "Lrts/vReal;")
         f := create_fieldref(c, bc_real_table[k], "Lrts/vReal;",
-                             bc_link_classname)
+                             java_classname)
         d := cp_String(c, cp_Utf8(c, k)) | runerr(500)
         put(clinitcode.code, ldc_w(d) )
         put(clinitcode.code, invokestatic(newmethod) )
@@ -1785,7 +1778,7 @@ procedure bc_create_linkinit(c)
     every k := key(bc_integer_table) do {
         create_field(c, 8, bc_integer_table[k], "Lrts/vInteger;")
         f := create_fieldref(c, bc_integer_table[k], "Lrts/vInteger;",
-                             bc_link_classname)
+                             java_classname)
         d := cp_Long(c, k)
         put(clinitcode.code, ldc2_w(d) )
         put(clinitcode.code, invokestatic(newmethod) )
@@ -1796,7 +1789,7 @@ procedure bc_create_linkinit(c)
     every k := key(bc_string_table) do {
         create_field(c, 8, bc_string_table[k], "Lrts/vString;")
         f := create_fieldref(c, bc_string_table[k], "Lrts/vString;",
-                             bc_link_classname)
+                             java_classname)
         d := cp_String(c, cp_Utf8(c, k)) | runerr(500)
         put(clinitcode.code, ldc_w(d) )
         put(clinitcode.code, invokestatic(newmethod) )
@@ -1807,7 +1800,7 @@ procedure bc_create_linkinit(c)
     every k := key(bc_cset_table) do {
         create_field(c, 8, bc_cset_table[k], "Lrts/vCset;")
         f := create_fieldref(c, bc_cset_table[k], "Lrts/vCset;",
-                             bc_link_classname)
+                             java_classname)
         d := cp_String(c, cp_Utf8(c, k)) | runerr(500)
         put(clinitcode.code, ldc_w(d) )
         put(clinitcode.code, invokestatic(newmethod) )

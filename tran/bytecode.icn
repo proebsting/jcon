@@ -335,9 +335,6 @@ procedure writer_cp_info(writer, p)
         writer_u1(writer, 1)
         writer_u2(writer, *s)
         writes(writer, s)
-        # every i := !s do {
-        #   writer_u1(writer, ord(i))
-        # }
     }
     "CONSTANT_Unicode": {
         writer_u1(writer, 2)
@@ -1625,6 +1622,7 @@ procedure writer_u2(writer, u2)
 end
 
 procedure writer_u4(writer, u4)
+    (0 <= u4 < 4294967296) | runerr(500, u4)
     writes(writer, char(iand(ishift(u4, -24), 255)),
                    char(iand(ishift(u4, -16), 255)),
                    char(iand(ishift(u4, - 8), 255)),
@@ -1643,7 +1641,11 @@ procedure writer_s2(writer, s2)
 end
 
 procedure writer_s4(writer, s4)
-    writer_u4(writer, s4)
+    (-2147483648 <= s4 < 2147483648) | runerr(500, s4)
+    writes(writer, char(iand(ishift(s4, -24), 255)),
+                   char(iand(ishift(s4, -16), 255)),
+                   char(iand(ishift(s4, - 8), 255)),
+                   char(iand(s4, 255)))
 end
 
 procedure offset_align4(offset, x)
@@ -1665,7 +1667,10 @@ procedure ipush(x, classptr)
     }
     if -128 <= x <= 127 then return bipush(x)
     if -32768 <= x <= 32767 then return sipush(x)
-    return ldc_w(cp_Integer(classptr, x))
+    if -2147483648 <= x <= 2147483647 then {
+        return ldc_w(cp_Integer(classptr, x))
+    }
+    runerr(500, x)
 end
 
 procedure Iload(x)
@@ -1678,7 +1683,10 @@ procedure Iload(x)
     if x < 256 then {
         return iload(x)
     } 
-    return iload_w(x)
+    if x < 65536 then {
+        return iload_w(x)
+    }
+    runerr(500, x)
 end
 procedure Istore(x)
     case x of {
@@ -1690,7 +1698,10 @@ procedure Istore(x)
     if x < 256 then {
         return istore(x)
     } 
-    return istore_w(x)
+    if x < 65536 then {
+        return istore_w(x)
+    }
+    runerr(500, x)
 end
 procedure Aload(x)
     case x of {
@@ -1702,7 +1713,10 @@ procedure Aload(x)
     if x < 256 then {
         return aload(x)
     } 
-    return aload_w(x)
+    if x < 65536 then {
+        return aload_w(x)
+    }
+    runerr(500, x)
 end
 procedure Astore(x)
     case x of {
@@ -1714,5 +1728,8 @@ procedure Astore(x)
     if x < 256 then {
         return astore(x)
     } 
-    return astore_w(x)
+    if x < 65536 then {
+        return astore_w(x)
+    }
+    runerr(500, x)
 end
