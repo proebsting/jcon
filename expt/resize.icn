@@ -1,0 +1,24 @@
+#  resize.icn -- window resizing test
+#
+#  shows filling of new background areas as the canvas is enlarged.
+#  drag the mouse from window interior to desired new lower right corner.
+
+procedure main()
+
+   &window := open("window", "g", "size=300,200", "fg=deep green")
+   EraseArea()
+   FillArc()
+
+   colors := ["red", "brown", "orange", "yellow", "green", "cyan",
+      "blue-cyan", "blue", "purple", "magenta"]
+   repeat case Event() of {
+      "q": break
+      &lrelease: {
+	 put(colors, c := get(colors))
+	 Bg(colors[1])
+	 s := "size=" || &x || "," || &y
+	 write(s)
+	 WAttrib(s) | write("[FAILED]")
+         }
+      }
+end

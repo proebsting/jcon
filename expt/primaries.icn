@@ -1,3 +1,7 @@
+#SRC: JCON
+
+#  display bands of primary colors
+
 procedure main()
    local i, x
    &window := open(&progname,"g","size=500,300")

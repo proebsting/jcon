@@ -1,6 +1,9 @@
 #SRC: JCON
 
 #  fonts.icn -- show some fonts
+#
+#  displays a predefined list of fonts,
+#  then reads additional names from stdin
 
 global x, y
 

@@ -1,8 +1,12 @@
 #SRC: JCON
 
 #  keynames.icn -- interactive test for verifying symbols in keysyms.icn
+#
+#  for testing "outboard" key names (F3, HOME, arrows, etc.)
+#  press keys with the mouse in the window
+#  key names are reported on stdout, if recognized
 
-$include "../bin/keysyms.icn"
+$include "../bin/keysyms.icn"		 #  requires jcon-revised version
 
 procedure main()
    &window := open(&progname, "g")

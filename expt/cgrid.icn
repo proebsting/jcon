@@ -1,3 +1,7 @@
+#SRC: JCON
+
+#  cgrid.icn -- display grid of color shades
+#
 #  reads "hue" names from stdin
 #  displays color grid showing lightness & saturation variations
 
