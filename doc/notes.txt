@@ -94,7 +94,6 @@ graphics overview:
 -- limitations other than "to be fixed" are likely to remain
 
 graphics bugs:
--- there are no defaults for rectangle functions (including EraseArea)
 -- open(s, "g") can return before the window is fully open 
 -- window repair is only done when paused for event input
 -- resize events are not reported
