@@ -793,7 +793,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 		sort(bc_var_set ++ set(params) ++ set(locals) ++ set(statics))
 
 	bc_create_locals(c, undeclared, sortedvars)
-	bc_create_prologue(c, params)
+	bc_create_prologue(c, params, accumulate)
 	bc_create_createvars(c, params, locals, undeclared)
 	bc_create_copy(c, params, locals, undeclared)
 
@@ -896,8 +896,8 @@ procedure bc_create_locals(c, undeclared, sortedvars)
 	put(localscode.code, vreturn() )
 end
 
-procedure bc_create_prologue(c, params)
-	local prologue, prologuecode, createvars, arguments, marshall, accumulate
+procedure bc_create_prologue(c, params, accumulate)
+	local prologue, prologuecode, createvars, arguments, marshall
 	local deref, assign, i, k, field
 
 	prologue := create_method(c, 0, "prologue", "()V")
