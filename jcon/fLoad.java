@@ -1,8 +1,12 @@
+//  fLoad.java -- the loadfunc() function
+
 package rts;
 
 import java.io.*;
 import java.util.*;
 import java.util.zip.*;
+
+final class fLoad {} //dummy
 
 
 

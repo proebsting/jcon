@@ -22,6 +22,8 @@ public final class vWindow extends vFile {
     // graphics context attributes
 
     private boolean clipping;	// is clipping enabled?
+    int dx, dy;			// graphics origin
+
     private wColor bg;		// current background color
     private wColor fg;		// current foreground color
     private wFont font;		// current text font
@@ -71,6 +73,10 @@ vWindow(String title, String mode, vDescriptor args[]) throws IOException {
     gnum = ++gcount;
 
     // set the usual defaults
+    clipping = false;
+    dx = 0;
+    dy = 0;
+
     fg = wColor.Black;
     bg = wColor.White;
     Font(vString.New(iConfig.FontName));
@@ -118,6 +124,10 @@ vWindow(vWindow w) {
     a = w.a.create();
     b = w.b.create();
     gnum = ++gcount;
+
+    this.clipping = w.clipping;
+    this.dx = w.dx;
+    this.dy = w.dy;
 
     this.fg = w.fg;
     b.setColor(fg);
@@ -234,6 +244,14 @@ vValue Event() {
 }
 
 
+
+void Origin(int newdx, int newdy) {		// set origin
+    b.translate(newdx - dx, newdy - dy);
+    a.translate(newdx - dx, newdy - dy);
+}
+
+
+
 Rectangle getClip() {				// inquire about clipping
     if (clipping) {
 	return b.getClipBounds();
@@ -267,8 +285,8 @@ vWindow Clip(vString xs, vString ys, vString ws, vString hs) {	// set attribs
 	    r = b.getClipBounds();
 	} else {
 	    r = c.getBounds();
-	    r.x = 0;	//#%#% s/b -dx
-	    r.y = 0;	//#%#% s/b -dy
+	    r.x = -dx;
+	    r.y = -dy;
 	}
 	if (xs != null) r.x = (int) xs.mkInteger().value;
 	if (ys != null) r.y = (int) ys.mkInteger().value;

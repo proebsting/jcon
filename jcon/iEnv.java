@@ -87,9 +87,21 @@ public static void declareGlobalInit(String s, vVariable x) {
     System.exit(1);
 }
 
+
+//#%#%#%#%#% old declareProcedure, to be removed:
 public static void declareProcedure(String name, String classname, int arity) {
-    declareGlobalInit(name,
-	vSimpleVar.New(name, vProc.New(classname, "procedure " + name, arity)));
+    try {
+	declareProcedure(
+	    name, (vProc)Class.forName(classname).newInstance(), arity);
+    } catch (Exception e) {
+	iRuntime.bomb("can't create instance of " + classname, e);
+    }
+} //#%#%#%##%#%//
+
+public static void declareProcedure(String name, vProc p, int arity) {
+    p.img = vString.New("procedure " + name);
+    p.args = arity;
+    declareGlobalInit(name, vSimpleVar.New(name, p));
 }
 
 public static void declareRecord(String name, String[] fields) {

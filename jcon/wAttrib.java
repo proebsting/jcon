@@ -26,6 +26,8 @@ static {
     newatt("depth", new aDepth());
     newatt("label", new aLabel());
 
+    newatt("dx", new aDx());
+    newatt("dy", new aDy());
     newatt("clipx", new aClipx());
     newatt("clipy", new aClipy());
     newatt("clipw", new aClipw());
@@ -61,8 +63,6 @@ static {
     // Other attempts to set the attribute fail.
 
     //     att name		   default	retval
-    newatt("dx",	new aDummy("0",		vInteger.New(0)));
-    newatt("dy",	new aDummy("0",		vInteger.New(0)));
     newatt("linewidth",	new aDummy("1",		vInteger.New(1)));
     newatt("linestyle",	new aDummy("solid",	vString.New("solid")));
     newatt("fillstyle",	new aDummy("solid",	vString.New("solid")));
@@ -179,6 +179,34 @@ final class aDepth extends wAttrib {
 final class aLabel extends wAttrib {
     vValue get(vWindow win)	{ return win.getCanvas().Label(win, null); }
     vValue set(vWindow win)	{ return win.getCanvas().Label(win, val); }
+}
+
+
+
+final class aDx extends wAttrib {
+    vValue get(vWindow win)	{ return vInteger.New(win.dx); }
+    vValue set(vWindow win)	{
+	try {
+	    int dx = Integer.parseInt(val);
+	    win.Origin(dx, win.dy);
+	    return vInteger.New(dx);
+	} catch (Exception e) {
+	    return null; /*FAIL*/
+	}
+    }
+}
+
+final class aDy extends wAttrib {
+    vValue get(vWindow win)	{ return vInteger.New(win.dy); }
+    vValue set(vWindow win)	{
+	try {
+	    int dy = Integer.parseInt(val);
+	    win.Origin(win.dx, dy);
+	    return vInteger.New(dy);
+	} catch (Exception e) {
+	    return null; /*FAIL*/
+	}
+    }
 }
 
 

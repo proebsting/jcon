@@ -30,7 +30,7 @@ public vProc mkProc(int i)	{ return this; }
 
 
 
-//  New(classname, image, nargs) -- create vProc and initialize
+//  New(classname, image, nargs) -- create vProc and initialize	//#%#%REMOVE
 
 static vProc New(String classname, String img, int nargs) {
     vProc p;

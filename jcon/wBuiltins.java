@@ -367,8 +367,7 @@ final class f$CopyArea extends vProcV {		// CopyArea(W,x1,y1,w,h,x2,y2)
 	if (a.length > 4) {	// explicit x2
 	    win.CopyArea(a[0], a[1], a[2], a[3], a[4], a[5]);
 	} else {
-	    win.CopyArea(a[0], a[1], a[2], a[3], 0, 0);
-	    //#%#% (0,0) s/b (-dx,-dy)
+	    win.CopyArea(a[0], a[1], a[2], a[3], -win.dx, -win.dy);
 	}
 	return win;
     }
