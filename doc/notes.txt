@@ -15,7 +15,8 @@ building programs:
 -- jcont is a complex script that only runs on Unix
 -- "jcont foo.zip" doesn't search IPATH (only link'd files are searched for)
 -- link directives must give a simple name (not a path)
--- compiled files cannot be renamed: the .zip name must match original .icn name
+-- compiled .zip files cannot be renamed: name must match original .icn name
+   (however, executables can be renamed)
 
 strings and csets:
 -- Jcon uses 8-bit characters, not Unicode
