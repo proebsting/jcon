@@ -215,11 +215,11 @@ procedure lexgen_tree()
         token := op[2]
         buildtree(actual, "", token, t)
     }
-    optimize_tree(t)
+    optim_optimize_tree(t)
     dotree(t, "\t")
 end
 
-procedure optimize_tree(t)
+procedure optim_optimize_tree(t)
     local changes, i, s, j
 
     changes := 1
@@ -237,7 +237,7 @@ procedure optimize_tree(t)
         }
     }
     every i := key(t.t) do {
-        optimize_tree(t.t[i])
+        optim_optimize_tree(t.t[i])
     }
 end
 

@@ -314,8 +314,8 @@ procedure u_gen_a_Every(s, p)
     pop(u_loops)
 end
 
-# record a_Sectioj_nop( op val left right )
-procedure u_gen_a_Sectioj_nop(s, p)
+# record a_Sectionop( op val left right )
+procedure u_gen_a_Sectionop(s, p)
     static fn
     initial {
         fn := table()
@@ -919,7 +919,7 @@ procedure u_gen(s, p)
     "a_Every" : return u_gen_a_Every(s, p)
     "a_Scan" : return u_gen_a_Scan(s, p)
     "a_Limitation" : return u_gen_a_Limitation(s, p)
-    "a_Sectioj_nop" : return u_gen_a_Sectioj_nop(s, p)
+    "a_Sectionop" : return u_gen_a_Sectionop(s, p)
     "a_Binop" : return u_gen_a_Binop(s, p)
     "a_Unop" : return u_gen_a_Unop(s, p)
     "a_Global" : return u_gen_a_Global(s, p)

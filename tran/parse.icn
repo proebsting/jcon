@@ -349,7 +349,7 @@ procedure expr11suffix(lhs)
             if member(expr11suffix_set2, tok_rec) then {
                 op := "[" || eat_token() || "]"
                 right := expr()
-                lhs := a_Sectioj_nop(op, lhs, left, right, lhs.coord)
+                lhs := a_Sectionop(op, lhs, left, right, lhs.coord)
             } else {
                 lhs := a_Binop("[]", lhs, left, lhs.coord)
             }

@@ -1,30 +1,30 @@
-global optimize_flag
+global optim_optimize_flag
 global ref_count
 
-procedure optimize(t, start)
-    local j_new, i
+procedure optim_optimize(t, start)
+    local new, i
 
-    j_new := t
-    if \optimize_flag then {
-        j_new := free_elimination(j_new, start)
-        j_new := dead_assignment(j_new, start)
-        j_new := j_goto_elimination(j_new, start)
-        j_new := copy_propagation(j_new, start)
-        j_new := coord_optimize(j_new, start)
+    new := t
+    if \optim_optimize_flag then {
+        new := optim_free_elimination(new, start)
+        new := optim_dead_assignment(new, start)
+        new := optim_goto_elimination(new, start)
+        new := optim_copy_propagation(new, start)
+        new := optim_coord_elimination(new, start)
     }
-    if i := j_new[start] &
+    if i := new[start] &
        type(i[1]) == "ir_EnterInit" &
        type(i[2]) == "ir_Goto" &
        i[1].startlabel === i[2].location then {
-        j_new[start] := [ i[2] ]
+        new[start] := [ i[2] ]
     }
-    return j_new
+    return new
 end
 
-procedure dead_assignment(t, start)
-    local k, chunk, j_new, c, i
+procedure optim_dead_assignment(t, start)
+    local k, chunk, new, c, i
 
-    j_new := table()
+    new := table()
     every k := key(t) & chunk := t[k] do {
         c := []
         every i := !chunk do {
@@ -33,32 +33,32 @@ procedure dead_assignment(t, start)
             }
             put(c, i)
         }
-        j_new[k] := c
+        new[k] := c
     }
-    return j_new
+    return new
 end
 
-procedure free_elimination(t, start)
-    local j_new, c, i, lab
+procedure optim_free_elimination(t, start)
+    local new, c, i, lab
 
-    j_new := table()
+    new := table()
     every lab := key(t) do {
         c := t[lab]
-        j_new[lab] := []
+        new[lab] := []
         every i := !c do {
             if (type(i) ~== "ir_Free") |
                # (*i.v.tmp > 0) |
                # (*i.v.lab > 0) |
                (*i.v.clo > 0)
                then {
-                put(j_new[lab], i)
+                put(new[lab], i)
             }
         }
     }
-    return j_new
+    return new
 end
 
-procedure coord_optimize(t, start)
+procedure optim_coord_elimination(t, start)
     local file, line, column, insn, coord, chunk
 
     every chunk := !t do {
@@ -88,8 +88,8 @@ procedure coord_optimize(t, start)
     }
 end
 
-procedure copy_propagation(t, start)
-    local rename, uses, defs, chunk, insn, j_newchunk, changes
+procedure optim_copy_propagation(t, start)
+    local rename, uses, defs, chunk, insn, newchunk, changes
     local k, i
 
     repeat {
@@ -98,12 +98,12 @@ procedure copy_propagation(t, start)
         defs := table(0)
         every chunk := !t do {
             every insn := !chunk do {
-                def_use(insn, &null, uses, defs)
+                optim_def_use(insn, &null, uses, defs)
             }
         }
         rename := table()
         every k := key(t) & chunk := t[k] do {
-            j_newchunk := []
+            newchunk := []
             every insn := !chunk do {
                 if type(insn) == "ir_Move" &
                    defs[insn.lhs] = 1 &
@@ -122,88 +122,88 @@ procedure copy_propagation(t, start)
                     rename[insn.lhs] := insn.rhs
                     changes := 1
                 } else {
-                    put(j_newchunk, insn)
+                    put(newchunk, insn)
                 }
             }
-            t[k] := j_newchunk
+            t[k] := newchunk
         }
         if /changes then break;
         every chunk := !t do {
             every i := 1 to *chunk do {
-                chunk[i] := opt_rewrite(chunk[i], rename)
+                chunk[i] := optim_rewrite(chunk[i], rename)
             }
         }
     }
     return t
 end
 
-procedure def_use(p, this, uses, defs)
+procedure optim_def_use(p, this, uses, defs)
     case type(p) of {
     "ir_Free" :  { }
-    "ir_Deref" : { def_use(p.value, uses, uses, defs) }
+    "ir_Deref" : { optim_def_use(p.value, uses, uses, defs) }
     "ir_Tmp" :   { this[p]+:=1 }
     "ir_TmpLabel" :  { this[p]+:=1 }
     "ir_TmpClosure": { this[p]+:=1 }
     "ir_Label" : { this[p]+:=1 }
-    "ir_Field" : { def_use(\p.lhs, defs, uses, defs);
-            def_use(p.expr, uses, uses, defs) }
-    "ir_Move" :  { def_use(\p.lhs, defs, uses, defs);
-            def_use(p.rhs, uses, uses, defs) }
-    "ir_ScanSwap" :  { def_use(p.subject, defs, uses, defs);
-            def_use(p.subject, uses, uses, defs);
-            def_use(p.pos, defs, uses, defs);
-            def_use(p.pos, uses, uses, defs); }
-    "ir_Goto" :  { def_use(p.location, uses, uses, defs); }
+    "ir_Field" : { optim_def_use(\p.lhs, defs, uses, defs);
+            optim_def_use(p.expr, uses, uses, defs) }
+    "ir_Move" :  { optim_def_use(\p.lhs, defs, uses, defs);
+            optim_def_use(p.rhs, uses, uses, defs) }
+    "ir_ScanSwap" :  { optim_def_use(p.subject, defs, uses, defs);
+            optim_def_use(p.subject, uses, uses, defs);
+            optim_def_use(p.pos, defs, uses, defs);
+            optim_def_use(p.pos, uses, uses, defs); }
+    "ir_Goto" :  { optim_def_use(p.location, uses, uses, defs); }
     "ir_Var" :   { this[p]+:=1 }
     "ir_Key" :   { this[p]+:=1 }
     "ir_IntLit" :    { this[p]+:=1 }
     "ir_RealLit" :   { this[p]+:=1 }
     "ir_StrLit" :    { this[p]+:=1 }
     "ir_CsetLit" :   { this[p]+:=1 }
-    "ir_Succeed" :   { def_use(p.expr, uses, uses, defs);
-            def_use(\p.continuation, uses, uses, defs); }
+    "ir_Succeed" :   { optim_def_use(p.expr, uses, uses, defs);
+            optim_def_use(\p.continuation, uses, uses, defs); }
     "ir_Fail" :  { }
-    "ir_Resume" :    { def_use(p.closure, uses, uses, defs);
-            def_use(p.failLabel, uses, uses, defs);
-            def_use(\p.retValue, defs, uses, defs); }
-    "ir_MakeList" :  { def_use(\p.lhs, defs, uses, defs);
-            every def_use(!p.valueList, uses, uses, defs); }
-    "ir_OpFunction":{def_use(\p.lhs, defs, uses, defs);
-            def_use(p.fn, uses, uses, defs);
-            def_use(\p.failLabel, uses, uses, defs);
-            every def_use(!p.argList, uses, uses, defs); }
-    "ir_MakeClosure":{ def_use(p.lhs, defs, uses, defs);
-            def_use(p.fn, uses, uses, defs);
-            every def_use(!p.argList, uses, uses, defs); }
+    "ir_Resume" :    { optim_def_use(p.closure, uses, uses, defs);
+            optim_def_use(p.failLabel, uses, uses, defs);
+            optim_def_use(\p.retValue, defs, uses, defs); }
+    "ir_MakeList" :  { optim_def_use(\p.lhs, defs, uses, defs);
+            every optim_def_use(!p.valueList, uses, uses, defs); }
+    "ir_OpFunction":{optim_def_use(\p.lhs, defs, uses, defs);
+            optim_def_use(p.fn, uses, uses, defs);
+            optim_def_use(\p.failLabel, uses, uses, defs);
+            every optim_def_use(!p.argList, uses, uses, defs); }
+    "ir_MakeClosure":{ optim_def_use(p.lhs, defs, uses, defs);
+            optim_def_use(p.fn, uses, uses, defs);
+            every optim_def_use(!p.argList, uses, uses, defs); }
     "ir_Operator" :  { this[p]+:=1 }
-    "ir_Create" :    { this[p]+:=1; def_use(p.location, uses, uses, defs); }
-    "ir_CoRet" : { def_use(p.value, uses, uses, defs);
-            def_use(p.continuation, uses, uses, defs); }
+    "ir_Create" :    { this[p]+:=1; optim_def_use(p.location, uses, uses, defs); }
+    "ir_CoRet" : { optim_def_use(p.value, uses, uses, defs);
+            optim_def_use(p.continuation, uses, uses, defs); }
     "ir_Restore" :   { }
     "ir_CoFail" :    { }
     "ir_RunTimeError":{ }
-    "ir_EnterInit" : { def_use(p.startlabel, uses, uses, defs) }
+    "ir_EnterInit" : { optim_def_use(p.startlabel, uses, uses, defs) }
     "ir_Coord" : { }
 
     default :   { runerr(500, p); }
     }
 end
 
-procedure opt_rewrite(p, rename)
+procedure optim_rewrite(p, rename)
     local i
 
     if member(rename, p) then {
-        return opt_rewrite(rename[p], rename)
+        return optim_rewrite(rename[p], rename)
     }
     case type(p) of {
-    "ir_Deref" : { p.value := opt_rewrite(p.value, rename); }
+    "ir_Deref" : { p.value := optim_rewrite(p.value, rename); }
     "ir_Free" :  { }
     "ir_Tmp" :   { }
     "ir_TmpLabel" :  { }
     "ir_TmpClosure": { }
     "ir_Label" : { }
-    "ir_Move" :  { p.lhs := opt_rewrite(\p.lhs, rename);
-            p.rhs := opt_rewrite(p.rhs, rename) }
+    "ir_Move" :  { p.lhs := optim_rewrite(\p.lhs, rename);
+            p.rhs := optim_rewrite(p.rhs, rename) }
     "ir_ScanSwap" :  { }
     "ir_Goto" :  { }
     "ir_Var" :   { }
@@ -213,41 +213,41 @@ procedure opt_rewrite(p, rename)
     "ir_StrLit" :    { }
     "ir_CsetLit" :   { }
     "ir_Restore" :   { }
-    "ir_Succeed" :   { p.expr := opt_rewrite(p.expr, rename);
-            p.continuation := opt_rewrite(\p.continuation, rename); }
+    "ir_Succeed" :   { p.expr := optim_rewrite(p.expr, rename);
+            p.continuation := optim_rewrite(\p.continuation, rename); }
     "ir_Fail" :  { }
-    "ir_Resume" :    { p.closure := opt_rewrite(p.closure, rename);
-            p.failLabel := opt_rewrite(p.failLabel, rename);
-            p.retValue := opt_rewrite(\p.retValue, rename); }
-    "ir_MakeList" :  { p.lhs := opt_rewrite(\p.lhs, rename);
+    "ir_Resume" :    { p.closure := optim_rewrite(p.closure, rename);
+            p.failLabel := optim_rewrite(p.failLabel, rename);
+            p.retValue := optim_rewrite(\p.retValue, rename); }
+    "ir_MakeList" :  { p.lhs := optim_rewrite(\p.lhs, rename);
             every i := 1 to *p.valueList do {
-                p.valueList[i] := opt_rewrite(p.valueList[i],
+                p.valueList[i] := optim_rewrite(p.valueList[i],
                                   rename); }
             }
-    "ir_Field" : { p.lhs := opt_rewrite(\p.lhs, rename)
-            p.expr := opt_rewrite(p.expr, rename)
-            p.failLabel := opt_rewrite(\p.failLabel, rename)
+    "ir_Field" : { p.lhs := optim_rewrite(\p.lhs, rename)
+            p.expr := optim_rewrite(p.expr, rename)
+            p.failLabel := optim_rewrite(\p.failLabel, rename)
             }
-    "ir_OpFunction":{p.lhs := opt_rewrite(\p.lhs, rename);
-            p.fn := opt_rewrite(p.fn, rename); 
+    "ir_OpFunction":{p.lhs := optim_rewrite(\p.lhs, rename);
+            p.fn := optim_rewrite(p.fn, rename); 
             every i := 1 to *p.argList do {
-                p.argList[i] := opt_rewrite(p.argList[i],
+                p.argList[i] := optim_rewrite(p.argList[i],
                                 rename); }
-            p.failLabel := opt_rewrite(\p.failLabel, rename);
+            p.failLabel := optim_rewrite(\p.failLabel, rename);
             }
-    "ir_MakeClosure":{ p.lhs := opt_rewrite(p.lhs, rename);
-            p.fn := opt_rewrite(p.fn, rename);
+    "ir_MakeClosure":{ p.lhs := optim_rewrite(p.lhs, rename);
+            p.fn := optim_rewrite(p.fn, rename);
             every i := 1 to *p.argList do {
-                p.argList[i] := opt_rewrite(p.argList[i],
+                p.argList[i] := optim_rewrite(p.argList[i],
                                 rename); }
             }
     "ir_Operator" :  { }
-    "ir_Create" :    { p.location := opt_rewrite(p.location, rename); }
-    "ir_CoRet" : { p.value := opt_rewrite(p.value, rename);
-            p.continuation := opt_rewrite(p.continuation, rename);}
+    "ir_Create" :    { p.location := optim_rewrite(p.location, rename); }
+    "ir_CoRet" : { p.value := optim_rewrite(p.value, rename);
+            p.continuation := optim_rewrite(p.continuation, rename);}
     "ir_CoFail" :    { }
     "ir_RunTimeError":{ }
-    "ir_EnterInit" : { p.startlabel := opt_rewrite(p.startlabel, rename) }
+    "ir_EnterInit" : { p.startlabel := optim_rewrite(p.startlabel, rename) }
     "ir_Coord" : { }
 
     default :   { runerr(500,p); }
@@ -255,40 +255,40 @@ procedure opt_rewrite(p, rename)
     return p;
 end
 
-procedure j_goto_elimination(t, start)
-    local j_new, wl, seen, lab, insn, chunk
+procedure optim_goto_elimination(t, start)
+    local new, wl, seen, lab, insn, chunk
 
     ref_count := table(0)
 
-    j_new := table()
+    new := table()
     wl := []
     seen := set()
-    add_label(start, wl, seen)
+    optim_add_label(start, wl, seen)
 
     while lab := pop(wl) do {
-        j_new[lab] := \t[lab]
+        new[lab] := \t[lab]
         every insn := !\t[lab] do {
-            j_gotos(insn, wl, seen,t)
+            optim_gotos(insn, wl, seen,t)
         }
     }
 
-    every lab := key(j_new) do {
-        while chunk := \j_new[lab] &
+    every lab := key(new) do {
+        while chunk := \new[lab] &
               insn := chunk[-1] &
               type(insn) == "ir_Goto" &
               type(insn.location) == "ir_Label" &
               ref_count[insn.location] = 1 do {
-            if /j_new[insn.location] then {
+            if /new[insn.location] then {
                 runerr(500, insn.location)
             }
-            j_new[lab] := chunk[1:-1] ||| j_new[insn.location]
-            delete(j_new, insn.location)
+            new[lab] := chunk[1:-1] ||| new[insn.location]
+            delete(new, insn.location)
         }
     }
-    return j_new
+    return new
 end
 
-procedure add_label(lab, wl, seen)
+procedure optim_add_label(lab, wl, seen)
     ref_count[lab] +:= 1
     if not member(seen, lab) then {
         insert(seen, lab)
@@ -296,7 +296,7 @@ procedure add_label(lab, wl, seen)
     }
 end
 
-procedure j_goto_chain(lab, t)
+procedure optim_goto_chain(lab, t)
     local chunk, seen
 
     seen := set([])
@@ -309,7 +309,7 @@ procedure j_goto_chain(lab, t)
     return lab
 end
 
-procedure j_goto_chain_defer(lab, t)
+procedure optim_goto_chain_defer(lab, t)
     local chunk
 
     while chunk := \t[lab] &
@@ -320,7 +320,7 @@ procedure j_goto_chain_defer(lab, t)
     return lab
 end
 
-procedure j_gotos(p, wl, seen, t)
+procedure optim_gotos(p, wl, seen, t)
     case type(p) of {
     "ir_Free" |
     "ir_Restore" |
@@ -344,43 +344,43 @@ procedure j_gotos(p, wl, seen, t)
         # nothing
         }
     "ir_Label" : {  # ir_Label : ( value )
-        add_label(p, wl, seen)
+        optim_add_label(p, wl, seen)
         }
     "ir_Move" : {  # ir_Move : ( lhs rhs )
-        p.rhs := j_goto_chain_defer(p.rhs, t)
-        j_gotos(p.rhs, wl, seen, t)
+        p.rhs := optim_goto_chain_defer(p.rhs, t)
+        optim_gotos(p.rhs, wl, seen, t)
         }
     "ir_Goto" : {  # ir_Goto : ( location )
-        p.location := j_goto_chain(p.location, t)
-        j_gotos(p.location, wl, seen, t)
+        p.location := optim_goto_chain(p.location, t)
+        optim_gotos(p.location, wl, seen, t)
         }
     "ir_Succeed" : {  # ir_Succeed : ( expr continuation )
-        p.continuation := j_goto_chain(\p.continuation, t)
-        j_gotos(\p.continuation, wl, seen, t)
+        p.continuation := optim_goto_chain(\p.continuation, t)
+        optim_gotos(\p.continuation, wl, seen, t)
         }
     "ir_Field" : {  # ir_Field : ( lhs expr field failLabel )
-        p.failLabel := j_goto_chain(\p.failLabel, t)
-        j_gotos(\p.failLabel, wl, seen, t)
+        p.failLabel := optim_goto_chain(\p.failLabel, t)
+        optim_gotos(\p.failLabel, wl, seen, t)
         }
     "ir_OpFunction" : {  # ir_OpFunction : ( lhs fn argList failLabel )
-        p.failLabel := j_goto_chain(\p.failLabel, t)
-        j_gotos(\p.failLabel, wl, seen, t)
+        p.failLabel := optim_goto_chain(\p.failLabel, t)
+        optim_gotos(\p.failLabel, wl, seen, t)
         }
     "ir_Resume" : {  # ir_Resume : ( closure failLabel retValue )
-        p.failLabel := j_goto_chain(p.failLabel, t)
-        j_gotos(p.failLabel, wl, seen, t)
+        p.failLabel := optim_goto_chain(p.failLabel, t)
+        optim_gotos(p.failLabel, wl, seen, t)
         }
     "ir_Create" : {  # ir_Create : ( location )
-        p.location := j_goto_chain(p.location, t)
-        j_gotos(p.location, wl, seen, t)
+        p.location := optim_goto_chain(p.location, t)
+        optim_gotos(p.location, wl, seen, t)
         }
     "ir_CoRet" : {  # ir_CoRet : ( value continuation )
-        p.continuation := j_goto_chain(p.continuation, t)
-        j_gotos(p.continuation, wl, seen, t)
+        p.continuation := optim_goto_chain(p.continuation, t)
+        optim_gotos(p.continuation, wl, seen, t)
         }
     "ir_EnterInit" : {  # ir_EnterInit : ( startlabel )
-        p.startlabel := j_goto_chain(p.startlabel, t)
-        j_gotos(p.startlabel, wl, seen, t)
+        p.startlabel := optim_goto_chain(p.startlabel, t)
+        optim_gotos(p.startlabel, wl, seen, t)
         }
     default : runerr(500, p)
     }

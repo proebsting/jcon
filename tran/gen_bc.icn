@@ -1,4 +1,4 @@
-global optimize_flag, nolink_flag, java_classname, noerror2failure
+global optim_optimize_flag, nolink_flag, java_classname, noerror2failure
 global nodebuginfo, nointrospection
 
 global bc_indirect_targets
@@ -101,7 +101,7 @@ procedure bc_gen_assign_to(s, p)
         assign := Assign_methodref(bc_proc_classptr)
         put(s, j_swap())
         put(s, j_invokevirtual(assign))
-        put(s, j_Pop())
+        put(s, j_pop())
     }
     }
     return s
@@ -218,7 +218,7 @@ procedure bc_gen_ir_Field(s, p)
         put(s, j_dup() )
         lab := j_label()
         put(s, j_ifnonnull(lab) )
-        put(s, j_Pop() )
+        put(s, j_pop() )
         bc_transfer_to(s, p.failLabel)
         put(s, lab )
         bc_gen_assign_to(s, p.lhs)
@@ -263,12 +263,12 @@ procedure bc_gen_ir_ScanSwap(s, p)
     every put(s, !subject)
     put(s, j_invokevirtual(deref))
     put(s, j_invokevirtual(assign))
-    put(s, j_Pop())
+    put(s, j_pop())
     every put(s, !Kpos)
     every put(s, !pos)
     put(s, j_invokevirtual(deref))
     put(s, j_invokevirtual(assign))
-    put(s, j_Pop())
+    put(s, j_pop())
 
     bc_gen_assign_to(s, p.subject)
     bc_gen_assign_to(s, p.pos)
@@ -376,7 +376,7 @@ procedure bc_save_tmps(s)
             put(s, j_Aload(bc_tmp_table[k] + bc_tmp_offset))
             put(s, j_aastore())
         }
-        put(s, j_Pop())
+        put(s, j_pop())
     }
 end
 
@@ -394,7 +394,7 @@ procedure bc_save_tmplabels(s)
             put(s, j_Iload(bc_tmplabel_table[k] + bc_tmplabel_offset))
             put(s, j_iastore())
         }
-        put(s, j_Pop())
+        put(s, j_pop())
     }
 end
 
@@ -411,7 +411,7 @@ procedure bc_save_tmpclosures(s)
             put(s, j_Aload(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
             put(s, j_aastore())
         }
-        put(s, j_Pop())
+        put(s, j_pop())
     }
 end
 
@@ -470,7 +470,7 @@ procedure bc_gen_ir_Resume(s, p)
     put(s, j_getfield(PC))
     target := j_label()
     put(s, j_ifne(target))
-    put(s, j_Pop())
+    put(s, j_pop())
     bc_transfer_to(s, p.failLabel)
     put(s, target)
     put(s, j_invokevirtual(resume))
@@ -478,7 +478,7 @@ procedure bc_gen_ir_Resume(s, p)
         put(s, j_dup())
         target := j_label()
         put(s, j_ifnonnull(target))
-        put(s, j_Pop())
+        put(s, j_pop())
         bc_transfer_to(s, p.failLabel)
         put(s, target)
         bc_gen_assign_to(s, p.retValue)
@@ -510,7 +510,7 @@ procedure bc_gen_ir_MakeList(s, p)
     return s
 end
 
-procedure initoptable()
+procedure bc_initoptable()
     static optable
     initial {
         optable := [ table(), table(), table() ]
@@ -587,7 +587,7 @@ end
 procedure bc_gen_ir_OpFunction(s, p)
     local target, args, method, class, i, op, field
     static optable
-    initial optable := initoptable()
+    initial optable := bc_initoptable()
 
     p.fn.arity = *p.argList | runerr(500, p)
     op := \optable[p.fn.arity][p.fn.name] | runerr(500, p.fn)
@@ -618,7 +618,7 @@ procedure bc_gen_ir_OpFunction(s, p)
             put(s, j_dup())
             target := j_label()
             put(s, j_ifnonnull(target))
-            put(s, j_Pop())
+            put(s, j_pop())
             bc_transfer_to(s, p.failLabel)
             put(s, target)
             bc_gen_assign_to(s, p.lhs)
@@ -629,7 +629,7 @@ procedure bc_gen_ir_OpFunction(s, p)
         if \p.lhs then {
             bc_gen_assign_to(s, p.lhs)
         } else {
-            put(s, j_Pop())
+            put(s, j_pop())
         }
     }
     return s
@@ -932,7 +932,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     bc_labels := table()
     bc_ir2bc_labels := table()
     bc_labels[codestart] := 1
-    bc_emit_table := optimize(bc_emit_table, codestart)
+    bc_emit_table := optim_optimize(bc_emit_table, codestart)
 
     bc_target_bookkeeping()
     bc_find_save_restore()
@@ -954,19 +954,19 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
 end
 
 procedure bc_class_constructor(c, statics)
-    local clinit, clinitcode, k, f, n, j_newsimplevar
+    local clinit, clinitcode, k, f, n, newsimplevar
 
     clinit := j_create_method(c, 8, "<clinit>", "()V")
     clinitcode := j_create_code(c, 10, 10)
     put(clinit.attributes, clinitcode)
 
-    j_newsimplevar := New_vSimpleVar_methodref(c)
+    newsimplevar := New_vSimpleVar_methodref(c)
     every k := !statics do {
         j_create_field(c, 8, "v$" || k, "Lrts/vVariable;")
         f := j_create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
         n := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(clinitcode.code, j_ldc_w(n))
-        put(clinitcode.code, j_invokestatic(j_newsimplevar))
+        put(clinitcode.code, j_invokestatic(newsimplevar))
         put(clinitcode.code, j_putstatic(f))
     }
     put(clinitcode.code, j_vreturn() )
@@ -1044,7 +1044,7 @@ procedure bc_restore_tmps(s)
             put(s, j_aaload())
             put(s, j_Astore(bc_tmp_table[k] + bc_tmp_offset))
         }
-        put(s, j_Pop())
+        put(s, j_pop())
     }
 end
 
@@ -1062,7 +1062,7 @@ procedure bc_restore_tmpclosures(s)
             put(s, j_aaload())
             put(s, j_Astore(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
         }
-        put(s, j_Pop())
+        put(s, j_pop())
     }
 end
 
@@ -1080,7 +1080,7 @@ procedure bc_restore_tmplabels(s)
             put(s, j_iaload())
             put(s, j_Istore(bc_tmplabel_table[k] + bc_tmplabel_offset))
         }
-        put(s, j_Pop())
+        put(s, j_pop())
     }
 end
 
@@ -1317,7 +1317,7 @@ procedure bc_emit_prologue_params(s, c, params, accumulate)
             put(s, j_ipush(*params))
             put(s, j_invokestatic(marshal))
             put(s, j_invokevirtual(assign) )
-            put(s, j_Pop())
+            put(s, j_pop())
         } else {
             elselab := j_label()
             endlab := j_label()
@@ -1327,7 +1327,7 @@ procedure bc_emit_prologue_params(s, c, params, accumulate)
             put(s, j_arraylength())
             put(s, j_ipush(i))
             put(s, j_if_icmpge(elselab))
-                put(s, j_Pop())
+                put(s, j_pop())
                 put(s, j_invokestatic(null))
                 put(s, j_goto(endlab))
             put(s, elselab)
@@ -1336,7 +1336,7 @@ procedure bc_emit_prologue_params(s, c, params, accumulate)
                 put(s, j_invokevirtual(deref) )
             put(s, endlab)
             put(s, j_invokevirtual(assign) )
-            put(s, j_Pop())
+            put(s, j_pop())
         }
     }
 end
@@ -1357,7 +1357,7 @@ procedure bc_emit_prologue_locals(s, c, locals)
         put(s, j_getfield(field) )
         put(s, j_invokestatic(null))
         put(s, j_invokevirtual(assign) )
-        put(s, j_Pop())
+        put(s, j_pop())
     }
 end
 
@@ -1382,7 +1382,7 @@ procedure bc_emit_prologue_undeclared(s, c, undeclared)
         put(s, j_getfield(field) )
         put(s, j_invokestatic(null))
         put(s, j_invokevirtual(assign) )
-        put(s, j_Pop())
+        put(s, j_pop())
         put(s, lab1 )
     }
 end
@@ -1394,17 +1394,17 @@ procedure bc_emit_prologue(s, c, params, locals, undeclared, accumulate)
 end
 
 procedure bc_createvars(s, c, params, locals, undeclared)
-    local j_newsimplevar, k, field, v
+    local newsimplevar, k, field, v
     local linkvalue, lab1
 
-    j_newsimplevar := New_vSimpleVar_methodref(c)
+    newsimplevar := New_vSimpleVar_methodref(c)
     every k := !params | !locals do {
         v := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         field := j_create_fieldref(c, "v$" || k, "Lrts/vVariable;",
                                  bc_proc_classname)
         put(s, j_aload_0() )
         put(s, j_ldc_w(v) )
-        put(s, j_invokestatic(j_newsimplevar) )
+        put(s, j_invokestatic(newsimplevar) )
         put(s, j_putfield(field) )
     }
 
@@ -1419,9 +1419,9 @@ procedure bc_createvars(s, c, params, locals, undeclared)
         put(s, j_getstatic(linkvalue) )
         put(s, j_dup() )
         put(s, j_ifnonnull(lab1) )
-        put(s, j_Pop() )
+        put(s, j_pop() )
         put(s, j_ldc_w(v) )
-        put(s, j_invokestatic(j_newsimplevar) )
+        put(s, j_invokestatic(newsimplevar) )
         put(s, lab1 )
         put(s, j_putfield(field) )
     }
@@ -1451,7 +1451,7 @@ procedure bc_copy_variable(s, c, k)
     put(s, j_getfield(field) )
     put(s, j_invokevirtual(deref) )
     put(s, j_invokevirtual(assign) )
-    put(s, j_Pop())
+    put(s, j_pop())
 end
 
 procedure bc_create_copy(c, params, locals, undeclared)
@@ -1506,7 +1506,7 @@ procedure bc_process_flags(flagList)
         bc_debug := 1
     }
     if match("-O", !flagList) then {
-        optimize_flag := 1
+        optim_optimize_flag := 1
     }
 
     !flagList ? {
@@ -1767,54 +1767,54 @@ procedure bc_create_linkinit(c)
 end
 
 procedure bc_create_class_linkinit(c)
-    local clinit, clinitcode, j_newmethod, k, f, d, s
+    local clinit, clinitcode, newmethod, k, f, d, s
 
     clinit := j_create_method(c, 8, "<clinit>", "()V")
     clinitcode := j_create_code(c, 10, 10)
     put(clinit.attributes, clinitcode)
     s := clinitcode.code
 
-    j_newmethod := New_vReal_methodref(c)
+    newmethod := New_vReal_methodref(c)
     every k := key(bc_real_table) do {
         j_create_field(c, 8, bc_real_table[k], "Lrts/vReal;")
         f := j_create_fieldref(c, bc_real_table[k], "Lrts/vReal;",
                              java_classname)
         d := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(s, j_ldc_w(d) )
-        put(s, j_invokestatic(j_newmethod) )
+        put(s, j_invokestatic(newmethod) )
         put(s, j_putstatic(f) )
     }
 
-    j_newmethod := New_vInteger_methodref(c)
+    newmethod := New_vInteger_methodref(c)
     every k := key(bc_integer_table) do {
         j_create_field(c, 8, bc_integer_table[k], "Lrts/vInteger;")
         f := j_create_fieldref(c, bc_integer_table[k], "Lrts/vInteger;",
                              java_classname)
         d := j_cp_Long(c, k)
         put(s, j_ldc2_w(d) )
-        put(s, j_invokestatic(j_newmethod) )
+        put(s, j_invokestatic(newmethod) )
         put(s, j_putstatic(f) )
     }
 
-    j_newmethod := New_vString_methodref(c)
+    newmethod := New_vString_methodref(c)
     every k := key(bc_string_table) do {
         j_create_field(c, 8, bc_string_table[k], "Lrts/vString;")
         f := j_create_fieldref(c, bc_string_table[k], "Lrts/vString;",
                              java_classname)
         d := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(s, j_ldc_w(d) )
-        put(s, j_invokestatic(j_newmethod) )
+        put(s, j_invokestatic(newmethod) )
         put(s, j_putstatic(f) )
     }
 
-    j_newmethod := New_vCset_methodref(c)
+    newmethod := New_vCset_methodref(c)
     every k := key(bc_cset_table) do {
         j_create_field(c, 8, bc_cset_table[k], "Lrts/vCset;")
         f := j_create_fieldref(c, bc_cset_table[k], "Lrts/vCset;",
                              java_classname)
         d := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(s, j_ldc_w(d) )
-        put(s, j_invokestatic(j_newmethod) )
+        put(s, j_invokestatic(newmethod) )
         put(s, j_putstatic(f) )
     }
 

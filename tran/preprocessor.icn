@@ -57,7 +57,7 @@ procedure preprocessor(fname,predefined_syms)
         nonpunctuation := &letters ++ &digits ++ ' \t\f\r'
     }
 
-    preproc_j_new(fname,predefined_syms)
+    preproc_new(fname,predefined_syms)
     
     while line := preproc_read() do line ? {
         if match("#line") then {
@@ -84,7 +84,7 @@ end
 #
 # a_Initializes the preprocessor "object".
 #
-procedure preproc_j_new(fname,predefined_syms)
+procedure preproc_new(fname,predefined_syms)
     preproc_file := open(fname) |
             stop("ERROR:  Could not open file ", image(fname))
     preproc_sym_table := \predefined_syms |table()
@@ -115,7 +115,7 @@ end
 # a_Scans a preprocessor directive.
 #
 procedure preproc_scan_directive()
-    local sym,value,j_new_file,j_new_filename,j_new_line,path_list,old
+    local sym,value,new_file,new_filename,new_line,path_list,old
     preproc_space()
     preproc_command := preproc_word()
     if \preproc_if_state then {
@@ -209,16 +209,16 @@ procedure preproc_scan_directive()
                     if member(preproc_include_set,sym) then {
                         preproc_error("circular reference to " || image(sym))
                     } else {
-                        if j_new_file := open(
-                              j_new_filename := sym | (!path_list || "/" || sym))
+                        if new_file := open(
+                              new_filename := sym | (!path_list || "/" || sym))
                               then {
                             push(preproc_file_stack,
                                  preproc_file,preproc_filename,
                                  preproc_include_name,preproc_line,
                                  preproc_nest_level)
-                            preproc_filename := j_new_filename
+                            preproc_filename := new_filename
                             preproc_include_name := sym
-                            preproc_file := j_new_file
+                            preproc_file := new_file
                             preproc_line := 0
                             preproc_nest_level := *preproc_if_stack
                             insert(preproc_include_set,sym)
@@ -233,13 +233,13 @@ procedure preproc_scan_directive()
         }
         "line": {
             #if /preproc_if_state then {
-                if j_new_line := integer(tab(many(&digits))) &
+                if new_line := integer(tab(many(&digits))) &
                         preproc_opt_space() &
-                        (j_new_filename := preproc_qword() | &null) \ 1 &
-                        (/j_new_filename | *j_new_filename > 0) \ 1 &
+                        (new_filename := preproc_qword() | &null) \ 1 &
+                        (/new_filename | *new_filename > 0) \ 1 &
                         preproc_at_end() then {
-                    preproc_filename := \j_new_filename
-                    preproc_line := j_new_line
+                    preproc_filename := \new_filename
+                    preproc_line := new_line
                 } else {
                     preproc_error()
                 }

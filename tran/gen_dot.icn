@@ -78,7 +78,7 @@ procedure dot_function(name, params, accumulate, locals, statics, code,
     every i := !code do {
         dot_emit_table[i.label] := i.insnList
     }
-    dot_emit_table := optimize(dot_emit_table, codestart)
+    dot_emit_table := optim_optimize(dot_emit_table, codestart)
     dot_output(dot_emit_table)
     write("}")
 end
@@ -86,7 +86,7 @@ end
 procedure dot_File(irgen, flagList)
     local p
     if match("-O", !flagList) then {
-        optimize_flag := 1
+        optim_optimize_flag := 1
     }
     while p := @irgen do {
         case type(p) of {

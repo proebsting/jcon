@@ -291,8 +291,8 @@ procedure ir_a_Every(p, st, inuse, target, bounded)
     suspend ir_Chunk(p.body.ir.failure, [ ir_Goto(p.expr.ir.resume) ])
 end
 
-# record a_Sectioj_nop( op val left right )
-procedure ir_a_Sectioj_nop(p, st, inuse, target, bounded)
+# record a_Sectionop( op val left right )
+procedure ir_a_Sectionop(p, st, inuse, target, bounded)
     local vv, lv, rv
 
     ir_init(p)
@@ -1284,7 +1284,7 @@ procedure ir(p, st, inuse, target, bounded)
     "a_RepAlt" : suspend ir_a_RepAlt(p, st, inuse, target, bounded)
     "a_Case" : suspend ir_a_Case(p, st, inuse, target, bounded)
     "a_Every" : suspend ir_a_Every(p, st, inuse, target, bounded)
-    "a_Sectioj_nop" : suspend ir_a_Sectioj_nop(p, st, inuse, target, bounded)
+    "a_Sectionop" : suspend ir_a_Sectionop(p, st, inuse, target, bounded)
     "a_Binop" : suspend ir_a_Binop(p, st, inuse, target, bounded)
     "a_Unop" : suspend ir_a_Unop(p, st, inuse, target, bounded)
     "a_Global" : suspend ir_a_Global(p, st, inuse, target, bounded)

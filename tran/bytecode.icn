@@ -134,7 +134,7 @@ record j_bastore()
 record j_castore()
 record j_sastore()
 record j_nop()
-record j_Pop()
+record j_pop()
 record j_pop2()
 record j_dup()
 record j_dup2()
@@ -607,7 +607,7 @@ procedure j_writer_opcodes(writer, p)
         opcode_table["j_castore"] := 85
         opcode_table["j_sastore"] := 86
         opcode_table["j_nop"] := 0
-        opcode_table["j_Pop"] := 87
+        opcode_table["j_pop"] := 87
         opcode_table["j_pop2"] := 88
         opcode_table["j_dup"] := 89
         opcode_table["j_dup2"] := 92
@@ -741,7 +741,7 @@ procedure j_writer_opcodes(writer, p)
             "j_iastore", "j_lastore", "j_fastore", "j_dastore", "j_aastore",
             "j_bastore", "j_castore", "j_sastore",
             "j_nop",
-            "j_Pop", "j_pop2",
+            "j_pop", "j_pop2",
             "j_dup", "j_dup2", "j_dup_x1", "j_dup2_x1", "j_dup_x2", "j_dup2_x2",
             "j_swap",
             "j_iadd", "j_ladd", "j_fadd", "j_dadd",
@@ -1139,7 +1139,7 @@ procedure j_offset_opcodes(p, offset, locations)
         offset_table["j_castore"] := 0
         offset_table["j_sastore"] := 0
         offset_table["j_nop"] := 0
-        offset_table["j_Pop"] := 0
+        offset_table["j_pop"] := 0
         offset_table["j_pop2"] := 0
         offset_table["j_dup"] := 0
         offset_table["j_dup2"] := 0
