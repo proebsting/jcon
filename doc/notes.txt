@@ -85,8 +85,6 @@ graphics overview:
 -- see rts/wAttrib.java for the list of implemented attributes
 
 graphics bugs:
--- open(s, "g") can return before the window is fully open 
--- the window can be seen resizing itself as it opens
 -- window repair is only done when paused for event input
 -- &interval is always zero
 -- graphics output is flushed before any read() -- even untranslated from disk
@@ -123,6 +121,9 @@ text:
 -- \r and \t are not handled correctly on output
 -- some Java font metrics are bogus, leading to various problems
 -- the visible text cursor, when enabled, is a solid, nonblinking underbar
+
+miscellaneous:
+-- WDefault() always fails
 
 ------------------------------------------------------------------------------
 
