@@ -23,6 +23,11 @@ class f$any extends iFunctionClosure {			// any(c,s,i1,i2)
 	int i1 = s.posEq(iRuntime.argPos(args, 2));
 	int i2 = s.posEq(vInteger.argVal(args, 3, 0));
 
+	if (i1 > i2) {
+	    int tmp = i1;
+	    i1 = i2;
+	    i2 = tmp;
+	}
 	if (i1 < i2 && c.member(s.value.charAt(i1-1))) {
 	    return iNew.Integer(i1+1);
 	}
@@ -36,6 +41,11 @@ class f$many extends iFunctionClosure {			// many(c,s,i1,i2)
 	vString s = iRuntime.argSubject(args, 1);
 	int i1 = s.posEq(iRuntime.argPos(args, 2));
 	int i2 = s.posEq(vInteger.argVal(args, 3, 0));
+	if (i1 > i2) {
+	    int tmp = i1;
+	    i1 = i2;
+	    i2 = tmp;
+	}
 
 	if (i1 >= i2) {
 	    return null;
@@ -61,6 +71,11 @@ class f$match extends iFunctionClosure {		// match(s1,s2,i1,i2)
 	int i1 = s2.posEq(iRuntime.argPos(args, 2));
 	int i2 = s2.posEq(vInteger.argVal(args, 3, 0));
 
+	if (i1 > i2) {
+		int tmp = i1;
+		i1 = i2;
+		i2 = tmp;
+	}
 	if (i1 > i2-s1.length()) {
 	    return null;
 	}
@@ -92,6 +107,11 @@ class f$find extends iClosure {				// find(s1,s2,i1,i2)
 	    s2 = iRuntime.argSubject(arguments, 1);
 	    i1 = s2.posEq(iRuntime.argPos(arguments, 2));
 	    i2 = s2.posEq(vInteger.argVal(arguments, 3, 0));
+	    if (i1 > i2) {
+		int tmp = i1;
+		i1 = i2;
+		i2 = tmp;
+	    }
 	}
 
 	if (i1 > i2) {
@@ -127,6 +147,11 @@ class f$upto extends iClosure {				// upto(c,s2,i1,i2)
 	    s = iRuntime.argSubject(arguments, 1);
 	    i1 = s.posEq(iRuntime.argPos(arguments, 2));
 	    i2 = s.posEq(vInteger.argVal(arguments, 3, 0));
+	    if (i1 > i2) {
+	        int tmp = i1;
+	        i1 = i2;
+	        i2 = tmp;
+	    }
 	}
 
 	for (; i1 < i2; i1++) {
@@ -162,6 +187,11 @@ class f$bal extends iClosure {				// bal(c1,c2,c3,s,i1,i2)
 	    s = iRuntime.argSubject(arguments, 3);
 	    i1 = s.posEq(iRuntime.argPos(arguments, 4));
 	    i2 = s.posEq(vInteger.argVal(arguments, 5, 0));
+	    if (i1 > i2) {
+		int tmp = i1;
+		i1 = i2;
+		i2 = tmp;
+	    }
 	}
 
 	int balance = 0;
