@@ -20,7 +20,9 @@ void report(iClosure c) {		// print message and abort
     //#%#% throw exception for handling as failure at proper point
 
     System.out.flush();
+    System.err.println();
     System.err.println("Run-time error " + num);
+    System.err.println("File " + c.parent.file + "; Line " + c.parent.line);
     System.err.println(iRunerr.text(num));
     if (desc != null) {
         System.err.println("offending value: " + desc.report());
