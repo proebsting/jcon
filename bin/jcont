@@ -15,8 +15,6 @@
 #     -d	debug jcont: use ./jtmp for temp files, and don't delete
 #     -v	verbose: echo shell commands, trace linking steps
 #		(this option is not for the squeamish)
-#     -J	use older Java code generator
-#		(instead of writing better class files directly)
 #     -P	pessimize: don't optimize the generated Java code
 #
 #  Jcont translates Icon source files into .zip files, and links .zip
@@ -27,6 +25,10 @@
 #  The following executables must be in the search path:
 #	icont, java, javac, zip, unzip 
 #  (zip and unzip may be installed in the same directory as jcont.)
+
+#%#%#%#%#% TEMPORARILY DISABLED BECAUSE THE OLD GENERATOR IS BROKEN:
+#     -J	use older Java code generator
+#		(instead of writing better class files directly)
 
 PREPROC="icont -s -E"
 ZIP="zip"
