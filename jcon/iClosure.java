@@ -21,7 +21,7 @@ public int column;
 public String[] names;		// arrays created by locals() for returning
 public vVariable[] variables;	//	contents of active closure.
 
-void init() {
+final void init() {
     PC = 1;
     returned = false;
 }
