@@ -427,6 +427,10 @@ class k$subject extends vProc0 {				// &subject
     public vDescriptor Call() {
 	return self;
     }
+
+    public static vString get() {
+	return (vString) self.value;
+    }
 }
 
 
@@ -452,6 +456,10 @@ class k$pos extends vProc0 {				// &pos
 
     public static void set(long i) {	// assign value known to be valid
 	self.value = vInteger.New(i);
+    }
+
+    public static int get() {		// retrieve value as int
+	return (int) ((vInteger)self.value).value;
     }
 }
 

@@ -9,20 +9,24 @@ class fScan {
     //  fScan.subj(arg) -- return explicit or defaulted subject argument
 
     static vString subj(vDescriptor arg) {
-	return arg.isnull() ? (vString)k$subject.self.Deref() : arg.mkString();
+	return arg.isnull() ? k$subject.get() : arg.mkString();
     }
 
-    //  fScan.pos(subjarg, posarg) -- return explicit or implicit pos argument
+    //  fScan.pos(subjarg, subjval, posarg) -- return posEq of pos argument
     //
+    //  subjval is the value returned by fScan.subj (above).
     //  Note that the default pos value depends on whether subj was defaulted.
 
-    static long pos(vDescriptor subjarg, vDescriptor posarg) {
-	if (!posarg.isnull()) {
-	    return posarg.mkInteger().value;
-	} else if (!subjarg.isnull()) {
-	    return 1;
+    static int pos(
+		vDescriptor subjarg, vString subjval, vDescriptor posarg) {
+	if (posarg.isnull()) {
+	    if (subjarg.isnull()) {
+		return k$pos.get();
+	    } else {
+		return 1;
+	    }
 	} else {
-	    return ((vInteger)k$pos.self.Deref()).value;
+	    return subjval.posEq(posarg.mkInteger().value);
 	}
     }
  
@@ -45,11 +49,12 @@ class f$pos extends vProc1 {			// pos(i)
 
 
 class f$any extends vProc4 {			// any(c,s,i1,i2)
-        public vDescriptor Call(
+
+    public vDescriptor Call(
 	    vDescriptor a, vDescriptor b, vDescriptor c, vDescriptor d) {
 	vCset cs = a.mkCset();
 	vString s = fScan.subj(b);
-	int i1 = s.posEq(fScan.pos(b, c));
+	int i1 = fScan.pos(b, s, c);
 	int i2 = s.posEq(d.isnull() ? 0 : d.mkInteger().value);
 
 	if (i1 == 0 || i2 == 0) {
@@ -65,16 +70,29 @@ class f$any extends vProc4 {			// any(c,s,i1,i2)
 	}
 	return null;
     }
+
+    // additional entry point for common case
+    public vDescriptor Call(vDescriptor a) {
+	vCset cs = a.mkCset();
+	vString subj = k$subject.get();		// &subject
+	int zpos = k$pos.get() - 1;		// zero-based &pos
+	if (zpos < subj.length() && cs.member(subj.charAt(zpos))) {
+	    return vInteger.New(zpos + 2);
+	} else {
+	    return null;
+	}
+    }
 }
 
 
 
 class f$many extends vProc4 {			// many(c,s,i1,i2)
-        public vDescriptor Call(
+
+    public vDescriptor Call(
 	    vDescriptor a, vDescriptor b, vDescriptor c, vDescriptor d) {
 	vCset cs = a.mkCset();
 	vString s = fScan.subj(b);
-	int i1 = s.posEq(fScan.pos(b, c));
+	int i1 = fScan.pos(b, s, c);
 	int i2 = s.posEq(d.isnull() ? 0 : d.mkInteger().value);
 
 	if (i1 == 0 || i2 == 0) {
@@ -101,16 +119,32 @@ class f$many extends vProc4 {			// many(c,s,i1,i2)
 	    return vInteger.New(i);
 	}
     }
+
+    // additional entry point for common case
+    public vDescriptor Call(vDescriptor a) {
+	vCset cs = a.mkCset();
+	vString subj = k$subject.get();		// &subject
+	int zpos = k$pos.get() - 1;		// zero-based &pos
+	long zmax = subj.length();
+	byte t[] = subj.getBytes();
+	if (zpos >= zmax || !cs.member(t[zpos])) {
+	    return null;
+	}
+	while (++zpos < zmax && cs.member(t[zpos])) {
+	    ;
+	}
+	return vInteger.New(zpos + 1);
+    }
 }
 
 
 
 class f$match extends vProc4 {			// match(s1,s2,i1,i2)
-        public vDescriptor Call(
+    public vDescriptor Call(
 	    vDescriptor a, vDescriptor b, vDescriptor c, vDescriptor d) {
 	vString s1 = a.mkString();
 	vString s2 = fScan.subj(b);
-	int i1 = s2.posEq(fScan.pos(b, c));
+	int i1 = fScan.pos(b, s2, c);
 	int i2 = s2.posEq(d.isnull() ? 0 : d.mkInteger().value);
 
 	if (i1 == 0 || i2 == 0) {
@@ -147,7 +181,7 @@ class f$find extends vProc4 {				// find(s1,s2,i1,i2)
 
 	final vString s1 = a.mkString();
 	final vString s2 = fScan.subj(b);
-	final int i1 = s2.posEq(fScan.pos(b, c));
+	final int i1 = fScan.pos(b, s2, c);
 	final int i2 = s2.posEq(d.isnull() ? 0 : d.mkInteger().value);
 	if (i1 == 0 || i2 == 0) {	// if posn out of range
 	    return null;
@@ -188,7 +222,7 @@ class f$upto extends vProc4 {				// upto(c,s2,i1,i2)
 
 	final vCset cs = a.mkCset();
 	final vString s = fScan.subj(b);
-	final int i1 = s.posEq(fScan.pos(b, c));
+	final int i1 = fScan.pos(b, s, c);
 	final int i2 = s.posEq(d.isnull() ? 0 : d.mkInteger().value);
 	if (i1 == 0 || i2 == 0) {
 	    return null;
@@ -218,6 +252,38 @@ class f$upto extends vProc4 {				// upto(c,s2,i1,i2)
 	    }
 	}.Resume();
     }
+
+    // additional entry point for common case
+    public vDescriptor Call(vDescriptor a) {
+	final vCset cs = a.mkCset();
+	final vString subj = k$subject.get();		// &subject
+	int zpos = k$pos.get() - 1;			// zero-based &pos
+	final byte t[] = subj.getBytes();
+
+	while (true) {
+	    if (zpos >= t.length) {
+		return null; /*FAIL*/
+	    }
+	    if (cs.member(t[zpos])) {
+		break;
+	    }
+	    zpos++;
+	}
+	final int zstart = zpos;
+
+	return new vClosure() {
+	    { retval = vInteger.New(zstart + 1); }
+	    int i = zstart;
+	    public vDescriptor Resume() {
+		while (++i < t.length) {
+		    if (cs.member(t[i])) {
+			return vInteger.New(i+1);
+		    }
+		}
+		return null;
+	    }
+	};
+    }
 }
 
 
@@ -234,7 +300,7 @@ class f$bal extends vProc6 {				// bal(c1,c2,c3,s,i1,i2)
 	final vCset c2 = b.isnull() ? c2def : b.mkCset();
 	final vCset c3 = c.isnull() ? c3def : c.mkCset();
 	final vString s = fScan.subj(d);
-	final int i1 = s.posEq(fScan.pos(d, e));
+	final int i1 = fScan.pos(d, s, e);
 	final int i2 = s.posEq(f.isnull() ? 0 : f.mkInteger().value);
 	if (i1 == 0 || i2 == 0) {
 	    return null;
