@@ -1,5 +1,7 @@
 #  gen_bc.icn -- filter to create class files from intermediate representation
 
+global bc_undeclared_table
+
 global bc_lvalset
 global bc_function_name
 
@@ -885,6 +887,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     c.this_class := j_cp_Class(c, j_cp_Utf8(c, bc_current_classname))
 
     undeclared := bc_function_variables(c, params, locals)
+    bc_undeclared_table[name] := [coord.file, undeclared]
     if /bc_save_restore_flag then {
         every insert(bc_undeclared_set, !undeclared)
         bc_class_constructor(c, statics)
@@ -1606,6 +1609,7 @@ procedure bc_File(irgen, flagList)
     bc_proc_table := table()
     bc_record_table := table()
     bc_undeclared_set := set([])
+    bc_undeclared_table := table()
     bc_op_table := table()
     bc_declare_set := set([])
 
@@ -1621,7 +1625,7 @@ procedure bc_File(irgen, flagList)
         "ir_Invocable" : bc_invocables(p.all, p.nameList)
         "ir_Function"  : bc_function(p.name, p.paramList, p.accumulate,
                                     p.localList, p.staticList, p.codeList,
-                                    p.codeStart, p.lvalset)
+                                    p.codeStart, p.lvalset, p.coord)
         "ir_Link"      : bc_links(p.nameList)
         default       : runerr(500, p)
         }
@@ -1634,6 +1638,7 @@ procedure bc_File(irgen, flagList)
 
     bc_create_declare(c)
     bc_create_unresolved(c)
+    bc_create_announce_unresolved(c)
     bc_create_linked(c)
     bc_create_resolve(c)
     bc_create_linkinit(c)
@@ -1731,6 +1736,32 @@ procedure bc_create_unresolved(c)
         s := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(unresolvedcode.code, j_ldc_w(s) )
         put(unresolvedcode.code, j_invokestatic(undeclaredmethod) )
+    }
+    put(unresolvedcode.code, j_return() )
+end
+
+procedure bc_create_announce_unresolved(c)
+    local unresolved, unresolvedcode, invokeall, invokes, k, s
+    local undeclaredmethod
+    local file, tuple, n
+
+    unresolved := j_create_method(c, 0, "announce_unresolved", "()V")
+    unresolvedcode := j_create_code(c, 15, 15)
+    put(unresolved.attributes, unresolvedcode)
+
+    undeclaredmethod := bc_announce_undeclared_methodref(c)
+    every k := key(bc_undeclared_table) do {
+	tuple := bc_undeclared_table[k]
+	file := tuple[1]
+	every n := !tuple[2] do {
+            s := j_cp_String(c, j_cp_Utf8(c, n))
+            put(unresolvedcode.code, j_ldc_w(s) )
+            s := j_cp_String(c, j_cp_Utf8(c, k))
+            put(unresolvedcode.code, j_ldc_w(s) )
+            s := j_cp_String(c, j_cp_Utf8(c, file))
+            put(unresolvedcode.code, j_ldc_w(s) )
+            put(unresolvedcode.code, j_invokestatic(undeclaredmethod) )
+	}
     }
     put(unresolvedcode.code, j_return() )
 end

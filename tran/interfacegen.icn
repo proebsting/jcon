@@ -269,7 +269,8 @@ procedure methodrefs()
              "rts/iEnv"],
             ["Resume", "()Lrts/vDescriptor;", "rts/vDescriptor"],
             ["Resume", "(Ljava/lang/String;ILrts/vDescriptor;)Lrts/vDescriptor;", "rts/iTrampoline", "trampoline_Resume"],
-            ["undeclared", "(Ljava/lang/String;)V", "rts/iEnv"]
+            ["undeclared", "(Ljava/lang/String;)V", "rts/iEnv"],
+            ["undeclared", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", "rts/iEnv", "announce_undeclared"]
         ]
     def := [ "name", "type", "class" ]
     every gen_procedure(!m, def, "methodref")

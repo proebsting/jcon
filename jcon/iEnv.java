@@ -48,6 +48,13 @@ public static void undeclared(String s) {
     invoke.put(s,s);
 }
 
+public static void undeclared(String name, String proc, String file) {
+    if (symtab.get(name) == null) {
+	System.err.println(file + ": \"" + name +
+			   "\": undeclared identifier, in procedure " + proc);
+    }
+}
+
 public static vVariable resolve(String s) {
     vVariable v = (vVariable) symtab.get(s);
     return v;

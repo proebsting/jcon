@@ -64,6 +64,16 @@ public static void start(iFile[] files, String[] names) {
 	iFile f = (iFile) e.nextElement();
 	f.declare();
     }
+
+    if (System.getProperty("-u") != null) {
+        e = fileTable.elements();
+        while (e.hasMoreElements()) {
+	    iFile f = (iFile) e.nextElement();
+	    f.announce_unresolved();
+        }
+	return;
+    }
+
     e = fileTable.elements();
     while (e.hasMoreElements()) {
 	iFile f = (iFile) e.nextElement();
