@@ -56,22 +56,29 @@ int compareTo(vValue v) { return this.value.compareTo(((vString) v).value); }
 
 vNumeric mkNumeric()	{
 
-    String s = value.trim();
+    String s = value.trim();	// #%#% too liberal -- trims other than spaces
+
     if (s.length() > 0 && s.charAt(0) == '+') {	// allow leading +, by trimming 
 	s = s.substring(1);
     }
 
     try {
-	return iNew.Integer(Long.parseLong(s));		//#%#% not exactly right
+	return iNew.Integer(Long.parseLong(s));
     } catch (NumberFormatException e) {
     }
 
     try {
-	return iNew.Real(Double.valueOf(s).doubleValue());  //#%#% likewise
+	Double d = Double.valueOf(s);
+	if (!d.isInfinite()) {
+	    return iNew.Real(d.doubleValue());
+	}
     } catch (NumberFormatException e) {
     }
 
-    //#%#% check here for 'r' or 'R' and parse radix integer
+    vInteger v = vInteger.radixParse(s);	// try to parse as radix value
+    if (v != null) {
+	return v;
+    }
 
     iRuntime.error(102, this);
     return null;

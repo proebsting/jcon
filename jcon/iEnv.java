@@ -59,7 +59,9 @@ public class iEnv {
 
 	public static void declareProcedure(String name, String classname, int arity) {
 		try {
-			declareGlobalInit(name, iNew.SimpleVar(name, iNew.Proc(Class.forName(classname), arity)));
+			declareGlobalInit(name, iNew.SimpleVar(name,
+				iNew.Proc("procedure " + name,
+					Class.forName(classname), arity)));
 		} catch (ClassNotFoundException e) {
 			System.err.println(name + ": procedure not found");
 			System.exit(1);

@@ -2,10 +2,12 @@ package rts;
 
 public class vProc extends vValue {
 	
-	Class proc;
-	int args;
+	String img;	// image for printing
+	Class proc;	// class that implements proc
+	int args;	// number of args
 
-	vProc(Class c, int args) {
+	vProc(String s, Class c, int args) {
+		img = s;
 		proc = c;
 		this.args = args;
 	}
@@ -14,22 +16,7 @@ public class vProc extends vValue {
 		return this;
 	}
 
-	String image() {
-
-		String s = proc.getName();
-		int j = s.lastIndexOf('$');
-		if (j >= 0) {
-                    j = j + 1;
-                } else {
-                    j = 0;
-		}
-
-		if (s.charAt(0) == 'p') {
-			return "procedure " + s.substring(j);
-		} else {
-			return "function " + s.substring(j);
-		}
-	}
+	String image()	{ return img; }
 
 	String type()	{ return "procedure"; }
 

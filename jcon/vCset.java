@@ -54,7 +54,33 @@ boolean member(char c) {
 }
 
 int compareTo(vValue v) {
-    return this.mkString().compareTo(v.mkString());  //#%#% horribly slow 
+    java.util.BitSet vset = ((vCset)v).t;
+    int i;
+    for (i = 0; i <= vCset.MAX_VALUE; i++) {
+	if (this.t.get(i) ^ vset.get(i)) {
+	    break;
+	}
+    }
+    if (i > vCset.MAX_VALUE) {
+	return 0;		// identical csets
+    }
+
+    if (this.t.get(i)) {	// first bit found in this
+	while (++i <= vCset.MAX_VALUE) {
+	   if (vset.get(i)) {
+		return -1;	// v is not empty
+	   }
+	}
+	return 1;		// v is empty
+
+    } else {			// first bit found in v
+	while (++i <= vCset.MAX_VALUE) {
+	   if (this.t.get(i)) {
+		return 1;	// this is not empty
+	   }
+	}
+	return -1;		// this is empty
+    }
 }
 
 public boolean equals(Object o) {

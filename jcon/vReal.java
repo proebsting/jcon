@@ -23,18 +23,28 @@ public boolean equals(Object o)	{
 }
 
 vReal mkReal()		{ return this; }
-vInteger mkInteger()	{ return iNew.Integer(this.value); }
+
+vInteger mkInteger()	{
+    if (value < Long.MIN_VALUE || value > Long.MAX_VALUE) {
+	    return null;	// if not convertable, fail
+    } else {
+	    return iNew.Integer(this.value);
+    }
+}
+
 vString mkString()	{ return iNew.String(this.image()); }
 
 String write()		{ return this.image(); }
 
-String image()		{
+String image()		{	//#%#%# differs from v9 formatting 
     String s = String.valueOf(value + 0.0);	 // +0.0 is to eliminate "-0"
-    				//#%#%#% differs from Icon formatting
-    if (s.indexOf('.') >= 0) {	// if decimal point is present
-	return s;		// use as given
+    if (s.indexOf('E') >= 0) {
+	return s.replace('E','e');	// if E notation, just change to 'e'
+    }
+    if (Double.isInfinite(value) || Double.isNaN(value) || s.indexOf('.')>=0) {
+	return s;		// don't edit if Inf, NaN, or if "." present
     } else {
-	return s + ".0";	// add decimal point 
+	return s + ".0";	// add decimal point if missing
     }
 }
 
