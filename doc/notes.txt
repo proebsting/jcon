@@ -48,8 +48,6 @@ miscellaneous:
 -- display() ignores its arguments (and displays everything)
 -- display() prints globals in an unsorted order
 -- function() generates names in an unsorted order
--- "linker" silently ignores multiply-defined names
-   (e.g., global foo, procedure foo())
 -- allocation-related keywords (&allocated, &collections, &storage, &regions)
    produce only 0's.
 
