@@ -84,8 +84,8 @@ events:
 -- no timing information is provided (&interval is always zero)
 
 colors:
--- there is no inherent limit to the number of colors in use
 -- the default gamma value is 1.5
+-- there is no inherent limit to the number of colors in use
 -- on 8-bit displays, depending on the Java system, colors may be approximated
 -- variants (dark, weak, ..) of unsaturated colors (brown, pink, violet) differ
 -- "light black" and "pale black" produce black, not shades of gray
@@ -105,4 +105,5 @@ images:
 -- the "image" attribute returns the last image filename loaded, or null if none
 -- image loading ignores the gamma attribute
 -- ReadImage() ignores the palette argument; Java dithers if necessary
--- WriteImage(), DrawImage(), and Pixel() are not implemented
+-- ReadImage() and DrawImage() never return an integer indicating color shortage
+-- WriteImage() and Pixel() are not implemented
