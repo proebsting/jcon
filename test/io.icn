@@ -1,4 +1,4 @@
-#  file test -- writes tmp1, tmp2
+#  I/O test -- writes ./tmp1 and ./tmp2 as well as stdout
 
 procedure main()
    local L, f, m, n, t1, t2
@@ -8,6 +8,14 @@ procedure main()
    L := sort(L)
    every f := !L do
       write(type(f), ": ", image(f))
+
+   write()
+   write(read())
+   write(read(&input))
+   while write(read()) do break
+   write(!&input)
+   every write(!&input \ 2)
+   every write(!&input) \ 2
 
    write()
    write("flush /etc/motd: ", image(flush(m)) | "FAILED")

@@ -4,6 +4,15 @@ file: &output
 file: file(/dev/null)
 file: file(/etc/motd)
 
+aaa
+bbbb
+ccccc
+dddddd
+eeeeeee
+ffffffff
+ggggggggg
+hhhhhhhhhh
+
 flush /etc/motd: file(/etc/motd)
 close /etc/motd: file(/etc/motd)
 close /etc/motd: file(/etc/motd)
