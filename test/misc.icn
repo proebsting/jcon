@@ -12,7 +12,12 @@ procedure main()
    write(x, .x, x := "b")
    every (write|"write")( (1|2)("hello", "mom"), "!")
    every (write|"write")! [ (1|2) ! ["hello", "mom"], "!"]
+   pairs { 1 to 100, 11 to 99 by 11 }
 
    exit()
    write("oops!")
+end
+
+procedure pairs(e)
+   while write(@e[1], " ", @e[2])
 end

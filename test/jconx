@@ -15,8 +15,14 @@ fi
 ZFILE="${1%.zip}.zip"
 shift
 
+#  check that it exists
+if [ ! -f $ZFILE ]; then
+    echo "$ZFILE: not found" 1>&2
+    exit 1
+fi
+
 #  determine installed directory
-PRG=`whence $0` >/dev/null 2>&1
+PRG=`whence $0`
 IDIR=`dirname $PRG`/..
 case $IDIR in 
     /*)	;;
@@ -28,7 +34,7 @@ case `uname -sr | sed 's/ //'` in
     SunOS4*)    ARCH=sunos;;
     SunOS5*)    ARCH=solaris;;
     IRIX*)      ARCH=irix;;
-    OSF*)       ARCH=digital;;
+    OSF*)       ARCH=digital; export SYSNAME=alpha_osf32c;;
     ULTRIX*)    ARCH=ultrix;;
     Linux*)     ARCH=linux;;
     HP-UX*)     ARCH=hpux;;
