@@ -1,6 +1,22 @@
 #!/bin/ksh
 #
-#  runtest [file...] -- run test
+#  runtest [-JP] [file...] -- run test
+#
+#	-J	use Java compiler target  (icont -J)
+#	-P	disable optimizer  (icont -P)
+
+JCONT="../bin/jcont"
+JCOPT="-s"
+
+USAGE="$0 [-JP] [file...]"
+while getopts :JP c; do
+    case $c in
+	J)	JCOPT="$JCOPT -J";;
+	P)	JCOPT="$JCOPT -P";;
+	*)	echo "usage: $USAGE" 1>&2; exit 1;;
+    esac
+done
+shift $((OPTIND-1))
 
 if [ $# = 0 ]; then
    set *.std
@@ -11,7 +27,12 @@ ERRORS=0
 for FNAME; do
     BASE=${FNAME%.*}
     echo ${BASE}:
-    ../bin/jcont -s $BASE
+    if [ ! -r $BASE.icn -o ! -r $BASE.std ]; then
+	echo "   invalid test: missing $BASE.icn or $BASE.std"
+	let 'ERRORS = ERRORS + 1'
+	continue
+    fi
+    $JCONT $JCOPT $BASE
     if [ -r $BASE.dat ]; then
 	./$BASE $BASE.dat <$BASE.dat >$BASE.out
     else
