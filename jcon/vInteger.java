@@ -22,6 +22,10 @@ String write()		{ return String.valueOf(value); }
 String image()		{ return String.valueOf(value); }
 String type()		{ return "integer"; }
 
+iClosure instantiate (vDescriptor[] args, iClosure parent) {
+	return new iIntegerClosure(this, args, parent);
+}
+
 
 
 //  static methods for argument processing and defaulting
@@ -124,13 +128,12 @@ vValue NGreater(vDescriptor v) {
     return (this.value > vi.value) ? vi : null;
 }
 
-iClosure instantiate (vDescriptor[] args, iClosure parent) {
-	return new iIntegerClosure(this, args, parent);
-}
-
 
 
 } // class vInteger
+
+
+
 
 class iIntegerClosure extends iRefClosure {
 	vInteger value;

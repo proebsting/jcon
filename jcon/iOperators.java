@@ -8,10 +8,11 @@ class iOperators extends iFile {
 void announce(iEnv env) {
 
     declare(env, ":=,2", "oAssign");
-    declare(env, "&,2", "oConjunction");
+    declare(env, ":?,2", "oSubjAssign");	// assign for `s ? e'
 
     declare(env, "...,3", "oToBy");
 
+    declare(env, ".,2", "oField");
     declare(env, "[],2", "oIndex");
     declare(env, "[:],3", "oSection");
     declare(env, "[+:],3", "oSectPlus");
@@ -26,6 +27,8 @@ void announce(iEnv env) {
 
     declare(env, "+,1", "oNumerate");
     declare(env, "-,1", "oNegate");
+
+    declare(env, "&,2", "oConjunction");
 
     declare(env, "+,2", "oAdd");
     declare(env, "-,2", "oSub");
@@ -70,6 +73,19 @@ class oAssign extends iRefClosure {			// x1 := x2
 		return args[0].Assign(args[1].deref());
 	}
 	String tfmt() { return "{$1 := $2}"; }
+}
+
+
+
+//  special assignment operator used to assign &subject for string scanning
+//  (exactly the same as := except for the error message)
+
+class oSubjAssign extends iRefClosure {			// s ? e assignment
+
+	vDescriptor function(vDescriptor[] args) {
+		return args[0].Assign(args[1].deref());
+	}
+	String tfmt() { return "{$2 ? ..}"; }
 }
 
 
@@ -134,6 +150,13 @@ class oToBy extends iClosure {				// i1 to i2 by i3
 }
 
 
+
+class oField extends iRefClosure {			// R . s
+	vDescriptor function(vDescriptor[] args) {
+		return args[0].field(args[1].mkString().value);
+	}
+	String tfmt() { return "{$1 . field}"; }
+}
 
 class oIndex extends iRefClosure {			//  x1[x2]
 	vDescriptor function(vDescriptor[] args) {

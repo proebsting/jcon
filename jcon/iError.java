@@ -46,10 +46,34 @@ static void traceback(iClosure c, int n) {
 
     traceback(c.parent, n - 1);		// print ancestry first
 
-    c.trace();				// report this closure
+    System.err.println("   " + c.trace());  // report this closure
 }
 
 
 
 
 } // class iError
+
+
+
+//  iErrorClosure exists just to raise instantiation errors
+
+class iErrorClosure extends iFunctionClosure {
+
+    vValue value;
+
+    iErrorClosure(vValue value, vDescriptor[] args, iClosure parent) {
+        this.value = value;
+	this.arguments = args;
+	this.parent = parent;
+    }
+
+    vDescriptor function(vDescriptor[] args) {
+    	iRuntime.error(106, value);	// procedure or integer expected
+	return null;
+    }
+
+    String trace()	{ return value.report() + super.trace(); }
+
+    String tfmt()	{ return "($*)"; }	// format for super.trace()
+}

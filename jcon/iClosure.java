@@ -52,19 +52,18 @@ String tfmt() {
    
 
 
-// trace -- report this call for traceback purposes
+// trace -- format this call for traceback purposes
 //
 // calls this.tfmt() to get the trace format string
 // substitutes procedure/function name, derived from class name, for "$0"
 // substitutes argument n-1 (in Java terms) for "$n" (1 <= n <= 9)
 // substitutes entire argument list for "$*"
 
-void trace() {
+String trace() {
 
     String f = this.tfmt();			// trace format
     StringBuffer b = new StringBuffer();	// output buffer
 
-    b.append("   ");				// start with three blanks
     for (int i = 0; i < f.length(); i++) {	// scan format
 	char c = f.charAt(i);
 	if (c == '$') {				// if $x
@@ -97,7 +96,7 @@ void trace() {
 	    b.append(c);			// not $; use as is
 	}
     }
-    System.err.println(b);
+    return b.toString();
 }
 
 
