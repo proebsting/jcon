@@ -1,7 +1,12 @@
-ICONT = icont -s -u
+#  Makefile for jcon/tran
 
-JTRAN = ../bin/jtran
-JLINK = ../bin/jlink
+
+ICONT = icont -u -s
+JCONT = ../bin/jcont -fa -s
+
+.SUFFIXES: .icn .u2 .zip
+.icn.u2:	; $(ICONT) -c $<
+.icn.zip:	; $(JCONT) -c $<
 
 
 BASESRC = \
@@ -37,13 +42,42 @@ TRANSRC = $(BASESRC) \
 	$(CODEGENSRC) \
 	jtran_main.icn
 
-all:	$(JTRAN) $(JLINK)
+LINKSRC = \
+	linker.icn \
+	bytecode.icn
 
-$(JLINK):  linker.icn bytecode.icn
-	$(ICONT) -o $(JLINK) linker.icn bytecode.icn
+TRANOBJ = $(TRANSRC:.icn=.u2)
+LINKOBJ = $(LINKSRC:.icn=.u2)
 
-$(JTRAN):  $(TRANSRC)
-	$(ICONT) -o $(JTRAN) $(TRANSRC)
+TRANZIP = $(TRANSRC:.icn=.zip)
+LINKZIP = $(LINKSRC:.icn=.zip)
+
+
+# usual versions built by icont
+
+all:	jtran jlink
+
+jtran:	$(TRANOBJ)
+	$(ICONT) -o jtran $(TRANOBJ)
+	cp jtran ../bin
+
+jlink:	$(LINKOBJ)
+	$(ICONT) -o jlink $(LINKOBJ)
+	cp jlink ../bin
+
+
+# versions built by jcon (not built by default)
+
+jj:	jjtran jjlink
+
+jjtran:	$(TRANZIP)
+	$(JCONT) -o jjtran $(TRANZIP)
+	cp jjtran ../bin
+
+jjlink:	$(LINKZIP)
+	$(JCONT) -o jjlink $(LINKZIP)
+	cp jjlink ../bin
+
 
 oplexgen: oplexgen.icn
 	$(ICONT) -o oplexgen oplexgen.icn
@@ -57,5 +91,7 @@ interface.icn: interfacegen
 do_ops.icn: oplexgen
 	./oplexgen > do_ops.icn
 
+
 clean:
-	rm -f do_ops.icn interface.icn interfacegen oplexgen *.u[12]
+	rm -f *.u[12] *.zip do_ops.icn interface.icn 
+	rm -f jtran jjtran jlink jjlink interfacegen oplexgen

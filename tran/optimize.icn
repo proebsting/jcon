@@ -273,7 +273,7 @@ procedure goto_elimination(t, start)
     }
 
     every lab := key(new) do {
-        while chunk := new[lab] &
+        while chunk := \new[lab] &
               insn := chunk[-1] &
               type(insn) == "irGoto" &
               type(insn.location) == "irLabel" &
