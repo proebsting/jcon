@@ -240,32 +240,150 @@ private static int hexdigit(int c)
 
 
 
-//  wImage.Write(window, fname, x, y, w, h) -- write image to file
+//  wImage.Write(window, fname, x, y, w, h, q) -- write image to file
+//
+//  If fname ends in .jpg or .jpeg (case insensitive), write JPEG file.
+//  Otherwise, write GIF file.
+//  JPEG writing fails on versions of Java earlier than 1.2.
+//
+//  q is a quality spec.  If q < 0, default settings are used:
+//  q=0.0 for JPEG and q=256 for GIF.
+//
+//  If 0.0 <= q <= 1.0, quality is interpreted on a floating scale.
+//  For JPEG files, the given value is passed to the encoder.
+//  For GIF files, q >= 0.9 produces a 256-color GIF file.
+//
+//  If q > 1, quality is interpreted on an integer scale.  For GIF files,
+//  q specifies the number of colors to be output, limited to 256.
+//  For JPEG files, q = 256 is equivalent to q = 0.90.
 
-public static vDescriptor Write(vWindow win, vString s,
-				int x, int y, int w, int h, int n) {
+public static vValue Write(vWindow win, String fname,
+			    int x, int y, int w, int h, double q) {
 
     final int[] data = Grab(win, x, y, w, h);
     if (data == null) {
     	return null; /*FAIL*/
     }
-    if (n < 1 || n > 256) {
-    	n = 256;
-    }
-    Quantize.toNcolors(data, n);	// reduce to max of n colors for GIF
 
     // AFTER grabbing, convert w & h to positive
     if (w < 0) { w = -w; }
     if (h < 0) { h = -h; }
 
+    String lfname = fname.toLowerCase();
+    if (lfname.endsWith(".jpg") || lfname.endsWith(".jpeg")) {
+	return writeJPEG(win, data, fname, w, h, q);
+    } else {
+	return writeGIF(win, data, fname, w, h, q);
+    }
+}
+
+
+
+//  writeGIF(win, data, fname, w, h, q) -- write GIF file
+
+public static vValue writeGIF(vWindow win, int[] data, String fname,
+				int w, int h, double q) {
+
+    int n = 256;
+    if (q > 1 && q < 256) {
+	// number of colors specified
+	n = (int) q;
+    } else if (q >= 0.0 && q <= 1.0) {
+	// convert from JPEG quality value
+	n = (int) (2 * Math.pow(167, Math.sqrt(q)));
+	if (n > 256) {
+	    n = 256;
+	}
+    }
+    Quantize.toNcolors(data, n);	// reduce to max of n colors
+
     ImageProducer p = new MemoryImageSource(w, h, data, 0, w);
+    OutputStream o;
     try {
-	OutputStream o = new BufferedOutputStream(
-			    new FileOutputStream(s.toString()));
+	o = new BufferedOutputStream(new FileOutputStream(fname));
 	new GifEncoder(p, o).encode();
 	o.close();
 	return win;
     } catch (IOException iox) {
+	return null; /*FAIL*/
+    }
+}
+
+
+
+//  writeJPEG(win, data, fname, w, h, q) -- write JPEG file
+
+public static vValue writeJPEG(vWindow win, int[] data, String fname,
+				int w, int h, double q) {
+
+    if (q < 0.0) {
+	q = 0.75;		// default quality
+    } else if (q > 1.0) {
+	// convert from GIF terms
+	q = (Math.log(q) - Math.log(2)) / Math.log(167);
+	q = q * q;
+	if (q > 0.90) {		// equiv of 256 colors
+	    q = 0.90;
+	}
+    }
+
+    // this is all done very indirectly because the
+    // com.sun.image.codec.jpeg.* class may not be available
+    // (if not, writing fails)
+
+    Integer ww = new Integer(w);
+    Integer hh = new Integer(h);
+    Integer zero = new Integer(0);
+    FileOutputStream f = null;
+
+    try {
+	f = new FileOutputStream(fname);
+
+	// int rgbtype = BufferedImage.TYPE_INT_RGB;
+	int rgbtype = Reflect.field(
+	    "java.awt.image.BufferedImage", "TYPE_INT_RGB").getInt(null);
+
+	// BufferedImage bi = new BufferedImage(w, h, rgbtype);
+	Object bi = Reflect.construct("java.awt.image.BufferedImage", 
+	    new Class[] { int.class, int.class, int.class },
+	    new Object[] { ww, hh, new Integer(1) }) ;
+
+	// bi.setRGB(0, 0, w, h, data, 0, w);
+	Reflect.call(bi, "setRGB",
+	    new Class[] { int.class, int.class, int.class, int.class,
+		int[].class, int.class, int.class },
+	    new Object[] { zero, zero, ww, hh, data, zero, ww });
+
+	// JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(f);
+	Object encoder = Reflect.call(
+	    "com.sun.image.codec.jpeg.JPEGCodec", "createJPEGEncoder",
+	    new Class[] { OutputStream.class },
+	    new Object[] { f });
+
+	// JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(bi);
+	Object param = Reflect.call(encoder, "getDefaultJPEGEncodeParam",
+	    new Class[] { bi.getClass() },
+	    new Object[] { bi });
+
+	// param.setQuality((float)q, false);
+	Reflect.call(param, "setQuality",
+	    new Class[] { float.class, boolean.class },
+	    new Object[] { new Float(q), new Boolean(false) });
+
+	// encoder.encode(bi, param);
+	Reflect.call(encoder, "encode",
+	    new Class[] { bi.getClass(),
+		Class.forName("com.sun.image.codec.jpeg.JPEGEncodeParam") },
+	    new Object[] { bi, param });
+
+	f.close();
+	return win;
+
+    } catch (Exception e) {
+	try {
+	    f.close();
+	} catch (Exception ee) {
+	}
 	return null; /*FAIL*/
     }
 }

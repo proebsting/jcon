@@ -355,7 +355,7 @@ final class f$ReadImage extends vProc4 {	// ReadImage(W,s,x,y)  [no ,s2]
 
 
 
-final class f$WriteImage extends vProc7 {	// WriteImage(W,s,x,y,w,h,n)
+final class f$WriteImage extends vProc7 {	// WriteImage(W,s,x,y,w,h,q)
     public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
 		vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g) {
 	if (!a.iswin()) {
@@ -363,16 +363,13 @@ final class f$WriteImage extends vProc7 {	// WriteImage(W,s,x,y,w,h,n)
 	}
 	vWindow win = (vWindow)(a.Deref());
 	Dimension wd = win.getCanvas().getSize();
-	vString fname = b.mkString();
+	String fname = b.mkString().toString();
 	int x = c.isnull() ? -win.dx : ((int) c.mkInteger().value);
 	int y = d.isnull() ? -win.dy : ((int) d.mkInteger().value);
 	int w = e.isnull() ? (wd.width-x+win.dx) : ((int) e.mkInteger().value);
 	int h = f.isnull() ? (wd.height-y+win.dy) : ((int) f.mkInteger().value);
-	int n = g.isnull() ? 256 : ((int) g.mkInteger().value);
-	if (n < 0 || n > 256) {
-	    iRuntime.error(205, f);
-	}
-	return wImage.Write(win, fname, x, y, w, h, n);
+	double q = g.isnull() ? -1.0 : g.mkReal().value;
+	return wImage.Write(win, fname, x, y, w, h, q);
     }
 }
 
