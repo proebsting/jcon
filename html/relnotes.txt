@@ -38,6 +38,8 @@ on other platforms.
 <UL>
     <LI><CODE>&amp;clock</CODE> and <CODE>&amp;dateline</CODE>
 	may be off by one hour due to Java library bugs
+    <LI>Extremely large procedures (thousands of lines long)
+	can generate code that is too large for Java to handle
 </UL>
 
 <H3>Known graphics problems</H3>
