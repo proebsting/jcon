@@ -208,46 +208,22 @@ iClosure instantiate(vDescriptor[] args, iClosure parent) {
 }
 
 vValue LLess(vDescriptor v) {
-    if (!(v instanceof vString)) {
-	iRuntime.error(103, v);
-    }
-    String vs = ((vString)v).value;
-    return this.value.compareTo(vs) < 0 ? (vValue)v : null;
+    return this.value.compareTo(((vString)v).value) < 0 ? (vValue)v : null;
 }
 vValue LLessEq(vDescriptor v) {
-    if (!(v instanceof vString)) {
-	iRuntime.error(103, v);
-    }
-    String vs = ((vString)v).value;
-    return this.value.compareTo(vs) <= 0 ? (vValue)v : null;
+    return this.value.compareTo(((vString)v).value) <= 0 ? (vValue)v : null;
 }
 vValue LEqual(vDescriptor v) {
-    if (!(v instanceof vString)) {
-	iRuntime.error(103, v);
-    }
-    String vs = ((vString)v).value;
-    return this.value.compareTo(vs) == 0 ? (vValue)v : null;
+    return this.value.compareTo(((vString)v).value) == 0 ? (vValue)v : null;
 }
 vValue LUnequal(vDescriptor v) {
-    if (!(v instanceof vString)) {
-	iRuntime.error(103, v);
-    }
-    String vs = ((vString)v).value;
-    return this.value.compareTo(vs) != 0 ? (vValue)v : null;
+    return this.value.compareTo(((vString)v).value) != 0 ? (vValue)v : null;
 }
 vValue LGreaterEq(vDescriptor v) {
-    if (!(v instanceof vString)) {
-	iRuntime.error(103, v);
-    }
-    String vs = ((vString)v).value;
-    return this.value.compareTo(vs) >= 0 ? (vValue)v : null;
+    return this.value.compareTo(((vString)v).value) >= 0 ? (vValue)v : null;
 }
 vValue LGreater(vDescriptor v) {
-    if (!(v instanceof vString)) {
-	iRuntime.error(103, v);
-    }
-    String vs = ((vString)v).value;
-    return this.value.compareTo(vs) > 0 ? (vValue)v : null;
+    return this.value.compareTo(((vString)v).value) > 0 ? (vValue)v : null;
 }
 
 vValue Complement()		{ return this.mkCset().Complement(); }

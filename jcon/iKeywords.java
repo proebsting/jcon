@@ -7,28 +7,54 @@ class iKeywords extends iFile {
 
 	void announce(iEnv env) {
 
-		k$subject s = new k$subject();
-		k$pos p = new k$pos();
+		// constants
+		env.declareKey("null", iNew.Null());
+		env.declareKey("e", iNew.Real(Math.E));
+		env.declareKey("phi", iNew.Real((1.0 + Math.sqrt(5.0)) / 2.0));
+		env.declareKey("pi", iNew.Real(Math.PI));
+		env.declareKey("version", 
+			    iNew.String("Jcon Version 0.0, Spring, 1997"));
+
+		// read-only, but variable
+		env.declareKey("clock", new k$clock());
+		env.declareKey("date", new k$date());
+		env.declareKey("dateline", new k$dateline());
+
+		//incestuous
+		k$subject s = new k$subject();		// &subject
+		k$pos p = new k$pos();			// &pos
 		s.pos = p;
 		p.subject = s;
 		s.Assign(iNew.String(""));
 		env.declareKey("subject", s);
 		env.declareKey("pos", p);
 
+		// generators
+		env.declareKey("features", 
+			iNew.Proc((new k$features()).getClass(), env));
+
+		// special behavior
 		env.declareKey("trace", new k$trace());
+	}
+}
 
-		env.declareKey("clock", new k$clock());
-		env.declareKey("date", new k$date());
-		env.declareKey("dateline", new k$dateline());	//#%#% imperfect
 
-		env.declareKey("null", iNew.Null());
 
-		env.declareKey("e", iNew.Real(Math.E));
-		env.declareKey("phi", iNew.Real((1.0 + Math.sqrt(5.0)) / 2.0));
-		env.declareKey("pi", iNew.Real(Math.PI));
+class k$features extends iClosure {		// &features
 
-		env.declareKey("version", 
-			    iNew.String("Jcon Version 0.0, Spring, 1997"));
+	//#%#%  The features list is hard-wired for now.
+	//#%#%  It's not completely clear what we should report.
+
+	static String[] flist = { "Java", "ASCII", "co-expressions" };
+
+	int posn = 0;
+
+	void nextval() {
+		if (posn < flist.length) {
+			retvalue = iNew.String(flist[posn++]);
+		} else {
+			retvalue = null;
+		}
 	}
 }
 

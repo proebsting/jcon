@@ -39,7 +39,14 @@ class iInterface {
 			files[i].announce(env);
 		}
 		iInterface.init(env);
-		vDescriptor p = env.resolve("main").deref();
+		vDescriptor m = env.resolve("main");
+		if (m == null) {
+		    System.err.println();
+		    System.err.println("Run-time error 117 in startup code");
+		    System.err.println("missing main procedure");
+		    System.exit(1);
+		}
+		vDescriptor p = m.deref();
 		vDescriptor[] vargs = new vDescriptor[args.length];
 		for (int i = 0; i < args.length; i++) {
 			vargs[i] = iNew.String(args[i]);
