@@ -176,7 +176,7 @@ procedure optim_def_use(p, this, uses, defs)
             optim_def_use(p.fn, uses, uses, defs);
             every optim_def_use(!p.argList, uses, uses, defs); }
     "ir_Operator" :  { this[p]+:=1 }
-    "ir_Create" :    { this[p]+:=1; optim_def_use(p.location, uses, uses, defs); }
+    "ir_Create" :    { this[p]+:=1; optim_def_use(p.location, uses,uses, defs);}
     "ir_CoRet" : { optim_def_use(p.value, uses, uses, defs);
             optim_def_use(p.continuation, uses, uses, defs); }
     "ir_Restore" :   { }

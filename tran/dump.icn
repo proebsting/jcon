@@ -32,14 +32,16 @@ procedure dump_verbose(x, nm,  indent)
         every i := 1 to *x do {
             n := "L[" || i || "]"
             v := x[i]
-            s ||:= "\n" || indent || n || " = " || dump_verbose(v, n, indent || "| ")
+            s ||:= "\n" || indent || n || " = " ||
+                   dump_verbose(v, n, indent || "| ")
         }
     } else if match("record", image(x)) then {
         names := dump_get_names(x)
         every i := 1 to *x do {
             n := names[i]
             v := x[i]
-            s ||:= "\n" || indent || n || " = " || dump_verbose(v, n, indent || "| ")
+            s ||:= "\n" || indent || n || " = " ||
+                   dump_verbose(v, n, indent || "| ")
         }
     }
     return s

@@ -23,7 +23,8 @@ record j_Code_attribute(attribute_name_index, ir_max_stack, max_locals, code,
               exception_table, attributes)
 record j_Exceptions_attribute(attribute_name_index, exception_index_table)
 record j_LineNumberTable_attribute(attribute_name_index, line_number_table)
-record j_LocalVariableTable_attribute(attribute_name_index, local_variable_table)
+record j_LocalVariableTable_attribute(attribute_name_index,
+        			      local_variable_table)
 record j_GenericAttribute_info(attribute_name_index, info)
 
 record j_method_info(access_flags, name_index, signature_index, attributes)
@@ -762,7 +763,8 @@ procedure j_writer_opcodes(writer, p)
             "j_lcmp",
             "j_fcmpl", "j_fcmpg",
             "j_dcmpl", "j_dcmpg",
-            "j_ireturn", "j_lreturn", "j_freturn", "j_dreturn", "j_areturn", "j_vreturn",
+            "j_ireturn", "j_lreturn", "j_freturn", "j_dreturn", "j_areturn",
+            "j_vreturn",
             "j_breakpoint",
             "j_athrow",
             "j_monitorenter",
@@ -1294,7 +1296,7 @@ end
 procedure j_cp_a_Fieldref(c, class_index, name_and_type_index)
     local s
 
-    s:= "j_CONSTANT_a_Fieldref" || "," || class_index || "," || name_and_type_index
+    s:= "j_CONSTANT_a_Fieldref," || class_index || "," || name_and_type_index
     if /c.constant_table[s] then {
         put(c.constant_pool, c.constant_table[s] :=
       j_CONSTANT_a_Fieldref(class_index, name_and_type_index, *c.constant_pool))
@@ -1305,7 +1307,7 @@ end
 procedure j_cp_Methodref(c, class_index, name_and_type_index)
     local s
 
-    s:= "j_CONSTANT_Methodref" || "," || class_index || "," || name_and_type_index
+    s:= "j_CONSTANT_Methodref," || class_index || "," || name_and_type_index
     if /c.constant_table[s] then {
         put(c.constant_pool, c.constant_table[s] :=
      j_CONSTANT_Methodref(class_index, name_and_type_index, *c.constant_pool))

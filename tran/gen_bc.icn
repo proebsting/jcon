@@ -331,8 +331,8 @@ procedure bc_gen_ir_RealLit(s, p)
 
     r := real(p.val)
     /bc_real_table[r] := "lr$" || map(r, ".-+", "dmp")
-    field := j_create_fieldref(bc_proc_classptr, bc_real_table[r], "Lrts/vReal;",
-                             bc_java_classname)
+    field := j_create_fieldref(bc_proc_classptr, bc_real_table[r],
+        		       "Lrts/vReal;", bc_java_classname)
     put(s, j_getstatic(field))
     return s
 end
@@ -600,8 +600,8 @@ procedure bc_gen_ir_OpFunction(s, p)
         3 : "rts/iTrinaryClosure"
         default : runerr(500)
         }
-    field := j_create_fieldref(bc_proc_classptr, "instance", "L" || class || ";",
-                             "rts/" || op)
+    field := j_create_fieldref(bc_proc_classptr, "instance",
+        		       "L" || class || ";", "rts/" || op)
     put(s, j_getstatic(field) )
 
     args := ""
@@ -909,8 +909,8 @@ procedure bc_function(name, params, accumulate, locals, statics, code,
     insert(bc_declare_set, name)
 
     bc_proc_classname := "p_" || bc_java_classname || "$" || name
-    c := bc_proc_classptr := j_ClassFile(3, 45, [&null], table(), 1, &null, &null,
-                                       [], [], [], [])
+    c := bc_proc_classptr := j_ClassFile(3, 45, [&null], table(), 1, &null,
+        				 &null, [], [], [], [])
     c.super_class := j_cp_Class(c, j_cp_Utf8(c, "rts/iClosure"))
     c.this_class := j_cp_Class(c, j_cp_Utf8(c, bc_proc_classname))
 
@@ -965,7 +965,8 @@ procedure bc_class_constructor(c, statics)
     newsimplevar := bc_New_vSimpleVar_methodref(c)
     every k := !statics do {
         j_create_field(c, 8, "v$" || k, "Lrts/vVariable;")
-        f := j_create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
+        f := j_create_fieldref(c, "v$" || k, "Lrts/vVariable;",
+        		       bc_proc_classname)
         n := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(clinitcode.code, j_ldc_w(n))
         put(clinitcode.code, j_invokestatic(newsimplevar))
@@ -983,7 +984,8 @@ procedure bc_create_constructor(c, class_index)
     s := initcode.code
     if \bc_save_restore_flag then {
         if *bc_tmp_table > 0 then {
-            j_create_field(bc_proc_classptr, 0, "tmpArray", "[Lrts/vDescriptor;")
+            j_create_field(bc_proc_classptr, 0, "tmpArray",
+        		   "[Lrts/vDescriptor;")
         }
         if *bc_tmpclosure_table > 0 then {
             j_create_field(bc_proc_classptr, 0, "tmpClosureArray",
@@ -1446,7 +1448,8 @@ procedure bc_copy_variable(s, c, k)
 
     deref := bc_deref_methodref(c)
     assign := bc_Assign_methodref(bc_proc_classptr)
-    field := j_create_fieldref(c, "v$" || k, "Lrts/vVariable;", bc_proc_classname)
+    field := j_create_fieldref(c, "v$" || k, "Lrts/vVariable;",
+        		       bc_proc_classname)
     put(s, j_aload_2() )
     put(s, j_getfield(field) )
     put(s, j_aload_0() )
@@ -1484,8 +1487,8 @@ procedure bc_create_copy(c, params, locals, undeclared)
             bc_copy_variable(s, c, k)
         }
         every k := !undeclared do {
-            linkvalue := j_create_fieldref(c, "v$" || k ||"$", "Lrts/vVariable;",
-                                         bc_java_classname)
+            linkvalue := j_create_fieldref(c, "v$" || k ||"$",
+        				   "Lrts/vVariable;", bc_java_classname)
             lab1 := j_label()
             put(s, j_getstatic(linkvalue) )
             put(s, j_ifnonnull(lab1) )
@@ -1574,8 +1577,8 @@ procedure bc_File(irgen, flagList)
         }
     }
 
-    c := bc_proc_classptr := j_ClassFile(3, 45, [&null], table(), 1, &null, &null,
-                                       [], [], [], [])
+    c := bc_proc_classptr := j_ClassFile(3, 45, [&null], table(), 1, &null,
+        				 &null, [], [], [], [])
     c.super_class := j_cp_Class(c, j_cp_Utf8(c, "rts/iFile"))
     c.this_class := j_cp_Class(c, j_cp_Utf8(c, bc_java_classname))
 
@@ -1614,7 +1617,7 @@ procedure bc_create_declare(c)
     every k := key(bc_proc_table) do {
         s := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
         put(declarecode.code, j_ldc_w(s) )
-        s := j_cp_String(c, j_cp_Utf8(c, "p_" || bc_java_classname || "$" || k)) |
+        s := j_cp_String(c, j_cp_Utf8(c, "p_" ||bc_java_classname|| "$" || k)) |
             runerr(500)
         put(declarecode.code, j_ldc_w(s) )
         put(declarecode.code, j_ipush(bc_proc_table[k]) )
@@ -1632,7 +1635,8 @@ procedure bc_create_declare(c)
         every i := 1 to *bc_record_table[k] do {
             put(declarecode.code, j_dup() )
             put(declarecode.code, j_ipush(i-1) )
-            f := j_cp_String(c, j_cp_Utf8(c, bc_record_table[k][i])) | runerr(500)
+            f := j_cp_String(c, j_cp_Utf8(c, bc_record_table[k][i])) |
+        	 runerr(500)
             put(declarecode.code, j_ldc_w(f) )
             put(declarecode.code, j_aastore() )
         }

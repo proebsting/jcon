@@ -20,7 +20,8 @@ procedure yylex(getline)
                 newline := &null
                 if member(lex_ender_set,\last_token) &
                    member(lex_beginner_set,\t) then {
-                    lex_SEMICOL.coord := lex_coordinate(yyfile, yyline-1, last_pos)
+                    lex_SEMICOL.coord := lex_coordinate(yyfile, yyline-1,
+        						last_pos)
                     suspend lex_SEMICOL
                     last_token := lex_SEMICOL
                 }
