@@ -30,8 +30,6 @@ procedure dump_globals(L)
 end
 
 procedure dump_function(name, params, accumulate, locals, statics, code, coord)
-	local lab, c
-
 	writes("procedure ", name, "(")
 	every writes(" ", !params)
 	writes(\accumulate & "[]")
@@ -46,18 +44,29 @@ procedure dump_function(name, params, accumulate, locals, statics, code, coord)
 	dump_emit_table := table()
 	ir(code)
 	dump_emit_table := optimize(dump_emit_table, code.ir.start)
-	every lab := key(dump_emit_table) & c := dump_emit_table[lab] do {
-		write(ir_dump(lab))
-		every write("\t", ir_dump(!c))
-	}
+	dump_table(&output, dump_emit_table)
 	write("end ", name)
 end
 
-procedure dump_File(getline, flagList)
+procedure dump_table(p, t)
+	local lab, c
+
+	every lab := key(t) & c := t[lab] do {
+		write(p, ir_dump(lab))
+		every write(p, "\t", ir_dump(!c))
+	}
+end
+
+procedure dump_File(parse, flagList)
+	local p
+
+	CG := dump_CG()
 	if match("-O", !flagList) then {
 		optimize_flag := 1
 	}
-	every ir(add_defaults(parse(getline)))
+	while p := @parse do {
+		ir(add_defaults(p))
+	}
 end
 
 procedure dump_CG()

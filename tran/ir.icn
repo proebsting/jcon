@@ -1,3 +1,4 @@
+record irFree(v)
 record irRestore()
 record irDeref(value)
 record irTmp(name)

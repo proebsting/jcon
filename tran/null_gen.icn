@@ -17,8 +17,16 @@ procedure null_function(name, params, accumulate, locals, statics, code, coord)
 	ir(code)
 end
 
-procedure null_File(getline, flagList)
-	every ir(add_defaults(parse(getline)))
+procedure null_File(parse, flagList)
+	local p
+
+	CG := null_CG()
+	if match("-O", !flagList) then {
+		optimize_flag := 1
+	}
+	while p := @parse do {
+		ir(add_defaults(p))
+	}
 end
 
 procedure null_CG()

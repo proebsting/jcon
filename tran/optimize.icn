@@ -6,7 +6,8 @@ procedure optimize(t, start)
 
 	new := t
 	if \optimize_flag then {
-		new := goto_elimination(t, start)
+		new := free_elimination(new, start)
+		new := goto_elimination(new, start)
 		new := copy_propagation(new, start)
 		new := coord_optimize(new, start)
 	}
@@ -15,6 +16,26 @@ procedure optimize(t, start)
 	   type(i[2]) == "irGoto" &
 	   i[1].startlabel === i[2].location then {
 		new[start] := [ i[2] ]
+	}
+	return new
+end
+
+procedure free_elimination(t, start)
+	local new, c, i, lab
+
+	new := table()
+	every lab := key(t) do {
+		c := t[lab]
+		new[lab] := []
+		every i := !c do {
+			if (type(i) ~== "irFree") |
+			   # (*i.v.tmp > 0) |
+			   # (*i.v.lab > 0) |
+			   (*i.v.clo > 0)
+			   then {
+				put(new[lab], i)
+			}
+		}
 	}
 	return new
 end
@@ -106,6 +127,7 @@ end
 
 procedure def_use(p, this, uses, defs)
 	case type(p) of {
+	"irFree" :	{ }
 	"irDeref" :	{ def_use(p.value, uses, uses, defs) }
 	"irTmp" :	{ this[p]+:=1 }
 	"irTmpLabel" :	{ this[p]+:=1 }
@@ -161,6 +183,7 @@ procedure opt_rewrite(p, rename)
 	}
 	case type(p) of {
 	"irDeref" :	{ p.value := opt_rewrite(p.value, rename); }
+	"irFree" :	{ }
 	"irTmp" :	{ }
 	"irTmpLabel" :	{ }
 	"irTmpClosure":	{ }
@@ -274,6 +297,7 @@ end
 
 procedure gotos(p, wl, seen, t)
 	case type(p) of {
+	"irFree" |
 	"irRestore" |
 	"irCoFail" |
 	"irRunTimeError" |

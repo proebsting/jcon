@@ -46,6 +46,15 @@ procedure dump(x, excl)
 			}
 		}
 		s ||:= "]"
+	} else if type(x) == "set" then {
+		s := "{"
+		every i := !x do {
+			if *s > 1 then {
+				s ||:= ", "
+			}
+			s ||:= dump(i, excl)
+		}
+		s ||:= "}"
 	} else if match("record", image(x)) then {
 		s := type(x) || "("
 		names := get_names(x)

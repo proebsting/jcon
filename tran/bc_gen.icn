@@ -130,6 +130,18 @@ procedure gen_bc_assign_to(s, p)
 	return s
 end
 
+# record irFree( v )
+procedure gen_bc_irFree(s, p)
+	local free, c
+
+	every c := !p.v.clo do {
+		gen_bc_irTmpClosure_rval(s, c)
+		free := create_methodref(bc_proc_classptr, "Free", "()V", "rts/iClosure")
+		put(s, invokevirtual(free))
+	}
+	return s
+end
+
 # record irCoord( coord )
 procedure gen_bc_irCoord(s, p)
 	local f, line, column, field
@@ -450,8 +462,7 @@ procedure gen_bc_irResume(s, p)
 	put(s, getfield(PC))
 	target := label()
 	put(s, ifne(target))
-	free := create_methodref(bc_proc_classptr, "Free", "()V", "rts/iClosure")
-	put(s, invokevirtual(free))
+	put(s, Pop())
 	transfer_to(s, p.failLabel)
 	put(s, target)
 	put(s, dup())
@@ -461,7 +472,7 @@ procedure gen_bc_irResume(s, p)
 		target := label()
 		put(s, ifnonnull(target))
 		put(s, Pop())
-		put(s, invokevirtual(free))
+		put(s, Pop())
 		transfer_to(s, p.failLabel)
 		put(s, target)
 		put(s, swap())
@@ -470,7 +481,7 @@ procedure gen_bc_irResume(s, p)
 	} else {
 		target := label()
 		put(s, ifnonnull(target))
-		put(s, invokevirtual(free))
+		put(s, Pop())
 		transfer_to(s, p.failLabel)
 		put(s, target)
 		put(s, Pop())
@@ -760,6 +771,7 @@ procedure gen_bc(s, p)
 	"irCoFail" : return gen_bc_irCoFail(s, p)
 	"irRunTimeError" : return gen_bc_irRunTimeError(s, p)
 	"irEnterInit" : return gen_bc_irEnterInit(s, p)
+	"irFree" : return gen_bc_irFree(s, p)
 	default : { runerr(1000, p); }
 	}
 end
@@ -1164,7 +1176,7 @@ end
 global bc_emitted
 
 procedure bc_emit_code0(s, switch, k)
-	local lab, insns
+	local lab, insns, i
 
 	if member(bc_emitted, k) then return
 	insert(bc_emitted, k)
@@ -1172,7 +1184,10 @@ procedure bc_emit_code0(s, switch, k)
 	lab := bc_ir2bc_labels[k]
 	put(s, lab)
 	insns := bc_emit_table[k]
-	every gen_bc(s, insns[1 to *insns-1])
+	every i := insns[1 to *insns-1] do {
+		gen_bc(s, i)
+	}
+	# every gen_bc(s, insns[1 to *insns-1])
 	if type(insns[-1]) == "irGoto" & type(insns[-1].location) == "irLabel" & not member(bc_emitted, insns[-1].location) then {
 		bc_emit_code0(s, switch, insns[-1].location)
 	} else {
