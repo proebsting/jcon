@@ -1,16 +1,17 @@
 running jcont:
 -- add /cs/jive/<platform>/bin to your Unix search path
--- <platform> is one of {linux,digital,solaris}
+-- <platform> is one of {irix,solaris}
 
 what's implemented:
--- all datatypes (but there are no large integers)
--- most keywords (see list)
--- most built-in functions (see list)
+-- all datatypes (but only 64-bit integers; no large integers)
+-- most keywords;  missing &time, &cset
+-- most functions; missing chdir(), loadfunc(), getch()/getche()/kbhit()
 -- no graphics
--- "icont -E" used for preprocessing
+-- "icont -E" is used for preprocessing
 
 general caveats:
--- no optimization has been done
+-- little optimization has been done
+-- some Java datatypes are suboptimal e.g. for push(L)/pop(L)
 -- crude tracing can be enabled by setting &trace
 
 building programs:
