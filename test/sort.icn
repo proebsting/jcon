@@ -1,9 +1,10 @@
-# test sorting 
+# test sorting and copying
 
 procedure main(args)
    listtest()
    rectest()
    tbltest()
+   copytest()
    messtest()
 end
 
@@ -31,6 +32,10 @@ procedure listtest()
 #wlist(L3)
       check(L2, L3)
 
+      L2 := sort(copy(L1))
+      L3 := sort(copy(set(L1)))
+      check(L2, L3)
+
    }
 end
 
@@ -45,11 +50,13 @@ record r5(a,b,c,d,e)
 procedure rectest()
    write()
    wlist(sort(r0()))
+   wlist(sort(copy(r0())))
    wlist(sort(r1(12)))
    wlist(sort(r2(5,2)))
    wlist(sort(r5(2,7,1,8,3)))
    wlist(sort(r5(3,1,4,1,6)))
    wlist(sort(r5("t","e","p","a","d")))
+   wlist(sort(copy(r5("t","e","p","a","d"))))
    return
 end
 
@@ -71,7 +78,15 @@ procedure tbltest()
    T[1] := "t"
    T[4] := "i"
    T[9] := "d"
+
    write()
+   L := sort(T);    every writes(" ", *L | !!L | "\n")
+   L := sort(T, 1); every writes(" ", *L | !!L | "\n")
+   L := sort(T, 2); every writes(" ", *L | !!L | "\n")
+   L := sort(T, 3); every writes(" ", *L |  !L | "\n")
+   L := sort(T, 4); every writes(" ", *L |  !L | "\n")
+
+   T := copy(T)
    L := sort(T);    every writes(" ", *L | !!L | "\n")
    L := sort(T, 1); every writes(" ", *L | !!L | "\n")
    L := sort(T, 2); every writes(" ", *L | !!L | "\n")
@@ -131,13 +146,59 @@ end
 
 
 
+#  test copy(), especially that copies are really distinct
+
+procedure copytest()
+   local L1, L2, S1, S2, T1, T2, R1, R2
+
+   write()
+
+   L1 := [1,2,3]
+   push(L1, L1)
+   L2 := copy(L1)
+   pull(L2)
+   put(L2, 4)
+   every writes(" ", "L1:" | image(!L1) | "\n")
+   every writes(" ", "L2:" | image(!L2) | "\n")
+
+   S1 := set([1,2,3])
+   insert(S1, S1)
+   S2 := copy(S1)
+   delete(S2, 2)
+   insert(S2, 5)
+   every writes(" ", "S1:" | image(!sort(S1)) | "\n")
+   every writes(" ", "S2:" | image(!sort(S2)) | "\n")
+
+   T1 := table()
+   T1[2] := "j"
+   T1[5] := "c"
+   T1[8] := "n"
+   T1[15] := T1
+   T2 := copy(T1)
+   delete(T2, 5)
+   insert(T2, 11, "t")
+   every writes(" ", "T1:" | image(!sort(T1,3)) | "\n")
+   every writes(" ", "T2:" | image(!sort(T2,3)) | "\n")
+
+   R1 := r5(1,3,5,7,9)
+   R2 := copy(R1)
+   R1.b := 4
+   R2.d := 6
+   every writes(" ", "R1:" | image(R1) | image(!sort(R1)) | "\n")
+   every writes(" ", "R2:" | image(R2) | image(!sort(R2)) | "\n")
+
+   return
+end
+
+
+
 #  sort different types together
 
 procedure messtest()
-   local L
+   local L1, L2, L3
 
    write()
-   L := [
+   L1 := [
       '', '0cs', 4.4, set(), 2.2, "a", &null, integer, wlist, "epsilons",
       r0, "delta", push, "beta", table(5), [], write, '123cs', [3,4],
       image, insert(table(3),4,7), 3.3, reverse, r1(1), [], table(4),
@@ -146,6 +207,8 @@ procedure messtest()
       serial, 'XYZcs', 1.1, r1(5), '1234cs', 5, r0(), read, "gamma",
       r5(4,5,6,7,8), 2, table, r2(1,2), right, r0(), "alpha", messtest,
       listtest, "gamma", main, 3]
-   put(L, L)
-   every write(image(!sort(L)))
+   put(L1, L1)
+   L2 := copy(L1)
+   every put(L1, copy(!L2))
+   every write(image(!sort(L1)))
 end
