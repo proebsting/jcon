@@ -24,10 +24,7 @@ procedure ir_Field(p)
 	CG.emit(p.ir.resume, [ irGoto(p.expr.ir.resume) ])
 	CG.emit(p.expr.ir.success, [
 		irCoord(p.coord),
-		# irMakeClosure(closure, irOperator(".", 2), [ p.expr.ir.value, irStrLit(p.field.id) ]),
-		irOpClosure(closure, irOperator(".", 2)),
-		irInstallArgs(closure, [ p.expr.ir.value, irStrLit(p.field.id) ]),
-		irResume(closure, p.expr.ir.resume, p.ir.value),
+		irOpFunction(p.ir.value, irOperator(".", 2), [ p.expr.ir.value, irStrLit(p.field.id) ], p.expr.ir.resume),
 		irGoto(p.ir.success)
 		])
 	CG.emit(p.expr.ir.failure, [ irGoto(p.ir.failure) ])
@@ -99,14 +96,8 @@ procedure ir_Limitation(p)
 
 	CG.emit(p.ir.start, [ irGoto(p.limit.ir.start) ])
 	CG.emit(p.ir.resume, [
-		irOpClosure(closure, irOperator(">", 2)),
-		irInstallArgs(closure, [ p.limit.ir.value, c ]),
-		irResume(closure, p.limit.ir.resume, c),
-
-		irOpClosure(closure, irOperator("+", 2)),
-		irInstallArgs(closure, [ c, irIntLit(1) ]),
-		irResume(closure, p.expr.ir.resume, c),
-
+		irOpFunction(c, irOperator(">", 2), [ p.limit.ir.value, c ], p.limit.ir.resume),
+		irOpFunction(c, irOperator("+", 2), [ c, irIntLit(1) ], p.expr.ir.resume),
 		irGoto(p.expr.ir.resume)
 		])
 	CG.emit(p.expr.ir.failure, [ irGoto(p.limit.ir.resume) ])
@@ -117,9 +108,7 @@ procedure ir_Limitation(p)
 		])
 	CG.emit(p.limit.ir.success, [
 		irCoord(p.coord),
-		irOpClosure(closure, irOperator("#", 1)),
-		irInstallArgs(closure, [ p.limit.ir.value ]),
-		irResume(closure, p.limit.ir.resume, p.limit.ir.value),
+		irOpFunction(p.limit.ir.value, irOperator("#", 1), [ p.limit.ir.value ], p.limit.ir.resume),
 		irMove(c, irIntLit(1)),
 		irGoto(p.expr.ir.start)
 		])
@@ -254,10 +243,7 @@ procedure ir_Case(p)
 		every i := 1 to *L do {
 			CG.emit(L[i].expr.ir.success, [
 				irCoord(p.coord),
-				# irMakeClosure(closure, irOperator("===", 2), [ p.expr.ir.value, L[i].expr.ir.value ]),
-				irOpClosure(closure, irOperator("===", 2)),
-				irInstallArgs(closure, [ p.expr.ir.value, L[i].expr.ir.value ]),
-				irResume(closure, L[i].expr.ir.resume, dummy),
+				irOpFunction(dummy, irOperator("===", 2), [ p.expr.ir.value, L[i].expr.ir.value ], L[i].expr.ir.resume),
 				irGoto(L[i].body.ir.start)
 				])
 			CG.emit(L[i].expr.ir.failure, [ irGoto(L[i+1].expr.ir.start) ])
@@ -425,14 +411,8 @@ procedure ir_Binop(p)
 		CG.emit(p.ir.resume, [ irGoto(p.right.ir.resume) ]) # augmented ops not resumed
 		CG.emit(p.right.ir.success, [
 			irCoord(p.coord),
-			# irMakeClosure(closure, irOperator(op, 2), [ p.left.ir.value, p.right.ir.value ]),
-			irOpClosure(closure, irOperator(op, 2)),
-			irInstallArgs(closure, [ p.left.ir.value, p.right.ir.value ]),
-			irResume(closure, p.right.ir.resume, tmp),
-			# irMakeClosure(closure, irOperator(":=", 2), [ p.left.ir.value, tmp ]),
-			irOpClosure(closure, irOperator(":=", 2)),
-			irInstallArgs(closure, [ p.left.ir.value, tmp ]),
-			irResume(closure, p.right.ir.resume, p.ir.value),
+			irOpFunction(tmp, irOperator(op, 2), [ p.left.ir.value, p.right.ir.value ], p.right.ir.resume),
+			irOpFunction(p.ir.value, irOperator(":=", 2), [ p.left.ir.value, tmp ], p.right.ir.resume),
 			irGoto(p.ir.success)
 			])
 	} else {
@@ -442,10 +422,7 @@ procedure ir_Binop(p)
 				])
 			CG.emit(p.right.ir.success, [
 				irCoord(p.coord),
-				# irMakeClosure(closure, irOperator(p.op, 2), [ p.left.ir.value, p.right.ir.value ]),
-				irOpClosure(closure, irOperator(p.op, 2)),
-				irInstallArgs(closure, [ p.left.ir.value, p.right.ir.value ]),
-				irResume(closure, p.right.ir.resume, p.ir.value),
+				irOpFunction(p.ir.value, irOperator(p.op, 2), [ p.left.ir.value, p.right.ir.value ], p.right.ir.resume),
 				irGoto(p.ir.success)
 				])
 		} else {
@@ -494,10 +471,7 @@ procedure ir_Unop(p)
 			])
 		CG.emit(p.operand.ir.success, [
 			irCoord(p.coord),
-			# irMakeClosure(closure, irOperator(p.op,1), [ p.operand.ir.value ]),
-			irOpClosure(closure, irOperator(p.op, 1)),
-			irInstallArgs(closure, [ p.operand.ir.value ]),
-			irResume(closure, p.operand.ir.resume, p.ir.value),
+			irOpFunction(p.ir.value, irOperator(p.op, 1), [ p.operand.ir.value ], p.operand.ir.resume),
 			irGoto(p.ir.success)
 			])
 	} else {

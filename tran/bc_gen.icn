@@ -446,16 +446,16 @@ procedure gen_bc_irResume(s, p)
 	put(s, dup())
 	put(s, invokevirtual(resume))
 	put(s, getfield(retvalue))
-	put(s, dup())
-	target := label()
-	put(s, ifnonnull(target))
-	put(s, Pop())
-	transfer_to(s, p.failLabel)
-	put(s, target)
 	if \p.retValue then {
+		put(s, dup())
+		target := label()
+		put(s, ifnonnull(target))
+		put(s, Pop())
+		transfer_to(s, p.failLabel)
+		put(s, target)
 		gen_bc_assign_to(s, p.retValue)
 	} else {
-		put(s, Pop())
+		put(s, ifnull(p.failLabel))
 	}
 	return s
 end
@@ -530,36 +530,6 @@ procedure initoptable()
 	return optable
 end
 
-# record irOpClosure( lhs op )
-procedure gen_bc_irOpClosure(s, p)
-	local field
-	static optable
-	initial optable := initoptable()
-
-	\optable[p.op.arity][p.op.name] | runerr(1000, p)
-
-	field := create_fieldref(bc_proc_classptr, "instance", "Lrts/iClosure;", "rts/" || optable[p.op.arity][p.op.name])
-	put(s, getstatic(field) )
-	gen_bc_assign_to(s, p.lhs)
-	return s
-end
-
-# record irInstallArgs( closure argList )
-procedure gen_bc_irInstallArgs(s, p)
-	local args, i, method
-
-	gen_bc(s, p.closure)
-	args := ""
-	every i := 1 to *p.argList do {
-		gen_bc(s, p.argList[i])
-		args ||:= "Lrts/vDescriptor;"
-	}
-	put(s, aload_0())
-	method := create_methodref(bc_proc_classptr, "closure", "(" || args || "Lrts/iClosure;)V", "rts/iClosure")
-	put(s, invokevirtual(method))
-	return s
-end
-
 procedure gen_bc_call_op(s, p)
 	local r, l, f, v, n, i, method
 
@@ -575,6 +545,47 @@ procedure gen_bc_call_op(s, p)
 	method := create_methodref(bc_proc_classptr, "instantiate", "(" || args || "Lrts/iClosure;)Lrts/iClosure;", "rts/vDescriptor")
 	put(s, invokevirtual(method))
 	gen_bc_assign_to(s, p.lhs)
+	return s
+end
+
+# record irOpFunction( lhs fn argList failLabel )
+procedure gen_bc_irOpFunction(s, p)
+	local target, args, method, class, i, op, field
+	static optable
+	initial optable := initoptable()
+
+	p.fn.arity = *p.argList | runerr(1000, p)
+	op := \optable[p.fn.arity][p.fn.name] | runerr(1000, p.fn)
+
+	class := case p.fn.arity of {
+		1 : "rts/iUnaryClosure"
+		2 : "rts/iBinaryClosure"
+		default : runerr(1000)
+		}
+	field := create_fieldref(bc_proc_classptr, "instance", "L" || class || ";", "rts/" || op)
+	put(s, getstatic(field) )
+
+	args := ""
+	every i := 1 to *p.argList do {
+		gen_bc(s, p.argList[i])
+		args ||:= "Lrts/vDescriptor;"
+	}
+	put(s, aload_0())
+	args ||:= "Lrts/iClosure;"
+	method := create_methodref(bc_proc_classptr, "call", "(" || args || ")Lrts/vDescriptor;", class)
+	put(s, invokevirtual(method))
+
+	if \p.lhs then {
+		put(s, dup())
+		target := label()
+		put(s, ifnonnull(target))
+		put(s, Pop())
+		transfer_to(s, p.failLabel)
+		put(s, target)
+		gen_bc_assign_to(s, p.lhs)
+	} else {
+		put(s, ifnull(p.failLabel))
+	}
 	return s
 end
 
@@ -699,9 +710,8 @@ procedure gen_bc(s, p)
 	"irFail" : return gen_bc_irFail(s, p)
 	"irResume" : return gen_bc_irResume(s, p)
 	"irMakeList" : return gen_bc_irMakeList(s, p)
+	"irOpFunction" : return gen_bc_irOpFunction(s, p)
 	"irMakeClosure" : return gen_bc_irMakeClosure(s, p)
-	"irOpClosure" : return gen_bc_irOpClosure(s, p)
-	"irInstallArgs" : return gen_bc_irInstallArgs(s, p)
 	"irOperator" : return gen_bc_irOperator(s, p)
 	"irCreate" : return gen_bc_irCreate(s, p)
 	"irCoRet" : return gen_bc_irCoRet(s, p)
@@ -817,7 +827,7 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	put(initcode.code, aload_0() )
 	put(initcode.code, invokenonvirtual(constructor) )
 
-	if \bc_suspend_flag then {
+	if 1 | \bc_suspend_flag then {
 
 		put(initcode.code, aload_0() )
 		put(initcode.code, ipush(*bc_tmp_table) )
@@ -919,7 +929,7 @@ procedure bc_create_nextval(c)
 	put(nextvalcode.code, getfield(PC))
 
 	#%#% this use of flag causes spurious verification errors.
-	if \bc_suspend_flag then {
+	if 1 | \bc_suspend_flag then {
 		put(nextvalcode.code, dup())
 		put(nextvalcode.code, iconst_1())
 		put(nextvalcode.code, if_icmpne(tmplab))
@@ -939,7 +949,7 @@ procedure bc_create_nextval(c)
 	}
 
 	#%#% this use of flag causes spurious verification errors.
-	if \bc_suspend_flag then {
+	if 1 | \bc_suspend_flag then {
 		put(s, goto_w(bc_switch_label))
 		put(nextvalcode.code, tmplab)
 		a := create_fieldref(bc_proc_classptr,

@@ -6,6 +6,12 @@ public abstract class iBinaryClosure extends iClosure {
 
 	abstract vDescriptor function(vDescriptor arg0, vDescriptor arg1);
 
+	public vDescriptor call(vDescriptor arg0, vDescriptor arg1, iClosure parent) {
+		closure(arg0, arg1, parent);
+		resume();
+		return retvalue;
+	}
+
 	public void closure(vDescriptor[] args, iClosure parent) {
 		init();
 		argument0 = args[0];
