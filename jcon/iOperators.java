@@ -8,7 +8,7 @@ void announce(iEnv env) {
     declare(env, ":=,2", "oAssign");
     declare(env, "&,2", "oConjunction");
 
-    declare(env, "ToBy,3", "oToBy");
+    declare(env, "...,3", "oToBy");
 
     declare(env, "/,1", "oIsNull");
     declare(env, "\\,1", "oIsntNull");
