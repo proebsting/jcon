@@ -5,7 +5,7 @@
 #  Does not handle transitive dependencies.  If changing one clas
 #  requires rebuilding another, run "make clean" and then rebuild.
 
-JAVAC="javac -O -nowarn"
+JAVAC="javac -O"
 FILES=
 
 for FNAME; do
