@@ -65,6 +65,7 @@ void announce() {
     declare("~===", 2, "oVUnequal");
 
     declare("||", 2, "oConcat");
+    declare("=", 1, "oTabMatch");
 
     declare("@", 2, "oActivate");
     declare("^", 1, "oRefresh");
@@ -540,6 +541,28 @@ class oActivate extends iFunctionClosure {		//  x @ C
 		return iEnv.cur_coexp.activate(args[0], args[1]);
 	}
 	String tfmt() { return "{$1 @ $2}"; }
+}
+
+class oTabMatch extends iClosure {			// =s
+    iClosure tab;
+
+    void nextval() {
+	if (tab == null) {
+	    iClosure match = new f$match();
+	    vDescriptor[] args = { arguments[0].mkString() };
+	    match.closure(args, this);
+	    match.resume();
+	    if (match.retvalue == null) {
+		this.retvalue = null;
+		return;
+	    }
+	    args[0] = match.retvalue;
+	    tab = new f$tab();
+	    tab.closure(args, this);
+	}
+	tab.resume();
+	this.retvalue = tab.retvalue;
+    }
 }
 
 class oProcessArgs extends iClosure {			//  x ! y

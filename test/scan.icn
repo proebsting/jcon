@@ -38,4 +38,9 @@ procedure main()
    write()
 
    "12345" ? { write(pos(1)); write(pos(-5)); write(pos(3)|"fail"); }
+   write()
+
+   "12345" ? { write(="123" | "fail") }
+   "12345" ? { tab(2); write(="123" | "fail") }
+   "12345" ? { tab(2); write(="23" | "fail") }
 end
