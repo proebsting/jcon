@@ -76,6 +76,7 @@ void transfer(vDescriptor value, vCoexp target) {
     target.incomingValue = value;
     iEnv.cur_coexp = target;
     iKeyword.current.set(target);
+    target.depth = depth;
     target.lock.V();
     try {
 	lock.P();

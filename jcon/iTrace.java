@@ -84,7 +84,7 @@ public static vDescriptor Resume(String fname, int lineno, vDescriptor object) {
 	iEnv.cur_coexp.depth--;
 	file = null;		// prevent confusion upstream
 	line = 0;
-    	throw e;
+	throw e;
     }
 
     if (iKeyword.trace.check()) {
@@ -100,57 +100,58 @@ public static vDescriptor Resume(String fname, int lineno, vDescriptor object) {
     return result;		// return/suspend result
 }
 
+
+
 //  iTrace.coret -- called by trampolines to issue tracing messages
 
-public static void coret(String fname, int lineno, String caller, vCoexp a, vDescriptor val) {
-    String s;
-
-    s = caller;
-    s += "; " + iEnv.cur_coexp.report();
-    s += " returned " + val.report() + " to ";
-    try {
-        s += ((vCoexp) a.callers.peek()).report();
-    } catch (java.util.EmptyStackException e) {
-	iRuntime.error(900);
-    }
+public static void coret(String fname, int lineno, String caller,
+vCoexp a, vDescriptor val) {
     if (iKeyword.trace.check()) {
-        trace(fname, lineno, s);
+	String s = caller + "; " + iEnv.cur_coexp.report() +
+	    " returned " + val.report() + " to ";
+	try {
+	    s += ((vCoexp) a.callers.peek()).report();
+	} catch (java.util.EmptyStackException e) {
+	    iRuntime.error(900);
+	}
+	trace(fname, lineno, s);
     }
+    iEnv.cur_coexp.depth--;
     a.coret(val);
 }
+
+
 
 //  iTrace.cofail -- called by trampolines to issue tracing messages
 
 public static void cofail(String fname, int lineno, String caller, vCoexp a) {
-    String s;
-
-    s = caller;
-    s += "; " + iEnv.cur_coexp.report();
-    s += " failed to ";
-    try {
-        s += ((vCoexp) a.callers.peek()).report();
-    } catch (java.util.EmptyStackException e) {
-	iRuntime.error(900);
-    }
     if (iKeyword.trace.check()) {
-        trace(fname, lineno, s);
+	String s = caller + "; " + iEnv.cur_coexp.report() + " failed to ";
+	try {
+	    s += ((vCoexp) a.callers.peek()).report();
+	} catch (java.util.EmptyStackException e) {
+	    iRuntime.error(900);
+	}
+	trace(fname, lineno, s);
     }
+    iEnv.cur_coexp.depth--;
     a.cofail();
 }
 
+
+
 //  iTrace.Activate -- called by trampolines to issue tracing messages
 
-public static vDescriptor Activate(String fname, int lineno, String caller, vDescriptor a1, vDescriptor a2) {
-    String s;
-
-    s = caller;
-    s += "; " + iEnv.cur_coexp.report();
-    s += " : " + a2.Deref().report() + " @ " + a1.Deref().report();
+public static vDescriptor Activate(String fname, int lineno, String caller,
+					vDescriptor a1, vDescriptor a2) {
+    iEnv.cur_coexp.depth++;
     if (iKeyword.trace.check()) {
-        trace(fname, lineno, s);
+	trace(fname, lineno, caller + "; " + iEnv.cur_coexp.report() +
+	    " : " + a2.Deref().report() + " @ " + a1.Deref().report());
     }
     return a1.Activate(a2);
 }
+
 
 
 //  trace(file, line, obj, string, value) -- output suspend/return trace
