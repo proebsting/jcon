@@ -91,14 +91,14 @@ function usage {	# usage message: print header above
 CMDLINE="$0 $*"
 UIPATH=`echo "$IPATH" | tr ' ' ':'`
 
-# clear inherited environment variables (also see next section)
-unset ICONCORE TRACE IPATH NOERRBUF
-unset HEAPSIZE COEXPSIZE MSTKSIZE QLSIZE
-
 #  set reasonably large regions for jtran
 export BLKSIZE=6000000
 export STRSIZE=500000
 export COEXPSIZE=30000
+
+# clear other environment variables that might affect jtran
+unset ICONCORE TRACE IPATH NOERRBUF
+unset HEAPSIZE BLOCKSIZE MSTKSIZE QLSIZE
 
 # set tracing modes and other defaults
 ANNOUNCE=echo
