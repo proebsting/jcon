@@ -19,7 +19,7 @@ end
 procedure ir_Field(p, st, target, bounded)
 	local t
 	init4ir(p)
-	t := (\target | ir_tmp(st))
+	t := ir_value(p, st, target)
 	ir(p.expr, st, t, &null)
 
 	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
@@ -211,7 +211,7 @@ end
 
 # record Case( expr clauseList dflt )
 procedure ir_Case(p, st, target, bounded)
-	local t, L, i, tmp1, tmp2, e, v
+	local t, L, i, tmp1, tmp2, e, v, x
 
 	init4ir(p)
 	/bounded & (t := ir_tmploc(st))
@@ -219,6 +219,7 @@ procedure ir_Case(p, st, target, bounded)
 	v := (\target | ir_tmp(st))
 
 	ir(p.expr, st, e, "always bounded")
+
 	tmp2 := copy(st)
 	every i := 1 to *p.clauseList do {
 		ir(p.clauseList[i].expr, copy(st), v, &null)
@@ -286,9 +287,9 @@ procedure ir_Sectionop(p, st, target, bounded)
 	local vv, lv, rv
 
 	init4ir(p)
-	vv := ir_tmp(st)
-	lv := ir_tmp(st)
-	rv := (\target | ir_tmp(st))
+	vv := ir_value(p.val, st, &null)
+	lv := ir_value(p.left, st, &null)
+	rv := ir_value(p.right, st, target)
 
 	ir(p.val, st, vv, &null)
 	ir(p.left, st, lv, &null)
@@ -316,7 +317,7 @@ procedure ir_Call(p, st, target, bounded)
 	closure := ir_tmp_closure(st)
 	fn := ir_tmp(st)
 	args := []
-	every !p.args.exprList do put(args, ir_tmp(st))
+	every i := !p.args.exprList do put(args, ir_value(i, st, &null))
 
 	ir(p.fn, st, fn, &null)
 	every i := 1 to *p.args.exprList do {
@@ -392,9 +393,9 @@ procedure ir_Binop(p, st, target, bounded)
 
 	init4ir(p)
 	closure := ir_tmp_closure(st)
-	lv := ir_tmp(st)
+	lv := ir_value(p.left, st, &null)
+	rv := ir_value(p.right, st, target)
 	tmp := (\target | ir_tmp(st))
-	rv := tmp
 
 	ir(p.left, st, lv, &null)
 	ir(p.right, st, rv, &null)
@@ -460,7 +461,7 @@ procedure ir_Unop(p, st, target, bounded)
 
 	init4ir(p)
 	closure := ir_tmp_closure(st)
-	v := (\target | ir_tmp(st))
+	v := ir_value(p.operand, st, target)
 
 	ir(p.operand, st, v, &null)
 
@@ -569,7 +570,7 @@ end
 procedure ir_value0(p)
 	case type(p) of {
 	"Intlit" : return irIntLit(p.int)
-	"Reallit" : return irRealLit(p.int)
+	"Reallit" : return irRealLit(p.real)
 	"Stringlit": return irStrLit(p.str)
 	"Csetlit" : return irCsetLit(p.str)
 	}
@@ -935,9 +936,9 @@ procedure ir_ToBy(p, st, target, bounded)
 
 	init4ir(p)
 	closure := ir_tmp_closure(st)
-	fv := ir_tmp(st)
-	tv := ir_tmp(st)
-	bv := (\target | ir_tmp(st))
+	fv := ir_value(p.fromexpr, st, &null)
+	tv := ir_value(p.toexpr, st, &null)
+	bv := ir_value(p.byexpr, st, target)
 
 	ir(p.fromexpr, st, fv, &null)
 	ir(p.toexpr, st, tv, &null)
@@ -1060,7 +1061,7 @@ procedure ir_ListConstructor(p, st, target, bounded)
 
 	args := []
 	if \target then {
-		every !p.exprList do put(args, ir_tmp(st))
+		every i := !p.exprList do put(args, ir_value(i, st, &null))
 	} else {
 		every !p.exprList do put(args, &null)
 	}
