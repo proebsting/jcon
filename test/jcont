@@ -151,7 +151,7 @@ JAVAC="$JDK/bin/javac -nowarn"
 JAVA="$JDK/bin/java -verify"
 
 # estimate the needed header size
-HBASE=500		# approximate size of fixed text, plus a little slop
+HBASE=600		# approximate size of fixed text, plus a little slop
 (( HDRSIZE = $HBASE + ${#CMDLINE} + ${#ROOTS} ))	# estimate total
 (( HDRSIZE = (HDRSIZE + 15) & ~15 ))			# round to mult of 16
 
