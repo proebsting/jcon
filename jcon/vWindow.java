@@ -417,10 +417,8 @@ public Rectangle getClip() {			// inquire about clipping
 }
 
 public vWindow Clip() {				// disable clipping
-    b.setClip(-Integer.MIN_VALUE, -Integer.MIN_VALUE,
-	Integer.MAX_VALUE, Integer.MAX_VALUE);
-    a.setClip(-Integer.MIN_VALUE, -Integer.MIN_VALUE,
-	Integer.MAX_VALUE, Integer.MAX_VALUE);
+    b.setClip(null);
+    a.setClip(null);
     clipping = false;
     return this;
 }
