@@ -8,7 +8,7 @@ what's implemented:
 -- many built-in functions (see list)
 -- no "invocable" declaration support
 -- no graphics
--- no preprocessor
+-- "icont -E" used for preprocessing
 
 general caveats:
 -- no optimization has been done
