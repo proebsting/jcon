@@ -24,6 +24,7 @@ Some areas where the implementation is known to be not-quite-right
 general:
 -- random selection uses Java's RNG, presumably generating different sequences
 -- write() is simplified, e.g. doesn't accept file arguments
+-- structures don't have serial numbers yet
 
 strings:
 -- image(s) doesn't escape special characters
@@ -36,13 +37,11 @@ numerics:
 -- "%" just uses the Java "%" operator; does that match what Icon needs?
 
 error reporting:
--- traceback omits the "offending operation" for cases
-   not implemented by iClosure class (e.g. field references, scanning)
 -- no error recovery yet
--- long strings are not elided
--- variables are dereferenced for reporting  (izzat so?)
+-- long strings are not elided, list contents are omitted, etc.
 
 arguably correct differences:
 -- "n to MAXINT" case works correctly in to-by
 -- 1 / 0 gives error 201 instead of error 204
 -- traceback is deliberately limited to the innermost 100 nested calls
+-- "R . field" errors (e.g. 107, 207) give actual field name attempted
