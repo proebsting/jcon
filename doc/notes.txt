@@ -58,8 +58,8 @@ miscellaneous:
 -- display() ignores its arguments (and displays everything)
 -- display() prints globals in an unsorted order
 -- function() generates names in an unsorted order
--- resource-related keywords (&time, &allocated, &collections, &storage,
-   &regions) produce only 0's
+-- &time produces elapsed wall-clock time, not CPU time, due to Java limitations
+-- &allocated, &collections, &storage, and &regions produce only zero values
 
 ------------------------------------------------------------------------------
 
