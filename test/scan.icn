@@ -1,0 +1,38 @@
+procedure main()
+   write(any('ab', "1234ab", 6, 0) | "fail")
+   write(any('ab', "1234ab", 6) | "fail")
+   write(any('ab', "1234ab") | "fail")
+   "1234ab" ? write(any('ab', "1234ab") | "fail")
+   "1234ab" ? write(any('ab') | "fail")
+   "1234ab" ? { &pos := 6 & write(any('ab') | "fail") }
+   write()
+
+   write(many('ab', "ababac") | "fail")
+   write(many('ab', "ababab") | "fail")
+   write(many('ab', "cababab") | "fail")
+   write()
+
+   write(match("ab", "ababab") | "fail")
+   write(match("ab", "bbabab") | "fail")
+   write(match("ab", "ab") | "fail")
+   write(match("ab", "a") | "fail")
+   write()
+
+   every write(find("ab", "ababab"|"ababa"|"ab"|"a"|"") | "done")
+   write()
+
+   every write(upto('ab', "abccab"|"cbabc"|"ab"|"a"|"") | "done")
+   write()
+
+   "123456" ? write(move(1), " ", move(2))
+   "123456" ? { write(move(1)); write(move(2)); write(move(3)); }
+   write()
+
+   "123456" ? write(tab(1), " ", tab(2))
+   "123456" ? { write(tab(2)); write(tab(4)); write(tab(-1)); write(tab(0)); }
+   write()
+
+   every write("-35" ? bal('-'))
+   every write("((2*x)+3)+(5*y)" ? bal('+'))
+   every write("[+,[2,3]],[*,[5,10]]" ? bal(',', '[', ']'))
+end
