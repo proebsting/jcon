@@ -55,7 +55,6 @@
 
 # command names
 JAVA="java -noverify"
-JAR="jar"
 TRAN="jtran"
 LINK="jlink"
 
@@ -254,7 +253,7 @@ for FNAME in $IFILES; do
 	    if $JTRAN preproc $FNAME.icn : yylex : parse : ast2ir $TFLAGS : \
 		bc_File $OFLAG $TFLAGS -class:l\$${FNAME##*/} -dir:$TDIR/; then
 		# bundle .class files (and linkage info) into .zip file
-		(cd $TDIR; $JAR cfM ../$FNAME.zip links *.class)
+		(cd $TDIR; $JAVA jcon.ZipMerge ../$FNAME.zip links *.class)
 		# disassemble if requested
 		if [ "$JVMDUMP" != "" ]; then (
 		    cd $TDIR

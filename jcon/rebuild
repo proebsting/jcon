@@ -20,7 +20,7 @@ if [ "$NEWER" != "" ]; then
     set -e
     echo "+ CLASSPATH=.. $JC *.java"
     CLASSPATH=.. $JC *.java
-    echo "+ cd ..; jar cfM $BZIP jcon/*.class"
+    echo "+ cd ..; java -noverify jcon.ZipMerge $BZIP jcon/*.class"
     cd ..
-    jar cfM $BZIP jcon/*.class 2>&1 
+    java -noverify jcon.ZipMerge $BZIP jcon/*.class 2>&1 
 fi
