@@ -560,12 +560,7 @@ public int Leading(int n)	{ return leading = n; }
 
 public int Fwidth() {
     FontMetrics m = c.getFontMetrics(font);
-    int fw = m.getMaxAdvance();
-    if (fw > 0) {
-	return fw;
-    } else {
-	return m.charWidth('W');
-    }
+    return m.charWidth('W');	// more reliable than getMaxAdvance
 }
 
 
