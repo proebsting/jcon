@@ -7,6 +7,8 @@ public class vProc extends vValue {
 	String classname;
 	int args;	// number of args
 
+	iFunctionClosure functionclosure;	// cached closure for pure functions.
+
 	vProc(String img, String classname, int args) {
 		this.img = img;
 		this.classname = classname;
@@ -34,6 +36,9 @@ public class vProc extends vValue {
 	iClosure getClosure() {
 		iClosure c = null;
 
+		if (functionclosure != null) {
+			return functionclosure;
+		}
 		try {
 			try {
 				c = (iClosure) proc.newInstance();
@@ -44,6 +49,9 @@ public class vProc extends vValue {
 					iRuntime.bomb("cannot load " + img);
 				}
 				c = (iClosure) proc.newInstance();
+				if (c instanceof iFunctionClosure) {
+					functionclosure = (iFunctionClosure) c;
+				}
 			}
 		} catch (InstantiationException e) {
 			iRuntime.bomb(e);
