@@ -9,6 +9,8 @@
 //  ZipMerge ignores subsequent repeated files.  (This happens with "link"
 //  files.)
 
+
+
 package rts;
 
 import java.io.*;
@@ -16,78 +18,90 @@ import java.util.*;
 import java.util.zip.*;
 
 public class ZipMerge {
-    public static void main(String[] args) {
-	if (args.length == 0) {
-	    System.err.println("Usage: ZipMerge destination sourcefiles....");
-	    System.exit(1);
+
+
+
+public static void main(String[] args) {
+    if (args.length == 0) {
+	System.err.println("Usage: ZipMerge destination sourcefiles....");
+	System.exit(1);
+    }
+    String dst = args[0];
+    Vector v = new Vector();
+    for (int i = 1; i < args.length; i++) {
+	v.addElement(args[i]);
+    }
+    Enumeration enum = v.elements();
+    compose(dst, enum);
+}
+
+
+
+static byte[] buffer = new byte[10000];
+
+public static void addZipEntry(ZipEntry ze, ZipOutputStream zos,
+				InputStream is) throws IOException {
+    try {
+	zos.putNextEntry(ze);
+    } catch (ZipException e) {
+	return;	// duplicate entry, ignored.
+    }
+    try {
+	int len = is.read(buffer, 0, buffer.length);
+	while (len > 0) {
+	    zos.write(buffer, 0, len);
+	    len = is.read(buffer, 0, buffer.length);
 	}
-	String dst = args[0];
-	Vector v = new Vector();
-	for (int i = 1; i < args.length; i++) {
-	    v.addElement(args[i]);
-	}
-	Enumeration enum = v.elements();
-        compose(dst, enum);
+    } catch (EOFException e) {	// this happens with some files; ignore
     }
 
-    static byte[] buffer = new byte[10000];
-    public static void addZipEntry(ZipEntry ze, ZipOutputStream zos, InputStream is) throws IOException {
-	try {
-            zos.putNextEntry(ze);
-	} catch (ZipException e) {
-	    return;	// duplicate entry, ignored.
-	}
-	try {
-	    int len = is.read(buffer, 0, buffer.length);
-	    while (len > 0) {
-		zos.write(buffer, 0, len);
-		len = is.read(buffer, 0, buffer.length);
+    zos.closeEntry();
+}
+
+
+
+public static ZipOutputStream newZipFile(String name) throws IOException {
+    FileOutputStream os = new FileOutputStream(name);
+    BufferedOutputStream bos = new BufferedOutputStream(os);
+    ZipOutputStream zos = new ZipOutputStream(bos);
+    return zos;
+}
+
+
+
+public static void compose(String dst, Enumeration files) {
+    try {
+	ZipOutputStream zos = newZipFile(dst);
+
+	while (files.hasMoreElements()) {
+	    String fname = (String) files.nextElement();
+	    ZipFile zsrc;
+	    try {
+		zsrc = new ZipFile(fname);
+	    } catch (ZipException ze) {
+		// handle regular file, not zip.
+		FileInputStream fis = new FileInputStream(fname);
+		BufferedInputStream bis = new BufferedInputStream(fis);
+		ZipEntry zf = new ZipEntry(fname);
+		addZipEntry(zf, zos, bis);
+		bis.close();
+		continue;
 	    }
-	} catch (EOFException e) {	// this happens with some files; ignore
+	    Enumeration e = zsrc.entries();
+	    while (e.hasMoreElements()) {
+		ZipEntry ze = (ZipEntry) e.nextElement();
+		InputStream zis = zsrc.getInputStream(ze);
+		addZipEntry(ze, zos, zis);
+		zis.close();
+	    }
 	}
-
-        zos.closeEntry();
-    }
-
-    public static ZipOutputStream newZipFile(String name) throws IOException {
-        FileOutputStream os = new FileOutputStream(name);
-	BufferedOutputStream bos = new BufferedOutputStream(os);
-        ZipOutputStream zos = new ZipOutputStream(bos);
-        return zos;
-    }
-
-    public static void closeZipFile(ZipOutputStream zos) throws IOException {
 	zos.close();
-    }
-
-    public static void compose(String dst, Enumeration files) {
-        try {
-            ZipOutputStream zos = newZipFile(dst);
-
-            while (files.hasMoreElements()) {
-		String fname = (String) files.nextElement();
-                ZipFile zsrc;
-		try {
-                    zsrc = new ZipFile(fname);
-		} catch (ZipException ze) {
-		    // handle regular file, not zip.
-	            FileInputStream fis = new FileInputStream(fname);
-		    BufferedInputStream bis = new BufferedInputStream(fis);
-	            ZipEntry zf = new ZipEntry(fname);
-	            addZipEntry(zf, zos, bis);
-		    continue;
-		}
-                Enumeration e = zsrc.entries();
-                while (e.hasMoreElements()) {
-                    ZipEntry ze = (ZipEntry) e.nextElement();
-                    InputStream zis = zsrc.getInputStream(ze);
-		    addZipEntry(ze, zos, zis);
-                }
-            }
-	    closeZipFile(zos);
-        } catch (IOException ex) {
-            System.err.println(ex);
-            System.exit(1);
-        }
+    } catch (IOException ex) {
+	System.err.println(ex);
+	System.exit(1);
     }
 }
+
+
+
+} // class ZipMerge
