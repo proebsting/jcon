@@ -49,9 +49,13 @@ public class iEnv {
 
 	public static void declareGlobalInit(String s, vVariable x) {
 		if (symtab.containsKey(s)) {
-			if (!(((vVariable)symtab.get(s)).deref() instanceof vNull)) {
-				System.err.println("\"" + s + "\": inconsistent redeclaration");
-				System.exit(1);
+			vValue val;
+			if (!((val = ((vVariable)symtab.get(s)).deref()) instanceof vNull)) {
+				vDescriptor bval = (vDescriptor) builtintab.get(s);
+				if (bval == null || bval.deref() != val) {
+					System.err.println("\"" + s + "\": inconsistent redeclaration");
+					System.exit(1);
+				}
 			}
 		}
 		global(s,x);
