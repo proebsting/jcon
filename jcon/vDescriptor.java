@@ -79,6 +79,11 @@ abstract class vDescriptor {
     abstract vDescriptor Delete(vDescriptor i);
     abstract vDescriptor Insert(vDescriptor i, vDescriptor val);
 
+    // set operations
+    abstract vDescriptor Intersect(vDescriptor i);
+    abstract vDescriptor Union(vDescriptor i);
+    abstract vDescriptor Diff(vDescriptor i);
+
     //#%#%#%# not-yet-implemented abort
     void NYI(String s) {
 	System.err.println("NYI: " + this + "." + (s != null ? s : "?"));

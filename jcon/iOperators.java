@@ -36,6 +36,10 @@ void announce(iEnv env) {
     declare(env, "/,2", "oDiv");
     declare(env, "%,2", "oMod");
 
+    declare(env, "**,2", "oIntersect");
+    declare(env, "++,2", "oUnion");
+    declare(env, "--,2", "oDiff");
+
     declare(env, "<,2", "oNLess");
     declare(env, "<=,2", "oNLessEq");
     declare(env, "=,2", "oNEqual");
@@ -294,6 +298,28 @@ class oMod extends iFunctionClosure {			//  n1 % n2
 		return args[0].Mod(args[1]);
 	}
 	String tfmt() { return "{$1 % $2}"; }
+}
+
+// set operations
+class oIntersect extends iFunctionClosure {		//  n1 ** n2
+	vDescriptor function(vDescriptor[] args) {
+		return args[0].Intersect(args[1]);
+	}
+	String tfmt() { return "{$1 ** $2}"; }
+}
+
+class oUnion extends iFunctionClosure {			//  n1 ++ n2
+	vDescriptor function(vDescriptor[] args) {
+		return args[0].Union(args[1]);
+	}
+	String tfmt() { return "{$1 ++ $2}"; }
+}
+
+class oDiff extends iFunctionClosure {			//  n1 -- n2
+	vDescriptor function(vDescriptor[] args) {
+		return args[0].Diff(args[1]);
+	}
+	String tfmt() { return "{$1 -- $2}"; }
 }
 
 

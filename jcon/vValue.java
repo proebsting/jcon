@@ -87,4 +87,12 @@ abstract class vValue extends vDescriptor {
     			{ iRuntime.error(122, this); return null; }
     vDescriptor Insert(vDescriptor i, vDescriptor val)
     			{ iRuntime.error(124, this); return null; }
+
+    // set operations
+    vDescriptor Union(vDescriptor x)
+    			{ iRuntime.error(120, this); return null; }
+    vDescriptor Intersect(vDescriptor x)
+    			{ iRuntime.error(120, this); return null; }
+    vDescriptor Diff(vDescriptor x)
+    			{ iRuntime.error(120, this); return null; }
 }

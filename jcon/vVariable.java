@@ -70,6 +70,11 @@ abstract class vVariable extends vDescriptor {
     vDescriptor Insert(vDescriptor i, vDescriptor val)
     		{ return this.deref().Insert(i, val); }
 
+    // set operations
+    vDescriptor Union(vDescriptor x)	{ return this.deref().Union(x); }
+    vDescriptor Intersect(vDescriptor x){ return this.deref().Intersect(x); }
+    vDescriptor Diff(vDescriptor x)	{ return this.deref().Diff(x); }
+
     vDescriptor isNull()	{
     	if (this.deref() instanceof vNull) {
 	    return this;	// return variable 

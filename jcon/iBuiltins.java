@@ -27,6 +27,7 @@ void announce(iEnv env) {
 	declare(env, "push");
 	declare(env, "put");
 	declare(env, "right");
+	declare(env, "set");
 	declare(env, "stop");
 	declare(env, "table");
 	declare(env, "type");
@@ -177,6 +178,18 @@ class f$table extends iFunctionClosure {			// table(x)
 	}
 }
 
+class f$set extends iFunctionClosure {				// set(x)
+	vDescriptor function(vDescriptor[] args) {
+		vValue x;
+		if (args.length > 0) {
+			x = (vValue) args[0];
+		} else {
+			x = null;
+		}
+		return iNew.Set(x);
+	}
+}
+
 class f$delete extends iFunctionClosure {			// delete(X,x)
 	vDescriptor function(vDescriptor[] args) {
 		if (args.length != 2) {
@@ -201,11 +214,17 @@ class f$member extends iFunctionClosure {			// member(X,x)
 
 class f$insert extends iFunctionClosure {			// insert(X,x,y)
 	vDescriptor function(vDescriptor[] args) {
-		if (args.length != 3) {
+		vValue x;
+		if (args.length > 2) {
+			x = (vValue) args[2];
+		} else {
+			x = iNew.Null();
+		}
+		if (args.length < 2) {
 			iRuntime.error(122);
 			return null;
 		} else {
-			return args[0].Insert(args[1], args[2]);
+			return args[0].Insert(args[1], x);
 		}
 	}
 }

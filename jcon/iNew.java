@@ -25,6 +25,8 @@ static vDescriptor List(vDescriptor[] elements)	{ return new vList(elements); }
 
 static vDescriptor Table(vValue x)	{ return new vTable(x); }
 
+static vDescriptor Set(vValue x)	{ return new vSet(x); }
+
 static vProc Proc(Class c, iEnv e)	{ return new vProc(c, e); }
 
 static vRecordProc RecordProc(String name, String[] fields)
