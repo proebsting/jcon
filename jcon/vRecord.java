@@ -12,7 +12,7 @@ vRecord(vRecordProc constr, vDescriptor[] inits) {
     this.constr = constr;
     values = new vSimpleVar[constr.fieldnames.length];
     for (int i = 0; i < values.length; i++) {
-	values[i] = iNew.SimpleVar();
+	values[i] = iNew.SimpleVar(constr.name + "." + constr.fieldnames[i]);
     }
     int max = values.length;
     if (max > inits.length) {
@@ -57,6 +57,17 @@ vVariable field(String s) {
 	iRuntime.error(207);
 	return null;
     }
+}
+
+vDescriptor Index(vValue i) {
+    long m = i.mkInteger().value;
+    if (m <= 0) {
+	m += constr.fieldnames.length;
+    }
+    if (m < 1 || m > constr.fieldnames.length) {
+	return null; /* FAIL */
+    }
+    return values[(int)m-1];
 }
 
 

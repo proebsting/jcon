@@ -16,6 +16,10 @@ vSubstring(vVariable v, int i1, int i2) {	// construct from String
     end = i2;
 }
 
+vString Name() {
+    String vname = var.Name().value;
+    return iNew.String(vname +"[" + start + ":" + end + "]");
+}
 
 //  ss.strval() -- return underlying java.lang.String value.
 //

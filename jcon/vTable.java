@@ -162,6 +162,10 @@ public vVariable Assign(vValue v) {
     return this;
 }
 
+vString Name() {
+    return iNew.String("T[" + key.image() + "]");
+}
+
 } // class vTrappedTable
 
 

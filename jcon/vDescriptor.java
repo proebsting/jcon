@@ -80,6 +80,9 @@ public abstract class vDescriptor {
 
     abstract vValue Concat(vDescriptor v);	//  s1 || s2
 
+    // variable operations
+    abstract vString Name();
+
     // list operations
     abstract vValue Push(vDescriptor v);
     abstract vValue Pull();

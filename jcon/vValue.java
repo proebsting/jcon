@@ -90,6 +90,9 @@ public abstract class vValue extends vDescriptor {
 
     vValue Concat(vDescriptor v)     { iRuntime.error(103, this); return null; }
 
+    // variable operations
+    vString Name()		{ iRuntime.error(111, this); return null; }
+
     // list operations
     vValue Push(vDescriptor v)	{ iRuntime.error(108, this); return null; }
     vValue Pull()		{ iRuntime.error(108, this); return null; }

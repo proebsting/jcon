@@ -25,7 +25,7 @@ vList(int n, vValue x) {			// new Vlist(n, x)
     super(nextsn++);
     v = new Vector(n);
     for (int i = 0; i < n; i++) {
-    	v.addElement(iNew.SimpleVar(x));
+    	v.addElement(iNew.SimpleVar("N/A", x));
     }
 }
 
@@ -33,7 +33,7 @@ vList(vDescriptor[] elements) {			// new Vlist(elements[])
     super(nextsn++);
     v = new Vector(elements.length);
     for (int i = elements.length - 1; i >= 0; i--) {	// add back-to-front
-    	v.addElement(iNew.SimpleVar(elements[i]));
+    	v.addElement(iNew.SimpleVar("N/A", elements[i]));
     }
 }
 
@@ -96,7 +96,7 @@ vValue Copy() {						// copy(L)
 
 
 vValue Push(vDescriptor x) {				// push(L, x)
-    v.addElement(iNew.SimpleVar(x));
+    v.addElement(iNew.SimpleVar("N/A", x));
     return this;
 }
 
@@ -128,7 +128,7 @@ vValue Get() {						// get(L)
 }
 
 vValue Put(vDescriptor x) {				// put(L, x)
-    v.insertElementAt(iNew.SimpleVar(x), 0);
+    v.insertElementAt(iNew.SimpleVar("N/A", x), 0);
     return this;
 }
 

@@ -143,6 +143,8 @@ class k$subject extends vSimpleVar {		// &subject
 	
 	k$pos pos;		// associated &pos variable
 
+	k$subject() { super("&subject"); }
+
 	public vVariable Assign(vValue s) {
 		value = s.mkString();			// &subject := s
 		pos.Assign(iNew.Integer(1));		// &pos := 1
@@ -155,6 +157,8 @@ class k$subject extends vSimpleVar {		// &subject
 class k$pos extends vSimpleVar {		// &pos
 
 	k$subject subject;		// associated &subject variable
+
+	k$pos() { super("&pos"); }
 
 	public vVariable Assign(vValue i) {
 		i = i.mkInteger();
@@ -169,6 +173,8 @@ class k$pos extends vSimpleVar {		// &pos
 class k$trace extends vSimpleVar {		// &trace
 
 	static long trace;		// #%#%#% referenced in iClosure
+
+	k$trace() { super("&trace"); }
 
 	public vVariable Assign(vValue i) {
 		value = i.mkInteger();

@@ -37,6 +37,7 @@ void announce(iEnv env) {
 	declare(env, "list");
 	declare(env, "log");
 	declare(env, "member");
+	declare(env, "name");
 	declare(env, "numeric");
 	declare(env, "ord");
 	declare(env, "pop");
@@ -83,6 +84,14 @@ static void declare(iEnv env, String name)
 //------------------------------------------  miscellaneous functions follow
 
 
+class f$name extends iRefClosure {				// name(v)
+	vDescriptor function(vDescriptor[] args) {
+		if (args.length < 1) {
+			iRuntime.error(111);
+		}
+		return args[0].Name();
+	}
+}
 
 class f$image extends iFunctionClosure {			// image(x)
 	vDescriptor function(vDescriptor[] args) {

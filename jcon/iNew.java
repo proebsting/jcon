@@ -47,10 +47,11 @@ public static vRecordProc RecordProc(String name, String[] fields)
 
 public static iEnv Env()			{ return new iEnv(); }
 
-public static vSimpleVar SimpleVar()		{ return new vSimpleVar(); }
+public static vSimpleVar SimpleVar(String name)
+				{ return new vSimpleVar(name); }
 
-public static vSimpleVar SimpleVar(vDescriptor x)
-					{ return new vSimpleVar(x.deref()); }
+public static vSimpleVar SimpleVar(String name, vDescriptor x)
+				{ return new vSimpleVar(name, x.deref()); }
 
 public static vSubstring Substring(vVariable v, int i1, int i2)
 					{ return new vSubstring(v, i1, i2); }
