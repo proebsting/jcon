@@ -110,17 +110,17 @@ io.std
 file(echo hello world)
 > hello world
 
-file(pr -n -t io.icn)
->     1	#SRC: JCON
->     2	
->     3	#  I/O test -- writes ./tmp1 and ./tmp2 as well as stdout
->     4	
->     5	procedure main()
->     6	   local L, f, m, n, t1, t2
->     7	
->     8	   L := [&input, &output, &errout,
->     9	   	m := open("/etc/motd"), n := open("/dev/null", "w")]
->    10	   L := sort(L)
+file(sed 's/^/=()= /' io.icn)
+> =()= #SRC: JCON
+> =()= 
+> =()= #  I/O test -- writes ./tmp1 and ./tmp2 as well as stdout
+> =()= 
+> =()= procedure main()
+> =()=    local L, f, m, n, t1, t2
+> =()= 
+> =()=    L := [&input, &output, &errout,
+> =()=    	m := open("/etc/motd"), n := open("/dev/null", "w")]
+> =()=    L := sort(L)
 
 file(ls io.i?n io.d?t io.s?d)
 > io.dat
