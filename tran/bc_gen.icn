@@ -683,6 +683,9 @@ procedure gen_bc_irCoFail(s, p)
 	current := create_fieldref(bc_proc_classptr, "cur_coexp", "Lrts/vCoexp;", "rts/iEnv")
 	put(s, getstatic(current))
 	put(s, invokevirtual(cofailmethod))
+	# the next two lines make the verifier happy.
+	put(s, aconst_null())
+	put(s, areturn())
 	return s
 end
 
