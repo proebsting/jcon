@@ -1,7 +1,13 @@
-#!/bin/ksh
+#!/bin/ksh -p
 #
 #  kreport progname... -- report user CPU times and ratios
 
+uname -a
+date
+echo JAVA_COMPILER=${JAVA_COMPILER-"<unset>"}
+echo JAVA_FAST_JVM=${JAVA_FAST_JVM-"<unset>"}
+java -version 2>&1
+java -fullversion 2>&1
 echo ''
 echo '          icont  jcont    ratio'
 for p; do
