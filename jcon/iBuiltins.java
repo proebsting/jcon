@@ -384,19 +384,22 @@ class f$rename extends iValueClosure {				// rename(s1,s2)
 }
 
 class f$system extends iValueClosure {				// system(s)
-	vDescriptor function(vDescriptor[] args) {
-		String s = vString.argDescr(args, 0).toString();
-		int status;
-		try {
-			// #%#%# new process's stdin/stdout/stderr are
-			// disconnected.  See class Runtime....
-			Process p = Runtime.getRuntime().exec(s);
-			status = p.waitFor();
-		} catch (Throwable e) {
-			status = -1;
-		}
-		return iNew.Integer(status);
+    vDescriptor function(vDescriptor[] args) {
+	String argv[] = { "sh", "-c", vString.argDescr(args, 0).toString() };
+	int status;
+	try {
+	    Process p = Runtime.getRuntime().exec(argv); // start process
+	    p.getOutputStream().close();		 // close its stdin
+	    status = p.waitFor();			 // wait for completion
+	    vFile.copy(p.getInputStream(),k$output.file);// copy stdout 
+	    k$output.file.flush();			 // flush stdout
+	    vFile.copy(p.getErrorStream(),k$errout.file);// copy stderr 
+	    k$errout.file.flush();
+	} catch (Throwable e) {
+	    status = -1;
 	}
+	return iNew.Integer(status);
+    }
 }
 
 class f$getenv extends iValueClosure {				// getenv(s)

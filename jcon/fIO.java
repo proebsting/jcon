@@ -37,7 +37,7 @@ class f$open extends iValueClosure {				// open(s1,s2)
 	vDescriptor function(vDescriptor[] args) {
 		String fname = vString.argDescr(args, 0).toString();
 		String mode = vString.argDescr(args, 1, defmode).toString();
-		String validFlags = "rwabctugRWABCTUG";
+		String validFlags = "rwabcptugRWABCPTUG";
 		for (int i = 0; i < mode.length(); i++) {
 		    if (validFlags.indexOf(mode.charAt(i)) < 0) {
 			iRuntime.error(209, args[1]);

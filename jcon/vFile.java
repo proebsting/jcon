@@ -10,6 +10,7 @@
 package rts;
 
 import java.io.*;
+import java.util.*;
 
 
 
@@ -20,6 +21,7 @@ public abstract class vFile extends vValue {
     DataInput instream;		// input stream, if readable
     DataOutput outstream;	// output stream, if writable
     RandomAccessFile randfile;	// random handle, if seekable
+    Process pipe;		// pipe process, if any
 
     byte[] ibuf;		// input buffer, if read-only random file
     int inext;			// offset to next buffered character
@@ -31,7 +33,9 @@ public abstract class vFile extends vValue {
 
 
 
-final static int BufferSize = 4096;	// input buffer size
+final static int BufferSize = 4096;		// input buffer size
+
+static Hashtable openfiles = new Hashtable();	// set of open files
 
 
 
@@ -59,15 +63,22 @@ static vFile fileToSync;	// file to sync, if non-null
 
 
 
-//  output flushing: this method must be called on exit!
+//  shutdown() -- handle files for program termination.
 //
-//  If we start buffering other output files besides stdin/stderr,
-//  we'll need to remember them, and flush them here.
+//  This method must be called when the progam exits.  It flushes
+//  stdout/stderr and closes other files.  This is especially needed
+//  to kill any processes spawned by opening pipes.
 
-public static void flushall() {
-    k$output.file.flush();
-    k$errout.file.flush();
+public static void shutdown() {
+    for (Enumeration e = openfiles.elements(); e.hasMoreElements(); ) {
+	((vFile) e.nextElement()).close();
+    }
 }
+
+
+// new vFile() -- degenerate constructor for vWindow subclass
+
+vFile() {}
 
 
 
@@ -77,6 +88,7 @@ vFile(String kwname, DataInput i, DataOutput o) {
     img = iNew.String(kwname);
     instream = i;
     outstream = o;
+    openfiles.put(this, this);				// remember open file
 }
 
 
@@ -89,6 +101,11 @@ vFile(String name, String flags) throws IOException {
     String mode;
 
     img = iNew.String("file(" + name + ")");		// save image
+
+    if (iRuntime.upto("pP", flags)) {
+	newpipe(name, flags);				// open pipe (or throw)
+	return;
+    }
 
     if (iRuntime.upto("wabcWABC", flags)) {		// planning to write?
 	mode = "rw";
@@ -118,13 +135,38 @@ vFile(String name, String flags) throws IOException {
 	inext = icount = 0;
 	iflen = randfile.length();			// record length
     }
+
+    openfiles.put(this, this);				// remember open file
 }
 
 
 
-// new vFile() -- degenerate constructor for vWindow subclass
+// newpipe(name, flags) -- open a pipe
+// throws IOException for failure
 
-vFile() {}
+void newpipe(String name, String flags) throws IOException {
+
+    String argv[] = { "sh", "-c", name.toString() };
+    pipe = Runtime.getRuntime().exec(argv);
+
+    if (iRuntime.upto("wabcWABC", flags)) {
+
+	// open pipe for writing
+	if (iRuntime.upto("rbRB", flags)) {
+	    throw new IOException();	// cannot open bidirectionally
+	}
+	outstream = new DataOutputStream(
+	    new BufferedOutputStream(pipe.getOutputStream()));
+
+    } else {
+	// open pipe for reading
+	instream = new DataInputStream(
+	    new BufferedInputStream(pipe.getInputStream()));
+	pipe.getOutputStream().close();		// close the pipe's input
+    }
+
+    openfiles.put(this, this);			// remember open file
+}
 
 
 
@@ -191,35 +233,81 @@ char rchar() throws IOException, EOFException {
 
 
 vFile flush() { 					// flush()
-    if (outstream instanceof OutputStream) {
+
+    if (outstream != null && outstream instanceof OutputStream) {
     	try {
     	    ((OutputStream)outstream).flush();
 	} catch (IOException e) {
 	    iRuntime.error(214, this);	// I/O error
 	}
     }
+    inext = icount = 0;
     return this;
 }
 
 
 
 vFile close() {						// close()
-    if (instream == null && outstream == null) {
-    	return this;			// already closed
+
+    if (! openfiles.containsKey(this)) {
+    	return this;				// already closed
     }
-    RandomAccessFile r = randfile;	// save random handle
-    randfile = null;			// indicate file closed
+
+    this.flush();				// flush pending output
+    inext = icount = 0;				// clear input buffer
+    openfiles.remove(this);			// remove from open file set
+
+    try {
+	if (pipe != null) {			// if pipe
+	    this.closepipe();
+	} else if (randfile != null) {		// if random file
+	    randfile.close();
+	}
+    } catch (IOException e) {
+	randfile = null;
+	instream = null;
+	outstream = null;
+	pipe = null;
+	iRuntime.error(214, this);		// I/O error
+    }
+
+    randfile = null;
     instream = null;
     outstream = null;
-    inext = icount = 0;
-    if (r != null) {			// if not stdin/stdout/stderr
-    	try {
-	    r.close();			// try system close
-	} catch (IOException e) {
-	    iRuntime.error(214, this);	// I/O error
-	}
-    }
+    pipe = null;
     return this;
+}
+
+
+
+void closepipe() throws IOException {
+
+    if (outstream != null) {			// if output pipe
+	((OutputStream)outstream).close();	// close output file
+	try {
+	    pipe.waitFor();			// wait for process to finish
+	} catch (InterruptedException e) {
+	    // nothing
+	};
+	copy(pipe.getInputStream(), k$output.file);  // copy stdout from process
+    }
+
+    k$output.file.flush();			// flush stdout
+    copy(pipe.getErrorStream(), k$errout.file);	// copy stderr from process
+    k$errout.file.flush();
+
+    pipe.destroy();				// kill process
+}
+
+
+
+static void copy(InputStream ifile, vFile ofile) throws IOException {
+    byte b[] = new byte[BufferSize];
+    int n;
+
+    while ((n = ifile.read(b)) >= 0) {
+	ofile.outstream.write(b, 0, n);
+    }
 }
 
 

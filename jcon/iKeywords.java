@@ -133,7 +133,7 @@ class k$features extends iClosure {		// &features
 
 	static String[] flist = { 
 		"Java", "ASCII", "co-expressions",
-		"environment variables", "system function" };
+		"environment variables", "pipes", "system function" };
 
 	int posn = 0;
 
@@ -304,24 +304,35 @@ class k$progname extends k$Value {		// &progname
 
 
 class k$input extends k$Value {			// &input
-	static vFile file;	//#%#% ref'd in fIO.java
+    static vFile file;	// referenced externally
 
-	k$input()		{ file = iNew.File("&input", System.in); }
-	public vValue deref()	{ return file; }
+    k$input() {
+	file = iNew.File("&input",
+	    new DataInputStream(new BufferedInputStream(System.in)), null);
+    }
+
+    public vValue deref()	{ return file; }
 }
 
 class k$output extends k$Value {		// &output
-	static vFile file;	//#%#% ref'd in fIO.java
+    static vFile file;	// referenced externally
 
-	k$output()		{ file = iNew.File("&output", System.out); }
-	public vValue deref()	{ return file; }
+    k$output() {
+	file = iNew.File("&output", null,
+	    new DataOutputStream(new BufferedOutputStream(System.out)));
+    }
+
+    public vValue deref()	{ return file; }
 }
 
 class k$errout extends k$Value {		// &errout
-	static vFile file;	//#%#% ref'd in fIO.java
+    static vFile file;	// referenced externally
 
-	k$errout()		{ file = iNew.File("&errout", System.err); }
-	public vValue deref()	{ return file; }
+    k$errout() {		// unbuffered
+	file = iNew.File("&errout", null, new DataOutputStream(System.err));
+    }
+
+    public vValue deref()	{ return file; }
 }
 
 

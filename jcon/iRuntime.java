@@ -147,7 +147,7 @@ public static void exit(int status, iClosure parent) {
 	if (k$dump.dump != 0) {
 		iRuntime.display(parent);	// honor &dump
 	}
-	vFile.flushall();			// flush output files
+	vFile.shutdown();			// flush output files etc.
 	System.exit(status);			// shut down
 }
 

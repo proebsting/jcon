@@ -192,8 +192,9 @@ public static vCset Cset(vString s) {
 
 //  for files, the actual type depends on the flags passed to open()
 
-public static vFile File(String kw, InputStream i) { return new vTFile(kw, i); }
-public static vFile File(String kw, PrintStream p) { return new vTFile(kw, p); }
+public static vFile File(String kw, DataInput i, DataOutput o) {
+    return new vTFile(kw, i, o);		// keyword text file
+}
 
 public static vFile File(String filename, String mode) {
     try {
