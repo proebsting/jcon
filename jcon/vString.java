@@ -13,6 +13,7 @@ vString mkString()		{ return this; }
 
 // runtime primitives
 
+public int hashCode()		{ return value.hashCode(); }
 public boolean equals(Object o)	{
 	return (o instanceof vString) && value.equals(((vString)o).value);
 }
@@ -105,7 +106,7 @@ vDescriptor Index(vValue i) {
     return iNew.String(value.substring(m, m+1));
 }
 
-vDescriptor IndexVar(vSimpleVar v, vValue i) {
+vDescriptor IndexVar(vVariable v, vValue i) {
     int m = this.posEq(i.mkInteger().value);
     if (m == 0 || m > value.length()) {
     	return null; /*FAIL*/
@@ -126,7 +127,7 @@ vDescriptor Section(vValue i, vValue j) {
     }
 }
 
-vDescriptor SectionVar(vSimpleVar v, vValue i, vValue j) {
+vDescriptor SectionVar(vVariable v, vValue i, vValue j) {
     int m = this.posEq(i.mkInteger().value);
     int n = this.posEq(j.mkInteger().value);
     if (m == 0 || n == 0) {
@@ -149,7 +150,7 @@ vDescriptor Select() {
     return iNew.String(value.substring(i+1, i+2));
 }
 
-vDescriptor SelectVar(vSimpleVar v) {
+vDescriptor SelectVar(vVariable v) {
     if (value.length() == 0) {
 	return null; /*FAIL*/
     }
@@ -171,14 +172,14 @@ vDescriptor Bang(iClosure c) {
     }
 }
 
-vDescriptor BangVar(iClosure c, vSimpleVar v) {
+vDescriptor BangVar(iClosure c, vVariable v) {
     int i;
     if (c.o == null) {
 	c.o = new Integer(i = 1);
     } else {
 	c.o = new Integer(i = ((Integer)c.o).intValue() + 1);
     }
-    if (i > ((vString)v.value).value.length()) {
+    if (i > ((vString)v.deref()).value.length()) {
 	return null; /*FAIL*/
     } else {
 	return iNew.Substring(v, i, i+1);

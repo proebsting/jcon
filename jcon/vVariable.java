@@ -62,4 +62,35 @@ abstract class vVariable extends vDescriptor {
     vValue Pop()			{ return this.deref().Pop(); }
     vValue Get()			{ return this.deref().Get(); }
     vValue Put(vDescriptor v)		{ return this.deref().Put(v); }
+
+    // table operations
+    vDescriptor Key(iClosure c)		{ return this.deref().Key(c); }
+    vDescriptor Member(vDescriptor i)	{ return this.deref().Member(i); }
+    vDescriptor Delete(vDescriptor i)	{ return this.deref().Delete(i); }
+    vDescriptor Insert(vDescriptor i, vDescriptor val)
+    		{ return this.deref().Insert(i, val); }
+
+    vDescriptor isNull()	{
+    	if (this.deref() instanceof vNull) {
+	    return this;	// return variable 
+	} else {
+	    return null;	// fail
+	}
+    }
+
+    vDescriptor isntNull()	{ 
+    	if (this.deref() instanceof vNull) {
+	    return null;	// fail
+	} else {
+	    return this;	// return variable 
+	}
+    }
+
+    vDescriptor Select()	  { return this.deref().SelectVar(this); }
+    vDescriptor Bang(iClosure c)  { return this.deref().BangVar(c, this); }
+
+    vDescriptor Index(vValue i)
+    				{ return this.deref().IndexVar(this, i); }
+    vDescriptor Section(vValue i, vValue j)
+    				{ return this.deref().SectionVar(this, i, j); }
 }

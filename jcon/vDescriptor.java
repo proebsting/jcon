@@ -73,6 +73,12 @@ abstract class vDescriptor {
     abstract vValue Get();
     abstract vValue Put(vDescriptor v);
 
+    // table operations
+    abstract vDescriptor Key(iClosure c);
+    abstract vDescriptor Member(vDescriptor i);
+    abstract vDescriptor Delete(vDescriptor i);
+    abstract vDescriptor Insert(vDescriptor i, vDescriptor val);
+
     //#%#%#%# not-yet-implemented abort
     void NYI(String s) {
 	System.err.println("NYI: " + this + "." + (s != null ? s : "?"));

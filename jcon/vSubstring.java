@@ -1,4 +1,6 @@
-class vSubstring extends vVarExpr {
+class vSubstring extends vVariable {
+
+    vVariable var;
 
     int start, end;	// substring bounds, in Icon terms
 
@@ -6,18 +8,11 @@ class vSubstring extends vVarExpr {
 
 //  constructors assume valid, ordered indices in positive form
 
-vSubstring(vSimpleVar v, int i1, int i2) {	// construct from String
-    super(v);
+vSubstring(vVariable v, int i1, int i2) {	// construct from String
+    var = v;
     start = i1;
     end = i2;
 }
-
-vSubstring(vSubstring v, int i1, int i2) {	// construct from Substring
-    super(v.var);
-    start = v.start - 1 + i1;
-    end = v.start - 1 + i2;
-}
-
 
 
 //  ss.strval() -- return underlying java.lang.String value.
@@ -27,10 +22,11 @@ vSubstring(vSubstring v, int i1, int i2) {	// construct from Substring
 
 String strval() 
 {
-    if (! (var.value instanceof vString)) {
+    vDescriptor v = var.deref();
+    if (! (v instanceof vString)) {
     	iRuntime.error(205);
     }
-    String s = ((vString)var.value).value;
+    String s = ((vString)v).value;
     if (end > s.length() + 1)  {
     	iRuntime.error(103, var);
     }
@@ -65,9 +61,9 @@ vValue deref() {
 
 String report() {
     if (start + 1 == end) {
-	return var.value.report() + "[" + start + "]";
+	return var.deref().report() + "[" + start + "]";
     } else {
-	return var.value.report() + "[" + start + ":" + end + "]";
+	return var.deref().report() + "[" + start + ":" + end + "]";
     }
 }
 

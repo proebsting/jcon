@@ -23,6 +23,8 @@ static vString String(String x) 	{ return new vString(x); }
 static vDescriptor List(int n, vValue x)	{ return new vList(n, x); }
 static vDescriptor List(vDescriptor[] elements)	{ return new vList(elements); }
 
+static vDescriptor Table(vValue x)	{ return new vTable(x); }
+
 static vProc Proc(Class c, iEnv e)	{ return new vProc(c, e); }
 
 static vRecordProc RecordProc(String name, String[] fields)
@@ -36,7 +38,7 @@ static vSimpleVar SimpleVar()		{ return new vSimpleVar(); }
 
 static vSimpleVar SimpleVar(vDescriptor x) { return new vSimpleVar(x.deref()); }
 
-static vSubstring Substring(vSimpleVar v, int i1, int i2)
+static vSubstring Substring(vVariable v, int i1, int i2)
 					{ return new vSubstring(v, i1, i2); }
 
 static vSubstring Substring(vSubstring v, int i1, int i2)

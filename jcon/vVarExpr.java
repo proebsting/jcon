@@ -6,9 +6,9 @@
 
 abstract class vVarExpr extends vVariable {
 
-    vSimpleVar var;
+    vVariable var;
 
-    vVarExpr(vSimpleVar v) {		// constructor
+    vVarExpr(vVariable v) {		// constructor
     	var = v;
     }
 

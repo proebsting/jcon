@@ -14,6 +14,7 @@ vReal(String s)		{ value = Double.valueOf(s).doubleValue(); }
 
 // runtime primitives
 
+public int hashCode()	{ return (int) value; }
 public boolean equals(Object o)	{
 	return (o instanceof vReal) && (((vReal)o).value == value);
 }

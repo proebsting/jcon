@@ -41,9 +41,9 @@ abstract class vValue extends vDescriptor {
     vDescriptor Bang(iClosure c){ iRuntime.error(116, this); return null; }
 
     // unary operations on variables
-    vDescriptor SelectVar(vSimpleVar v)
+    vDescriptor SelectVar(vVariable v)
     				{ return this.deref().Select(); }
-    vDescriptor BangVar(iClosure c, vSimpleVar v)
+    vDescriptor BangVar(iClosure c, vVariable v)
     				{ return this.deref().Bang(c); }
 
     // subscripting
@@ -51,9 +51,9 @@ abstract class vValue extends vDescriptor {
     				{ iRuntime.error(114, this); return null; }
     vDescriptor Section(vValue i, vValue j)		// x1[i1:i2]
     				{ iRuntime.error(110, this); return null; }
-    vDescriptor IndexVar(vSimpleVar v, vValue i)
+    vDescriptor IndexVar(vVariable v, vValue i)
 				{ return this.deref().Index(i); }
-    vDescriptor SectionVar(vSimpleVar v, vValue i, vValue j)
+    vDescriptor SectionVar(vVariable v, vValue i, vValue j)
 				{ return this.deref().Section(i,j); }
 
     // simple binary operators
@@ -78,4 +78,13 @@ abstract class vValue extends vDescriptor {
     vValue Pop()		{ iRuntime.error(108, this); return null; }
     vValue Get()		{ iRuntime.error(108, this); return null; }
     vValue Put(vDescriptor v)	{ iRuntime.error(108, this); return null; }
+
+    // table operations
+    vDescriptor Key(iClosure c)	  { iRuntime.error(124, this); return null; }
+    vDescriptor Member(vDescriptor i)
+    			{ iRuntime.error(122, this); return null; }
+    vDescriptor Delete(vDescriptor i)
+    			{ iRuntime.error(122, this); return null; }
+    vDescriptor Insert(vDescriptor i, vDescriptor val)
+    			{ iRuntime.error(124, this); return null; }
 }
