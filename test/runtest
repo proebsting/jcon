@@ -9,7 +9,7 @@ fi
 for FNAME; do
     BASE=${FNAME%.*}
     echo ${BASE}:
-    ./jcont -s $BASE
+    ../bin/jcont -s $BASE
     if [ -r $BASE.dat ]; then
 	./$BASE <$BASE.dat >$BASE.out
     else
