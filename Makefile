@@ -50,4 +50,5 @@ clean:
 
 dclean:	
 	rm -f `find * -type f | xargs grep -l '<< *ARIZONA-ONLY *>>' | cat`
+	rm -rf `find * -type d -name CVS`
 
