@@ -10,4 +10,7 @@ procedure main()
    write("i" || "jk")
    write(23 || "skidoo")
    write(x, .x, x := "b")
+
+   exit()
+   write("oops!")
 end

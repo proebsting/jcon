@@ -1,11 +1,20 @@
+record point(x,y)
+
 procedure main()
-   write(image())
-   write(image(,))
-   write(image(47))
-   write(image(3.14159))
-   write(image("asparagus"))
-   write(image(main))
-   write(image(right))
-   write(image(write))
-   write(image(image))
+   dump()
+   dump(47)
+   dump(3.14159)
+   dump("asparagus")
+   dump(main)
+   dump(write)
+   dump(point)
+
+#%#% the following don't work because the images are incomplete
+#%#%   dump(point(1,2))
+#%#%   dump(create 1 to 5)
+end
+
+procedure dump(x)
+   write(type(x), " : ", image(x))
+   return
 end

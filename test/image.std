@@ -1,9 +1,7 @@
-&null
-&null
-47
-3.14159
-"asparagus"
-procedure main
-function right
-function write
-function image
+null : &null
+integer : 47
+real : 3.14159
+string : "asparagus"
+procedure : procedure main
+procedure : function write
+procedure : record constructor point
