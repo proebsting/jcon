@@ -54,7 +54,6 @@ final class f$loadfunc extends vProc2 {				// loadfunc(s,s)
 	    // as in Icon v9, print additional info before raising error
 	    System.err.print(
 		"loadfunc(\"" + filename + "\",\"" + funcname + "\"): " + t);
-System.err.println();t.printStackTrace();//#%#%#%#%#%##%
 	    iRuntime.error(216);
 	    return null;
 	}

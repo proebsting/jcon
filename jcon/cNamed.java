@@ -49,11 +49,17 @@ static String mapcube =			// one thousand points of light
     "Ccccc##^^{Dccc99$$^{DDdd9&&&66DDddd,,,66";
 
 vString Key(wColor k) {
-    int r = (int) (k.r * (cubeside - 1) + 0.5);
-    int g = (int) (k.g * (cubeside - 1) + 0.5);
-    int b = (int) (k.b * (cubeside - 1) + 0.5);
-    int n = (cubeside * cubeside * r) + (cubeside * g) + b;
-    return vString.New(mapcube.charAt(n));
+    if (k.r == k.g && k.g == k.b) {
+	// this is a shade of gray
+	return vString.New("0123456".charAt((int) (6 * k.g + 0.5)));
+    } else {
+	// not a shade of gray -- look up in mapping cube
+	int r = (int) (k.r * (cubeside - 1) + 0.5);
+	int g = (int) (k.g * (cubeside - 1) + 0.5);
+	int b = (int) (k.b * (cubeside - 1) + 0.5);
+	int n = (cubeside * cubeside * r) + (cubeside * g) + b;
+	return vString.New(mapcube.charAt(n));
+    }
 }
 
 

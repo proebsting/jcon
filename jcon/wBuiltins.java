@@ -13,6 +13,7 @@ static void announce() {
 
     // graphics functions that are at least partially implemented:
 
+    iEnv.declareBuiltin("Active", 0, wFunctions.self);
     iEnv.declareBuiltin("Alert", 1, wFunctions.self);
     iEnv.declareBuiltin("Bg", 2, wFunctions.self);
     iEnv.declareBuiltin("Clip", 5, wFunctions.self);
@@ -23,7 +24,7 @@ static void announce() {
     iEnv.declareBuiltin("DrawArc", -1, wFunctions.self);
     iEnv.declareBuiltin("DrawCircle", -1, wFunctions.self);
     iEnv.declareBuiltin("DrawCurve", -1, wFunctions.self);	// just DrawLine
-    iEnv.declareBuiltin("DrawImage", 4, wFunctions.self);	// no bilevels
+    iEnv.declareBuiltin("DrawImage", 4, wFunctions.self);
     iEnv.declareBuiltin("DrawLine", -1, wFunctions.self);
     iEnv.declareBuiltin("DrawPoint", -1, wFunctions.self);
     iEnv.declareBuiltin("DrawPolygon", -1, wFunctions.self);
@@ -60,7 +61,6 @@ static void announce() {
 
     //#%#% Not implemented:
     // iEnv.declareBuiltin("WriteImage", 6);
-    // iEnv.declareBuiltin("Active", 0);
     // iEnv.declareBuiltin("Couple", 2);	// may not be possible
 }
 

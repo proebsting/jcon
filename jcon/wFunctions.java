@@ -3,10 +3,12 @@
 package rts;
 
 import java.awt.*;
+import java.util.*;
 
 public final class wFunctions extends iInstantiate {
     public static wFunctions self = new wFunctions();
     public vProc instantiate(String name) {
+        if (name.equals("f$Active")) return new f$Active();
         if (name.equals("f$Alert")) return new f$Alert();
         if (name.equals("f$Bg")) return new f$Bg();
         if (name.equals("f$Clip")) return new f$Clip();
@@ -139,6 +141,12 @@ final class f$Event extends vProc1 {		// Event(W)
 	    return Call(iKeyword.window.getWindow());
 	}
 	return ((vWindow)a.Deref()).Event();
+    }
+}
+
+final class f$Active extends vProc0 {		// Active()
+    public vDescriptor Call() {
+	return vWindow.Active();
     }
 }
 

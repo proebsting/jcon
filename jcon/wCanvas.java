@@ -192,6 +192,8 @@ synchronized void enqueue(vValue a, vValue b, vValue c) {
 
 
 //  Canvas(win, s) -- set "canvas" (visibility) attribute
+//
+//  Accepts only "hidden" and "normal", rejects "maximal" and "iconic"
 
 vString Canvas(vWindow win, String s) {
     if (s != null) {
@@ -201,7 +203,6 @@ vString Canvas(vWindow win, String s) {
 	    f.setVisible(true);
 	} else {
 	    return null; /*FAIL*/
-	    //#%#% still need to handle "maximal" and "iconic"
 	}
 	visibility = s;
     }

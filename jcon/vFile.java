@@ -127,7 +127,9 @@ public static vFile New(String filename, String mode, vDescriptor args[]) {
 
 // new vFile() -- degenerate constructor for vWindow subclass
 
-vFile() {}
+vFile() {
+    openfiles.put(this, this);				// rememver open file
+}
 
 
 

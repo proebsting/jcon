@@ -242,6 +242,7 @@ vFile close() {
 	win.a = null;		// mark each as closed
 	win.b = null;
 	win.c = null;
+	vWindow.openfiles.remove(win);
     }
     v.removeAllElements();
     return this;
@@ -355,6 +356,38 @@ vValue Event() {
 	e = wEvent.dequeue(c, dx, dy);
     }
     return e;
+}
+
+
+
+static int offset;			// round-robin starting point
+
+static vWindow Active() {		// Active() finds win w/ pending event
+    Vector v = new Vector();
+    for (Enumeration e = openfiles.elements(); e.hasMoreElements(); ) {
+	Object o = e.nextElement();
+	if (o instanceof vWindow && ((vWindow)o).c != null) {
+	    v.addElement(o);
+	}
+    }
+    int n = v.size();
+    if (n == 0) {
+	return null; /*FAIL*/
+    }
+    ++offset;				// update starting point
+    while (true) {
+	for (int i = 0; i < n; i++) {
+	    vWindow w = (vWindow) v.elementAt((i + offset) % n);
+	    if (w.c.evq.Size().value > 0) {
+		return w;
+	    }
+	}
+	iKeyword.output.file().flush();		// flush stdout
+	try {
+	    Thread.sleep(iConfig.PollDelay);	// sleep a little
+	} catch (InterruptedException x) {
+	}
+    }
 }
 
 
