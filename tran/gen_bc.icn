@@ -124,13 +124,6 @@ procedure bc_gen_assign_to(s, p)
 end
 
 
-# record ir_Free( v )
-procedure bc_gen_ir_Free(s, p)
-    local free, c, lab
-
-    return s
-end
-
 # record ir_Deref( lhs value )
 procedure bc_gen_ir_Deref(s, p)
     local deref
@@ -345,11 +338,6 @@ procedure bc_gen_ir_CsetLit(s, p)
     field := j_create_fieldref(bc_current_classptr, bc_cset_table[p.val],
                              "Ljcon/vCset;", bc_java_classname)
     put(s, j_getstatic(field))
-    return s
-end
-
-# record ir_Restore( )
-procedure bc_gen_ir_Restore(s, p)
     return s
 end
 
@@ -728,7 +716,6 @@ procedure bc_gen(s, p)
     "ir_RealLit" : return bc_gen_ir_RealLit(s, p)
     "ir_StrLit" : return bc_gen_ir_StrLit(s, p)
     "ir_CsetLit" : return bc_gen_ir_CsetLit(s, p)
-    "ir_Restore" : return bc_gen_ir_Restore(s, p)
     "ir_Succeed" : return bc_gen_ir_Succeed(s, p)
     "ir_Fail" : return bc_gen_ir_Fail(s, p)
     "ir_ResumeValue" : return bc_gen_ir_ResumeValue(s, p)
@@ -740,7 +727,6 @@ procedure bc_gen(s, p)
     "ir_CoFail" : return bc_gen_ir_CoFail(s, p)
     "ir_RunTimeError" : return bc_gen_ir_RunTimeError(s, p)
     "ir_EnterInit" : return bc_gen_ir_EnterInit(s, p)
-    "ir_Free" : return bc_gen_ir_Free(s, p)
     "ir_Field" : return bc_gen_ir_Field(s, p)
     "ir_Call" : return bc_gen_ir_Call(s, p)
     default : { runerr(500, p); }

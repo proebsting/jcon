@@ -7,7 +7,6 @@ procedure optim_optimize(t, start)
 
     new := t
     if \optim_optimize_flag then {
-        new := optim_free_elimination(new, start)
         new := optim_dead_assignment(new, start)
         new := optim_goto_elimination(new, start)
         new := optim_copy_propagation(new, start)
@@ -28,25 +27,6 @@ procedure optim_dead_assignment(t, start)
             put(c, i)
         }
         new[k] := c
-    }
-    return new
-end
-
-procedure optim_free_elimination(t, start)
-    local new, c, i, lab
-
-    new := table()
-    every lab := key(t) do {
-        c := t[lab]
-        new[lab] := []
-        every i := !c do {
-            if (type(i) ~== "ir_Free")
-	       # | (*i.v.tmp > 0)
-	       # | (*i.v.lab > 0)
-               then {
-                put(new[lab], i)
-            }
-        }
     }
     return new
 end
@@ -102,7 +82,6 @@ end
 
 procedure optim_def_use(p, this, uses, defs)
     case type(p) of {
-    "ir_Free" :  { }
     "ir_Tmp" :   { this[p]+:=1 }
     "ir_TmpLabel" :  { this[p]+:=1 }
     "ir_Label" : { this[p]+:=1 }
@@ -142,7 +121,6 @@ procedure optim_def_use(p, this, uses, defs)
             optim_def_use(p.location, uses,uses, defs);}
     "ir_CoRet" : { optim_def_use(p.value, uses, uses, defs);
             optim_def_use(p.continuation, uses, uses, defs); }
-    "ir_Restore" :   { }
     "ir_CoFail" :    { }
     "ir_RunTimeError":{ }
     "ir_EnterInit" : { optim_def_use(p.startlabel, uses, uses, defs) }
@@ -158,7 +136,6 @@ procedure optim_rewrite(p, rename)
         return optim_rewrite(rename[p], rename)
     }
     case type(p) of {
-    "ir_Free" :  { }
     "ir_Tmp" :   { }
     "ir_TmpLabel" :  { }
     "ir_Label" : { }
@@ -174,7 +151,6 @@ procedure optim_rewrite(p, rename)
     "ir_RealLit" :   { }
     "ir_StrLit" :    { }
     "ir_CsetLit" :   { }
-    "ir_Restore" :   { }
     "ir_Succeed" :   { p.expr := optim_rewrite(p.expr, rename);
             p.continuation := optim_rewrite(\p.continuation, rename); }
     "ir_Fail" :  { }
@@ -293,8 +269,6 @@ procedure optim_goto_transitive(t, new, lab)
 
     every p := !t[lab] do {
 	    case type(p) of {
-	    "ir_Free" |
-	    "ir_Restore" |
 	    "ir_CoFail" |
 	    "ir_RunTimeError" |
 	    "ir_MakeList" |
@@ -358,8 +332,6 @@ end
 
 procedure optim_refcountX(refcount, p)
     case type(p) of {
-    "ir_Free" |
-    "ir_Restore" |
     "ir_CoFail" |
     "ir_RunTimeError" |
     "ir_MakeList" |

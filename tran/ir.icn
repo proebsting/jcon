@@ -8,8 +8,6 @@ record ir_Function(name, paramList, accumulate, localList, staticList, codeList,
                   codeStart, lvalset, coord)
 record ir_Chunk(label, insnList)
  
-record ir_Free(v)
-record ir_Restore()
 record ir_Deref(lhs, value)
 record ir_Tmp(name)
 record ir_TmpLabel(name)
