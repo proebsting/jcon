@@ -1,0 +1,181 @@
+#  timings.icn -- microbenchmark timings of Icon operations
+#  14-feb-98/gmt
+#
+#  usage:  timings interval
+#
+#  Various Icon operations are executed inside an "every 1 to n" loop,
+#  with n scaled to execute the loop for at least <interval> seconds.
+#  Timings are based on &time, which must be meaningful or all bets are off.
+#
+#  For each operation, execution time per iteration is given in nanoseconds.
+#  The first report is delayed while loop overhead is measured with greater
+#  precision.  Timings labeled "nothing" illustrate the accuracy and
+#  consistency of the overhead times subtracted from reported values -- 
+#  that is, they give a flavor for the amount of "noise" in the timings.
+
+
+
+$define DefaultTime 1.0		# default measurement interval, in seconds
+$define MinOvhTime 1.0		# minimum interval for overhead measurement
+
+global looptime			# expected loop time, in msec
+
+global overhead			# measured loop overhead, in nsec
+
+
+
+procedure main(args)
+   local ovhtime
+
+   looptime := integer(1000 * (args[1] | DefaultTime))
+
+   ovhtime := 3 * looptime
+   ovhtime <:= integer(1000 * MinOvhTime)
+   overhead := measure(nothing, ovhtime)
+
+   report(nothing, "nothing")
+   report(nothing, "nothing")
+   report(nothing, "nothing")
+
+   report(tonumeric,"+\"407\"")
+   report(tostring, "*407")
+   report(concat,   "\"a\" || \"b\"")
+   report(strsub,   "\"abcde\"[3]")
+
+   report(addopr,  "4 + 7")
+   report(addfunc, "add(4, 7)")
+   report(rfact0,  "rfact(0)")
+   report(rfact10, "rfact(10)")
+
+   report(marshal, "2(3,1,4,1,6)")
+   report(everyalt,"1|2|3|4|5")
+   report(everyto, "1 to 5")
+   report(evbang,  "!\"12345\"")
+
+   report(nothing, "nothing")
+   report(nothing, "nothing")
+   report(nothing, "nothing")
+end
+
+procedure report(proc, label)
+   write(right(measure(proc, looptime) - overhead, 10), "  ", label)
+end
+
+procedure measure(proc, looptime)
+   local n, t1, t2, dt, nsec
+   static mult
+   initial {
+      # bug workaround: &time reads 67% high under Solaris iconx
+      if &features == "UNIX" &
+	 (&host ? tab(upto('.'))) == ("baskerville" | "lectura") then
+	    mult := 0.6
+      else
+	 mult := 1.0
+      }
+
+   proc(1)	# prime the pump -- load classes etc.
+   n := 1
+   repeat {
+      t1 := &time
+      proc(n)
+      t2 := &time
+      dt := integer(mult * (t2 - t1))
+      if dt >= looptime then break
+      if dt < looptime / 20 then
+         n *:= 10
+      else
+         n := integer(1.1 * n * looptime / real(dt))
+      }
+
+   t1 := dt / real(n)
+   nsec := integer(t1 * 1000000 + 0.5)
+   return nsec
+end
+
+
+
+####################### microbenchmark procedures #####################
+
+
+procedure nothing(n)
+   every 1 to n do
+      0
+end
+
+
+procedure addopr(n)
+   every 1 to n do
+      4 + 7
+end
+
+
+procedure addfunc(n)
+   every 1 to n do
+      add(4, 7)
+end
+
+procedure add(a, b)
+   return a + b
+end
+
+
+procedure rfact0(n)
+   every 1 to n do
+      rfact(0)
+end
+
+procedure rfact10(n)
+   every 1 to n do
+      rfact(10)
+end
+
+procedure rfact(n)	# makes n recursive calls
+   if n < 1 then return 1
+   else return n * rfact(n - 1)
+end
+
+
+procedure marshal(n)
+   every 1 to n do
+      2 (3, 1, 4, 1, 6)
+end
+
+
+procedure everyalt(n)
+   every 1 to n do
+      every 1 | 2 | 3 | 4 | 5
+end
+
+procedure everyto(n)
+   every 1 to n do
+      every 1 to 5
+end
+
+procedure evbang(n)
+   every 1 to n do
+      every !"12345"
+end
+
+
+
+procedure tonumeric(n)
+   every 1 to n do
+      +"407"
+end
+
+procedure tostring(n)
+   every 1 to n do
+      *407
+end
+
+
+procedure concat(n)
+   every 1 to n do
+      "a" || "b"
+end
+
+
+procedure strsub(n)
+   every 1 to n do
+      "abcde"[3]
+end
