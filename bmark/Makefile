@@ -9,15 +9,30 @@
 ICONT = icont
 JCONT = ../bin/jcont
 
-PROGS = concord.icn deal.icn ipxref.icn queens.icn rsg.icn \
+BMARKS = concord.icn deal.icn ipxref.icn queens.icn rsg.icn \
 	tgrlink.icn geddump.icn
+PROGS = $(BMARKS) version.icn
+IXE = $(PROGS:.icn=.ixe)
+JXE = $(PROGS:.icn=.jxe)
+
 LIBS = options.icn post.icn shuffle.icn
-P = $(PROGS:.icn=)
+ILIB = $(LIBS:.icn=.u2)
+JLIB = $(LIBS:.icn=.zip)
+
+SETUP = $(IXE) $(JXE) timer
+
+.SUFFIXES:	.icn .u2 .zip .ixe .jxe
+.icn.u2:	; $(ICONT) -s -c $*
+.icn.zip:	; $(JCONT) -s -c $*
+.icn.ixe:	; $(ICONT) -s -o $@ $* $(ILIB)
+.icn.jxe:	; $(JCONT) -s -o $@ $* $(JLIB)
+
+
 
 report:	run
-	./kreport $P
+	./kreport $(BMARKS:.icn=)
 
-run:	setup
+run:	$(SETUP)
 	./timer concord.ixe <concord.dat		>/dev/null 2>concord.it
 	./timer concord.jxe <concord.dat		>/dev/null 2>concord.jt
 	./timer deal.ixe -h 1000			>/dev/null 2>deal.it
@@ -40,15 +55,15 @@ rerun:
 	$(MAKE) run
 	$(MAKE) report
 
-setup:	$(PROGS) $(LIBS) timer
-	$(ICONT) -sc $(LIBS)
-	for f in $P; do $(ICONT) -s -o $$f.ixe $$f *.u2; done
-	$(JCONT) -sc $(LIBS)
-	for f in $P; do $(JCONT) -s -o $$f.jxe $$f *.zip; done
-	touch ./setup
+setup:	$(SETUP)
+
+$(IXE): $(ILIB)
+
+$(JXE): $(JLIB)
 
 timer:	timer.c
 	cc -o timer timer.c
 
+
 clean:
-	rm -rf setup timer run *.u? *.zip *.ixe *.jxe *.it *.jt
+	rm -rf timer run *.u? *.zip *.ixe *.jxe *.it *.jt

@@ -2,9 +2,12 @@
 #
 #  kreport progname... -- report user CPU times and ratios
 
+echo ''
 uname -a
 date
-icont -us version -x
+./version.ixe
+./version.jxe
+echo ''
 echo JAVA_COMPILER=${JAVA_COMPILER-"<unset>"}
 echo JAVA_FAST_JVM=${JAVA_FAST_JVM-"<unset>"}
 java -version 2>&1
@@ -16,3 +19,4 @@ for p; do
 	{ printf("%-8s %6.2f %6.2f %8.2f\n", "'$p'", $1, $4, $4 / $1); }
     '
 done
+echo ''
