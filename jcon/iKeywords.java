@@ -8,6 +8,12 @@ import java.util.*;
 public class iKeywords extends iFile {
 
 	void announce() {
+
+		// implemented in the compiler:
+		//	&fail
+		//	&file
+		//	&line
+		// (preserve that line format for the documentation extractor)
 		
 		// constants
 		iEnv.declareKey("null", iNew.Null());

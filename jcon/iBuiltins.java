@@ -30,7 +30,7 @@ void announce() {
 	declare("iand", 2);
 	declare("icom", 1);
 	declare("image", 1);
-	declare("insert", 2);
+	declare("insert", 3);
 	declare("integer", 1);
 	declare("ior", 2);
 	declare("ishift", 2);
