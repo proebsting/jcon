@@ -12,6 +12,7 @@ public vDescriptor retvalue;	// value returned/suspended, or null for failure
 public boolean returned;	// flag to indicate resumption unnecessary
 
 public Object o;		// arbitrary storage for RTS methods
+public int oint;		// arbitrary storage for RTS methods
 
 public String file;		// location in source file
 public int line;

@@ -267,16 +267,16 @@ vDescriptor SelectVar(vVariable v) {
 }
 
 vDescriptor Bang(iClosure c) {
-    int i;
     if (c.o == null) {
-	c.o = new Integer(i = 1);
+	c.o = c;
+	c.oint = 1;
     } else {
-	c.o = new Integer(i = ((Integer)c.o).intValue() + 1);
+	c.oint++;
     }
-    if (i > value.length()) {
+    if (c.oint > value.length()) {
 	return null; /*FAIL*/
     } else {
-	return iNew.String(value.substring(i - 1, i));
+	return iNew.String(value.substring(c.oint - 1, c.oint));
     }
 }
 

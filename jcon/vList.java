@@ -170,16 +170,16 @@ vDescriptor Select() {					//  ?L
 
 
 vDescriptor Bang(iClosure c) {				//  !L
-    int i;
     if (c.o == null) {
-	c.o = new Integer(i = 0);
+	c.o = c;
+	c.oint = 0;
     } else {
-	c.o = new Integer(i = ((Integer)c.o).intValue() + 1);
+	c.oint++;
     }
-    if (i >= v.size()) {
+    if (c.oint >= v.size()) {
 	return null; /*FAIL*/
     } else {
-	return (vDescriptor) v.elementAt(i);		// generate as variable
+	return (vDescriptor) v.elementAt(c.oint);	// generate as variable
     }
 }
 
