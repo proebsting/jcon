@@ -4,7 +4,9 @@
 #
 #  usage:  jcont [-bcdhjrstuvEJPS] [-f flags] [-o exe] file... [-x [args]]
 #
-#     file:	filename.icn (Icon source) or filename.zip (translated code)
+#     file:	filename.icn 	Icon source code to translate and link
+#         	filename.zip	translated Icon code to link in
+#         	filename.class	Java class file to include in output file
 #
 #     -b	generate backwards-compatible .u1/u2 files; implies -c
 #     -c	compile only: don't produce an executable
@@ -31,7 +33,8 @@
 #  Jcont translates Icon source files into .zip files, and links .zip
 #  files to make an executable program.  Jcont is similar to icont in
 #  concept and behavior; think of a .zip file as analogous to a .u1/.u2
-#  pair from icont.
+#  pair from icont.  Raw Java class files can also be bundled in for
+#  access via loadfunc().
 #
 #  "java" and "jar" must be in the search path, and "javap" if -S is used.
 #
@@ -179,8 +182,9 @@ if [ "$XFILE" = "" ]; then
     XFILE="$MAIN${XTYPE%.ksh}"
 fi
 
-# accumulate .icn and .zip file names
+# accumulate .icn, .zip, and .class file names
 IFILES=
+CFILES=
 ZFILES=
 ZBUILT=
 ROOTS=
@@ -193,6 +197,10 @@ for FNAME; do
 	*.zip)	BASE=${FNAME%.zip}
 		ZFILES="$ZFILES $BASE.zip"
 		ROOTS="$ROOTS l\$${BASE##*/}"
+		shift
+		;;
+	*.class)
+		CFILES="$CFILES $FNAME"
 		shift
 		;;
 	*)	BASE=${FNAME%.icn}
@@ -294,8 +302,12 @@ rm -f $TDIR/*.class
 # generate list of files needed for linking
 $JAVA jcon.FindFiles $LINKTRACE "$UIPATH" $ZFILES >$TDIR/zip.list
 
-# unpack all the .zip files and combine the class files to make a new .zip file
-(cd $TDIR; $JAVA jcon.ZipMerge combined.zip $MAIN.class `cat zip.list` $LINKRTS)
+# combine all the .zip files (and any .class files) into one .zip file
+if [ "$CFILES" != "" ]; then
+    cp -p $CFILES $TDIR
+fi
+(cd $TDIR; $JAVA jcon.ZipMerge combined.zip \
+    $MAIN.class `cat zip.list` $CFILES $LINKRTS)
 
 # disassemble $MAIN class, if requested
 if [ "$JVMDUMP" != "" ]; then (
