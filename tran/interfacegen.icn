@@ -104,11 +104,13 @@ procedure methodrefs()
     m := [
             ["<init>", "()V", &null, "init"],
             ["<init>", "([Lrts/vDescriptor;)V", &null, "initV"],
+            ["<init>", "([Lrts/vDescriptor;I)V", &null, "initVI"],
             ["Assign", "(Lrts/vDescriptor;)Lrts/vVariable;", "rts/vDescriptor"],
             ["Call", "([Lrts/vDescriptor;)Lrts/vDescriptor;",
              "rts/vDescriptor",  "CallV"],
             ["New", "()Lrts/vNull;", "rts/vNull", "New_vNull"],
             ["New", "(J)Lrts/vInteger;", "rts/vInteger", "New_vInteger"],
+            ["New", "(Lrts/vClosure;)Lrts/vCoexp;", "rts/vCoexp", "New_vCoexp"],
             ["New", "(Ljava/lang/String;)Lrts/vCset;", "rts/vCset","New_vCset"],
             ["New", "(Ljava/lang/String;)Lrts/vReal;", "rts/vReal","New_vReal"],
             ["New", "(Ljava/lang/String;Lrts/vDescriptor;)Lrts/vSimpleVar;",
@@ -122,7 +124,7 @@ procedure methodrefs()
             ["cofail", "()V", "rts/vCoexp"],
             ["copy", "(I)Lrts/vClosure;", &null],
             ["coret", "(Lrts/vDescriptor;)V", "rts/vCoexp"],
-            ["create", "(Lrts/vClosure;)Lrts/vCoexp;", "rts/iCoexp","a_Create"],
+            ["create", "()V", "rts/vCoexp"],
             ["createVars", "()V", &null],
             ["declareGlobal", "(Ljava/lang/String;)V", "rts/iEnv"],
             ["declareInvoke", "(Ljava/lang/String;)V", "rts/iEnv"],
@@ -207,6 +209,8 @@ procedure fieldrefs()
         [ "PC", "I", &null],
         [ "arguments", "[Lrts/vDescriptor;", "rts/vClosure"],
         [ "retval", "Lrts/vDescriptor;", "rts/vClosure"],
+        [ "refreshArray", "[Lrts/vDescriptor;", &null],
+        [ "refreshPC", "I", &null],
         [ "cur_coexp", "Lrts/vCoexp;", "rts/iEnv"]
     ]
     def := [ "name", "type", "class" ]

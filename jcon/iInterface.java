@@ -91,12 +91,17 @@ public static void start(String[] filenames, String[] args, String name) {
     // create arglist only if main() declares a parameter;
     // this keeps List serial numbers in sync with v9
     vDescriptor a = vNull.New();
+    vDescriptor[] argArray;
     if (! (p instanceof vProc0)) {
 	vDescriptor[] vargs = new vDescriptor[args.length];
 	for (int i = 0; i < args.length; i++) {
 	    vargs[i] = vString.New(args[i]);
 	}
 	a = vList.New(vargs);
+	argArray = new vDescriptor[1];
+	argArray[0] = a;
+    } else {
+	argArray = new vDescriptor[0];
     }
 
     // initialize &trace from $TRACE
@@ -110,9 +115,12 @@ public static void start(String[] filenames, String[] args, String name) {
 
     k$time.reset();				// zero &time
 
-    //#%#%#%# need to set up a coexpression, but for now...
+    iEnv.main = vCoexp.New(new vProcClosure(p, argArray));
+    iEnv.cur_coexp = iEnv.main;
+    iEnv.main.lock.V();
+
     try {
-	p.Call(a);
+        iEnv.main.run();
 	iRuntime.exit(0);
     } catch (iError err) {
 	err.printStackTrace(); //#%#% temporary
@@ -122,11 +130,6 @@ public static void start(String[] filenames, String[] args, String name) {
 	iRuntime.bomb(t);
     };
 
-    //#%#% iEnv.main = new vCoexp(p, v);
-    iEnv.cur_coexp = iEnv.main;
-    iEnv.main.lock.V();
-    iEnv.main.run();
-    iRuntime.exit(0);
 }
 
 

@@ -187,6 +187,36 @@ public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
 	return retval.Call(a, b, c, d, e, f, g, h, i);
 }
 
+public vClosure refreshcopy() {
+    iRuntime.error(902);
+    return null;
+}
 
 
 } // class vClosure
+
+// vProcClosure creates a closure from a vProc.  Used for &main.
+public class vProcClosure extends vClosure {
+    vDescriptor vproc;
+    vDescriptor[] args;
+    vDescriptor closure;
+
+public vProcClosure(vDescriptor vproc, vDescriptor[] args) {
+    this.vproc = vproc;
+    this.args = args;
+}
+
+public vDescriptor Resume() {
+    if (closure == null) {
+	closure = vproc.Call(args);
+	return closure;
+    } else {
+	return closure.Resume();
+    }
+}
+
+public vClosure refreshcopy() {
+    return new vProcClosure(this.vproc, this.args);
+}
+
+} // class vProcClosure

@@ -394,6 +394,7 @@ procedure ir_a_Call(p, st, inuse, target, bounded)
     suspend ir_Chunk(L[ 1].ir.failure, [ ir_Goto(p.ir.failure) ])
     suspend ir_Chunk(L[-1].ir.success, [
         ir_Coord(p.coord),
+	ir_Move(fn, ir_Deref(fn)),
         ir_Call(closure, fn, args, L[-1].ir.resume),
         ir_Move(target, closure),
         ir_Goto(p.ir.success)
