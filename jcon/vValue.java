@@ -54,7 +54,7 @@ public vNumeric Negate()	{ return this.Numerate().Negate(); }
 public vInteger Size()		{ iRuntime.error(112, this); return null; }
 public vValue Complement()	{ iRuntime.error(104, this); return null; }
 public vCoexp Refresh()		{ iRuntime.error(118, this); return null; }
-public vString TabMatch()	{ return this.mkString().TabMatch(); }
+public vDescriptor TabMatch()	{ return this.mkString().TabMatch(); }
 public vNumeric Abs()		{ return this.Numerate().Abs(); }
 public vValue Copy()		{ return this; }
 public abstract vString Type();		// required of all subclasses

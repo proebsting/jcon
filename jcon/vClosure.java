@@ -52,7 +52,7 @@ public vNumeric Numerate()		{ return retval.Numerate(); }
 public vInteger Size()			{ return retval.Size(); }
 public vValue Complement()		{ return retval.Complement(); }
 public vCoexp Refresh()			{ return retval.Refresh(); }
-public vString TabMatch()		{ return retval.TabMatch(); }
+public vDescriptor TabMatch()		{ return retval.TabMatch(); }
 public vNumeric Abs()			{ return retval.Abs(); }
 public vValue Copy()			{ return retval.Copy(); }
 public vString Type()			{ return retval.Type(); }

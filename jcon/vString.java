@@ -418,7 +418,7 @@ vCset mkCset() {						// cset(s)
 //#%#% should this be a generator (undo &pos movement on resumption)?
 //#%#% shouldn't tab() return a modifyable substring?
 
-public vString TabMatch() {
+public vDescriptor TabMatch() {
     vString subj = (vString) k$subject.self.Deref();
     int pos = (int) ((vInteger)k$pos.self.Deref()).value;
     if (this.matches(subj, pos - 1)) {

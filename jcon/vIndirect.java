@@ -50,7 +50,7 @@ public vNumeric Numerate()		{ return Deref().Numerate(); }
 public vInteger Size()			{ return Deref().Size(); }
 public vValue Complement()		{ return Deref().Complement(); }
 public vCoexp Refresh()			{ return Deref().Refresh(); }
-public vString TabMatch()		{ return Deref().TabMatch(); }
+public vDescriptor TabMatch()		{ return Deref().TabMatch(); }
 public vNumeric Abs()			{ return Deref().Abs(); }
 public vValue Copy()			{ return Deref().Copy(); }
 public vString Type()			{ return Deref().Type(); }

@@ -48,7 +48,7 @@ public abstract vNumeric Negate();			//  -n
 public abstract vInteger Size();			//  *x
 public abstract vValue Complement();			//  ~x
 public abstract vCoexp Refresh();			//  ^x
-public abstract vString TabMatch();			//  =s
+public abstract vDescriptor TabMatch();			//  =s
 public abstract vNumeric Abs();				//  abs(x)
 public abstract vValue Copy();				//  copy(x)
 public abstract vString Type();				//  type(x)

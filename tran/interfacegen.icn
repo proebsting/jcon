@@ -32,7 +32,7 @@ procedure operators()
 	[ 1,     "*", "Size",         "rts.vInteger"    ],
 	[ 1,     "~", "Complement",   "rts.vValue"      ],
 	[ 1,     "^", "Refresh",      "rts.vCoexp"      ],
-	[ 1,     "=", "TabMatch",     "rts.vString"     ],
+	[ 1,     "=", "TabMatch",     "rts.vDescriptor" ],
 
 	[ 1,     "/", "IsNull",       "rts.vDescriptor" ],
 	[ 1,    "\\", "IsntNull",     "rts.vDescriptor" ],
