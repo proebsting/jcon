@@ -28,5 +28,9 @@ docpro:	docpro.icn
 	icont -us docpro
 
 
+lint:	$(BUILT)
+	# we don't really use netscape extensions, only stylesheets
+	weblint -x netscape *.htm
+
 clean:
 	rm -f docpro $(BUILT)

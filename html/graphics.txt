@@ -54,8 +54,8 @@ The first image below (from Plate 8.2 of the Graphics book)
 shows the surface of color space as rendered on a full-color display.
 The second image is an example of how Java renders it on an 8-bit display.
 <BR>
-<IMG WIDTH=202 HEIGHT=122 SRC=merc24.jpg>
-<IMG WIDTH=202 HEIGHT=122 SRC=merc8.gif>
+<IMG WIDTH=202 HEIGHT=122 SRC=merc24.jpg ALT="full color image">
+<IMG WIDTH=202 HEIGHT=122 SRC=merc8.gif  ALT="quantized image">
 <P>
 For named colors, variants (such as <CODE>light</CODE>
 and <CODE>dark</CODE>) of the unsaturated hues (<CODE>brown</CODE>,
@@ -117,7 +117,7 @@ Attempts to alter these attribute values are ignored.
 Acceptable values for the <CODE>pointer</CODE> attribute
 are illustrated in this figure.
 For compatibility with other systems, some pointers have multiple names.
-<BR><IMG WIDTH=442 HEIGHT=302 SRC=pointers.gif>
+<BR><IMG WIDTH=442 HEIGHT=302 SRC=pointers.gif ALT="pointer shapes">
 <H3>Deprecated Features</H3>
 <P>
 Version 9 of Icon retains compatibility support for some old features

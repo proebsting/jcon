@@ -40,8 +40,8 @@ are copied from the process after it terminates.
 
 <H3>Keywords</H3>
 <P>
-<CODE>&amp;features</CODE> includes <CODE>"Java"</CODE>; 
-<CODE>_JAVA</CODE> is predefined in the preprocessor.
+<CODE>&amp;features</CODE> includes <CODE>"Java"</CODE>.
+A corresponding preprocessor symbol <CODE>_JAVA</CODE> is also defined.
 <P>
 <CODE>&amp;time</CODE> produces elapsed wall-clock time, not CPU time,
 due to Java limitations.

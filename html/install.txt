@@ -82,7 +82,6 @@ on other platforms.
 
 <P>
 The subdirectories within the Jcon tree are as follows:
-<PRE>
 <BLOCKQUOTE><PRE>
 bin      target for all build products; also includes jcont script
 tran     source code for the translator
