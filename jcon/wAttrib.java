@@ -24,6 +24,8 @@ private static Hashtable attlist = new Hashtable();
 static {
     newatt("canvas", new aCanvas());	//#%#% only normal and hidden, for now
     newatt("depth", new aDepth());
+    newatt("displayheight", new aDisplayheight());
+    newatt("displaywidth", new aDisplaywidth());
     newatt("label", new aLabel());
 
     newatt("dx", new aDx());
@@ -36,6 +38,8 @@ static {
     newatt("gamma", new aGamma());
     newatt("bg", new aBg());
     newatt("fg", new aFg());
+    newatt("drawop", new aDrawop());
+    newatt("reverse", new aReverse());
 
     newatt("font", new aFont());
     newatt("fheight", new aFheight());
@@ -64,14 +68,29 @@ static {
     // Other attempts to set the attribute fail.
 
     //     att name		   default	retval
+
     newatt("linewidth",	new aDummy("1",		vInteger.New(1)));
     newatt("linestyle",	new aDummy("solid",	vString.New("solid")));
     newatt("fillstyle",	new aDummy("solid",	vString.New("solid")));
     newatt("pattern",	new aDummy("solid",	vString.New("black")));
-    // These last three are especially unlikely to be implemented.
-    // They are incomplete and/or problematical even in v9 Icon.
-    newatt("reverse",	new aDummy("off",	vString.New("off")));
-    newatt("drawop",	new aDummy("copy",	vString.New("copy")));
+
+    newatt("display",	new aDummy(":0.0",	vString.New(":0.0")));
+    newatt("pos",	new aDummy("0,0",	vString.New("0,0")));
+    newatt("posx",	new aDummy("0",		vString.New("0")));
+    newatt("posy",	new aDummy("0",		vString.New("0")));
+
+    // The following attributes are not implemented at all:
+
+    //#%#% att("resize",	new aSomething());
+    //#%#% att("image",		new aSomething());
+    //#%#% att("iconpos",	new aSomething());
+    //#%#% att("iconlabel",	new aSomething());
+    //#%#% att("iconimage",	new aSomething());
+    //#%#% att("pointer",	new aSomething());
+    //#%#% att("pointerx",	new aSomething());
+    //#%#% att("pointery",	new aSomething());
+    //#%#% att("pointerrow",	new aSomething());
+    //#%#% att("pointercol",	new aSomething());
 }
 
 private static void newatt(String name, wAttrib a) {
@@ -167,11 +186,26 @@ final class aCanvas extends wAttrib {
 }
 
 
+
 final class aDepth extends wAttrib {
     vValue get(vWindow win)	{ return vInteger.New(
 	Toolkit.getDefaultToolkit().getColorModel().getPixelSize()); }
     vValue set(vWindow win)
-	{ return wAttrib.unsettable("depth=", val); }
+	{ return wAttrib.unsettable("depth", val); }
+}
+
+final class aDisplayheight extends wAttrib {
+    vValue get(vWindow win)	{ return vInteger.New(
+	Toolkit.getDefaultToolkit().getScreenSize().height); }
+    vValue set(vWindow win)
+	{ return wAttrib.unsettable("displayheight", val); }
+}
+
+final class aDisplaywidth extends wAttrib {
+    vValue get(vWindow win)	{ return vInteger.New(
+	Toolkit.getDefaultToolkit().getScreenSize().width); }
+    vValue set(vWindow win)
+	{ return wAttrib.unsettable("displaywidth", val); }
 }
 
 
@@ -272,6 +306,17 @@ final class aBg extends wAttrib {
     vValue set(vWindow win)	{ return win.Bg(vString.New(val)); }
 }
 
+final class aDrawop extends wAttrib {
+    vValue get(vWindow win)	{ return win.Drawop(null); }
+    vValue set(vWindow win)	{ return win.Drawop(vString.New(val)); }
+}
+
+final class aReverse extends wAttrib {
+    vValue get(vWindow win)	{ return win.Reverse(null); }
+    vValue set(vWindow win)	{ return win.Reverse(vString.New(val)); }
+}
+
+
 
 
 final class aFont extends wAttrib {
@@ -294,14 +339,14 @@ final class aAscent extends wAttrib {
     vValue get(vWindow win)
 	{ return vInteger.New(win.getFontMetrics().getMaxAscent()); }
     vValue set(vWindow win)
-	{ return wAttrib.unsettable("ascent=", val); }
+	{ return wAttrib.unsettable("ascent", val); }
 }
 
 final class aDescent extends wAttrib {
     vValue get(vWindow win)
 	{ return vInteger.New(win.getFontMetrics().getMaxDescent()); }
     vValue set(vWindow win)
-	{ return wAttrib.unsettable("descent=", val); }
+	{ return wAttrib.unsettable("descent", val); }
 }
 
 final class aFheight extends wAttrib {
@@ -310,12 +355,12 @@ final class aFheight extends wAttrib {
 	return vInteger.New(m.getMaxAscent() + m.getMaxDescent());
     }
     vValue set(vWindow win)
-	{ return wAttrib.unsettable("fheight=", val); }
+	{ return wAttrib.unsettable("fheight", val); }
 }
 
 final class aFwidth extends wAttrib {
     vValue get(vWindow win) { return vInteger.New(win.Fwidth()); }
-    vValue set(vWindow win) { return wAttrib.unsettable("fwidth=", val); }
+    vValue set(vWindow win) { return wAttrib.unsettable("fwidth", val); }
 }
 
 

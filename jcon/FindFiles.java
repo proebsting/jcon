@@ -209,7 +209,10 @@ static void readlinks(String fname) {
 	}
 	f.close();
     } catch (Exception e) {
-	error(fname + ": " + e);
+	// ignore EOFException, which happens with some Zip files
+	if (! (e instanceof EOFException)) {
+	    error(fname + ": " + e);
+	}
     }
 }
 

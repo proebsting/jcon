@@ -111,7 +111,7 @@ public static vFile New(String kwname, PrintStream o, boolean buffered) {
 
 public static vFile New(String filename, String mode, vDescriptor args[]) {
     try {
-	if (upto("gG", mode)) {
+	if (upto("gGxX", mode)) {
 	    return new vWindow(filename, mode, args);
 	} else if (upto("uU", mode)) {
 	    return new vBFile(filename, mode);	// binary (untranslated) file

@@ -27,9 +27,19 @@ public final class vWindow extends vFile {
     private double gamma;	// gamma correction factor
     private wColor bg;		// background color
     private wColor fg;		// foreground color
+    private boolean xormode;	// in "drawop=reverse" (XOR) mode?
+    private vString revatt;	// value of "reverse=" attribute
 
     private wFont font;		// text font
     private int leading;	// leading value
+
+
+
+// constant vstrings
+private static vString vSoff = vString.New("off");
+private static vString vSon = vString.New("on");
+private static vString vScopy = vString.New("copy");
+private static vString vSreverse = vString.New("reverse");
 
 
 public boolean iswin()		{ return true; }
@@ -82,6 +92,7 @@ vWindow(String title, String mode, vDescriptor args[]) throws IOException {
     gamma = iConfig.Gamma;
     fg = wColor.Black;
     bg = wColor.White;
+    revatt = vSoff;
     Font(vString.New(iConfig.FontName));
 
     wAttrib alist[] = wAttrib.parseAtts(args, 2);  // verify parsing first
@@ -133,6 +144,8 @@ vWindow(vWindow w) {
     this.dy = w.dy;
 
     this.gamma = w.gamma;
+    this.xormode = w.xormode;
+    this.revatt = w.revatt;
     this.fg = w.fg;
     this.bg = w.bg;
     b.setColor(fg);
@@ -341,8 +354,47 @@ vString Bg(vString s) {
 	return null;
     } else {
 	bg = k;
+	if (xormode) {
+	    b.setXORMode(bg);
+	    a.setXORMode(bg);
+	}
 	return k.spec;
     }
+}
+
+vString Drawop(vString s) {
+    if (s != null) {
+        if (s.identical(vScopy)) {
+	    if (xormode) {
+		b.setPaintMode();
+		a.setPaintMode();
+	    	xormode = false;
+	    }
+	} else if (s.identical(vSreverse)) {
+	    if (!xormode) {
+		b.setXORMode(bg);
+		a.setXORMode(bg);
+	    	xormode = true;
+	    }
+	} else {
+	    return null; /*FAIL*/
+	}
+    }
+    return xormode ? vSreverse : vScopy; 
+}
+
+vString Reverse(vString s) {				// reverse= attribute
+    if (s != null && ! (revatt.identical(s))) {		// if changing value
+	if (s.identical(vSoff) || s.identical(vSon)) {	// if legal new value
+	    vString fgspec = fg.spec;			// swap fg/bg
+	    Fg(bg.spec);
+	    Bg(fgspec);	// set bg second in case of drawop=reversed mode
+	    revatt = s;					// save new value
+	} else {
+	    return null; /*FAIL*/
+	}
+    }
+    return revatt;
 }
 
 

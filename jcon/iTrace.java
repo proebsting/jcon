@@ -16,6 +16,8 @@ public static int line;		// line number
 
 
 
+//  iTrace.Call -- called by trampolines to issue tracing messages
+
 public static vDescriptor Call(String fname, int lineno,
 			vDescriptor a, vDescriptor[] args) {
 
@@ -56,6 +58,8 @@ public static vDescriptor Call(String fname, int lineno,
 
 
 
+//  iTrace.Resume -- called by trampolines to issue tracing messages
+
 public static vDescriptor Resume(String fname, int lineno, vDescriptor object) {
     if (! (object instanceof vTracedClosure)) {		// don't trace to-by etc
 	return object.Resume();
@@ -67,7 +71,16 @@ public static vDescriptor Resume(String fname, int lineno, vDescriptor object) {
 
     file = null;		// clear for suspended procedure to set (or not)
     line = 0;
-    vDescriptor result = object.Resume();	// resume
+    vDescriptor result;
+
+    try {
+	result = object.Resume();	// resume procedure
+    } catch (iError e) {
+	iEnv.cur_coexp.depth--;
+	file = null;		// prevent confusion upstream
+	line = 0;
+    	throw e;
+    }
 
     if (iKeyword.trace.check()) {
 	trace(file, line, object, " suspended", result);

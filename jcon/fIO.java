@@ -36,7 +36,7 @@ final class f$open extends vProcV {				// open(s1,s2,...)
     public vDescriptor Call(vDescriptor[] v) {
 	String fname;
 	String mode;
-	String validFlags = "rwabcptugRWABCPTUG";
+	String validFlags = "rwabcptugxRWABCPTUGX";
 
 	fname = iRuntime.arg(v, 0).mkString().toString();
 	vDescriptor m = iRuntime.arg(v, 1).Deref();
