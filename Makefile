@@ -40,4 +40,4 @@ clean:
 	cd doc;  $(MAKE) clean
 	cd test; $(MAKE) clean
 	cd expt; $(MAKE) clean
-	cd bin;  rm -f $(BUILT)
+	cd bin;  rm -rf $(BUILT) JCON
