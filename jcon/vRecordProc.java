@@ -47,6 +47,14 @@ class vRecord extends vValue {
 		return null;
 	}
 
+	vDescriptor Select() {
+	    if (values.length == 0) {
+		return null; /*FAIL*/
+	    }
+	    int i = (int) iRuntime.random(values.length);
+	    return values[i];
+	}
+
 	vDescriptor Bang(iClosure c) {
             int i;
             if (c.o == null) {
