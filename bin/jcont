@@ -57,7 +57,7 @@
 #  file requires no external runtime library for execution.
 
 # command names
-JAVA="java -noverify"
+JAVA="java -verify"
 TRAN="jtran"
 LINK="jlink"
 
