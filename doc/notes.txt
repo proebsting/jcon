@@ -38,7 +38,6 @@ miscellaneous:
 -- random selection uses Java's RNG, presumably generating different sequences
 -- random sequences are different on every run
 -- read() and write() don't accept file arguments
--- x ! R doesn't work for records (only for lists)
 -- jcon always allocates a list even if main() declares no arguments
 
 arguably correct differences:
