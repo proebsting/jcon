@@ -115,9 +115,15 @@ public class oAssign extends iBinaryRefClosure {		// x1 := x2
 public class oSwap extends iBinaryRefClosure {			// x1 :=: x2
 	public static iBinaryClosure instance = new oSwap();
 	vDescriptor function() {
-		vValue tmp = argument1.deref();
-		argument1.Assign(argument0.deref());
-		return argument0.Assign(tmp);
+		vValue tmp = argument0.deref();
+		// must check for failure because &pos:=K can fail.
+		if (argument0.Assign(argument1.deref()) == null) {
+			return null;
+		}
+		if (argument1.Assign(tmp) == null) {
+			return null;
+		}
+		return argument0;
 	}
 	String tfmt() { return "{$1 :=: $2}"; }
 }
@@ -145,11 +151,22 @@ public class oRevSwap extends iClosure {			// x1 <-> x2
 		if (oldleft == null) {
 			oldleft = arguments[0].deref();
 			oldright = arguments[1].deref();
-			arguments[1].Assign(oldleft);
-			return arguments[0].Assign(oldright);
+			// must check for failure because &pos:=K can fail.
+			// the order of the assignments matters, too.
+			if (arguments[0].Assign(oldright) == null) {
+				return null;
+			}
+			if (arguments[1].Assign(oldleft) == null) {
+				return null;
+			}
+			return arguments[0];
 		} else {
-			arguments[0].Assign(oldleft);
-			arguments[1].Assign(oldright);
+			if (arguments[0].Assign(oldleft) == null) {
+				return null;
+			}
+			if (arguments[1].Assign(oldright) == null) {
+				return null;
+			}
 			return null;
 		}
 	}

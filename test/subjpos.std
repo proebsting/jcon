@@ -52,3 +52,11 @@ p :=          4 FAILED  &pos=2   &subject="x"
   &pos=1   &subject="inner"
   &pos=2   &subject="inner"
   &pos=3   &subject="outer"
+&pos=3 x=4
+&pos=4 x=3
+&pos=3 x=9
+&pos=3 x=3
+&pos=3 x=9
+&pos=3 x=3
+&pos=1 x=3
+&pos=1 x=2

@@ -1,7 +1,7 @@
 #SRC: JCON
 
 procedure main()
-   local i, s
+   local i, s, x
 
    ws()		# dump initial state
    write()
@@ -22,6 +22,38 @@ procedure main()
          }
       ws()
       }
+
+   "123456" ? {
+      &pos := 3
+      x := 4
+      write("&pos=", &pos, " x=", x)
+      &pos :=: x
+      write("&pos=", &pos, " x=", x)
+      &pos := 3
+      x := 9
+      &pos :=: x
+      write("&pos=", &pos, " x=", x)
+      &pos := 3
+      x := 9
+      x :=: &pos
+      write("&pos=", &pos, " x=", x)
+      &pos := 3
+      x := 9
+      every &pos <-> x do write("&pos=", &pos, " x=", x)
+      write("&pos=", &pos, " x=", x)
+      &pos := 3
+      x := 9
+      every x <-> &pos do write("&pos=", &pos, " x=", x)
+      write("&pos=", &pos, " x=", x)
+      &pos := 3
+      x := 2
+      every &pos <-> x do &subject := "A"
+      write("&pos=", &pos, " x=", x)
+      &pos := 3
+      x := 2
+      every x <-> &pos do &subject := "A"
+      write("&pos=", &pos, " x=", x)
+   }
 end
 
 procedure setpos(n)
