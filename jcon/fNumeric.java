@@ -14,7 +14,7 @@ class f$abs extends iFunctionClosure {				// abs(n)
 
 class f$icom extends iFunctionClosure {				// icom(n)
     vDescriptor function(vDescriptor[] args) {
-	return iRuntime.argVal(args,0).mkInteger().ICom();
+	return iNew.Integer(~vInteger.argVal(args, 0)); 
     }
 }
 
@@ -22,8 +22,8 @@ class f$icom extends iFunctionClosure {				// icom(n)
 
 class f$iand extends iFunctionClosure {				// iand(n)
     vDescriptor function(vDescriptor[] args) {
-	return iRuntime.argVal(args,0).mkInteger().IAnd(
-		iRuntime.argVal(args,1).mkInteger());
+	return iNew.Integer(
+	    vInteger.argVal(args, 0) & vInteger.argVal(args, 1)); 
     }
 }
 
@@ -31,8 +31,8 @@ class f$iand extends iFunctionClosure {				// iand(n)
 
 class f$ior extends iFunctionClosure {				// ior(n)
     vDescriptor function(vDescriptor[] args) {
-	return iRuntime.argVal(args,0).mkInteger().IOr(
-		iRuntime.argVal(args,1).mkInteger());
+	return iNew.Integer(
+	    vInteger.argVal(args, 0) | vInteger.argVal(args, 1)); 
     }
 }
 
@@ -40,8 +40,8 @@ class f$ior extends iFunctionClosure {				// ior(n)
 
 class f$ixor extends iFunctionClosure {				// ixor(n)
     vDescriptor function(vDescriptor[] args) {
-	return iRuntime.argVal(args,0).mkInteger().IXor(
-		iRuntime.argVal(args,1).mkInteger());
+	return iNew.Integer(
+	    vInteger.argVal(args, 0) ^ vInteger.argVal(args, 1)); 
     }
 }
 
@@ -49,9 +49,18 @@ class f$ixor extends iFunctionClosure {				// ixor(n)
 
 class f$ishift extends iFunctionClosure {			// ishift(n)
     vDescriptor function(vDescriptor[] args) {
-	return iRuntime.argVal(args,0).mkInteger().IShift(
-		iRuntime.argVal(args,1).mkInteger());
-    }
+	long v = vInteger.argVal(args, 0);
+	long n = vInteger.argVal(args, 1);
+	if (n >= 64) {
+	    return iNew.Integer(0);		//#%#% ignoring overflow
+	} else if (n >= 0) {
+	    return iNew.Integer(v << n);	//#%#% ignoring overflow
+	} else if (n > -64) {
+	    return iNew.Integer(v >> -n);
+	} else {
+	    return iNew.Integer(v >> 63);	// fill with sign
+	}
+    } 
 }
 
 

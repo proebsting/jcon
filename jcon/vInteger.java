@@ -137,35 +137,6 @@ vValue Abs() {
     }
 }
 
-vValue ICom() {
-    return iNew.Integer(~this.value);
-} 
-
-vValue IAnd(vDescriptor v) {
-    return iNew.Integer(this.value & ((vInteger)v).value);
-} 
-
-vValue IOr(vDescriptor v) {
-    return iNew.Integer(this.value | ((vInteger)v).value);
-} 
-
-vValue IXor(vDescriptor v) {
-    return iNew.Integer(this.value ^ ((vInteger)v).value);
-} 
-
-vValue IShift(vDescriptor v) {
-    long n = ((vInteger)v).value;
-    if (n >= 64) {
-	return iNew.Integer(0);			//#%#% ignoring overflow
-    } else if (n >= 0) {
-	return iNew.Integer(this.value << n);	//#%#% ignoring overflow
-    } else if (n > -64) {
-	return iNew.Integer(this.value >> -n);
-    } else {
-	return iNew.Integer(this.value >> 63);	// fill with sign
-    }
-} 
-
 
 
 
