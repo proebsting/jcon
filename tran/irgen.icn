@@ -1,6 +1,6 @@
 record ir_info(start, resume, failure, success, x)
 record ir_loopinfo(scanlevel, nextlabel, continue, in_st, out_st, value,
-		   bounded, inuse)
+                   bounded, inuse)
 record ir_scaninfo(oldsubject, oldpos)
 record ir_stacks(tmp, lab, clo)
 
@@ -60,7 +60,7 @@ procedure ir_Scan(p, st, inuse, target, bounded)
         irMove(p.ir.x.oldsubject, irDeref(irKey("subject"))),
         irMove(p.ir.x.oldpos, irDeref(irKey("pos"))),
         ir_opfn(target, irOperator(":?", 2), [ irKey("subject"), lv ],
-		p.expr.ir.resume),
+                p.expr.ir.resume),
         irGoto(p.body.ir.start)
         ])
     CG.emit(p.expr.ir.failure, [ irGoto(p.ir.failure) ])
@@ -240,7 +240,7 @@ procedure ir_Case(p, st, inuse, target, bounded)
             CG.emit(L[i].expr.ir.success, [
                 irCoord(p.coord),
                 ir_opfn(&null, irOperator("===", 2), [ e, v ],
-			L[i].expr.ir.resume),
+                        L[i].expr.ir.resume),
                 irFree(ciu[i]),
                 irGoto(L[i].body.ir.start)
                 ])
@@ -419,7 +419,7 @@ procedure ir_Binop(p, st, inuse, target, bounded)
     /p.right := Key("null")
 
     if p.op == "&" then {
-	ir_conjunction(p, st, inuse, target, bounded)
+        ir_conjunction(p, st, inuse, target, bounded)
         return
     }
 
@@ -441,9 +441,9 @@ procedure ir_Binop(p, st, inuse, target, bounded)
     CG.emit(p.right.ir.failure, [ irGoto(p.left.ir.resume) ])
 
     if find(":=", p.op) > 1 then {
-	ir_augmented_assignment(p, target, bounded, lv, rv, tmp)
+        ir_augmented_assignment(p, target, bounded, lv, rv, tmp)
     } else {
-	ir_binary(p, target, bounded, lv, rv, closure, funcs)
+        ir_binary(p, target, bounded, lv, rv, closure, funcs)
     }
 end
 
@@ -712,7 +712,7 @@ procedure ir_ProcDecl(p, st, inuse, target, bounded)
     ir_clotable := table()
 
     CG.function(p.ident.id, params, p.accumulate, locals, statics, p.code,
-		p.ident.coord)
+                p.ident.coord)
 
 end
 
@@ -732,7 +732,7 @@ procedure ir_ProcBody(p, st, inuse, target, bounded)
     every i := 1 to *p.nexprList do {
         put(tiu, new_inuse())
         every ir(p.nexprList[i], ir_stacks(0,0,0), tiu[i], &null,
-		 "always bounded")
+                 "always bounded")
     }
 
     CG.emit(p.ir.start, [ irGoto(L[1].ir.start) ])
@@ -820,17 +820,25 @@ procedure ir_Return(p, st, inuse, target, bounded)
 
     CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
     /bounded & CG.emit(p.ir.resume, [ irFail() ])
-    CG.emit(p.expr.ir.success,
-        ([ irMove(irKey("subject"), scans[1].ir.x.oldsubject),
-        irMove(irKey("pos"), scans[1].ir.x.oldpos) ] | []) |||
-        [
-        irFree(tiu),
-        irSucceed(t, &null)
-        ])
-    CG.emit(p.expr.ir.failure,
-        ([ irMove(irKey("subject"), scans[1].ir.x.oldsubject),
-        irMove(irKey("pos"), scans[1].ir.x.oldpos) ] | []) |||
-        [ irFail() ])
+    if scans[1] then {
+        CG.emit(p.expr.ir.success, [
+            irMove(irKey("subject"), scans[1].ir.x.oldsubject),
+            irMove(irKey("pos"), scans[1].ir.x.oldpos),
+            irFree(tiu),
+            irSucceed(t, &null)
+            ])
+        CG.emit(p.expr.ir.failure, [
+            irMove(irKey("subject"), scans[1].ir.x.oldsubject),
+            irMove(irKey("pos"), scans[1].ir.x.oldpos),
+            irFail()
+            ])
+    } else {
+        CG.emit(p.expr.ir.success, [
+            irFree(tiu),
+            irSucceed(t, &null)
+            ])
+        CG.emit(p.expr.ir.failure, [ irFail() ])
+    }
 end
 
 # record Fail( )
@@ -838,14 +846,21 @@ procedure ir_Fail(p, st, inuse, target, bounded)
 
     init4ir(p)
 
-    CG.emit(p.ir.start,
-        ([ irMove(irKey("subject"), scans[1].ir.x.oldsubject),
-        irMove(irKey("pos"), scans[1].ir.x.oldpos) ] | []) |||
-        [ irFail() ])
-    /bounded & CG.emit(p.ir.resume,
-        ([ irMove(irKey("subject"), scans[1].ir.x.oldsubject),
-        irMove(irKey("pos"), scans[1].ir.x.oldpos) ] | []) |||
-        [ irFail() ])
+    if scans[1] then {
+        CG.emit(p.ir.start, [
+            irMove(irKey("subject"), scans[1].ir.x.oldsubject),
+            irMove(irKey("pos"), scans[1].ir.x.oldpos),
+            irFail()
+            ])
+        /bounded & CG.emit(p.ir.resume, [
+            irMove(irKey("subject"), scans[1].ir.x.oldsubject),
+            irMove(irKey("pos"), scans[1].ir.x.oldpos),
+            irFail()
+            ])
+    } else {
+        CG.emit(p.ir.start, [ irFail() ])
+        /bounded & CG.emit(p.ir.resume, [ irFail() ])
+    }
 end
 
 # record Suspend( expr body )
@@ -868,15 +883,23 @@ procedure ir_Suspend(p, st, inuse, target, bounded)
     CG.emit(p.ir.x.nextlabel, [ irGoto(p.expr.ir.resume) ])
     CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
     /bounded & CG.emit(p.ir.resume, [ irGoto(p.ir.x.continue) ])
-    CG.emit(p.expr.ir.success,
-        ([ irScanSwap( scans[1].ir.x.oldsubject, scans[1].ir.x.oldpos ) ] |
-	   []) |||
-        [ irSucceed(susp, t) ])
-    CG.emit(t,
-        [ irRestore() ] |||
-        ([ irScanSwap( scans[1].ir.x.oldsubject, scans[1].ir.x.oldpos ) ] |
-	   []) |||
-        [ irGoto(p.body.ir.start) ])
+    if scans[1] then {
+        CG.emit(p.expr.ir.success, [
+            irScanSwap( scans[1].ir.x.oldsubject, scans[1].ir.x.oldpos ),
+            irSucceed(susp, t)
+            ])
+        CG.emit(t, [
+            irRestore(),
+            irScanSwap( scans[1].ir.x.oldsubject, scans[1].ir.x.oldpos ),
+            irGoto(p.body.ir.start)
+            ])
+    } else {
+        CG.emit(p.expr.ir.success, [ irSucceed(susp, t) ])
+        CG.emit(t, [
+            irRestore(),
+            irGoto(p.body.ir.start)
+            ])
+    }
     CG.emit(p.expr.ir.failure, [ irGoto(p.ir.failure) ])
     CG.emit(p.body.ir.success, [
         irFree(tiu),
@@ -987,10 +1010,15 @@ procedure ir_Next(p, st, inuse, target, bounded)
 
     curloop := loops[-1]
     sl := curloop.ir.x.scanlevel
-    CG.emit(p.ir.start,
-        ([ irMove(irKey("subject"), scans[sl+1].ir.x.oldsubject),
-        irMove(irKey("pos"), scans[sl+1].ir.x.oldpos) ] | []) |||
-        [ irGoto(curloop.ir.x.nextlabel) ])
+    if scans[sl+1] then {
+        CG.emit(p.ir.start, [
+            irMove(irKey("subject"), scans[sl+1].ir.x.oldsubject),
+            irMove(irKey("pos"), scans[sl+1].ir.x.oldpos),
+            irGoto(curloop.ir.x.nextlabel)
+            ])
+    } else {
+        CG.emit(p.ir.start, [ irGoto(curloop.ir.x.nextlabel) ])
+    }
     /bounded & CG.emit(p.ir.resume, [ irRunTimeError() ])
 end
 
@@ -1014,13 +1042,19 @@ procedure ir_Break(p, st, inuse, target, bounded)
     loops := oldloops
     scans := oldscans
 
-    CG.emit(p.ir.start,
-        ([ irMove(irKey("subject"), scans[clx.scanlevel+1].ir.x.oldsubject),
-        irMove(irKey("pos"), scans[clx.scanlevel+1].ir.x.oldpos) ] | []) |||
-        [
-        irMove(clx.continue, p.ir.resume),
-        irGoto(p.expr.ir.start)
-        ])
+    if scans[clx.scanlevel+1] then {
+        CG.emit(p.ir.start, [
+            irMove(irKey("subject"), scans[clx.scanlevel+1].ir.x.oldsubject),
+            irMove(irKey("pos"), scans[clx.scanlevel+1].ir.x.oldpos),
+            irMove(clx.continue, p.ir.resume),
+            irGoto(p.expr.ir.start)
+            ])
+    } else {
+        CG.emit(p.ir.start, [
+            irMove(clx.continue, p.ir.resume),
+            irGoto(p.expr.ir.start)
+            ])
+    }
     /clx.bounded & CG.emit(p.ir.resume, [ irGoto(p.expr.ir.resume) ])
     CG.emit(p.expr.ir.success, [ irGoto(curloop.ir.success) ])
     CG.emit(p.expr.ir.failure, [ irGoto(curloop.ir.failure) ])
@@ -1173,7 +1207,7 @@ end
 # record Arglist( exprList )
 procedure ir_Arglist(p, st, inuse, target, bounded)
     stop("FATAL ERROR: Arglist should be handled in ir_Call(), file ",
-	 image(&file), ", line ", image(&line))
+         image(&file), ", line ", image(&line))
 end
 
 # record ListConstructor( exprList )
