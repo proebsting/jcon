@@ -255,13 +255,9 @@ procedure ir_a_Case(p, st, inuse, target, bounded, rval)
 
     L := p.clauseList
     if *L = 0 then {
-        suspend ir_Chunk(p.expr.ir.success, [
-            ir_Goto(p.dflt.ir.start)
-            ])
+        suspend ir_Chunk(p.expr.ir.success, [ ir_Goto(p.dflt.ir.start) ])
     } else {
-        suspend ir_Chunk(p.expr.ir.success, [
-            ir_Goto(L[1].expr.ir.start)
-            ])
+        suspend ir_Chunk(p.expr.ir.success, [ ir_Goto(L[1].expr.ir.start) ])
         every i := 1 to *L do {
             suspend ir_Chunk(L[i].expr.ir.success, [
                 ir_opfn(p.coord, &null, ir_Operator("===", 2, "rval"), [ e, v ],
