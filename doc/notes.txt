@@ -2,14 +2,14 @@ additions in v2:
 -- programs run about 40% faster
 -- large integers are implemented
 -- loadfunc() is implemented
--- most of the graphics repertoire is implemented()
+-- most of the graphics repertoire is implemented
 -- section wraparound (e.g. "abcd"[-2+:3]) yields failure  (this is a bugfix)
 -- function() generates names in sorted order
 -- record fields are shown in traceback images
 
 losses in v2:
 -- variable(), display(), and &dump can access only global variables
--- compilation with "-fn" is needed for tracing or for detailed error traceback
+-- compilation with "-fn" is needed for tracing, detailed traceback, or &error
 
 ------------------------------------------------------------------------------
 
@@ -73,31 +73,24 @@ graphics overview:
 -- biggest omissions are wide lines, patterns, and WriteImage()
 -- linking with IPL ("link graphics") can take some time
 
-graphics bugs:
--- \r and \t are not handled correctly by WWrite() etc.
--- window repair may be delayed until the program pauses for graphics input
--- "drawop=reverse" produces the wrong color under Java 1.1; okay under 1.2
--- DEC Java 1.1.6 exhibits problems with fonts and font metrics
--- SGI Irix is unable to link very large programs (e.g. VIB)
-
 unimplemented functions:
 -- WriteImage() is not implemented
 -- Couple() is not implemented
 -- Pattern(), Color(), NewColor(), and WDefault() always fail
 
 graphics attributes:
+-- all attributes listed in the graphics book are implemented
 -- "linewidth", "linestyle", "fillstyle", and "pattern" cannot be changed
 -- "canvas" can be "normal" or "hidden" but not "maximal" or "iconic"
 -- attempts to set "display", "iconpos", "iconlabel", or "iconimage" are ignored
 
-text and fonts:
+fonts:
 -- Java family names are case sensitive
 -- Icon generic family names, and all characteristics, are case-insensitive
 -- generic names {serif, sans, typewriter} work well; bold/italic variants work
 -- generic "mono" appearance varies by platform; bold/italic don't always work
 -- Font(s) always succeeds for non-empty s (Java never rejects any name)
 -- the default font name "fixed" is mapped to "mono,bold,14"
--- the visible text cursor, when enabled, is a solid, nonblinking underbar
 
 colors:
 -- there is no inherent limit to the number of colors in use simultaneously
@@ -119,11 +112,17 @@ events:
 -- Java distinguishes "alt" and "meta" keys; Jcon maps both to the &meta flag
 -- &meta is never set with mouse events (Java uses it to encode "which button")
 -- "outboard" keycodes differ from X, are close to Windows; see bin/keysyms.icn
--- no timing information is provided (&interval is always zero)
 
-mouse:
+cursors and pointers:
+-- the visible text cursor, when enabled, is a solid, nonblinking underbar
 -- standard "pointer" shapes are:  arrow, cross, hand, move, text, wait,
       top side, right side, bottom side, left side,  top right corner,
       top left corner, bottom right corner, bottom left corner,
       [for X compatibility:] left ptr, crosshair, fleur, ibeam, xterm, watch
 -- mouse position can be read ("pointerx" etc.), but set attempts are ignored
+
+infelicities:
+-- window repair may be delayed until the program pauses for input
+-- "drawop=reverse" produces the wrong color under Java 1.1; okay under 1.2
+-- DEC Java 1.1.6 exhibits problems with fonts and font metrics
+-- SGI Irix is unable to link very large programs (e.g. VIB)
