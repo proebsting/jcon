@@ -1,0 +1,12 @@
+procedure main()
+    write(trim("abc  "))
+    write(trim("abc  ", ' '))
+    write(trim("abc  ", 'x'))
+    write(trim("abc  ", 'abc '))
+    write(trim("a c  ", ' '))
+    write(trim("a c", ' '))
+    write(trim("   ", ' '))
+    write(trim(" ", ' '))
+    write(trim("", ' '))
+    write(trim(""))
+end

@@ -1,6 +1,9 @@
 procedure main()
    local i, x
 
+   write(args(push))
+   write(args(put))
+
    limage("a", list())
    limage("b", list(2))
    limage("c", list(,3))
