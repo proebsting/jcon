@@ -1,0 +1,194 @@
+link init
+
+procedure main(L)
+	local toks, prim, actual, token, res, op, elem
+
+	init_lex_tables()
+	toks := table()
+	every prim := !primitives do {
+	    actual := prim[1]
+	    token := prim[2]
+	    if /toks[token] then {
+		toks[token] := actual
+		write("global ", token)
+	    }
+	}
+
+	every res := !reserveds do {
+	    actual := res[1]
+	    token := res[2]
+	    if /toks[token] then {
+		toks[token] := actual
+		write("global ", token)
+	    }
+	}
+
+	every op := !operators do {
+	    actual := op[1]
+	    token := op[2]
+	    if /toks[token] then {
+		toks[token] := actual
+		write("global ", token)
+	    }
+	}
+
+	write();
+	write("global beginner_set")
+	write("global ender_set")
+
+	write();
+	write("procedure initialize()")
+	every prim := !primitives do {
+		actual := prim[1]
+		token := prim[2]
+		if toks[token] == actual then {
+			write("\t", token, " := TOK(", image(token), ",", image(actual), ")")
+		}
+	}
+	every res := !reserveds do {
+		actual := res[1]
+		token := res[2]
+		if toks[token] == actual then {
+			write("\t", token, " := TOK(", image(token), ",", image(actual), ")")
+		}
+	}
+	every op := !operators do {
+		actual := op[1]
+		token := op[2]
+		if toks[token] == actual then {
+			write("\t", token, " := TOK(", image(token), ",", image(actual), ")")
+		}
+	}
+	write()
+	write("\tbeginner_set := set()")
+	write("\tender_set := set()")
+	every elem := !primitives | !reserveds | !operators do {
+	    if find("b", elem[3]) then
+	    	write("\tinsert(beginner_set, ", elem[2], ")")
+	    if find("e", elem[3]) then
+	    	write("\tinsert(ender_set, ", elem[2], ")")
+	}
+	write("end # end initialize")
+
+	write()
+	write("procedure do_reserveds(str)")
+	write("\tstatic reserved_sym_tbl")
+	write("\tinitial {")
+	write("\t\treserved_sym_tbl := table(&null)")
+	lexgen_reserveds()
+	write("\t}")
+	write("\t return \\reserved_sym_tbl[str]")
+	write("\tfail")
+	write("end")
+
+	write();
+	write("procedure do_ops()")
+
+	case L[1] of {
+	"simple" : lexgen_seq()
+	"tree" : lexgen_tree()
+	default : stop("usage: lexgen [ tree | simple ]")
+	}
+	write("\tfail")
+	write("end")
+end
+
+procedure do_suspend(actual, token)
+	write("{ return ", token, " }")
+end
+
+procedure lexgen_reserveds()
+	local l, res, actual, token, i
+
+	l := []
+	every 1 to 10 do put(l, [])
+	every res := !reserveds do {
+		actual := res[1]
+		token := res[2]
+		put(l[*actual], res)
+	}
+	every i := !l[10 to 1 by -1] do {
+	        write("\t\treserved_sym_tbl[", image(i[1]), "] := ", i[2])
+	}
+end
+
+procedure lexgen_seq()
+	local l, op, actual, token, i
+
+	l := []
+	every 1 to 10 do put(l, [])
+	every op := !operators do {
+		actual := op[1]
+		token := op[2]
+		put(l[*actual], op)
+	}
+	every i := !l[10 to 1 by -1] do {
+		writes("\tif =", image(i[1]), " then ")
+		do_suspend(i[1], i[2])
+	}
+end
+
+record node(actual, token, t)
+
+procedure lexgen_tree()
+	local t, op, actual, token
+
+	t := node(&null, &null, table())
+	every op := !operators do {
+		actual := op[1]
+		token := op[2]
+		buildtree(actual, "", token, t)
+	}
+	optimize_tree(t)
+	dotree(t, "\t")
+end
+
+procedure optimize_tree(t)
+	local changes, i, s, j
+
+	changes := 1
+	while \changes do {
+		changes := &null
+		every i := key(t.t) do {
+			s := t.t[i]
+			if /s.token then {
+				changes := 1
+				delete(t.t, i)
+				every j := key(s.t) do {
+					t.t[i || j] := s.t[j]
+				}
+			}
+		}
+	}
+	every i := key(t.t) do {
+		optimize_tree(t.t[i])
+	}
+end
+
+procedure dotree(t, indent)
+	local i
+
+	every i := key(t.t) do {
+		write(indent, "if =", image(i), " then { # ", t.actual || i)
+		dotree(t.t[i], indent || "  ")
+		write(indent, "}")
+	}
+	if \t.token then {
+		writes(indent)
+		if *t.t > 0 then {
+			writes("else ")
+		}
+		do_suspend(t.actual, t.token)
+	}
+end
+
+procedure buildtree(a, sofar, token, t)
+	t.actual := sofar
+	if a == "" then {
+		t.token := token
+		return
+	}
+	/t.t[a[1]] := node(&null, &null, table())
+	buildtree(a[2:0], sofar || a[1], token, t.t[a[1]])
+end
+

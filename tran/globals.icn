@@ -1,0 +1,1 @@
+record coordinate(file, line, column)

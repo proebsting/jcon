@@ -1,0 +1,14 @@
+# returns the set of keywords that are implemented as functions.
+procedure key_functions()
+	return set([
+		"errornumber",
+		"errortext",
+		"errorvalue",
+		"level",
+		"regions",
+		"storage",
+		"allocated",
+		"collections",
+		"features"
+	])
+end

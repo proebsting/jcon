@@ -1,0 +1,34 @@
+invocable all
+
+global outfile, optimize_flag, nolink_flag, java_classname
+
+procedure main(L) 
+	local filename, cg_flags, cg, getline
+
+	cg_flags := []
+	while L[1] do {	# process flags
+		pop(L) ? {
+			if ="-target=" then {
+				/CG | stop("ERROR: multiple -target specifications")
+				cg := tab(0)
+				CG := (\proc(cg || "_CG"))()
+				\CG | stop("ERROR: unknown target: ", cg)
+			} else if ="-class=" then {
+				/java_classname | stop("ERROR: multiple -class specifications")
+				java_classname := tab(0)
+			} else if ="-" then {
+				put(cg_flags, &subject)
+			} else {
+				/filename | stop("ERROR: only one file name")
+				filename := &subject
+			}
+		}
+	}
+	\CG | stop("ERROR: must specify -target")
+	\java_classname | stop("ERROR: must specify -class")
+
+	getline := if \filename then (create preprocessor(filename)) else (create !&input)
+	CG.File(getline, cg_flags)
+
+	#every write(&errout, &allocated)
+end

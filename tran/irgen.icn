@@ -1,0 +1,1123 @@
+record ir_info(value, start, resume, failure, success, x)
+record ir_loopinfo(scanlevel, nextlabel, continue)
+record ir_scaninfo(oldsubject, oldpos)
+
+global loops, scans
+
+# record NoOp( )
+procedure ir_NoOp(p)
+	init4ir(p)
+
+	CG.emit(p.ir.start, [ irGoto(p.ir.success) ])
+	CG.emit(p.ir.resume, [ irGoto(p.ir.failure) ])
+end
+
+# record Field( expr field )
+procedure ir_Field(p)
+	local closure
+
+	ir(p.expr)
+	init4ir(p)
+	closure := ir_tmp_closure(p, "closure")
+
+	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.ir.resume, [ irGoto(p.expr.ir.resume) ])
+	CG.emit(p.expr.ir.success, [
+		irCoord(p.coord),
+		irMakeClosure(closure, irOperator(".", 2), [ p.expr.ir.value, irStrLit(p.field.id) ]),
+		irResume(closure, p.expr.ir.resume, p.ir.value),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.expr.ir.failure, [ irGoto(p.ir.failure) ])
+end
+
+# record Scan( op expr body )		op == "?" or "?:="
+procedure ir_Scan(p)
+	local closure
+
+	init4ir(p)
+
+	p.ir.x := ir_scaninfo()
+	p.ir.x.oldpos := ir_tmp(p, "oldpos")
+	p.ir.x.oldsubject := ir_tmp(p, "oldsubject")
+
+	closure := ir_tmp_closure(p, "closure")
+
+	ir(p.expr)
+	put(scans, p)
+	ir(p.body)
+	pull(scans)
+
+	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.ir.resume, [
+		irScanSwap( p.ir.x.oldsubject, p.ir.x.oldpos ),
+		irGoto(p.body.ir.resume)
+		])
+	CG.emit(p.expr.ir.success, [
+		irCoord(p.coord),
+		irMove(p.ir.x.oldsubject, irDeref(irKey("subject"))),
+		irMove(p.ir.x.oldpos, irDeref(irKey("pos"))),
+		irMakeClosure(closure, irOperator(":?", 2), [ irKey("subject"), p.expr.ir.value ]),
+		irResume(closure, p.expr.ir.resume, p.ir.value),
+		irGoto(p.body.ir.start)
+		])
+	CG.emit(p.expr.ir.failure, [ irGoto(p.ir.failure) ])
+	CG.emit(p.body.ir.failure, [
+		irMove(irKey("subject"), p.ir.x.oldsubject),
+		irMove(irKey("pos"), p.ir.x.oldpos),
+		irGoto(p.expr.ir.resume)
+		])
+
+	if p.op == "?" then {
+		CG.emit(p.body.ir.success, [
+			irScanSwap( p.ir.x.oldsubject, p.ir.x.oldpos ),
+			irMove(p.ir.value, p.body.ir.value),
+			irGoto(p.ir.success)
+			])
+	} else {
+		# p.op == "?:="
+		CG.emit(p.body.ir.success, [
+			irMakeClosure(closure, irOperator(":=", 2), [ p.expr.ir.value, p.body.ir.value ]),
+			irResume(closure, p.body.ir.resume, p.ir.value),
+			irScanSwap( p.ir.x.oldsubject, p.ir.x.oldpos ),
+			irGoto(p.ir.success)
+			])
+	}
+end
+
+# record Limitation( expr limit )
+procedure ir_Limitation(p)
+	stop("FATAL ERROR: don't know how to do limitation")
+end
+
+# record Not( expr )
+procedure ir_Not(p)
+	ir(p.expr)
+
+	init4ir(p)
+
+	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.ir.resume, [ irGoto(p.ir.failure) ])
+	CG.emit(p.expr.ir.success, [ irGoto(p.ir.failure) ])
+	CG.emit(p.expr.ir.failure, [
+		irMove(p.ir.value, irKey("null")),
+		irGoto(p.ir.success)
+		])
+end
+
+# record CoexpList( exprList )
+procedure ir_CoexpList(p)
+	stop("FATAL ERROR: don't know how to do coexplist")
+end
+
+# record ExclAlt( e1 e2 )
+procedure ir_ExclAlt(p)
+	local X, Y
+
+	ir(p.e1)
+	ir(p.e2)
+
+	init4ir(p)
+
+	X := ir_tmploc(p, "gate")
+	Y := ir_tmploc(p, "gate")
+
+	CG.emit(p.ir.start, [
+		irMove(Y, p.e2.ir.start),
+		irGoto(p.e1.ir.start)
+		])
+	CG.emit(p.ir.resume, [ irGoto(X) ])
+	CG.emit(p.e1.ir.success, [
+		irMove(X, p.e1.ir.resume),
+		irMove(Y, p.ir.failure),
+		irMove(p.ir.value, p.e1.ir.value),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.e1.ir.failure, [ irGoto(Y) ])
+	CG.emit(p.e2.ir.success, [
+		irMove(X, p.e2.ir.resume),
+		irMove(p.ir.value, p.e2.ir.value),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.e2.ir.failure, [ irGoto(p.ir.failure) ])
+end
+
+# record Parallel( e1 e2 )
+procedure ir_Parallel(p)
+	local t
+
+	ir(p.e1)
+	ir(p.e2)
+
+	init4ir(p)
+
+	t := ir_tmploc(p, "gate")
+
+	CG.emit(p.ir.start, [
+		irMove(t, p.e2.ir.start),
+		irGoto(p.e1.ir.start)
+		])
+	CG.emit(p.ir.resume, [ irGoto(p.e1.ir.resume) ])
+	CG.emit(p.e1.ir.success, [ irGoto(t) ])
+	CG.emit(p.e1.ir.failure, [ irGoto(p.ir.failure) ])
+	CG.emit(p.e2.ir.success, [
+		irMove(t, p.e2.ir.resume),
+		irMove(p.ir.value, p.e2.ir.value),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.e2.ir.failure, [ irGoto(p.ir.failure) ])
+end
+
+# record Alt( e1 e2 )
+procedure ir_Alt(p)
+	local t
+	
+	ir(p.e1)
+	ir(p.e2)
+
+	init4ir(p)
+
+	t := ir_tmploc(p, "gate")
+
+	CG.emit(p.ir.start, [ irGoto(p.e1.ir.start) ])
+	CG.emit(p.ir.resume, [ irGoto(t) ])
+	CG.emit(p.e1.ir.success, [
+		irMove(t, p.e1.ir.resume),
+		irMove(p.ir.value, p.e1.ir.value),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.e1.ir.failure, [ irGoto(p.e2.ir.start) ])
+	CG.emit(p.e2.ir.success, [
+		irMove(t, p.e2.ir.resume),
+		irMove(p.ir.value, p.e2.ir.value),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.e2.ir.failure, [ irGoto(p.ir.failure) ])
+end
+
+# record RepAlt( expr )
+procedure ir_RepAlt(p)
+	local t
+
+	ir(p.expr)
+
+	init4ir(p)
+
+	t := ir_tmploc(p, "gate")
+
+	CG.emit(p.ir.start, [
+		irMove(t, p.ir.failure),
+		irGoto(p.expr.ir.start)
+		])
+	CG.emit(p.ir.resume, [ irGoto(p.expr.ir.resume) ])
+	CG.emit(p.expr.ir.success, [
+		irMove(t, p.ir.start),
+		irMove(p.ir.value, p.expr.ir.value),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.expr.ir.failure, [ irGoto(t) ])
+end
+
+# record Case( expr clauseList dflt )
+procedure ir_Case(p)
+	local closure, dummy, t, L, i
+
+	ir(p.expr)
+	every ir((!p.clauseList).expr)
+	every ir((!p.clauseList).body)
+	ir(p.dflt)
+
+	init4ir(p)
+	closure := ir_tmp_closure(p, "closure")
+	dummy := ir_tmp(p, "dummy")
+
+	t := ir_tmploc(p, "gate")
+
+	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.ir.resume, [ irGoto(t) ])
+
+	CG.emit(p.expr.ir.failure, [ irGoto(p.ir.failure) ])
+	L := p.clauseList
+	if *L = 0 then {
+		CG.emit(p.expr.ir.success, [ irGoto(p.dflt.ir.start) ])
+	} else {
+		CG.emit(p.expr.ir.success, [ irGoto(L[1].expr.ir.start) ])
+		every i := 1 to *L do {
+			CG.emit(L[i].expr.ir.success, [
+				irCoord(p.coord),
+				irMakeClosure(closure, irOperator("===", 2), [ p.expr.ir.value, L[i].expr.ir.value ]),
+				irResume(closure, L[i].expr.ir.resume, dummy),
+				irGoto(L[i].body.ir.start)
+				])
+			CG.emit(L[i].expr.ir.failure, [ irGoto(L[i+1].expr.ir.start) ])
+			CG.emit(L[i].body.ir.success, [
+				irMove(p.ir.value, L[i].body.ir.value),
+				irMove(t, L[i].body.ir.resume),
+				irGoto(p.ir.success)
+				])
+			CG.emit(L[i].body.ir.failure, [ irGoto(p.ir.failure) ])
+		}
+		CG.emit(L[-1].expr.ir.failure, [ irGoto(p.dflt.ir.start) ])
+	}
+
+	CG.emit(p.dflt.ir.success, [
+		irMove(p.ir.value, p.dflt.ir.value),
+		irMove(t, p.dflt.ir.resume),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.dflt.ir.failure, [ irGoto(p.ir.failure) ])
+end
+
+# record Every( expr body )
+procedure ir_Every(p)
+	init4ir_loop(p)
+	put(loops, p)
+	ir(p.expr)
+	ir(p.body)
+	pull(loops)
+
+	CG.emit(p.ir.x.nextlabel, [ irGoto(p.expr.ir.resume) ])
+	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.ir.resume, [ irGoto(p.ir.x.continue) ])
+	CG.emit(p.expr.ir.success, [ irGoto(p.body.ir.start) ])
+	CG.emit(p.expr.ir.failure, [ irGoto(p.ir.failure) ])
+	CG.emit(p.body.ir.success, [ irGoto(p.expr.ir.resume) ])
+	CG.emit(p.body.ir.failure, [ irGoto(p.expr.ir.resume) ])
+end
+
+# record Sectionop( op val left right )
+procedure ir_Sectionop(p)
+	local closure
+
+	ir(p.val)
+	ir(p.left)
+	ir(p.right)
+
+	init4ir(p)
+
+	closure := ir_tmp_closure(p, "closure")
+
+	CG.emit(p.ir.start, [ irGoto(p.val.ir.start) ])
+	CG.emit(p.ir.resume, [
+		irCoord(p.coord),
+		irResume(closure, p.right.ir.resume, p.ir.value),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.val.ir.success, [ irGoto(p.left.ir.start) ])
+	CG.emit(p.val.ir.failure, [ irGoto(p.ir.failure) ])
+	CG.emit(p.left.ir.success, [ irGoto(p.right.ir.start) ])
+	CG.emit(p.left.ir.failure, [ irGoto(p.val.ir.resume) ])
+	CG.emit(p.right.ir.success, [
+		irCoord(p.coord),
+		irMakeClosure(closure, irOperator(p.op, 3), [ p.val.ir.value, p.left.ir.value, p.right.ir.value ]),
+		irGoto(p.ir.resume)
+		])
+	CG.emit(p.right.ir.failure, [ irGoto(p.left.ir.resume) ])
+end
+
+# record Call( fn args )
+procedure ir_Call(p)
+	local closure, L, i
+
+	ir(p.fn)
+	every ir(!p.args.exprList)
+
+	init4ir(p)
+
+	closure := ir_tmp_closure(p, "closure")
+
+	L := make_sentinel(p.args.exprList)
+
+	CG.emit(p.ir.start, [ irGoto(p.fn.ir.start) ])
+	CG.emit(p.ir.resume, [
+		irCoord(p.coord),
+		irResume(closure, L[-1].ir.resume, p.ir.value),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.fn.ir.success, [ irGoto(L[1].ir.start) ])
+	CG.emit(p.fn.ir.failure, [ irGoto(p.ir.failure) ])
+
+	CG.emit(L[1].ir.start, [ irGoto(L[2].ir.start) ])
+	CG.emit(L[1].ir.resume, [ irGoto(p.fn.ir.resume) ])
+	args := []
+	every i := 2 to *L-1 do {
+		CG.emit(L[i].ir.success, [ irGoto(L[i+1].ir.start) ])
+		CG.emit(L[i].ir.failure, [ irGoto(L[i-1].ir.resume) ])
+		put(args, L[i].ir.value)
+	}
+	CG.emit(L[-1].ir.start, [
+		irCoord(p.coord),
+		irMakeClosure(closure, p.fn.ir.value, args),
+		irGoto(p.ir.resume)
+		])
+	CG.emit(L[-1].ir.resume, [ irGoto(L[-2].ir.resume) ])
+
+end
+
+# record Binop( op left right )
+procedure ir_Binop(p)
+	local closure, tmp, op
+
+	ir(p.left)
+	ir(p.right)
+
+	init4ir(p)
+
+	CG.emit(p.ir.start, [ irGoto(p.left.ir.start) ])
+	CG.emit(p.left.ir.success, [ irGoto(p.right.ir.start) ])
+	CG.emit(p.left.ir.failure, [ irGoto(p.ir.failure) ])
+	CG.emit(p.right.ir.failure, [ irGoto(p.left.ir.resume) ])
+
+	closure := ir_tmp_closure(p, "closure")
+	if find(":=", p.op) > 1 then {
+		# augmented assignment
+		tmp := ir_tmp(p, "tmp")
+		op := (p.op ? tab(find(":=")))
+
+		CG.emit(p.ir.resume, [ irGoto(p.right.ir.resume) ]) # augmented ops not resumed
+		CG.emit(p.right.ir.success, [
+			irCoord(p.coord),
+			irMakeClosure(closure, irOperator(op, 2), [ p.left.ir.value, p.right.ir.value ]),
+			irResume(closure, p.right.ir.resume, tmp),
+			irMakeClosure(closure, irOperator(":=", 2), [ p.left.ir.value, tmp ]),
+			irResume(closure, p.right.ir.resume, p.ir.value),
+			irGoto(p.ir.success)
+			])
+	} else {
+		CG.emit(p.ir.resume, [
+			irCoord(p.coord),
+			irResume(closure, p.right.ir.resume, p.ir.value),
+			irGoto(p.ir.success)
+			])
+		CG.emit(p.right.ir.success, [
+			irCoord(p.coord),
+			irMakeClosure(closure, irOperator(p.op, 2), [ p.left.ir.value, p.right.ir.value ]),
+			irGoto(p.ir.resume)
+			])
+	}
+end
+
+# record Unop( op operand )
+procedure ir_Unop(p)
+	local closure
+
+	ir(p.operand)
+
+	init4ir(p)
+
+	closure := ir_tmp_closure(p, "closure")
+
+	CG.emit(p.ir.start, [ irGoto(p.operand.ir.start) ])
+	CG.emit(p.ir.resume, [
+		irCoord(p.coord),
+		irResume(closure, p.operand.ir.resume, p.ir.value),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.operand.ir.success, [
+		irCoord(p.coord),
+		irMakeClosure(closure, irOperator(p.op,1), [ p.operand.ir.value ]),
+		irGoto(p.ir.resume)
+		])
+	CG.emit(p.operand.ir.failure, [ irGoto(p.ir.failure) ])
+end
+
+# record Global( idList )
+procedure ir_Global(p)
+	local globals
+
+	globals := []
+	every put(globals, (!p.idList).id)
+	CG.globals(globals)
+end
+
+# record If( expr thenexpr elseexpr )
+procedure ir_If(p)
+	local t
+
+	ir(p.expr)
+	ir(p.thenexpr)
+	ir(p.elseexpr)
+
+	init4ir(p)
+
+	t := ir_tmploc(p, "gate")
+
+	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.ir.resume, [ irGoto(t) ])
+	CG.emit(p.expr.ir.success, [
+		irMove(t, p.thenexpr.ir.resume),
+		irGoto(p.thenexpr.ir.start)
+		])
+	CG.emit(p.expr.ir.failure, [
+		irMove(t, p.elseexpr.ir.resume),
+		irGoto(p.elseexpr.ir.start)
+		])
+	CG.emit(p.thenexpr.ir.success, [
+		irMove(p.ir.value, p.thenexpr.ir.value),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.thenexpr.ir.failure, [ irGoto(p.ir.failure) ])
+	CG.emit(p.elseexpr.ir.success, [
+		irMove(p.ir.value, p.elseexpr.ir.value),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.elseexpr.ir.failure, [ irGoto(p.ir.failure) ])
+end
+
+# record Initial( expr )
+procedure ir_Initial(p)
+	loops := []
+	scans := []
+
+	ir(p.expr)
+
+	init4ir(p)
+
+	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.ir.resume, [ irRunTimeError() ])
+	CG.emit(p.expr.ir.success, [ irGoto(p.ir.success) ])
+	CG.emit(p.expr.ir.failure, [ irGoto(p.ir.success) ])
+end
+
+# record Invocable( ivocopList )
+procedure ir_Invocable(p)
+	local all, inv, i
+
+	inv := []
+	every i := !p.ivocopList do {
+		case type(i) of {
+		"Ident" : {
+			if i.id == "all" then {
+				all := 1
+			}
+			}
+		"Stringlit" : {
+			put(inv, i.str)
+			}
+		}
+	}
+	CG.invocables(all, inv)
+end
+
+# record Link( linkfileList )
+procedure ir_Link(p)
+	CG.links(p.linkfileList)
+end
+
+# record Intlit( int )
+procedure ir_Intlit(p)
+
+	init4ir(p)
+
+	CG.emit(p.ir.start, [
+		irMove(p.ir.value, irIntLit(p.int)),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.ir.resume, [ irGoto(p.ir.failure) ])
+end
+
+# record Reallit( real )
+procedure ir_Reallit(p)
+
+	init4ir(p)
+
+	CG.emit(p.ir.start, [
+		irMove(p.ir.value, irRealLit(p.real)),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.ir.resume, [ irGoto(p.ir.failure) ])
+end
+
+# record Stringlit( str )
+procedure ir_Stringlit(p)
+
+	init4ir(p)
+
+	CG.emit(p.ir.start, [
+		irMove(p.ir.value, irStrLit(p.str)),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.ir.resume, [ irGoto(p.ir.failure) ])
+end
+
+# record Csetlit( str )
+procedure ir_Csetlit(p)
+
+	init4ir(p)
+
+	CG.emit(p.ir.start, [
+		irMove(p.ir.value, irCsetLit(p.str)),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.ir.resume, [ irGoto(p.ir.failure) ])
+end
+
+# record ProcDecl( ident paramList accumulate localsList code )
+procedure ir_ProcDecl(p)
+	local locals, statics, params, i, v
+
+	v := set([])
+	every i := !p.paramList | !(!p.localsList).idList do {
+		if member(v, i.id) then {
+			semantic_error(image(i.id) || ": redeclared identifier", i.coord)
+		}
+		insert(v, i.id)
+	}
+
+	locals := []
+	statics := []
+	every i := !p.localsList do {
+		case type(i) of {
+		"Statics" : every put(statics, (!i.idList).id)
+		"Locals" : every put(locals, (!i.idList).id)
+		}
+	}
+	params := []
+	every put(params, (!p.paramList).id)
+
+	CG.function(p.ident.id, params, p.accumulate, locals, statics, p.code, p.ident.coord)
+
+end
+
+# record ProcBody( nexprList )
+procedure ir_ProcBody(p)
+	local L, i
+
+	loops := []
+	scans := []
+
+	init4ir(p)
+
+	L := make_sentinel(p.nexprList)
+	every ir(!p.nexprList)
+	CG.emit(p.ir.start, [ irGoto(L[1].ir.start) ])
+	CG.emit(p.ir.resume, [ irRunTimeError() ])
+	every i := 1 to *L-1 do {
+		CG.emit(L[i].ir.success, [ irGoto(L[i+1].ir.start) ])
+		CG.emit(L[i].ir.failure, [ irGoto(L[i+1].ir.start) ])
+	}
+	CG.emit(L[-1].ir.success, [ irGoto(p.ir.success) ])
+	CG.emit(L[-1].ir.failure, [ irGoto(p.ir.failure) ])
+end
+
+# record ProcCode( init body )
+procedure ir_ProcCode(p)
+	ir(p.init)
+	ir(p.body)
+
+	init4ir(p)
+
+	CG.emit(p.ir.start, [
+		irEnterInit(p.body.ir.start),
+		irGoto(p.init.ir.start)
+		])
+	CG.emit(p.ir.resume, [ irRunTimeError() ])
+	CG.emit(p.init.ir.success, [ irGoto(p.body.ir.start) ])
+	CG.emit(p.init.ir.failure, [ irGoto(p.body.ir.start) ])
+	CG.emit(p.body.ir.success, [ irFail() ])
+	CG.emit(p.body.ir.failure, [ irFail() ])
+end
+
+# record Record( ident idlist )
+procedure ir_Record(p)
+	local fields, v, i
+
+	v := set([])
+	every i := !p.idlist do {
+		if member(v, i.id) then {
+			semantic_error(image(i.id) || ": redeclared identifier", i.coord)
+		}
+		insert(v, i.id)
+	}
+	fields := []
+	every put(fields, (!p.idlist).id)
+	CG.records(p.ident.id, fields, p.ident.coord)
+end
+
+# record Repeat( expr )
+procedure ir_Repeat(p)
+	init4ir_loop(p)
+	put(loops, p)
+	ir(p.expr)
+	pull(loops)
+
+
+	CG.emit(p.ir.x.nextlabel, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.ir.resume, [ irGoto(p.ir.x.continue) ])
+	CG.emit(p.expr.ir.success, [ irGoto(p.ir.start) ])
+	CG.emit(p.expr.ir.failure, [ irGoto(p.ir.start) ])
+end
+
+# record Return( expr )
+procedure ir_Return(p)
+	local t
+
+	ir(p.expr)
+
+	init4ir(p)
+
+	t := ir_label(p, "continuation")
+
+	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.ir.resume, [ irFail() ])
+	CG.emit(p.expr.ir.success,
+		([ irMove(irKey("subject"), scans[1].ir.x.oldsubject),
+		irMove(irKey("pos"), scans[1].ir.x.oldpos) ] | []) |||
+		[
+		irSucceed(p.expr.ir.value, &null)
+		])
+	CG.emit(t, [ irFail() ])
+	CG.emit(p.expr.ir.failure,
+		([ irMove(irKey("subject"), scans[1].ir.x.oldsubject),
+		irMove(irKey("pos"), scans[1].ir.x.oldpos) ] | []) |||
+		[
+		irFail()
+		])
+end
+
+# record Fail( )
+procedure ir_Fail(p)
+
+	init4ir(p)
+
+	CG.emit(p.ir.start,
+		([ irMove(irKey("subject"), scans[1].ir.x.oldsubject),
+		irMove(irKey("pos"), scans[1].ir.x.oldpos) ] | []) |||
+		[
+		irFail()
+		])
+	CG.emit(p.ir.resume,
+		([ irMove(irKey("subject"), scans[1].ir.x.oldsubject),
+		irMove(irKey("pos"), scans[1].ir.x.oldpos) ] | []) |||
+		[
+		irFail()
+		])
+end
+
+# record Suspend( expr body )
+procedure ir_Suspend(p)
+	local t
+
+	init4ir_loop(p)
+	put(loops, p)
+	ir(p.expr)
+	ir(p.body)
+	pull(loops)
+
+	t := ir_label(p, "continuation")
+
+
+	CG.emit(p.ir.x.nextlabel, [ irGoto(p.expr.ir.resume) ])
+	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.ir.resume, [ irGoto(p.ir.x.continue) ])
+	CG.emit(p.expr.ir.success,
+		([ irScanSwap( scans[1].ir.x.oldsubject, scans[1].ir.x.oldpos ) ] | []) |||
+		[
+		irSucceed(p.expr.ir.value, t)
+		])
+	CG.emit(t,
+		([ irScanSwap( scans[1].ir.x.oldsubject, scans[1].ir.x.oldpos ) ] | []) |||
+		[
+		irGoto(p.body.ir.start)
+		])
+	CG.emit(p.expr.ir.failure, [ irGoto(p.ir.failure) ])
+	CG.emit(p.body.ir.success, [ irGoto(p.expr.ir.resume) ])
+	CG.emit(p.body.ir.failure, [ irGoto(p.expr.ir.resume) ])
+end
+
+# record Until( expr body )
+procedure ir_Until(p)
+	init4ir_loop(p)
+	put(loops, p)
+	ir(p.expr)
+	ir(p.body)
+	pull(loops)
+
+	CG.emit(p.ir.x.nextlabel, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.ir.resume, [ irGoto(p.ir.x.continue) ])
+	CG.emit(p.expr.ir.success, [ irGoto(p.ir.failure) ])
+	CG.emit(p.expr.ir.failure, [ irGoto(p.body.ir.start) ])
+	CG.emit(p.body.ir.success, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.body.ir.failure, [ irGoto(p.expr.ir.start) ])
+end
+
+# record While( expr body )
+procedure ir_While(p)
+	init4ir_loop(p)
+	put(loops, p)
+	ir(p.expr)
+	ir(p.body)
+	pull(loops)
+
+	CG.emit(p.ir.x.nextlabel, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.ir.resume, [ irGoto(p.ir.x.continue) ])
+	CG.emit(p.expr.ir.success, [ irGoto(p.body.ir.start) ])
+	CG.emit(p.expr.ir.failure, [ irGoto(p.ir.failure) ])
+	CG.emit(p.body.ir.success, [ irGoto(p.expr.ir.start) ])
+	CG.emit(p.body.ir.failure, [ irGoto(p.expr.ir.start) ])
+end
+
+# record Create( expr )
+procedure ir_Create(p)
+	ir(p.expr)
+
+	init4ir(p)
+
+	CG.emit(p.ir.start, [
+		irCoord(p.coord),
+		irMove(p.ir.value, irCreate(p.expr.ir.start)),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.ir.resume, [ irGoto(p.ir.failure) ])
+	CG.emit(p.expr.ir.success, [ irCoRet(p.expr.ir.value, p.expr.ir.resume) ])
+	CG.emit(p.expr.ir.failure, [ irCoFail() ])
+end
+
+# record Ident( id )
+procedure ir_Ident(p)
+	local v
+
+	init4ir(p)
+
+	v := ir_ident(p.id)
+
+	CG.emit(p.ir.start, [
+		irMove(p.ir.value, v),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.ir.resume, [ irGoto(p.ir.failure) ])
+end
+
+# record Next( )
+procedure ir_Next(p)
+	local curloop
+
+	init4ir(p)
+
+	curloop := loops[-1]
+	CG.emit(p.ir.start,
+		([ irMove(irKey("subject"), scans[curloop.ir.x.scanlevel+1].ir.x.oldsubject),
+		irMove(irKey("pos"), scans[curloop.ir.x.scanlevel+1].ir.x.oldpos) ] | []) |||
+		[
+		irGoto(curloop.ir.x.nextlabel)
+		])
+	CG.emit(p.ir.resume, [ irRunTimeError() ])
+end
+
+# record Break( expr )
+procedure ir_Break(p)
+	local curloop, oldloops, oldscans
+
+	curloop := loops[-1] 
+	oldloops := loops
+	oldscans := scans
+	loops := loops[1:-1] 
+	scans := scans[1:curloop.ir.x.scanlevel] 
+	ir(p.expr)
+	loops := oldloops
+	scans := oldscans
+
+	init4ir(p)
+
+	CG.emit(p.ir.start,
+		([ irMove(irKey("subject"), scans[curloop.ir.x.scanlevel+1].ir.x.oldsubject),
+		irMove(irKey("pos"), scans[curloop.ir.x.scanlevel+1].ir.x.oldpos) ] | []) |||
+		[
+		irMove(curloop.ir.x.continue, p.ir.resume),
+		irGoto(p.expr.ir.start)
+		])
+	CG.emit(p.ir.resume, [ irGoto(p.expr.ir.resume) ])
+	CG.emit(p.expr.ir.success, [
+		irMove(curloop.ir.value, p.expr.ir.value),
+		irGoto(curloop.ir.success)
+		])
+	CG.emit(p.expr.ir.failure, [ irGoto(curloop.ir.failure) ])
+end
+
+# record ToBy( fromexpr toexpr byexpr )
+procedure ir_ToBy(p)
+	local closure
+
+	ir(p.fromexpr)
+	ir(p.toexpr)
+	ir(p.byexpr)
+
+	init4ir(p)
+
+	closure := ir_tmp_closure(p, "closure")
+
+	CG.emit(p.ir.start, [ irGoto(p.fromexpr.ir.start) ])
+	CG.emit(p.ir.resume, [
+		irCoord(p.coord),
+		irResume(closure, p.byexpr.ir.resume, p.ir.value),
+		irGoto(p.ir.success)
+		])
+	CG.emit(p.fromexpr.ir.success, [ irGoto(p.toexpr.ir.start) ])
+	CG.emit(p.fromexpr.ir.failure, [ irGoto(p.ir.failure) ])
+	CG.emit(p.toexpr.ir.success, [ irGoto(p.byexpr.ir.start) ])
+	CG.emit(p.toexpr.ir.failure, [ irGoto(p.fromexpr.ir.resume) ])
+	CG.emit(p.byexpr.ir.success, [
+		irCoord(p.coord),
+		irMakeClosure(closure, irOperator("...", 3), [ p.fromexpr.ir.value, p.toexpr.ir.value, p.byexpr.ir.value ]),
+		irGoto(p.ir.resume)
+		])
+	CG.emit(p.byexpr.ir.failure, [ irGoto(p.toexpr.ir.resume) ])
+
+end
+
+# record Mutual( exprList )
+procedure ir_Mutual(p)
+	local L, i
+
+	every ir(!p.exprList)
+
+	init4ir(p)
+
+	L := make_sentinel(p.exprList)
+	CG.emit(p.ir.start, [ irGoto(L[1].ir.start) ])
+	CG.emit(p.ir.resume, [ irGoto(L[-1].ir.resume) ])
+
+	CG.emit(L[1].ir.start, [ irGoto(L[2].ir.start) ])
+	CG.emit(L[1].ir.resume, [ irGoto(p.ir.failure) ])
+	every i := 2 to *p.exprList-1 do {
+		CG.emit(L[i].ir.success, [ irGoto(L[i+1].ir.start) ])
+		CG.emit(L[i].ir.failure, [ irGoto(L[i-1].ir.resume) ])
+	}
+	CG.emit(L[-1].ir.start, [
+		irMove(p.ir.value, L[-2].ir.value),
+		irGoto(p.ir.success)
+		])
+	CG.emit(L[-1].ir.resume, [ irGoto(L[-2].ir.resume) ])
+
+end
+
+# record Compound( exprList )
+procedure ir_Compound(p)
+	local L, i
+
+	every ir(!p.exprList)
+
+	init4ir(p)
+
+	L := p.exprList
+	*L > 0 | stop("fatal error in ir_Compound")
+	CG.emit(p.ir.start, [ irGoto(L[1].ir.start) ])
+	CG.emit(p.ir.resume, [ irGoto(L[-1].ir.resume) ])
+
+	every i := 1 to *p.exprList-1 do {
+		CG.emit(L[i].ir.success, [ irGoto(L[i+1].ir.start) ])
+		CG.emit(L[i].ir.failure, [ irGoto(L[i+1].ir.start) ])
+	}
+	CG.emit(L[-1].ir.success, [
+		irMove(p.ir.value, L[-1].ir.value),
+		irGoto(p.ir.success)
+		])
+	CG.emit(L[-1].ir.failure, [ irGoto(p.ir.failure) ])
+
+end
+
+# record Key( id )
+procedure ir_Key(p)
+	local k
+
+	init4ir(p)
+
+	case (p.id) of {
+	"fail" : {
+		CG.emit(p.ir.start, [ irGoto(p.ir.failure) ])
+		CG.emit(p.ir.resume, [ irRunTimeError() ])
+		}
+	"line" : {
+		CG.emit(p.ir.start, [
+			irMove(p.ir.value, irIntLit(p.coord.line)),
+			irGoto(p.ir.success)
+			])
+		CG.emit(p.ir.resume, [ irGoto(p.ir.failure) ])
+		}
+	"file" : {
+		CG.emit(p.ir.start, [
+			irMove(p.ir.value, irStrLit(p.coord.file)),
+			irGoto(p.ir.success)
+			])
+		CG.emit(p.ir.resume, [ irGoto(p.ir.failure) ])
+		}
+	default: {
+		k := ir_key(p.id)
+		CG.emit(p.ir.start, [
+			irMove(p.ir.value, k),
+			irGoto(p.ir.success)
+			])
+		CG.emit(p.ir.resume, [ irGoto(p.ir.failure) ])
+		}
+	}
+end
+
+# record ListConstructor( exprList )
+procedure ir_ListConstructor(p)
+	list_builder(p, irMakeList)
+end
+
+# record Arglist( exprList )
+procedure ir_Arglist(p)
+	stop("FATAL ERROR: Arglist should be handled in ir_Call(), file ", image(&file), ", line ", image(&line))
+end
+
+procedure list_builder(p, fn)
+	local L, i
+
+	every ir(!p.exprList)
+
+	init4ir(p)
+
+	L := make_sentinel(p.exprList)
+
+	CG.emit(p.ir.start, [ irGoto(L[1].ir.start) ])
+	CG.emit(p.ir.resume, [ irGoto(L[-1].ir.resume) ])
+
+	CG.emit(L[1].ir.start, [ irGoto(L[2].ir.start) ])
+	CG.emit(L[1].ir.resume, [ irGoto(p.ir.failure) ])
+	args := []
+	every i := 2 to *p.exprList-1 do {
+		CG.emit(L[i].ir.success, [ irGoto(L[i+1].ir.start) ])
+		CG.emit(L[i].ir.failure, [ irGoto(L[i-1].ir.resume) ])
+		put(args, L[i].ir.value)
+	}
+	CG.emit(L[-1].ir.start, [
+		irCoord(p.coord),
+		fn(p.ir.value, args),
+		irGoto(p.ir.success)
+		])
+	CG.emit(L[-1].ir.resume, [ irGoto(L[-2].ir.resume) ])
+
+end
+
+procedure ir(p)
+	local q
+	case type(p) of {
+	"NoOp" : q := ir_NoOp(p)
+	"Field" : q := ir_Field(p)
+	"Call" : q := ir_Call(p)
+	"Scan" : q := ir_Scan(p)
+	"Limitation" : q := ir_Limitation(p)
+	"Not" : q := ir_Not(p)
+	"CoexpList" : q := ir_CoexpList(p)
+	"Alt" : q := ir_Alt(p)
+	"ExclAlt" : q := ir_ExclAlt(p)
+	"Parallel" : q := ir_Parallel(p)
+	"RepAlt" : q := ir_RepAlt(p)
+	"Case" : q := ir_Case(p)
+	"Every" : q := ir_Every(p)
+	"Sectionop" : q := ir_Sectionop(p)
+	"Binop" : q := ir_Binop(p)
+	"Unop" : q := ir_Unop(p)
+	"Global" : q := ir_Global(p)
+	"If" : q := ir_If(p)
+	"Initial" : q := ir_Initial(p)
+	"Invocable" : q := ir_Invocable(p)
+	"Link" : q := ir_Link(p)
+	"Intlit" : q := ir_Intlit(p)
+	"Reallit" : q := ir_Reallit(p)
+	"Stringlit" : q := ir_Stringlit(p)
+	"Csetlit" : q := ir_Csetlit(p)
+	"ProcDecl" : q := ir_ProcDecl(p)
+	"ProcBody" : q := ir_ProcBody(p)
+	"ProcCode" : q := ir_ProcCode(p)
+	"Record" : q := ir_Record(p)
+	"Repeat" : q := ir_Repeat(p)
+	"Return" : q := ir_Return(p)
+	"Fail" : q := ir_Fail(p)
+	"Suspend" : q := ir_Suspend(p)
+	"Until" : q := ir_Until(p)
+	"While" : q := ir_While(p)
+	"Create" : q := ir_Create(p)
+	"Ident" : q := ir_Ident(p)
+	"Next" : q := ir_Next(p)
+	"Break" : q := ir_Break(p)
+	"ToBy" : q := ir_ToBy(p)
+	"Mutual" : q := ir_Mutual(p)
+	"Compound" : q := ir_Compound(p)
+	"ListConstructor" : q := ir_ListConstructor(p)
+	"Key" : q := ir_Key(p)
+	"Arglist" : q := ir_Arglist(p)
+	default : stop("ERROR in ir: ", image(type(p)), "[", image(p), "]")
+	}
+	return q
+end
+
+procedure init4ir(p)
+	p.ir := ir_info()
+	p.ir.value := ir_tmp(p, "value")
+	p.ir.start := ir_label(p, "start")
+	p.ir.resume := ir_label(p, "resume")
+	p.ir.success := ir_label(p, "success")
+	p.ir.failure := ir_label(p, "failure")
+	return p
+end
+
+procedure init4ir_loop(p)
+	init4ir(p)
+	p.ir.x := ir_loopinfo()
+	p.ir.x.continue := ir_tmploc(p, "continue")
+	p.ir.x.nextlabel := ir_label(p, "next")
+	p.ir.x.scanlevel := *scans
+	return p
+end
+
+procedure ir_label(p, suffix)
+	return irLabel(ir_naming(p, suffix))
+end
+
+procedure ir_naming(p, suffix)
+	local s
+
+	image(p) ? {
+		tab(upto(' '))
+		move(1)
+		s := tab(upto('('))
+	}
+	return s || "_" || suffix
+end
+
+procedure ir_dump(insn)
+	return dump(insn, set(["x"]))
+end
+
+procedure ir_ident(str)
+	return irVar(str)
+end
+
+procedure ir_key(str)
+	local k
+
+	static keytable
+	initial {
+		keytable := table()
+	}
+	k := /keytable[str] := irKey(str)
+	return \k | keytable[str]
+end
+
+procedure ir_tmp(p, name)
+	return irTmp(ir_naming(p, name))
+end
+
+procedure ir_tmploc(p, name)
+	return irTmpLabel(ir_naming(p, name))
+end
+
+procedure ir_tmp_closure(p, name)
+	return irTmpClosure(ir_naming(p, name))
+end
+
+procedure make_sentinel(L)
+	put(L, init4ir(NoOp()))
+	push(L, init4ir(NoOp()))
+	return L
+end
+
+procedure semantic_error(msg, coord)
+	stop("File ", coord.file, "; Line ", coord.line, " # ", msg)
+end
