@@ -22,12 +22,12 @@ IRGENSRC = \
 	irgen.icn
 
 CODEGENSRC = \
-	bc_gen.icn \
-	dump_gen.icn \
-	dot_gen.icn \
-	java_gen.icn \
-	null_gen.icn \
-	ucode_gen.icn \
+	gen_bc.icn \
+	gen_dump.icn \
+	gen_dot.icn \
+	gen_java.icn \
+	gen_null.icn \
+	gen_ucode.icn \
 	cg.icn \
 	optimize.icn \
 	bytecode.icn 
