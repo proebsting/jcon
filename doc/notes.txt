@@ -11,7 +11,8 @@ what's implemented:
 -- all datatypes including large integers
 -- all keywords, although resource keywords produce zeroes
 -- preprocessing
--- most functions; missing chdir(), loadfunc(), getch()/getche()/kbhit()
+-- most functions; missing chdir(), getch()/getche()/kbhit()
+-- loadfunc(zipfile,funcname) links in Java code; supports generators, too
 -- only part of the graphics repertoire (see below)
 -- based Icon as defined by LB3/GB; undocumented behavior may differ
 
