@@ -39,4 +39,5 @@ clean:
 	cd rts;  $(MAKE) clean
 	cd doc;  $(MAKE) clean
 	cd test; $(MAKE) clean
+	cd expt; $(MAKE) clean
 	cd bin;  rm -f $(BUILT)
