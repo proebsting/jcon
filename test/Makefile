@@ -7,8 +7,11 @@
 #  to compile a file:		./jcont filename
 #  to execute:			./filename [args]
 
+
+TLIMIT = 60  # maximum compilation + execution time for any one test (in sec)
+
 run:
-	./runtest
+	ulimit -t $(TLIMIT); ./runtest
 
 clean:
 	rm -rf tmp.* *.out *.err *.sum
