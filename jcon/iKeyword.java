@@ -448,11 +448,11 @@ final class k$random extends vProc0 {				// &random
     private static final long RandC = 453816694;
     private static final double RanScale = 4.65661286e-10;
  
-    private long randval;				// current value
+    long randval;				// current value
 
     private vSimpleVar vrandom = new vSimpleVar("&random", vNull.New()) {
 
-	public vVariable Assign(vDescriptor v) {	// assign
+	public vVariable Assign(vDescriptor v){ // assign
 	    randval = v.mkInteger().value;
 	    return this;
 	}
