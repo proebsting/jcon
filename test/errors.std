@@ -157,7 +157,7 @@ error in line 57:
    &error = -24
    &errornumber = 115
    &errortext = "structure expected"
-   &errorvalue = 'abcdefghijklmnopqrstuvwxyz'
+   &errorvalue = &lcase
 sort(&lcase) | monitor(&line) ----> 57
 
 error in line 59:
