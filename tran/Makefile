@@ -1,4 +1,4 @@
-#  Makefile for jcon/tran
+#  jcon/tran/Makefile -- for building the Jcon translator and linker
 #
 #  To build translator and linker:	make
 #  To build them using Jcon:		make jj
@@ -70,7 +70,7 @@ jlink:	$(LINKOBJ)
 	cp jlink ../bin
 
 
-# versions built by jcon (not built by default)
+# versions built by Jcon (not built by default)
 
 jj:	jjtran jjlink
 

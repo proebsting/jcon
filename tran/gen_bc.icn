@@ -466,8 +466,7 @@ procedure bc_gen_ir_Resume(s, p)
     local c, PC, target, resume, free
 
     PC := bc_PC_fieldref(bc_proc_classptr)
-    #resume := bc_resume_methodref(bc_proc_classptr)
-    resume := bc_nextval_methodref(bc_proc_classptr)
+    resume := bc_resume_methodref(bc_proc_classptr)
     bc_gen(s, p.closure)
     put(s, j_dup())
     put(s, j_getfield(PC))
