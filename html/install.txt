@@ -37,8 +37,9 @@ of OS patches.
 
 <P> Executables of <CODE>icont</CODE>, <CODE>javac</CODE>, <CODE>java</CODE>,
 and <CODE>jar</CODE> must be in the search path
-to build programs with Jcon.
-Only <CODE>java</CODE> is needed for execution.
+to build the Jcon system.
+Only <CODE>java</CODE> is needed to run <CODE>jcont</CODE> or the
+executables it produces.
 
 <H3>Building Jcon</H3>
 

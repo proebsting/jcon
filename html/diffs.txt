@@ -36,7 +36,7 @@ are copied from the process after it terminates.
 even with the same random seed.
 
 <P> Jcon is not always consistent with Version 9 when it encounters
-large Integers in unsupported contexts such as subscripting.
+large integers in unsupported contexts such as subscripting.
 
 <H3>Keywords</H3>
 

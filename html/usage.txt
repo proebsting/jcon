@@ -13,7 +13,7 @@ and arguments can be passed as usual.
 <H3>Synopsis</H3>
 <blockquote>
 <CODE>jcont </CODE>[<VAR>options</VAR>] <VAR>file...</VAR>
-	[<CODE>-x</CODE> [arguments]]
+	[<CODE>-x</CODE> [<VAR>arguments</VAR>]]
 <br>
 </blockquote>
 
@@ -127,8 +127,11 @@ but the general concept is the same.
 
 <H3>Caveats</H3>
 
-<P> <I>java</I> and <I>jar</I> must be in the search path,
-and <I>javap</I> if <CODE>-S</CODE> is used.
+<P> <I>java</I> must be in the search path,
+and also <I>javap</I> if <CODE>-S</CODE> is used.
+
+<P> The <CODE>-S</CODE> option does not work for files containing
+<CODE>link</CODE> directives.
 
 <P> A compiled <CODE>.zip</CODE> file cannot be renamed:
 The file name must match the original <CODE>.icn</CODE> name.
