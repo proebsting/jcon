@@ -272,6 +272,15 @@ vInteger mkInteger() {
     }
 }
 
+vNumeric mkFixed() {
+    try {
+	return this.mkString().mkFixed();
+    } catch (iError e) {
+	iRuntime.error(101, this);
+	return null;
+    }
+}
+
 vReal mkReal() {
     try {
 	return this.mkString().mkReal();

@@ -30,6 +30,7 @@ boolean isnull()			{ return Deref().isnull(); }
 boolean iswin()				{ return Deref().iswin(); }
 vString mkString()			{ return Deref().mkString(); }
 vInteger mkInteger()			{ return Deref().mkInteger(); }
+vNumeric mkFixed()			{ return Deref().mkFixed(); }
 vReal mkReal()				{ return Deref().mkReal(); }
 vCset mkCset()				{ return Deref().mkCset(); }
 vProc mkProc(int i)			{ return Deref().mkProc(i); }

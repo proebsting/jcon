@@ -26,6 +26,7 @@ boolean isnull()			{ return retval.isnull(); }
 boolean iswin()				{ return retval.iswin(); }
 vString mkString()			{ return retval.mkString(); }
 vInteger mkInteger()			{ return retval.mkInteger(); }
+vNumeric mkFixed()			{ return retval.mkFixed(); }
 vReal mkReal()				{ return retval.mkReal(); }
 vCset mkCset()				{ return retval.mkCset(); }
 vProc mkProc(int i)			{ return retval.mkProc(i); }

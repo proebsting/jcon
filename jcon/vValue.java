@@ -23,6 +23,7 @@ boolean isnull()		{ return false; }
 boolean iswin()			{ return false; }
 vString mkString()		{ iRuntime.error(103, this); return null; }
 vInteger mkInteger()		{ iRuntime.error(101, this); return null; }
+vNumeric mkFixed()		{ iRuntime.error(101, this); return null; }
 vReal mkReal()			{ iRuntime.error(102, this); return null; }
 vCset mkCset()			{ iRuntime.error(104, this); return null; }
 vProc mkProc(int i)		{ iRuntime.error(106, this); return null; }

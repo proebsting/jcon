@@ -65,8 +65,8 @@ public boolean equals(Object o) {
     return (o instanceof vBigInt) && (((vBigInt)o).value.equals(value));
 }
 
-vInteger mkInteger()	{ iRuntime.error(101, this); return null; }  //#%#% ??
-
+vInteger mkInteger()	{ iRuntime.error(101, this); return null; }
+vNumeric mkFixed()	{ return this; }
 vReal mkReal()		{ return vReal.New(mkDouble()); }
 
 vString mkString() {

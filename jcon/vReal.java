@@ -29,7 +29,14 @@ vReal mkReal()		{ return this; }
 
 vInteger mkInteger()	{
     if (value < Long.MIN_VALUE || value > Long.MAX_VALUE) {
-	iRuntime.error(101, this);	//#%#% ?? is this right?
+	iRuntime.error(101, this);
+    }
+    return vInteger.New(this.value);
+}
+
+vNumeric mkFixed() {
+    if (value < Long.MIN_VALUE || value > Long.MAX_VALUE) {
+	return vBigInt.New(this.value);
     }
     return vInteger.New(this.value);
 }

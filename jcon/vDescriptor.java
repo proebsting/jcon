@@ -19,11 +19,12 @@ public abstract class vDescriptor {
 // Type checking and conversion
 abstract boolean isnull();			// runtime check for null
 abstract boolean iswin();			// runtime check for window
-abstract vString mkString();			// convert to Icon string
-abstract vInteger mkInteger();			// convert to Icon integer
-abstract vReal mkReal();			// convert to Icon real
-abstract vCset mkCset();			// convert to Icon cset
-abstract vProc mkProc(int i);			// convert to Icon procedure
+abstract vString mkString();			// convert to vString
+abstract vInteger mkInteger();			// convert to vInteger
+abstract vNumeric mkFixed();			// convert to vInteger/vBigInt
+abstract vReal mkReal();			// convert to vReal
+abstract vCset mkCset();			// convert to vCset
+abstract vProc mkProc(int i);			// convert to vProc
 abstract vValue[] mkArray(int errno);		// convert to array of vValues
 
 // special-purpose string conversions

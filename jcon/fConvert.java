@@ -25,7 +25,7 @@ final class f$image extends vProc1 {				// image(x)
 final class f$integer extends vProc1 {				// integer(x)
     public vDescriptor Call(vDescriptor a) {
 	try {
-	    return a.mkInteger();
+	    return a.mkFixed();
 	} catch (iError e) {
 	    return null; /*FAIL*/
 	}

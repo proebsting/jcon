@@ -55,7 +55,7 @@ public boolean equals(Object o)	{
 }
 
 vInteger mkInteger()	{ return this; }
-
+vNumeric mkFixed()	{ return this; }
 vReal mkReal()		{ return vReal.New(this.value); }
 
 vString mkString() {
@@ -296,13 +296,13 @@ vNumeric PowerOf(vInteger i) {			// i ^ i
 
     long v = 1L;
     while (y > 0) {
+	if (Math.abs(x) > Integer.MAX_VALUE) {	// conservative but quick test
+	    return Big(i).ToPower(this);
+	}
 	if ((y & 1) != 0) {
 	    v *= x;
 	}
 	y >>= 1;
-	if (x > Integer.MAX_VALUE && y > 0) {
-	    return Big(i).ToPower(this);
-	}
 	x *= x;
     }
     return New(v);

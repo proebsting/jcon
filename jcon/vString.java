@@ -304,9 +304,18 @@ int compareTo(vValue v) {		// compare strings lexicographically
 
 
 
-vInteger mkInteger()	{					// integer(s)
+vInteger mkInteger()	{					// make vInteger
     try {
 	return this.Numerate().mkInteger();	// allows integer("3e6")
+    } catch (iError e) {
+	iRuntime.error(101, this);
+	return null;
+    }
+}
+
+vNumeric mkFixed()	{					// integer(s)
+    try {
+	return this.Numerate().mkFixed();
     } catch (iError e) {
 	iRuntime.error(101, this);
 	return null;
