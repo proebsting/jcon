@@ -46,7 +46,8 @@ public class ZipMerge {
 
     public static ZipOutputStream newZipFile(String name) throws IOException {
         FileOutputStream os = new FileOutputStream(name);
-        ZipOutputStream zos = new ZipOutputStream(os);
+	BufferedOutputStream bos = new BufferedOutputStream(os);
+        ZipOutputStream zos = new ZipOutputStream(bos);
         return zos;
     }
 
@@ -65,8 +66,9 @@ public class ZipMerge {
 		} catch (ZipException ze) {
 		    // handle regular file, not zip.
 	            FileInputStream fis = new FileInputStream(files[k]);
+		    BufferedInputStream bis = new BufferedInputStream(fis);
 	            ZipEntry zf = new ZipEntry(files[k]);
-	            addZipEntry(zf, zos, fis);
+	            addZipEntry(zf, zos, bis);
 		    continue;
 		}
                 Enumeration e = zsrc.entries();
