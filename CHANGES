@@ -19,6 +19,9 @@ From gmt  Dec 10 1998
 In translator, change confusing name ir_RunTimeError to ir_Unreachable
 in response to referee comments on SP&E paper.
 
+From todd  Feb 15 1998
+Make token names consistent with Icon V9.
+
 ------------------------------------------------------------------------------
 
 Earlier:
