@@ -125,7 +125,7 @@ public abstract vList Sort(int i);			//  sort(X, i)
 
 abstract vNumeric AddInto(vInteger a);		// a + b ==> b.AddInto(a)
 abstract vNumeric SubFrom(vInteger a);		// a - b ==> b.SubFrom(a)
-abstract vNumeric MulInto(vInteger a);		// a * b ==> b.MolInto(a)
+abstract vNumeric MulInto(vInteger a);		// a * b ==> b.MulInto(a)
 abstract vNumeric DivInto(vInteger a);		// a / b ==> b.DivInto(a)
 abstract vNumeric ModInto(vInteger a);		// a % b ==> b.ModInto(a)
 abstract vNumeric PowerOf(vInteger a);		// a ^ b ==> b.PowerOf(a)

@@ -414,6 +414,14 @@ vCset mkCset() {						// cset(s)
 
 
 
+// s ! args	//#%#% only handles operators for now
+
+public vDescriptor ProcessArgs(vDescriptor v) {
+    return iOperators.invoke(this, v);
+}
+
+
+
 //  =s : tab(match(s))
 
 public vDescriptor TabMatch() {
