@@ -3,12 +3,21 @@ invocable all
 global outfile, optimize_flag, nolink_flag, java_classname
 
 procedure main(L) 
-	local filename, cg_flags, cg, getline
+	local filename, cg_flags, cg, getline, predefs, preonly
+
+	predefs := table()
+	predefs["_JAVA"] := "1"
+	predefs["_ASCII"] := "1"
+	predefs["_CO_EXPRESSIONS"] := "1"
+	predefs["_SYSTEM_FUNCTION"] := "1"
+	# there is no predefn for "environment variables" feature
 
 	cg_flags := []
 	while L[1] do {	# process flags
 		pop(L) ? {
-			if ="-target:" then {
+			if ="-E" then {
+				preonly := 1	# preprocess only
+			} else if ="-target:" then {
 				/CG | stop("ERROR: multiple -target specifications")
 				cg := tab(0)
 				CG := (\proc(cg || "_CG"))()
@@ -24,11 +33,20 @@ procedure main(L)
 			}
 		}
 	}
-	\CG | stop("ERROR: must specify -target")
-	\java_classname | stop("ERROR: must specify -class")
 
-	getline := if \filename then (create preprocessor(filename)) else (create !&input)
-	CG.File(getline, cg_flags)
+	if \filename then {
+		getline := create preprocessor(filename, predefs)
+	} else {
+		getline := create !&input
+	}
+
+	if \preonly then {
+		while write(@getline)
+	} else {
+		\CG | stop("ERROR: must specify -target")
+		\java_classname | stop("ERROR: must specify -class")
+		CG.File(getline, cg_flags)
+	}
 
 	#every writes(&errout, " ", "  total alloc: " | &allocated | "\n")
 	#every writes(&errout, " ", "  current:     " | &storage | "\n")

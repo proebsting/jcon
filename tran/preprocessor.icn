@@ -1,9 +1,419 @@
-# phony preprocessor
-procedure preprocessor(fname)
-	local f
+#
+# Preprocessor for jtran
+#
+# Arguments:
+#
+#   fname - the filename to preprocess
+#
+#   predefined_syms - (optional) a table of symbols & definitions to serve as
+#                     preprocessor "predefined" symbols 
+#
 
-	f := open(fname) | stop("ERROR:  Could not open file ", image(fname))
+#
+# Known deficiencies:
+#
+#   - The mechanism for getting the $include path is not appropriate for
+#     Java.  The machinery is there for dealing with a path string, but
+#     where does it come from?  Right now, it's doing a getenv() which
+#     probably doesn't make sense.
+#
 
+#
+# Global variable definitions
+#
+global preproc_sym_table,preproc_if_stack,preproc_file_stack,preproc_if_state,
+		preproc_file,preproc_filename,preproc_line,preproc_print_line,
+		preproc_word_chars,preproc_nest_level,preproc_include_name,
+		preproc_include_set,preproc_print_file,preproc_err_count
+
+#
+# Main preprocessor procedure
+#
+procedure preprocessor(fname,predefined_syms)
+	local line,result
+	static nonpunctuation
+	initial nonpunctuation := &letters ++ &digits ++ ' \t\f'
+	
+	preproc_new(fname,predefined_syms)
+	
 	suspend "#line 0 " || image(fname)
-	suspend !f
+	while line := preproc_read() do line ? {
+		preproc_space()
+		if ="$" & any(nonpunctuation) then {
+			suspend preproc_scan_directive()
+		}
+		else {
+			&pos := 1
+			suspend preproc_scan_text()
+		}
+	}
+	preproc_line +:= 1
+	suspend preproc_sync_lines()
+	close(preproc_file)
+	close(preproc_file)
+	preproc_done()
+	if preproc_err_count > 0 then
+		stop()		# force error exit (abruptly)
+end
+
+#
+# Initialize globals.
+#
+procedure preproc_new(fname,predefined_syms)
+	preproc_file := open(fname) |
+			stop("ERROR:  Could not open file ", image(fname))
+	preproc_sym_table := \predefined_syms |table()
+	preproc_if_stack := []
+	preproc_file_stack := []
+	preproc_include_set := set([fname])
+	preproc_if_state := &null
+	preproc_word_chars := &letters ++ &digits ++ '_'
+	preproc_filename := preproc_include_name := fname
+	preproc_print_file := preproc_file
+	preproc_line := preproc_print_line := 0
+	preproc_nest_level := 0
+	preproc_err_count := 0
+	return
+end
+
+#
+# Clear space-consuming globals.
+#
+procedure preproc_done()
+	preproc_sym_table := preproc_if_stack := preproc_file_stack :=
+			preproc_filename := preproc_file := preproc_include_set :=
+			preproc_word_chars := preproc_include_name :=
+			preproc_include_set := preproc_print_file := &null
+	return
+end
+
+#
+# Scan a preprocessor directive
+#
+procedure preproc_scan_directive()
+	local cmd,sym,value,new_file,new_filename,new_line,path_list
+	preproc_space()
+	cmd := preproc_word()
+	case cmd of {
+		"define": {
+			if /preproc_if_state then {
+				if preproc_space() &
+				    (sym := preproc_word()) &
+				    (preproc_space() | match("#") | pos(0)) &
+				    (value := preproc_value()) then
+					preproc_sym_table[sym] := value
+				else
+					preproc_error("bad $define")
+			}
+		}
+		"undef": {
+			if /preproc_if_state then {
+				if preproc_space() & sym := preproc_word() then {
+					delete(preproc_sym_table,sym)
+				}
+				else
+					preproc_error("bad $undef")
+			}
+		}
+		"ifdef" | "ifndef": {
+			if preproc_space() & sym := preproc_word() then {
+				push(preproc_if_stack,preproc_if_state)
+				if /preproc_if_state then {
+					value := (\preproc_sym_table[sym] & &null) | "false"
+					if match("n",cmd,3) then
+						value := (\value & &null) | "false"
+					preproc_if_state := value
+				}
+				else {
+					preproc_if_state := "off"
+				}
+			}
+			else
+				preproc_error("bad $ifdef/$ifndef")
+		}
+		"else": {
+			if *preproc_if_stack <= preproc_nest_level then
+				preproc_error("$else without $if")
+			else
+				preproc_if_state := {
+					case preproc_if_state of {
+						"false": &null
+						"off": "off"
+						default: "false"
+					}
+				}
+		}
+		"endif": {
+			(*preproc_if_stack >= preproc_nest_level &
+					preproc_if_state := pop(preproc_if_stack)) |
+					preproc_error("$endif without $if")
+		}
+		"include": {
+			if /preproc_if_state then {
+				path_list := preproc_get_path_list()
+				if preproc_space() & sym := preproc_qword() then {
+					if member(preproc_include_set,sym) then {
+						preproc_error(image(sym) || " $includes itself")
+					}
+					else {
+						if new_file := open(
+								new_filename := ("" | !path_list) || sym) then {
+							push(preproc_file_stack,
+									preproc_file,preproc_filename,
+									preproc_include_name,preproc_line,
+									preproc_nest_level)
+							preproc_filename := new_filename
+							preproc_include_name := sym
+							preproc_file := preproc_print_file := new_file
+							preproc_line := preproc_print_line := 0
+							preproc_nest_level := *preproc_if_stack
+							insert(preproc_include_set,sym)
+							suspend "#line 0 " || image(new_filename)
+						}
+						else preproc_error("can't open " || sym)
+					}
+				}
+				else preproc_error("bad $include")
+			}
+		}
+		"line": {
+			if /preproc_if_state then {
+				if preproc_space() &
+						new_line := integer(tab(many(preproc_word_chars))) &
+						preproc_space() | &null &
+						new_filename := preproc_qword() |
+						(pos(0) | match("#") & new_filename := &null) then {
+					preproc_filename := preproc_print_file := \new_filename
+					preproc_line := preproc_print_line := new_line
+				}
+				else preproc_error("bad $line")
+			}
+		}
+		"error": {
+			if /preproc_if_state then {
+				preproc_error()
+				stop("    ",&subject)
+			}
+		}
+		default: {
+			if /preproc_if_state then
+				preproc_error("bad $ directive")
+		}
+	}
+end
+
+#
+# Scan a text line.
+#
+procedure preproc_scan_text(done_set)
+	local q,result,p,interesting_in_quotes,ident,value
+	static interesting_chars
+	initial interesting_chars := '#"\'_' ++ &letters
+	if /preproc_if_state then {
+		if *preproc_sym_table > 0 then {
+			&pos := q := 1
+			result := ""
+			while tab(upto(interesting_chars)) do {
+				case move(1) of {
+					"#": {
+						move(-1)
+						tab(0)
+					}
+					"\"" | "'": {
+						interesting_in_quotes := '\\' ++ &subject[&pos - 1]
+						repeat {
+							p := &pos
+							while tab(upto(interesting_in_quotes)) do {
+								case move(1) of {
+									"\\": move(1)
+									default: break break
+								}
+							}
+							suspend preproc_sync_lines()
+							suspend if q = 1 then .&subject else
+									result || &subject[q:0]
+							if not match("_",,-1) then break
+							&subject := preproc_read() | fail
+							result := ""
+							q := 1
+						}
+					}
+					default: {
+						move(-1)
+						p := &pos
+						ident := tab(many(preproc_word_chars))
+						if value := \preproc_sym_table[ident] then {
+							if /done_set |
+									{type(done_set) == "string" &
+										done_set := set([done_set])
+									not member(done_set,ident)} then {
+								value ? value :=
+									preproc_scan_text(
+										insert(copy(\done_set),ident) | ident)
+								result ||:= &subject[q:p] || value
+								q := &pos
+							}
+						}
+					}
+				}
+			}
+			if /done_set then suspend preproc_sync_lines()
+			suspend if q = 1 then .&subject else result || &subject[q:0]
+		}
+		else {
+			suspend preproc_sync_lines()
+			suspend .&subject
+		}
+		preproc_print_line := preproc_line
+	}
+end
+
+#
+# Read-line procedure for all preprocessor input
+#
+procedure preproc_read()
+	local result
+	until result := read(preproc_file) do {
+		if *preproc_if_stack ~= preproc_nest_level then {
+			preproc_error("$if without $endif")
+			until *preproc_if_stack <= preproc_nest_level do
+				pop(preproc_if_stack)
+		}
+		close(preproc_file)
+		delete(preproc_include_set,preproc_include_name)
+		(preproc_nest_level := pop(preproc_file_stack) &
+			preproc_line := preproc_print_line := pop(preproc_file_stack) &
+			preproc_include_name := pop(preproc_file_stack) &
+			preproc_filename := pop(preproc_file_stack) &
+			preproc_file := pop(preproc_file_stack)) | fail
+	}
+	preproc_line +:= 1
+	return result
+end
+
+#
+# Scan an identifier.
+#
+procedure preproc_word()
+	static word_starters
+	initial {
+		word_starters := &letters ++ '_'
+	}
+	suspend any(word_starters) & tab(many(preproc_word_chars))
+end
+
+#
+# Scan a quoted string or unquoted string of letters ++ digits ++ "_".
+#
+procedure preproc_qword()
+	local result
+	suspend ((="\"" & result := tab(find("\"")) & move(1) & result) |
+			tab(many(preproc_word_chars))) \ 1
+end
+
+#
+# Scan a quoted string or cset.
+#
+procedure preproc_qstring()
+	local p, cs
+	if not any('\'"') then fail
+	p := &pos
+	cs := move(1) ++ '\\'
+	while tab(upto(cs)) do {
+		if ="\\" then {
+			move(1) | break
+		} else {
+			move(1)
+			suspend &subject[p:&pos]
+			break
+		}
+	}
+	&pos := p
+	fail
+end
+
+#
+# Scan a defined value.
+#
+procedure preproc_value()
+	local p, result
+	p := &pos
+	result := ""
+	while not pos(0) do {
+		if any('#') then
+			break
+		else if any('\'"') then
+			result ||:= preproc_qstring() | { &pos := p; fail }
+		else
+			result ||:= tab(upto('#\'"') | 0)
+	}
+	tab(0)			# consume comment
+	suspend trim(result, ' \t\f')
+	&pos := p
+	fail
+end
+
+#
+# Scan a run of white-space characters.
+#
+procedure preproc_space()
+	suspend tab(many(' \t\f'))
+end
+
+#
+# Output an error message.
+#
+procedure preproc_error(msg)
+	write(&errout,"Preprocessor error: ",image(preproc_filename),":",
+			preproc_line,": ",msg)
+	preproc_err_count +:= 1
+end
+
+#
+# Retrieve the $include path list.  This is used so the path will not be
+# computed unless it is needed.
+#
+procedure preproc_get_path_list()
+	static the_list
+	initial {
+		the_list := preproc_compute_path_list()
+	}
+	return the_list
+end
+
+#
+# Compute the $include path list.
+#
+procedure preproc_compute_path_list()
+	local result,path_string,path_sep
+	result := []	# FIX ME: compute path list
+	if path_string := "" ~== getenv("LPATH") then {
+		path_sep := getenv("PATHSEP") | ":"
+		path_string ? {
+			while put(result,tab(find(path_sep))) do
+				move(1)
+			put(result,tab(0))
+		}
+	}
+	return result
+end
+
+#
+# Output either a few blank lines or a "#line" line if output lines are
+# out-of-sync with input lines.
+#
+procedure preproc_sync_lines()
+	local delta
+	if preproc_file ~=== preproc_print_file then {
+		suspend "#line " || preproc_line || " " || image(preproc_filename)
+		preproc_print_file := preproc_file
+	}
+	else {
+		delta := preproc_line - preproc_print_line
+		if delta ~= 1 then {
+			if delta < 10 then suspend 1 to delta - 1 & ""
+			else suspend "#line " || preproc_line || " " || image(preproc_filename)
+		}
+	}
+	preproc_print_line := preproc_line
 end
