@@ -39,7 +39,6 @@ miscellaneous:
 -- random sequences are different on every run
 -- read() and write() don't accept file arguments
 -- x ! R doesn't work for records (only for lists)
--- for co-expressions, image(), and serial() don't work
 -- jcon always allocates a list even if main() declares no arguments
 
 arguably correct differences:
