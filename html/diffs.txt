@@ -38,17 +38,6 @@ by the program, <CODE>&amp;input</CODE> is always empty.
 The two output files, <CODE>&amp;output</CODE> and <CODE>&amp;errout</CODE>,
 are copied from the process after it terminates.
 
-<H3>Built-in Functions</H3>
-<P>
-The functions <CODE>chdir()</CODE>, <CODE>getch</CODE>, 
-<CODE>getche()</CODE>, and <CODE>kbhit</CODE> are not implemented.
-<P>
-The functions <CODE>getenv()</CODE> requires the presence of the utility
-<CODE>env</CODE> in the shell search path.
-<P>
-The implementation of <CODE>loadfunc()</CODE> is described
-in a <A HREF=loadfunc.htm>separate section</A>.
-
 <H3>Keywords</H3>
 <P>
 <CODE>&amp;features</CODE> includes <CODE>"Java"</CODE>; 
@@ -60,6 +49,28 @@ due to Java limitations.
 <CODE>&amp;allocated</CODE>, <CODE>&amp;collections</CODE>,
 <CODE>&amp;storage</CODE>, and <CODE>&amp;regions</CODE>
 produce only zero values.
+<P>
+The <CODE>&amp;hostname</CODE> keyword requires the presence of the utility
+<CODE>uname</CODE> in the shell search path.
+
+<H3>Built-in Functions</H3>
+<P>
+The functions <CODE>chdir()</CODE>, <CODE>getch</CODE>, 
+<CODE>getche()</CODE>, and <CODE>kbhit</CODE> are not implemented.
+<P>
+The functions <CODE>getenv()</CODE> requires the presence of the utility
+<CODE>env</CODE> in the shell search path.
+<P>
+The implementation of <CODE>loadfunc()</CODE> is described
+in a <A HREF=loadfunc.htm>separate section</A>.
+
+<H3>Linking</H3>
+
+<P> <CODE>link</CODE> directives must give a simple name, not a path.
+
+<P> Under Jcon, more user procedures may be "invocable" by default
+than under Version 9 of Icon.
+
 
 <H3>Debugging</H3>
 <P>

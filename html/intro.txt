@@ -56,17 +56,5 @@ what's implemented:
 -- most other functions; missing chdir(), getch()/getche()/kbhit()
 -- loadfunc(zipfile,funcname) loads Java or Icon code, and supports generators
 
-compilation and linking:
 -- jcont is a complex script that only runs on Unix
--- "jcont foo.zip" doesn't search IPATH (only link'd files are searched for)
--- link directives must give a simple name (not a path)
--- compiled .zip files cannot be renamed: name must match original .icn name
-   (however, executables can be renamed)
--- more procedures may be "invocable" by default than in v9
-
-execution:
--- if Java runs out of memory, setenv JXOPTS='-mx50m' (e.g.) to increase max
--- out-of-memory errors say "block region"; there is no separate string region
--- $PATH must include env and uname commands to use getenv() and &amp;hostname
--- executables are portable among dissimilar Unix platforms (just need ksh+Java)
 </PRE>

@@ -120,3 +120,16 @@ but will be similar in concept to the Unix example give above.
 <P>
 <I>java</I> and <I>jar</I> must be in the search path,
 and <I>javap</I> if <CODE>-S</CODE> is used.
+
+<PRE>
+
+compilation and linking:
+-- "jcont foo.zip" doesn't search IPATH (only link'd files are searched for)
+-- compiled .zip files cannot be renamed: name must match original .icn name
+   (however, executables can be renamed)
+
+execution:
+-- if Java runs out of memory, setenv JXOPTS='-mx50m' (e.g.) to increase max
+-- out-of-memory errors say "block region"; there is no separate string region
+-- executables are portable among dissimilar Unix platforms (just need ksh+Java)
+</PRE>

@@ -50,6 +50,12 @@ There is no inherent limit to the number of different colors that can
 be in use simultaneously.
 On 8-bit displays, Java approximates colors by selection from a limited
 palette that can vary from one run to another.
+The first image below (from Plate 8.2 of the Graphics book)
+shows the surface of color space as rendered on a full-color display.
+The second image is an example of how Java renders it on an 8-bit display.
+<BR>
+<IMG WIDTH=202 HEIGHT=122 SRC=merc24.jpg>
+<IMG WIDTH=202 HEIGHT=122 SRC=merc8.gif>
 <P>
 For named colors, variants (such as <CODE>light</CODE>
 and <CODE>dark</CODE>) of the unsaturated hues (<CODE>brown</CODE>,
