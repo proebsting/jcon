@@ -73,6 +73,9 @@ public vString read() {
 
 public vString reads(long n) {
     vString s = read();
+    if (s == null) {
+	return null; /*FAIL*/
+    }
     if (s.length() <= n) {
     	return s;
     } else {
