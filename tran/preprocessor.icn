@@ -35,17 +35,20 @@ global preproc_sym_table,preproc_if_stack,preproc_file_stack,preproc_if_state,
 procedure preprocessor(fname,predefined_syms)
     local line,result
     static nonpunctuation
-    initial nonpunctuation := &letters ++ &digits ++ ' \t\f\r'
-    
+    initial {
+        nonpunctuation := &letters ++ &digits ++ ' \t\f\r'
+    }
+
     preproc_new(fname,predefined_syms)
     
     while line := preproc_read() do line ? {
-        if match("#line") then next
+        if match("#line") then {
+            next
+        }
         preproc_space()
         if ="$" & any(nonpunctuation) then {
             suspend preproc_scan_directive()
-        }
-        else {
+        } else {
             &pos := 1
             suspend preproc_scan_text()
         }
@@ -55,8 +58,9 @@ procedure preprocessor(fname,predefined_syms)
     close(preproc_file)
     close(preproc_file)
     preproc_done()
-    if preproc_err_count > 0 then
+    if preproc_err_count > 0 then {
         stop()      # force error exit (abruptly)
+    }
 end
 
 #
@@ -97,8 +101,9 @@ procedure preproc_scan_directive()
     preproc_space()
     preproc_command := preproc_word()
     if \preproc_if_state then {
-        if match("if",preproc_command) then
+        if match("if",preproc_command) then {
             preproc_command := "$if"
+        }
     }
     preproc_space()
     case preproc_command of {
@@ -106,13 +111,15 @@ procedure preproc_scan_directive()
             if /preproc_if_state then {
                 if sym := preproc_word() &
                         value := preproc_scan_define_value() then {
-                    if \(old := preproc_sym_table[sym]) ~=== value then
+                    if \(old := preproc_sym_table[sym]) ~=== value then {
                         preproc_error("redefinition of " || sym || " = " ||
                                 old)
-                    else
+                    } else {
                         preproc_sym_table[sym] := value
+                    }
+                } else {
+                    preproc_error()
                 }
-                else preproc_error()
             }
         }
         "undef": {
@@ -120,8 +127,9 @@ procedure preproc_scan_directive()
                 if sym := preproc_word() &
                         preproc_at_end() then {
                     delete(preproc_sym_table,sym)
+                } else {
+                    preproc_error()
                 }
-                else preproc_error()
             }
         }
         "ifdef" | "ifndef": {
@@ -130,15 +138,14 @@ procedure preproc_scan_directive()
                     preproc_at_end() then {
                 if /preproc_if_state then {
                     value := (\preproc_sym_table[sym] & &null) | "false"
-                    if match("n",preproc_command,3) then
+                    if match("n",preproc_command,3) then {
                         value := (\value & &null) | "false"
+                    }
                     preproc_if_state := value
-                }
-                else {
+                } else {
                     preproc_if_state := "off"
                 }
-            }
-            else {
+            } else {
                 preproc_if_state := "off"
                 preproc_error()
             }
@@ -149,9 +156,9 @@ procedure preproc_scan_directive()
         }
         "else": {
             if preproc_at_end() then {
-                if *preproc_if_stack <= preproc_nest_level then
+                if *preproc_if_stack <= preproc_nest_level then {
                     preproc_error("no corresponding $if...")
-                else {
+                } else {
                     #preproc_if_state := (\preproc_if_state & &null) | "done"
                     preproc_if_state := {
                         case preproc_if_state of {
@@ -161,16 +168,16 @@ procedure preproc_scan_directive()
                         }
                     }
                 }
+            } else {
+                preproc_error()
             }
-            else preproc_error()
         }
         "endif": {
             if preproc_at_end() then {
                 (*preproc_if_stack >= preproc_nest_level &
                         preproc_if_state := pop(preproc_if_stack)) |
                         preproc_error("no corresponding $if...")
-            }
-            else {
+            } else {
                 *preproc_if_stack >= preproc_nest_level &
                         preproc_if_state := pop(preproc_if_stack)
                 preproc_error()
@@ -197,11 +204,13 @@ procedure preproc_scan_directive()
                             preproc_line := 0
                             preproc_nest_level := *preproc_if_stack
                             insert(preproc_include_set,sym)
+                        } else {
+                            preproc_error("cannot open " || image(sym))
                         }
-                        else preproc_error("cannot open " || image(sym))
                     }
+                } else {
+                    preproc_error()
                 }
-                else preproc_error()
             }
         }
         "line": {
@@ -213,8 +222,9 @@ procedure preproc_scan_directive()
                         preproc_at_end() then {
                     preproc_filename := \new_filename
                     preproc_line := new_line
+                } else {
+                    preproc_error()
                 }
-                else preproc_error()
             #}
         }
         "error": {
@@ -228,13 +238,15 @@ procedure preproc_scan_directive()
                 if value := integer(tab(many(&digits ++ "-"))) &
                         preproc_at_end() then {
                     &trace := value
+                } else {
+                    preproc_error()
                 }
-                else preproc_error()
             }
         }
         default: {
-            if /preproc_if_state then
+            if /preproc_if_state then {
                 preproc_error("unknown preprocessor directive")
+            }
         }
     }
     preproc_command := &null
@@ -246,7 +258,9 @@ end
 procedure preproc_scan_text(done_set)
     local q,result,p,interesting_in_quotes,ident,value
     static interesting_chars
-    initial interesting_chars := '#"\'_' ++ &letters
+    initial {
+        interesting_chars := '#"\'_' ++ &letters
+    }
     if /preproc_if_state then {
         if *preproc_sym_table > 0 then {
             &pos := q := 1
@@ -271,7 +285,9 @@ procedure preproc_scan_text(done_set)
                             suspend preproc_sync_lines()
                             suspend if q = 1 then .&subject else
                                     result || &subject[q:0]
-                            if not match("_",,-1) then break
+                            if not match("_",,-1) then {
+                                break
+                            }
                             &subject := preproc_read() | fail
                             preproc_print_line := preproc_line
                             preproc_line +:= 1
@@ -297,7 +313,9 @@ procedure preproc_scan_text(done_set)
                     }
                 }
             }
-            if /done_set then suspend preproc_sync_lines()
+            if /done_set then {
+                suspend preproc_sync_lines()
+            }
             suspend if q = 1 then .&subject else result || &subject[q:0]
         }
         else {
@@ -426,8 +444,9 @@ procedure preproc_error(msg)
     initial non_shell_word_chars := ~(&letters ++ &digits ++ '_.-')
     /msg := "syntax error"
     filename := preproc_filename
-    if upto(non_shell_word_chars,filename) then
+    if upto(non_shell_word_chars,filename) then {
         filename := image(filename)
+    }
     write(&errout,"File ",filename,"; Line ",preproc_line," # ",
         "$" || \preproc_command || ": " | "",msg)
     preproc_err_count +:= 1
@@ -454,8 +473,9 @@ procedure preproc_compute_path_list()
     if path_string := "" ~== getenv("LPATH") then {
         path_sep := getenv("PATHSEP") | " "
         path_string ? {
-            while put(result,tab(find(path_sep))) do
+            while put(result,tab(find(path_sep))) do {
                 move(1)
+            }
             put(result,tab(0))
         }
     }
@@ -477,9 +497,12 @@ procedure preproc_sync_lines()
         #   "; preproc_print_line = ",image(preproc_print_line),
         #   "; delta = ",image(delta))
         if delta ~= 1 then {
-            if delta < 20 then suspend 2 to delta & ""
-            else suspend "#line " || preproc_line - 1 || " " ||
+            if delta < 20 then {
+                suspend 2 to delta & ""
+            } else {
+                suspend "#line " || preproc_line - 1 || " " ||
                     image(preproc_filename)
+            }
         }
     }
     preproc_print_line := preproc_line
