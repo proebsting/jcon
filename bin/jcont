@@ -2,7 +2,7 @@
 #
 #  jcont -- compile Icon program
 #
-#  usage:  jcont [-bcdhjsvEJPSU] [-f flags] [-o exe] file... [-x [args]]
+#  usage:  jcont [-bcdhjsvEPSU] [-f flags] [-o exe] file... [-x [args]]
 #
 #     file:	filename.icn (Icon source) or filename.zip (translated code)
 #
@@ -31,7 +31,7 @@
 #
 #  Jcont translates Icon source files into .zip files, and links .zip
 #  files to make an excutable program.  Jcont is similar to icont in
-#  concept and behavior; think of a .zip file as analagous to a .u1/.u2
+#  concept and behavior; think of a .zip file as analogous to a .u1/.u2
 #  pair from icont.
 #
 #  "java" and "jar" must be in the search path, and "javap" if -S is used.
@@ -39,7 +39,7 @@
 #  Normally, jcont produces a directly executable Korn Shell script
 #  containing an embedded ZIP file.  Running the script executes the
 #  compiled Icon program, and arguments can be passed as usual.  The
-#  JXOPTS environment variable can be set to pass an abritrary string
+#  JXOPTS environment variable can be set to pass an arbitrary string
 #  of options to the Java interpreter.
 #
 #  If -j is passed to jcont, the final output file is given a .jar
@@ -51,10 +51,13 @@
 #	java myprog
 #
 
+# command names
 JAVAC="javac -nowarn"
 JAVA="java"
 JAR="jar"
 
+# check OS type and set shell variables accordingly
+# WARNING: the Windows code once worked, but has not been maintained
 case `uname` in
     Windows* | OS/2 | DOS)
 	set -K		# use "Korn shell" mode in MKS, not POSIX
@@ -82,7 +85,8 @@ case $IDIR in
     *)		IDIR=`pwd`/$IDIR;;	# relative path
 esac
 
-function usage {	# usage message: print header above
+# using script location, define handler for usage error
+function usage {	# usage: print header above, and exit
     sed -n '
        1,3d
        /^$/q
@@ -93,11 +97,10 @@ function usage {	# usage message: print header above
 }
 
 # save command line and user IPATH
-# (remove spaces from IPATH to work around SGI java bug in argument handling)
 CMDLINE="$0 $*"
-UIPATH=`echo "$IPATH" | tr ' ' ':'`
+UIPATH="$IPATH"
 
-#  set reasonably large regions for jtran
+#  set reasonably large regions for use by jtran
 export BLKSIZE=6000000
 export STRSIZE=500000
 export COEXPSIZE=30000
@@ -127,7 +130,7 @@ NOLINK=
 # assume no subsequent execution
 NOEXECUTE=exit
 
-# process options, changing devault values set above
+# process options, changing default values set above
 
 while getopts "bcdjsvEPSUo:f:" c 2>$NULLFILE; do
     case $c in
