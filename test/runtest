@@ -6,6 +6,8 @@ if [ $# = 0 ]; then
    set *.std
 fi
 
+ERRORS=0
+
 for FNAME; do
     BASE=${FNAME%.*}
     echo ${BASE}:
@@ -15,5 +17,11 @@ for FNAME; do
     else
 	./$BASE </dev/null >$BASE.out
     fi
-    cmp $BASE.std $BASE.out
+    cmp $BASE.std $BASE.out || let 'ERRORS = ERRORS + 1'
 done
+
+case $ERRORS in
+    0)  echo "Testing complete; no errors.";  exit 0;;
+    1)  echo "Testing complete; ***** $ERRORS error. *****";  exit 1;;
+    *)  echo "Testing complete; ***** $ERRORS errors. *****";  exit 1;;
+esac
