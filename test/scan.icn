@@ -35,4 +35,7 @@ procedure main()
    every write("-35" ? bal('-'))
    every write("((2*x)+3)+(5*y)" ? bal('+'))
    every write("[+,[2,3]],[*,[5,10]]" ? bal(',', '[', ']'))
+   write()
+
+   "12345" ? { write(pos(1)); write(pos(-5)); write(pos(3)|"fail"); }
 end
