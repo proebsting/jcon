@@ -3,7 +3,6 @@ what's implemented:
 -- all keywords, although resource keywords produce zeroes
 -- preprocessing
 -- most functions; missing chdir(), loadfunc(), getch()/getche()/kbhit()
--- no graphics
 
 general caveats:
 -- little optimization has been done
@@ -28,12 +27,24 @@ numerics:
 -- conversion of reals to strings does not match results from v9
 -- conversion of strings to reals and integers follows slightly different rules
 
+structures:
+-- random selection from sets and tables differs from v9
+
 files:
 -- no pipes
 -- random I/O (seek(), where()) fails for &input/&output/&errout
 
-structures:
--- random selection from sets and tables differs from v9
+graphics (general):
+-- very few things are implemented at this time
+-- all windows collate after all files when sorting
+
+graphics events:
+-- Jcon maps Java's "alt" key (as well as the meta key) to the &meta flag
+-- &meta is never set with mouse events  (Java uses it to encode "which button")
+-- X returns "\r" for the Enter key but Java (and therefore Jcon) returns "\n"
+-- "outboard" keys differ from X, but are close to Windows; see keysyms.icn
+-- resize events are not reported
+-- &interval is always zero
 
 error reporting:
 -- arg lists in traceback show actual instead of expected number of arguments
@@ -73,6 +84,7 @@ compatible, although the book is unclear or wrong:
 -- any() and match() return position beyond matched string even if i2<i1
 
 known bugs:
+-- flush(&output) may not always work? (not confirmed)
 -- e[e+:e] and e[e-:e] function identically to v9, which is wrong in some cases
 -- local variables are not dereferenced prior to being returned
 -- "invocable" procedures are computed incorrectly.  "invocable all" works.
