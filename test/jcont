@@ -15,7 +15,8 @@
 #     -d	debug jcont: use ./jtmp for temp files, and don't delete
 #     -v	verbose: echo shell commands, trace linking steps
 #		(this option is not for the squeamish)
-#     -J	use Java target (instead of writing class files directly)
+#     -J	use older Java code generator
+#		(instead of writing class files directly)
 #     -P	pessimize: don't optimize the generated Java code
 #
 #  Jcont translates Icon source files into .zip files, and links .zip
