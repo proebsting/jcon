@@ -32,10 +32,6 @@ vString reads(long n) {
 	iRuntime.error(212, this);		// not open for reading
     }
 
-    if (fileToSync != null && instream == System.in) {
-	fileToSync.flush();			// flush pending graphics output
-    }
-
     try {
 	while (b.length() < n) {
 	    char c = this.rchar();

@@ -378,9 +378,7 @@ class k$host extends vProc0 {					// &host
 class k$input extends vProc0 {					// &input
 
     static vFile file =		// referenced externally
-	vFile.New("&input",
-	    new DataInputStream(new BufferedInputStream(System.in)), null);
-	    //#%#% why is this buffered if we're piling our own buffering atop?
+	vFile.New("&input", System.in);	
 
     public vDescriptor Call() {
 	return file;
@@ -392,8 +390,7 @@ class k$input extends vProc0 {					// &input
 class k$output extends vProc0 {					// &output
 
     static vFile file =		// referenced externally
-	vFile.New("&output", null,
-	    new DataOutputStream(new BufferedOutputStream(System.out)));
+	vFile.New("&output", System.out, true);
 
     public vDescriptor Call() {
 	return file;
@@ -405,7 +402,7 @@ class k$output extends vProc0 {					// &output
 class k$errout extends vProc0 {					// &errout
 
     static vFile file = 		// referenced externally
-	vFile.New("&errout", null, new DataOutputStream(System.err));
+	vFile.New("&errout", System.err, false);
 
     public vDescriptor Call() {
 	return file;

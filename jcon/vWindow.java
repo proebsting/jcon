@@ -153,7 +153,7 @@ private static vWindow curwin;
 
 static void setCurrent(vWindow win) {
     curwin = win;
-    vFile.fileToSync = win;
+    vFile.winToSync = win;
 }
 
 static vWindow getCurrent() {

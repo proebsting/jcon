@@ -27,7 +27,7 @@ public abstract class vFile extends vValue {
     int inext;			// offset to next buffered character
     int icount;			// number of remaining buffered chars
     long ifpos;			// input file position (only valid mode "r")
-    long iflen;			// input file length (only valid mode "r")
+    long iflen;			// input file length (only valid random "r")
 
     char lastCharRead = '\0';	// last char seen by read()
 
@@ -39,18 +39,29 @@ static Hashtable openfiles = new Hashtable();	// set of open files
 
 
 
+// Window synchronization: The graphics code sets winToSync to register
+// a vWindow file that needs to be synchronized (by winToSync.flush())
+// before reading from &input.  This is here and not in vWindow because we
+// don't want to initialize the vWindow class in a non-graphics execution.
+
+static vFile winToSync;		// window to sync, if non-null
+
+
+
 abstract vString reads(long n);		// read n bytes
 abstract void writes(vString s);	// write without appending newline
 abstract void newline();		// write newline
 
 
+
+//  vDescriptor methods
+
 static vString typestring = vString.New("file");
 public vString Type()		{ return typestring; }
+
 vString image()			{ return this.img; }
 int rank()			{ return 60; }	// files sort after windows
 int compareTo(vValue v)		{ return this.img.compareTo(((vFile) v).img); }
-
-
 
 public vDescriptor Bang() {
     final vString s = this.read();
@@ -64,16 +75,6 @@ public vDescriptor Bang() {
 	}
     };
 }
-
-
-
-// synchronization: The graphics code sets fileToSync to register a vWindow
-// file that needs to be synchronized before tty (actually dataInputStream)
-// input.  This is here and not in vWindow because we don't want to
-// initialize the vWindow class in a non-graphics execution.
-// Synchronization is done by calling fileToSync.flush().
-
-static vFile fileToSync;	// file to sync, if non-null
 
 
 
@@ -91,10 +92,22 @@ public static void shutdown() {
 
 
 
-// constructor methods
+// factory methods
 
-public static vFile New(String kw, DataInput i, DataOutput o)
-				{ return new vTFile(kw, i, o); }        
+public static vFile New(String kwname, InputStream i) {		// &input
+    return new vTFile(kwname, new DataInputStream(i), null);
+}
+
+public static vFile New(String kwname, PrintStream o, boolean buffered) {
+							// &output, errout
+    DataOutputStream ostream;
+    if (buffered) {
+	ostream = new DataOutputStream(new BufferedOutputStream(o));
+    } else {
+	ostream = new DataOutputStream(o);
+    }
+    return new vTFile(kwname, null, ostream);
+}
 
 public static vFile New(String filename, String mode, vDescriptor args[]) {
     try {
@@ -122,8 +135,14 @@ vFile() {}
 
 vFile(String kwname, DataInput i, DataOutput o) {
     img = vString.New(kwname);
-    instream = i;
-    outstream = o;
+
+    if (i != null) {			// if input file
+	instream = i;
+	ibuf = new byte[BufferSize];	// allocate input buffer
+	inext = icount = 0;
+    } else {
+	outstream = o;
+    }
     openfiles.put(this, this);				// remember open file
 }
 
@@ -256,17 +275,30 @@ char rchar() throws IOException, EOFException {
 	icount--;
 	return (char) (ibuf[inext++] & 0xFF);
     }
+
     if (ibuf == null) {			// if not buffered by us
 	return (char) (instream.readByte() & 0xFF);
     }
 
-    int n = randfile.read(ibuf);	// refill buffer
-    if (n <= 0) {
+    if (this == k$input.file) {		// flush output before reading &input
+	if (winToSync != null) {
+	    winToSync.flush();		// flush pending graphics output
+	}
+	k$output.file.flush();		// flush &output
+    }
+
+    int nbytes;
+    if (randfile != null) {
+	nbytes = randfile.read(ibuf);	// refill buffer
+    } else {
+	nbytes = ((InputStream)instream).read(ibuf);
+    }
+    if (nbytes <= 0) {
 	throw new EOFException();
     }
-    ifpos += n;				// update file position
+    ifpos += nbytes;				// update file position
     inext = 1;				// point to second byte
-    icount = n - 1;
+    icount = nbytes - 1;
     return (char) (ibuf[0] & 0xFF);	// return first byte
 }
 
@@ -425,10 +457,6 @@ vInteger where() {						// where()
 vString read() {						// read()
     if (instream == null) {
 	iRuntime.error(212, this);	// not open for reading
-    }
-
-    if (fileToSync != null && this == k$input.file) {
-	fileToSync.flush();		// flush pending graphics output
     }
 
     vByteBuffer b = new vByteBuffer(100);
