@@ -16,7 +16,7 @@
 #     -o exe	specify output file for executable
 #     -s	silent: suppress commentary
 #     -t	compile with -fe (to allow tracing) and init &trace to -1
-#     -u	presently ignored
+#     -u	diagnose undeclared variables
 #     -x	execute after compilation
 #     -E	preprocess only
 #
@@ -121,6 +121,7 @@ OFLAG=-O
 JVMDUMP=
 TFLAGS=
 INITTRACE="\$TRACE"
+UNDECLARED=
 
 # set temporary directory name, and assume its deletion
 TDIR=./jcon$$
@@ -144,8 +145,8 @@ while getopts "bcdjsvtuEJPSo:f:" c 2>$NULLFILE; do
 	f)	TFLAGS="$TFLAGS -f$OPTARG";;
 	j)	XTYPE=.jar;;
 	s)	ANNOUNCE=":";;
-	t)	INITTRACE="\${TRACE-\"-1\"}"; TFLAGS="$TFLAGS -fe";;
-	u)	;;	#%#%#%#% should diagnose undeclared identifiers
+	t)	INITTRACE="\${TRACE-\"-1\"}"; UTRACE=-1; TFLAGS="$TFLAGS -fe";;
+	u)	UNDECLARED="-D-u";;
 	v)	CMDTRACE="set -x"; LINKTRACE="-t";;
 	E)	TARGET="ppsrc"; NOLINK="exit";;
 	J)	TRAN="jjtran"; LINK="jjlink";;
@@ -358,12 +359,21 @@ esac	# case $XTYPE
 # delete built .zip files
 $NODELETE rm -f $ZBUILT
 
+# diagnose undeclared variables (maybe)
+if [ "$UNDECLARED" != "" ]; then
+    case $XTYPE in
+       *.jar) (CLASSPATH=$XFILE$PATHSEP$JRTS $JAVA $UNDECLARED $MAIN);;
+       *.ksh) (JXOPTS=$UNDECLARED ./$XFILE);;
+    esac
+fi
+
 # execute, or don't
 $NOEXECUTE
 $NODELETE rm -rf $TDIR
 $ANNOUNCE 1>&2 "Executing:"
 
 case $XTYPE in
-   *.jar) CLASSPATH=$XFILE$PATHSEP$JRTS exec java -DTRACE="$UTRACE" $MAIN "$@";;
+   *.jar) CLASSPATH=$XFILE$PATHSEP$JRTS \
+	    exec $JAVA $JXOPTS -DTRACE="$UTRACE" $MAIN "$@";;
    *.ksh) export TRACE="$UTRACE"; exec ./$XFILE "$@";;
 esac
