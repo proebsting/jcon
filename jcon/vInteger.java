@@ -82,7 +82,7 @@ public vString mkString() {
 	       v /= 10;
            } while (v > 0);
 	   if (negative) {
-	       b[i++] = '-';
+	       b[i++] = (byte) '-';
 	   }
 	   byte[] c = new byte[i];
 	   for (int j = 0; j < i; j++) {

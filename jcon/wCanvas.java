@@ -12,22 +12,24 @@ final class wCanvas extends Canvas {
     Frame f;			// enclosing Frame object
     Image i;			// backing image for refreshing visable image
 
-    int width, height;		// last known width and height
-    int xloc, yloc;		// last known mouse position
-
     vList evq;			// event queue
     wTTY tty;			// file I/O stuff
 
     Vector wlist;		// list of associated vWindows
 
-    String visibility;		// value of "canvas" (visibility) attribute
-    String pointer;		// value of "pointer" (mouse cursor) attribute
-    vString image;		// value of "image" attribut, if set
-
+    int width, height;		// last known width and height
     boolean have_set_width;	// was width set explicitly?
     boolean have_set_height;	// was height set explicitly?
 
-    long lastevent;		// timestamp of last event
+    long evtime;		// timestamp of last event
+    int xloc, yloc;		// last known mouse position
+
+    String visibility;		// value of "canvas" (visibility) attribute
+    String pointer;		// value of "pointer" (mouse cursor) attribute
+
+    vString imgfile;		// value of "image" attribute, if set
+    boolean defer_image;	// defer image loading?
+    Image deferred_image;	// deferred image
 
 
 
@@ -186,9 +188,9 @@ public void paint(Graphics g) {
 //  interval() -- return interval in milliseconds since last event
 
 public long interval() {
-    long tprev = lastevent;
-    lastevent = System.currentTimeMillis();
-    return (tprev == 0) ? 0 : (lastevent - tprev);
+    long tprev = evtime;
+    evtime = System.currentTimeMillis();
+    return (tprev == 0) ? 0 : (evtime - tprev);
 }
 
 

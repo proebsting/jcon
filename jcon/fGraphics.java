@@ -338,7 +338,7 @@ final class f$ReadImage extends vProc4 {	// ReadImage(W,s,x,y)  [no ,s2]
 	}
 	win.CopyImage(im, x, y);
 	im.flush();
-	win.getCanvas().image = fname;
+	win.getCanvas().imgfile = fname;
 	return vNull.New();	// note: returns null, not window
     }
 }

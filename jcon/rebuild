@@ -1,0 +1,23 @@
+#!/bin/sh
+#
+#  rebuild -- rebuild runtime system if necessary
+#
+#  (rebuild all .class files if any are out of date;
+#   not easily expressed in "make")
+
+BZIP=bin/rts.zip
+ZIP=../$BZIP
+
+if [ -f $ZIP ]; then
+    NEWER=`find *.java -newer $ZIP`
+else
+    NEWER=*.java
+fi
+
+if [ "$NEWER" != "" ]; then
+    echo "+ javac *.java"
+    javac *.java
+    echo "+ cd ..; jar cfM $BZIP rts/*.class"
+    cd ..
+    jar cfM $BZIP rts/*.class 2>&1 
+fi

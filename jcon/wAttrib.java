@@ -614,7 +614,7 @@ final class aImage extends wAttrib {
 
     vValue get(vWindow win) {
 	wCanvas c = win.getCanvas();
-	return (c.image == null) ? (vValue)vNull.New() : (vValue)c.image;
+	return (c.imgfile == null) ? (vValue)vNull.New() : (vValue)c.imgfile;
     }
 
     vValue set(vWindow win) {
@@ -627,8 +627,12 @@ final class aImage extends wAttrib {
 	    c.resize(win, im.getWidth(null), im.getHeight(null));
 	    c.have_set_width = c.have_set_height = true;
 	}
-	win.CopyImage(im, -win.dx, -win.dy);
-	im.flush();
-	return c.image = vString.New(val);
+	if (c.defer_image) {
+	    c.deferred_image = im;
+	} else {
+	    win.CopyImage(im, -win.dx, -win.dy);
+	    im.flush();
+	}
+	return c.imgfile = vString.New(val);
     }
 }

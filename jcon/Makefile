@@ -2,20 +2,15 @@
 #
 #  Creates ../bin/rts.zip
 #
-#  The "upclass" script is used to accomplish partial rebuilds.
-#  It is dependable only when small, local changes are made.
-#  When a change affects other classes, run "make clean" before rebuilding.
+#  Uses a script because it's hard to handle this correctly in the Makefile
 
 
-build:	iTrampoline.java compile
+build:  iTrampoline.java
+	./rebuild
 
 iTrampoline.java: trampgen.icn
 	icont -us trampgen -x >iTrampoline.java
 
-compile:
-	./upclass *.java
-	cd ..; jar cfM bin/rts.zip rts/*.class 2>&1 | sed '/<GC: /d'
-
 
 clean:
-	rm -f *.class *.[cho] trampgen iTrampoline.java
+	rm -f *.class trampgen iTrampoline.java

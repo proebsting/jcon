@@ -122,6 +122,15 @@ static vValue dequeue(wCanvas c, int dx, int dy) {
     iKeyword.x.assign(x);		// also sets k$col
     iKeyword.y.assign(y);		// also sets k$row
 
+    if (x == -1 && y == -1 && a instanceof vInteger
+    			&& ((vInteger)a).value == Resize) {
+	// this is a window-closed event
+    	vWindow win = (vWindow) c.wlist.elementAt(0);
+	if (win != null) {
+	    win.close();		// mark as closed in Icon
+	}
+    }
+
     return a;				// return event code
 }
 
@@ -134,11 +143,9 @@ public void windowDeactivated(WindowEvent e)	{}
 public void windowIconified(WindowEvent e)	{}
 public void windowDeiconified(WindowEvent e)	{}
 
-public void windowClosing(WindowEvent e) {		// user has closed it
-    vWindow win = (vWindow)c.wlist.elementAt(0);
-    if (win != null) {
-	win.close();					// mark closed to Icon
-    }
+public void windowClosing(WindowEvent e) {		// user closed window
+    enqueue(vInteger.New(Resize), -1, -1, null);	// enqueue event
+    							// (close when dequeued)
 }
 
 
@@ -158,10 +165,10 @@ public void componentResized(ComponentEvent e) {
 
 
 
-public void keyTyped(KeyEvent e) {}
-public void keyPressed(KeyEvent e) {}
+public void keyTyped(KeyEvent e)		{}
+public void keyReleased(KeyEvent e)		{}
 
-public void keyReleased(KeyEvent e)	{
+public void keyPressed(KeyEvent e) {
     char ch = e.getKeyChar();
     if (ch == '\n' && ! e.isControlDown()) {	// if enter key
 	ch = '\r';				// change to \r for v9 compat

@@ -36,11 +36,15 @@ public class ZipMerge {
 	} catch (ZipException e) {
 	    return;	// duplicate entry, ignored.
 	}
-        int len = is.read(buffer, 0, buffer.length);
-        while (len > 0) {
-            zos.write(buffer, 0, len);
-            len = is.read(buffer, 0, buffer.length);
-        }
+	try {
+	    int len = is.read(buffer, 0, buffer.length);
+	    while (len > 0) {
+		zos.write(buffer, 0, len);
+		len = is.read(buffer, 0, buffer.length);
+	    }
+	} catch (EOFException e) {	// this happens with some files; ignore
+	}
+
         zos.closeEntry();
     }
 

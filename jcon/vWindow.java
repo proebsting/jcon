@@ -112,6 +112,7 @@ vWindow(String title, String mode, vDescriptor args[]) throws IOException {
 
     wAttrib alist[] = wAttrib.parseAtts(args, 2);  // verify parsing first
 
+    c.defer_image = true;			// set flag to defer image load
     for (int i = 0; i < alist.length; i++) {	// apply attributes
 	wAttrib a = alist[i];
 	if (a.val != null) {
@@ -132,11 +133,17 @@ vWindow(String title, String mode, vDescriptor args[]) throws IOException {
     }
 
     // clear window and backing store, including out-of-bounds area, with new bg
-    if (c.image == null) {
-	EraseArea(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
-    }
-    this.flush();
+    EraseArea(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
 
+    // now (after initializing background) load deferred image
+    if (c.deferred_image != null) {
+    	CopyImage(c.deferred_image, -dx, -dy);
+	c.deferred_image.flush();
+	c.deferred_image = null;
+    }
+    c.defer_image = false;
+
+    this.flush();
     setCurrent(this);		// remember as "current" window
 }
 
@@ -204,7 +211,6 @@ void newgcb(Graphics g) {
 //  "current window" maintenance  (not the same as &window)
 //  set by open() and Event()
 //  used by assignment to &x, &y, &row, &col
-//  and for synching with reads from tty
 
 private static vWindow curwin;
 
@@ -214,10 +220,10 @@ static void setCurrent(vWindow win) {
 }
 
 static vWindow getCurrent() {
-    if (curwin == null) {
-	iRuntime.error(140);
+    if (curwin != null && curwin.c != null) {	// if still open
+    	return curwin;
     }
-    return curwin;
+    return curwin = iKeyword.window.getWindow();  // no, fall back to &window
 }
 
 
@@ -346,7 +352,7 @@ vValue Event() {
 	    Thread.sleep(iConfig.PollDelay);
 	} catch (InterruptedException x) {
 	}
-	if (c.i == null) {
+	if (c == null) {
 	    iRuntime.error(142);	// window was closed while waiting
 	}
 	e = wEvent.dequeue(c, dx, dy);
@@ -374,7 +380,7 @@ static vWindow Active() {		// Active() finds win w/ pending event
     while (true) {
 	for (int i = 0; i < n; i++) {
 	    vWindow w = (vWindow) v.elementAt((i + offset) % n);
-	    if (w.c.evq.Size().value > 0) {
+	    if (w.c != null && w.c.evq.Size().value > 0) {
 		return w;
 	    }
 	}

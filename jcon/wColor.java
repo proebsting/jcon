@@ -153,9 +153,9 @@ private static int hex(byte[] b, int i, int n) {
     	char c = (char) b[i++];
 	if ('0' <= c && c <= '9') {
 	    r += c - '0';
-	} else if ('a' <= c && c <= 'z') {
+	} else if ('a' <= c && c <= 'f') {
 	    r += c - 'a' + 10;
-	} else if ('A' <= c && c <= 'Z') {
+	} else if ('A' <= c && c <= 'F') {
 	    r += c - 'A' + 10;
 	} else {
 	    return -1;

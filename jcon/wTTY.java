@@ -132,7 +132,7 @@ void writes(vWindow win, vString s) {
 	    default:
 		continue;
 	}
-	i = j;
+	i = j + 1;
     }
     wchars(win, m, b, i, j);
 }
