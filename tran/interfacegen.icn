@@ -156,18 +156,22 @@ procedure operators()
 	[ 2,    "--", "Diff",       "jcon.vValue"      ]
     ]
 
-    op_methodrefs(ops, "op_methodref", "", "jcon/vDescriptor")
+    op_methodrefs(ops, "op_methodref", "", "jcon/vDescriptor", &null)
     op_methodrefs(ops, "trampoline_op_methodref",
                        "Ljava/lang/String;ILjcon/vDescriptor;",
-		       "jcon/iTrampoline")
+		       "jcon/iTrampoline", "trampoline")
 end
 
-procedure op_methodrefs(ops, fn, prefix, ty)
+procedure op_methodrefs(ops, fn, prefix, ty, trampoline)
     local o
 
     write("procedure bc_", fn, "(c, name, arity, rval)")
     every o := !ops do {
-	op_select(o, prefix, ty)
+	if /trampoline | (o[2] ~== "@") then {
+	    op_select(o, prefix, ty)
+	} else {
+	    op_select(o, "Ljava/lang/String;ILjava/lang/String;Ljcon/vDescriptor;", ty)
+	}
     }
     write("\trunerr(500, name || arity)")
     write("end")
@@ -244,8 +248,10 @@ procedure methodrefs()
              "New_vList"],
 	["Free", "(Ljcon/vLocalVar;)V", "jcon/vLocalVar"],
 	["cofail", "()V", "jcon/vCoexp"],
+	["cofail", "(Ljava/lang/String;ILjava/lang/String;Ljcon/vCoexp;)V", "jcon/iTrampoline", "trampoline_cofail"],
 	["copy", "(I)Ljcon/vClosure;", &null],
 	["coret", "(Ljcon/vDescriptor;)V", "jcon/vCoexp"],
+	["coret", "(Ljava/lang/String;ILjava/lang/String;Ljcon/vCoexp;Ljcon/vDescriptor;)V", "jcon/iTrampoline", "trampoline_coret"],
 	["create", "()V", "jcon/vCoexp"],
 	["createVars", "()V", &null],
 	["declareDebugging", "()V", "jcon/iEnv"],

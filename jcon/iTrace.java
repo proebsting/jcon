@@ -100,10 +100,62 @@ public static vDescriptor Resume(String fname, int lineno, vDescriptor object) {
     return result;		// return/suspend result
 }
 
+//  iTrace.coret -- called by trampolines to issue tracing messages
+
+public static void coret(String fname, int lineno, String caller, vCoexp a, vDescriptor val) {
+    String s;
+
+    s = caller;
+    s += "; " + iEnv.cur_coexp.report();
+    s += " returned " + val.report() + " to ";
+    try {
+        s += ((vCoexp) a.callers.peek()).report();
+    } catch (java.util.EmptyStackException e) {
+	iRuntime.error(900);
+    }
+    if (iKeyword.trace.check()) {
+        trace(fname, lineno, s);
+    }
+    a.coret(val);
+}
+
+//  iTrace.cofail -- called by trampolines to issue tracing messages
+
+public static void cofail(String fname, int lineno, String caller, vCoexp a) {
+    String s;
+
+    s = caller;
+    s += "; " + iEnv.cur_coexp.report();
+    s += " failed to ";
+    try {
+        s += ((vCoexp) a.callers.peek()).report();
+    } catch (java.util.EmptyStackException e) {
+	iRuntime.error(900);
+    }
+    if (iKeyword.trace.check()) {
+        trace(fname, lineno, s);
+    }
+    a.cofail();
+}
+
+//  iTrace.Activate -- called by trampolines to issue tracing messages
+
+public static vDescriptor Activate(String fname, int lineno, String caller, vDescriptor a1, vDescriptor a2) {
+    String s;
+
+    s = caller;
+    s += "; " + iEnv.cur_coexp.report();
+    s += " : " + a2.Deref().report() + " @ " + a1.Deref().report();
+    if (iKeyword.trace.check()) {
+        trace(fname, lineno, s);
+    }
+    return a1.Activate(a2);
+}
 
 
 //  trace(file, line, obj, string, value) -- output suspend/return trace
 //  trace(file, line, obj, string) -- output general trace message
+//  trace(file, line, string) -- output general trace message
 
 static void trace(String fn, int ln, vDescriptor o, String s, vDescriptor v) {
     if (v == null) {
@@ -114,6 +166,23 @@ static void trace(String fn, int ln, vDescriptor o, String s, vDescriptor v) {
 }
 
 static void trace(String fname, int lineno, vDescriptor obj, String s) {
+    StringBuffer out = new StringBuffer(80);
+
+    if (obj == null) {
+	out.append("?");
+    } else if (obj instanceof vTracedClosure) {
+	String procImage = ((vTracedClosure)obj).tracedProc.report().toString();
+	out.append(procImage.substring(procImage.lastIndexOf(' ') + 1));
+    } else {
+	String procImage = obj.report().toString();
+	out.append(procImage.substring(procImage.lastIndexOf(' ') + 1));
+    }
+
+    out.append(s);
+    trace(fname, lineno, out.toString());
+}
+
+static void trace(String fname, int lineno, String s) {
     StringBuffer out = new StringBuffer(80);
 
     if (fname == null || lineno == 0) {
@@ -133,16 +202,6 @@ static void trace(String fname, int lineno, vDescriptor obj, String s) {
 
     for (int n = iEnv.cur_coexp.depth - 1; n > 0; n--) {
 	out.append("| ");
-    }
-
-    if (obj == null) {
-	out.append("?");
-    } else if (obj instanceof vTracedClosure) {
-	String procImage = ((vTracedClosure)obj).tracedProc.report().toString();
-	out.append(procImage.substring(procImage.lastIndexOf(' ') + 1));
-    } else {
-	String procImage = obj.report().toString();
-	out.append(procImage.substring(procImage.lastIndexOf(' ') + 1));
     }
 
     out.append(s);

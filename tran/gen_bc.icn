@@ -540,7 +540,7 @@ end
 
 # record ir_OpFunction( coord lhs fn argList failLabel )
 procedure bc_gen_ir_OpFunction(s, p)
-    local method
+    local c, method
 
     p.fn.arity = *p.argList | runerr(500, p)
     if \bc_nodebuginfo then {
@@ -550,6 +550,10 @@ procedure bc_gen_ir_OpFunction(s, p)
         put(s, j_invokevirtual(method))
     } else {
 	bc_push_coordinate(s, p.coord)
+	if p.fn.name == "@" then {
+            c := j_cp_String(bc_current_classptr, j_cp_Utf8(bc_current_classptr, bc_function_name))
+            put(s, j_ldc_w(c))
+	}
         method := bc_trampoline_op_methodref(bc_current_classptr, p.fn.name, p.fn.arity, p.fn.rval)
         \method | runerr(500)
         every bc_gen(s, !p.argList)
@@ -665,25 +669,45 @@ end
 
 # record ir_CoRet( value resumeLabel )
 procedure bc_gen_ir_CoRet(s, p)
-    local r, coretmethod, current
+    local c, r, coretmethod, current
 
-    coretmethod := bc_coret_methodref(bc_current_classptr)
+    if /bc_nodebuginfo then {
+	bc_push_coordinate(s, p.coord)
+        c := j_cp_String(bc_current_classptr, j_cp_Utf8(bc_current_classptr, bc_function_name))
+        put(s, j_ldc_w(c))
+    }
     current := bc_cur_coexp_fieldref(bc_current_classptr)
     put(s, j_getstatic(current))
     bc_gen(s, p.value)
-    put(s, j_invokevirtual(coretmethod))
+    if \bc_nodebuginfo then {
+        coretmethod := bc_coret_methodref(bc_current_classptr)
+        put(s, j_invokevirtual(coretmethod))
+    } else {
+        coretmethod := bc_trampoline_coret_methodref(bc_current_classptr)
+        put(s, j_invokestatic(coretmethod))
+    }
     bc_transfer_to(s, p.resumeLabel)
     return s
 end
 
 # record ir_CoFail( )
 procedure bc_gen_ir_CoFail(s, p)
-    local cofailmethod, current
+    local c, cofailmethod, current
 
-    cofailmethod := bc_cofail_methodref(bc_current_classptr)
+    if /bc_nodebuginfo then {
+	bc_push_coordinate(s, p.coord)
+        c := j_cp_String(bc_current_classptr, j_cp_Utf8(bc_current_classptr, bc_function_name))
+        put(s, j_ldc_w(c))
+    }
     current := bc_cur_coexp_fieldref(bc_current_classptr)
     put(s, j_getstatic(current))
-    put(s, j_invokevirtual(cofailmethod))
+    if \bc_nodebuginfo then {
+        cofailmethod := bc_cofail_methodref(bc_current_classptr)
+        put(s, j_invokevirtual(cofailmethod))
+    } else {
+        cofailmethod := bc_trampoline_cofail_methodref(bc_current_classptr)
+        put(s, j_invokestatic(cofailmethod))
+    }
     # the next two lines make the verifier happy.
     put(s, j_aconst_null())
     put(s, j_areturn())

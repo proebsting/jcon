@@ -35,7 +35,7 @@ procedure operators()
 
 	[ 1,     "#", "Limit",        "vNumeric",   "limit counter: $"    ],
 	[ 2,     "&", "Conjunction",  "vDescriptor" ],
-	[ 2,     "@", "Activate",     "vDescriptor" ],
+	# [ 2,     "@", "Activate",     "vDescriptor" ],
 	[ 3,   "...", "ToBy",         "vDescriptor", "{$ to $ by $}" ],
 
 	[ 1,     "+", "Numerate",     "vNumeric"    ],
@@ -158,6 +158,24 @@ end
 
 procedure boilerplate()
     every write(![
+"",
+"public static void coret(String fname, int lineno, String caller, vCoexp a, vDescriptor val) {",
+"	iTrace.coret(fname, lineno, caller, a, val);",
+"}",
+"",
+"public static void cofail(String fname, int lineno, String caller, vCoexp a) {",
+"	iTrace.cofail(fname, lineno, caller, a);",
+"}",
+"",
+"public static vDescriptor Activate(String fname, int lineno, String caller, vDescriptor a1, vDescriptor a2) {",
+"	try {",
+"		vDescriptor retval = iTrace.Activate(fname, lineno, caller, a1, a2);",
+"               return retval;",
+"	} catch (iError e) {",
+"		e.propagate(fname, lineno, \"{$ @ $}\", a1, a2);",
+"		return null;",
+"	}",
+"}",
 "",
 "public static vVariable Field(String fname, int lineno, vDescriptor record, String field) {",
 "	try {",
