@@ -1,10 +1,10 @@
 global tok          # This is the coexpression that represents the scanner
 global tok_rec      # This is the current token record
 
-procedure parse(getline)
+procedure parse(lex)
     local d
 
-    tok := create yylex(getline)
+    tok := lex
     tok_rec := @tok
     suspend program()
 end

@@ -231,10 +231,10 @@ for FNAME in $IFILES; do
 	    $JTRAN preproc $FNAME.icn : stdout
 	    ;;
 	ucode)
-	    $JTRAN preproc $FNAME.icn : parse : ucode_File -out:$FNAME
+	    $JTRAN preproc $FNAME.icn : yylex : parse : ucode_File -out:$FNAME
 	    ;;
 	bytecode)
-	    if $JTRAN preproc $FNAME.icn : parse : \
+	    if $JTRAN preproc $FNAME.icn : yylex : parse : \
 		bc_File $OFLAG $TFLAGS -class:l\$$FNAME -dir:$TDIR/; then
 		# bundle .class files (and linkage info) into .zip file
 		(cd $TDIR; $JAR cfM ../$FNAME.zip links *.class)
