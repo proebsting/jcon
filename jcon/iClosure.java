@@ -106,8 +106,9 @@ String trace() {
     
             if (c == '0') {			// $0: proc/func name
                 String s = this.getClass().getName();
-                if (s.charAt(1) == '$') {	// should be [pf]$xxxxx format
-                    b.append(s.substring(2));
+		int j = s.indexOf('$');
+		if (j >= 0) {			// xxx$yyyyy format
+                    b.append(s.substring(j+1));
                 } else {			// no, use full class name
                     b.append(s);
                 }

@@ -21,12 +21,17 @@ public class vProc extends vValue {
 	String image() {
 
 		String s = proc.getName();
+		int j = s.indexOf('$');
+		if (j >= 0) {
+                    j = j + 1;
+                } else {
+                    j = 0;
+		}
 
-		//#%#%# this code has guilty knowledge of internals of others
 		if (s.charAt(0) == 'p') {
-			return "procedure " + s.substring(2);
+			return "procedure " + s.substring(j);
 		} else {
-			return "function " + s.substring(6);
+			return "function " + s.substring(j);
 		}
 	}
 

@@ -64,7 +64,19 @@ public class vRecord extends vValue {
                 return values[i];
             }
 	}
-}
+
+	vValue Sort(vDescriptor n) {
+	    vValue a[] = new vValue[values.length];
+	    for (int i = 0; i < values.length; i++) {
+	    	a[i] = values[i].deref();
+	    }
+	    iUtil.sort(a);
+	    return iNew.List(a);
+	}
+
+} // class vRecord
+
+
 
 class iRecordClosure extends iFunctionClosure {
 	String name;

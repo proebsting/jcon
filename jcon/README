@@ -47,9 +47,10 @@ error reporting:
 miscellaneous:
 -- random selection uses Java's RNG, presumably generating different sequences
 -- random sequences are different every time
--- structures don't have serial numbers yet
+-- structures don't have serial numbers yet (and so, they don't sort right)
+-- sort(X) works for set, list, record, but not table (yet)
 -- crude tracing can be enabled by setting &trace
--- write() doesn't accept file arguments
+-- read() and write() doen't accept file arguments
 -- x ! R doesn't work for records (only for lists)
 -- resuming a "break" is handled improperly (program crashes with Java error)
 
