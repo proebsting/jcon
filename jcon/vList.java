@@ -1,9 +1,7 @@
 //  vList -- an Icon list
 //
 //  java.util.vectors are used to implement lists.
-//  The *end* of the vector is the *front* of a list,
-//  so that push() and pop() are relatively quick.
-//  (put and pull will be slow for long lists, at least with JDK 1.0.2).
+//  push(), pop(), and get() take O(N) time where N is list size.
 
 package rts;
 
@@ -28,7 +26,7 @@ vList(int n, vValue x) {			// new Vlist(n, x)
 vList(vDescriptor[] elements) {			// new Vlist(elements[])
     super(nextsn++);
     v = new Vector(elements.length);
-    for (int i = elements.length - 1; i >= 0; i--) {	// add back-to-front
+    for (int i = 0; i < elements.length; i++) {
     	v.addElement(new vListVar(this, elements[i].deref()));
     }
 }
@@ -67,6 +65,8 @@ int posEq(long n)
     }
 }
 
+
+
 // elements() is used when creating vSets and for the binary "!" operator.
 // Elements must be generated in order.
 java.util.Enumeration elements() {
@@ -77,9 +77,8 @@ int intsize() {
 }
 
 
+
 //  operations
-
-
 
 vInteger Size()	{					//  *L
     return iNew.Integer(v.size());
@@ -92,11 +91,20 @@ vValue Copy() {						// copy(L)
 
 
 vValue Push(vDescriptor x) {				// push(L, x)
-    v.addElement(new vListVar(this, x.deref()));
+    v.insertElementAt(new vListVar(this, x.deref()), 0);
     return this;
 }
 
 vValue Pull() {						// pull(L)
+    if (v.size() == 0) {
+    	return null; /*FAIL*/
+    }
+    vDescriptor x = (vDescriptor) v.lastElement();
+    v.removeElementAt(v.size()-1);
+    return x.deref();
+}
+
+vValue Pop() {						// pop(L)
     if (v.size() == 0) {
     	return null; /*FAIL*/
     }
@@ -105,26 +113,17 @@ vValue Pull() {						// pull(L)
     return x.deref();
 }
 
-vValue Pop() {						// pop(L)
-    if (v.size() == 0) {
-    	return null; /*FAIL*/
-    }
-    vDescriptor x = (vDescriptor) v.lastElement();
-    v.removeElementAt(v.size()-1);
-    return x.deref();
-}
-
 vValue Get() {						// get(L)
     if (v.size() == 0) {
     	return null; /*FAIL*/
     }
-    vDescriptor x = (vDescriptor) v.lastElement();
-    v.removeElementAt(v.size()-1);
+    vDescriptor x = (vDescriptor) v.firstElement();
+    v.removeElementAt(0);
     return x.deref();
 }
 
 vValue Put(vDescriptor x) {				// put(L, x)
-    v.insertElementAt(new vListVar(this, x.deref()), 0);
+    v.addElement(new vListVar(this, x.deref()));
     return this;
 }
 
@@ -135,8 +134,7 @@ vDescriptor Index(vValue i) {				//  L[i]
     if (m == 0 || m > v.size()) {
     	return null; /*FAIL*/
     }
-    // index from BACK end of vector
-    return (vDescriptor) v.elementAt(v.size() - m);	// return as variable
+    return (vDescriptor) v.elementAt(m - 1);		// return as variable
 }
 
 
@@ -154,7 +152,7 @@ vDescriptor Section(vValue i, vValue j) {		//  L[i:j]
     }
     vDescriptor a[] = new vDescriptor[n-m];
     for (int k = 0; k < a.length; k++) {
-    	a[k] = (vDescriptor) v.elementAt(v.size() - (k + m));
+    	a[k] = (vDescriptor) v.elementAt(k + m - 1);
     }
     return iNew.List(a);
 }
@@ -165,7 +163,7 @@ vDescriptor Select() {					//  ?L
     if (v.size() == 0) {
 	return null; /*FAIL*/
     }
-    return (vDescriptor) v.elementAt(v.size()-(int)k$random.choose(v.size())-1);
+    return (vDescriptor) v.elementAt((int)k$random.choose(v.size()));
     							// return as variable
 }
 
@@ -174,15 +172,14 @@ vDescriptor Select() {					//  ?L
 vDescriptor Bang(iClosure c) {				//  !L
     int i;
     if (c.o == null) {
-	c.o = new Integer(i = 1);
+	c.o = new Integer(i = 0);
     } else {
 	c.o = new Integer(i = ((Integer)c.o).intValue() + 1);
     }
-    if (i > v.size()) {
+    if (i >= v.size()) {
 	return null; /*FAIL*/
     } else {
-	// indexing runs from BACK end of vector
-	return (vDescriptor) v.elementAt(v.size() - i);	// generate as variable
+	return (vDescriptor) v.elementAt(i);		// generate as variable
     }
 }
 
@@ -191,9 +188,9 @@ vValue ListConcat(vDescriptor v) {			// L1 ||| L2
     if (!(v instanceof vList)) {
 	iRuntime.error(108, v);
     }
-    vList result = new vList(((vList)v).v);
-    for (int i = 0; i < this.v.size(); i++) {
-	result.v.addElement(this.v.elementAt(i));
+    vList result = new vList(this.v);
+    for (int i = 0; i < ((vList)v).v.size(); i++) {
+	result.v.addElement(((vList)v).v.elementAt(i));
     }
     return result;
 }
@@ -230,18 +227,19 @@ class vListEnumeration implements java.util.Enumeration {
 
 	vListEnumeration(java.util.Vector v) {
 		this.v = v;
-		this.i = 1;
+		this.i = 0;
 	}
 
 	public boolean hasMoreElements() {
-		return i <= v.size();
+		return i < v.size();
 	}
 
 	public Object nextElement() {
-		i++;
-		return v.elementAt(v.size() - i + 1);
+		return v.elementAt(i++);
 	}
 }
+
+
 
 class vListVar extends vSimpleVar {
 	vList parent;
