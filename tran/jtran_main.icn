@@ -1,6 +1,7 @@
 invocable all
 
 global outfile, optimize_flag, nolink_flag, java_classname, noerror2failure
+global nodebuginfo
 
 procedure main(L) 
 	local filename, cg_flags, cg, getline, predefs, preonly
@@ -28,6 +29,9 @@ procedure main(L)
 			} else if ="-f" then {
 				if find("e") | find("a") then {
 					noerror2failure := 1
+				}
+				if find("n") | find("a") then {
+					nodebuginfo := 1
 				}
 			} else if ="-" then {
 				put(cg_flags, &subject)

@@ -114,6 +114,8 @@ end
 procedure gen_bc_irCoord(s, p)
 	local f, line, column, field
 
+	/nodebuginfo | return s
+
 	if f := cp_String(bc_proc_classptr, cp_Utf8(bc_proc_classptr, \(\p.coord).file)) then {
 		field := create_fieldref(bc_proc_classptr, "file", "Ljava/lang/String;", "rts/iClosure")
 		put(s, aload_0())
