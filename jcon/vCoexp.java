@@ -10,6 +10,7 @@ public class vCoexp extends vValue implements Runnable {
 	vDescriptor incomingValue;
 	Semaphore lock;
 	int snum;	// serial number
+	int resultCount;
 
 
 	static int nextsn = 1;		// next serial number
@@ -45,6 +46,7 @@ public class vCoexp extends vValue implements Runnable {
 
 	public void coret(vDescriptor retValue) {
 		vCoexp caller = (vCoexp) callers.pop();
+		resultCount++;
 		transfer(retValue, caller);
 	}
 
@@ -84,6 +86,8 @@ public class vCoexp extends vValue implements Runnable {
 		c.thread.start();
 		return c;
 	}
+
+	vInteger Size() { return iNew.Integer(resultCount); }
 
 	String type()	{ return "co-expression";}
 
