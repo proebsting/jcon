@@ -62,7 +62,7 @@ procedure yylex0(getline)
 		}
 
 		# skip whitespace
-		tab(many(' \t\f'))
+		tab(many(' \t\f\r'))
 		coord_pos := &pos
 
 		# check if EOL

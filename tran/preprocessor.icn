@@ -35,7 +35,7 @@ global preproc_sym_table,preproc_if_stack,preproc_file_stack,preproc_if_state,
 procedure preprocessor(fname,predefined_syms)
 	local line,result
 	static nonpunctuation
-	initial nonpunctuation := &letters ++ &digits ++ ' \t\f'
+	initial nonpunctuation := &letters ++ &digits ++ ' \t\f\r'
 	
 	preproc_new(fname,predefined_syms)
 	
@@ -220,7 +220,7 @@ procedure preproc_scan_directive()
 		"error": {
 			if /preproc_if_state then {
 				preproc_space()
-				preproc_error(trim(tab(find("#") | 0),' \t\f'))
+				preproc_error(trim(tab(find("#") | 0),' \t\f\r'))
 			}
 		}
 		"ITRACE": {
@@ -388,14 +388,14 @@ procedure preproc_scan_define_value()
 			}
 		}
 	}) | tab(0)
-	return trim(&subject[q:&pos],' \t\f')
+	return trim(&subject[q:&pos],' \t\f\r')
 end
 
 #
 # Scans white space.
 #
 procedure preproc_space()
-	suspend tab(many(' \t\f'))
+	suspend tab(many(' \t\f\r'))
 end
 
 #
@@ -403,7 +403,7 @@ end
 #
 procedure preproc_opt_space()
 	local i
-	suspend if i := many(' \t\f') then tab(i) else ""
+	suspend if i := many(' \t\f\r') then tab(i) else ""
 end
 
 #
