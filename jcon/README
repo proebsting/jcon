@@ -26,6 +26,7 @@ general:
 -- random selection uses Java's RNG, presumably generating different sequences
 -- write() is simplified, e.g. doesn't accept file arguments
 -- structures don't have serial numbers yet
+-- &dateline returns date in Java format, not Icon format
 
 strings:
 -- image(s) doesn't escape special characters
@@ -40,6 +41,7 @@ numerics:
 error reporting:
 -- no error recovery yet
 -- long strings are not elided, list contents are omitted, etc.
+-- main's argument list is shown in the traceback
 
 arguably correct differences:
 -- "n to MAXINT" case works correctly in to-by

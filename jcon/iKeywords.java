@@ -1,5 +1,8 @@
 //  iKeywords.java -- Icon keywords
 
+import java.util.*;
+
+
 class iKeywords extends iFile {
 
 	void announce(iEnv env) {
@@ -12,9 +15,11 @@ class iKeywords extends iFile {
 		env.declareKey("subject", s);
 		env.declareKey("pos", p);
 
-		env.declareKey("null", iNew.Null());
+		env.declareKey("clock", new k$clock());
+		env.declareKey("date", new k$date());
+		env.declareKey("dateline", new k$dateline());	//#%#% imperfect
 
-		env.declareKey("fail", iNew.Null()); //#%#% BOGUS, avoids msgs
+		env.declareKey("null", iNew.Null());
 
 		env.declareKey("e", iNew.Real(Math.E));
 		env.declareKey("phi", iNew.Real((1.0 + Math.sqrt(5.0)) / 2.0));
@@ -22,6 +27,57 @@ class iKeywords extends iFile {
 
 		env.declareKey("version", 
 			    iNew.String("Jcon Version 0.0, Spring, 1997"));
+	}
+}
+
+
+
+abstract class k$Value extends vValue {		// super of read-only keywords
+
+	abstract vValue deref();		// must implement deref()
+
+	String image()	{ return deref().image(); }
+	String type()	{ return deref().type(); }
+}
+
+
+
+class k$clock extends k$Value {			// &clock
+
+	vValue deref() {
+		return iNew.String((new Date()).toString().substring(11,19));
+	}
+}
+
+
+
+class k$date extends k$Value {			// &date
+
+	vValue deref() {
+		Date d = new Date();
+		StringBuffer b = new StringBuffer(10);
+		b.append(d.getYear() + 1900);
+		b.append('/');
+		if (d.getMonth() < 9) {		// getMonth returns 0 - 11
+		    b.append('0');
+		}
+		b.append(d.getMonth() + 1);
+		b.append('/');
+		if (d.getDate() < 10) {		// but getDate returns 1 - 31
+		    b.append('0');
+		}
+		b.append(d.getDate());
+		return iNew.String(b.toString());
+	}
+}
+
+
+
+class k$dateline extends k$Value {			// &dateline
+
+	vValue deref() {
+		//#%#% this isn't right: need to format according to Icon rules
+		return iNew.String(new Date().toString());
 	}
 }
 

@@ -13,6 +13,7 @@ static final String PREFIX = "f$";	// classname prefix for built-in funcs
 
 
 void announce(iEnv env) {
+	declare(env, "delay");
 	declare(env, "exit");
 	declare(env, "get");
 	declare(env, "image");
@@ -155,6 +156,20 @@ class f$exit extends iFunctionClosure {				// exit(n)
 		int n = (int) vInteger.argVal(args, 0, 0);
 		System.exit(n);					// exit
 		return null;	// not reached
+	}
+}
+
+
+
+class f$delay extends iFunctionClosure {			// delay(i)
+	vDescriptor function(vDescriptor[] args) {
+		int i = (int) vInteger.argVal(args, 0, 1);
+		try {
+			Thread.sleep(i);
+		} catch (InterruptedException e) {
+			// nothing; just return		//#%#%??
+		}
+		return iNew.Null();
 	}
 }
 
