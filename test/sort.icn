@@ -1,6 +1,15 @@
 # test sorting 
 
 procedure main()
+   listtest()
+   rectest()
+end
+
+
+
+#  listtest() -- test sorting of lists and sets
+
+procedure listtest()
    local n, x, S, L1, L2, L3
 
    every n := (0 to 10) | 23 | 47 | 91 do {
@@ -21,6 +30,24 @@ procedure main()
       check(L2, L3)
 
    }
+end
+
+
+#  rectest() -- test sorting of records
+
+record r0()
+record r1(a)
+record r2(a,b)
+record r5(a,b,c,d,e)
+
+procedure rectest()
+   write()
+   wlist(sort(r0()))
+   wlist(sort(r1(12)))
+   wlist(sort(r2(5,2)))
+   wlist(sort(r5(2,7,1,8,3)))
+   wlist(sort(r5(3,1,4,1,6)))
+   wlist(sort(r5("t","e","p","a","d")))
 end
 
 
