@@ -2,7 +2,7 @@
 #
 #  jcont -- compile Icon program
 #
-#  usage:  jcont [-bcdhjstuvEJPS] [-f flags] [-o exe] file... [-x [args]]
+#  usage:  jcont [-bcdhjrstuvEJPS] [-f flags] [-o exe] file... [-x [args]]
 #
 #     file:	filename.icn (Icon source) or filename.zip (translated code)
 #
@@ -12,6 +12,7 @@
 #     -h	print this usage message and exit
 #     -j	produce .jar file instead of executable script
 #     -o exe	specify output file for executable
+#     -r	bundle runtime system into output file
 #     -s	silent: suppress commentary
 #     -t	compile with -fd (to allow tracing) and init &trace to -1
 #     -u	diagnose undeclared variables
@@ -48,6 +49,9 @@
 #	setenv CLASSPATH myprog.jar:/myhome/jcon/bin/jcon.zip
 #	java myprog
 #
+#  If -r is specified, the Jcon runtime system is included in the generated
+#  binary file.  This increases its size by about 300KB, but the resulting
+#  file requires no external runtime library for execution.
 
 # command names
 JAVA="java -noverify"
@@ -78,11 +82,15 @@ esac
 # determine installed directory
 SCRIPT=`whence $0`
 IDIR=`dirname $SCRIPT`
+IDIR="${IDIR#/tmp_mnt}"
+IDIR="${IDIR#/.automount}"
 case $IDIR in
     /*)		;;			# Unix-style absolute path
     ?:*)	;;			# DOS-style absolute path
     *)		IDIR=`pwd`/$IDIR;;	# relative path
 esac
+JRTS="$IDIR${FILESEP}jcon.zip"
+RTSREF="$PATHSEP$JRTS"
 
 # using script location, define handler for usage error
 function usage {	# usage: print header above, and exit
@@ -96,7 +104,7 @@ function usage {	# usage: print header above, and exit
 }
 
 # save command line, user IPATH, user TRACE
-CMDLINE="$0 $*"
+CMDLINE="jcont $*"
 UIPATH="$IPATH"
 UTRACE="$TRACE"
 
@@ -114,6 +122,7 @@ ANNOUNCE=echo
 CMDTRACE=
 TARGET="bytecode"
 LINKTRACE=
+LINKRTS=
 OFLAG=-O
 JVMDUMP=
 TFLAGS=
@@ -134,13 +143,14 @@ NOEXECUTE=exit
 
 # process options, changing default values set above
 
-while getopts "bcdjsvtuEJPSo:f:" c 2>$NULLFILE; do
+while getopts "bcdjrstuvEJPSo:f:" c 2>$NULLFILE; do
     case $c in
 	b)	TARGET="ucode"; NOLINK="exit";;
 	c)	NOLINK="exit";;
 	d)	TDIR=./jtmp; NODELETE=":";;
 	f)	TFLAGS="$TFLAGS -f$OPTARG";;
 	j)	XTYPE=.jar;;
+	r)	LINKRTS=$JRTS; RTSREF=;;
 	s)	ANNOUNCE=":";;
 	t)	INITTRACE="\${TRACE-\"-1\"}"; UTRACE=-1; TFLAGS="$TFLAGS -fd";;
 	u)	UNDECLARED="-D-u";;
@@ -196,10 +206,9 @@ for FNAME; do
     esac
 done
 
-# set paths for translator and for runtime files
+# set paths for translator
 JTRAN="$ICONX $IDIR${FILESEP}$TRAN"
 JLINK="$ICONX $IDIR${FILESEP}$LINK"
-JRTS="$IDIR${FILESEP}jcon.zip"
 
 # estimate the needed header size
 HBASE=480		# approximate size of fixed text, plus breathing room
@@ -287,7 +296,7 @@ rm -f $TDIR/*.class
 $JAVA jcon.FindFiles $LINKTRACE "$UIPATH" $ZFILES >$TDIR/zip.list
 
 # unpack all the .zip files and combine the class files to make a new .zip file
-(cd $TDIR; $JAVA jcon.ZipMerge combined.zip $MAIN.class `cat zip.list`)
+(cd $TDIR; $JAVA jcon.ZipMerge combined.zip $MAIN.class `cat zip.list` $LINKRTS)
 
 # disassemble $MAIN class, if requested
 if [ "$JVMDUMP" != "" ]; then (
@@ -328,7 +337,7 @@ TZIP="$TMPVAR${FILESEP}jcon\$\$.zip"
 trap "rm -rf \$TZIP" 0 1 2 15
 dd bs=$HDRSIZE skip=1 <\$THISFILE >\$TZIP 2>$NULLFILE
 
-export CLASSPATH="\$TZIP${PATHSEP}$JRTS${PATHSEP}\$CLASSPATH"
+export CLASSPATH="\$TZIP$RTSREF$PATHSEP\$CLASSPATH"
 $JAVA -DTRACE=$INITTRACE \$JXOPTS $MAIN "\$@"
 exit
 
