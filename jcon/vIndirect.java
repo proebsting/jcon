@@ -55,8 +55,8 @@ public vNumeric Abs()			{ return Deref().Abs(); }
 public vValue Copy()			{ return Deref().Copy(); }
 public vString Type()			{ return Deref().Type(); }
 
-public vDescriptor IsNull()		{ return Deref().IsNull(); }
-public vDescriptor IsntNull()		{ return Deref().IsntNull(); }
+public vDescriptor IsNull()		{ return isnull() ? this : null; }
+public vDescriptor IsntNull()		{ return isnull() ? null : this; }
 public vDescriptor Select()		{ return Deref().Select(); }
 public vDescriptor Bang()		{ return Deref().Bang(); }
 public vDescriptor Key()		{ return Deref().Key(); }
@@ -146,12 +146,6 @@ vNumeric RevUnequal(vReal a)		{ return Deref().RevUnequal(a);}
 vNumeric RevGreaterEq(vReal a)		{ return Deref().RevGreaterEq(a) ;}
 vNumeric RevGreater(vReal a)		{ return Deref().RevGreater(a); }
 
-
-
-//#%#% to be handled:
-public vVariable Swap(vDescriptor x)      {iRuntime.bomb("Swap"); return null; }
-public vDescriptor RevAssign(vDescriptor x){iRuntime.bomb("RevAssign"); return null;}
-public vDescriptor RevSwap(vDescriptor x)  {iRuntime.bomb("RevSwap"); return null; }
 
 
 public iClosure instantiate(vDescriptor[] args, iClosure parent) //#%#%#%

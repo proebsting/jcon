@@ -72,12 +72,20 @@ static int compareLastWord(vString s1, vString s2) {
 
 
 public vDescriptor ProcessArgs(vDescriptor x) {
+    // unnecessary Deref() on following line
+    // prevents sun.tools.java.CompilerError from JDK 1.1.6 (SGI)
+    final vProc p = (vProc) this.Deref();
     final vDescriptor[] a = x.mkArray(126);
     return new vClosure() {
-	iClosure func = iInterface.Instantiate(this, a, null);	//#%#% parent?
+	iClosure func = iInterface.Instantiate(p, a, null);
+			//#%#% no parent for Instantiate?
 	public vDescriptor resume() {
 	    this.retval = func.nextval();
-	    return this;
+	    if (retval == null) {
+		return null;
+	    } else {
+		return this;
+	    }
 	}
     }.resume();
 }

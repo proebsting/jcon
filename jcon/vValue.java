@@ -168,12 +168,6 @@ public vDescriptor SectionVar(vVariable v, vDescriptor i, vDescriptor j)
 				{ return this.Deref().Section(i, j); }
 
 
-//#%#% to be handled:
-public vVariable Swap(vDescriptor x)      {iRuntime.bomb("Swap"); return null; }
-public vDescriptor RevAssign(vDescriptor x){iRuntime.bomb("RevAssign"); return null;}
-public vDescriptor RevSwap(vDescriptor x)  {iRuntime.bomb("RevSwap"); return null; }
-
-
 
 public iClosure instantiate(vDescriptor[] args, iClosure parent) //#%#%#%
     { return new iErrorClosure(this, args, parent); }  // will gen err 106

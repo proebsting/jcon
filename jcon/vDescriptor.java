@@ -32,10 +32,7 @@ abstract vString report();			// convert for error, traceback
 // dereferencing and assignment
 public abstract vValue Deref();				// . x
 public abstract vVariable Assign(vDescriptor x);	// v := x
-public abstract vVariable Swap(vDescriptor x);		// v :=: x
 public abstract vVariable SubjAssign(vDescriptor x);	// &subject := x  
-public abstract vDescriptor RevAssign(vDescriptor x);	// v <- x
-public abstract vDescriptor RevSwap(vDescriptor x);	// v <-> x
 
 // control-structure-like operations
 public abstract vDescriptor resume();			// resume vClosure
@@ -153,6 +150,23 @@ abstract vNumeric RevEqual(vReal a);		// a = b  ==> b.RevEqual(a)
 abstract vNumeric RevUnequal(vReal a);		// a ~= b ==> b.RevUnequal(a)
 abstract vNumeric RevGreaterEq(vReal a);	// a < b  ==> b.RevGreaterEq(a)
 abstract vNumeric RevGreater(vReal a);		// a >= b ==> b.RevGreaterEq(a)
+
+
+
+//  swapping and reversible assignment are handled here by calling Assign()
+
+public vVariable Swap(vDescriptor v) {		// a :=: b
+    vValue a = this.Deref();
+    vValue b = v.Deref();
+    vVariable retval;
+    if ((retval = this.Assign(b)) == null || v.Assign(a) == null) {
+	return null; /*FAIL*/
+    }
+    return retval;
+}
+
+public vDescriptor RevAssign(vDescriptor x) {iRuntime.bomb("RevAsg");return null;}
+public vDescriptor RevSwap(vDescriptor x){iRuntime.bomb("RevSwap");return null;}
 
 
 
