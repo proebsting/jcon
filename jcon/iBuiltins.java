@@ -77,6 +77,7 @@ void announce() {
 	declare("sqrt", 1);
 	declare("stop", -1);
 	declare("string", 1);
+	declare("system", 1);
 	declare("tab", 1);
 	declare("table", 1);
 	declare("tan", 1);
@@ -370,6 +371,22 @@ class f$rename extends iFunctionClosure {			// rename(s1,s2)
 		} else {
 			return null;
 		}
+	}
+}
+
+class f$system extends iFunctionClosure {			// system(s)
+	vDescriptor function(vDescriptor[] args) {
+		String s = vString.argVal(args, 0);
+		int status;
+		try {
+			// #%#%# new process's stdin/stdout/stderr are
+			// disconnected.  See class Runtime....
+			Process p = Runtime.getRuntime().exec(s);
+			status = p.waitFor();
+		} catch (Throwable e) {
+			status = -1;
+		}
+		return iNew.Integer(status);
 	}
 }
 
