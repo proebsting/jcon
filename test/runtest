@@ -1,0 +1,14 @@
+#!/bin/ksh
+#
+#  runtest [file...] -- run test
+
+if [ $# = 0 ]; then
+   set *.std
+fi
+
+for FNAME; do
+    BASE=${FNAME%.*}
+    echo ${BASE}:
+    ./jcontx $BASE.icn >$BASE.out
+    cmp $BASE.std $BASE.out
+done

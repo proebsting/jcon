@@ -1,0 +1,11 @@
+procedure main()
+   write(image())
+   write(image(,))
+   write(image(47))
+   write(image(3.14159))
+   write(image("asparagus"))
+   write(image(main))
+   write(image(right))
+   write(image(write))
+   write(image(image))
+end

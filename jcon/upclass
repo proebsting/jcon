@@ -1,0 +1,21 @@
+#!/bin/ksh
+#
+#  upclass file.java -- update .class files that are out of date
+
+JAVAC="toba -K"
+
+FILES=
+
+for FNAME; do
+    BASE=${FNAME%.*}
+    if [ ! $BASE.java -ot $BASE.class ]; then
+	FILES="$FILES $BASE.java"
+    fi
+done
+
+if [ ${#FILES} = 0 ]; then
+    exit 0
+fi
+
+set -x 
+$JAVAC $FILES

@@ -1,0 +1,59 @@
+# test arithmetic operators and numeric coercion
+
+procedure main()
+    tst(0, 0)
+    tst(0, 1)
+    tst(0, -1)
+    tst(1, 0)
+    tst(1, 1)
+    tst(1, 2)
+    tst(7, 3)
+    tst(3, 8)
+    tst(6.2, 4)
+    tst(8, 2.5)
+    tst(5.4, 1.2)
+    tst(" 1 ", 2.5)
+    tst(" 3.4", 1.7)
+    tst(" 5 ", " 5 ")
+    tst(0., 0.)
+    tst(0., 1.)
+    tst(0., -1.)
+    tst(1, -2)
+    tst(1., -2.)
+    tst(-3, 2)
+    tst(-3., " 2. ")
+    tst(-6, -3)
+    tst(-6., -3.)
+end
+
+procedure tst(a, b)
+    static f
+    initial f := "---"
+
+    wr(a)
+    wr(b)
+    wr(+a)
+    wr(-a)
+    wr(a + b)
+    wr(a - b)
+    wr(a * b)
+    if b ~= 0 then wr(a / b) else wr(f)
+    if b ~= 0 then wr(a % b) else wr(f)
+    wr(-b)
+    wr(a < b  | f)
+    wr(a <= b | f)
+    wr(a = b  | f)
+    wr(a ~= b | f)
+    wr(a >= b | f)
+    wr(a > b  | f)
+    write()
+end
+
+procedure wr(n)
+    local s
+    s := n
+#    s ?:= { tab(upto('.')) & move(3) & tab(1) }
+    if *s < 4 then s := right(s, 4)
+    writes(s, " ")
+    return
+end

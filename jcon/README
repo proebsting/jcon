@@ -1,0 +1,42 @@
+rts/README:  working notes for the runtime system
+
+------------------------------------------------------------------------------
+
+Java class names are assigned as follows.
+
+    i.....	infrastructure
+    f$.....	runtime functions
+    k$.....	keywords
+    l$.....	linked files
+    o.....	runtime operators
+    p$.....	(user) procedures
+    v.....	values and variables
+
+------------------------------------------------------------------------------
+
+Grep for '#%#%' in the code to find places that need revisiting.
+
+------------------------------------------------------------------------------
+
+Some areas where the implementation is known to be not-quite-right
+(as distinguished from simply being unimplemented) are as follows.
+
+general:
+-- random selection uses Java's RNG, presumably generating different sequences
+-- write() is simplified, e.g. doesn't accept file arguments
+
+strings:
+-- image(s) doesn't escape special characters
+-- trapped substring derefs assume original string hasn't changed underneath
+
+numerics:
+-- overflow or underflow is not detected
+-- conversion of reals (& possibly integers) to strings does not match v9
+-- conversion of strings to reals and integers probably follows different rules
+-- "%" just uses the Java "%" operator; does that match what Icon needs?
+
+error reporting:
+-- no traceback
+-- no recovery
+-- long strings are not elided
+-- variables are dereferenced for reporting

@@ -1,0 +1,17 @@
+#!/bin/ksh
+#
+#  addtest filename.icn ... -- add test(s) to standard collection
+#
+#  compiles and executes using icont/iconx, creating .std output file
+
+if [ $# = 0 ]; then
+   echo "usage: $0 file.icn..." 1>&2
+   exit 1
+fi
+
+for FNAME; do
+    BASE=${FNAME%.*}
+    echo ${BASE}:
+    icont -us $BASE.icn -x >$BASE.std
+    rm ./$BASE
+done

@@ -1,0 +1,29 @@
+#  only for Jcon; does not work under Icon v9
+
+procedure main()
+
+   every write ("a. ", 16r7ffffffffffffffd to 16r7fffffffffffffff)
+
+   every write ("b. ", 16r7ffffffffffffff0 to 16r7fffffffffffffff by 5)
+
+   every write ("c. ", 16r7ffffffffffffff2 to 16r7fffffffffffffff by 5)
+
+   every write ("d. ", 16r7ffffffffffffff4 to 16r7fffffffffffffff by 5)
+
+   every write ("e. ", -16r7ffffffffffffffd to -16r7fffffffffffffff by -1)
+
+   every write ("f. ", -16r7ffffffffffffff0 to -16r7fffffffffffffff by -5)
+
+   every write ("g. ", -16r7ffffffffffffff2 to -16r7fffffffffffffff by -5)
+
+   every write ("h. ", -16r7ffffffffffffff4 to -16r7fffffffffffffff by -5)
+
+   every write ("i. ",
+      16r7ffffff800000000 to 16r7fffffff00000000 by 16r100000000)
+
+   every write ("j. ",
+      -16r6fffffffffffffff to 16r6fffffffffffffff by 16r2555555555555555)
+
+   every write ("k. ",
+      16r6fffffffffffffff to -16r6fffffffffffffff by -16r2555555555555555)
+end

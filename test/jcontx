@@ -1,0 +1,29 @@
+#!/bin/ksh
+#
+#  jcontx file.icn -- build and run an Icon program using the Jcon translator
+#
+#  writes temp files in ./tmp; cleans up class files if no errors
+
+JDIR=/home/gmt/jcon
+TMP=./tmp
+
+JCON="$JDIR/src/jcon -O -target=java"
+JAVAC="toba -K"
+JAVA="java"
+
+for FNAME; do
+    BASE=${FNAME%.icn}
+    FILES="$FILES $BASE.icn"
+done
+
+set -e
+export CLASSPATH=${CLASSPATH-.}:$JDIR/rts
+
+test -d $TMP || mkdir $TMP
+$JCON $FILES >$TMP/a_out.java
+
+cd $TMP
+rm -f *.class 
+$JAVAC a_out.java
+$JAVA a_out
+
