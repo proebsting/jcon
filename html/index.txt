@@ -21,6 +21,6 @@
 
 
 <P> They are also collected together into a 
-<A HREF=jcon.htm>single large file</A>, if you prefer that.
+<A HREF=ipd286.htm>single large file</A>, if you prefer that.
 
 </BODY></HTML>

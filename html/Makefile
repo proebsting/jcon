@@ -10,8 +10,8 @@ HEAD1 = head1.txt
 HEAD2 = head2.txt
 SECTINPUT = $(HEAD1) $(HEAD2) $(SECTPAGES:.htm=.txt)
 
-BIGDOC = jcon.htm
-BIGTMP = jcon.tmp
+BIGDOC = ipd286.htm
+BIGTMP = ipd286.tmp
 
 INDEX = index.htm
 

@@ -1,7 +1,7 @@
 <P> Programs built by Jcon typically run somewhat slower than when
 built and run by Version 9 of Icon.
 We use the ratio of execution times as our basic benchmark measurement.
-The result depends on many things, but a factor of three is typical
+The result depends on many things, but a factor of two or three is typical
 with a good Java system.
 
 <P> We have measured execution times for the standard Icon benchmarks
@@ -10,7 +10,7 @@ The standard benchmark programs were taken from Icon v9.3.1 and run unmodified,
 but some data files and command options were changed to make them run longer.
 The benchmark programs are as follows:
 
-<P><TABLE ALIGN=CENTER>
+<P><BLOCKQUOTE><TABLE>
     <TR><TD>concord</TD>
 	<TD>produces a text concordance (word index)</TD></TR>
     <TR><TD>deal</TD>
@@ -27,7 +27,7 @@ The benchmark programs are as follows:
 	<TD>dumps a genealogical data base</TD></TR>
     <TR><TD>jtran</TD>
 	<TD>translates Icon into Java class files</TD></TR>
-</TABLE>
+</TABLE></BLOCKQUOTE>
 
 <P> We did most of our performance tuning on a 
 Silicon Graphics Indigo2 running SGI Java 3.1 (JDK 1.1.5).

@@ -44,7 +44,7 @@ The appearance of the generic family <CODE>mono</CODE> varies by platform,
 and bold and italic characteristics are not always effective.
 
 <P> The default font name <CODE>fixed</CODE> is mapped to
-<CODE>mono,bold,14</CODE>.
+<CODE>mono,bold,12</CODE>.
 
 <H3>Colors</H3>
 
