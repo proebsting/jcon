@@ -45,7 +45,8 @@ end
 procedure dump()		# test using WAttrib
    local s, t
    static atts
-   initial atts := ["size", "width", "height", "fg", "bg", "font"]
+   initial atts := ["size", "width", "height", "fg", "bg", "font",
+	"cursor", "echo", "x", "y", "row", "col"]
 
    write()
    every s := !atts do {
