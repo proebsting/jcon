@@ -1,0 +1,46 @@
+#  bouncing balls -- animation from Graphics Programming in Icon, chapter 4
+
+link graphics
+
+$define Balls 10		# number of balls
+$define Radius 10		# ball radius
+$define MaxDisp 5		# maximum displacement
+$define Interval 20		# delay per frame
+
+record ball(x, y, dx, dy)	# one ball and its velocity
+
+procedure main()
+   local xmax, ymax, blist, b
+
+   WOpen("size=400,300") | stop("can't open window")
+   xmax := WAttrib("width") - Radius
+   ymax := WAttrib("height") - Radius
+
+   blist := []			# list of balls
+   every 1 to Balls do		# place entries randomly
+      put(blist, ball(?xmax, ?ymax, ?MaxDisp, ?MaxDisp))
+
+   until WQuit() do {		# loop until interrupted
+
+      Fg("white")
+      every b := !blist do	# erase all old circles
+         DrawCircle(b.x, b.y, Radius)
+
+      every b := !blist do {
+
+         b.x +:= b.dx		# update position
+         b.y +:= b.dy
+         Fg("white")
+         FillCircle(b.x, b.y, Radius)	# fill center 
+         Fg("black")
+         DrawCircle(b.x, b.y, Radius)	# draw outline
+
+         if b.x < Radius | b.x > xmax then
+            b.dx := -b.dx	# bounce horizontally
+         if b.y < Radius | b.y > ymax then
+            b.dy := -b.dy	# bounce vertically
+         }
+
+      WDelay(Interval)		# delay between frames
+      }
+end

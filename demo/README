@@ -1,0 +1,5 @@
+jcon/demo -- graphics demonstration programs
+
+This directory contains source code for programs that demonstrate
+Icon's graphics abilities.  Most are from the Icon Program Library.
+See the individual program comments for more details.
