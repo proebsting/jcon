@@ -61,7 +61,7 @@ UIPATH=`echo "$IPATH" | tr ' ' ':'`
 
 #  clear inherited environment variables
 #  (but note that BLKSIZE and STRSIZE are set above)
-unset ICONX ICONCORE TRACE IPATH LPATH NOERRBUF
+unset ICONCORE TRACE IPATH LPATH NOERRBUF
 unset HEAPSIZE COEXPSIZE MSTKSIZE QLSIZE
 
 #  set tracing modes
@@ -174,7 +174,7 @@ export CLASSPATH="$JRTS"
 
 # create temporary directory
 if [ -d $TDIR ]; then
-    rm -f $TDIR/*
+    rm -rf $TDIR/*
 else
     mkdir $TDIR
 fi
@@ -212,7 +212,7 @@ $JAVA rts.FindFiles $LINKTRACE "$UIPATH" $ZFILES >$TDIR/zip.list
 # unpack all those .zip files
 rm -f $TDIR/*.class
 for FNAME in `<$TDIR/zip.list`; do
-    (cd $TDIR; $JAR xf ../$FNAME)
+    (cd $TDIR; $JAR xf $FNAME)
 done
 
 # combine the Icon files from there
