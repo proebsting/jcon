@@ -137,10 +137,7 @@ public void windowIconified(WindowEvent e)	{}
 public void windowDeiconified(WindowEvent e)	{}
 
 public void windowClosing(WindowEvent e) {
-    //#%#% window was closed. don't know how to handle; bail out.
-    System.err.println("WINDOW CLOSING... EXITING");
-    c.f.dispose();
-    System.exit(0);
+    iRuntime.bomb("WINDOW WAS KILLED... EXITING");	//#%#% should be smarter
 }
 
 

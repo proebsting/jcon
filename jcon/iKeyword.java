@@ -521,7 +521,7 @@ final class k$window extends vProc0 {				// &window
     }
 
     vWindow getWindow() {			// get non-null &window value
-	if (kwindow.value.isnull()) {
+	if (! kwindow.value.iswin()) {
 	    iRuntime.error(140);
 	} 
 	return (vWindow) kwindow.value;

@@ -44,7 +44,12 @@ private static vString vScopy = vString.New("copy");
 private static vString vSreverse = vString.New("reverse");
 
 
-public boolean iswin()		{ return true; }
+public boolean iswin() {
+    if (c == null) {
+	iRuntime.error(142, this);
+    }
+    return true;
+}
 
 wCanvas getCanvas() {
     if (c == null) {
@@ -176,9 +181,24 @@ vWindow(vWindow w) {
 //  (called by the Canvas code if the underlying image has changed)
 
 void newgcb(Graphics g) {
-    b = g.create();
-    b.setColor(fg);
-    b.setFont(font);
+
+    Graphics newb = g.create();
+
+    newb.setColor(fg);
+    if (xormode) {
+	newb.setXORMode(bg);
+    }
+
+    newb.setFont(font);
+
+    newb.translate(dx, dy);
+    if (clipping) {
+	Rectangle r = b.getClipBounds();
+	newb.setClip(r.x, r.y, r.width, r.height);
+    }
+
+    b.dispose();
+    b = newb;
 }
 
 
@@ -297,7 +317,7 @@ vString reads(long n)		{ return getTTY().reads(this, n); }
 void writes(vString s)		{ getTTY().writes(this, s); }
 void newline()			{ getTTY().newline(this); }
 
-vFile flush()			{ toolkit.sync(); return this; }
+vFile flush()			{ getTTY(); toolkit.sync(); return this; }
 
 
 

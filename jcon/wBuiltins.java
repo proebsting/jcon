@@ -347,7 +347,7 @@ final class f$EraseArea extends vProcV {	// EraseArea(W,x,y,w,h,...)
 
 final class f$FillRectangle extends vProcV {	// FillRectangle(W,x,y,w,h,...)
     public vDescriptor Call(vDescriptor[] args) {
-	vWindow win = vWindow.winArg(args);	//#%#% ClassCastException?!
+	vWindow win = vWindow.winArg(args);
 	int[] a = wCoords.rectArgs(args, 4);
 	for (int i = 0; i < a.length; i += 4) {
 	    win.FillRectangle(a[i], a[i+1], a[i+2], a[i+3]);

@@ -141,6 +141,9 @@ void resize(vWindow win, int w, int h) {
     g.fillRect(0, 0, iw, ih);
     g.drawImage(i, 0, 0, null);
 
+    // out with the old, in with the new
+    g.dispose();
+    i.flush();
     i = inew;
 }
 
