@@ -9,13 +9,16 @@ import java.util.*;
 
 class wCanvas extends Canvas {
 
-Frame f;		// enclosing Frame object
-Image i;		// backing image used for refreshing visable image
+    Frame f;		// enclosing Frame object
+    Image i;		// backing image used for refreshing visable image
 
-vList evq;		// event queue
-wTTY tty;		// file I/O stuff
+    vList evq;		// event queue
+    wTTY tty;		// file I/O stuff
 
-Vector wlist;		// list of associated vWindows
+    Vector wlist;	// list of associated vWindows
+
+    private boolean have_set_width;		// was width set explicitly?
+    private boolean have_set_height;		// was height set explicitly?
 
 
 
@@ -31,7 +34,6 @@ wCanvas(vWindow win, String label, int w, int h) {
     f = new Frame(label);
     f.add(this, "North");
     f.pack();
-    f.show();		// must precede createImage (?)
 
     i = this.createImage(w, h);
 
@@ -39,11 +41,13 @@ wCanvas(vWindow win, String label, int w, int h) {
     tty = new wTTY();				// create TTY instance
 
     wEvent.register(this);			// register event handlers
+
+    f.show();
 }
 
 
 
-//  config(win, x, y, w, h) -- reconfigure geometry
+//  config(win, multiplier, x, y, w, h) -- reconfigure geometry
 //
 //  #%#%#%#% for now, x and y are ignored; only size counts
 //
@@ -52,19 +56,44 @@ wCanvas(vWindow win, String label, int w, int h) {
 //
 //  returns failure (false) or success (true).
 
-boolean config(vWindow win, String x, String y, String w, String h) {
+boolean config(vWindow win, int m, String x, String y, String w, String h) {
     Rectangle r = this.getBounds();
 
     try {
-    	if (x != null) { r.x = Integer.parseInt(x); }
-    	if (y != null) { r.y = Integer.parseInt(y); }
-    	if (w != null) { r.width = Integer.parseInt(w); }
-    	if (h != null) { r.height = Integer.parseInt(h); }
+    	if (x != null) { r.x = m * Integer.parseInt(x); }
+      	if (y != null) { r.y = m * Integer.parseInt(y); }
+    	if (w != null) { r.width = m * Integer.parseInt(w); }
+    	if (h != null) { r.height = m * Integer.parseInt(h); }
+	// do the following only after we know both values parsed okay
+    	if (w != null) { have_set_width = true; }
+    	if (h != null) { have_set_height = true; }
     } catch (Exception e) {
     	return false;
     }
     resize(win, r.width, r.height);
     return true; 
+}
+
+
+
+//  defconfig -- set default configuration for window
+//
+//  If not explicitly set otherwise, the default window size is
+//  12 rows x 80 columns.  This cannot be done until the font and
+//  leading are known.
+
+void defconfig(vWindow win) {
+    if (have_set_width && have_set_height) {
+	return;
+    }
+    Rectangle r = this.getBounds();
+    if (! have_set_width) {
+	r.width = 80 * win.Fwidth();
+    }
+    if (! have_set_width) {
+	r.height = 12 * win.Leading();
+    }
+    resize(win, r.width, r.height);
 }
 
 

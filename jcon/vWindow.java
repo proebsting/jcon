@@ -75,6 +75,10 @@ static vWindow open(String name, String mode, vDescriptor args[]) {
     // clear window and backing store, including out-of-bounds area, with new bg
     win.EraseArea(0, 0, Integer.MAX_VALUE, Integer.MAX_VALUE);
 
+    win.c.defconfig(win);	// set window size, if not set by attributes
+    win.c.tty.Row(win, "1");	// set text cursor position
+    win.c.tty.Col(win, "1");
+
     setCurrent(win);
     return win;
 }
@@ -271,6 +275,16 @@ vString Font(vString s) {
 
 int Leading()		{ return leading; }
 int Leading(int n)	{ return leading = n; }
+
+int Fwidth() {
+    FontMetrics m = c.getFontMetrics(font);
+    int fw = m.getMaxAdvance();
+    if (fw > 0) {
+	return fw;
+    } else {
+	return m.charWidth('W');
+    }
+}
 
 
 

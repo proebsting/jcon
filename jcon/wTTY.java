@@ -225,17 +225,13 @@ vValue Row(vWindow win, String v) {
 	return null; /*FAIL*/
     }
     if (leading == 0) {
-    	iRuntime.error(204);	// this is what v9 does
+    	iRuntime.error(204);	// this is what v9 does: real division by 0
     }
     return iNew.Integer((yloc - a) / leading + 1);
 }
 
 vValue Col(vWindow win, String v) {
-    FontMetrics m = win.getFontMetrics();
-    int a = m.getMaxAdvance();
-    if (a <= 0) {
-	a = m.charWidth('W');
-    }
+    int a = win.Fwidth();
     if (v != null) try {
 	xloc = Integer.parseInt(v);
 	xloc = (xloc - 1) * a;

@@ -35,6 +35,8 @@ static {
     newatt("width", new aWidth());
     newatt("height", new aHeight());
     newatt("size", new aSize());
+    newatt("rows", new aRows());
+    newatt("columns", new aColumns());
 
     newatt("echo", new aEcho());
     newatt("cursor", new aCursor());
@@ -154,14 +156,7 @@ class aFheight extends wAttrib {
 }
 
 class aFwidth extends wAttrib {
-    vValue get(vWindow win) {	 
-	FontMetrics m = win.getFontMetrics();
-	int a = m.getMaxAdvance();
-	if (a <= 0) {
-	    a = m.charWidth('W');
-	}
-	return iNew.Integer(a);
-    }
+    vValue get(vWindow win)	{ return iNew.Integer(win.Fwidth()); }
     vValue set(vWindow win)	{ iRuntime.error(145); return null; }
 }
 
@@ -206,7 +201,7 @@ vValue get(vWindow win) {
 }
 
 vValue set(vWindow win) {
-    if (win.getCanvas().config(win, null, null, val, null)) {
+    if (win.getCanvas().config(win, 1, null, null, val, null)) {
 	return get(win);
     } else {
 	return null; /*FAIL*/
@@ -224,7 +219,7 @@ vValue get(vWindow win) {
 }
 
 vValue set(vWindow win) {
-    if (win.getCanvas().config(win, null, null, null, val)) {
+    if (win.getCanvas().config(win, 1, null, null, null, val)) {
 	return get(win);
     } else {
 	return null; /*FAIL*/
@@ -249,7 +244,47 @@ vValue set(vWindow win) {
     }
     String w = val.substring(0, j);
     String h = val.substring(j + 1);
-    if (win.getCanvas().config(win, null, null, w, h)) {
+    if (win.getCanvas().config(win, 1, null, null, w, h)) {
+	return get(win);
+    } else {
+	return null; /*FAIL*/
+    }
+}
+
+}
+
+
+
+class aRows extends wAttrib {
+
+vValue get(vWindow win) { 
+    int l = win.Leading();
+    if (l == 0) {
+	iRuntime.error(204);	// this is what v9 does: real division by 0
+    }
+    return iNew.Integer(win.getCanvas().getSize().height / l);
+}
+
+vValue set(vWindow win) {
+    if (win.getCanvas().config(win, win.Leading(), null, null, null, val)) {
+	return get(win);
+    } else {
+	return null; /*FAIL*/
+    }
+}
+
+}
+
+
+
+class aColumns extends wAttrib {
+
+vValue get(vWindow win) { 
+    return iNew.Integer(win.getCanvas().getSize().width / win.Fwidth());
+}
+
+vValue set(vWindow win) {
+    if (win.getCanvas().config(win, win.Fwidth(), null, null, val, null)) {
 	return get(win);
     } else {
 	return null; /*FAIL*/
