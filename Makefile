@@ -30,7 +30,6 @@ install: build
 	cp rts/rts.zip $(DEST)/lib
 	cp src/jcon    $(DEST)/lib
 	cp test/jcont $(DEST)/bin
-	cp test/jconx $(DEST)/bin
 	cp doc/jcon.txt $(DEST)/doc
 
 clean:
