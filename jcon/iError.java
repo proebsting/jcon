@@ -20,8 +20,6 @@ iError(int num, vDescriptor desc) {	// constructor
 
 
 void report() {				// print message and abort
-
-
     k$output.file.flush();
     vFile f = k$errout.file;
     f.newline();
@@ -34,10 +32,8 @@ void report() {				// print message and abort
 	f.println("offending value: " + desc.report());
     }
     f.println("Traceback:");
-    f.println(message);
-
+    f.print(message);
     // this.printStackTrace(); 	//#%#% temporary
-
     iRuntime.exit(1);
 }
 
@@ -51,6 +47,7 @@ public void propagate(String fname, int lineno, vDescriptor record,
 	   + "}";
     propagate(fname, lineno, call);
 }
+
 public void propagate(String fname, int lineno, String template,
 		             vDescriptor a1) {
     String call;
@@ -61,6 +58,7 @@ public void propagate(String fname, int lineno, String template,
 	   + "}";
     propagate(fname, lineno, call);
 }
+
 public void propagate(String fname, int lineno, String template,
 		             vDescriptor a1, vDescriptor a2) {
     String call;
@@ -73,6 +71,7 @@ public void propagate(String fname, int lineno, String template,
 	   + "}";
     propagate(fname, lineno, call);
 }
+
 public void propagate(String fname, int lineno, String template,
 		             vDescriptor a1, vDescriptor a2, vDescriptor a3) {
     String call;
@@ -90,8 +89,11 @@ public void propagate(String fname, int lineno, String template,
 
 public void propagate(String fname, int lineno,
 		      vDescriptor a, vDescriptor[] args) {
-    String call = a.Deref().report() + args2string(args);
-    propagate(fname, lineno, call);
+    String arg0 = a.Deref().report().toString();
+    if (arg0.startsWith("procedure ")) {
+	arg0 = arg0.substring(10);
+    }
+    propagate(fname, lineno, arg0 + args2string(args));
 }
 
 String args2string(vDescriptor[] args) {
@@ -140,6 +142,7 @@ void propagate(String fname, int lineno, String call) {
         throw this;
     }
 }
+
 
 
 } // class iError
