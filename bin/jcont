@@ -36,7 +36,7 @@
 #  pair from icont.  Raw Java class files can also be bundled in for
 #  access via loadfunc().
 #
-#  "java" and "jar" must be in the search path, and "javap" if -S is used.
+#  "java" must be in the search path, and "javap" if -S is used.
 #
 #  Normally, jcont produces a directly executable Korn Shell script
 #  containing an embedded Zip file.  Running the script executes the
