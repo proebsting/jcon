@@ -239,7 +239,7 @@ public vDescriptor SectPlus(vDescriptor a, vDescriptor b) {	// s[i+:j]
     long i = ai.value;
     long j = i + b.mkInteger().value;
     if ((-i ^ -j) < 0) {	// if wraparound
-	; //#%#% nothing for now; will be failure
+	return null; /*FAIL*/
     }
     return Section(ai, vInteger.New(j));
 }
@@ -249,7 +249,7 @@ public vDescriptor SectMinus(vDescriptor a, vDescriptor b) {	// s[i-:j]
     long i = ai.value;
     long j = i - b.mkInteger().value;
     if ((-i ^ -j) < 0) {	// if wraparound
-	; //#%#% nothing for now; will be failure
+	return null; /*FAIL*/
     }
     return Section(ai, vInteger.New(j));
 }
