@@ -25,10 +25,8 @@
 #  concept and behavior; think of a .zip file as analagous to a .u1/.u2
 #  pair from icont.
 #
-#  The following executables must be in the search path:
-#	icont, java, jar
+#  "java" and "jar" must be in the search path.
 
-PREPROC="icont -s -E"
 JAVAC="javac -nowarn"
 JAVA="java"
 JAR="jar"
@@ -187,8 +185,7 @@ for FNAME in $IFILES; do
     rm -f $TDIR/*.class
     # Icon to Java
     $ANNOUNCE 1>&2 $FNAME.icn:
-    if ($PREPROC $FNAME.icn || echo nosuchfile) | 
-		$JTRAN -class:l\$$FNAME -dir:$TDIR/ >$TDIR/$FNAME.java; then
+    if $JTRAN -class:l\$$FNAME -dir:$TDIR/ $FNAME.icn >$TDIR/$FNAME.java; then
 	# if using java target, make "links" file and compile the code
 	if [ $TARGET = java ]; then
 	    sed -n 's=^//JCON//links:==p' $TDIR/$FNAME.java >$TDIR/links
