@@ -1,3 +1,6 @@
+global outfile, optimize_flag, nolink_flag, java_classname, noerror2failure
+global nodebuginfo, nointrospection
+
 global bc_indirect_targets
 global bc_directory
 global bc_statics
@@ -1435,6 +1438,32 @@ procedure bc_File(getline, flagList)
 	if match("-O", !flagList) then {
 		optimize_flag := 1
 	}
+
+	!flagList ? {
+		="-class:" & java_classname := tab(0)
+		&fail
+	}
+	\java_classname | stop("ERROR: must specify -class:<name>")
+
+	nodebuginfo := 1
+	nointrospection := 1
+	noerror2failure := 1
+	every k := !flagList do {
+		k ? {
+			if ="-f" then {
+				if find("e") | find("a") then {
+					noerror2failure := &null
+				}
+				if find("n") | find("a") then {
+					nodebuginfo := &null
+				}
+				if find("d") | find("a") then {
+					nointrospection := &null
+				}
+			}
+		}
+	}
+
 	bc_directory := "./"
 	bc_directory := (!flagList ? (="-dir:" & tab(0)))
 
