@@ -2,10 +2,87 @@
 
 procedure main()
     write("#  AUTOMATICALLY GENERATED FILE -- DO NOT EDIT!")
+    keywords()
     operators()
     methodrefs()
     methods()
     fieldrefs()
+end
+
+procedure keywords()
+    local keys, t, i
+
+    keys := [
+	# field, type, [name]		(name defaults to field if not present)
+        [ "allocated", "Lrts/vProc;" ],
+        [ "ascii", "Lrts/vProc;" ],
+        [ "clock", "Lrts/vProc;" ],
+        [ "col", "Lrts/kMirrored;" ],
+        [ "collections", "Lrts/vProc;" ],
+        [ "control", "Lrts/kReadOnly;" ],
+        [ "cset", "Lrts/vProc;" ],
+        [ "current", "Lrts/vProc;" ],
+        [ "date", "Lrts/vProc;" ],
+        [ "dateline", "Lrts/vProc;" ],
+        [ "digits", "Lrts/vProc;" ],
+        [ "dump", "Lrts/kCounter;" ],
+        [ "e", "Lrts/vProc;" ],
+        [ "error", "Lrts/kCounter;" ],
+        [ "errornumber", "Lrts/kReadOnly;" ],
+        [ "errortext", "Lrts/kReadOnly;" ],
+        [ "errorvalue", "Lrts/kReadOnly;" ],
+        [ "errout", "Lrts/kReadOnly;" ],
+        [ "fail", "Lrts/vProc;" ],
+        [ "features", "Lrts/vProc;" ],
+        [ "host", "Lrts/vProc;" ],
+        [ "input", "Lrts/kReadOnly;" ],
+        [ "interval", "Lrts/kReadOnly;" ],
+        [ "lcase", "Lrts/vProc;" ],
+        [ "ldrag", "Lrts/vProc;" ],
+        [ "letters", "Lrts/vProc;" ],
+        [ "level", "Lrts/vProc;" ],
+        [ "lpress", "Lrts/vProc;" ],
+        [ "lrelease", "Lrts/vProc;" ],
+        [ "main", "Lrts/vProc;" ],
+        [ "mdrag", "Lrts/vProc;" ],
+        [ "meta", "Lrts/kReadOnly;" ],
+        [ "mpress", "Lrts/vProc;" ],
+        [ "mrelease", "Lrts/vProc;" ],
+        [ "nulll", "Lrts/vProc;", "null" ],	# note third element
+        [ "output", "Lrts/kReadOnly;" ],
+        [ "phi", "Lrts/vProc;" ],
+        [ "pi", "Lrts/vProc;" ],
+        [ "pos", "Lrts/k$pos;" ],
+        [ "progname", "Lrts/kReadOnly;" ],
+        [ "random", "Lrts/k$random;" ],
+        [ "rdrag", "Lrts/vProc;" ],
+        [ "regions", "Lrts/vProc;" ],
+        [ "resize", "Lrts/vProc;" ],
+        [ "row", "Lrts/kMirrored;" ],
+        [ "rpress", "Lrts/vProc;" ],
+        [ "rrelease", "Lrts/vProc;" ],
+        [ "shift", "Lrts/kReadOnly;" ],
+        [ "source", "Lrts/vProc;" ],
+        [ "storage", "Lrts/vProc;" ],
+        [ "subject", "Lrts/k$subject;" ],
+        [ "time", "Lrts/k$time;" ],
+        [ "trace", "Lrts/kCounter;" ],
+        [ "ucase", "Lrts/vProc;" ],
+        [ "version", "Lrts/vProc;" ],
+        [ "window", "Lrts/k$window;" ],
+        [ "x", "Lrts/kMirrored;" ],
+        [ "y", "Lrts/kMirrored;" ]
+    ]
+    write("procedure bc_keywords(name)")
+    write("\tstatic t")
+    write("\tinitial {")
+    write("\t\tt := table()")
+    every i := !keys do {
+	write("\t\tt[", image(\i[3]|i[1]), "] := [ ", image(i[1]), ", ", image(i[2]), "]")
+    }
+    write("\t}")
+    write("\treturn t[name]")
+    write("end")
 end
 
 procedure operators()

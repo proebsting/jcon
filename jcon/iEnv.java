@@ -163,14 +163,6 @@ static vVariable getKeyVar(String s) {
     }
 }
 
-public static vProc resolveKey(String s) {
-    vProc p = (vProc) keytab.get(s);
-    if (p == null) {
-	iRuntime.bomb("keyword not found: &" + s);
-    }
-    return p;
-}
-
 
 
 //  operators (registered for use via string invocation)

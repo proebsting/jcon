@@ -8,7 +8,6 @@ global bc_java_classname
 
 global bc_indirect_targets
 global bc_directory
-global bc_keys_link
 
 global bc_current_classptr
 global bc_current_classname
@@ -279,11 +278,10 @@ end
 
 # record ir_Key( name )
 procedure bc_gen_ir_Key_register(p)
-    bc_keys_link[p.name] := 1
     /bc_key_table[p.name] := j_create_fieldref(bc_current_classptr,
-                                               "$" || p.name,
-                                               "Lrts/vDescriptor;",
-                                               bc_java_classname)
+					       bc_keywords(p.name)[1],
+					       bc_keywords(p.name)[2],
+                                               "rts/iKeyword")
 end
 procedure bc_gen_ir_Key_rval(s, p)
     bc_gen_ir_Key_register(p)
@@ -1660,7 +1658,6 @@ procedure bc_File(irgen, flagList)
     bc_string_table := table()
     bc_integer_table := table()
     bc_real_table := table()
-    bc_keys_link := table()
 
     while p := @irgen do {
         case type(p) of {
@@ -1834,16 +1831,6 @@ procedure bc_create_resolve(c)
         put(resolvecode.code, j_putstatic(f) )
     }
 
-    resolvemethod := bc_resolveKey_methodref(c)
-    every k := key(bc_keys_link) do {
-        f := j_create_fieldref(c, "$" || k, "Lrts/vDescriptor;",
-                             bc_java_classname)
-        s := j_cp_String(c, j_cp_Utf8(c, k)) | runerr(500)
-        put(resolvecode.code, j_ldc_w(s) )
-        put(resolvecode.code, j_invokestatic(resolvemethod) )
-        put(resolvecode.code, j_putstatic(f) )
-    }
-
     resolvemethod := bc_resolveProc_methodref(c)
     every k := key(bc_op_table) do {
         k ? {
@@ -1872,7 +1859,6 @@ procedure bc_create_linkinit(c)
 
     every j_create_field(c, 8, "v$" || !bc_undeclared_set || "$",
                        "Lrts/vVariable;")
-    every j_create_field(c, 8, "$" || key(bc_keys_link), "Lrts/vDescriptor;")
     every j_create_field(c, 8, !bc_op_table, "Lrts/vDescriptor;")
 
     constructor := bc_init_methodref(c, "rts/iFile")
