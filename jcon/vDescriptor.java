@@ -31,6 +31,9 @@ public abstract vValue[] mkArray(int errno);	// convert to array of vValues
 public abstract vString write();		// convert for use in write()
 public abstract vString image();		// convert for use in image()
 public abstract vString report();		// convert for error, traceback
+public vString reportShallow() {		// report w/out expanding
+    return this.report();
+}
 
 // dereferencing and assignment
 public abstract vDescriptor DerefLocal();		// .x iff x refs a local

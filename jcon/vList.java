@@ -69,12 +69,7 @@ public vString report() {			// image for display() & tracebk
     b.append("list_").append(this.snum).append(" = [");
     for (int i = 0; i < n; i++) {
 	vValue e = ((vListVar) v.elementAt(i)).Deref();
-	if (e instanceof vList && ((vList)e).v.size() > 0) {
-	    s = e.image();	// don't expand non-empty list recursively
-	} else {
-	    s = e.report();	// report (NOT image) all others, esp. string
-	}
-	b.append(s.toString());
+	b.append(e.reportShallow().toString());
 	if (i == 2 && n > 6) {
 	   b.append(",...,");		// elide center if >6 elements
 	   i = n - 4;
@@ -85,6 +80,13 @@ public vString report() {			// image for display() & tracebk
     return vString.New(b.append(']').toString());
 }
 
+public vString reportShallow() {		// image for display() & tracebk
+    if (v.size() > 0) {
+	return this.image();
+    } else {
+	return this.report();
+    }
+}
 
 
 //  L.posEq(n) -- return positive equivalent of position n in list L,

@@ -29,6 +29,22 @@ public vString image() {
 	"record " + constr.name + "_" + snum + "(" + values.length + ")");
 }
 
+public vString report() {			// image for display() & tracebk
+    String s = "record " + constr.name + "_" + snum + "(";
+    for (int i = 0; i < values.length; i++) {
+	if (i > 0) {
+	    s += ",";
+	}
+	s += values[i].Deref().reportShallow().toString();
+    }
+    s += ")";
+    return vString.New(s);
+}
+
+public vString reportShallow() {
+    return this.image();
+}
+
 public vInteger Size()	{ return vInteger.New(values.length); }
 
 int rank()		{ return 120; }			// records sort last

@@ -4,6 +4,7 @@ additions in v2:
 -- several more graphics attributes and functions are implemented
 -- section wraparound (e.g. "abcd"[-2+:3]) yields failure  (this is a bugfix)
 -- function() generates names in sorted order
+-- record fields are shown in traceback images
 
 losses in v2:
 -- variable(), display(), and &dump can access only global variables
@@ -55,7 +56,6 @@ debugging:
 -- most debugging features require compilation with the "-fd" switch
 -- arg lists in traceback show actual instead of expected number of arguments
    (e.g.: a call to insert() traces as insert() not insert(&null,&null,&null))
--- record fields are not shown in traceback images
 -- variable(), display(), and &dump can access only global variables
 
 keywords:
