@@ -70,11 +70,7 @@ keywords:
 
 graphics overview:
 -- the graphics implementation is nearly complete
--- biggest omissions are wide lines, patterns, and WriteImage()
--- linking with IPL ("link graphics") can take some time
-
-unimplemented functions:
--- WriteImage() is not implemented
+-- biggest omissions are wide lines and textured drawing
 -- Couple() is not implemented
 -- Pattern(), Color(), NewColor(), and WDefault() always fail
 
@@ -106,7 +102,7 @@ images:
 -- image loading ignores the gamma attribute
 -- ReadImage() ignores the palette argument; Java dithers if necessary
 -- ReadImage() and DrawImage() never return an integer indicating color shortage
--- WriteImage() is not implemented
+-- WriteImage() always writes a GIF file, quantizing to 256 colors if necessary
 
 events:
 -- Java distinguishes "alt" and "meta" keys; Jcon maps both to the &meta flag
