@@ -17,7 +17,7 @@ public class vProc extends vValue {
 	String image() {
 
 		String s = proc.getName();
-		int j = s.indexOf('$');
+		int j = s.lastIndexOf('$');
 		if (j >= 0) {
                     j = j + 1;
                 } else {

@@ -99,8 +99,8 @@ public static void display(iClosure parent) {
 	// do the call chain.
 	for (iClosure p = parent; p != null; p = p.parent) {
 		String s = p.getClass().getName();
-		int j = s.indexOf('$');
-		if (j >= 0) {                   // xxx$yyyyy format
+		int j = s.lastIndexOf('$');
+		if (j >= 0) {                   // xxx$file$yyyyy format
 		    s = s.substring(j+1);
 		}
 		System.out.println(s + " local identifiers:");

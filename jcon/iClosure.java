@@ -106,8 +106,8 @@ String trace() {
     
             if (c == '0') {			// $0: proc/func name
                 String s = this.getClass().getName();
-		int j = s.indexOf('$');
-		if (j >= 0) {			// xxx$yyyyy format
+		int j = s.lastIndexOf('$');
+		if (j >= 0) {			// xxx$file$yyyyy format
                     b.append(s.substring(j+1));
                 } else {			// no, use full class name
                     b.append(s);

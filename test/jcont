@@ -135,6 +135,9 @@ JCON="$JCON -O -target=java"
 ZIP="$PROJHOME/$ARCH/bin/zip"
 UNZIP="$PROJHOME/$ARCH/bin/unzip"
 
+#%#%#% set preprocessor name
+PREPROC="icont -s -E"
+
 #  set Java names and paths
 JDK="$SUMATRA/$ARCH/jdk.1.0.2"
 #%#% would like to use toba, but need a no-warnings option
@@ -178,7 +181,7 @@ for FNAME in $IFILES; do
     rm -f $TDIR/*.class
     # Icon to Java
     $ANNOUNCE 1>&2 $FNAME.icn:
-    if $JCON $FNAME.icn >$TDIR/$FNAME.java ; then
+    if $PREPROC $FNAME.icn | $JCON -class=l\$$FNAME >$TDIR/$FNAME.java ; then
 	# extract linkage information from stylized comments
 	sed -n 's=^//JCON//links:==p' $TDIR/$FNAME.java >$TDIR/links
 	# Java to .class
