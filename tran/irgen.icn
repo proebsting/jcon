@@ -58,9 +58,7 @@ procedure ir_Scan(p, st, target, bounded)
 		irCoord(p.coord),
 		irMove(p.ir.x.oldsubject, irDeref(irKey("subject"))),
 		irMove(p.ir.x.oldpos, irDeref(irKey("pos"))),
-
 		ir_opfn(target, irOperator(":?", 2), [ irKey("subject"), lv ], p.expr.ir.resume),
-
 		irGoto(p.body.ir.start)
 		])
 	CG.emit(p.expr.ir.failure, [ irGoto(p.ir.failure) ])
@@ -79,9 +77,7 @@ procedure ir_Scan(p, st, target, bounded)
 	} else {
 		# p.op == "?:="
 		CG.emit(p.body.ir.success, [
-
 			ir_opfn(target, irOperator(":=", 2), [ lv, rv ], p.body.ir.resume),
-
 			irScanSwap( p.ir.x.oldsubject, p.ir.x.oldpos ),
 			irGoto(p.ir.success)
 			])
@@ -570,8 +566,23 @@ procedure ir_Link(p, st, target, bounded)
 	CG.links(p.linkfileList)
 end
 
+procedure ir_value0(p)
+	case type(p) of {
+	"Intlit" : return irIntLit(p.int)
+	"Reallit" : return irRealLit(p.int)
+	"Stringlit": return irStrLit(p.str)
+	"Csetlit" : return irCsetLit(p.str)
+	}
+end
+
+procedure ir_value(p, st, target)
+	return (ir_value0(p) | \target | ir_tmp(st))
+end
+
 # record Intlit( int )
 procedure ir_Intlit(p, st, target, bounded)
+
+	if type(target) == "irIntLit" then target := &null
 
 	init4ir(p)
 
@@ -586,6 +597,8 @@ end
 # record Reallit( real )
 procedure ir_Reallit(p, st, target, bounded)
 
+	if type(target) == "irRealLit" then target := &null
+
 	init4ir(p)
 
 	p.real := real(p.real) | semantic_error(p.real || ": illegal real literal", p.coord)
@@ -599,6 +612,8 @@ end
 # record Stringlit( str )
 procedure ir_Stringlit(p, st, target, bounded)
 
+	if type(target) == "irStrLit" then target := &null
+
 	init4ir(p)
 
 	CG.emit(p.ir.start, [
@@ -610,6 +625,8 @@ end
 
 # record Csetlit( str )
 procedure ir_Csetlit(p, st, target, bounded)
+
+	if type(target) == "irCsetLit" then target := &null
 
 	init4ir(p)
 
