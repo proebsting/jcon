@@ -1,7 +1,7 @@
 #SRC: JCON
 
 procedure main()
-   local i, x
+   local i, x, y
 
    write(args(push))
    write(args(put))
@@ -63,11 +63,16 @@ procedure main()
    limage("u", x[-3+:6]) | write("u. wraparound failed")	# should fail
    limage("v", x[3-:6]) | write("v. wraparound failed")		# should fail
 
+   y := copy(x)		# ensure that copies are distinct
+   every !x +:= 10
+   every !y +:= 20
+   limage("x", x)
+   limage("y", y)
+
 end
 
 procedure limage(label, lst)
    writes(label, ". [", *lst, "]")
-#%#%#%   writes(" ", image(lst))
    every writes(" ", image(!lst))
    write()
    return

@@ -33,4 +33,11 @@ procedure main()
    b := rec(3, 7)
    every write(b[1 to 3])
    every write(b["f" || (1 to 3)])
+
+   a := rec(1, 2)
+   b := rec(3, 4)
+   a.f1 +:= 10
+   a.f2 +:= 20
+   every !b +:= 70
+   every writes(" ", !a | !b | "\n")
 end

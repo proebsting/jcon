@@ -3,7 +3,7 @@
 # table test
 
 procedure main()
-   local k, x
+   local k, x, y
 
    x := table()
    tdump("initial", x)
@@ -63,6 +63,15 @@ procedure main()
    every x[3] <- 19
    every write("k ", key(x))
    every write("v ", !x)
+
+   x := table()
+   every k := 0 to 4 do
+      x[k] := k + 10
+   y := copy(x)
+   every !x +:= 20
+   every !y +:= 40
+   tdump("30s", x)
+   tdump("50s", y)
 
 end
 
