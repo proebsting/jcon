@@ -108,6 +108,12 @@ which corresponds to a JPEG quality setting of 0.75.
 
 <P> Image reading and writing ignores the <CODE>gamma</CODE> attribute.
 
+<P> <CODE>Pixel()</CODE> clips the specified region by the window bounds
+before generating values.
+This differs from Version 9 of Icon, which generates the background color
+for out-of-bounds pixels.
+(The graphics book is silent on this point.)
+
 <H3>Events</H3>
 
 <P> Java distinguishes between ALT and META keys;
