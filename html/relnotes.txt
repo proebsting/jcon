@@ -3,11 +3,14 @@ documentation edits, and bug fixes.
 Changes include the following:
 
 <UL>
+    <LI> JPEG images can be written under Java 2 implementations.
     <LI> Large integers now work with <CODE>to</CODE>-<CODE>by</CODE>,
 	 <CODE>seq()</CODE>, and limitation (<CODE>e1 \ e2</CODE>)
     <LI> A zero increment value is diagnosed by <CODE>seq()</CODE>
     <LI> <CODE>&hostname</CODE> no longer spawns a shell invocation
 	of <CODE>uname</CODE> (but see <CITE>Problems</CITE>, below)
+    <LI> The run-time package name has been changed from <CODE>rts</CODE>
+    	to <CODE>jcon</CODE>.  All programs must be recompiled.
 </UL>
 
 <H3>Tested Platforms</H3>
