@@ -17,8 +17,8 @@ run:
 
 
 bmark:	tgrlink geddump
-	time ./tgrlink tgrlink.bmk >/dev/null
-	JXOPTS='-mx50m -ms50m' time ./geddump geddump.bmk >/dev/null
+	JXOPTS='-noverify' time ./tgrlink tgrlink.bmk >/dev/null
+	JXOPTS='-noverify -mx50m -ms50m' time ./geddump geddump.bmk >/dev/null
 
 
 #  "make clean" removes most generated files
