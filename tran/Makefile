@@ -16,7 +16,6 @@ LEXSRC = \
 PARSESRC = \
 	ast.icn \
 	key.icn \
-	add_defaults.icn \
 	parse.icn
 
 IRGENSRC = \

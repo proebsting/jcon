@@ -65,7 +65,7 @@ procedure dump_File(parse, flagList)
 		optimize_flag := 1
 	}
 	while p := @parse do {
-		ir(add_defaults(p))
+		ir(p)
 	}
 end
 

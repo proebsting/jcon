@@ -7,10 +7,6 @@ procedure parse(getline)
 	tok := create yylex(getline)
 	tok_rec := @tok
 	suspend program()
-        # every d := program() do {
-	# 	add_defaults(d)
-	# 	ir(d)
-	# }
 end
 
 #  CASE  expr  OF  LBRACE  cclause {  SEMICOL  cclause }  RBRACE 

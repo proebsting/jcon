@@ -1525,9 +1525,8 @@ procedure bc_File(parse, flagList)
 	bc_keys_link := table()
 
 	while p := @parse do {
-		ir(add_defaults(p))
+		ir(p)
 	}
-	#every ir(add_defaults(parse(getline)))
 
 	c := bc_proc_classptr := ClassFile(3, 45, [&null], table(), 1,
 		&null,
