@@ -1121,11 +1121,19 @@ end
 
 procedure bc_create_locals(c, undeclared, statics, sortedvars)
 	local locals, localscode, names, variables, k, lab
-	local shadow, index, class_index
+	local shadow, index, class_index, m
 
 	locals := create_method(c, 0, "locals", "()V")
 	localscode := create_code(c, 10, 10)
 	put(locals.attributes, localscode)
+
+	if \nointrospection then {
+		m := runtimeerror_methodref(c)
+		put(localscode.code, ipush(905))
+		put(localscode.code, invokestatic(m))
+		put(localscode.code, vreturn() )
+		return
+	}
 	# local1 is int counter
 	put(localscode.code, iconst_0() )
 	put(localscode.code, istore_1() )

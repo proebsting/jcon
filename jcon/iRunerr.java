@@ -96,6 +96,7 @@ static {
     tlist[902] = "implementation malfunction";
     tlist[903] = "unexpected catastrophic event";
     tlist[904] = "attempt to set &error when error conversion disabled";
+    tlist[905] = "attempt to use introspection when disabled";
 };
 
 

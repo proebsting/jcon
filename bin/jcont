@@ -82,7 +82,7 @@ ANNOUNCE=echo
 CMDTRACE=
 LINKTRACE=
 OFLAG=-O
-TFLAGS=
+TFLAGS=-fd
 TARGET=bc
 
 # set temporary directory name, and assume its deletion
