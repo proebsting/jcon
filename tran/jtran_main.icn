@@ -45,7 +45,7 @@ end
 procedure echo(c)
 	local p
 	while p := @\c do {
-		write(\string(p))
+		write(dump(p))
 	}
 end
 
