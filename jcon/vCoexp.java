@@ -66,7 +66,9 @@ class vCoexp extends vValue implements Runnable {
 	}
 
 	vValue Refresh() {
-		return new vCoexp(closure.copy(this.originalPC));
+		vCoexp c = new vCoexp(closure.copy(this.originalPC));
+		c.create();
+		return c;
 	}
 
 	String image()	{ return "co-expression";}	//#%#% incomplete image
