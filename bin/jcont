@@ -2,13 +2,17 @@
 #
 #  jcont -- compile Icon program
 #
-#  usage:  jcont [-cdjsvJP] [-o exe] file[.icn]... [file.zip...] [-x [args]]
+#  usage:  jcont [-cdjsvJPU] [-f flags] [-o exe] file[.icn|.zip] [-x [args]]
 #
 #     -c	compile only: don't produce an executable
-#     -s	silent: suppress commentary
+#     -f flags	enable features indicated by letters in "flags":
+#			-f a	all features, equivalent to -f den
+#			-f d	display() and variable() functions
+#			-f e	error conversion to failure
+#			-f n	file and line number tracking
 #     -j	produce .jar file instead of executable script
 #     -o exe	specify output file for executable
-#
+#     -s	silent: suppress commentary
 #     -x	execute after compilation
 #
 #  The following are mainly for debugging jcont:
@@ -20,6 +24,7 @@
 #		    instead of writing class files directly
 #		    (may expose bugs in the Java compiler)
 #     -P	pessimize: don't optimize the generated Java code
+#     -U	unsafe: allow generation of code that won't verify
 #
 #  Jcont translates Icon source files into .zip files, and links .zip
 #  files to make an excutable program.  Jcont is similar to icont in
@@ -76,7 +81,8 @@ unset HEAPSIZE COEXPSIZE MSTKSIZE QLSIZE
 ANNOUNCE=echo
 CMDTRACE=
 LINKTRACE=
-JCOPT=-O
+OFLAG=-O
+TFLAGS=
 TARGET=bc
 
 # set temporary directory name, and assume its deletion
@@ -93,17 +99,19 @@ NOEXECUTE=exit
 
 #  process options, changing devault values set above
 
-USAGE="usage: $0 [-cdjsvJP] [-o exe] file[.icn]... [file.zip...] [-x [args]]"
+USAGE="usage: $0 [-cdjsvJPU] [-f flags] [-o exe] file[.icn|.zip]... [-x [args]]"
 
-while getopts "cdjsvJPo:" c 2>$NULLFILE; do
+while getopts "cdjsvJPUo:f:" c 2>$NULLFILE; do
     case $c in
 	c)	NOLINK="exit";;
 	d)	TDIR=./jtmp; NODELETE=":";;
+	f)	TFLAGS="$TFLAGS -f$OPTARG";;
 	j)	XTYPE=.jar;;
 	s)	ANNOUNCE=":";;
 	v)	CMDTRACE="set -x"; LINKTRACE="-t";;
 	J)	TARGET="java";;
-	P)	JCOPT="";;
+	P)	OFLAG="";;
+	U)	TFLAGS="$TFLAGS -U";;
 	o)	XFILE="$OPTARG";;
     	\?)	echo 1>&2 $USAGE; exit 1;;
     esac
@@ -161,7 +169,7 @@ case $IDIR in
 esac
 
 #  set paths for translator and for runtime files
-JTRAN="$ICONX $IDIR${FILESEP}jtran $JCOPT -target:$TARGET"
+JTRAN="$ICONX $IDIR${FILESEP}jtran $OFLAG $TFLAGS -target:$TARGET"
 JLINK="$ICONX $IDIR${FILESEP}jlink"
 JRTS="$IDIR${FILESEP}rts.zip"
 
