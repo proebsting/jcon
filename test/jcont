@@ -2,7 +2,7 @@
 #
 #  jcont -- compile Icon program
 #
-#  usage:  jcont [-cdsv] [-o exe] file[.icn]... [file.zip...] [-x [arguments]]
+#  usage:  jcont [-cdsvP] [-o exe] file[.icn]... [file.zip...] [-x [arguments]]
 #
 #     -c	compile only: don't produce an executable
 #     -s	silent: suppress commentary
@@ -11,6 +11,7 @@
 #     -d	debug jcont: use ./jtmp for temp files, and don't delete
 #     -v	verbose: echo shell commands, trace linking steps
 #		(this option is not for the squeamish)
+#     -P	pessimize: don't optimize the generated Java code
 #
 #     -x	execute after compilation
 #
@@ -35,6 +36,7 @@ unset UNZIP UNZIPOPT
 ANNOUNCE=echo
 CMDTRACE=
 LINKTRACE=
+JCOPT=-O
 
 # set temporary directory name, and assume its deletion
 TDIR=./jcon$$
@@ -49,14 +51,15 @@ NOEXECUTE=exit
 
 #  process options
 
-USAGE="usage: $0 [-cdsv] [-o exe] file[.icn]... [file.zip...] [-x [arguments]]"
+USAGE="usage: $0 [-cdsvP] [-o exe] file[.icn]... [file.zip...] [-x [arguments]]"
 
-while getopts "cdsvo:" c 2>/dev/null; do
+while getopts "cdsvPo:" c 2>/dev/null; do
     case $c in
 	c)	NOLINK="exit";;
 	d)	TDIR=./jtmp; NODELETE=":";;
 	s)	ANNOUNCE=":";;
 	v)	CMDTRACE="set -x"; LINKTRACE="-t";;
+	P)	JCOPT="";;
 	o)	XFILE="$OPTARG";;
     	\?)	echo 1>&2 $USAGE; exit 1;;
     esac
@@ -131,7 +134,7 @@ else
     JCON=$IDIR/src/jcon
     JRTS=$IDIR/rts/rts.zip
 fi
-JCON="$JCON -O -target=java"
+JCON="$JCON $JCOPT -target=java"
 ZIP="$PROJHOME/$ARCH/bin/zip"
 UNZIP="$PROJHOME/$ARCH/bin/unzip"
 
