@@ -30,5 +30,7 @@ procedure main(L)
 	getline := if \filename then (create preprocessor(filename)) else (create !&input)
 	CG.File(getline, cg_flags)
 
-	#every write(&errout, &allocated)
+	#every writes(&errout, " ", "  total alloc: " | &allocated | "\n")
+	#every writes(&errout, " ", "  current:     " | &storage | "\n")
+	#every writes(&errout, " ", "  collections: " | &collections | "\n")
 end
