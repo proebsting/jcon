@@ -17,11 +17,17 @@ final class fLoad extends iInstantiate {
 
 //  loadfunc(library, funcname)
 //
-//  Loads a class (which must extend jcon.vProc[0-9V]) from a Zip (or Jar)
-//  library and returns a procedure.  Loadfunc selects the first class
-//  named either "funcname.class" (assumed to be a Java procedure) or
-//  "p_l$<anything>$funcname.class" (an Icon procedure).  For an Icon
-//  library, all procedures are linked in and the specified one is returned.
+//  Loads a class (which must extend jcon.vProc[0-9V]) and returns a
+//  procedure.
+//
+//  If library is null, the class is loaded using the system classloader
+//  (that is, from the CLASSPATH) and must be named "funcname".
+//
+//  Otherwise, library names a from a Zip (or Jar) library; loadfunc selects
+//  the first class named either "funcname.class" (assumed to be a Java
+//  procedure) or "p_l$<anything>$funcname.class" (an Icon procedure).
+//  For an Icon library, all procedures are linked in and the specified one
+//  is returned.
 
 final class f$loadfunc extends vProc2 {				// loadfunc(s,s)
     private static final String linkhead = "l$";
@@ -29,10 +35,23 @@ final class f$loadfunc extends vProc2 {				// loadfunc(s,s)
     private static Hashtable ilinked = new Hashtable();  // icnfiles prev linked
 
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
-	String filename = a.mkString().toString();
 	String funcname = b.mkString().toString();
+
+	if (a.isnull()) try {			// if /a, use sys classloader
+	    Class c = Class.forName(funcname);
+	    vProc p = (vProc) c.newInstance();
+	    initProc(p, "function " + funcname);
+	    return p;
+	} catch (Throwable t) {
+	    // as in Icon v9, print additional info before raising error
+	    System.err.print("loadfunc(,\"" + funcname + "\"): " + t);
+	    iRuntime.error(216);
+	    return null;
+	}
+
 	String exact = funcname + ".class";
 	String tail = "$" + funcname + ".class";
+	String filename = a.mkString().toString();
 	try {
 	    ZipFile zf = new ZipFile(filename);
 	    Enumeration e = zf.entries();
