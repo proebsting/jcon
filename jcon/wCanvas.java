@@ -27,6 +27,8 @@ final class wCanvas extends Canvas {
     boolean have_set_width;	// was width set explicitly?
     boolean have_set_height;	// was height set explicitly?
 
+    long lastevent;		// timestamp of last event
+
 
 
 //  new wCanvas(win, label, w, h) -- create new canvas
@@ -177,6 +179,16 @@ void resize(vWindow win, int w, int h) {
 
 public void paint(Graphics g) {
     g.drawImage(i,0,0,null);
+}
+
+
+
+//  interval() -- return interval in milliseconds since last event
+
+public long interval() {
+    long tprev = lastevent;
+    lastevent = System.currentTimeMillis();
+    return (tprev == 0) ? 0 : (lastevent - tprev);
 }
 
 

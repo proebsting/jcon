@@ -12,7 +12,7 @@ procedure main()
 
    &window := open("window", "g", "size=500,300")
    x := 10
-   y := 15
+   y := 0
 
    show()
    show("fixed")
@@ -30,21 +30,32 @@ procedure main()
 end
 
 procedure show(s)
+   static prevl
+   local advance
+
    if /s then
       s := "[default font]"
    else if not Font(s) then {
       s := "FAILED: " || s
       write("[FAILED]")
       }
-   DrawString(x, y, s)
-   y +:= 15
-   if y >= 300 then {
-      y := 15
-      x +:= 160
+
+   advance := \prevl | 0
+   advance <:= (prevl := WAttrib("leading"))
+   y +:= advance
+
+   if y >= WAttrib("height") then {
+      y := WAttrib("leading")
+      x +:= 180
       if x > 420 then {
 	 EraseArea()
 	 x := 10
 	 }
       }
+
+   DrawString(x, y, s)
+   write("w=", WAttrib("fwidth"), " h=", WAttrib("fheight"),
+      "=", WAttrib("ascent"), "+", WAttrib("descent"),
+      " l=", WAttrib("leading"), " \t", s)
    return
 end

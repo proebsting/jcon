@@ -18,15 +18,6 @@ final class wTTY {
 
 
 
-//  new wTTY() -- create new tty structure
-
-wTTY() {
-    xloc = 0;
-    yloc = 20;	//#%#% should depend on font
-}
-
-
-
 //  read(win) -- read line from window
 
 vString read(vWindow win) {
@@ -117,33 +108,45 @@ private char rchar(vWindow win, StringBuffer b) {
 
 //  writes(win, s) -- write string to window
 
-//  #%#% also should handle \r and \t
+void writes(vWindow win, vString s) {
+    FontMetrics m = win.getFontMetrics();
+    byte[] b = s.getBytes();
+    int i, j;
 
-void writes(vWindow win, vString vs) {
-    int i = 0;
-    int j;
-    String s = vs.toString();
-    while ((j = s.indexOf('\n', i)) >= 0) {		// find embedded '\n'
-	if (j > i) {
-	    wstring(win, s.substring(i, j));
+    for (i = j = 0; j < b.length; j++) {
+	char c = (char) b[j];
+	switch (c) {
+	    case '\n':
+		wchars(win, m, b, i, j);
+		newline(win);
+		break;
+	    case '\r':
+		wchars(win, m, b, i, j);
+		xloc = 0;
+		break;
+	    case '\t':
+		wchars(win, m, b, i, j);
+		int tabw = 8 * win.Fwidth();
+		xloc = xloc - (xloc % tabw) + tabw;
+		break;
+	    default:
+		continue;
 	}
-	newline(win);
-	i = j + 1;
+	i = j;
     }
-    if (i < s.length()) {
-	wstring(win, s.substring(i, s.length()));
-    }
+    wchars(win, m, b, i, j);
 }
 
+//  wchars(win, m, b, i, j) -- write b[i:j] to window
 
-
-//  wstring(win, s) -- write string to window
-
-private void wstring(vWindow win, String s) {
-    FontMetrics m = win.getFontMetrics();
+private void wchars(vWindow win, FontMetrics m, byte[] b, int i, int j) {
+    if (i >= j) {
+	return;
+    }
+    String s = new String(b, i, j - i);
     int w = m.stringWidth(s);
     int a = m.getMaxAscent();
-    win.EraseArea(xloc, yloc - a, w, a + m.getMaxDescent());
+    win.EraseArea(xloc, yloc - a, w, win.Leading());
     win.DrawString(xloc, yloc, s);
     xloc += w;
 }

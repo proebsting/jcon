@@ -56,11 +56,11 @@ static void register(wCanvas cv) {		// register event handlers
 
 void enqueue(vValue a, int x, int y, InputEvent e) {
 
-    int msec = 0;			// msec values not known 
+    long msec = c.interval();
     int expo = 0;
-    while (msec > 0x1000) {
+    while (msec >= 0x1000) {
 	msec >>= 4;
-	expo += 0x1000;
+	expo++;
     }
 
     int flags = 0;

@@ -584,7 +584,8 @@ final class k$row extends kPaired {				// &row
     void assign(long i) {
 	vWindow win = vWindow.getCurrent();
 	set(i);
-	iKeyword.y.set(i * win.Leading());
+	iKeyword.y.set((i - 1) * win.Leading() +
+	    win.getFontMetrics().getMaxAscent() - 1);
     }
 }
 
@@ -594,6 +595,6 @@ final class k$col extends kPaired {				// &col
     void assign(long i) {
 	vWindow win = vWindow.getCurrent();
 	set(i);
-	iKeyword.x.set(i * win.Fwidth());
+	iKeyword.x.set((i - 1) * win.Fwidth());
     }
 }

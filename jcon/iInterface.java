@@ -56,7 +56,6 @@ public static void start(iFile[] files, String[] names) {
 
     iOperators.announce();		// install operators
     iBuiltins.announce();		// install built-in functions
-    wBuiltins.announce();		// install built-in graphics functions
     iKeyword.announce();		// install keywords
 
     e = fileTable.elements();

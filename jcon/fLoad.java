@@ -83,7 +83,6 @@ final class f$loadfunc extends vProc2 {				// loadfunc(s,s)
 	iFile r = (iFile) c.newInstance();	// create instance
 	r.unresolved();				// create new globals 
 	iBuiltins.announce();			// init with builtins
-	wBuiltins.announce();
 	r.declare();				// declare procedures
 	r.resolve();				// resolve references
 

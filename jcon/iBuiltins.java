@@ -6,10 +6,12 @@ package rts;
 
 public final class iBuiltins extends iFile {
 
-
 static iBuiltins self = new iBuiltins();
 
+
+
 static void announce() {
+
     iEnv.declareBuiltin("abs", 1, fNumeric.self);
     iEnv.declareBuiltin("acos", 1, fNumeric.self);
     iEnv.declareBuiltin("any", 4, fScan.self);
@@ -19,6 +21,7 @@ static void announce() {
     iEnv.declareBuiltin("bal", 6, fScan.self);
     iEnv.declareBuiltin("center", 3, fString.self);
     iEnv.declareBuiltin("char", 1, fString.self);
+    //			"chdir"				// not possible in Java
     iEnv.declareBuiltin("close", 1, fIO.self);
     iEnv.declareBuiltin("collect", 2, fMisc.self);
     iEnv.declareBuiltin("copy", 1, fStruct.self);
@@ -27,7 +30,7 @@ static void announce() {
     iEnv.declareBuiltin("delay", 1, fMisc.self);
     iEnv.declareBuiltin("delete", 2, fStruct.self);
     iEnv.declareBuiltin("detab", -2, fTab.self);
-    iEnv.declareBuiltin("display", 2, fMisc.self);
+    iEnv.declareBuiltin("display", 2, fMisc.self);	// globals only
     iEnv.declareBuiltin("dtor", 1, fNumeric.self);
     iEnv.declareBuiltin("entab", -2, fTab.self);
     iEnv.declareBuiltin("errorclear", 0, fMisc.self);
@@ -37,7 +40,9 @@ static void announce() {
     iEnv.declareBuiltin("flush", 1, fIO.self);
     iEnv.declareBuiltin("function", 0, fMisc.self);
     iEnv.declareBuiltin("get", 1, fList.self);
-    iEnv.declareBuiltin("getenv", 1, fMisc.self);
+    //			"getch"				// not implemented
+    //			"getche"			// not implemented
+    iEnv.declareBuiltin("getenv", 1, fMisc.self);	// uses "env" in $PATH
     iEnv.declareBuiltin("iand", 2, fNumeric.self);
     iEnv.declareBuiltin("icom", 1, fNumeric.self);
     iEnv.declareBuiltin("image", 1, fConvert.self);
@@ -46,6 +51,7 @@ static void announce() {
     iEnv.declareBuiltin("ior", 2, fNumeric.self);
     iEnv.declareBuiltin("ishift", 2, fNumeric.self);
     iEnv.declareBuiltin("ixor", 2, fNumeric.self);
+    //			"kbhit"				// not implemented
     iEnv.declareBuiltin("key", 1, fStruct.self);
     iEnv.declareBuiltin("left", 3, fString.self);
     iEnv.declareBuiltin("list", 2, fList.self);
@@ -76,7 +82,7 @@ static void announce() {
     iEnv.declareBuiltin("right", 3, fString.self);
     iEnv.declareBuiltin("rtod", 1, fNumeric.self);
     iEnv.declareBuiltin("runerr", 2, fMisc.self);
-    iEnv.declareBuiltin("seek", 2, fIO.self);
+    iEnv.declareBuiltin("seek", 2, fIO.self);		// not for &input etc.
     iEnv.declareBuiltin("seq", 2, fNumeric.self);
     iEnv.declareBuiltin("serial", 1, fStruct.self);
     iEnv.declareBuiltin("set", 1, fStruct.self);
@@ -93,10 +99,58 @@ static void announce() {
     iEnv.declareBuiltin("trim", 2, fString.self);
     iEnv.declareBuiltin("type", 1, fConvert.self);
     iEnv.declareBuiltin("upto", 4, fScan.self);
-    iEnv.declareBuiltin("variable", 1, fMisc.self);
-    iEnv.declareBuiltin("where", 1, fIO.self);
+    iEnv.declareBuiltin("variable", 1, fMisc.self);	// globals only
+    iEnv.declareBuiltin("where", 1, fIO.self);		// not for &input etc.
     iEnv.declareBuiltin("write", -1, fIO.self);
     iEnv.declareBuiltin("writes", -1, fIO.self);
+
+    iEnv.declareBuiltin("Active", 0, fGraphics.self);
+    iEnv.declareBuiltin("Alert", 1, fGraphics.self);
+    iEnv.declareBuiltin("Bg", 2, fGraphics.self);
+    iEnv.declareBuiltin("Clip", 5, fGraphics.self);
+    iEnv.declareBuiltin("Clone", -1, fGraphics.self);
+    iEnv.declareBuiltin("Color", -1, fGraphics.self);		// always fails
+    iEnv.declareBuiltin("ColorValue", 2, fGraphics.self);
+    iEnv.declareBuiltin("CopyArea", 8, fGraphics.self);
+    //			"Couple"				// not possible?
+    iEnv.declareBuiltin("DrawArc", -1, fDrawing.self);
+    iEnv.declareBuiltin("DrawCircle", -1, fDrawing.self);
+    iEnv.declareBuiltin("DrawCurve", -1, fDrawing.self);
+    iEnv.declareBuiltin("DrawImage", 4, fDrawing.self);
+    iEnv.declareBuiltin("DrawLine", -1, fDrawing.self);
+    iEnv.declareBuiltin("DrawPoint", -1, fDrawing.self);
+    iEnv.declareBuiltin("DrawPolygon", -1, fDrawing.self);
+    iEnv.declareBuiltin("DrawRectangle", -1, fDrawing.self);
+    iEnv.declareBuiltin("DrawSegment", -1, fDrawing.self);
+    iEnv.declareBuiltin("DrawString", -1, fDrawing.self);
+    iEnv.declareBuiltin("EraseArea", -1, fDrawing.self);
+    iEnv.declareBuiltin("Event", 1, fGraphics.self);
+    iEnv.declareBuiltin("Fg", 2, fGraphics.self);
+    iEnv.declareBuiltin("FillArc", -1, fDrawing.self);
+    iEnv.declareBuiltin("FillCircle", -1, fDrawing.self);
+    iEnv.declareBuiltin("FillPolygon", -1, fDrawing.self);
+    iEnv.declareBuiltin("FillRectangle", -1, fDrawing.self);
+    iEnv.declareBuiltin("Font", 2, fGraphics.self);
+    iEnv.declareBuiltin("FreeColor", -1, fGraphics.self);
+    iEnv.declareBuiltin("GotoRC", 3, fGraphics.self);
+    iEnv.declareBuiltin("GotoXY", 3, fGraphics.self);
+    iEnv.declareBuiltin("Lower", 1, fGraphics.self);
+    iEnv.declareBuiltin("NewColor", 2, fGraphics.self);		// always fails
+    iEnv.declareBuiltin("PaletteChars", 2, fGraphics.self);
+    iEnv.declareBuiltin("PaletteColor", 3, fGraphics.self);
+    iEnv.declareBuiltin("PaletteKey", 3, fGraphics.self);
+    iEnv.declareBuiltin("Pattern", 2, fGraphics.self);		// always fails
+    iEnv.declareBuiltin("Pending", 1, fGraphics.self);
+    iEnv.declareBuiltin("Pixel", 5, fGraphics.self);
+    iEnv.declareBuiltin("Raise", 1, fGraphics.self);
+    iEnv.declareBuiltin("ReadImage", 4, fGraphics.self);	// no quantizatn
+    iEnv.declareBuiltin("TextWidth", 2, fGraphics.self);
+    iEnv.declareBuiltin("Uncouple", 1, fGraphics.self);
+    iEnv.declareBuiltin("WAttrib", -1, fGraphics.self);
+    iEnv.declareBuiltin("WDefault", 3, fGraphics.self);		// always fails
+    iEnv.declareBuiltin("WFlush", 1, fGraphics.self);
+    //			"WriteImage"				// not done
+    iEnv.declareBuiltin("WSync", 1, fGraphics.self);
 }
 
 
