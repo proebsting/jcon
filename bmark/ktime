@@ -1,0 +1,27 @@
+#!/bin/ksh
+#
+#  ktime command...
+#
+#  time a command using ksh to ensure uniform input format;
+#  reformat into one line on stderr giving 
+#	verb  real  user  sys  user+sys
+#  with the times in floating-point format.
+
+#  default no verification of JVM code
+export JXOPTS="-noverify $JXOPTS"
+
+TMP=/tmp/ktime.$$
+trap "rm -f $TMP" 0 1 2 15
+
+(time "$@" 2>&1) 2>$TMP
+sed <$TMP '
+    /^$/d
+    s/m/ /
+    s/s *$//
+' | awk '
+    /real/	{ REAL = 60 * $2 + $3; }
+    /user/	{ USER = 60 * $2 + $3; }
+    /sys/	{ SYS  = 60 * $2 + $3; }
+    END		{ printf("%-12s %6.2f %6.2f %6.2f %6.2f\n", \
+		  "'$1'", REAL, USER, SYS, USER + SYS); }
+' 1>&2

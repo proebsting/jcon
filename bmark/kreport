@@ -1,0 +1,11 @@
+#!/bin/ksh
+#
+#  kreport progname... -- report user CPU times and ratios
+
+echo ''
+echo '          icont  jcont    ratio'
+for p; do
+    echo `<$p.it` `<$p.jt` | awk '
+	{ printf("%-8s %6.2f %6.2f %8.2f\n", "'$p'", $3, $8, $8 / $3); }
+    '
+done
