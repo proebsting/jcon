@@ -414,6 +414,37 @@ vCset mkCset() {						// cset(s)
 
 
 
+public vProc Proc(long i) {
+    String s = this.toString();
+    if (i == 0) {
+	return (vProc) iEnv.builtintab.get(s);
+    }
+    
+    vDescriptor v = (vDescriptor) iEnv.symtab.get(s);
+    if (v != null) {
+	return v.Deref().mkProc();
+    }
+    v = (vDescriptor) iEnv.builtintab.get(s);
+    if (v != null) {
+	return (vProc) v;
+    }
+    try {
+	return this.mkInteger().mkProc();
+    } catch (iError e) {
+	// ignore
+    }
+    if (i < 1 || i > 3) {
+	return null;
+    }
+    v = (vDescriptor) iEnv.proctab[(int)i-1].get(s);
+    if (v != null) {
+	return (vProc) v;
+    }
+    return null;
+}
+
+
+
 // s ! args	//#%#% only handles operators for now
 
 public vDescriptor ProcessArgs(vDescriptor v) {

@@ -60,6 +60,12 @@ vString mkString() {
     return cachedString;
 }
 
+vProc mkProc() {
+    // return new vIntegerProc(this); 
+    iRuntime.bomb("vInteger.mkProc() NYI");	//#%#%#%
+    return null;
+}
+
 vString write()		{ return mkString(); }
 vString image()		{ return mkString(); }
 

@@ -25,6 +25,8 @@ public vString Type()	{ return typestring; }
 
 public vInteger Args()	{ return vInteger.New(args); }
 
+public vProc mkProc()	{ return this; }
+
 
 
 //  New(classname, image, nargs) -- create vProc and initialize

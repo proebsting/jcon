@@ -31,6 +31,10 @@ private vRecordProc(String name, String[] fieldnames) {
 
 // methods
 
+public vProc mkProc() {
+    return this;
+}
+
 public vDescriptor Call(vDescriptor[] v) {
     return new vRecord(this ,v);
 }

@@ -76,6 +76,8 @@ public static void start(String[] filenames, String[] args, String name) {
     }
 
     k$progname.self.set(vString.New(name));
+
+    // find main()
     vDescriptor m = iEnv.resolve("main");
     if (m == null || !(m.Deref() instanceof vProc)) {
 	System.err.println();
@@ -84,25 +86,32 @@ public static void start(String[] filenames, String[] args, String name) {
 	System.exit(1);	// not iRuntime.exit: main coexp not set up
     }
     vProc p = (vProc) m.Deref();
-    vDescriptor[] vargs = new vDescriptor[args.length];
-    for (int i = 0; i < args.length; i++) {
-	vargs[i] = vString.New(args[i]);
+
+    // create arglist only if main() declares a parameter;
+    // this keeps List serial numbers in sync with v9
+    vDescriptor a = vNull.New();
+    if (! (p instanceof vProc0)) {
+	vDescriptor[] vargs = new vDescriptor[args.length];
+	for (int i = 0; i < args.length; i++) {
+	    vargs[i] = vString.New(args[i]);
+	}
+	a = vList.New(vargs);
     }
-    vDescriptor[] v = { vList.New(vargs) };
 
     // initialize &trace from $TRACE
     try {
-	long t = Long.parseLong(System.getProperty("TRACE", "0"));
-	k$trace.self.Assign(vInteger.New(t));
-    } catch (Exception x) {
-	// nothing
+	String s = System.getProperty("TRACE", "0");
+	long t = Long.parseLong(s);
+	k$trace.self.Call().Assign(vInteger.New(t));
+    } catch (Throwable t) {
+	k$trace.self.Call().Assign(vInteger.New(0));
     }
 
     k$time.reset();				// zero &time
 
     //#%#%#%# need to set up a coexpression, but for now...
     try {
-	p.Call(v);
+	p.Call(a);
 	iRuntime.exit(0);
     } catch (iError err) {
 	err.printStackTrace(); //#%#% temporary

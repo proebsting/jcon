@@ -24,6 +24,7 @@ vString mkString()		{ iRuntime.error(103, this); return null; }
 vInteger mkInteger()		{ iRuntime.error(101, this); return null; }
 vReal mkReal()			{ iRuntime.error(102, this); return null; }
 vCset mkCset()			{ iRuntime.error(104, this); return null; }
+vProc mkProc()			{ iRuntime.error(106, this); return null; }
 vValue[] mkArray(int errno)	{ iRuntime.error(errno, this); return null; }
 
 vString write()			{ return this.mkString(); }
@@ -63,7 +64,7 @@ public vDescriptor Key()	{ iRuntime.error(124, this); return null; }
 
 public vString Name()		{ iRuntime.error(111, this); return null; }
 public vInteger Args()		{ iRuntime.error(106, this); return null; }
-public vValue Proc(long i) { iRuntime.bomb("Proc() NYI"); return null; } //#%#%
+public vProc Proc(long i)	{ iRuntime.error(106, this); return null; }
 
 public vVariable Field(String s){ iRuntime.error(107, this); return null;}
 public vDescriptor Index(vDescriptor i)
@@ -156,55 +157,44 @@ public vDescriptor SectionVar(vVariable v, vDescriptor i, vDescriptor j)
 					{ return this.Deref().Section(i, j); }
 
 public vDescriptor Call(vDescriptor v[]) {
-	iRuntime.error(106, this);
-	return null;
+	return this.Proc((v.length > 0) ? v.length : -1).Call(v);
 }
 public vDescriptor Call() {
-	iRuntime.error(106, this);
-	return null;
+	return this.Proc(-1).Call();	// NOT proc(0)!
 }
 public vDescriptor Call(vDescriptor a) {
-	iRuntime.error(106, this);
-	return null;
+	return this.Proc(1).Call(a);
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b) {
-	iRuntime.error(106, this);
-	return null;
+	return this.Proc(2).Call(a, b);
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c){
-	iRuntime.error(106, this);
-	return null;
+	return this.Proc(3).Call(a, b, c);
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d) {
-	iRuntime.error(106, this);
-	return null;
+	return this.Proc(4).Call(a, b, c, d);
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e) {
-	iRuntime.error(106, this);
-	return null;
+	return this.Proc(5).Call(a, b, c, d, e);
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f) {
-	iRuntime.error(106, this);
-	return null;
+	return this.Proc(6).Call(a, b, c, d, e, f);
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g) {
-	iRuntime.error(106, this);
-	return null;
+	return this.Proc(7).Call(a, b, c, d, e, f, g);
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h) {
-	iRuntime.error(106, this);
-	return null;
+	return this.Proc(8).Call(a, b, c, d, e, f, g, h);
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h,
     vDescriptor i) {
-	iRuntime.error(106, this);
-	return null;
+	return this.Proc(9).Call(a, b, c, d, e, f, g, h, i);
 }
 
 

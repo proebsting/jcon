@@ -22,6 +22,7 @@ abstract vString mkString();			// convert to Icon string
 abstract vInteger mkInteger();			// convert to Icon integer
 abstract vReal mkReal();			// convert to Icon real
 abstract vCset mkCset();			// convert to Icon cset
+abstract vProc mkProc();			// convert to Icon procedure
 abstract vValue[] mkArray(int errno);		// convert to array of vValues
 
 // special-purpose string conversions
@@ -62,7 +63,7 @@ public abstract vDescriptor Key();			//  key(T)
 // variable operations
 public abstract vString Name();				//  name(v)
 public abstract vInteger Args();			//  args(p)
-public abstract vValue Proc(long i);			//  proc(s, i)
+public abstract vProc Proc(long i);			//  proc(s, i)
 
 // element access
 public abstract vVariable Field(String s);		//  R . s
