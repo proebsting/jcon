@@ -230,6 +230,10 @@ final class vTableRef extends vVariable {
 	return this;
     }
 
+    public vDescriptor Return() {
+	return this;
+    }
+
     public vValue Deref() {
 	vValue v = table.get(key);
 	return (v == null) ? table.dflt : v;

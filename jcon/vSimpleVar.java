@@ -33,6 +33,7 @@ vSimpleVar(String name, vValue x) {	// new vSimpleVar(name, value)
 
 
 public vDescriptor DerefLocal()		{ return this; }	// Not a local.
+public vDescriptor Return()		{ return this; }	// Not a local.
 public vValue Deref()			{ return value; }
 
 public vVariable Assign(vDescriptor x)	{ value = x.Deref(); return this; }

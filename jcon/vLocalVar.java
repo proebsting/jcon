@@ -57,5 +57,6 @@ vLocalVar(String name, vValue x) {	// new vLocalVar(name, value)
 }
 
 public vDescriptor DerefLocal()		{ return value; }	// a local.
+public vDescriptor Return()		{ return value; }	// a local.
 
 } // class vLocalVar

@@ -37,6 +37,7 @@ public vString reportShallow() {		// report w/out expanding
 
 // dereferencing and assignment
 public abstract vDescriptor DerefLocal();		// .x iff x refs a local
+public abstract vDescriptor Return();			// .x iff x refs a local
 public abstract vValue Deref();				// . x
 public abstract vVariable Assign(vDescriptor x);	// v := x
 public abstract vVariable SubjAssign(vDescriptor x);	// &subject := x  

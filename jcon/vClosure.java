@@ -36,6 +36,7 @@ public vString image()			{ return retval.image(); }
 public vString report()			{ return retval.report(); }
 
 public vDescriptor DerefLocal()		{ return this; }
+public vDescriptor Return()		{ return retval.DerefLocal(); }
 public vValue Deref()			{ return retval.Deref(); }
 public vVariable Assign(vDescriptor x)	{ return retval.Assign(x); }
 public vVariable Swap(vDescriptor x)	{ return retval.Swap(x); }

@@ -68,6 +68,10 @@ int posEq(long n) {
 
 //  internal methods
 
+public vDescriptor Return() {
+    return this.DerefLocal();
+}
+
 public vDescriptor DerefLocal() {
     vDescriptor v = var.DerefLocal();
     if (v instanceof vValue) {
