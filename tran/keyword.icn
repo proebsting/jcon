@@ -5,7 +5,7 @@ procedure key_generator(name)
     initial {
 	t := set([
 		    "features",
-		    "allocations",
+		    "allocated",
 		    "collections",
 		    "regions",
 		    "storage"
