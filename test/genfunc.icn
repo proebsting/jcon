@@ -21,7 +21,11 @@ end
 procedure wproc(f)
    every write(f, ![
       "procedure inv(x)", 
-      "   return 1.0 / x",
-      "   end"
+      "   return adiv(-1.0, x)",
+      "end",
+      "",
+      "procedure adiv(a, b)",
+      "   return abs(a) / b",
+      "end"
    ]);
 end
