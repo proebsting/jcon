@@ -183,7 +183,8 @@ procedure ir_Alt(p, st, inuse, target, bounded)
 		ir(p.eList[i], tmpst, tiu[i], target, bounded)
 		max_st(st, tmpst)
 	}
-	inter_inuse(inuse, tiu)
+	# inter_inuse(inuse, tiu)
+	union_inuse(inuse, tiu)
 
 	CG.emit(p.ir.start, [ irGoto(p.eList[1].ir.start) ])
 	/bounded & CG.emit(p.ir.resume, [ irGoto(t) ])
@@ -245,7 +246,8 @@ procedure ir_Case(p, st, inuse, target, bounded)
 	put(tiu, copy_inuse(inuse))
 	ir(p.dflt, st, tiu[-1], target, bounded)
 	max_st(st, tmp2)
-	inter_inuse(inuse, tiu)
+	# inter_inuse(inuse, tiu)
+	union_inuse(inuse, tiu)
 
 	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
 	/bounded & CG.emit(p.ir.resume, [ irGoto(t) ])
@@ -524,7 +526,8 @@ procedure ir_If(p, st, inuse, target, bounded)
 	ir(p.thenexpr, tmp, xiu, target, bounded)
 	ir(p.elseexpr, st, yiu, target, bounded)
 	max_st(st, tmp)
-	inter_inuse(inuse, [xiu,yiu])
+	# inter_inuse(inuse, [xiu,yiu])
+	union_inuse(inuse, [xiu,yiu])
 
 	CG.emit(p.ir.start, [ irGoto(p.expr.ir.start) ])
 	/bounded & CG.emit(p.ir.resume, [ irGoto(t) ])
@@ -1355,6 +1358,18 @@ procedure new_inuse()
 	return ir_stacks(set(), set(), set())
 end
 
+procedure union_inuse(x, L)
+	local t
+	t := pop(L)
+	x.tmp := t.tmp
+	x.lab := t.lab
+	x.clo := t.clo
+	while t := pop(L) do {
+		x.tmp ++:= t.tmp
+		x.lab ++:= t.lab
+		x.clo ++:= t.clo
+	}
+end
 procedure inter_inuse(x, L)
 	local t
 	t := pop(L)

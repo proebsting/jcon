@@ -132,14 +132,18 @@ end
 
 # record irFree( v )
 procedure gen_bc_irFree(s, p)
-	local free, c
+	local free, c, lab
 
+	free := create_methodref(bc_proc_classptr, "Free", "()V", "rts/iClosure")
 	every c := !p.v.clo do {
+		lab := label()
 		gen_bc_irTmpClosure_rval(s, c)
-		free := create_methodref(bc_proc_classptr, "Free", "()V", "rts/iClosure")
-		put(s, invokevirtual(free))
-		put(s, aconst_null() )
-		gen_bc_irTmpClosure_assign(s, c)
+		put(s, ifnull(lab))
+			gen_bc_irTmpClosure_rval(s, c)
+			put(s, invokevirtual(free))
+			put(s, aconst_null() )
+			gen_bc_irTmpClosure_assign(s, c)
+		put(s, lab)
 	}
 	return s
 end
