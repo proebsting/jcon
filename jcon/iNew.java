@@ -46,11 +46,15 @@ public static vProc Proc(String s, String classname, int args) {
 public static vRecordProc RecordProc(String name, String[] fields)
 					{ return new vRecordProc(name, fields);}
 
-public static vFile File(String kw, InputStream i) { return new vFile(kw, i); }
-public static vFile File(String kw, PrintStream p) { return new vFile(kw, p); }
+public static vFile File(String kw, InputStream i) { return new vTFile(kw, i); }
+public static vFile File(String kw, PrintStream p) { return new vTFile(kw, p); }
 public static vFile File(String filename, String mode) {
     try {
-    	return new vFile(filename, mode);
+	if (vFile.any("uU", mode)) {
+	    return new vBFile(filename, mode);	// binary (untranslated) file
+	} else {
+	    return new vTFile(filename, mode);	// text (translated) file
+	}
     } catch (IOException e) {
     	return null; /*FAIL*/
     }

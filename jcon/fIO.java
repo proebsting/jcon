@@ -70,6 +70,10 @@ class f$reads extends iValueClosure {			// reads(f,n)
 	vDescriptor function(vDescriptor[] args) {
 		vFile f = vFile.argVal(args, 0, k$input.file);
 		long n = vInteger.argVal(args, 1, 1);
+		if (n <= 0) {
+			iRuntime.error(205, args[1]);
+			return null;
+		}
 		return f.reads(n);
 	}
 }

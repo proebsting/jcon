@@ -1,12 +1,19 @@
 //  vFile.java -- Icon Files
 
+//  vFile is an abstract class that is subclassed by
+//  vTFile for text files or vBFile for binary files.
+//  iNew.vFile() examines flags to know which type to construct.
+//
+//  many common operations are implemented here, including read().
+//  reads(), writes(), and newline() are class-specific.
+
 package rts;
 
 import java.io.*;
 
 
 
-public class vFile extends vValue {
+public abstract class vFile extends vValue {
 
     String img;			// string for image() and for sorting
 
@@ -14,6 +21,13 @@ public class vFile extends vValue {
     DataOutput outstream;	// output stream, if writable
     RandomAccessFile randfile;	// random handle, if seekable
 
+    byte lastCharRead = '\0';	// last char seen by read()
+
+
+
+abstract vString reads(long n);	// read n bytes
+abstract void writes(String s);	// write string without appending newline
+abstract void newline();	// write newline
 
 
 String type()			{ return "file"; }
@@ -24,21 +38,21 @@ vDescriptor Bang(iClosure c)	{ return this.read(); }
 
 
 
-vFile(String kwname, InputStream i) {		// new vFile(&input, System.in)
-    instream = new DataInputStream(i);
+// new vFile(kwname, instream, outstream) -- constructor for keyword files
+
+vFile(String kwname, DataInput i, DataOutput o) {
     img = kwname;
+    instream = i;
+    outstream = o;
 }
 
-vFile(String kwname, PrintStream p) {		// new vFile(&output/&errout...)
-    outstream = new DataOutputStream(p);
-    img = kwname;
-}
 
 
-
-// new vFile(name, flags) constructor for open()
+// new vFile(name, flags) -- constructor for open()
 // throws IOException for failure
-// #%#%# ignores t/u flags; disallows p flag
+//
+// ignores "t/u" flags, which should have been checked by open()
+// disallows "p" flag
 
 vFile(String name, String flags) throws IOException {
 
@@ -178,14 +192,18 @@ vInteger where() {					// where()
 
 
 vString read() {					// read()
-    StringBuffer b = new StringBuffer(100);
-
     if (instream == null) {
 	iRuntime.error(212, this);	// not open for reading
     }
+    StringBuffer b = new StringBuffer(100);
+    byte c = '\0';
     try {
-	byte c;
-	while ((c = instream.readByte()) != '\n') {	//#%#% assumes Unix
+	if (lastCharRead == '\r') {
+	    if ((c = instream.readByte()) != '\n') {
+		b.append((char) c);
+	    }
+	}
+	while ((c = instream.readByte()) != '\n' && c != '\r') {
 	    b.append((char) c);
 	}
     } catch (EOFException e) {
@@ -194,55 +212,9 @@ vString read() {					// read()
     } catch (IOException e) {
 	iRuntime.error(214, this);	// I/O error
 	return null;
-    } 
+    }
+    lastCharRead = c;
     return iNew.String(b.toString());
-}
-
-
-
-vString reads(long n) {					// reads(n)
-    StringBuffer b = new StringBuffer((int) n);
-
-    if (instream == null) {
-	iRuntime.error(212, this);	// not open for reading
-    }
-    try {
-	while (b.length() < n) {
-	    b.append((char) instream.readByte());
-	}
-    } catch (EOFException e) {
-    	if (b.length() == 0)
-	    return null; /*FAIL*/
-    } catch (IOException e) {
-	iRuntime.error(214, this);	// I/O error
-	return null;
-    } 
-    return iNew.String(b.toString());
-}
-
-
-
-void writes(String s) {				// writes(s)
-    if (outstream == null) {
-	iRuntime.error(213, this);	// not open for writing
-    }
-    try {
-	outstream.writeBytes(s);
-    } catch (IOException e) {
-	iRuntime.error(214, this);	// I/O error
-    }
-}
-
-
-void newline() {				// write newline
-    if (outstream == null) {
-	iRuntime.error(213, this);	// not open for writing
-    }
-    try {
-	outstream.writeByte('\n');	//#%#% assumes Unix
-    } catch (IOException e) {
-	iRuntime.error(214, this);	// I/O error
-    }
 }
 
 
