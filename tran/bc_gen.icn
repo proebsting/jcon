@@ -345,47 +345,53 @@ procedure gen_bc_irSucceed(s, p)
 		gen_bc(s, p.continuation)
 		put(s, putfield(PC))
 
-		a := create_fieldref(bc_proc_classptr,
-					"tmpArray",
-					"[Lrts/vDescriptor;",
-					bc_proc_classname)
-		put(s, aload_0())
-		put(s, getfield(a))
-		every k := key(bc_tmp_table) do {
-			put(s, dup())
-			put(s, ipush(bc_tmp_table[k]))
-			put(s, Aload(bc_tmp_table[k] + bc_tmp_offset))
-			put(s, aastore())
+		if *bc_tmp_table > 0 then {
+			a := create_fieldref(bc_proc_classptr,
+						"tmpArray",
+						"[Lrts/vDescriptor;",
+						bc_proc_classname)
+			put(s, aload_0())
+			put(s, getfield(a))
+			every k := key(bc_tmp_table) do {
+				put(s, dup())
+				put(s, ipush(bc_tmp_table[k]))
+				put(s, Aload(bc_tmp_table[k] + bc_tmp_offset))
+				put(s, aastore())
+			}
+			put(s, Pop())
 		}
-		put(s, Pop())
 
-		a := create_fieldref(bc_proc_classptr,
-					"tmpLabelArray",
-					"[I",
-					bc_proc_classname)
-		put(s, aload_0())
-		put(s, getfield(a))
-		every k := key(bc_tmplabel_table) do {
-			put(s, dup())
-			put(s, ipush(bc_tmplabel_table[k]))
-			put(s, Iload(bc_tmplabel_table[k] + bc_tmplabel_offset))
-			put(s, iastore())
+		if *bc_tmplabel_table > 0 then {
+			a := create_fieldref(bc_proc_classptr,
+						"tmpLabelArray",
+						"[I",
+						bc_proc_classname)
+			put(s, aload_0())
+			put(s, getfield(a))
+			every k := key(bc_tmplabel_table) do {
+				put(s, dup())
+				put(s, ipush(bc_tmplabel_table[k]))
+				put(s, Iload(bc_tmplabel_table[k] + bc_tmplabel_offset))
+				put(s, iastore())
+			}
+			put(s, Pop())
 		}
-		put(s, Pop())
 
-		a := create_fieldref(bc_proc_classptr,
-					"tmpClosureArray",
-					"[Lrts/iClosure;",
-					bc_proc_classname)
-		put(s, aload_0())
-		put(s, getfield(a))
-		every k := key(bc_tmpclosure_table) do {
-			put(s, dup())
-			put(s, ipush(bc_tmpclosure_table[k]))
-			put(s, Aload(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
-			put(s, aastore())
+		if *bc_tmpclosure_table > 0 then {
+			a := create_fieldref(bc_proc_classptr,
+						"tmpClosureArray",
+						"[Lrts/iClosure;",
+						bc_proc_classname)
+			put(s, aload_0())
+			put(s, getfield(a))
+			every k := key(bc_tmpclosure_table) do {
+				put(s, dup())
+				put(s, ipush(bc_tmpclosure_table[k]))
+				put(s, Aload(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
+				put(s, aastore())
+			}
+			put(s, Pop())
 		}
-		put(s, Pop())
 	} else {
 		put(s, aload_0())
 		returned := returned_fieldref(bc_proc_classptr)
@@ -806,9 +812,15 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 	init := create_method(c, 1, "<init>", "()V")
 	initcode := create_code(c, 10, 10)
 	put(init.attributes, initcode)
-	create_field(bc_proc_classptr, 0, "tmpArray", "[Lrts/vDescriptor;")
-	create_field(bc_proc_classptr, 0, "tmpClosureArray", "[Lrts/iClosure;")
-	create_field(bc_proc_classptr, 0, "tmpLabelArray", "[I")
+	if *bc_tmp_table > 0 then {
+		create_field(bc_proc_classptr, 0, "tmpArray", "[Lrts/vDescriptor;")
+	}
+	if *bc_tmpclosure_table > 0 then {
+		create_field(bc_proc_classptr, 0, "tmpClosureArray", "[Lrts/iClosure;")
+	}
+	if *bc_tmplabel_table > 0 then {
+		create_field(bc_proc_classptr, 0, "tmpLabelArray", "[I")
+	}
 	create_field(c, 8, "initialized", "Z")
 	constructor := create_methodref(c, "<init>", "()V", "rts/iClosure")
 	put(initcode.code, aload_0() )
@@ -816,34 +828,40 @@ procedure bc_function(name, params, accumulate, locals, statics, code, coord)
 
 	if \bc_save_restore_flag then {
 
-		put(initcode.code, aload_0() )
-		put(initcode.code, ipush(*bc_tmp_table) )
-		class_index := cp_Class(c, cp_Utf8(c, "rts/vDescriptor"))
-		put(initcode.code, anewarray(class_index) )
-		a := create_fieldref(bc_proc_classptr,
-					"tmpArray",
-					"[Lrts/vDescriptor;",
-					bc_proc_classname)
-		put(initcode.code, putfield(a) )
+		if *bc_tmp_table > 0 then {
+			put(initcode.code, aload_0() )
+			put(initcode.code, ipush(*bc_tmp_table) )
+			class_index := cp_Class(c, cp_Utf8(c, "rts/vDescriptor"))
+			put(initcode.code, anewarray(class_index) )
+			a := create_fieldref(bc_proc_classptr,
+						"tmpArray",
+						"[Lrts/vDescriptor;",
+						bc_proc_classname)
+			put(initcode.code, putfield(a) )
+		}
 
-		put(initcode.code, aload_0() )
-		put(initcode.code, ipush(*bc_tmplabel_table) )
-		put(initcode.code, newarray(10) )
-		a := create_fieldref(bc_proc_classptr,
-					"tmpLabelArray",
-					"[I",
-					bc_proc_classname)
-		put(initcode.code, putfield(a) )
+		if *bc_tmplabel_table > 0 then {
+			put(initcode.code, aload_0() )
+			put(initcode.code, ipush(*bc_tmplabel_table) )
+			put(initcode.code, newarray(10) )
+			a := create_fieldref(bc_proc_classptr,
+						"tmpLabelArray",
+						"[I",
+						bc_proc_classname)
+			put(initcode.code, putfield(a) )
+		}
 
-		put(initcode.code, aload_0() )
-		put(initcode.code, ipush(*bc_tmpclosure_table) )
-		class_index := cp_Class(c, cp_Utf8(c, "rts/iClosure"))
-		put(initcode.code, anewarray(class_index) )
-		a := create_fieldref(bc_proc_classptr,
-					"tmpClosureArray",
-					"[Lrts/iClosure;",
-					bc_proc_classname)
-		put(initcode.code, putfield(a) )
+		if *bc_tmpclosure_table > 0 then {
+			put(initcode.code, aload_0() )
+			put(initcode.code, ipush(*bc_tmpclosure_table) )
+			class_index := cp_Class(c, cp_Utf8(c, "rts/iClosure"))
+			put(initcode.code, anewarray(class_index) )
+			a := create_fieldref(bc_proc_classptr,
+						"tmpClosureArray",
+						"[Lrts/iClosure;",
+						bc_proc_classname)
+			put(initcode.code, putfield(a) )
+		}
 	}
 	put(initcode.code, vreturn() )
 
@@ -957,47 +975,53 @@ procedure bc_create_nextval(c, start)
 	if \bc_save_restore_flag then {
 		put(s, goto_w(var_load_label))
 		put(nextvalcode.code, tmplab)
-		a := create_fieldref(bc_proc_classptr,
-					"tmpArray",
-					"[Lrts/vDescriptor;",
-					bc_proc_classname)
-		put(s, aload_0())
-		put(s, getfield(a))
-		every k := key(bc_tmp_table) do {
-			put(s, dup())
-			put(s, ipush(bc_tmp_table[k]))
-			put(s, aaload())
-			put(s, Astore(bc_tmp_table[k] + bc_tmp_offset))
+		if *bc_tmp_table > 0 then {
+			a := create_fieldref(bc_proc_classptr,
+						"tmpArray",
+						"[Lrts/vDescriptor;",
+						bc_proc_classname)
+			put(s, aload_0())
+			put(s, getfield(a))
+			every k := key(bc_tmp_table) do {
+				put(s, dup())
+				put(s, ipush(bc_tmp_table[k]))
+				put(s, aaload())
+				put(s, Astore(bc_tmp_table[k] + bc_tmp_offset))
+			}
+			put(s, Pop())
 		}
-		put(s, Pop())
 
-		a := create_fieldref(bc_proc_classptr,
-					"tmpClosureArray",
-					"[Lrts/iClosure;",
-					bc_proc_classname)
-		put(s, aload_0())
-		put(s, getfield(a))
-		every k := key(bc_tmpclosure_table) do {
-			put(s, dup())
-			put(s, ipush(bc_tmpclosure_table[k]))
-			put(s, aaload())
-			put(s, Astore(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
+		if *bc_tmpclosure_table > 0 then {
+			a := create_fieldref(bc_proc_classptr,
+						"tmpClosureArray",
+						"[Lrts/iClosure;",
+						bc_proc_classname)
+			put(s, aload_0())
+			put(s, getfield(a))
+			every k := key(bc_tmpclosure_table) do {
+				put(s, dup())
+				put(s, ipush(bc_tmpclosure_table[k]))
+				put(s, aaload())
+				put(s, Astore(bc_tmpclosure_table[k] + bc_tmpclosure_offset))
+			}
+			put(s, Pop())
 		}
-		put(s, Pop())
 
-		a := create_fieldref(bc_proc_classptr,
-					"tmpLabelArray",
-					"[I",
-					bc_proc_classname)
-		put(s, aload_0())
-		put(s, getfield(a))
-		every k := key(bc_tmplabel_table) do {
-			put(s, dup())
-			put(s, ipush(bc_tmplabel_table[k]))
-			put(s, iaload())
-			put(s, Istore(bc_tmplabel_table[k] + bc_tmplabel_offset))
+		if *bc_tmplabel_table > 0 then {
+			a := create_fieldref(bc_proc_classptr,
+						"tmpLabelArray",
+						"[I",
+						bc_proc_classname)
+			put(s, aload_0())
+			put(s, getfield(a))
+			every k := key(bc_tmplabel_table) do {
+				put(s, dup())
+				put(s, ipush(bc_tmplabel_table[k]))
+				put(s, iaload())
+				put(s, Istore(bc_tmplabel_table[k] + bc_tmplabel_offset))
+			}
+			put(s, Pop())
 		}
-		put(s, Pop())
 	}
 
 	put(nextvalcode.code, var_load_label)
