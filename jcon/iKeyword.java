@@ -20,156 +20,156 @@ static private vCset lcset = vCset.New('a', 'z');
 static private vCset ucset = vCset.New('A', 'Z');
 
 // NOTE: changing the declared type of any keyword below 
-//       also requires a corresponding change in jtran.
+//       also requires a corresponding change in ../tran/interfacegen.icn.
 
-static vProc allocated =
-    iEnv.declareKey("allocated", new kZeroes(4));
-static vProc ascii =
-    iEnv.declareKey("ascii", new kReadOnly(vCset.New(0, 127)));
-static vProc clock =
-    iEnv.declareKey("clock", new k$clock());
-static kMirrored col = (kMirrored)
-    iEnv.declareKey("col", new k$col());
-static vProc collections =
-    iEnv.declareKey("collections", new kZeroes(4));
-static kReadOnly control = (kReadOnly)
-    iEnv.declareKey("control", new kReadOnly());
-static vProc cset =
-    iEnv.declareKey("cset", new kReadOnly(vCset.New(0, vCset.MAX_VALUE)));
-static vProc current =
-    iEnv.declareKey("current", new k$current());
-static vProc date =
-    iEnv.declareKey("date", new k$date());
-static vProc dateline =
-    iEnv.declareKey("dateline", new k$dateline());
-static vProc digits =
-    iEnv.declareKey("digits", new kReadOnly(vCset.New('0', '9')));
-static kCounter dump = (kCounter)
-    iEnv.declareKey("dump", new kCounter("&dump"));
-static vProc e =
-    iEnv.declareKey("e", new kReadOnly(vReal.New(Math.E)));
-static kCounter error = (kCounter)
-    iEnv.declareKey("error", new kCounter("&error"));
-static kReadOnly errornumber = (kReadOnly)
-    iEnv.declareKey("errornumber", new kReadOnly());
-static kReadOnly errortext = (kReadOnly)
-    iEnv.declareKey("errortext", new kReadOnly());
-static kReadOnly errorvalue = (kReadOnly)
-    iEnv.declareKey("errorvalue", new kReadOnly());
-static kReadOnly errout = (kReadOnly)
-    iEnv.declareKey("errout",
-	new kReadOnly(vFile.New("&errout", System.err, false)));
-static vProc fail =
-    iEnv.declareKey("fail", new kReadOnly(null));
-static vProc features =
-    iEnv.declareKey("features", new k$features());
-static vProc host =
-    iEnv.declareKey("host", new k$host());
-static kReadOnly input = (kReadOnly)
-    iEnv.declareKey("input", new kReadOnly(vFile.New("&input", System.in)));	
-static kReadOnly interval = (kReadOnly)
-    iEnv.declareKey("interval", new kReadOnly());
-static vProc lcase =
-    iEnv.declareKey("lcase", new kReadOnly(lcset));
-static vProc ldrag =
-    iEnv.declareKey("ldrag", new kReadOnly(vInteger.New(wEvent.LDrag)));
-static vProc letters =
-    iEnv.declareKey("letters", new kReadOnly(lcset.Union(ucset)));
-static vProc level =
-    iEnv.declareKey("level", new k$level());
-static vProc lpress =
-    iEnv.declareKey("lpress", new kReadOnly(vInteger.New(wEvent.LPress)));
-static vProc lrelease =
-    iEnv.declareKey("lrelease", new kReadOnly(vInteger.New(wEvent.LRelease)));
-static vProc main =
-    iEnv.declareKey("main", new k$main());
-static vProc mdrag =
-    iEnv.declareKey("mdrag", new kReadOnly(vInteger.New(wEvent.MDrag)));
-static kReadOnly meta = (kReadOnly)
-    iEnv.declareKey("meta", new kReadOnly());
-static vProc mpress =
-    iEnv.declareKey("mpress", new kReadOnly(vInteger.New(wEvent.MPress)));
-static vProc mrelease =
-    iEnv.declareKey("mrelease", new kReadOnly(vInteger.New(wEvent.MRelease)));
-static vProc nulll =
-    iEnv.declareKey("null", new kReadOnly(vNull.New()));
-static kReadOnly output = (kReadOnly)
-    iEnv.declareKey("output",
-	new kReadOnly(vFile.New("&output", System.out, true)));
-static vProc phi =
-    iEnv.declareKey("phi", new kReadOnly(vReal.New((1.0+Math.sqrt(5.0))/2.0)));
-static vProc pi =
-    iEnv.declareKey("pi", new kReadOnly(vReal.New(Math.PI)));
-static k$pos pos = (k$pos)
-    iEnv.declareKey("pos", new k$pos());
-static kReadOnly progname = (kReadOnly)
-    iEnv.declareKey("progname", new kReadOnly());
-static k$random random = (k$random)
-    iEnv.declareKey("random", new k$random());
-static vProc rdrag =
-    iEnv.declareKey("rdrag", new kReadOnly(vInteger.New(wEvent.RDrag)));
-static vProc regions =
-    iEnv.declareKey("regions", new kZeroes(3));
-static vProc resize =
-    iEnv.declareKey("resize", new kReadOnly(vInteger.New(wEvent.Resize)));
-static kMirrored row = (kMirrored)
-    iEnv.declareKey("row", new k$row());
-static vProc rpress =
-    iEnv.declareKey("rpress", new kReadOnly(vInteger.New(wEvent.RPress)));
-static vProc rrelease =
-    iEnv.declareKey("rrelease", new kReadOnly(vInteger.New(wEvent.RRelease)));
-static kReadOnly shift = (kReadOnly)
-    iEnv.declareKey("shift", new kReadOnly());
-static vProc source =
-    iEnv.declareKey("source", new k$source());
-static vProc storage =
-    iEnv.declareKey("storage", new kZeroes(3));
-static k$subject subject = (k$subject)
-    iEnv.declareKey("subject", new k$subject());
-static k$time time = (k$time)
-    iEnv.declareKey("time", new k$time());
-static kCounter trace = (kCounter)
-    iEnv.declareKey("trace", new kCounter("&trace"));
-static vProc ucase =
-    iEnv.declareKey("ucase", new kReadOnly(ucset));
-static vProc version =
-    iEnv.declareKey("version", new kReadOnly(vString.New(iConfig.Version)));
-static k$window window = (k$window)
-    iEnv.declareKey("window", new k$window());
-static kMirrored x = (kMirrored)
-    iEnv.declareKey("x", new k$x());
-static kMirrored y = (kMirrored)
-    iEnv.declareKey("y", new k$y());
+static kZeroes	allocated	= new kZeroes(4);
+static kValue	ascii		= new kValue(vCset.New(0, 127));
+static vProc	clock		= new k$clock();
+static kPaired	col		= new k$col();
+static kZeroes	collections	= new kZeroes(4);
+static kValue	control		= new kValue();
+static kValue	cset		= new kValue(vCset.New(0, vCset.MAX_VALUE));
+static kValue	current		= new kValue();
+static vProc	date		= new k$date();
+static vProc	dateline	= new k$dateline();
+static kValue	digits		= new kValue(vCset.New('0', '9'));
+static kCounter	dump		= new kCounter("&dump");
+static kValue	e		= new kValue(vReal.New(Math.E));
+static kCounter	error		= new kCounter("&error");
+static kValue	errornumber	= new kValue();
+static kValue	errortext	= new kValue();
+static kValue	errorvalue	= new kValue();
+static kValue	errout		= new kValue(vFile.New("&errout",System.err,false));
+static kValue	fail		= new kValue(null);
+static vProc	features	= new k$features();
+static vProc	host		= new k$host();
+static kValue	input		= new kValue(vFile.New("&input", System.in));	
+static kValue	interval	= new kValue();
+static kValue	lcase		= new kValue(lcset);
+static kValue	ldrag		= new kValue(vInteger.New(wEvent.LDrag));
+static kValue	letters		= new kValue(lcset.Union(ucset));
+static vProc	level		= new k$level();
+static kValue	lpress		= new kValue(vInteger.New(wEvent.LPress));
+static kValue	lrelease	= new kValue(vInteger.New(wEvent.LRelease));
+static kValue	main		= new kValue();
+static kValue	mdrag		= new kValue(vInteger.New(wEvent.MDrag));
+static kValue	meta		= new kValue();
+static kValue	mpress		= new kValue(vInteger.New(wEvent.MPress));
+static kValue	mrelease	= new kValue(vInteger.New(wEvent.MRelease));
+static kValue	nulll		= new kValue(vNull.New());
+static kValue	output		= new kValue(vFile.New("&output",System.out,true));
+static kValue	phi		= new kValue(vReal.New((1+Math.sqrt(5.0))/2));
+static kValue	pi		= new kValue(vReal.New(Math.PI));
+static k$pos	pos		= new k$pos();
+static kValue	progname	= new kValue();
+static k$random	random		= new k$random();
+static kValue	rdrag		= new kValue(vInteger.New(wEvent.RDrag));
+static kZeroes	regions		= new kZeroes(3);
+static kValue	resize		= new kValue(vInteger.New(wEvent.Resize));
+static kPaired	row		= new k$row();
+static kValue	rpress		= new kValue(vInteger.New(wEvent.RPress));
+static kValue	rrelease	= new kValue(vInteger.New(wEvent.RRelease));
+static kValue	shift		= new kValue();
+static vProc	source		= new k$source();
+static kZeroes	storage		= new kZeroes(3);
+static k$subject subject	= new k$subject();
+static k$time	time		= new k$time();
+static kCounter	trace		= new kCounter("&trace");
+static kValue	ucase		= new kValue(ucset);
+static kValue	version		= new kValue(vString.New(iConfig.Version));
+static k$window	window		= new k$window();
+static kPaired	x		= new k$x();
+static kPaired	y		= new k$y();
 
 static void announce() {
-    // we shouldn't have do to anything here, but under SGI JDK 1.1.6,
-    // it seems that we have to do something to run the init code above
-    y.toString();
+    iEnv.declareKey("allocated", allocated);
+    iEnv.declareKey("ascii", ascii);
+    iEnv.declareKey("clock", clock);
+    iEnv.declareKey("col", col);
+    iEnv.declareKey("collections", collections);
+    iEnv.declareKey("control", control);
+    iEnv.declareKey("cset", cset);
+    iEnv.declareKey("current", current);
+    iEnv.declareKey("date", date);
+    iEnv.declareKey("dateline", dateline);
+    iEnv.declareKey("digits", digits);
+    iEnv.declareKey("dump", dump);
+    iEnv.declareKey("e", e);
+    iEnv.declareKey("error", error);
+    iEnv.declareKey("errornumber", errornumber);
+    iEnv.declareKey("errortext", errortext);
+    iEnv.declareKey("errorvalue", errorvalue);
+    iEnv.declareKey("errout", errout);
+    iEnv.declareKey("fail", fail);
+    iEnv.declareKey("features", features);
+    iEnv.declareKey("host", host);
+    iEnv.declareKey("input", input);
+    iEnv.declareKey("interval", interval);
+    iEnv.declareKey("lcase", lcase);
+    iEnv.declareKey("ldrag", ldrag);
+    iEnv.declareKey("letters", letters);
+    iEnv.declareKey("level", level);
+    iEnv.declareKey("lpress", lpress);
+    iEnv.declareKey("lrelease", lrelease);
+    iEnv.declareKey("main", main);
+    iEnv.declareKey("mdrag", mdrag);
+    iEnv.declareKey("meta", meta);
+    iEnv.declareKey("mpress", mpress);
+    iEnv.declareKey("mrelease", mrelease);
+    iEnv.declareKey("null", nulll);
+    iEnv.declareKey("output", output);
+    iEnv.declareKey("phi", phi);
+    iEnv.declareKey("pi", pi);
+    iEnv.declareKey("pos", pos);
+    iEnv.declareKey("progname", progname);
+    iEnv.declareKey("random", random);
+    iEnv.declareKey("rdrag", rdrag);
+    iEnv.declareKey("regions", regions);
+    iEnv.declareKey("resize", resize);
+    iEnv.declareKey("row", row);
+    iEnv.declareKey("rpress", rpress);
+    iEnv.declareKey("rrelease", rrelease);
+    iEnv.declareKey("shift", shift);
+    iEnv.declareKey("source", source);
+    iEnv.declareKey("storage", storage);
+    iEnv.declareKey("subject", subject);
+    iEnv.declareKey("time", time);
+    iEnv.declareKey("trace", trace);
+    iEnv.declareKey("ucase", ucase);
+    iEnv.declareKey("version", version);
+    iEnv.declareKey("window", window);
+    iEnv.declareKey("x", x);
+    iEnv.declareKey("y", y);
 }
 
 } // class iKeyword
 
 
 
+//  kValue -- read-only keyword class
+//
 //  Many keywords are read-only from the Icon programmer's standpoint
 //  (but not necessarily constant).  They are assigned by rts calls to
 //  iKeyword.keywordname.set().  Setting a Java null makes the keyword fail.
 
-final class kReadOnly extends vProc0 {
+final class kValue extends vProc0 {
 
     vValue value;		// may be null for failure
 
-    kReadOnly()			{ value = null; }	// null constructor
-    kReadOnly(vValue v)		{ value = v; }		// initing constructor
+    kValue()			{ value = null; }	// null constructor
+    kValue(vValue v)		{ value = v; }		// initing constructor
 
     public vValue get()		{ return value; }	// get value
     public vFile file()		{ return (vFile)value;}	// get file value
     public void set(vValue v)	{ value = v; }		// set value
+
     public vDescriptor Call()	{ return value; }	// reference keyword
 }
 
 
 
+//  kCounter -- decrementing counter class
+//
 //  Decrementing counters (&trace, &error, &dump) are instances of kCounter.
 //  Integer values may be assigned.  iKeyword.keywordname.check() succeeds,
 //  and decrements, if the counter is nonzero.
@@ -213,16 +213,15 @@ final class kCounter extends vProc0 {
 
 
 
-
 final class k$features extends vProc0 {				// &features
 
-    //  The features list is hard-wired.
-    //  (And it's not completely clear what we should report.)
+    //  the features list is hard-wired
     private static vString[] flist = {
 	vString.New("UNIX"),
 	vString.New("Java"), 
 	vString.New("ASCII"),
 	vString.New("co-expressions"),
+	vString.New("dynamic loading"),
 	vString.New("environment variables"),
 	vString.New("large integers"),
 	vString.New("pipes"),
@@ -246,24 +245,13 @@ final class k$features extends vProc0 {				// &features
 
 
 
-final class k$current extends vProc0 {				// &current
-    public vDescriptor Call() {
-	return iEnv.cur_coexp;
-    }
-}
-
-final class k$main extends vProc0 {				// &main
-    public vDescriptor Call() {
-	return iEnv.main;
-    }
-}
-
 final class k$source extends vProc0 {				// &source
     public vDescriptor Call() {
-	if (iEnv.cur_coexp.callers.empty()) {
-	    return iEnv.main;
+	vCoexp current = (vCoexp) iKeyword.current.get();
+	if (current.callers.empty()) {
+	    return iKeyword.main.get();
 	}
-	return (vCoexp) iEnv.cur_coexp.callers.peek();
+	return (vCoexp) current.callers.peek();
     }
 }
 
@@ -542,22 +530,22 @@ final class k$window extends vProc0 {				// &window
 
 
 
-abstract class kMirrored extends vProc0 {	// super for "mirrored" int kwds
+abstract class kPaired extends vProc0 {		// super for paired integer kwds
 
     private vSimpleVar kwvar;			// trapped variable
 
-    kMirrored(String name) {			// constructor 
+    kPaired(String name) {			// constructor 
 	kwvar = new vSimpleVar(name, vInteger.New(0)) {
 	    public vVariable Assign(vDescriptor v) {
 		vInteger i = v.mkInteger();	// must be integer
-		newValue(i.value);		// call subclass (may give err)
+		assign(i.value);		// call subclass (may give err)
 		value = i;			// if no error, set value
 		return this;
 	    }
 	};
     }
 
-    abstract void newValue(long v);		// set with side-effects
+    abstract void assign(long v);		// set with side-effects
 
     void set(long v) {				// set without side-effects
 	kwvar.value = vInteger.New(v);
@@ -568,40 +556,40 @@ abstract class kMirrored extends vProc0 {	// super for "mirrored" int kwds
     }
 }
 
-final class k$x extends kMirrored {				// &x
+final class k$x extends kPaired {				// &x
     k$x()			{ super("&x"); }
 
-    void newValue(long i) {
+    void assign(long i) {
 	vWindow win = vWindow.getCurrent();
 	set(i);
 	iKeyword.col.set(1 + i / 12);		// #%#% should depend on font
     }
 }
 
-final class k$y extends kMirrored {				// &y
+final class k$y extends kPaired {				// &y
     k$y()			{ super("&y"); }
 
-    void newValue(long i) {
+    void assign(long i) {
 	vWindow win = vWindow.getCurrent();
 	set(i);
 	iKeyword.row.set(1 + i / 7);		// #%#% should depend on font
     }
 }
 
-final class k$row extends kMirrored {				// &row
+final class k$row extends kPaired {				// &row
     k$row()			{ super("&row"); }
 
-    void newValue(long i) {
+    void assign(long i) {
 	vWindow win = vWindow.getCurrent();
 	set(i);
 	iKeyword.y.set(12 * i);			// #%#% should depend on font
     }
 }
 
-final class k$col extends kMirrored {				// &col
+final class k$col extends kPaired {				// &col
     k$col()			{ super("&col"); }
 
-    void newValue(long i) {
+    void assign(long i) {
 	vWindow win = vWindow.getCurrent();
 	set(i);
 	iKeyword.x.set(7 * i);			// #%#% should depend on font

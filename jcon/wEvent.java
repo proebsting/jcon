@@ -122,8 +122,8 @@ static vValue dequeue(vList evq) {
     y = (int)(short)y;
     //#%#% need to translate x/y to this window's coordinate system
 
-    iKeyword.x.newValue(x);		// also sets k$col
-    iKeyword.y.newValue(y);		// also sets k$row
+    iKeyword.x.assign(x);		// also sets k$col
+    iKeyword.y.assign(y);		// also sets k$row
 
     return a;				// return event code
 }

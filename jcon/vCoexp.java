@@ -71,6 +71,7 @@ public vDescriptor activate(vDescriptor value, vDescriptor coexp) {
 void transfer(vDescriptor value, vCoexp target) {
     target.incomingValue = value;
     iEnv.cur_coexp = target;
+    iKeyword.current.set(target);
     target.lock.V();
     try {
 	lock.P();

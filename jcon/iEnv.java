@@ -12,8 +12,7 @@ static boolean debugging = false;
 static Hashtable invoke = new Hashtable();
 static Hashtable symtab = new Hashtable();
 
-public static vCoexp main;
-public static vCoexp cur_coexp;
+public static vCoexp cur_coexp;		// currently executing co-expression
 
 
 

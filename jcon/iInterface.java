@@ -116,13 +116,14 @@ public static void start(String[] filenames, String[] args, String name) {
 	iKeyword.trace.set(0);
     }
 
-    iEnv.main = vCoexp.New(new vProcClosure(p, argArray));
-    iEnv.cur_coexp = iEnv.main;
-    iEnv.main.lock.V();
+    iEnv.cur_coexp = vCoexp.New(new vProcClosure(p, argArray));
+    iKeyword.main.set(iEnv.cur_coexp);
+    iKeyword.current.set(iEnv.cur_coexp);
+    iEnv.cur_coexp.lock.V();
 
     try {
 	iKeyword.time.reset();				// zero &time
-        iEnv.main.run();
+        iEnv.cur_coexp.run();
 	iRuntime.exit(0);
     } catch (iError err) {
 	err.report();
