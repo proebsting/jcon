@@ -60,6 +60,7 @@ void announce() {
 	declare("reverse", 1);
 	declare("right", 3);
 	declare("rtod", 1);
+	declare("seq", 2);
 	declare("serial", 1);
 	declare("set", 1);
 	declare("sin", 1);
@@ -298,5 +299,19 @@ class f$exit extends iFunctionClosure {				// exit(n)
 		int n = (int) vInteger.argVal(args, 0, 0);
 		System.exit(n);					// exit
 		return null;	// not reached
+	}
+}
+
+class f$seq extends iClosure {					// seq(i1,i2)
+	vInteger i1;
+	vInteger i2;
+
+	void nextval() {
+		if (i1 == null) {
+			i1 = (arguments.length >= 1) ? arguments[0].mkInteger(): iNew.Integer(1);
+			i2 = (arguments.length >= 2) ? arguments[1].mkInteger(): iNew.Integer(1);
+		}
+		retvalue = i1;
+		i1 = iNew.Integer(i1.value + i2.value);
 	}
 }
