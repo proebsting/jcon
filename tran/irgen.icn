@@ -989,7 +989,11 @@ end
 procedure ir_Ident(p, st, inuse, target, bounded)
     local v
 
-    if type(target) ~== "irTmp" then target := &null
+    if type(\target) ~== "irTmp" then {
+	# #%#%# prevents nasty interaction with targeting.
+	# %#%#% probably a symptom of bad design....
+        target := &null
+    }
 
     init4ir(p)
 
@@ -1168,7 +1172,11 @@ record KeyX(id, coord, ir)
 procedure ir_KeyX(p, st, inuse, target, bounded)
     local k
     
-    if type(target) ~== "irTmp" then target := &null
+    if type(\target) ~== "irTmp" then {
+	# #%#%# prevents nasty interaction with targeting.
+	# %#%#% probably a symptom of bad design....
+        target := &null
+    }
 
     init4ir(p)
 
