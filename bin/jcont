@@ -59,7 +59,7 @@ UIPATH=`echo "$IPATH" | tr ' ' ':'`
 
 #  clear inherited environment variables
 #  (but note that BLKSIZE and STRSIZE are set above)
-unset ICONCORE TRACE IPATH LPATH NOERRBUF
+unset ICONCORE TRACE IPATH NOERRBUF
 unset HEAPSIZE COEXPSIZE MSTKSIZE QLSIZE
 
 #  set tracing modes
