@@ -96,9 +96,10 @@ function usage {	# usage: print header above, and exit
     exit 1
 }
 
-# save command line and user IPATH
+# save command line, user IPATH, user TRACE
 CMDLINE="$0 $*"
 UIPATH="$IPATH"
+UTRACE="$TRACE"
 
 #  set reasonably large regions for use by jtran
 export BLKSIZE=6000000
@@ -197,7 +198,7 @@ JLINK="$ICONX $IDIR${FILESEP}jlink"
 JRTS="$IDIR${FILESEP}rts.zip"
 
 # estimate the needed header size
-HBASE=600		# approximate size of fixed text, plus breathing room
+HBASE=480		# approximate size of fixed text, plus breathing room
 (( HDRSIZE = $HBASE + ${#CMDLINE} ))	# estimate total size in bytes
 (( HDRSIZE = (HDRSIZE + 15) & ~15 ))	# round to multiple of 16
 
@@ -319,7 +320,7 @@ trap "rm -rf \$TZIP" 0 1 2 15
 dd bs=$HDRSIZE skip=1 <\$THISFILE >\$TZIP 2>$NULLFILE
 
 export CLASSPATH="\$TZIP${PATHSEP}$JRTS${PATHSEP}\$CLASSPATH"
-$JAVA \$JXOPTS $MAIN "\$@"
+$JAVA -DTRACE="\$TRACE" \$JXOPTS $MAIN "\$@"
 exit
 
 [binary data follows]
@@ -347,6 +348,6 @@ $NODELETE rm -rf $TDIR
 $ANNOUNCE 1>&2 "Executing:"
 
 case $XTYPE in
-    *.jar)	CLASSPATH=$XFILE$PATHSEP$JRTS exec java $MAIN "$@";;
-    *.ksh)	exec ./$XFILE "$@";;
+   *.jar) CLASSPATH=$XFILE$PATHSEP$JRTS exec java -DTRACE="$UTRACE" $MAIN "$@";;
+   *.ksh) export TRACE="$UTRACE"; exec ./$XFILE "$@";;
 esac

@@ -368,6 +368,14 @@ class k$trace extends vSimpleVar {				// &trace
 
     static long trace;		// referenced in iClosure
 
+    static {			// initialize from $TRACE
+	try {
+	    trace = Long.parseLong(System.getProperty("TRACE", "0"));
+	} catch (Exception e) {
+	    // nothing
+	}
+    }
+
     k$trace() { super("&trace"); }
 
     public vVariable Assign(vValue i) {
