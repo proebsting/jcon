@@ -1,6 +1,9 @@
 # test arithmetic operators and numeric coercion
 #
 # note: two lines of shifttest output differ from v9 with large integers
+#
+# note also:  on Dec Alpha, Java doesn't sign-extend on right-shifts,
+#		causing differences to appear.
 
 procedure main()
    local i, j

@@ -1,18 +1,36 @@
-record point(x,y)
+#  test image(), serial(), *x, and explicit conversion functions
 
-procedure main()
+record point(x,y)
+record circle(x, y, r)
+
+procedure main(args)
    dump()
-   dump(47)
+   dump(047)
    dump(3.14159)
-   dump('712')
+   dump('7121')
    dump("asparagus")
    dump(main)
    dump(write)
+   dump(args)
+   dump([])
+   dump([1,2,3,4,5])
+   dump(set())
+   dump(insert(insert(insert(set(),1),2),3))
+   dump(table())
+   dump(insert(table(), 3, 4))
    dump(point)
+   dump(circle)
+   dump(point(0))
+   dump(circle(0))
+   dump(point(1,2))
+   dump(point(3,4,5))
+   dump(circle(6,7))
+   dump(circle(4,5,6))
 
-#%#% the following don't work because the images are incomplete
-#%#%   dump(point(1,2))
+#%#%# not working yet
 #%#%   dump(create 1 to 5)
+#%#%   dump(create 6 to 10)
+#%#% not tested yet:  a coexpr that has produced some values
 
    write()
    write("          x     integer(x)      real(x)   numeric(x)",
@@ -25,7 +43,13 @@ end
 
 
 procedure dump(x)
-   write(type(x), " : ", image(x))
+   local n
+
+   if n := serial(x) then
+      writes("#", n, "  ", "*", *x)
+   else if type(x) === ("string" | "cset" | "real" | "integer") then
+      writes("    *", *x)
+   write("\t", type(x), " : ", image(x))
    return
 end
 

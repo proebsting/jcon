@@ -25,3 +25,70 @@
  10 2 a 9 d 0 e 7 h 4 i 5 n 3 o 8 r 6 s 1 t 
  20 0 e 1 t 2 a 3 o 4 i 5 n 6 s 7 h 8 r 9 d 
  20 2 a 9 d 0 e 7 h 4 i 5 n 3 o 8 r 6 s 1 t 
+
+&null
+&null
+&null
+1
+2
+3
+4
+5
+1.1
+2.2
+3.3
+4.4
+5.5
+""
+"a"
+"alpha"
+"beta"
+"delta"
+"epsilon"
+"epsilons"
+"gamma"
+"gamma"
+''
+'0cs'
+'1234cs'
+'123cs'
+'XYZcs'
+procedure check
+function image
+function integer
+procedure listtest
+procedure main
+procedure messtest
+function push
+record constructor r0
+record constructor r1
+record constructor r2
+record constructor r5
+function read
+function reverse
+function right
+function serial
+function table
+procedure wlist
+function write
+list_85(0)
+list_86(2)
+list_87(0)
+list_89(3)
+list_91(66)
+set_29(0)
+set_30(2)
+set_31(3)
+table_2(0)
+table_3(1)
+table_4(0)
+record r0_2(0)
+record r0_3(0)
+record r1_2(1)
+record r1_3(1)
+record r2_2(2)
+record r2_3(2)
+record r5_4(5)
+record r5_5(5)
+record r5_6(5)
+record r5_7(5)
