@@ -417,7 +417,7 @@ class k$pos extends vProc0 {				// &pos
 	    vInteger p = v.mkInteger();
 	    int n = ((vString)k$subject.self.value).posEq(p.value);
 	    if (n > 0) {	// if valid
-		value = p;
+		value = vInteger.New(n);
 		return this;
 	    } else {
 		return null; /*FAIL*/

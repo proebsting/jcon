@@ -5,6 +5,7 @@ public class iInterface {
 
 
 public static void init() {    // general runtime initialization
+    (new iOperators()).announce();	// install operators
     (new iBuiltins()).announce();	// install built-in functions
     (new wBuiltins()).announce();	// install built-in graphics functions
     (new iKeywords()).announce();	// install keywords

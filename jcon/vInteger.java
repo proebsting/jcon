@@ -450,7 +450,7 @@ public vDescriptor Call(vDescriptor v[]) {
 	i = (int) value - 1;
     }
     if (i >= 0 && i < v.length) {
-	return v[i - 1];
+	return v[i - 1].Deref();
     } else {
 	return null; /*FAIL*/
     }
@@ -460,83 +460,83 @@ public vDescriptor Call() {
 }
 public vDescriptor Call(vDescriptor a) {
     if (value == 1 || value == -1) {
-	return a;
+	return a.Deref();
     } else {
 	return null; /*FAIL*/
     }
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	switch ((int) value) {
-	    case 1:  case -2:	return a;
-	    case 2:  case -1:	return b;
+	    case 1:  case -2:	return a.Deref();
+	    case 2:  case -1:	return b.Deref();
 	    default:		return null; /*FAIL*/
 	}
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c) {
 	switch ((int) value) {
-	    case 1:  case -3:	return a;
-	    case 2:  case -2:	return b;
-	    case 3:  case -1:	return c;
+	    case 1:  case -3:	return a.Deref();
+	    case 2:  case -2:	return b.Deref();
+	    case 3:  case -1:	return c.Deref();
 	    default:		return null; /*FAIL*/
 	}
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d) {
 	switch ((int) value) {
-	    case 1:  case -4:	return a;
-	    case 2:  case -3:	return b;
-	    case 3:  case -2:	return c;
-	    case 4:  case -1:	return d;
+	    case 1:  case -4:	return a.Deref();
+	    case 2:  case -3:	return b.Deref();
+	    case 3:  case -2:	return c.Deref();
+	    case 4:  case -1:	return d.Deref();
 	    default:		return null; /*FAIL*/
 	}
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e) {
 	switch ((int) value) {
-	    case 1:  case -5:	return a;
-	    case 2:  case -4:	return b;
-	    case 3:  case -3:	return c;
-	    case 4:  case -2:	return d;
-	    case 5:  case -1:	return e;
+	    case 1:  case -5:	return a.Deref();
+	    case 2:  case -4:	return b.Deref();
+	    case 3:  case -3:	return c.Deref();
+	    case 4:  case -2:	return d.Deref();
+	    case 5:  case -1:	return e.Deref();
 	    default:		return null; /*FAIL*/
 	}
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f) {
 	switch ((int) value) {
-	    case 1:  case -6:	return a;
-	    case 2:  case -5:	return b;
-	    case 3:  case -4:	return c;
-	    case 4:  case -3:	return d;
-	    case 5:  case -2:	return e;
-	    case 6:  case -1:	return f;
+	    case 1:  case -6:	return a.Deref();
+	    case 2:  case -5:	return b.Deref();
+	    case 3:  case -4:	return c.Deref();
+	    case 4:  case -3:	return d.Deref();
+	    case 5:  case -2:	return e.Deref();
+	    case 6:  case -1:	return f.Deref();
 	    default:		return null; /*FAIL*/
 	}
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g) {
 	switch ((int) value) {
-	    case 1:  case -7:	return a;
-	    case 2:  case -6:	return b;
-	    case 3:  case -5:	return c;
-	    case 4:  case -4:	return d;
-	    case 5:  case -3:	return e;
-	    case 6:  case -2:	return f;
-	    case 7:  case -1:	return g;
+	    case 1:  case -7:	return a.Deref();
+	    case 2:  case -6:	return b.Deref();
+	    case 3:  case -5:	return c.Deref();
+	    case 4:  case -4:	return d.Deref();
+	    case 5:  case -3:	return e.Deref();
+	    case 6:  case -2:	return f.Deref();
+	    case 7:  case -1:	return g.Deref();
 	    default:		return null; /*FAIL*/
 	}
 }
 public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h) {
 	switch ((int) value) {
-	    case 1:  case -8:	return a;
-	    case 2:  case -7:	return b;
-	    case 3:  case -6:	return c;
-	    case 4:  case -5:	return d;
-	    case 5:  case -4:	return e;
-	    case 6:  case -3:	return f;
-	    case 7:  case -2:	return g;
-	    case 8:  case -1:	return h;
+	    case 1:  case -8:	return a.Deref();
+	    case 2:  case -7:	return b.Deref();
+	    case 3:  case -6:	return c.Deref();
+	    case 4:  case -5:	return d.Deref();
+	    case 5:  case -4:	return e.Deref();
+	    case 6:  case -3:	return f.Deref();
+	    case 7:  case -2:	return g.Deref();
+	    case 8:  case -1:	return h.Deref();
 	    default:		return null; /*FAIL*/
 	}
 }
@@ -544,15 +544,15 @@ public vDescriptor Call(vDescriptor a, vDescriptor b, vDescriptor c,
     vDescriptor d, vDescriptor e, vDescriptor f, vDescriptor g, vDescriptor h,
     vDescriptor i) {
 	switch ((int) value) {
-	    case 1:  case -9:	return a;
-	    case 2:  case -8:	return b;
-	    case 3:  case -7:	return c;
-	    case 4:  case -6:	return d;
-	    case 5:  case -5:	return e;
-	    case 6:  case -4:	return f;
-	    case 7:  case -3:	return g;
-	    case 8:  case -2:	return h;
-	    case 9:  case -1:	return i;
+	    case 1:  case -9:	return a.Deref();
+	    case 2:  case -8:	return b.Deref();
+	    case 3:  case -7:	return c.Deref();
+	    case 4:  case -6:	return d.Deref();
+	    case 5:  case -5:	return e.Deref();
+	    case 6:  case -4:	return f.Deref();
+	    case 7:  case -3:	return g.Deref();
+	    case 8:  case -2:	return h.Deref();
+	    case 9:  case -1:	return i.Deref();
 	    default:		return null; /*FAIL*/
 	}
 }

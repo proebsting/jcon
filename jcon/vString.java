@@ -445,10 +445,10 @@ public vProc Proc(long i) {
 
 
 
-// s ! args	//#%#% only handles operators for now
+// s ! args
 
 public vDescriptor ProcessArgs(vDescriptor v) {
-    return iOperators.invoke(this, v);
+    return Call(v.mkArray(126));
 }
 
 

@@ -93,7 +93,7 @@ public static vDescriptor arg(vDescriptor[] args, int index, int errcode) {
 public static void display(vFile f) {
 
     // do the current coexpression
-    f.writes(iEnv.cur_coexp.report());
+    //#%#%  f.writes(iEnv.cur_coexp.report());
     
     // do the globals
     f.newline();

@@ -32,17 +32,17 @@ public vString Name() {
 
 //  ss.strval() -- return underlying vString value.
 //
-//  Verifies that the underlying variable is still a string
-//  and that the indices are still in range, and return String.
+//  Verifies that the underlying variable is still a string and
+//  that the indices are still in range, and returns the vString.
 
 vString strval() {
     vDescriptor v = var.Deref();
     if (! (v instanceof vString)) {
-	iRuntime.error(205);
+	iRuntime.error(103, var);
     }
     vString s = (vString) v;
     if (end > s.length() + 1)  {
-	iRuntime.error(103, var);
+	iRuntime.error(205);
     }
     return s;
 }

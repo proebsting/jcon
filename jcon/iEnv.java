@@ -145,8 +145,9 @@ public static vDescriptor resolveProc(String s, int args) {
     return v;
 }
 
-public static void declareProc(String s, int args, vDescriptor k) {
-    proctab[args-1].put(s, k);
+public static void declareProc(String s, int args, vProc p) {
+    p.img = vString.New("function " + s);
+    proctab[args-1].put(s, p);
 }
 
 

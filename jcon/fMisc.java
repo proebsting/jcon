@@ -19,7 +19,9 @@ class f$name extends vProc1 {					// name(v)
 
 class f$display extends vProc2 {				// display(i,f)
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
-	a.mkInteger();			// validate and ignore level count
+	if (!a.isnull()) {
+	    a.mkInteger();		// validate and ignore level count
+	}
 	iRuntime.display(vFile.arg(b, k$errout.file));
 	return vNull.New();
     }
