@@ -113,7 +113,7 @@ procedure optim_def_use(p, this, uses, defs)
             optim_def_use(p.fn, uses, uses, defs);
             optim_def_use(\p.failLabel, uses, uses, defs);
             every optim_def_use(!p.argList, uses, uses, defs); }
-    "ir_Operator" :  { this[p]+:=1 }
+    "ir_operator" :  { this[p]+:=1 }
     "ir_Create" :    {
 	    optim_def_use(\p.lhs, defs, uses, defs);
             optim_def_use(p.coexpLabel, uses,uses, defs);}
@@ -174,7 +174,7 @@ procedure optim_rewrite(p, rename)
                                 rename); }
             p.failLabel := optim_rewrite(\p.failLabel, rename);
             }
-    "ir_Operator" :  { }
+    "ir_operator" :  { }
     "ir_Create" :    {
             p.lhs := optim_rewrite(\p.lhs, rename);
 	    p.coexpLabel := optim_rewrite(p.coexpLabel, rename); }
@@ -272,7 +272,7 @@ procedure optim_goto_transitive(t, new, lab)
 	    "ir_CoFail" |
 	    "ir_RunTimeError" |
 	    "ir_MakeList" |
-	    "ir_Operator" |
+	    "ir_operator" |
 	    "ir_Fail" |
 	    "ir_Var" |
 	    "ir_Key" |
@@ -336,7 +336,7 @@ procedure optim_refcountX(refcount, p)
     "ir_CoFail" |
     "ir_RunTimeError" |
     "ir_MakeList" |
-    "ir_Operator" |
+    "ir_operator" |
     "ir_Fail" |
     "ir_Var" |
     "ir_Key" |
@@ -418,7 +418,7 @@ procedure optim(irgen, flagList)
 	        T := optim_optimize(T, p.codeStart)
 	        L := []
 	        every i := key(T) do {
-		    put(L, ir_Chunk(i, T[i]))
+		    put(L, ir_chunk(i, T[i]))
 	        }
 	        p.codeList := L
             }

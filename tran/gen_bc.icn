@@ -587,7 +587,7 @@ end
 procedure bc_gen_ir_Call(s, p)
     local r, l, f, v, n, i, method, class_index
 
-    type(p.fn) ~== "ir_Operator" | runerr(500, p)
+    type(p.fn) ~== "ir_operator" | runerr(500, p)
 
     if /bc_nodebuginfo then {
 	bc_push_coordinate(s, p.coord)
@@ -618,8 +618,8 @@ procedure bc_gen_ir_Call(s, p)
     return ir_CallTail(s, p)
 end
 
-# record ir_Operator( name arity )
-procedure bc_gen_ir_Operator(s, p)
+# record ir_operator( name arity )
+procedure bc_gen_ir_operator(s, p)
     local n, x, field
 
     n := p.name || "," || p.arity
@@ -732,7 +732,7 @@ procedure bc_gen(s, p)
     "ir_ResumeValue" : return bc_gen_ir_ResumeValue(s, p)
     "ir_MakeList" : return bc_gen_ir_MakeList(s, p)
     "ir_OpFunction" : return bc_gen_ir_OpFunction(s, p)
-    "ir_Operator" : return bc_gen_ir_Operator(s, p)
+    "ir_operator" : return bc_gen_ir_operator(s, p)
     "ir_Create" : return bc_gen_ir_Create(s, p)
     "ir_CoRet" : return bc_gen_ir_CoRet(s, p)
     "ir_CoFail" : return bc_gen_ir_CoFail(s, p)
