@@ -79,6 +79,7 @@ procedure main()
 
    while e := Event(&window) do {
       write(image(e))
+      if e === "\^g" then Alert()
       if e === !"\^c\^d\dqQ" then break
    }
 end
