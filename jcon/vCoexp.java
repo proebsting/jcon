@@ -9,7 +9,7 @@ public final class vCoexp extends vValue implements Runnable {
 
     Thread thread;
     vClosure closure;
-    java.util.Stack callers;
+    java.util.Stack<vCoexp> callers;
     vDescriptor incomingValue;
     Semaphore lock;
     int snum;		// serial number
@@ -37,7 +37,7 @@ void setup(Thread thread, vClosure closure) {
     this.closure = closure;
     this.thread = thread;
     this.snum = nextsn++;
-    callers = new java.util.Stack();
+    callers = new java.util.Stack<vCoexp>();
     lock = new Semaphore();
 }
 
@@ -53,7 +53,7 @@ public void run() {
 }
 
 public void coret(vDescriptor retValue) {
-    vCoexp caller = (vCoexp) callers.pop();
+    vCoexp caller = callers.pop();
     if (retValue != null) {
        resultCount++;
     }

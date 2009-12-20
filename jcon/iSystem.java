@@ -27,13 +27,13 @@ public static Process command(String s) throws IOException {
 
 //  getenv(s) -- get environment value
 
-private static Hashtable etable;
+private static Hashtable<String,vString> etable;
 
 public static vString getenv(String name) {
 
     if (etable == null) {		// init table on first call
 	try {
-	    etable = new Hashtable();
+	    etable = new Hashtable<String,vString>();
 	    Process p = Runtime.getRuntime().exec("env");
 	    BufferedReader d = new BufferedReader(
 		new InputStreamReader(p.getInputStream()));

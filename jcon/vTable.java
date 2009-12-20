@@ -4,7 +4,7 @@ import java.util.*;
 
 public final class vTable extends vStructure {
 
-    public java.util.Hashtable t;	// MS JVM chokes on "private"
+    private java.util.Hashtable<vValue,vValue> t;
     vValue dflt;
 
 
@@ -20,13 +20,13 @@ public static vTable New(vValue x)		{ return new vTable(x); }
 private vTable(vValue dflt) {
     super(nextsn++);
     this.dflt = dflt;
-    t = new java.util.Hashtable();
+    this.t = new Hashtable<vValue,vValue>();
 }
 
 private vTable(vTable x) {
     super(nextsn++);
     this.dflt = x.dflt;
-    this.t = (java.util.Hashtable) x.t.clone();
+    this.t = new Hashtable<vValue,vValue>(x.t);
 }
 
 

@@ -6,7 +6,7 @@ import java.util.*;
 
 public final class vSet extends vStructure {
 
-    private java.util.Hashtable t;
+    private java.util.Hashtable<vValue,vValue> t;
 
 
 static int nextsn = 1;		// next serial number
@@ -17,14 +17,14 @@ static int nextsn = 1;		// next serial number
 
 public static vSet New(vValue x)		{ return new vSet(x); }
 
-private vSet(java.util.Hashtable x) {
+private vSet(java.util.Hashtable<vValue,vValue> x) {
     super(nextsn++);
-    t = (java.util.Hashtable) x.clone();
+    t = new java.util.Hashtable<vValue,vValue>(x);
 }
 
 private vSet(vValue x) {
     super(nextsn++);
-    t = new java.util.Hashtable();
+    t = new java.util.Hashtable<vValue,vValue>();
     if (x != null && !x.isnull()) {
 	if (!(x instanceof vList)) {
 	    iRuntime.error(108, x);
@@ -32,8 +32,7 @@ private vSet(vValue x) {
 	vList list = (vList) x;
 	java.util.Enumeration i = list.elements();
 	while (i.hasMoreElements()) {
-	    vDescriptor v = (vDescriptor) i.nextElement();
-	    v = v.Deref();
+	    vValue v = ((vDescriptor)i.nextElement()).Deref();
 	    t.put(v, v);
 	}
     }
@@ -57,7 +56,7 @@ public vDescriptor Select() {
 	return null;
     }
     int index = (int) iKeyword.random.choose(t.size());
-    java.util.Enumeration e = t.keys();
+    java.util.Enumeration<vValue> e = t.keys();
     for (int k = 0; k < index; k++) {
 	e.nextElement();
     }
@@ -66,7 +65,7 @@ public vDescriptor Select() {
 
 public vDescriptor Bang() {
     final vValue a[] = new vValue[t.size()];
-    java.util.Enumeration e = (java.util.Enumeration) t.keys();
+    java.util.Enumeration<vValue> e = t.keys();
     int i = 0;
     while (e.hasMoreElements()) {
 	a[i++] = (vValue) e.nextElement();
@@ -98,7 +97,7 @@ public vValue[] mkArray(int errno) {		// for sort(S)
     }
     vValue a[] = new vValue[t.size()];
     int i = 0;
-    for (Enumeration e = t.keys(); e.hasMoreElements(); ) {
+    for (Enumeration<vValue> e = t.keys(); e.hasMoreElements(); ) {
 	a[i++] = (vValue)e.nextElement();
     }
     return a;
@@ -116,8 +115,8 @@ public vValue Delete(vDescriptor i) {
 
 public vValue Insert(vDescriptor i, vDescriptor val) {
     // "val" is unused here; it's only for tables
-    i = i.Deref();
-    t.put(i, i);
+    vValue v = i.Deref();
+    t.put(v, v);
     return this;
 }
 
@@ -128,11 +127,11 @@ public vValue Intersect(vDescriptor x) {
     }
     vSet rhs = (vSet) x;
     vSet result = new vSet((vValue)null);
-    java.util.Enumeration i;
-    java.util.Hashtable y = rhs.t;
+    java.util.Enumeration<vValue> i;
+    java.util.Hashtable<vValue,vValue> y = rhs.t;
     i = this.t.keys();
     while (i.hasMoreElements()) {
-	Object o = i.nextElement();
+	vValue o = i.nextElement();
 	if (y.containsKey(o)) {
 	    result.t.put(o, o);
 	}
@@ -147,10 +146,10 @@ public vValue Union(vDescriptor x) {
     }
     vSet rhs = (vSet) x;
     vSet result = new vSet(rhs.t);
-    java.util.Enumeration i;
+    java.util.Enumeration<vValue> i;
     i = this.t.keys();
     while (i.hasMoreElements()) {
-	Object o = i.nextElement();
+	vValue o = i.nextElement();
 	result.t.put(o, o);
     }
     return result;
@@ -163,8 +162,8 @@ public vValue Diff(vDescriptor x) {
     }
     vSet rhs = (vSet)x;
     vSet result = new vSet(this.t);
-    java.util.Enumeration i;
-    java.util.Hashtable y = rhs.t;
+    java.util.Enumeration<vValue> i;
+    java.util.Hashtable<vValue,vValue> y = rhs.t;
     i = y.keys();
     while (i.hasMoreElements()) {
 	Object o = i.nextElement();

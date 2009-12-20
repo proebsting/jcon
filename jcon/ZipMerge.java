@@ -36,7 +36,7 @@ public static void main(String[] args) {
 	System.exit(1);
     }
     String dst = args[i++];
-    Vector v = new Vector();
+    Vector<String> v = new Vector<String>();
     while (i < args.length) {
 	v.addElement(args[i++]);
     }
@@ -90,12 +90,12 @@ public static ZipOutputStream newZipFile(String name) throws IOException {
 
 
 
-public static void compose(String dst, Enumeration files) {
+public static void compose(String dst, Enumeration<String> files) {
     try {
 	ZipOutputStream zos = newZipFile(dst);
 
 	while (files.hasMoreElements()) {
-	    String fname = (String) files.nextElement();
+	    String fname = files.nextElement();
 	    ZipFile zsrc;
 	    try {
 		zsrc = new ZipFile(fname);

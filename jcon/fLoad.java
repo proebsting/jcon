@@ -32,7 +32,8 @@ final class fLoad extends iInstantiate {
 final class f$loadfunc extends vProc2 {				// loadfunc(s,s)
     private static final String linkhead = "l$";
     private static final String prochead = "p_l$";
-    private static Hashtable ilinked = new Hashtable();  // icnfiles prev linked
+    private static Hashtable<String,String> ilinked =
+	    new Hashtable<String,String>();	  // icn files previously linked
 
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	String funcname = b.mkString().toString();
@@ -143,11 +144,13 @@ final class f$loadfunc extends vProc2 {				// loadfunc(s,s)
 
 final class DynamicLoader extends ClassLoader {
     private ZipFile zf;					// library ZipFile
-    private Hashtable classcache = new Hashtable();	// classes loaded
+    private Hashtable<String,Class> classcache =
+    	    new Hashtable<String,Class>();		// classes loaded
 
 
     // cache of known loaders
-    private static Hashtable zcache = new Hashtable();
+    private static Hashtable<String,DynamicLoader> zcache =
+	    new Hashtable<String,DynamicLoader>();
 
     // lookup or create loader for a particular library
     static DynamicLoader get(String libname) throws IOException {

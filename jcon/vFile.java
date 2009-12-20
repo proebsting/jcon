@@ -35,7 +35,8 @@ public abstract class vFile extends vValue {
 
 private final static int BufferSize = 4096;	// input buffer size
 
-static Hashtable openfiles = new Hashtable();	// set of open files
+static Hashtable<vFile,vFile> openfiles = new Hashtable<vFile,vFile>();
+						// set of open files
 
 
 
@@ -84,7 +85,7 @@ public vDescriptor Bang() {
 //  to kill any processes spawned by opening pipes.
 
 public static void shutdown() {
-    for (Enumeration e = openfiles.elements(); e.hasMoreElements(); ) {
+    for (Enumeration<vFile> e = openfiles.elements(); e.hasMoreElements(); ) {
 	((vFile) e.nextElement()).close();
     }
 }

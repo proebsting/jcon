@@ -30,10 +30,13 @@ static String ipath[];			// list of IPATH component directories
 static boolean tracing = false;		// trace actions?
 static int errorcount = 0;		// number of errors encountered
 
-static Stack needed = new Stack();	   // names still needed
-static Hashtable found = new Hashtable();  // names already processed
+static Stack<String> needed = new Stack<String>();
+					// names still needed
+static Hashtable<String,String> found = new Hashtable<String,String>();
+					// names already processed
 
-static Vector files = new Vector();	// list of files to link
+static Vector<String> files = new Vector<String>();
+					// list of files to link
 
 
 
@@ -125,7 +128,7 @@ static void error(String s) {
 //  or by the standard pathSeparator character.
 
 static String[] crackpath(String s) {
-    Vector v = new Vector();
+    Vector<String> v = new Vector<String>();
 
     s = s.replace(IconPathSeparator, File.pathSeparatorChar)
 	+ File.pathSeparatorChar;

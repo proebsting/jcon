@@ -8,8 +8,8 @@ public final class iEnv {
 
 static boolean invokeAll = false;
 static boolean debugging = false;
-static Hashtable invoke = new Hashtable();
-static Hashtable symtab = new Hashtable();
+static Hashtable<String,String> invoke = new Hashtable<String,String>();
+static Hashtable<String,vVariable> symtab = new Hashtable<String,vVariable>();
 
 public static vCoexp cur_coexp;		// currently executing co-expression
 
@@ -25,7 +25,9 @@ static Object instantiate(String classname) {
     }
 }
 
-static Hashtable builtin_instantiator = new Hashtable();
+static Hashtable<String,iInstantiate> builtin_instantiator =
+	new Hashtable<String,iInstantiate>();
+
 public static vProc instantiate_builtin(String classname) {
     iInstantiate i = (iInstantiate) builtin_instantiator.get(classname);
     if (i == null) {
@@ -111,7 +113,8 @@ public static void declareRecord(String name, String[] fields) {
 
 //  built-in functions
 
-private static Hashtable builtintab = new Hashtable();
+private static Hashtable<String,vFuncVar> builtintab =
+	new Hashtable<String,vFuncVar>();
 
 static void declareBuiltin(String name, int arity, iInstantiate i) {
     vFuncVar f = new vFuncVar(
@@ -147,7 +150,7 @@ static vProc getBuiltin(String s) {
 
 //  keywords
 
-private static Hashtable keytab = new Hashtable();
+private static Hashtable<String,vProc> keytab = new Hashtable<String,vProc>();
 
 static vProc declareKey(String name, vProc p) {
     p.img = vString.New("&" + name);
@@ -173,15 +176,24 @@ static vVariable getKeyVar(String s) {
 
 //  operators (registered for use via string invocation)
 
-private static Hashtable[] oname = 
-    { new Hashtable(), new Hashtable(), new Hashtable() };
-private static Hashtable[] oproc = 
-    { new Hashtable(), new Hashtable(), new Hashtable() };
+private static Hashtable[] oname = {
+    new Hashtable<vString,String>(),
+    new Hashtable<vString,String>(),
+    new Hashtable<vString,String>(),
+};
 
+private static Hashtable[] oproc = {
+    new Hashtable<vString,vProc>(),
+    new Hashtable<vString,vProc>(),
+    new Hashtable<vString,vProc>(),
+};
+
+@SuppressWarnings("unchecked")
 static void declareOpr(String repr, int arity, String classname) {
     oname[arity-1].put(vString.New(repr), classname);
 }
 
+@SuppressWarnings("unchecked")
 static vProc getOpr(vString repr, long arity) {
     if (arity < 1 || arity > 3) {
         return null;

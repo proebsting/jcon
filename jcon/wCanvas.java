@@ -15,7 +15,7 @@ public final class wCanvas extends Canvas {
     vList evq;			// event queue
     wTTY tty;			// file I/O stuff
 
-    Vector wlist;		// list of associated vWindows
+    Vector<vWindow> wlist;	// list of associated vWindows
 
     int width, height;		// last known width and height
     boolean have_set_width;	// was width set explicitly?
@@ -39,7 +39,7 @@ public final class wCanvas extends Canvas {
 
 wCanvas(vWindow win, String label, int w, int h) {
 
-    wlist = new Vector();
+    wlist = new Vector<vWindow>();
     wlist.addElement(win);
 
     this.setSize(width = w, height = h);
@@ -275,7 +275,7 @@ public vString Label(vWindow win, String s) {
 //
 //  indented values are provided for compatibility but are not preferred.
 
-static Hashtable plist = new Hashtable();
+static Hashtable<String,vInteger> plist = new Hashtable<String,vInteger>();
 static {
     plist.put("arrow",			vInteger.New(Cursor.DEFAULT_CURSOR));
 	plist.put("left ptr",		vInteger.New(Cursor.DEFAULT_CURSOR));

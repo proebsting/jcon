@@ -11,7 +11,7 @@ import java.util.*;
 
 public final class vList extends vStructure {
 
-    public Vector v;		// MS JVM cannot handle this being private
+    private Vector<vListVar> v;
 
 private static int nextsn = 1;			// next serial number
 
@@ -24,7 +24,7 @@ public static vList New(vDescriptor[] elements)	{ return new vList(elements); }
 
 private vList(int n, vValue x) {		// new Vlist(n, x)
     super(nextsn++);
-    v = new Vector(n);
+    v = new Vector<vListVar>(n);
     for (int i = 0; i < n; i++) {
 	v.addElement(new vListVar(this, x));
     }
@@ -32,7 +32,7 @@ private vList(int n, vValue x) {		// new Vlist(n, x)
 
 private vList(vDescriptor[] elements) {		// new Vlist(elements[])
     super(nextsn++);
-    v = new Vector(elements.length);
+    v = new Vector<vListVar>(elements.length);
     for (int i = 0; i < elements.length; i++) {
 	v.addElement(new vListVar(this, elements[i].Deref()));
     }
@@ -40,7 +40,7 @@ private vList(vDescriptor[] elements) {		// new Vlist(elements[])
 
 private vList(Vector oldv, int newsize) {	// new Vlist(oldvector, newsize)
     super(nextsn++);
-    v = new Vector(newsize);
+    v = new Vector<vListVar>(newsize);
     int n = oldv.size();
     for (int i = 0; i < n; i++) {
 	vValue vv = ((vDescriptor)(oldv.elementAt(i))).Deref();
@@ -251,10 +251,10 @@ public vValue[] mkArray(int errno) {	// make array for sort(L) or p ! L
 
 
 final class vListEnumeration implements java.util.Enumeration {
-    java.util.Vector v;
+    java.util.Vector<vListVar> v;
     int i;
 
-    vListEnumeration(java.util.Vector v) {
+    vListEnumeration(java.util.Vector<vListVar> v) {
 	this.v = v;
 	this.i = 0;
     }

@@ -22,7 +22,9 @@ public static vList marshal( vDescriptor[] args, int len) {
 
 
 
-static java.util.Hashtable fileTable = new java.util.Hashtable();
+static java.util.Hashtable<String,iFile> fileTable =
+	new java.util.Hashtable<String,iFile>();
+
 public static void link(iFile f, String name) {
     if (fileTable.containsKey(name)) {
 	return;
