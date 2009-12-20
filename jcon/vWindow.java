@@ -370,11 +370,11 @@ public vValue Event() {
 private static int offset;		// round-robin starting point
 
 public static vWindow Active() {	// Active() finds win w/ pending event
-    Vector v = new Vector();
+    Vector<vWindow> v = new Vector<vWindow>();
     for (Enumeration e = openfiles.elements(); e.hasMoreElements(); ) {
 	Object o = e.nextElement();
 	if (o instanceof vWindow && ((vWindow)o).c != null) {
-	    v.addElement(o);
+	    v.addElement((vWindow)o);
 	}
     }
     int n = v.size();

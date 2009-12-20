@@ -32,7 +32,7 @@ public final class wColor extends Color {
 
 
 
-private static Hashtable hueTable = new Hashtable();
+private static Hashtable<String,wHue> hueTable = new Hashtable<String,wHue>();
 
 static {
     //		      color       ish-form     hue  sat  brt

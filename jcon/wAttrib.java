@@ -19,7 +19,8 @@ abstract vValue get(vWindow win);	// get current value, set s, return val
 
 //  initialize known attributes
 
-private static Hashtable attlist = new Hashtable();
+private static Hashtable<String,wAttrib> attlist =
+	new Hashtable<String,wAttrib>();
 
 static {
 

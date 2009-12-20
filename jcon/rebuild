@@ -5,7 +5,7 @@
 #  (rebuild all .class files if any are out of date;
 #   not easily expressed in "make")
 
-JC=${JC-"javac -O"}
+JC=${JC-"javac -O -Xlint:unchecked"}
 BZIP=bin/jcon.zip
 ZIP=../$BZIP
 

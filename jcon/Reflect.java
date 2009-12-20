@@ -19,9 +19,9 @@ public final class Reflect {
 
 //  construct(classname, sigs[], args[]) -- instantiate object
 
-static Object construct(String classname, Class[] sigs, Object[] args) 
+static Object construct(String classname, Class<?>[] sigs, Object[] args) 
 throws Exception {
-    Class c = Class.forName(classname);
+    Class<?> c = Class.forName(classname);
     Constructor k = c.getConstructor(sigs);
     return k.newInstance(args);
 }
@@ -39,9 +39,9 @@ throws Exception {
 
 //  call(instance, name, sigs[], args[]) -- invoke instance.name(args)
 
-static Object call(Object instance, String name, Class[] sigs, Object[] args)
+static Object call(Object instance, String name, Class<?>[] sigs, Object[] args)
 throws Exception {
-    Class c = instance.getClass();
+    Class<?> c = instance.getClass();
     Method m = c.getDeclaredMethod(name, sigs);
     return m.invoke(instance, args);
 }
@@ -50,9 +50,9 @@ throws Exception {
 
 //  call(classname, methname, sigs[], args[]) -- invoke static method
 
-static Object call(String classname, String name, Class[] sigs, Object[] args)
+static Object call(String classname,String name,Class<?>[] sigs,Object[] args)
 throws Exception {
-    Class c = Class.forName(classname);
+    Class<?> c = Class.forName(classname);
     Method m = c.getDeclaredMethod(name, sigs);
     return m.invoke(null, args);
 }

@@ -18,7 +18,7 @@ abstract vString Key(wColor k);		// PaletteKey(W, p, k)
 
 
 
-static Hashtable cache = new Hashtable();
+static Hashtable<vString,cPalette> cache = new Hashtable<vString,cPalette>();
 static cEntry nullentry = new cEntry(0, 0, 0, false, false);
 static cEntry xptentry = new cEntry(0, 0, 0, false, true);
 
