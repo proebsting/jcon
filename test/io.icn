@@ -6,7 +6,7 @@ procedure main()
    local L, f, m, n, t1, t2
 
    L := [&input, &output, &errout,
-   	m := open("/etc/motd") | stop("no /etc/motd"),
+   	m := open("/etc/passwd") | stop("no /etc/passwd"),
 	n := open("/dev/null" | stop("no /dev/null"), "w")]
    L := sort(L)
    every f := !L do
@@ -21,10 +21,10 @@ procedure main()
    every write(!&input) \ 2
 
    write()
-   write("flush /etc/motd: ", image(flush(m)) | "FAILED")
-   write("close /etc/motd: ", image(close(m)) | "FAILED")
-   write("close /etc/motd: ", image(close(m)) | "FAILED")
-   write("flush /etc/motd: ", image(flush(m)) | "FAILED")
+   write("flush /etc/passwd: ", image(flush(m)) | "FAILED")
+   write("close /etc/passwd: ", image(close(m)) | "FAILED")
+   write("close /etc/passwd: ", image(close(m)) | "FAILED")
+   write("flush /etc/passwd: ", image(flush(m)) | "FAILED")
 
    write()
    write("flush /dev/null: ", image(flush(n)) | "FAILED")

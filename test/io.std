@@ -2,7 +2,7 @@ file: &errout
 file: &input
 file: &output
 file: file(/dev/null)
-file: file(/etc/motd)
+file: file(/etc/passwd)
 
 aaa
 bbbb
@@ -13,10 +13,10 @@ ffffffff
 ggggggggg
 hhhhhhhhhh
 
-flush /etc/motd: file(/etc/motd)
-close /etc/motd: file(/etc/motd)
-close /etc/motd: file(/etc/motd)
-flush /etc/motd: file(/etc/motd)
+flush /etc/passwd: file(/etc/passwd)
+close /etc/passwd: file(/etc/passwd)
+close /etc/passwd: file(/etc/passwd)
+flush /etc/passwd: file(/etc/passwd)
 
 flush /dev/null: file(/dev/null)
 close /dev/null: file(/dev/null)
@@ -119,7 +119,7 @@ file(sed 's/^/=()= /' io.icn)
 > =()=    local L, f, m, n, t1, t2
 > =()= 
 > =()=    L := [&input, &output, &errout,
-> =()=    	m := open("/etc/motd") | stop("no /etc/motd"),
+> =()=    	m := open("/etc/passwd") | stop("no /etc/passwd"),
 > =()= 	n := open("/dev/null" | stop("no /dev/null"), "w")]
 
 file(ls io.i?n io.d?t io.s?d)
