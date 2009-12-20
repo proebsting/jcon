@@ -1,0 +1,15 @@
+tmp.*
+*.out
+*.err
+*.sum
+*.zip
+*.jar
+*.class
+[a-z][a-z]
+[a-z][a-z][a-z]
+[a-z][a-z][a-z][a-z12]
+[a-z][a-z][a-z][a-z][a-z12]
+[a-z][a-z][a-z][a-z][a-z][a-z12]
+[a-z][a-z][a-z][a-z][a-z][a-z][a-z12]
+[a-z][a-z][a-z][a-z][a-z][a-z][a-z][a-z]
+[a-z][a-z][a-z][a-z][a-z][a-z][a-z][a-z][a-z]

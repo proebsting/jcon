@@ -1,0 +1,8 @@
+*.u1
+*.u2
+jtran
+jlink
+oplexgen
+interfacegen
+do_ops.icn
+interface.icn
