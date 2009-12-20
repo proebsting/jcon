@@ -44,7 +44,7 @@ large integers in unsupported contexts such as subscripting.
 A corresponding preprocessor symbol <CODE>_JAVA</CODE> is predefined.
 
 <P> <CODE>&amp;time</CODE> produces elapsed wall-clock time, not CPU time,
-due to Java limitations.
+if <CODE>getCurrentThreadCpuTime()</CODE> is not supported by the Java host.
 
 <P> <CODE>&amp;allocated</CODE>, <CODE>&amp;collections</CODE>,
 <CODE>&amp;storage</CODE>, and <CODE>&amp;regions</CODE>

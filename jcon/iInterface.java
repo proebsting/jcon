@@ -122,7 +122,7 @@ public static void start(iFile[] files, String[] names) {
     iEnv.cur_coexp.lock.V();
 
     try {
-	iKeyword.time.reset();				// zero &time
+	iKeyword.time.setup();				// initialize &time
         iEnv.cur_coexp.run();
 	iRuntime.exit(0);
     } catch (iError err) {

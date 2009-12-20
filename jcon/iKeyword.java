@@ -9,6 +9,7 @@
 package jcon;
 
 import java.io.*;
+import java.lang.management.*;
 import java.text.*;
 import java.util.*;
 
@@ -324,14 +325,26 @@ final class k$date extends vProc0 {				// &date
 
 final class k$time extends vProc0 {				// &time
 
-    private long tbase;
+    private ThreadMXBean tmbean;
+    private long tbase = 0;
 
-    void reset() {				// reset to zero
-	tbase = System.currentTimeMillis();
+    void setup() {				// set up CPU time measurement
+        tmbean = ManagementFactory.getThreadMXBean();
+	if (tmbean.isCurrentThreadCpuTimeSupported()) {
+	    tbase = tmbean.getCurrentThreadCpuTime() / 1000000;
+	} else {
+	    tmbean = null;
+	    tbase = System.currentTimeMillis();
+	}
     }
 
     public vDescriptor Call() {			// read value
-	return vInteger.New(System.currentTimeMillis() - tbase);
+	long msec;
+	if (tmbean != null)
+	    msec = tmbean.getCurrentThreadCpuTime() / 1000000;
+	else
+	    msec = System.currentTimeMillis();
+	return vInteger.New(msec - tbase);
     }
 }
 
