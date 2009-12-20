@@ -1,0 +1,12 @@
+#!/bin/ksh -p
+#
+#  jcon -- execute Icon source program using Jcon
+#
+#  usage:  jcon file.icn [ arg ... ]
+#
+#  Assumes that jcont and java are in the search path.
+
+SOURCE=${1?"usage: jcon file.icn [ arg ... ]"}
+shift
+
+exec jcont -us "$SOURCE" -x "$@"
