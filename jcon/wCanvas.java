@@ -156,7 +156,7 @@ public void resize(vWindow win, int w, int h) {
 
     // install new graphics context in each associated window
     for (int j = 0; j < wlist.size(); j++) {
-	((vWindow) wlist.elementAt(j)).newgcb(g);
+	wlist.elementAt(j).newgcb(g);
     }
 
     // g has been cloned for use with each window
@@ -166,7 +166,7 @@ public void resize(vWindow win, int w, int h) {
     if (win == null) {
 	// we don't know which Icon graphics context to use, because the
 	// window was resized via the mouse;  so, just use the first
-	win = (vWindow) wlist.elementAt(0);	
+	win = wlist.elementAt(0);	
     }
     g.setColor(win.getBg());
     g.fillRect(0, 0, iw, ih);
@@ -301,7 +301,7 @@ static {
 
 public vString Pointer(vWindow win, String s) {
     if (s != null) {
-	vInteger i = (vInteger) plist.get(s);
+	vInteger i = plist.get(s);
 	if (i == null) {
 	    return null; /*FAIL*/
 	}

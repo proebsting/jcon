@@ -126,7 +126,7 @@ public static vValue dequeue(wCanvas c, int dx, int dy) {
     if (x == -1 && y == -1 && a instanceof vInteger
     			&& ((vInteger)a).value == Resize) {
 	// this is a window-closed event
-    	vWindow win = (vWindow) c.wlist.elementAt(0);
+    	vWindow win = c.wlist.elementAt(0);
 	if (win != null) {
 	    win.close();		// mark as closed in Icon
 	}

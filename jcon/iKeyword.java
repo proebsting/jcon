@@ -253,7 +253,7 @@ final class k$source extends vProc0 {				// &source
 	if (current.callers.empty()) {
 	    return iKeyword.main.get();
 	}
-	return (vCoexp) current.callers.peek();
+	return current.callers.peek();
     }
 }
 

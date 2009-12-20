@@ -274,11 +274,11 @@ private static wColor newNamedColor(vString vs, double gamma) {
 private static double parseLightness(String s) {
     if (s.length() > 3) {
 	switch (s.charAt(2)) {
-	    case 'l':  if (s.equals("pale"))   { return +.666667; }
-	    case 'g':  if (s.equals("light"))  { return +.333333; }
-	    case 'd':  if (s.equals("medium")) { return 0.000000; }
-	    case 'r':  if (s.equals("dark"))   { return -.333333; }
-	    case 'e':  if (s.equals("deep"))   { return -.666667; }
+	    case 'l':  if (s.equals("pale"))   return +.666667; else break;
+	    case 'g':  if (s.equals("light"))  return +.333333; else break;
+	    case 'd':  if (s.equals("medium")) return 0.000000; else break;
+	    case 'r':  if (s.equals("dark"))   return -.333333; else break;
+	    case 'e':  if (s.equals("deep"))   return -.666667; else break;
 	}
     }
     return 0.0 / 0.0;		// NaN signals failure
@@ -289,10 +289,10 @@ private static double parseLightness(String s) {
 private static double parseSaturation(String s) {
     if (s.length() > 0) {
 	switch (s.charAt(0)) {
-	    case 'w':  if (s.equals("weak"))     { return 0.25; }
-	    case 'm':  if (s.equals("moderate")) { return 0.50; }
-	    case 's':  if (s.equals("strong"))   { return 0.75; }
-	    case 'v':  if (s.equals("vivid"))    { return 1.00; }
+	    case 'w':  if (s.equals("weak"))     return 0.25; else break;
+	    case 'm':  if (s.equals("moderate")) return 0.50; else break;
+	    case 's':  if (s.equals("strong"))   return 0.75; else break;
+	    case 'v':  if (s.equals("vivid"))    return 1.00; else break;
 	}
     }
     return 0.0 / 0.0;		// NaN signals failure
@@ -302,7 +302,7 @@ private static double parseSaturation(String s) {
 
 private static wHue parseIsh(String s) {
     if (s.endsWith("ish")) {
-	return (wHue) hueTable.get(s);
+	return hueTable.get(s);
     } else {
 	return null;
     }
@@ -314,7 +314,7 @@ private static wHue parseHue(String s) {
     if (s.endsWith("ish")) {
 	return null;
     } else {
-	return (wHue) hueTable.get(s);
+	return hueTable.get(s);
     }
 }
 

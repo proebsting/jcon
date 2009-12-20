@@ -68,7 +68,7 @@ public vString report() {			// image for display() & tracebk
 
     b.append("list_").append(this.snum).append(" = [");
     for (int i = 0; i < n; i++) {
-	vValue e = ((vListVar) v.elementAt(i)).Deref();
+	vValue e = v.elementAt(i).Deref();
 	b.append(e.reportShallow().toString());
 	if (i == 2 && n > 6) {
 	   b.append(",...,");		// elide center if >6 elements

@@ -53,7 +53,7 @@ public static vString getenv(String name) {
 	}
     }
 
-    return (vString) etable.get(name);
+    return etable.get(name);
 }
 
 

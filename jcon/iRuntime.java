@@ -41,7 +41,7 @@ public static void display(vFile f) {
     }
     iSort.sort(a);
     for (i = 0; i < a.length; i++) {
-	vVariable v = (vVariable) iEnv.symtab.get(a[i].toString());
+	vVariable v = iEnv.symtab.get(a[i].toString());
 	f.println("   " + a[i] + " = " + v.Deref().report());
     }
 }

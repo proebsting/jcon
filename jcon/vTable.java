@@ -32,7 +32,7 @@ private vTable(vTable x) {
 
 
 public vValue get(vValue i) {
-    return (vValue) this.t.get(i);
+    return this.t.get(i);
 }
 
 public void put(vValue key, vValue val) {
@@ -62,7 +62,7 @@ public vDescriptor Index(vDescriptor i) {		// T[x]
 
 public vValue IndexVal(vDescriptor i) {			// .T[x]
     vValue key = i.Deref();
-    vValue val = (vValue) t.get(key);
+    vValue val = t.get(key);
     return (val == null) ? this.dflt : val;
 }
 
@@ -162,9 +162,9 @@ public vList Sort(int n) {
     vTableElem a[] = new vTableElem[t.size()];	// make array of key/val pairs
 
     int i = 0;
-    for (Enumeration e = t.keys(); e.hasMoreElements(); ) {
-	vValue key = (vValue)e.nextElement();
-	vValue val = (vValue)t.get(key);
+    for (Enumeration<vValue> e = t.keys(); e.hasMoreElements(); ) {
+	vValue key = e.nextElement();
+	vValue val = t.get(key);
 	if ((n & 1) != 0) {
 	    a[i++] = new vTableElem(key, val);	// sort by key
 	} else {

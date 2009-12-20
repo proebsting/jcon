@@ -113,7 +113,7 @@ public static void coret(String fname, int lineno, String caller,
 	String s = caller + "; " + iEnv.cur_coexp.report() +
 	    " returned " + val.report() + " to ";
 	try {
-	    s += ((vCoexp) a.callers.peek()).report();
+	    s += a.callers.peek().report();
 	} catch (java.util.EmptyStackException e) {
 	    iRuntime.error(900);
 	}
@@ -131,7 +131,7 @@ public static void cofail(String fname, int lineno, String caller, vCoexp a) {
 	if (iKeyword.trace.check()) {
 	    String s = caller + "; " + iEnv.cur_coexp.report() + " failed to ";
 	    try {
-		s += ((vCoexp) a.callers.peek()).report();
+		s += a.callers.peek().report();
 	    } catch (java.util.EmptyStackException e) {
 		iRuntime.error(900);
 	    }

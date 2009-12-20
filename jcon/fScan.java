@@ -390,7 +390,7 @@ final class f$tab extends vProc1 {			// tab(j)
 	final vInteger oldpos = iKeyword.pos.get();
 	final vString s = iKeyword.subject.get();
 	final int i = (int) oldpos.value;
-	final int j = (int) s.posEq(a.mkInteger().value);
+	final int j = s.posEq(a.mkInteger().value);
 	if (j == 0) {
 	    return null;
 	}

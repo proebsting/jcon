@@ -29,7 +29,7 @@ static Hashtable<String,iInstantiate> builtin_instantiator =
 	new Hashtable<String,iInstantiate>();
 
 public static vProc instantiate_builtin(String classname) {
-    iInstantiate i = (iInstantiate) builtin_instantiator.get(classname);
+    iInstantiate i = builtin_instantiator.get(classname);
     if (i == null) {
 	return null;
     }
@@ -60,7 +60,7 @@ public static void undeclared(String name, String proc, String file) {
 }
 
 public static vVariable resolve(String s) {
-    vVariable v = (vVariable) symtab.get(s);
+    vVariable v = symtab.get(s);
     return v;
 }
 
@@ -85,7 +85,7 @@ public static void declareGlobalInit(String s, vVariable x) {
     if (x.isnull()) {
 	return;				// innocuous redeclaration
     }
-    vVariable var = (vVariable) symtab.get(s);
+    vVariable var = symtab.get(s);
     if (var instanceof vFuncVar) {	// if built-in function
 	global(s, x);			// okay to replace
 	return;
@@ -160,7 +160,7 @@ static vProc declareKey(String name, vProc p) {
 }
 
 static vVariable getKeyVar(String s) {
-    vProc p = (vProc)keytab.get(s);
+    vProc p = keytab.get(s);
     if (p == null) {
 	return null;
     }

@@ -65,10 +65,10 @@ public vDescriptor Select() {
 
 public vDescriptor Bang() {
     final vValue a[] = new vValue[t.size()];
-    java.util.Enumeration<vValue> e = t.keys();
+    Enumeration<vValue> e = t.keys();
     int i = 0;
     while (e.hasMoreElements()) {
-	a[i++] = (vValue) e.nextElement();
+	a[i++] = e.nextElement();
     }
     if (i == 0) {
 	return null; /*FAIL*/
@@ -98,7 +98,7 @@ public vValue[] mkArray(int errno) {		// for sort(S)
     vValue a[] = new vValue[t.size()];
     int i = 0;
     for (Enumeration<vValue> e = t.keys(); e.hasMoreElements(); ) {
-	a[i++] = (vValue)e.nextElement();
+	a[i++] = e.nextElement();
     }
     return a;
 }

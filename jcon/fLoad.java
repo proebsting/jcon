@@ -154,7 +154,7 @@ final class DynamicLoader extends ClassLoader {
 
     // lookup or create loader for a particular library
     static DynamicLoader get(String libname) throws IOException {
-	DynamicLoader dl = (DynamicLoader) zcache.get(libname);
+	DynamicLoader dl = zcache.get(libname);
 	if (dl == null) {
 	    zcache.put(libname, dl = new DynamicLoader(libname));
 	}
@@ -171,7 +171,7 @@ final class DynamicLoader extends ClassLoader {
     // standard ClassLoader method
     public Class loadClass(String name, boolean resolve)
     throws ClassNotFoundException {
-	Class c = (Class) classcache.get(name);
+	Class c = classcache.get(name);
 	if (c == null) {
 	    ZipEntry ze = zf.getEntry(name + ".class");
 	    if (ze == null) {

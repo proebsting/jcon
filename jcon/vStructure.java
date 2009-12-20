@@ -46,7 +46,7 @@ public vString image() {		// type_snum(size)
 //  for records, overridden by a different method
 
 int compareTo(vValue v) {
-    return (int) (this.snum - ((vStructure)v).snum);
+    return this.snum - ((vStructure)v).snum;
 }
 
 

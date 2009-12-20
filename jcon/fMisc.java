@@ -49,7 +49,7 @@ final class f$display extends vProc2 {				// display(i,f)
 final class f$variable extends vProc1 {				// variable(x)
     public vDescriptor Call(vDescriptor a) {
 	String s = a.mkString().toString();
-	vVariable v = (vVariable) iEnv.symtab.get(s);
+	vVariable v = iEnv.symtab.get(s);
 	if (v != null) {
 	    return v;
 	}

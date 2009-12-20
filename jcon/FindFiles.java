@@ -76,7 +76,7 @@ public static void main(String a[]) {
 
     //  find needed link files
     while (! needed.empty()) {		// while more to do on list
-	String s = (String) needed.pop();
+	String s = needed.pop();
 	if (! found.contains(s)) {
 	    found.put(s, s);		// in case of problems, try only once
 	    String fname = findfile(s);	// find .zip file
@@ -91,7 +91,7 @@ public static void main(String a[]) {
     //  output the list of files
 
     for (int i = 0; i < files.size(); i++) {
-	System.out.println((String) files.elementAt(i));
+	System.out.println(files.elementAt(i));
     }
 
     //  check for error exit

@@ -237,7 +237,7 @@ final class f$map extends vProc3 {				// map(s1,s2,s3)
     static {
 	s2def = vString.New("ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 	s3def = vString.New("abcdefghijklmnopqrstuvwxyz");
-	initmap = new int[(int) vCset.MAX_VALUE + 1];
+	initmap = new int[vCset.MAX_VALUE + 1];
 	for (int i = 0; i <= vCset.MAX_VALUE; i++) {
 	    initmap[i] = i;
 	}
@@ -257,7 +257,7 @@ final class f$map extends vProc3 {				// map(s1,s2,s3)
 	}
 
 	if (s2 != s2prev || s3 != s3prev) {
-	    map = new int[(int) vCset.MAX_VALUE + 1];
+	    map = new int[vCset.MAX_VALUE + 1];
 	    System.arraycopy(initmap, 0, map, 0, map.length);
 	    for (int i = 0; i < n; i++) {
 		map[b2[i] & 0xFF] = b3[i];

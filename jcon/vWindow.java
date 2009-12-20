@@ -384,7 +384,7 @@ public static vWindow Active() {	// Active() finds win w/ pending event
     ++offset;				// update starting point
     while (true) {
 	for (int i = 0; i < n; i++) {
-	    vWindow w = (vWindow) v.elementAt((i + offset) % n);
+	    vWindow w = v.elementAt((i + offset) % n);
 	    if (w.c != null && w.c.evq.Size().value > 0) {
 		return w;
 	    }

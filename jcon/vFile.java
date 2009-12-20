@@ -86,7 +86,7 @@ public vDescriptor Bang() {
 
 public static void shutdown() {
     for (Enumeration<vFile> e = openfiles.elements(); e.hasMoreElements(); ) {
-	((vFile) e.nextElement()).close();
+	e.nextElement().close();
     }
 }
 

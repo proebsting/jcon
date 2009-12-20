@@ -134,7 +134,7 @@ public static wAttrib[] parseAtts(vDescriptor[] args, int n) {
 	    val = s.substring(j + 1);
 	}
 
-	wAttrib a = (wAttrib) attlist.get(name);
+	wAttrib a = attlist.get(name);
 	if (a == null) {
 	    iRuntime.error(145, args[i]);
 	}
