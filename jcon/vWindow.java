@@ -94,8 +94,10 @@ int compareTo(vValue v)	{ return title().compareTo(((vWindow)v).title()); }
 
 vWindow(String title, String mode, vDescriptor args[]) throws IOException {
 
-    int w = 480;	// default initial width (later reset depending on font)
-    int h = 156;	// default initial height
+    //#%#% start with unreasonably large default to work around an unfound bug
+    //#%#% (canvas will be shrunken before it appears on screen)
+    int w = 3000;	// default initial width (later reset depending on font)
+    int h = 2000;	// default initial height
 
     c = new wCanvas(this, title, w, h);
     wnum = ++wcount;
