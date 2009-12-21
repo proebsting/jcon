@@ -30,6 +30,8 @@ public final class wColor extends Color {
     public double gamma;	// gamma correction applied
     public double r, g, b;	// linear (uncorrected) r/g/b values, 0 - 1
 
+    private static final long serialVersionUID = 1;	// prevent warning
+
 
 
 private static Hashtable<String,wHue> hueTable = new Hashtable<String,wHue>();

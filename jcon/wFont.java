@@ -15,6 +15,8 @@ public final class wFont extends Font {
 private static double szmul =		// pixel-to-pointsize multiplier
     72.0 / Toolkit.getDefaultToolkit().getScreenResolution();
 
+private static final long serialVersionUID = 1;	// prevent warning
+
 
 
 //  new wFont(name, style, ptsize, spec) -- create new Icon font

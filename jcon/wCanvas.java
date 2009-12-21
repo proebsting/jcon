@@ -31,6 +31,8 @@ public final class wCanvas extends Canvas {
     boolean defer_image;	// defer image loading?
     Image deferred_image;	// deferred image
 
+    private static final long serialVersionUID = 1;	// prevent warning
+
 
 
 //  new wCanvas(win, label, w, h) -- create new canvas

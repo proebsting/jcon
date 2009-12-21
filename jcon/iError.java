@@ -10,6 +10,7 @@ public final class iError extends Error {
     String filename;
     int lineno;
 
+    private static final long serialVersionUID = 1;	// prevent warning
 
 
 iError(int num, vDescriptor desc) {	// constructor
