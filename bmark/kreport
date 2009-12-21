@@ -16,7 +16,7 @@ echo ''
 echo '          icont  jcont    ratio'
 for p; do
     echo `<$p.it` `<$p.jt` | awk '
-	{ printf("%-8s %6.2f %6.2f %8.2f\n", "'$p'", $1, $4, $4 / $1); }
+	{ printf("%-8s %6.6f %6.6f %8.6f\n", "'$p'", $1, $4, $4 / $1); }
     '
 done
 echo ''

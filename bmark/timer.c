@@ -39,8 +39,8 @@ int main (int argc, char *argv[]) {
     system(cmd);			/* run command */
     times(&t2);				/* record CPU usage after */
 
-    usr = (t2.tms_cutime - t1.tms_cutime) / (double) CLK_TCK;
-    sys = (t2.tms_cstime - t1.tms_cstime) / (double) CLK_TCK;
-    fprintf(stderr, "%8.3f %8.3f %8.3f\n", usr, sys, usr + sys);
+    usr = (t2.tms_cutime - t1.tms_cutime) / (double) CLOCKS_PER_SEC;
+    sys = (t2.tms_cstime - t1.tms_cstime) / (double) CLOCKS_PER_SEC;
+    fprintf(stderr, "%8.6f %8.6f %8.6f\n", usr, sys, usr + sys);
     return 0;
 }
