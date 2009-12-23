@@ -70,7 +70,7 @@
        &time: nnnn
       &trace: 0
       &ucase: &ucase  [size 26]
-    &version: Jcon Version 2.1
+    &version: Jcon Version 2.2
      &window: &null
           &x: 0
           &y: 0
