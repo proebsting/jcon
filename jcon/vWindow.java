@@ -23,6 +23,8 @@ public final class vWindow extends vFile {
     // graphics context attributes
     // when adding new ones, be sure to update the cloning code below
 
+    private BasicStroke stroke;	// linewidth
+
     private boolean clipping;	// is clipping enabled?
     int dx, dy;			// graphics origin
 
@@ -107,6 +109,11 @@ vWindow(String title, String mode, vDescriptor args[]) throws IOException {
     gnum = ++gcount;
 
     // set the usual defaults
+
+    stroke = new BasicStroke(1);		// linewidth
+    a.setStroke(stroke);
+    b.setStroke(stroke);
+
     clipping = false;
     dx = 0;
     dy = 0;
@@ -166,6 +173,10 @@ private vWindow(vWindow w) {
     a = (Graphics2D) w.a.create();
     b = (Graphics2D) w.b.create();
     gnum = ++gcount;
+
+    this.stroke = w.stroke;
+    a.setStroke(stroke);
+    b.setStroke(stroke);
 
     this.clipping = w.clipping;
     this.dx = w.dx;
@@ -500,6 +511,17 @@ public vString Bg(vString s) {
 	}
 	return k.spec;
     }
+}
+
+public vInteger Linewidth(vInteger n) {
+    long curr = (int) this.stroke.getLineWidth();
+    if (n != null && n.value != curr) {
+    	stroke = new BasicStroke(n.value);
+	a.setStroke(stroke);
+	b.setStroke(stroke);
+	curr = n.value;
+    }
+    return vInteger.New(curr);
 }
 
 public vString Drawop(vString s) {

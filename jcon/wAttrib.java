@@ -62,6 +62,8 @@ static {
 
     newatt("fg", new aFg());
     newatt("bg", new aBg());
+    newatt("linewidth",	new aLinewidth());
+
     newatt("reverse", new aReverse());
     newatt("drawop", new aDrawop());
     newatt("gamma", new aGamma());
@@ -92,7 +94,6 @@ static {
     // They are recognized as legal, but changes are ignored.
     // They will be easier to support under Java 1.2.
 
-    newatt("linewidth",	new aDummy(vInteger.New(1)));
     newatt("linestyle",	new aDummy(vString.New("solid")));
     newatt("fillstyle",	new aDummy(vString.New("solid")));
     newatt("pattern",	new aDummy(vString.New("black")));
@@ -336,6 +337,11 @@ final class aFg extends wAttrib {
 final class aBg extends wAttrib {
     vValue get(vWindow win)	{ return win.Bg(null); }
     vValue set(vWindow win)	{ return win.Bg(vString.New(val)); }
+}
+
+final class aLinewidth extends wAttrib {
+    vValue get(vWindow win)	{ return win.Linewidth(null); }
+    vValue set(vWindow win)	{ return win.Linewidth(vInteger.New(val)); }
 }
 
 final class aDrawop extends wAttrib {
