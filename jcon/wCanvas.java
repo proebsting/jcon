@@ -154,7 +154,7 @@ public void resize(vWindow win, int w, int h) {
     if (ih < h) { ih = h; }
 
     Image inew = this.createImage(iw, ih);
-    Graphics g = inew.getGraphics();
+    Graphics2D g = (Graphics2D) inew.getGraphics();
 
     // install new graphics context in each associated window
     for (int j = 0; j < wlist.size(); j++) {
@@ -186,7 +186,7 @@ public void resize(vWindow win, int w, int h) {
 //
 //  g is a zero-origin graphics context with no clipping
 
-public void paint(Graphics g) {
+public void paint(Graphics2D g) {
     g.drawImage(i,0,0,null);
 }
 

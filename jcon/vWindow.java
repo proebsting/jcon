@@ -15,7 +15,7 @@ public final class vWindow extends vFile {
     // when a window has closed, a/b/c are null
 
     private wCanvas c;		// underlying Icon canvas
-    private Graphics a, b;	// graphics context for canvas and backing image
+    private Graphics2D a, b;	// graphics context for canvas and backing image
 
     private int wnum;		// window serial number
     private int gnum;		// graphics context serial number
@@ -102,8 +102,8 @@ vWindow(String title, String mode, vDescriptor args[]) throws IOException {
     c = new wCanvas(this, title, w, h);
     wnum = ++wcount;
 
-    a = c.getGraphics();
-    b = c.i.getGraphics();
+    a = (Graphics2D) c.getGraphics();
+    b = (Graphics2D) c.i.getGraphics();
     gnum = ++gcount;
 
     // set the usual defaults
@@ -163,8 +163,8 @@ private vWindow(vWindow w) {
     wnum = w.wnum;
     c.wlist.addElement(this);
 
-    a = w.a.create();
-    b = w.b.create();
+    a = (Graphics2D) w.a.create();
+    b = (Graphics2D) w.b.create();
     gnum = ++gcount;
 
     this.clipping = w.clipping;
@@ -192,9 +192,9 @@ private vWindow(vWindow w) {
 //
 //  (called by the Canvas code if the underlying image has changed)
 
-void newgcb(Graphics g) {
+void newgcb(Graphics2D g) {
 
-    Graphics newb = g.create();
+    Graphics2D newb = (Graphics2D) g.create();
 
     newb.setColor(fg);
     if (xormode) {
