@@ -1,3 +1,10 @@
+<P>
+<BLOCKQUOTE><EM>
+This data is really old.  As of 2010 it appears that Java performance
+has improved greatly and that Jcon now outperforms Icon v9.5.0
+in many cases, perhaps most.
+</EM></BLOCKQUOTE>
+
 <P> Programs built by Jcon typically run somewhat slower than when
 built and run by Version 9 of Icon.
 We use the ratio of execution times as our basic benchmark measurement.

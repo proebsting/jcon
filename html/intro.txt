@@ -1,4 +1,4 @@
-<P> Jcon (pronounced <EM>JAY-konn</EM>) is a new Java-based implementation
+<P> Jcon (pronounced <EM>JAY-konn</EM>) is a Java-based implementation
 of the Icon programming language
 (<A HREF=refs.htm>Griswold and Griswold, 1996</A>).
 The Jcon translator, written in Icon, generates Java class files that
@@ -15,9 +15,7 @@ although for performance reasons they are disabled by default.
 There are a few minor deficiencies due to Java limitations.
 
 <P> Jcon includes almost all of Icon's standard graphics facilities.
-Wide lines and textured drawing are lacking; these should be easier to
-implement after version 1.2 of Java becomes universally available.
-A few other features, notably mutable colors, are also unavailable.
+A few features such as textured drawing and mutable colors are lacking.
 Details are provided in the <A HREF=graphics.htm>Graphics</A> section.
 
 <P> The <CODE>jcont</CODE> script functions similarly to <CODE>icont</CODE>.
@@ -28,6 +26,10 @@ Separate compilation is also supported, with <CODE>.zip</CODE> files
 substituting for <CODE>.u1/.u2</CODE> file pairs.
 
 <H3>Implementation</H3>
+
+<BLOCKQUOTE><EM>
+Line counts were accurate as of 1999 but have not been updated.
+</EM></BLOCKQUOTE>
 
 <P> The Jcon translator is a 10,000-line Icon program that produces
 either Java class files or <EM>ucode</EM> (<CODE>.u1/.u2</CODE>) files.

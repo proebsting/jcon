@@ -5,8 +5,7 @@
 <TD VALIGN=TOP>Ralph E. Griswold and Madge T. Griswold
     <BR><A HREF="http://www.cs.arizona.edu/icon/lb3.htm">
 	<CITE>The Icon Programming Language, Third Edition</CITE></A>
-    <BR><A HREF="http://www.peer-to-peer.com/catalog/language/icon.html">
-	Peer-to-Peer Communications</A>, 1997
+    <BR>Peer-to-Peer Communications, 1997, out of print
     <BR>ISBN 1-57398-001-3
 </TD></TR>
 
@@ -15,8 +14,7 @@
 <TD VALIGN=TOP>Ralph E. Griswold, Clinton L. Jeffery, and Gregg M. Townsend
     <BR><A HREF="http://www.cs.arizona.edu/icon/gb/">
 	<CITE>Graphics Programming in Icon</CITE></A>
-    <BR><A HREF="http://www.peer-to-peer.com/catalog/language/icong.html">
-	Peer-to-Peer Communications</A>, 1998
+    <BR>Peer-to-Peer Communications, 1998, out of print
     <BR>ISBN 1-57398-009-9
 </TD></TR>
 <TR><TD VALIGN=TOP><A HREF="http://www.cs.arizona.edu/icon/jcon/impl.pdf">

@@ -24,12 +24,12 @@ of OS patches.
 <P> For software see:
 <BLOCKQUOTE>
 <TABLE>
-<TR><TD>Icon 9.3:</TD><TD>
-	<A HREF="http://www.cs.arizona.edu/icon/v93u.htm">
-	http://www.cs.arizona.edu/icon/v93u.htm</A></TD></TR>
-<TR><TD>Java 1.1:</TD><TD>
-	<A HREF="http://www.javasoft.com/products/jdk/1.1/">
-	http://www.javasoft.com/products/jdk/1.1/</A></TD></TR>
+<TR><TD>Icon 9.5:</TD><TD>
+	<A HREF="http://www.cs.arizona.edu/icon/current/">
+	www.cs.arizona.edu/icon/current</A></TD></TR>
+<TR><TD>Java 1.6:</TD><TD>
+	<A HREF="http://java.sun.com/">
+	java.sun.com</A></TD></TR>
 </TABLE>
 </BLOCKQUOTE>
 
@@ -109,13 +109,12 @@ nongraphical tests and experiments.
 
 <P> The Jcon home page is located at
 <A HREF="http://www.cs.arizona.edu/icon/jcon/">
-http://www.cs.arizona.edu/icon/jcon/</A>.
+www.cs.arizona.edu/icon/jcon</A>.
 Go there for the lastest versions of the implementation and documentation.
 
-<P> Please send all Jcon-related mail to 
-<A HREF="mailto:jcon@cs.arizona.edu">jcon@cs.arizona.edu</A>.
-Using this alias helps us log the mail and respond more promptly.
+<P> Please send any comments to
+<A HREF="mailto:icon@cs.arizona.edu">icon@cs.arizona.edu</A>.
 
 <P> The home page for the Icon language is located at
 <A HREF="http://www.cs.arizona.edu/icon/">
-http://www.cs.arizona.edu/icon/</A>.
+www.cs.arizona.edu/icon</A>.

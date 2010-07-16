@@ -1,39 +1,24 @@
-<P> Version 2.1 of Jcon includes minor feature additions,
+<P> Version 2.2 of Jcon includes minor feature additions,
 documentation edits, and bug fixes.  
 Changes include the following:
 
 <UL>
-    <LI> A directory can be read by opening it as a file.
-    <LI> JPEG images can be written under Java 2 implementations.
-    <LI> Java class files can be bundled with a Jcon program for
-    	easier dynamic loading.
-    <LI> The run-time system can be bundled with a Jcon program
-    	to make it completely self-contained.
-    <LI> Large integers now work with <CODE>to</CODE>-<CODE>by</CODE>,
-	 <CODE>seq()</CODE>, limitation (<CODE>e1 \ e2</CODE>),
-	 and exponentiation (<CODE>e1 ^ e2</CODE>)
-    <LI> A zero increment value is diagnosed by <CODE>seq()</CODE>
-    <LI> <CODE>&amp;host</CODE> no longer spawns a shell invocation
-	of <CODE>uname</CODE> (but see <CITE>Problems</CITE>, below)
-    <LI> The run-time package name has been changed from <CODE>rts</CODE>
-    	to <CODE>jcon</CODE>.  All programs must be recompiled.
+<LI> The source code is now compatible with Java 6 (Java v1.6).
+<LI> The <CODE>linewidth</CODE> graphics attribute is now implemented.
 </UL>
 
 <H3>Tested Platforms</H3>
 
 <P> Jcon has been successfully tested on:
 <BLOCKQUOTE>
-	Sun Sparc / Solaris 2.6 (SunOS 5.6) / Sun Java 1.3beta0
-	<BR> SGI Indigo2 / Irix 6.5 / SGI Java 3.1.1 (JDK 1.1.6N)
-	<BR> IBM RS6000 / AIX 4.3 / IBM Java 1.1.6-19990401
-	<BR> DEC Alpha / Digital Unix 4.0D / Digital Java 1.1.6-2
-	<BR> Intel / Linux 2.2.5 (Red Hat 6.0) / IBM JDK 1.1.6-990814
+	Mac OS 10.6 (Snow Leopard) / Sun Java 1.6.0_20
 </BLOCKQUOTE>
 
 <P> We would be interested to learn of either successes or failures
 on other platforms.
 
 <H3>Known problems (nongraphical)</H3>
+<SMALL>(not recently verified)</SMALL>
 <UL>
     <LI>Some JIT compilers fail to execute Jcon programs correctly.
 	Disabling the JIT compiler produces correct execution.
@@ -50,6 +35,7 @@ on other platforms.
 </UL>
 
 <H3>Known graphics problems</H3>
+<SMALL>(not recently verified)</SMALL>
 
 <P> Some problems are universal:
 <UL>

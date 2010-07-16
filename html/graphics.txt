@@ -6,9 +6,7 @@ This section documents differences from that specification,
 supplementing Appendix N ("Platform Dependencies") of the book.
 
 <P> Jcon's graphics implementation is nearly complete.
-The biggest omissions are wide lines, textured drawing, and mutable colors.
-Java 1.2 promises to make the first two more feasible.
-Mutable colors will remain out of reach.
+The biggest omission is textured drawing.
 
 <H3>Graphics Attributes</H3>
 
@@ -17,7 +15,7 @@ but some cannot be changed successfully.
 The <CODE>canvas</CODE> attribute can be set to <CODE>normal</CODE>
 or <CODE>hidden</CODE> but not to <CODE>maximal</CODE> or <CODE>iconic</CODE>.
 Changes to the following attributes are ignored:
-<CODE>linewidth</CODE>, <CODE>linestyle</CODE>, 
+<CODE>linestyle</CODE>, 
 <CODE>fillstyle</CODE>, <CODE>pattern</CODE>,
 <CODE>display</CODE>, <CODE>iconpos</CODE>,
 <CODE>iconlabel</CODE>, <CODE>iconimage</CODE>.
@@ -72,7 +70,8 @@ rather than producing shades of gray.
 
 <P> Mutable colors are not available;
 <CODE>NewColor()</CODE> and <CODE>Color()</CODE> always fail.
-(In Version 9 of Icon, mutable colors work on 8-bit X displays.)
+(Few modern display systems support mutable colors;
+they were briefly useful when graphics memory was still expensive.)
 
 <H3>Images</H3>
 
