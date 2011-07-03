@@ -252,6 +252,10 @@ public vFile close() {
     if (a == null) {
 	return this;		// already closed
     }
+    if (curwin == this) {	// if registered as current window
+	setCurrent(iKeyword.window.getWindow());  // reset to &window
+    }
+
     a.dispose();		// dispose graphics contexts
     b.dispose();
     c.dispose();		// dispose frame and image
