@@ -9,10 +9,16 @@ containing an embedded Zip file.
 Running the script executes the compiled Icon program,
 and arguments can be passed as usual.
 
+<P> The short form <I>jcon</I> command is analogous to the <I>icon</I> command.
+It translates, links, and executes a single source file.
+
 <H3>Synopsis</H3>
 <blockquote>
 <CODE>jcont </CODE>[<VAR>options</VAR>] <VAR>file...</VAR>
 	[<CODE>-x</CODE> [<VAR>arguments</VAR>]]
+<br>
+<br>
+<CODE>jcon </CODE> <VAR>file</VAR><CODE>.icn</CODE> [<VAR>arguments</VAR>]
 <br>
 </blockquote>
 

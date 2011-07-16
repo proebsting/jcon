@@ -11,7 +11,7 @@ Changes include the following:
 
 <P> Jcon has been successfully tested on:
 <BLOCKQUOTE>
-	Mac OS 10.6 (Snow Leopard) / Sun Java 1.6.0_20
+	Mac OS 10.6 (Snow Leopard) / Sun Java 1.6.0_26
 </BLOCKQUOTE>
 
 <P> We would be interested to learn of either successes or failures
