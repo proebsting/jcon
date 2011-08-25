@@ -89,15 +89,19 @@ public void enqueue(vValue a, int x, int y, InputEvent e) {
 public static vValue dequeue(wCanvas c, int dx, int dy) {
     vValue a, xv, yv;
 
-    // get first value; return null if queue is empty
-    a = c.evq.Get();
+    // try to get three values, synchronizing with the window event recorder
+    // (but still doesn't synchronize with Icon put(Pending(),...))
+    synchronized(c) {
+	a = c.evq.Get();
+	xv = c.evq.Get();
+	yv = c.evq.Get();
+    }
+
+    // a null first value means the queue is empty
     if (a == null) {
 	return null;
     }
-
-    //  get two more values, which must be integers
-    xv = c.evq.Get();
-    yv = c.evq.Get();
+    //  the other two values must be integers
     if (xv == null || !(xv instanceof vInteger)
     ||  yv == null || !(yv instanceof vInteger)) {
 	iRuntime.error(143);		// malformed queue
