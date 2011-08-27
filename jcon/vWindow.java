@@ -253,7 +253,7 @@ public vFile close() {
 	return this;		// already closed
     }
     if (curwin == this) {	// if registered as current window
-	setCurrent(iKeyword.window.getWindow());  // reset to &window
+	curwin = null;
     }
 
     a.dispose();		// dispose graphics contexts
