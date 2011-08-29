@@ -216,10 +216,12 @@ final class kCounter extends vProc0 {
 
 final class k$features extends vProc0 {				// &features
 
-    //  the features list is hard-wired
+    //  the features list is built once at initialization time
+    //  null values are skipped when generating the features list
     private static vString[] flist = {
 	vString.New("UNIX"),
 	vString.New("Java"), 
+	isMac() ? vString.New("Macintosh") : null,
 	vString.New("ASCII"),
 	vString.New("co-expressions"),
 	vString.New("dynamic loading"),
@@ -234,14 +236,20 @@ final class k$features extends vProc0 {				// &features
 	return new vClosure() {
 	    int posn = 0;
 	    public vDescriptor Resume() {
-		if (posn < flist.length) {
+		while (posn < flist.length) {
 		    retval = flist[posn++];
-		    return this;
-		} else {
-		    return null;
+		    if (retval != null) {
+		    	return this;
+		    }
 		}
+		return null;
 	    }
 	}.Resume();
+    }
+
+    private static boolean isMac() {		// return true iff Macintosh
+	String s = System.getProperty("os.name");
+	return s != null && s.startsWith("Mac");
     }
 }
 

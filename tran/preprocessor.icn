@@ -37,6 +37,9 @@ procedure predefs()
     t := table()
     t["_UNIX"] := "1"
     t["_JAVA"] := "1"
+    $ifdef _MACINTOSH
+	t["_MACINTOSH"] := "1"
+    $endif
     t["_ASCII"] := "1"
     t["_CO_EXPRESSIONS"] := "1"
     t["_DYNAMIC_LOADING"] := "1"
