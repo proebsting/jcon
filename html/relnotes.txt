@@ -11,7 +11,7 @@ Changes include the following:
 
 <P> Jcon has been successfully tested on:
 <BLOCKQUOTE>
-	Mac OS 10.6 (Snow Leopard) / Sun Java 1.6.0_26
+	Mac OS 10.7 (Lion) / Sun Java 1.6.0_26
 </BLOCKQUOTE>
 
 <P> We would be interested to learn of either successes or failures
@@ -44,6 +44,7 @@ on other platforms.
 	pauses to await an event.
     <LI><CODE>WOpen("image=file.gif")</CODE> does not load an image
    	if presented with a multi-part (animated) GIF image.
+    <LI>A java exception may occur during program termination.
 </UL>
 <P> Other problems are seen only on some platforms and are
 attributed to Java bugs:
