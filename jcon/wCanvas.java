@@ -209,10 +209,12 @@ public long interval(long newtime) {
 
 //  enqueue(a, b, c) -- enqueue three event values (synchronized)
 
-public synchronized void enqueue(vValue a, vValue b, vValue c) {
-    evq.Put(a);
-    evq.Put(b);
-    evq.Put(c);
+public void enqueue(vValue a, vValue b, vValue c) {
+    synchronized(evq) {
+	evq.Put(a);
+	evq.Put(b);
+	evq.Put(c);
+    }
 }
 
 

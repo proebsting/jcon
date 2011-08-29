@@ -33,6 +33,16 @@ final class f$push extends vProcV {				// push(L, x...)
 	return a.Push(b.Deref());
     }
 
+    // with exactly three args, synchronize in case this is an event queue
+    public vDescriptor Call(vDescriptor a,
+			    vDescriptor b, vDescriptor c, vDescriptor d) {
+    	synchronized(a) {
+	    a.Push(b.Deref());
+	    a.Push(c.Deref());
+	    return a.Push(d.Deref());
+	}
+    }
+
     public vDescriptor Call(vDescriptor[] v) {
 	vValue L = iRuntime.arg(v, 0).Deref();
 	L.Push(iRuntime.arg(v, 1).Deref());	// always push at least one val
@@ -73,6 +83,16 @@ final class f$put extends vProcV {				// put(L, x...)
 
     public vDescriptor Call(vDescriptor a, vDescriptor b) {
 	return a.Put(b.Deref());
+    }
+
+    // with exactly three args, synchronize in case this is an event queue
+    public vDescriptor Call(vDescriptor a,
+			    vDescriptor b, vDescriptor c, vDescriptor d) {
+    	synchronized(a) {
+	    a.Put(b.Deref());
+	    a.Put(c.Deref());
+	    return a.Put(d.Deref());
+	}
     }
 
     public vDescriptor Call(vDescriptor[] v) {

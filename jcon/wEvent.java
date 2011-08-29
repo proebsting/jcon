@@ -89,12 +89,12 @@ public void enqueue(vValue a, int x, int y, InputEvent e) {
 public static vValue dequeue(wCanvas c, int dx, int dy) {
     vValue a, xv, yv;
 
-    // try to get three values, synchronizing with the window event recorder
-    // (but still doesn't synchronize with Icon put(Pending(),...))
-    synchronized(c) {
-	a = c.evq.Get();
-	xv = c.evq.Get();
-	yv = c.evq.Get();
+    // try to get three values, synchronizing with other accesses
+    vList evq = c.evq;
+    synchronized(evq) {
+	a = evq.Get();
+	xv = evq.Get();
+	yv = evq.Get();
     }
 
     // a null first value means the queue is empty
