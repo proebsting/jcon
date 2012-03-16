@@ -61,6 +61,11 @@ produce only zero values.
 <P> The implementation of <CODE>loadfunc()</CODE> is described
 in the <A HREF=dynload.htm>Dynamic Loading</A> section.
 
+<P> Procedures returned by <CODE>proc(s,i)</CODE> always dereference
+their arguments.
+Version 9 produces procedures that can alter their arguments
+for calls such as <CODE>proc(":=",2)</CODE>.
+
 <H3>Linking</H3>
 
 <P> <CODE>link</CODE> directives must give a simple name, not a path.
