@@ -55,9 +55,6 @@ produce only zero values.
 <P> The functions <CODE>chdir()</CODE>, <CODE>getch()</CODE>, 
 <CODE>getche()</CODE>, and <CODE>kbhit()</CODE> are not implemented.
 
-<P> The functions <CODE>getenv()</CODE> requires the presence of the utility
-<CODE>env</CODE> in the shell search path.
-
 <P> The implementation of <CODE>loadfunc()</CODE> is described
 in the <A HREF=dynload.htm>Dynamic Loading</A> section.
 

@@ -91,9 +91,8 @@ procedure main ()
    every ferr (ord, &output | table(), 103)
 
 #  test getenv()
-   #  DISABLED
-   #  write(getenv("HOME") | write("getenv failed"))
-   #  write(getenv("foo") | write("getenv failed"))
+   write("getenv(JCONT) = ", getenv("JCONT") | "[FAILED]")
+   write("getenv(NOPE!) = ", getenv("nope") | "[FAILED]")
 
 #  test open(directory)
 

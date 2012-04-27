@@ -8,7 +8,7 @@
 #  to execute:			./filename [args]
 
 
-TLIMIT = 60  # maximum compilation + execution time for any one test (in sec)
+TLIMIT = 10  # maximum compilation + execution time for any one test (in sec)
 
 run:
 	ulimit -t $(TLIMIT); ./runtest

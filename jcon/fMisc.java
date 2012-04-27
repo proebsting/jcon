@@ -169,7 +169,16 @@ final class f$exit extends vProc1 {				// exit(n)
 
 final class f$getenv extends vProc1 {				// getenv(s)
     public vDescriptor Call(vDescriptor a) {
-	return iSystem.getenv(a.mkString().toString());
+	String name = a.mkString().toString();
+	try {
+	    String val = System.getenv(name);
+	    if (val != null)
+		return vString.New(val);
+	    else
+		return null;
+	} catch (Exception e) {	// probably SecurityException, but catch all
+	    return null;
+	}
     }
 }
 

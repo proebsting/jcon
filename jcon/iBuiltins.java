@@ -42,7 +42,7 @@ static void announce() {
     iEnv.declareBuiltin("get", 1, fList.self);
     //			"getch"				// not implemented
     //			"getche"			// not implemented
-    iEnv.declareBuiltin("getenv", 1, fMisc.self);	// uses "env" in $PATH
+    iEnv.declareBuiltin("getenv", 1, fMisc.self);
     iEnv.declareBuiltin("iand", 2, fNumeric.self);
     iEnv.declareBuiltin("icom", 1, fNumeric.self);
     iEnv.declareBuiltin("image", 1, fConvert.self);
