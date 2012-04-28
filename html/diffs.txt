@@ -38,6 +38,12 @@ even with the same random seed.
 <P> Jcon is not always consistent with Version 9 when it encounters
 large integers in unsupported contexts such as subscripting.
 
+<H3>Subscripting</H3>
+
+<P>Version 9 of Icon allows wrap-around subscripting of strings and lists,
+for example <CODE>s[-3+:5]</CODE>.  This is arguably an implementation error,
+and such expressions fail in Jcon.
+
 <H3>Keywords</H3>
 
 <P> <CODE>&amp;features</CODE> includes <CODE>"Java"</CODE>.

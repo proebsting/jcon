@@ -13,5 +13,3 @@ Implement textures and patterns.
 
 Switch to Arrays.sort().  It's stable, and probably faster.
 
-Document behavior difference WRT wrap-around string subscripting.
-
