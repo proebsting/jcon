@@ -41,6 +41,9 @@ final class fIO extends iInstantiate {
 	}
 	if (nl) {
 	    f.newline();
+	    if (f == iKeyword.output.file()) {
+	        f.flush();		// flush stdout after write()
+	    }
 	}
 	return d;
     }
