@@ -352,34 +352,34 @@ public static vValue writeJPEG(vWindow win, int[] data, String fname,
 
 	// BufferedImage bi = new BufferedImage(w, h, rgbtype);
 	Object bi = Reflect.construct("java.awt.image.BufferedImage", 
-	    new Class[] { int.class, int.class, int.class },
+	    new Class<?>[] { int.class, int.class, int.class },
 	    new Object[] { ww, hh, new Integer(1) }) ;
 
 	// bi.setRGB(0, 0, w, h, data, 0, w);
 	Reflect.call(bi, "setRGB",
-	    new Class[] { int.class, int.class, int.class, int.class,
+	    new Class<?>[] { int.class, int.class, int.class, int.class,
 		int[].class, int.class, int.class },
 	    new Object[] { zero, zero, ww, hh, data, zero, ww });
 
 	// JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(f);
 	Object encoder = Reflect.call(
 	    "com.sun.image.codec.jpeg.JPEGCodec", "createJPEGEncoder",
-	    new Class[] { OutputStream.class },
+	    new Class<?>[] { OutputStream.class },
 	    new Object[] { f });
 
 	// JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(bi);
 	Object param = Reflect.call(encoder, "getDefaultJPEGEncodeParam",
-	    new Class[] { bi.getClass() },
+	    new Class<?>[] { bi.getClass() },
 	    new Object[] { bi });
 
 	// param.setQuality((float)q, false);
 	Reflect.call(param, "setQuality",
-	    new Class[] { float.class, boolean.class },
+	    new Class<?>[] { float.class, boolean.class },
 	    new Object[] { new Float(q), new Boolean(false) });
 
 	// encoder.encode(bi, param);
 	Reflect.call(encoder, "encode",
-	    new Class[] { bi.getClass(),
+	    new Class<?>[] { bi.getClass(),
 		Class.forName("com.sun.image.codec.jpeg.JPEGEncodeParam") },
 	    new Object[] { bi, param });
 

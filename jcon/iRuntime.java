@@ -35,9 +35,9 @@ public static void display(vFile f) {
     f.println("global identifiers:");
     int i = 0;
     vString[] a = new vString[iEnv.symtab.size()];
-    java.util.Enumeration e = iEnv.symtab.keys();
+    java.util.Enumeration<String> e = iEnv.symtab.keys();
     while (e.hasMoreElements()) {
-	a[i++] = vString.New((String) e.nextElement());
+	a[i++] = vString.New(e.nextElement());
     }
     iSort.sort(a);
     for (i = 0; i < a.length; i++) {

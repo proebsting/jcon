@@ -73,21 +73,21 @@ public vDescriptor Select() {				// ?T
 	return null;
     }
     int index = (int) iKeyword.random.choose(t.size());
-    java.util.Enumeration e = t.keys();
+    java.util.Enumeration<vValue> e = t.keys();
     for (int k = 0; k < index; k++) {
 	e.nextElement();
     }
-    return new vTableRef(this, (vValue)e.nextElement());
+    return new vTableRef(this, e.nextElement());
 }
 
 
 
 public vDescriptor Bang() {				// !T
     final vTableRef a[] = new vTableRef[t.size()];
-    java.util.Enumeration e = (java.util.Enumeration) t.keys();
+    java.util.Enumeration<vValue> e = t.keys();
     int i = 0;
     while (e.hasMoreElements()) {
-	a[i++] = new vTableRef(this, (vValue) e.nextElement());
+	a[i++] = new vTableRef(this, e.nextElement());
     }
     if (i == 0) { 
 	return null; /*FAIL*/
@@ -114,10 +114,10 @@ public vDescriptor Bang() {				// !T
 
 public vDescriptor Key() {
     final vValue a[] = new vValue[t.size()];
-    java.util.Enumeration e = (java.util.Enumeration) t.keys();
+    java.util.Enumeration<vValue> e = t.keys();
     int i = 0;
     while (e.hasMoreElements()) {
-	a[i++] = (vValue) e.nextElement();
+	a[i++] = e.nextElement();
     }
     if (i == 0) {
 	return null; /*FAIL*/

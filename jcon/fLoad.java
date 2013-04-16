@@ -39,7 +39,7 @@ final class f$loadfunc extends vProc2 {				// loadfunc(s,s)
 	String funcname = b.mkString().toString();
 
 	if (a.isnull()) try {			// if /a, use sys classloader
-	    Class c = Class.forName(funcname);
+	    Class<?> c = Class.forName(funcname);
 	    vProc p = (vProc) c.newInstance();
 	    initProc(p, "function " + funcname);
 	    return p;
@@ -55,9 +55,9 @@ final class f$loadfunc extends vProc2 {				// loadfunc(s,s)
 	String filename = a.mkString().toString();
 	try {
 	    ZipFile zf = new ZipFile(filename);
-	    Enumeration e = zf.entries();
+	    Enumeration<? extends ZipEntry> e = zf.entries();
 	    while (e.hasMoreElements()) {
-		ZipEntry ze = (ZipEntry) e.nextElement();
+		ZipEntry ze = e.nextElement();
 		String s = ze.getName();
 		if (s.startsWith(prochead) && s.endsWith(tail)) {
 		    zf.close();
@@ -86,7 +86,7 @@ final class f$loadfunc extends vProc2 {				// loadfunc(s,s)
 
 	DynamicLoader dl = DynamicLoader.get(filename);
 
-	Class c = dl.loadClass(funcname);
+	Class<?> c = dl.loadClass(funcname);
 	vProc p = (vProc) c.newInstance();
 	initProc(p, "function " + funcname);
 	return p;
@@ -100,7 +100,7 @@ final class f$loadfunc extends vProc2 {				// loadfunc(s,s)
 	String linkname = classname.substring(2, classname.lastIndexOf('$'));
 
 	DynamicLoader dl = DynamicLoader.get(filename);
-	Class c;
+	Class<?> c;
 
 	if (ilinked.get(linkname) == null) {
 	    c = dl.loadClass(linkname);		// get link director for file
@@ -144,8 +144,8 @@ final class f$loadfunc extends vProc2 {				// loadfunc(s,s)
 
 final class DynamicLoader extends ClassLoader {
     private ZipFile zf;					// library ZipFile
-    private Hashtable<String,Class> classcache =
-    	    new Hashtable<String,Class>();		// classes loaded
+    private Hashtable<String,Class<?>> classcache =
+    	    new Hashtable<String,Class<?>>();		// classes loaded
 
 
     // cache of known loaders
@@ -169,9 +169,9 @@ final class DynamicLoader extends ClassLoader {
 
 
     // standard ClassLoader method
-    public Class loadClass(String name, boolean resolve)
+    public Class<?> loadClass(String name, boolean resolve)
     throws ClassNotFoundException {
-	Class c = classcache.get(name);
+	Class<?> c = classcache.get(name);
 	if (c == null) {
 	    ZipEntry ze = zf.getEntry(name + ".class");
 	    if (ze == null) {

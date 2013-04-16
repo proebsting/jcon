@@ -43,7 +43,7 @@ public static void start(String[] args, String name, iExecutable exe) {
 }
 
 public static void start(iFile[] files, String[] names) {
-    java.util.Enumeration e;
+    java.util.Enumeration<iFile> e;
 
     for (int i = 0; i < files.length; i++) {
 	link(files[i], names[i]);
@@ -51,7 +51,7 @@ public static void start(iFile[] files, String[] names) {
 
     e = fileTable.elements();
     while (e.hasMoreElements()) {
-	iFile f = (iFile) e.nextElement();
+	iFile f = e.nextElement();
 	f.unresolved();
     }
     iEnv.declareInvoke("main");
@@ -62,14 +62,14 @@ public static void start(iFile[] files, String[] names) {
 
     e = fileTable.elements();
     while (e.hasMoreElements()) {
-	iFile f = (iFile) e.nextElement();
+	iFile f = e.nextElement();
 	f.declare();
     }
 
     if (System.getProperty("-u") != null) {
         e = fileTable.elements();
         while (e.hasMoreElements()) {
-	    iFile f = (iFile) e.nextElement();
+	    iFile f = e.nextElement();
 	    f.announce_unresolved();
         }
 	return;
@@ -77,7 +77,7 @@ public static void start(iFile[] files, String[] names) {
 
     e = fileTable.elements();
     while (e.hasMoreElements()) {
-	iFile f = (iFile) e.nextElement();
+	iFile f = e.nextElement();
 	f.resolve();
     }
 

@@ -115,9 +115,9 @@ public static void compose(String dst, Enumeration<String> files) {
 	    if (verbose) {
 		System.err.println("   zipfile:   " + fname);
 	    }
-	    Enumeration e = zsrc.entries();
+	    Enumeration<? extends ZipEntry> e = zsrc.entries();
 	    while (e.hasMoreElements()) {
-		ZipEntry ze = (ZipEntry) e.nextElement();
+		ZipEntry ze = e.nextElement();
 		if (verbose) {
 		    System.err.println("      " + ze.getName());
 		}

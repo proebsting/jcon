@@ -22,8 +22,7 @@ public final class Reflect {
 static Object construct(String classname, Class<?>[] sigs, Object[] args) 
 throws Exception {
     Class<?> c = Class.forName(classname);
-    Constructor k = c.getConstructor(sigs);
-    return k.newInstance(args);
+    return c.getConstructor(sigs).newInstance(args);
 }
 
 

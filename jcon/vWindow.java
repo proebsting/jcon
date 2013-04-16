@@ -260,9 +260,9 @@ public vFile close() {
     b.dispose();
     c.dispose();		// dispose frame and image
 
-    Vector v = c.wlist;		// list of windows sharing the canvas
+    Vector<vWindow> v = c.wlist;	// list of windows sharing the canvas
     for (int j = 0; j < v.size(); j++) {
-	vWindow win = (vWindow) v.elementAt(j);
+	vWindow win = v.elementAt(j);
 	win.a = null;		// mark each as closed
 	win.b = null;
 	win.c = null;
@@ -294,10 +294,10 @@ public vFile uncouple() {
 
 
 
-//  static function that references the toolkit
+//  beep() -- send a beep to the window
 
-public static void beep() {		// send a beep
-    toolkit.beep();
+public void beep() {
+    toolkit.beep();		// n.b. actually independent of the window
 }
 
 
@@ -388,7 +388,7 @@ private static int offset;		// round-robin starting point
 
 public static vWindow Active() {	// Active() finds win w/ pending event
     Vector<vWindow> v = new Vector<vWindow>();
-    for (Enumeration e = openfiles.elements(); e.hasMoreElements(); ) {
+    for (Enumeration<vFile> e = openfiles.elements(); e.hasMoreElements(); ) {
 	Object o = e.nextElement();
 	if (o instanceof vWindow && ((vWindow)o).c != null) {
 	    v.addElement((vWindow)o);

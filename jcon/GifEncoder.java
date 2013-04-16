@@ -105,14 +105,14 @@ public class GifEncoder extends ImageEncoder
 
 	}
 
-    IntHashtable colorHash;
+    Hashtable<Integer,GifEncoderHashitem> colorHash;
 
     void encodeDone() throws IOException
 	{
 	int transparentIndex = -1;
 	int transparentRgb = -1;
         // Put all the pixels into a hash table.
-        colorHash = new IntHashtable();
+        colorHash = new Hashtable<Integer,GifEncoderHashitem>();
 	int index = 0;
         for ( int row = 0; row < height; ++row )
             {
@@ -136,8 +136,7 @@ public class GifEncoder extends ImageEncoder
 			rgbPixels[row][col] = rgb = transparentRgb;
 			}
 		    }
-                GifEncoderHashitem item =
-		    (GifEncoderHashitem) colorHash.get( rgb );
+                GifEncoderHashitem item = colorHash.get( rgb );
                 if ( item == null )
 		    {
 		    if ( index >= 256 )
@@ -168,9 +167,10 @@ public class GifEncoder extends ImageEncoder
 	byte[] reds = new byte[mapSize];
 	byte[] grns = new byte[mapSize];
 	byte[] blus = new byte[mapSize];
-	for ( Enumeration e = colorHash.elements(); e.hasMoreElements(); )
+	for ( Enumeration<GifEncoderHashitem> e = colorHash.elements();
+		e.hasMoreElements(); )
 	    {
-	    GifEncoderHashitem item = (GifEncoderHashitem) e.nextElement();
+	    GifEncoderHashitem item = e.nextElement();
 	    reds[item.index] = (byte) ( ( item.rgb >> 16 ) & 0xff );
 	    grns[item.index] = (byte) ( ( item.rgb >>  8 ) & 0xff );
 	    blus[item.index] = (byte) (   item.rgb         & 0xff );
@@ -183,8 +183,7 @@ public class GifEncoder extends ImageEncoder
 
     byte GetPixel( int x, int y ) throws IOException
 	{
-	GifEncoderHashitem item =
-	    (GifEncoderHashitem) colorHash.get( rgbPixels[y][x] );
+	GifEncoderHashitem item = colorHash.get( rgbPixels[y][x] );
 	if ( item == null )
 	    throw new IOException( "color not found" );
 	return (byte) item.index;

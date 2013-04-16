@@ -38,7 +38,7 @@ private vList(vDescriptor[] elements) {		// new Vlist(elements[])
     }
 }
 
-private vList(Vector oldv, int newsize) {	// new Vlist(oldvector, newsize)
+private vList(Vector <vListVar>oldv, int newsize) {  // new Vlist(oldv, newsize)
     super(nextsn++);
     v = new Vector<vListVar>(newsize);
     int n = oldv.size();
@@ -109,7 +109,7 @@ public int posEq(long n) {
 // elements() is used when creating vSets and for the binary "!" operator.
 // Elements must be generated in order.
 
-public java.util.Enumeration elements() {
+public java.util.Enumeration<vSimpleVar> elements() {
     return new vListEnumeration(this.v);
 }
 
@@ -228,7 +228,7 @@ public vList ListConcat(vDescriptor v) {		// L1 ||| L2
     if (!(v instanceof vList)) {
 	iRuntime.error(108, v);
     }
-    Vector v2 = ((vList)v).v;
+    Vector<vListVar> v2 = ((vList)v).v;
     int size2 = v2.size();
     vList result = new vList(this.v, this.v.size() + size2);
     for (int i = 0; i < size2; i++) {
@@ -250,7 +250,7 @@ public vValue[] mkArray(int errno) {	// make array for sort(L) or p ! L
 
 
 
-final class vListEnumeration implements java.util.Enumeration {
+final class vListEnumeration implements java.util.Enumeration<vSimpleVar> {
     java.util.Vector<vListVar> v;
     int i;
 
@@ -263,7 +263,7 @@ final class vListEnumeration implements java.util.Enumeration {
 	return i < v.size();
     }
 
-    public Object nextElement() {
+    public vSimpleVar nextElement() {
 	return v.elementAt(i++);
     }
 } // class vListEnumeration
@@ -279,7 +279,7 @@ final class vListVar extends vSimpleVar {
     }
 
     public vString Name() {
-	java.util.Enumeration e = parent.elements();
+	java.util.Enumeration<vSimpleVar> e = parent.elements();
 	int i = 1;
 	while (e.hasMoreElements()) {
 	    if (this == e.nextElement()) {

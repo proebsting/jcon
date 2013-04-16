@@ -1,11 +1,12 @@
-JCON 2.1 README
+JCON 2.1+cvs README
 September 10, 1999
+April 16, 2013
 
 Gregg Townsend, The University of Arizona
 Todd Proebsting, Microsoft Research
 
 http://www.cs.arizona.edu/icon/jcon/
-jcon@cs.arizona.edu
+icon-project@cs.arizona.edu
 
 
 For detailed documentation, visit the web page listed above. 
@@ -21,8 +22,8 @@ QUICK INSTALLATION SUMMARY
 
 Jcon requires:
     A Unix system with the Korn Shell (/bin/ksh)
-    Version 9 of Icon  (http://www.cs.arizona.edu/icon/v93u.html)
-    Version 1.1 (or newer) of Java  (http://www.javasoft.com/products/jdk/1.1/)
+    Version 9 of Icon  (www.cs.arizona.edu/icon/current)
+    Java 7 or newer  (possibly 5 or 6, but haven't tested them)
 
 The icont, javac, java, and jar programs must be in the search path.
 Go to the top level of the Jcon distribution and type "make".

@@ -30,9 +30,9 @@ private vSet(vValue x) {
 	    iRuntime.error(108, x);
 	}
 	vList list = (vList) x;
-	java.util.Enumeration i = list.elements();
+	java.util.Enumeration<vSimpleVar> i = list.elements();
 	while (i.hasMoreElements()) {
-	    vValue v = ((vDescriptor)i.nextElement()).Deref();
+	    vValue v = (i.nextElement()).Deref();
 	    t.put(v, v);
 	}
     }
