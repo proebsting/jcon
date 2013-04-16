@@ -89,7 +89,6 @@ the filename of the most recently loaded image.
 <P> <CODE>WriteImage()</CODE>
 attempts to write a JPEG file if the specified filename
 ends in <CODE>".jpg"</CODE> or <CODE>".jpeg"</CODE> (case insensitive).
-JPEG writing fails for Java versions earlier than 1.2beta4.
 For all other filenames, a GIF file is written;  if the area being
 written contains more than 256 colors, automatic quantization occurs.
 

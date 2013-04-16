@@ -5,6 +5,8 @@ package jcon;
 import java.awt.*;
 import java.awt.image.*;
 import java.io.*;
+import javax.imageio.*;
+import javax.imageio.stream.*;
 
 
 
@@ -323,6 +325,9 @@ public static vValue writeGIF(vWindow win, int[] data, String fname,
 public static vValue writeJPEG(vWindow win, int[] data, String fname,
 				int w, int h, double q) {
 
+    BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+    bi.setRGB(0, 0, w, h, data, 0, w);
+
     if (q < 0.0) {
 	q = 0.75;		// default quality
     } else if (q > 1.0) {
@@ -334,63 +339,19 @@ public static vValue writeJPEG(vWindow win, int[] data, String fname,
 	}
     }
 
-    // this is all done very indirectly because the
-    // com.sun.image.codec.jpeg.* class may not be available
-    // (if not, writing fails)
-
-    Integer ww = new Integer(w);
-    Integer hh = new Integer(h);
-    Integer zero = new Integer(0);
-    FileOutputStream f = null;
-
     try {
-	f = new FileOutputStream(fname);
-
-	// int rgbtype = BufferedImage.TYPE_INT_RGB;
-	int rgbtype = Reflect.field(
-	    "java.awt.image.BufferedImage", "TYPE_INT_RGB").getInt(null);
-
-	// BufferedImage bi = new BufferedImage(w, h, rgbtype);
-	Object bi = Reflect.construct("java.awt.image.BufferedImage", 
-	    new Class<?>[] { int.class, int.class, int.class },
-	    new Object[] { ww, hh, new Integer(1) }) ;
-
-	// bi.setRGB(0, 0, w, h, data, 0, w);
-	Reflect.call(bi, "setRGB",
-	    new Class<?>[] { int.class, int.class, int.class, int.class,
-		int[].class, int.class, int.class },
-	    new Object[] { zero, zero, ww, hh, data, zero, ww });
-
-	// JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(f);
-	Object encoder = Reflect.call(
-	    "com.sun.image.codec.jpeg.JPEGCodec", "createJPEGEncoder",
-	    new Class<?>[] { OutputStream.class },
-	    new Object[] { f });
-
-	// JPEGEncodeParam param = encoder.getDefaultJPEGEncodeParam(bi);
-	Object param = Reflect.call(encoder, "getDefaultJPEGEncodeParam",
-	    new Class<?>[] { bi.getClass() },
-	    new Object[] { bi });
-
-	// param.setQuality((float)q, false);
-	Reflect.call(param, "setQuality",
-	    new Class<?>[] { float.class, boolean.class },
-	    new Object[] { new Float(q), new Boolean(false) });
-
-	// encoder.encode(bi, param);
-	Reflect.call(encoder, "encode",
-	    new Class<?>[] { bi.getClass(),
-		Class.forName("com.sun.image.codec.jpeg.JPEGEncodeParam") },
-	    new Object[] { bi, param });
-
-	f.close();
+	ImageWriter iw = ImageIO.getImageWritersBySuffix("jpg").next();
+	ImageWriteParam param = iw.getDefaultWriteParam();
+	param.setCompressionMode(ImageWriteParam.MODE_EXPLICIT);
+	param.setCompressionQuality((float) q);
+	FileImageOutputStream o = new FileImageOutputStream(new File(fname));
+	iw.setOutput(o);
+	IIOImage iioImage = new IIOImage(bi, null, null);
+	iw.write(null, iioImage, param);
+	iw.dispose();
+	o.close();
 	return win;
-
     } catch (Exception e) {
-	try {
-	    f.close();
-	} catch (Exception ee) {
-	}
 	return null; /*FAIL*/
     }
 }
