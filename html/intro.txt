@@ -24,6 +24,8 @@ by embedding a Zip archive of Java classes (a "Jar file")
 inside a shell script.
 Separate compilation is also supported, with <CODE>.zip</CODE> files
 substituting for <CODE>.u1/.u2</CODE> file pairs.
+There is also a <CODE>jcon</CODE> command that is analogous to the
+standard <CODE>icon</CODE> command.
 
 <H3>Implementation</H3>
 

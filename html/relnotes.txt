@@ -1,24 +1,32 @@
-<P> Version 2.2 of Jcon includes minor feature additions,
-documentation edits, and bug fixes.  
-Changes include the following:
+<P> The CVS version of Jcon includes several changes since
+the last public release of version 2.1 in 1999.
 
 <UL>
-<LI> The source code is now compatible with Java 6 (Java v1.6).
+<LI> The source code is now compatible with Java 7 (Java v1.7).
 <LI> The <CODE>linewidth</CODE> graphics attribute is now implemented.
+<LI> <CODE>&time</CODE> now properly reports CPU time
+     instead of wall-clock time.
+<LI> Some minor bugs have been fixed (see the CVS log).
 </UL>
 
 <H3>Tested Platforms</H3>
 
 <P> Jcon has been successfully tested on:
 <BLOCKQUOTE>
-	Mac OS 10.7 (Lion) / Sun Java 1.6.0_26
+	Mac OS 10.8.3 (Mountain Lion) / Oracle Java 1.7.0_17
 </BLOCKQUOTE>
 
 <P> We would be interested to learn of either successes or failures
 on other platforms.
 
-<H3>Known problems (nongraphical)</H3>
-<SMALL>(not recently verified)</SMALL>
+<H3> Problems seen recently </H3>
+
+<UL>
+    <LI> Graphics windows are often incorrect when first opened.
+    	This seems to be a timing problem (race condition) of some sort.
+</UL>
+
+<H3>Older unverified problems (nongraphical)</H3>
 <UL>
     <LI>Some JIT compilers fail to execute Jcon programs correctly.
 	Disabling the JIT compiler produces correct execution.
@@ -34,8 +42,7 @@ on other platforms.
 	can generate code that is too large for Java to handle.
 </UL>
 
-<H3>Known graphics problems</H3>
-<SMALL>(not recently verified)</SMALL>
+<H3>Older graphics problems</H3>
 
 <P> Some problems are universal:
 <UL>
