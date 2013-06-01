@@ -52,6 +52,8 @@ A corresponding preprocessor symbol <CODE>_JAVA</CODE> is predefined.
 <P> <CODE>&amp;time</CODE> produces elapsed wall-clock time, not CPU time,
 if <CODE>getCurrentThreadCpuTime()</CODE> is not supported by the Java host.
 
+<P> <CODE>&amp;progname</CODE> is not assignable.
+
 <P> <CODE>&amp;allocated</CODE>, <CODE>&amp;collections</CODE>,
 <CODE>&amp;storage</CODE>, and <CODE>&amp;regions</CODE>
 produce only zero values.
