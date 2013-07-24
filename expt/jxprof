@@ -1,4 +1,4 @@
-#!/bin/ksh -p
+#!/bin/sh
 #
 #  jxprof filename [args] -- execute Jcon program with profiling
 #
@@ -9,4 +9,4 @@ if [ $# = 0 ]; then
    exit 1
 fi
 
-JXOPTS="-prof:$1.prof -nojit -noasyncgc" "$@"
+JXOPTS="-prof:$1.prof" "$@"

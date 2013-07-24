@@ -1,4 +1,6 @@
-#!/bin/ksh -p
+#!/bin/sh
+#
+#  #%#%  NO LONGER FUNCTIONAL.  Retained only for historical interest.
 #
 #  build ../bin/JCON package using toba
 #  <<ARIZONA-ONLY>>

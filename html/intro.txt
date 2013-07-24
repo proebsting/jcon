@@ -46,7 +46,7 @@ The corresponding portion of Version 9, counting only the Unix code,
 is over 50,000 lines of C code.
 
 <P> The <CODE>jcont</CODE> script that directs compilation and linking
-is a 400-line Korn shell script.
+is a 400-line shell script.
 While this works well for Unix, it is the single largest impediment
 to a non-Unix port.
 We believe that writing a replacement program would be the easiest route

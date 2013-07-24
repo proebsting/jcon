@@ -21,7 +21,7 @@
 	<BR> September 10, 1999
 	<BR> www.cs.arizona.edu/icon/docs/ipd286.htm 
 
-	<P> Subsequently revised through April 16, 2013
+	<P> Subsequently revised through July 24, 2013
     </TD></TR></TABLE>
 </CENTER>
 

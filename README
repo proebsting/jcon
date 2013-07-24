@@ -1,6 +1,6 @@
-JCON 2.1+cvs README
+JCON 2.2+cvs README
 September 10, 1999
-April 16, 2013
+July 24, 2013
 
 Gregg Townsend, The University of Arizona
 Todd Proebsting, Microsoft Research
@@ -21,7 +21,7 @@ QUICK INSTALLATION SUMMARY
 (If this isn't sufficient, please visit the web site above)
 
 Jcon requires:
-    A Unix system with the Korn Shell (/bin/ksh)
+    A Unix system with a POSIX shell (/bin/sh)
     Version 9 of Icon  (www.cs.arizona.edu/icon/current)
     Java 7 or newer  (possibly 5 or 6, but haven't tested them)
 

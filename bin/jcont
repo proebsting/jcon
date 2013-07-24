@@ -1,4 +1,4 @@
-#!/bin/ksh -p
+#!/bin/sh
 #
 #  jcont -- compile Icon program
 #
@@ -38,7 +38,7 @@
 #
 #  "java" must be in the search path, and "javap" if -S is used.
 #
-#  Normally, jcont produces a directly executable Korn Shell script
+#  Normally, jcont produces a directly executable POSIX Shell script
 #  containing an embedded Zip file.  Running the script executes the
 #  compiled Icon program, and arguments can be passed as usual.  The
 #  JXOPTS environment variable can be set to pass an arbitrary string
@@ -62,7 +62,7 @@ TRAN="jtran"
 LINK="jlink"
 
 # determine installed directory
-SCRIPT=`whence $0`
+SCRIPT=`command -v $0`
 IDIR=`dirname $SCRIPT`
 IDIR="${IDIR#/tmp_mnt}"
 IDIR="${IDIR#/.automount}"
@@ -74,7 +74,7 @@ JRTS="$IDIR/jcon.zip"
 RTSREF=":$JRTS"
 
 # using script location, define handler for usage error
-function usage {	# usage: print header above, and exit
+usage() {		# usage: print header above, and exit
     sed -n '
        1,3d
        /^$/q
@@ -115,7 +115,7 @@ TDIR=./jcon$$
 NODELETE=
 
 # assume an executable script is created
-XTYPE=.ksh
+XTYPE=.sh
 XFILE=
 NOLINK=
 
@@ -158,7 +158,7 @@ MAIN="${MAIN##*/}"
 
 # set output file name, if not specified
 if [ "$XFILE" = "" ]; then
-    XFILE="$MAIN${XTYPE%.ksh}"
+    XFILE="$MAIN${XTYPE%.sh}"
 fi
 
 # accumulate .icn, .zip, and .class file names
@@ -197,7 +197,7 @@ JTRAN="$IDIR/$TRAN"
 JLINK="$IDIR/$LINK"
 
 # estimate the needed header size
-HBASE=480		# approximate size of fixed text, plus breathing room
+HBASE=360		# approximate size of fixed text, plus breathing room
 (( HDRSIZE = $HBASE + ${#CMDLINE} ))	# estimate total size in bytes
 (( HDRSIZE = (HDRSIZE + 15) & ~15 ))	# round to multiple of 16
 
@@ -316,22 +316,16 @@ case $XTYPE in
 	cp $TDIR/combined.zip $XFILE
 	;;
 
-    *.ksh)
+    *.sh)
 	# combine a header (padded via dd) with that zip file to make a script
 	# (if making significant changes here, also adjust HBASE above)
 	(dd bs=$HDRSIZE conv=sync 2>/dev/null; cat $TDIR/combined.zip) \
 	    <<=====EOF===== >$XFILE
-#!/bin/ksh -p
+#!/bin/sh
 
 # built by:  $CMDLINE
 
-WHENCE=\`whence \$0\`
-case \$WHENCE in
-    /*)		THISFILE=\$WHENCE;;
-    ?:*)	THISFILE=\$WHENCE;;
-    *)		THISFILE=\`pwd\`/\$WHENCE;;
-esac
-
+THISFILE=\`command -v -- \$0\`
 TZIP="\${TMPDIR:-/tmp}/jcon\$\$.zip"
 trap "rm -rf \$TZIP" 0 1 2 15
 dd bs=$HDRSIZE skip=1 <\$THISFILE >\$TZIP 2>/dev/null
@@ -363,7 +357,7 @@ $NODELETE rm -f $ZBUILT
 if [ "$UNDECLARED" != "" ]; then
     case $XTYPE in
        *.jar) (CLASSPATH=$XFILE:$JRTS $JAVA $UNDECLARED $MAIN);;
-       *.ksh) (JXOPTS=$UNDECLARED ./$XFILE);;
+       *.sh)  (JXOPTS=$UNDECLARED ./$XFILE);;
     esac
 fi
 
@@ -375,5 +369,5 @@ $ANNOUNCE 1>&2 "Executing:"
 case $XTYPE in
    *.jar) CLASSPATH=$XFILE:$JRTS \
 	    exec $JAVA $JXOPTS -DTRACE="$UTRACE" $MAIN "$@";;
-   *.ksh) export TRACE="$UTRACE"; exec ./$XFILE "$@";;
+   *.sh)  export TRACE="$UTRACE"; exec ./$XFILE "$@";;
 esac

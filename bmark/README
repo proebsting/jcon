@@ -10,7 +10,7 @@ These programs are supplemented by two additional long-running applications:
 
 The standard benchmarks use &time to report CPU usage, but &time can only
 report wall-clock time for jcont.  Consequently, we use times as reported
-by the Korn shell.  These times include run-time initialization, which puts
+by the a C wrapper.  These times include run-time initialization, which puts
 Jcon at a disadvantage compared to the previous method.  To partially
 compensate, some program arguments and data files have been changed to yield
 longer execution times.

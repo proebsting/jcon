@@ -1,8 +1,6 @@
 TO DO -- JCON
 <<ARIZONA-ONLY>>
 
-Don't require ksh; a POSIX shell should suffice.
-
 Make &progname assignable.
 
 Line-buffer &output.

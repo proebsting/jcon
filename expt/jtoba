@@ -1,7 +1,9 @@
-#!/bin/ksh -p
+#!/bin/sh
 #
 #  jtoba -- compile program with jcont and toba
 #  <<ARIZONA-ONLY>>
+#
+#  #%#%  NO LONGER FUNCTIONAL.  Retained only for historical interest.
 #
 #  usage:  jtoba file.icn ...
 #	writes	file.tx		(toba executable)

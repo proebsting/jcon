@@ -3,23 +3,19 @@ Automated tests are provided to validate the build.
 
 <H3>Requirements</H3>
 
-<P> Jcon is written in Icon, Java, and Korn Shell.
+<P> Jcon is written in Icon, Java, and Unix shell scripts.
 
-<H4>Unix with the Korn shell</H4>
+<H4>Unix with a POSIX shell</H4>
 
 <P> Building and running Jcon requires various Unix utilities including
-the Korn Shell.
-Any system that has <CODE>/bin/ksh</CODE> will probably work.
-Most commercial Unix systems supply <CODE>ksh</CODE>,
-and the <CODE>ksh</CODE> clone on Linux also works.
+a POSIX shell in /bin/sh.
+Most modern Unix systems (including Mac and Linux) will work.
+It may be necessary to install &ldquo;developer&rdquo; packages.
 
 <H4>Installed Software</H4>
 
-<P> Jcon requires a recent version of Icon and version 1.1 of Java.
+<P> Jcon requires a recent version of Icon and version 7 of Java.
 Prebuilt binaries of these are available for many platforms.
-Installation of Java may require system privileges,
-and proper functioning of some Java systems may require installation
-of OS patches.
 
 <P> For software see:
 <BLOCKQUOTE>
@@ -27,9 +23,9 @@ of OS patches.
 <TR><TD>Icon 9.5:</TD><TD>
 	<A HREF="http://www.cs.arizona.edu/icon/current/">
 	www.cs.arizona.edu/icon/current</A></TD></TR>
-<TR><TD>Java 1.6:</TD><TD>
-	<A HREF="http://java.sun.com/">
-	java.sun.com</A></TD></TR>
+<TR><TD>Java 7:</TD><TD>
+<A HREF="http://www.oracle.com/technetwork/java/javase/downloads/index.html">
+	oracle.com</A></TD></TR>
 </TABLE>
 </BLOCKQUOTE>
 
