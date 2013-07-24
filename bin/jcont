@@ -198,8 +198,9 @@ JLINK="$IDIR/$LINK"
 
 # estimate the needed header size
 HBASE=360		# approximate size of fixed text, plus breathing room
-(( HDRSIZE = $HBASE + ${#CMDLINE} ))	# estimate total size in bytes
-(( HDRSIZE = (HDRSIZE + 15) & ~15 ))	# round to multiple of 16
+LLEN=${#CMDLINE}	# command line length
+HDRSIZE=$(( HBASE + LLEN ))		# estimate total size in bytes
+HDRSIZE=$(( (HDRSIZE + 15) & ~15 ))	# round to multiple of 16
 
 # conditionalize "Translating:" announcement
 if [ "$IFILES" != "" ]; then
