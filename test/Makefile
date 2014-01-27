@@ -14,7 +14,7 @@ run:
 	ulimit -t $(TLIMIT); ./runtest
 
 clean:
-	rm -rf tmp.* *.out *.err *.sum
+	rm -rf tmp? tmp.* *.out *.err *.sum
 	rm -rf jtmp *.class *.zip *.jar *.jvm *.[cho] *.tx *.u[12]
 	grep -l '$${ICONX-/' `find . -type f -perm -100 -print` | xargs rm -f
 	grep -l '^THISFILE=`' `find . -type f -perm -100 -print`  | xargs rm -f
