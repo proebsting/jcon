@@ -53,4 +53,4 @@ clean:
 
 dclean:	
 	rm -f `find * -type f | xargs grep -l '<< *ARIZONA-ONLY *>>' | cat`
-	rm -rf `find * -type d -name CVS`
+	rm -rf `find * -type d -name CVS -o -type -d -name .git`` 

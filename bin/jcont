@@ -285,7 +285,7 @@ mkdir $TDIR/META-INF
 cat <<==EOF== >>$TDIR/META-INF/MANIFEST.MF
 Manifest-Version: 1.0
 Main-Class: $MAIN
-Created-By: Jcon v2.2.cvs (University of Arizona)
+Created-By: Jcon v2.2.git (University of Arizona)
 ==EOF==
 
 # generate list of files needed for linking
