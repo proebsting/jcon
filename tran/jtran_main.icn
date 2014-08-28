@@ -19,6 +19,16 @@ procedure cat(getline, args)
     }
 end
 
+procedure tee(c, L)
+    local fn, f, v
+    fn := get(L) | stop("ERROR: tee: no filename")
+    f := open(fn, "w") | stop("ERROR: cannot write ", fn)
+    while v := @c do {
+	write(f, dump_verbose(v, "", ""))
+	suspend v
+    }
+end
+
 procedure stdout(c)
     local p
     while p := @\c do {
