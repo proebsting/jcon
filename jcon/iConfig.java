@@ -8,7 +8,7 @@ final class iConfig {
 
 // the following constants are peculiar to the Jcon implementation
 
-static final String Version = "Jcon Version 2.2.git, August 27, 2014";
+static final String Version = "Jcon Version 2.2.git, September 4, 2014";
 
 static final String PackageName = "jcon";	// class prefix
 static final String KeywordPrefix = "k$";	// name prefix for keywords

@@ -1,12 +1,14 @@
-<P> The CVS version of Jcon includes several changes since
+<P> The Git version of Jcon includes several changes since
 the last public release of version 2.1 in 1999.
 
 <UL>
 <LI> The source code is now compatible with Java 7 (Java v1.7).
-<LI> The <CODE>linewidth</CODE> graphics attribute is now implemented.
-<LI> <CODE>&time</CODE> now properly reports CPU time
+<LI> For consistency with v9, <CODE>reads()</CODE>
+	no longer translates line terminators.
+<LI> <CODE>&amp;time</CODE> now properly reports CPU time
      instead of wall-clock time.
-<LI> Some minor bugs have been fixed (see the CVS log).
+<LI> The <CODE>linewidth</CODE> graphics attribute is now implemented.
+<LI> Some minor bugs have been fixed.
 </UL>
 
 <H3>Tested Platforms</H3>

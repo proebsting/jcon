@@ -1,9 +1,16 @@
-JCON 2.2+cvs README
+JCON 2.2+git README
 September 10, 1999
-July 24, 2013
+September 4, 2014
 
-Gregg Townsend, The University of Arizona
-Todd Proebsting, Microsoft Research
+
+This is Jcon, a Java implementation of the Icon programming language.
+Unlike the C implementation, this version is not actively maintained,
+but you are welcome to experiment with it.
+
+Gregg Townsend and Todd Proebsting
+Department of Computer Science
+The University of Arizona
+Tucson, Arizona, USA
 
 http://www.cs.arizona.edu/icon/jcon/
 icon-project@cs.arizona.edu
@@ -15,9 +22,7 @@ The Jcon build process constructs a local copy of the documentation.
 Jcon can be freely redistributed; see the COPYRIGHT file.
 
 
-
 QUICK INSTALLATION SUMMARY
-
 (If this isn't sufficient, please visit the web site above)
 
 Jcon requires:

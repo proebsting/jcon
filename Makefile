@@ -10,7 +10,7 @@
 #
 #   to clean up:	make clean
 #
-#  
+#
 #   to build using Jcon (optional), after completing initial build:
 #			make jj
 
@@ -30,7 +30,7 @@ test:	build
 	cd test; $(MAKE)
 
 
-install: 
+install:
 	test -d $(DEST) || mkdir $(DEST)
 	cp bin/j* bin/jcon.zip $(DEST)
 
@@ -52,5 +52,4 @@ clean:
 # clean up for distribution by removing locally-specific files
 
 dclean:	
-	rm -f `find * -type f | xargs grep -l '<< *ARIZONA-ONLY *>>' | cat`
-	rm -rf `find * -type d -name CVS -o -type -d -name .git`` 
+	rm -rf `find * -type d -name .git`
