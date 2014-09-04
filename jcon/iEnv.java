@@ -176,13 +176,13 @@ static vVariable getKeyVar(String s) {
 
 //  operators (registered for use via string invocation)
 
-private static Hashtable[] oname = {
+private static Object[] oname = {
     new Hashtable<vString,String>(),
     new Hashtable<vString,String>(),
     new Hashtable<vString,String>(),
 };
 
-private static Hashtable[] oproc = {
+private static Object[] oproc = {
     new Hashtable<vString,vProc>(),
     new Hashtable<vString,vProc>(),
     new Hashtable<vString,vProc>(),
@@ -190,7 +190,8 @@ private static Hashtable[] oproc = {
 
 @SuppressWarnings("unchecked")
 static void declareOpr(String repr, int arity, String classname) {
-    oname[arity-1].put(vString.New(repr), classname);
+    Hashtable<vString,String> nh = (Hashtable<vString,String>)oname[arity-1];
+    nh.put(vString.New(repr), classname);
 }
 
 @SuppressWarnings("unchecked")
@@ -199,15 +200,17 @@ static vProc getOpr(vString repr, long arity) {
         return null;
     }
     int i = (int) arity - 1;
-    vProc v = (vProc) oproc[i].get(repr);	// check if already created
+    Hashtable<vString,String> nh = (Hashtable<vString,String>)oname[i];
+    Hashtable<vString,vProc> ph = (Hashtable<vString,vProc>)oproc[i];
+    vProc v = ph.get(repr);			// check if already created
     if (v != null) {
 	return v;				// found it
     }
-    String classname = (String) oname[i].get(repr);
+    String classname = nh.get(repr);
     if (classname == null) {
 	return null;				// unknown operation
     }
-    oproc[i].put(repr, v = iOperators.instantiate(classname));
+    ph.put(repr, v = iOperators.instantiate(classname));
     v.img = repr.surround("function ", "");
     return v;					// return new instance
 }

@@ -2,7 +2,7 @@
 the last public release of version 2.1 in 1999.
 
 <UL>
-<LI> The source code is now compatible with Java 7 (Java v1.7).
+<LI> The source code is now compatible with Java 8 (Java v1.8).
 <LI> For consistency with v9, <CODE>reads()</CODE>
 	no longer translates line terminators.
 <LI> <CODE>&amp;time</CODE> now properly reports CPU time
@@ -15,7 +15,7 @@ the last public release of version 2.1 in 1999.
 
 <P> Jcon has been successfully tested on:
 <BLOCKQUOTE>
-	Mac OS 10.8.3 (Mountain Lion) / Oracle Java 1.7.0_21
+	Mac OS 10.9.4 (Mavericks) / Oracle Java 1.8.0_20
 </BLOCKQUOTE>
 
 <P> We would be interested to learn of either successes or failures
