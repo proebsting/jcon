@@ -1,16 +1,19 @@
 TO DO -- JCON
 
-Make &progname assignable.
-
 Line-buffer &output.
 
 Give jcont a way to print its version number.
 
-Better List implementation, a la v9.
-
 Create Main-Class manifest for "java -jar" w/ option to include copy of RTS.
+
+Redo graphics for modern Java.
 
 Implement textures and patterns.
 
+Make &progname assignable.
+
 Switch to Arrays.sort().  It's stable, and probably faster.
 
+Better List implementation, a la v9.
+
+Review documentation and bring up to date.
