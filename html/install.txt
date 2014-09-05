@@ -14,20 +14,10 @@ It may be necessary to install &ldquo;developer&rdquo; packages.
 
 <H4>Installed Software</H4>
 
-<P> Jcon requires a recent version of Icon and version 7 of Java.
+<P> Jcon requires recent versions of
+<A HREF="http://www.cs.arizona.edu/icon/current/">Icon</A> and
+<A HREF="http://www.oracle.com/technetwork/java/javase/downloads/index.html">Java</A>.
 Prebuilt binaries of these are available for many platforms.
-
-<P> For software see:
-<BLOCKQUOTE>
-<TABLE>
-<TR><TD>Icon 9.5:</TD><TD>
-	<A HREF="http://www.cs.arizona.edu/icon/current/">
-	www.cs.arizona.edu/icon/current</A></TD></TR>
-<TR><TD>Java 7:</TD><TD>
-<A HREF="http://www.oracle.com/technetwork/java/javase/downloads/index.html">
-	oracle.com</A></TD></TR>
-</TABLE>
-</BLOCKQUOTE>
 
 <H4>Search Path</H4>
 

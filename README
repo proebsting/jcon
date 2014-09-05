@@ -4,22 +4,18 @@ September 5, 2014
 
 
 This is Jcon, a Java implementation of the Icon programming language.
-Unlike the C implementation, this version is not actively maintained,
-but you are welcome to experiment with it.
+This code is not actively maintained, but you are welcome to explore.
+
+For detailed documentation visit the Jcon website:
+    http://www.cs.arizona.edu/icon/jcon/
+
+Jcon can be freely redistributed; see the COPYRIGHT file.
 
 Gregg Townsend and Todd Proebsting
 Department of Computer Science
 The University of Arizona
 Tucson, Arizona, USA
-
-http://www.cs.arizona.edu/icon/jcon/
 icon-project@cs.arizona.edu
-
-
-For detailed documentation, not quite current, visit the web page above. 
-The Jcon build process constructs the latest documentation.
-
-Jcon can be freely redistributed; see the COPYRIGHT file.
 
 
 QUICK INSTALLATION SUMMARY
