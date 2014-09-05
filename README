@@ -1,6 +1,6 @@
 JCON 2.2+git README
 September 10, 1999
-September 4, 2014
+September 5, 2014
 
 
 This is Jcon, a Java implementation of the Icon programming language.
@@ -16,19 +16,18 @@ http://www.cs.arizona.edu/icon/jcon/
 icon-project@cs.arizona.edu
 
 
-For detailed documentation, visit the web page listed above. 
-The Jcon build process constructs a local copy of the documentation.
+For detailed documentation, not quite current, visit the web page above. 
+The Jcon build process constructs the latest documentation.
 
 Jcon can be freely redistributed; see the COPYRIGHT file.
 
 
 QUICK INSTALLATION SUMMARY
-(If this isn't sufficient, please visit the web site above)
 
 Jcon requires:
     A Unix system with a POSIX shell (/bin/sh)
     Version 9 of Icon  (www.cs.arizona.edu/icon/current)
-    Java 7 or newer  (possibly 5 or 6, but haven't tested them)
+    Java 6 or newer  (possibly Java 5)
 
 The icont, javac, java, and jar programs must be in the search path.
 Go to the top level of the Jcon distribution and type "make".
