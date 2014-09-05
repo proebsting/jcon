@@ -16,6 +16,8 @@ the last public release of version 2.1 in 1999.
 <P> Jcon has been successfully tested on:
 <BLOCKQUOTE>
 	Mac OS 10.9.4 (Mavericks) / Oracle Java 1.8.0_20
+	<BR>Ubuntu 12.04.5 LTS / Java 1.7.0_05
+	<BR>Ubuntu 12.04.4 LTS / Java 1.6.0_26
 </BLOCKQUOTE>
 
 <P> We would be interested to learn of either successes or failures
