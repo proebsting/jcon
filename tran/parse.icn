@@ -926,7 +926,11 @@ procedure parse_match_token(which_token)
         parse_tok_rec := @parse_tok
         return saved
     } else {
-        parse_error("Expecting "||which_token.str)
+        if which_token ~=== lex_IDENT then {
+            parse_error("Expecting "|| which_token.str)
+        } else {
+            parse_error("Expecting identifier")
+        }
     }
 end
 
