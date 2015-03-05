@@ -102,8 +102,10 @@ procedure lex_yylex0(getline)
         if str := tab(many(&digits)) then {
             sym := lex_INTLIT
             if str ||:= =("r"|"R") then { # radix
-                str ||:= tab(many(let_dig)) |
+                str ||:= tab(many(let_dig))
+                if not integer(str) then {  # validates digits vs base
                     lex_error("invalid integer literal")
+                }
                 ptok := sym
                 ptok.str := str
                 suspend ptok
