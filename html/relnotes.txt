@@ -15,7 +15,7 @@ the last public release of version 2.1 in 1999.
 
 <P> Jcon has been successfully tested on:
 <BLOCKQUOTE>
-	Mac OS 10.9.4 (Mavericks) / Oracle Java 1.8.0_20
+	Mac OS 10.10.4 (Yosemite) / Oracle Java 1.8.0_05
 	<BR>Ubuntu 12.04.5 LTS / Java 1.7.0_05
 	<BR>Ubuntu 12.04.4 LTS / Java 1.6.0_26
 </BLOCKQUOTE>
@@ -28,6 +28,10 @@ on other platforms.
 <UL>
     <LI> Graphics windows are often incorrect when first opened.
     	This seems to be a timing problem (race condition) of some sort.
+    <LI> If a source file contains two procedures whose names differ
+	only in lettercase, one will be lost if compiled on a case-insensitive
+	filesystem such as the usual Macintosh filesystem.
+	<!-- in IPL: gprocs/viface.icn vsetfont, vecho -->
 </UL>
 
 <H3>Older unverified problems (nongraphical)</H3>
