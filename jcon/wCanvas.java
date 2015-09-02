@@ -186,7 +186,7 @@ public void resize(vWindow win, int w, int h) {
 //
 //  g is a zero-origin graphics context with no clipping
 
-public void paint(Graphics2D g) {
+public void paint(Graphics g) {
     g.drawImage(i,0,0,null);
 }
 
