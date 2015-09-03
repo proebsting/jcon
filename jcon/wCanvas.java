@@ -51,7 +51,12 @@ wCanvas(vWindow win, String label, int w, int h) {
     f.pack();
     f.setResizable(false);
 
-    i = this.createImage(w, h);
+    // make an Image most compatible with the screen for faster drawImage()
+    // n.b. TRANSLUCENT is measurably faster than OPAQUE on Mac "Pierre".
+    GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+    GraphicsDevice device = env.getDefaultScreenDevice();
+    GraphicsConfiguration config = device.getDefaultConfiguration();
+    i = config.createCompatibleImage(width, height, Transparency.TRANSLUCENT);
 
     evq = vList.New(0, null);			// create event queue
     tty = new wTTY();				// create TTY instance
